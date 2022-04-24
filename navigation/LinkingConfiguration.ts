@@ -19,13 +19,13 @@ const linking: LinkingOptions<RootStackParamList> = {
           Categories: 'categories',
           Calendar: 'calendar',
           AddTask: 'add-task'
-        },
+        }
       },
       Login: 'login',
       Modal: 'modal',
-      NotFound: '*',
-    },
-  },
+      NotFound: '*'
+    }
+  }
 };
 
 export default linking;
