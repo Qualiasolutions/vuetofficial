@@ -1,4 +1,8 @@
-{
+const extraData = {
+  vuetApiUrl: process.env.ENV === 'prod' ? 'api.vuet.app' : 'localhost:8000'
+}
+
+export default {
   "expo": {
     "name": "vuet-app",
     "slug": "vuet-app",
@@ -29,6 +33,8 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
-    }
+    },
+    "extra": extraData
   }
 }
+  

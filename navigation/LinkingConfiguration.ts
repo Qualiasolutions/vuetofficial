@@ -15,18 +15,13 @@ const linking: LinkingOptions<RootStackParamList> = {
     screens: {
       Root: {
         screens: {
-          Home: {
-            screens: {
-              HomeScreen: 'one',
-            },
-          },
-          Categories: {
-            screens: {
-              CategoriesScreen: 'two',
-            },
-          },
+          Home: '',
+          Categories: 'categories',
+          Calendar: 'calendar',
+          AddTask: 'add-task'
         },
       },
+      Login: 'login',
       Modal: 'modal',
       NotFound: '*',
     },

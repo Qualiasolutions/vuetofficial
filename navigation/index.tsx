@@ -20,6 +20,7 @@ import CalendarScreen from '../screens/CalendarScreen';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import LoginScreen from '../screens/LoginScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -42,6 +43,7 @@ function RootNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
@@ -69,7 +71,8 @@ function BottomTabNavigator() {
         component={HomeScreen}
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
       <BottomTab.Screen
@@ -77,7 +80,8 @@ function BottomTabNavigator() {
         component={CategoriesScreen}
         options={{
           title: 'Categories',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />,
         }}
       />
       <BottomTab.Screen
@@ -85,7 +89,8 @@ function BottomTabNavigator() {
         component={CalendarScreen}
         options={{
           title: 'Calendar',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
       <BottomTab.Screen
@@ -93,7 +98,8 @@ function BottomTabNavigator() {
         component={AddTaskScreen}
         options={{
           title: 'AddTask',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
         }}
       />
     </BottomTab.Navigator>
