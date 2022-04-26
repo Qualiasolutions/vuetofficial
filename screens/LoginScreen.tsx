@@ -14,32 +14,7 @@ import { Text, View } from '../components/Themed';
 
 import { RootStackScreenProps } from '../types';
 
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
-
-type LoginResponse = {
-  access: string;
-  refresh: string;
-};
-
-const getTokenAsync = async (username: string, password: string) => {
-  const loginResponse: LoginResponse = await fetch(`http://${vuetApiUrl}/auth/token/`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      username,
-      password
-    })
-  })
-    .then((response) => response.json())
-    .catch((err) => {
-      console.log(err);
-    });
-
-  return loginResponse
-};
+import { getTokenAsync } from '../utils/authRequests';
 
 // TODO - the typing needs a good look at
 interface LoginProps extends RootStackScreenProps<'Login'> {
@@ -66,10 +41,12 @@ const LoginScreen = ({
     await getTokenAsync(usernameToUse, passwordToUse).then(
       ({ access, refresh }) => {
         if (access) {
+          console.log(access);
+          console.log(refresh);
+          console.log(usernameToUse);
           setAccessTokenProp(access);
           setRefreshTokenProp(refresh);
           setUsernameProp(usernameToUse);
-          navigation.navigate('Root');
         } else {
           setErrorMessage(
             'Failed to log in. Please check that you have entered your credentials correctly'
@@ -131,6 +108,7 @@ const styles = StyleSheet.create({
   }
 });
 
+// TODO - delete this as it's not needed
 const mapStateToProps = (state: EntireState) => ({
   jwtAccessToken: state.authentication.jwtAccessToken,
   jwtRefreshToken: state.authentication.jwtRefreshToken,
@@ -146,6 +124,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
     },
     dispatch
   );
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

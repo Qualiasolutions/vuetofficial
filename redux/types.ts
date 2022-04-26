@@ -4,7 +4,7 @@ type AuthState = {
   username: string;
   jwtAccessToken: string;
   jwtRefreshToken: string;
-}
+};
 
 type AuthReducerActionType = {
   type: keyof typeof allActionNames;
@@ -13,10 +13,6 @@ type AuthReducerActionType = {
 
 type EntireState = {
   authentication: AuthState;
-}
-
-export {
-  AuthState,
-  EntireState,
-  AuthReducerActionType
 };
+
+export { AuthState, EntireState, AuthReducerActionType };

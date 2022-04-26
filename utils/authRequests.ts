@@ -1,0 +1,89 @@
+import Constants from 'expo-constants';
+
+const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+
+type LoginResponse = {
+  access: string;
+  refresh: string;
+};
+
+type VerifyResponse = {
+  detail?: string;
+  code?: string;
+};
+
+type RefreshResponse = { access: string };
+
+const getTokenAsync = async (username: string, password: string) => {
+  const loginResponse: LoginResponse = await fetch(
+    `http://${vuetApiUrl}/auth/token/`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    }
+  )
+    .then((response) => response.json())
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return loginResponse;
+};
+
+const verifyTokenAsync = async (token: string): Promise<VerifyResponse> => {
+  const verifyResponse: VerifyResponse = await fetch(
+    `http://${vuetApiUrl}/auth/token/verify/`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token })
+    }
+  )
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw Error('Failed to verify token');
+      }
+    })
+    .catch((err) => {
+      return {
+        detail: 'Failed to verify token',
+        code: 'failed_to_verify_token'
+      };
+    });
+
+  return verifyResponse;
+};
+
+const refreshTokenAsync = async (refreshToken: string) => {
+  const refreshResponse: RefreshResponse = await fetch(
+    `http://${vuetApiUrl}/auth/token/refresh/`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ refresh: refreshToken })
+    }
+  )
+    .then((response) => response.json())
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return refreshResponse;
+};
+
+export { getTokenAsync, verifyTokenAsync, refreshTokenAsync };
