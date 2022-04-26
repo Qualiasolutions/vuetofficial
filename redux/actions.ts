@@ -1,32 +1,28 @@
 import {
   SET_ACCESS_TOKEN,
   SET_REFRESH_TOKEN,
-  SET_USERNAME,
+  SET_USERNAME
 } from './actionNames';
 
 function setAccessToken(token: string) {
   return {
     type: SET_ACCESS_TOKEN,
-    token,
+    token
   };
 }
 
 function setRefreshToken(token: string) {
   return {
     type: SET_REFRESH_TOKEN,
-    value: token,
+    value: token
   };
 }
 
 function setUsername(username: string) {
   return {
     type: SET_USERNAME,
-    value: username,
+    value: username
   };
 }
 
-export {
-  setAccessToken,
-  setRefreshToken,
-  setUsername
-}
+export { setAccessToken, setRefreshToken, setUsername };

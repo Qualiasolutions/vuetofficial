@@ -2,9 +2,12 @@ import React from 'react';
 
 import { StyleSheet, TextInput, Button } from 'react-native';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {setAccessToken, setRefreshToken, setUsername} from '../redux/actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setAccessToken, setRefreshToken, setUsername } from '../redux/actions';
+
+import { EntireState, AuthReducerActionType } from '../redux/types';
+import type { Dispatch } from '@reduxjs/toolkit';
 
 import Constants from 'expo-constants';
 import { Text, View } from '../components/Themed';
@@ -19,7 +22,7 @@ type LoginResponse = {
 };
 
 const getTokenAsync = async (username: string, password: string) => {
-  return await fetch(`http://${vuetApiUrl}/auth/token/`, {
+  const loginResponse: LoginResponse = await fetch(`http://${vuetApiUrl}/auth/token/`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -31,37 +34,49 @@ const getTokenAsync = async (username: string, password: string) => {
     })
   })
     .then((response) => response.json())
-    .then((data) => data.token)
     .catch((err) => {
       console.log(err);
     });
+
+  return loginResponse
 };
 
+// TODO - the typing needs a good look at
 interface LoginProps extends RootStackScreenProps<'Login'> {
   setAccessTokenProp: Function;
   setRefreshTokenProp: Function;
   setUsernameProp: Function;
 }
 
-const LoginScreen = ({navigation, setAccessTokenProp, setRefreshTokenProp, setUsernameProp}: LoginProps) => {
+const LoginScreen = ({
+  navigation,
+  setAccessTokenProp,
+  setRefreshTokenProp,
+  setUsernameProp
+}: LoginProps) => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const setTokenAsync = async (usernameToUse: string, passwordToUse: string) => {
+  const setTokenAsync = async (
+    usernameToUse: string,
+    passwordToUse: string
+  ) => {
     setErrorMessage('');
-    await getTokenAsync(usernameToUse, passwordToUse).then(({access, refresh}) => {
-      if (access) {
-        setAccessTokenProp(access);
-        setRefreshTokenProp(refresh);
-        setUsernameProp(usernameToUse);
-        navigation.navigate('Root');
-      } else {
-        setErrorMessage(
-          'Failed to log in. Please check that you have entered your credentials correctly',
-        );
+    await getTokenAsync(usernameToUse, passwordToUse).then(
+      ({ access, refresh }) => {
+        if (access) {
+          setAccessTokenProp(access);
+          setRefreshTokenProp(refresh);
+          setUsernameProp(usernameToUse);
+          navigation.navigate('Root');
+        } else {
+          setErrorMessage(
+            'Failed to log in. Please check that you have entered your credentials correctly'
+          );
+        }
       }
-    });
+    );
   };
 
   const errorContent = errorMessage ? (
@@ -100,10 +115,9 @@ const LoginScreen = ({navigation, setAccessTokenProp, setRefreshTokenProp, setUs
           // color={PRIMARY} TODO
         />
       </View>
-
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -114,23 +128,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold'
-  },
+  }
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: EntireState) => ({
   jwtAccessToken: state.authentication.jwtAccessToken,
   jwtRefreshToken: state.authentication.jwtRefreshToken,
-  username: state.authentication.username,
+  username: state.authentication.username
 });
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
+const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
+  return bindActionCreators(
     {
       setAccessTokenProp: setAccessToken,
       setRefreshTokenProp: setRefreshToken,
-      setUsernameProp: setUsername,
+      setUsernameProp: setUsername
     },
-    dispatch,
+    dispatch
   );
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

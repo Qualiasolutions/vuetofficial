@@ -1,32 +1,33 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 import allActionNames from './actionNames';
+import { AuthState, AuthReducerActionType } from './types';
 
-const {
-  SET_ACCESS_TOKEN,
-  SET_REFRESH_TOKEN,
-  SET_USERNAME,
-} = allActionNames
+const { SET_ACCESS_TOKEN, SET_REFRESH_TOKEN, SET_USERNAME } = allActionNames;
 
-const INITIAL_AUTH_STATE = {
-  username: null,
-  jwtAccessToken: null,
-  jwtRefreshToken: null,
+const INITIAL_AUTH_STATE: AuthState = {
+  username: '',
+  jwtAccessToken: '',
+  jwtRefreshToken: ''
 };
 
-type AuthReducerActionType = {
-  type: keyof typeof allActionNames;
-  value: string;
-}
-
-const authReducer = (state = INITIAL_AUTH_STATE, action: AuthReducerActionType) => {
+const authReducer = (
+  state = INITIAL_AUTH_STATE,
+  action: AuthReducerActionType
+) => {
   switch (action.type) {
     case SET_ACCESS_TOKEN:
-      return {...state, jwtAccessToken: action.value};
+      return { ...state, jwtAccessToken: action.value };
     case SET_REFRESH_TOKEN:
-      return {...state, jwtRefreshToken: action.value};
+      return { ...state, jwtRefreshToken: action.value };
     case SET_USERNAME:
-      return {...state, username: action.value};
+      return { ...state, username: action.value };
     default:
       return state;
   }
 };
+
+const rootReducer = combineReducers({
+  authentication: authReducer
+});
+
+export default rootReducer;

@@ -30,20 +30,12 @@ import {
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
 
-export default function Navigation({
-  colorScheme
-}: {
-  colorScheme: ColorSchemeName;
-}) {
-  return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-    >
-      <RootNavigator />
-    </NavigationContainer>
-  );
-}
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import type { Dispatch } from '@reduxjs/toolkit';
+import { EntireState, AuthReducerActionType } from '../redux/types';
+import { setAccessToken, setRefreshToken, setUsername } from '../redux/actions';
+import {RootStackScreenProps} from '../types'
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -143,3 +135,45 @@ function TabBarIcon(props: {
 }) {
   return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }
+
+interface NavigationProps {
+  colorScheme: ColorSchemeName;
+  setAccessTokenProp: Function;
+  setRefreshTokenProp: Function;
+  setUsernameProp: Function;
+}
+
+const Navigation = ({
+  colorScheme,
+  setAccessTokenProp,
+  setRefreshTokenProp,
+  setUsernameProp
+}: NavigationProps) => {
+  return (
+    <NavigationContainer
+      linking={LinkingConfiguration}
+      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+    >
+      <RootNavigator />
+    </NavigationContainer>
+  );
+}
+
+const mapStateToProps = (state: EntireState) => ({
+  jwtAccessToken: state.authentication.jwtAccessToken,
+  jwtRefreshToken: state.authentication.jwtRefreshToken,
+  username: state.authentication.username
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
+  return bindActionCreators(
+    {
+      setAccessTokenProp: setAccessToken,
+      setRefreshTokenProp: setRefreshToken,
+      setUsernameProp: setUsername
+    },
+    dispatch
+  );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
