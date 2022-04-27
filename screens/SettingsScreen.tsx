@@ -44,7 +44,6 @@ const SettingsScreen = ({
         <Button
           title="Log Out"
           onPress={logOut}
-          // color={PRIMARY} TODO
         />
       </View>
 
@@ -69,9 +68,7 @@ const styles = StyleSheet.create({
   }
 });
 
-// TODO - delete this as it's not needed
 const mapStateToProps = (state: EntireState) => ({
-  jwtAccessToken: state.authentication.jwtAccessToken,
   jwtRefreshToken: state.authentication.jwtRefreshToken,
   username: state.authentication.username
 });

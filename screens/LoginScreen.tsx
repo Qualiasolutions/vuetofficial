@@ -1,20 +1,22 @@
 import React from 'react';
 
-import { StyleSheet, TextInput, Button } from 'react-native';
+import { StyleSheet, TextInput, Button, Image } from 'react-native';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setAccessToken, setRefreshToken, setUsername } from '../redux/actions';
 
-import { EntireState, AuthReducerActionType } from '../redux/types';
+import { AuthReducerActionType } from '../redux/types';
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import Constants from 'expo-constants';
 import { Text, View } from '../components/Themed';
 
-import { UnauthorisedStackScreenProps } from '../types';
-
 import { getTokenAsync } from '../utils/authRequests';
+
+import GLOBAL_STYLES from '../globalStyles/styles';
+import { SUCCESS } from '../globalStyles/colorScheme';
+
+const logo = require('../assets/images/logo.png')
 
 interface LoginProps {
   setAccessTokenProp: Function;
@@ -52,40 +54,33 @@ const LoginScreen = ({
   };
 
   const errorContent = errorMessage ? (
-    // TODO - add generic error message styling
-    // <View style={{...ERROR_MESSAGE_STYLE, ...styles.errorMessage}}>
     <View>
-      <Text> {errorMessage} </Text>
+      <Text style={GLOBAL_STYLES.errorMessage}>{errorMessage}</Text>
     </View>
   ) : null;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Login: {Constants.manifest?.extra?.vuetApiUrl}{' '}
-      </Text>
+      <Image source={logo} style={styles.logo}/>
       {errorContent}
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
-        // style={styles.textInput} TODO
+        style={GLOBAL_STYLES.textInput}
         placeholder="Username"
-        // placeholderTextColor={LIGHT + '66'} TODO
       />
       <TextInput
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
-        // style={styles.textInput} TODO
+        style={GLOBAL_STYLES.textInput}
         placeholder="Password"
-        // placeholderTextColor={LIGHT + '66'} TODO
       />
-      {/* </View><View style={styles.buttonWrapper}> TODO */}
-      <View>
+      <View style={styles.loginButtonWrapper}>
         <Button
           title="Log In"
           onPress={() => setTokenAsync(username, password)}
-          // color={PRIMARY} TODO
+          color={SUCCESS}
         />
       </View>
     </View>
@@ -98,17 +93,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
+  logo: {
+    width: 200,
+    aspectRatio: 1,
+  },
+  loginButtonWrapper: {
+    marginTop: 30
   }
-});
-
-// TODO - delete this as it's not needed
-const mapStateToProps = (state: EntireState) => ({
-  jwtAccessToken: state.authentication.jwtAccessToken,
-  jwtRefreshToken: state.authentication.jwtRefreshToken,
-  username: state.authentication.username
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
@@ -122,4 +113,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default connect(null, mapDispatchToProps)(LoginScreen);
