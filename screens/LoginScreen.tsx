@@ -12,19 +12,17 @@ import type { Dispatch } from '@reduxjs/toolkit';
 import Constants from 'expo-constants';
 import { Text, View } from '../components/Themed';
 
-import { RootStackScreenProps } from '../types';
+import { UnauthorisedStackScreenProps } from '../types';
 
 import { getTokenAsync } from '../utils/authRequests';
 
-// TODO - the typing needs a good look at
-interface LoginProps extends RootStackScreenProps<'Login'> {
+interface LoginProps {
   setAccessTokenProp: Function;
   setRefreshTokenProp: Function;
   setUsernameProp: Function;
 }
 
 const LoginScreen = ({
-  navigation,
   setAccessTokenProp,
   setRefreshTokenProp,
   setUsernameProp
@@ -41,9 +39,6 @@ const LoginScreen = ({
     await getTokenAsync(usernameToUse, passwordToUse).then(
       ({ access, refresh }) => {
         if (access) {
-          console.log(access);
-          console.log(refresh);
-          console.log(usernameToUse);
           setAccessTokenProp(access);
           setRefreshTokenProp(refresh);
           setUsernameProp(usernameToUse);
@@ -69,6 +64,7 @@ const LoginScreen = ({
       <Text style={styles.title}>
         Login: {Constants.manifest?.extra?.vuetApiUrl}{' '}
       </Text>
+      {errorContent}
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}

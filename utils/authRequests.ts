@@ -14,6 +14,8 @@ type VerifyResponse = {
 
 type RefreshResponse = { access: string };
 
+type BlacklistResponse = { success: boolean };
+
 const getTokenAsync = async (username: string, password: string) => {
   const loginResponse: LoginResponse = await fetch(
     `http://${vuetApiUrl}/auth/token/`,
@@ -86,4 +88,24 @@ const refreshTokenAsync = async (refreshToken: string) => {
   return refreshResponse;
 };
 
-export { getTokenAsync, verifyTokenAsync, refreshTokenAsync };
+const blacklistTokenAsync = async (refreshToken: string) => {
+  const refreshResponse: BlacklistResponse = await fetch(
+    `http://${vuetApiUrl}/auth/token/blacklist/`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ refresh: refreshToken })
+    }
+  )
+    .then((response) => response.json())
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return refreshResponse;
+};
+
+export { getTokenAsync, verifyTokenAsync, refreshTokenAsync, blacklistTokenAsync };

@@ -20,12 +20,13 @@ import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesScreen from '../screens/CategoriesScreen';
-import CalendarScreen from '../screens/CalendarScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import {
   RootStackParamList,
   RootTabParamList,
-  RootTabScreenProps
+  RootTabScreenProps,
+  UnauthorisedStackParamList
 } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
@@ -47,6 +48,7 @@ import {
  * https://reactnavigation.org/docs/modal
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const UnauthorisedStack = createNativeStackNavigator<UnauthorisedStackParamList>();
 
 function RootNavigator() {
   return (
@@ -70,13 +72,13 @@ function RootNavigator() {
 
 function UnauthorisedNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <UnauthorisedStack.Navigator>
+      <UnauthorisedStack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-    </Stack.Navigator>
+    </UnauthorisedStack.Navigator>
   );
 }
 
@@ -115,13 +117,13 @@ function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Calendar"
-        component={CalendarScreen}
+        name="Settings"
+        component={SettingsScreen}
         options={{
-          title: 'Calendar',
+          title: 'Settings',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="calendar" color={color} />
+            <TabBarIcon name="cog" color={color} />
           )
         }}
       />

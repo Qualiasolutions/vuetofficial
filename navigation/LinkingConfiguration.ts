@@ -17,7 +17,7 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           Home: '',
           Categories: 'categories',
-          Calendar: 'calendar',
+          Settings: 'settings',
           AddTask: 'add-task'
         }
       },
