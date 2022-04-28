@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-import { Text, View } from '../components/Themed';
+import { Text, View } from 'components/Themed';
 
-export default function HomeScreen() {
+export default function CalendarScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
+      <Text style={styles.title}>Calendar</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
