@@ -2,10 +2,12 @@ import { StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 
-export default function CalendarScreen() {
+type PropTypes = { date: Date }
+
+export default function DayCalendar({ date }: PropTypes) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Calendar</Text>
+      <Text style={styles.title}>{date.toDateString()}</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
