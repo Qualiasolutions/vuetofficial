@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 type CalendarProps = {
-  jwtToken: string;
+  jwtAccessToken: string;
 }
 
 type PerDateTasks = {
