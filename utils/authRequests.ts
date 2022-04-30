@@ -108,4 +108,9 @@ const blacklistTokenAsync = async (refreshToken: string) => {
   return refreshResponse;
 };
 
-export { getTokenAsync, verifyTokenAsync, refreshTokenAsync, blacklistTokenAsync };
+export {
+  getTokenAsync,
+  verifyTokenAsync,
+  refreshTokenAsync,
+  blacklistTokenAsync
+};

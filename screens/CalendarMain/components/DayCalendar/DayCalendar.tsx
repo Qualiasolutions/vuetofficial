@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 
-type PropTypes = { date: Date }
+type PropTypes = { date: Date };
 
 export default function DayCalendar({ date }: PropTypes) {
   return (

@@ -23,9 +23,8 @@ export type RootStackParamList = {
   NotFound: undefined;
 };
 
-
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
-NativeStackScreenProps<RootStackParamList, Screen>;
+  NativeStackScreenProps<RootStackParamList, Screen>;
 
 export type RootTabParamList = {
   Home: undefined;
@@ -44,8 +43,9 @@ export type UnauthorisedStackParamList = {
   Login: undefined;
 };
 
-export type UnauthorisedStackScreenProps<Screen extends keyof UnauthorisedStackParamList> =
-NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
+export type UnauthorisedStackScreenProps<
+  Screen extends keyof UnauthorisedStackParamList
+> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
 
 export type UnauthorisedTabParamList = {
   Login: {
@@ -55,5 +55,6 @@ export type UnauthorisedTabParamList = {
   };
 };
 
-export type UnauthorisedTabScreenProps<Screen extends keyof UnauthorisedTabParamList> =
-NativeStackScreenProps<UnauthorisedStackParamList, Screen>
+export type UnauthorisedTabScreenProps<
+  Screen extends keyof UnauthorisedTabParamList
+> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;

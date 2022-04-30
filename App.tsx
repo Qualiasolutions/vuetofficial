@@ -9,8 +9,8 @@ import Splash from './screens/SplashScreen';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import type { CombinedState } from '@reduxjs/toolkit';
-import reducer from './redux/reducers';
-import { AuthReducerActionType, EntireState } from './redux/types';
+import reducer from './reduxStore/reducers';
+import { AuthReducerActionType, EntireState } from './reduxStore/types';
 
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';

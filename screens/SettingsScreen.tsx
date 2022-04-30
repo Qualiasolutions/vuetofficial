@@ -3,13 +3,13 @@ import { StyleSheet, Button } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { blacklistTokenAsync } from '../utils/authRequests';
 
-import { setAccessToken, setRefreshToken, setUsername } from '../redux/actions';
+import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { RootStackScreenProps } from '../types';
 import type { Dispatch } from '@reduxjs/toolkit';
-import { EntireState, AuthReducerActionType } from '../redux/types';
+import { EntireState, AuthReducerActionType } from '../reduxStore/types';
 
 interface SettingsProps extends RootStackScreenProps<'Settings'> {
   setAccessTokenProp: Function;
@@ -27,11 +27,11 @@ const SettingsScreen = ({
 }: SettingsProps) => {
   const logOut = () => {
     blacklistTokenAsync(jwtRefreshToken).then(() => {
-      setAccessTokenProp('')
-      setRefreshTokenProp('')
-      setUsernameProp('')
-    })
-  }
+      setAccessTokenProp('');
+      setRefreshTokenProp('');
+      setUsernameProp('');
+    });
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
@@ -41,15 +41,11 @@ const SettingsScreen = ({
         darkColor="rgba(255,255,255,0.1)"
       />
       <View>
-        <Button
-          title="Log Out"
-          onPress={logOut}
-        />
+        <Button title="Log Out" onPress={logOut} />
       </View>
-
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

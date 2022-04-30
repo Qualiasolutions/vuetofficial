@@ -4,7 +4,13 @@ module.exports = function (api) {
   const rootImportOpts = {
     root: ['./'],
     alias: {
-      components: './components'
+      components: './components',
+      utils: './utils',
+      reduxStore: './reduxStore',
+      screens: './screens',
+      navigation: './navigation',
+      globalStyles: './globalStyles',
+      assets: './assets'
     }
   };
 

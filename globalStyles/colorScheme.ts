@@ -7,13 +7,4 @@ const WARNING = '#91030B';
 const SUCCESS = 'green';
 const ERROR = 'red';
 
-export {
-  DARK,
-  SECONDARY,
-  LIGHT,
-  HIGHLIGHT,
-  PRIMARY,
-  WARNING,
-  SUCCESS,
-  ERROR
-};
+export { DARK, SECONDARY, LIGHT, HIGHLIGHT, PRIMARY, WARNING, SUCCESS, ERROR };

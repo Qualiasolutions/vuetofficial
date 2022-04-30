@@ -4,9 +4,9 @@ import { StyleSheet, TextInput, Button, Image } from 'react-native';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setAccessToken, setRefreshToken, setUsername } from '../redux/actions';
+import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/actions';
 
-import { AuthReducerActionType } from '../redux/types';
+import { AuthReducerActionType } from '../reduxStore/types';
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import { Text, View } from '../components/Themed';
@@ -16,7 +16,7 @@ import { getTokenAsync } from '../utils/authRequests';
 import GLOBAL_STYLES from '../globalStyles/styles';
 import { SUCCESS } from '../globalStyles/colorScheme';
 
-const logo = require('../assets/images/logo.png')
+const logo = require('../assets/images/logo.png');
 
 interface LoginProps {
   setAccessTokenProp: Function;
@@ -61,7 +61,7 @@ const LoginScreen = ({
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.logo}/>
+      <Image source={logo} style={styles.logo} />
       {errorContent}
       <TextInput
         value={username}
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 200,
-    aspectRatio: 1,
+    aspectRatio: 1
   },
   loginButtonWrapper: {
     marginTop: 30

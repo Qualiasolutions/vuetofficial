@@ -34,8 +34,8 @@ import LoginScreen from '../screens/LoginScreen';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import type { Dispatch } from '@reduxjs/toolkit';
-import { EntireState, AuthReducerActionType } from '../redux/types';
-import { setAccessToken, setRefreshToken, setUsername } from '../redux/actions';
+import { EntireState, AuthReducerActionType } from '../reduxStore/types';
+import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/actions';
 
 import {
   getTokenAsync,
@@ -48,7 +48,8 @@ import {
  * https://reactnavigation.org/docs/modal
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const UnauthorisedStack = createNativeStackNavigator<UnauthorisedStackParamList>();
+const UnauthorisedStack =
+  createNativeStackNavigator<UnauthorisedStackParamList>();
 
 function RootNavigator() {
   return (
@@ -122,9 +123,7 @@ function BottomTabNavigator() {
         options={{
           title: 'Settings',
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="cog" color={color} />
-          )
+          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />
         }}
       />
       <BottomTab.Screen
