@@ -1,17 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { Text, View } from 'components/Themed';
 import DayCalendar from './components/DayCalendar/DayCalendar';
 import {
   makeAuthorisedRequest,
-  SuccessfulResponseType,
   isSuccessfulResponseType
 } from 'utils/makeAuthorisedRequest';
-import { EntireState } from 'reduxStore/types';
 import Constants from 'expo-constants';
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import type { Dispatch } from '@reduxjs/toolkit';
 
 import {
   getDateStringFromDateObject,
@@ -29,16 +24,13 @@ import {
   isFlexibleTaskResponseType
 } from 'types/tasks';
 
+import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
+
 import { setAllTasks } from 'reduxStore/slices/tasks/actions';
-import { SetAllTasksReducerActionType } from 'reduxStore/slices/tasks/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
-
-type CalendarProps = {
-  jwtAccessToken: string;
-  allTasks: TaskParsedType[];
-  setAllTasksProp: Function;
-};
 
 type SingleDateTasks = {
   dateObj: Date;
@@ -66,13 +58,13 @@ const parseFlexibleTaskResponse = (
   };
 };
 
-function CalendarScreen({
-  jwtAccessToken,
-  allTasks,
-  setAllTasksProp
-}: CalendarProps) {
+function CalendarScreen() {
   const [loadingTasks, setLoadingTasks] = React.useState<boolean>(true);
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
+
+  const dispatch = useDispatch();
+  const jwtAccessToken = useSelector(selectAccessToken);
+  const allTasks = useSelector(selectAllTasks);
 
   // Gets all tasks and sets them in the redux store - is this the best place to do this?
   const getAllTasks = (): void => {
@@ -81,8 +73,8 @@ function CalendarScreen({
       jwtAccessToken,
       `http://${vuetApiUrl}/core/task/`
     ).then((res) => {
-      if (isSuccessfulResponseType(res)) {
-        setAllTasksProp(res.response);
+      if (isSuccessfulResponseType<TaskResponseType[]>(res)) {
+        dispatch(setAllTasks(res.response));
         setLoadingTasks(false);
       }
     });
@@ -91,7 +83,7 @@ function CalendarScreen({
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
-    for (const task of allTasks) {
+    for (const task of Object.values(allTasks.byId)) {
       if (isFixedTaskResponseType(task)) {
         const parsedTask: FixedTaskParsedType = parseFixedTaskResponse(task);
         const taskDates = getDateStringsBetween(
@@ -137,39 +129,41 @@ function CalendarScreen({
 
   React.useEffect(formatAndSetTasksPerDate, [allTasks]);
 
-  const dayCalendars = Object.keys(tasksPerDate).map((date) => (
-    <DayCalendar
-      date={tasksPerDate[date].dateObj}
-      key={date}
-      tasks={tasksPerDate[date].tasks}
-    />
-  ));
+  const dayCalendars = Object.keys(tasksPerDate)
+    .sort()
+    .map((date) => (
+      <DayCalendar
+        date={tasksPerDate[date].dateObj}
+        key={date}
+        tasks={tasksPerDate[date].tasks}
+      />
+    ));
 
-  const pageContent = loadingTasks ? <Text>...</Text> : dayCalendars;
+  const loadingScreen = (
+    <View style={styles.spinnerWrapper}>
+      <ActivityIndicator size="large" />
+    </View>
+  );
 
-  return <View style={styles.container}>{pageContent}</View>;
+  const pageContent = loadingTasks ? loadingScreen : dayCalendars;
+
+  return <ScrollView style={styles.container}> {pageContent} </ScrollView>;
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20
+    padding: 20,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white'
+  },
+  spinnerWrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 
-const mapStateToProps = (state: EntireState) => ({
-  jwtAccessToken: state.authentication.jwtAccessToken,
-  allTasks: state.tasks.allTasks
-});
-
-const mapDispatchToProps = (
-  dispatch: Dispatch<SetAllTasksReducerActionType>
-) => {
-  return bindActionCreators(
-    {
-      setAllTasksProp: setAllTasks
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarScreen);
+export default CalendarScreen;

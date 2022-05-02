@@ -8,33 +8,20 @@ import {
   setRefreshToken,
   setUsername
 } from '../reduxStore/slices/auth/actions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
-import { RootStackScreenProps, RootTabScreenProps } from '../types/base';
-import type { Dispatch } from '@reduxjs/toolkit';
-import { EntireState } from '../reduxStore/types';
-import { AuthReducerActionType } from '../reduxStore/slices/auth/types';
+import { selectRefreshToken } from '../reduxStore/slices/auth/selectors';
+import { useDispatch, useSelector } from 'react-redux';
 
-interface SettingsProps extends RootTabScreenProps<'Settings'> {
-  setAccessTokenProp: Function;
-  setRefreshTokenProp: Function;
-  setUsernameProp: Function;
-  jwtRefreshToken: string;
-}
+const SettingsScreen = () => {
+  const dispatch = useDispatch();
 
-const SettingsScreen = ({
-  navigation,
-  setAccessTokenProp,
-  setRefreshTokenProp,
-  setUsernameProp,
-  jwtRefreshToken
-}: SettingsProps) => {
+  const jwtRefreshToken = useSelector(selectRefreshToken);
+
   const logOut = () => {
     blacklistTokenAsync(jwtRefreshToken).then(() => {
-      setAccessTokenProp('');
-      setRefreshTokenProp('');
-      setUsernameProp('');
+      dispatch(setAccessToken(''));
+      dispatch(setRefreshToken(''));
+      dispatch(setUsername(''));
     });
   };
   return (
@@ -69,20 +56,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state: EntireState) => ({
-  jwtRefreshToken: state.authentication.jwtRefreshToken,
-  username: state.authentication.username
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
-  return bindActionCreators(
-    {
-      setAccessTokenProp: setAccessToken,
-      setRefreshTokenProp: setRefreshToken,
-      setUsernameProp: setUsername
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsScreen);
+export default SettingsScreen;

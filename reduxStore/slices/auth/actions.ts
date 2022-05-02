@@ -3,27 +3,10 @@ import {
   SET_REFRESH_TOKEN,
   SET_USERNAME
 } from './actionNames';
-import { AuthReducerActionType } from './types';
+import { createAction } from 'typesafe-actions';
 
-function setAccessToken(token: string): AuthReducerActionType {
-  return {
-    type: SET_ACCESS_TOKEN,
-    value: token
-  };
-}
-
-function setRefreshToken(token: string): AuthReducerActionType {
-  return {
-    type: SET_REFRESH_TOKEN,
-    value: token
-  };
-}
-
-function setUsername(username: string): AuthReducerActionType {
-  return {
-    type: SET_USERNAME,
-    value: username
-  };
-}
+const setAccessToken = createAction(SET_ACCESS_TOKEN)<string>();
+const setRefreshToken = createAction(SET_REFRESH_TOKEN)<string>();
+const setUsername = createAction(SET_USERNAME)<string>();
 
 export { setAccessToken, setRefreshToken, setUsername };

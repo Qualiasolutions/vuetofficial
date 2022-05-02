@@ -1,27 +1,13 @@
 import { SET_ALL_TASKS, SET_TASK_COMPLETION } from './actionNames';
 
-import {
-  SetAllTasksReducerActionType,
-  SetTaskCompletionReducerActionType
-} from './types';
-import { TaskParsedType } from 'types/tasks';
+import { TaskResponseType } from 'types/tasks';
 
-function setAllTasks(value: TaskParsedType[]): SetAllTasksReducerActionType {
-  return {
-    type: SET_ALL_TASKS,
-    value
-  };
-}
+import { createAction } from 'typesafe-actions';
 
-function setTaskComplete(
-  id: number,
-  value: boolean
-): SetTaskCompletionReducerActionType {
-  return {
-    type: SET_TASK_COMPLETION,
-    taskId: id,
-    value
-  };
-}
+const setAllTasks = createAction(SET_ALL_TASKS)<TaskResponseType[]>();
+const setTaskCompletion = createAction(SET_TASK_COMPLETION)<{
+  taskId: number;
+  value: boolean;
+}>();
 
-export { setAllTasks, setTaskComplete };
+export { setAllTasks, setTaskCompletion };

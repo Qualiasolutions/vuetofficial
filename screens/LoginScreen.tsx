@@ -2,7 +2,7 @@ import React from 'react';
 
 import { StyleSheet, TextInput, Button, Image } from 'react-native';
 
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
   setAccessToken,
@@ -10,7 +10,6 @@ import {
   setUsername
 } from '../reduxStore/slices/auth/actions';
 
-import { AuthReducerActionType } from '../reduxStore/slices/auth/types';
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import { Text, View } from '../components/Themed';
@@ -22,20 +21,12 @@ import { SUCCESS } from '../globalStyles/colorScheme';
 
 const logo = require('../assets/images/logo.png');
 
-interface LoginProps {
-  setAccessTokenProp: Function;
-  setRefreshTokenProp: Function;
-  setUsernameProp: Function;
-}
-
-const LoginScreen = ({
-  setAccessTokenProp,
-  setRefreshTokenProp,
-  setUsernameProp
-}: LoginProps) => {
+const LoginScreen = () => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+
+  const dispatch = useDispatch();
 
   const setTokenAsync = async (
     usernameToUse: string,
@@ -45,9 +36,9 @@ const LoginScreen = ({
     await getTokenAsync(usernameToUse, passwordToUse).then(
       ({ access, refresh }) => {
         if (access) {
-          setAccessTokenProp(access);
-          setRefreshTokenProp(refresh);
-          setUsernameProp(usernameToUse);
+          dispatch(setAccessToken(access));
+          dispatch(setRefreshToken(refresh));
+          dispatch(setUsername(usernameToUse));
         } else {
           setErrorMessage(
             'Failed to log in. Please check that you have entered your credentials correctly'
@@ -106,15 +97,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
-  return bindActionCreators(
-    {
-      setAccessTokenProp: setAccessToken,
-      setRefreshTokenProp: setRefreshToken,
-      setUsernameProp: setUsername
-    },
-    dispatch
-  );
-};
-
-export default connect(null, mapDispatchToProps)(LoginScreen);
+export default LoginScreen;

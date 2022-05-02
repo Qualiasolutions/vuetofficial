@@ -1,7 +1,8 @@
-import allActionNames from './actionNames';
-import { AuthState, AuthReducerActionType } from './types';
+import { AuthState } from './types';
+import { ActionType, createReducer } from 'typesafe-actions';
+import * as actions from './actions';
 
-const { SET_ACCESS_TOKEN, SET_REFRESH_TOKEN, SET_USERNAME } = allActionNames;
+export type AuthAction = ActionType<typeof actions>;
 
 const INITIAL_AUTH_STATE: AuthState = {
   username: '',
@@ -9,20 +10,18 @@ const INITIAL_AUTH_STATE: AuthState = {
   jwtRefreshToken: ''
 };
 
-const authReducer = (
-  state = INITIAL_AUTH_STATE,
-  action: AuthReducerActionType
-) => {
-  switch (action.type) {
-    case SET_ACCESS_TOKEN:
-      return { ...state, jwtAccessToken: action.value };
-    case SET_REFRESH_TOKEN:
-      return { ...state, jwtRefreshToken: action.value };
-    case SET_USERNAME:
-      return { ...state, username: action.value };
-    default:
-      return state;
-  }
-};
+const authReducer = createReducer(INITIAL_AUTH_STATE)
+  .handleAction(actions.setAccessToken, (state, action) => ({
+    ...state,
+    jwtAccessToken: action.payload
+  }))
+  .handleAction(actions.setRefreshToken, (state, action) => ({
+    ...state,
+    jwtRefreshToken: action.payload
+  }))
+  .handleAction(actions.setUsername, (state, action) => ({
+    ...state,
+    username: action.payload
+  }));
 
 export { authReducer };

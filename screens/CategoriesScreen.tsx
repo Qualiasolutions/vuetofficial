@@ -1,8 +1,11 @@
+import Checkbox from 'expo-checkbox';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 
 export default function CategoriesScreen() {
+  const [checked, setChecked] = React.useState(false);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Categories</Text>

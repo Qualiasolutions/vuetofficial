@@ -25,28 +25,23 @@ import AddTaskScreen from '../screens/AddTaskScreen';
 import {
   RootStackParamList,
   RootTabParamList,
-  RootTabScreenProps,
   UnauthorisedStackParamList
 } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import type { Dispatch } from '@reduxjs/toolkit';
-import { EntireState } from '../reduxStore/types';
-import { AuthReducerActionType } from '../reduxStore/slices/auth/types';
 import {
   setAccessToken,
   setRefreshToken,
   setUsername
 } from '../reduxStore/slices/auth/actions';
 
+import { verifyTokenAsync, refreshTokenAsync } from '../utils/authRequests';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  getTokenAsync,
-  verifyTokenAsync,
-  refreshTokenAsync
-} from '../utils/authRequests';
+  selectAccessToken,
+  selectRefreshToken
+} from 'reduxStore/slices/auth/selectors';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -156,22 +151,13 @@ function TabBarIcon(props: {
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
-  jwtAccessToken: string;
-  jwtRefreshToken: string;
-  username: string;
-  setAccessTokenProp: Function;
-  setRefreshTokenProp: Function;
-  setUsernameProp: Function;
 }
 
-const Navigation = ({
-  colorScheme,
-  jwtAccessToken,
-  jwtRefreshToken,
-  setAccessTokenProp,
-  setRefreshTokenProp,
-  setUsernameProp
-}: NavigationProps) => {
+const Navigation = ({ colorScheme }: NavigationProps) => {
+  const dispatch = useDispatch();
+  const jwtAccessToken = useSelector(selectAccessToken);
+  const jwtRefreshToken = useSelector(selectRefreshToken);
+
   React.useEffect(() => {
     const verifyToken = async () => {
       if (jwtAccessToken || jwtRefreshToken) {
@@ -179,14 +165,14 @@ const Navigation = ({
         if (verifyAccessResponse.code) {
           const verifyRefreshResponse = await verifyTokenAsync(jwtRefreshToken);
           if (verifyRefreshResponse.code) {
-            setRefreshTokenProp('');
-            setAccessTokenProp('');
-            setUsernameProp('');
+            dispatch(setAccessToken(''));
+            dispatch(setRefreshToken(''));
+            dispatch(setUsername(''));
           } else {
             const refreshedAccessCode = (
               await refreshTokenAsync(jwtRefreshToken)
             ).access;
-            setAccessTokenProp(refreshedAccessCode);
+            dispatch(setAccessToken(refreshedAccessCode));
           }
         }
       }
@@ -212,21 +198,4 @@ const Navigation = ({
   );
 };
 
-const mapStateToProps = (state: EntireState) => ({
-  jwtAccessToken: state.authentication.jwtAccessToken,
-  jwtRefreshToken: state.authentication.jwtRefreshToken,
-  username: state.authentication.username
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<AuthReducerActionType>) => {
-  return bindActionCreators(
-    {
-      setAccessTokenProp: setAccessToken,
-      setRefreshTokenProp: setRefreshToken,
-      setUsernameProp: setUsername
-    },
-    dispatch
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default Navigation;

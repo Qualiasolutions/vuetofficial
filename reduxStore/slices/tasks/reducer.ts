@@ -1,26 +1,44 @@
 import allActionNames from './actionNames';
-import { TasksState, SetAllTasksReducerActionType } from './types';
+import { TasksState } from './types';
+import * as actions from './actions';
 
-const { SET_ALL_TASKS, SET_TASK_COMPLETION } = allActionNames;
+import { ActionType, createReducer } from 'typesafe-actions';
+
+export type TasksAction = ActionType<typeof actions>;
 
 const INITIAL_TASKS_STATE: TasksState = {
-  allTasks: []
-};
-
-const tasksReducer = (
-  state = INITIAL_TASKS_STATE,
-  action: SetAllTasksReducerActionType
-) => {
-  switch (action.type) {
-    case SET_ALL_TASKS:
-      return { ...state, allTasks: action.value };
-    case SET_TASK_COMPLETION:
-      // TODO
-      // const taskToUpdate = state.allTasks.find(task => task.id === action.taskId)
-      return state;
-    default:
-      return state;
+  allTasks: {
+    ids: [],
+    byId: {}
   }
 };
+
+const tasksReducer = createReducer(INITIAL_TASKS_STATE)
+  .handleAction(actions.setAllTasks, (state, { payload }) => ({
+    ...state,
+    allTasks: {
+      ids: payload.map(({ id }) => id),
+      byId: payload.reduce(
+        (prev, next) => ({
+          ...prev,
+          [next.id]: next
+        }),
+        {}
+      )
+    }
+  }))
+  .handleAction(actions.setTaskCompletion, (state, { payload }) => ({
+    ...state,
+    allTasks: {
+      ids: state.allTasks.ids,
+      byId: {
+        ...state.allTasks.byId,
+        [payload.taskId]: {
+          ...state.allTasks.byId[payload.taskId],
+          is_complete: payload.value
+        }
+      }
+    }
+  }));
 
 export { tasksReducer };

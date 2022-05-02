@@ -6,9 +6,4 @@ type AuthState = {
   jwtRefreshToken: string;
 };
 
-type AuthReducerActionType = {
-  type: keyof typeof allActionNames;
-  value: string;
-};
-
-export { AuthState, AuthReducerActionType };
+export { AuthState };

@@ -2,19 +2,21 @@ type MethodType = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
 
 interface SuccessfulResponseType<ResponseBodyType> {
   success: boolean;
+  statusCode: number;
   response: ResponseBodyType;
 }
 
 interface UnsuccessfulResponseType {
   success: boolean;
-  error: object;
+  statusCode: number;
+  response: object;
 }
 
 type ResponseType<ResponseBodyType> =
   | SuccessfulResponseType<ResponseBodyType>
   | UnsuccessfulResponseType;
 
-const isSuccessfulResponseType = (x: any): x is SuccessfulResponseType<any> =>
+const isSuccessfulResponseType = <T>(x: any): x is SuccessfulResponseType<T> =>
   x.success === true;
 
 const makeAuthorisedRequest = async <ResponseBodyType>(
@@ -34,18 +36,21 @@ const makeAuthorisedRequest = async <ResponseBodyType>(
     },
     body: requestBody ? JSON.stringify(requestBody) : null
   })
-    .then((response) => response.json())
-    .then((resJson) => {
-      return {
-        success: true,
-        response: resJson
+    .then((response) => {
+      const getJsonObject = async () => {
+        return {
+          response: await response.json(),
+          success: response.ok,
+          statusCode: response.status
+        };
       };
+      return getJsonObject();
     })
     .catch((error) => {
-      console.log(error);
       return {
         success: false,
-        error
+        statusCode: 0,
+        response: { error }
       };
     });
 };
