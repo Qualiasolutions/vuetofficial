@@ -3,15 +3,16 @@ import { StyleSheet, Button } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { blacklistTokenAsync } from '../utils/authRequests';
 
-import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/actions';
+import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/slices/auth/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { RootStackScreenProps } from '../types';
+import { RootStackScreenProps, RootTabScreenProps } from '../types/base';
 import type { Dispatch } from '@reduxjs/toolkit';
-import { EntireState, AuthReducerActionType } from '../reduxStore/types';
+import { EntireState } from '../reduxStore/types';
+import { AuthReducerActionType } from '../reduxStore/slices/auth/types';
 
-interface SettingsProps extends RootStackScreenProps<'Settings'> {
+interface SettingsProps extends RootTabScreenProps<'Settings'> {
   setAccessTokenProp: Function;
   setRefreshTokenProp: Function;
   setUsernameProp: Function;

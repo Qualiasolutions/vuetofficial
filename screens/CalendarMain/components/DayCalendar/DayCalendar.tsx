@@ -1,18 +1,30 @@
 import { StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
+import Task from './components/Task'
 
-type PropTypes = { date: Date };
+import { TaskParsedType } from 'types/tasks'
 
-export default function DayCalendar({ date }: PropTypes) {
+
+type PropTypes = {
+  date: Date,
+  tasks: TaskParsedType[]
+};
+
+export default function DayCalendar({ date, tasks }: PropTypes) {
+  const taskViews = tasks.map(task => <Task task={task} key={task.id}></Task>)
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{date.toDateString()}</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+    <View>
+      <View style={styles.container}>
+        <View style={styles.leftBar}>
+          <Text style={styles.dateDay}>{date.toLocaleString('default', { day: 'numeric' })} </Text>
+          <Text style={styles.dateMonth}>{date.toLocaleString('default', { month: 'short' })} </Text>
+          <View style={styles.verticalLine}></View>
+        </View>
+        <View style={styles.taskViews}>
+          {taskViews}
+        </View>
+      </View>
     </View>
   );
 }
@@ -20,16 +32,40 @@ export default function DayCalendar({ date }: PropTypes) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
   },
-  title: {
+  dateDay: {
     fontSize: 20,
+    fontWeight: 'bold'
+  },
+  dateMonth: {
+    fontSize: 15,
     fontWeight: 'bold'
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%'
+  },
+  verticalLine: {
+    width: 2,
+    flex: 1,
+    flexGrow: 1,
+    minHeight: 10,
+    backgroundColor: 'black',
+    marginVertical: 10
+  },
+  leftBar: {
+    flex: 1,
+    flexGrow: 0,
+    marginRight: 20,
+    height: '100%',
+    alignItems: 'center',
+  },
+  taskViews: {
+    paddingTop: 30,
+    paddingBottom: 60
   }
 });

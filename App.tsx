@@ -10,7 +10,8 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import type { CombinedState } from '@reduxjs/toolkit';
 import reducer from './reduxStore/reducers';
-import { AuthReducerActionType, EntireState } from './reduxStore/types';
+import { EntireState } from './reduxStore/types';
+import { AuthReducerActionType } from './reduxStore/slices/auth/types'
 
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';

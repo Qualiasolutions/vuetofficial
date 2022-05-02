@@ -1,18 +1,11 @@
-import allActionNames from './actionNames';
-
-type AuthState = {
-  username: string;
-  jwtAccessToken: string;
-  jwtRefreshToken: string;
-};
-
-type AuthReducerActionType = {
-  type: keyof typeof allActionNames;
-  value: string;
-};
+import { AuthState } from './slices/auth/types'
+import { TasksState } from './slices/tasks/types'
 
 type EntireState = {
   authentication: AuthState;
+  tasks: TasksState
 };
 
-export { AuthState, EntireState, AuthReducerActionType };
+export {
+  EntireState,
+};

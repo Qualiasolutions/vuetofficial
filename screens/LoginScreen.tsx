@@ -4,9 +4,9 @@ import { StyleSheet, TextInput, Button, Image } from 'react-native';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/actions';
+import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/slices/auth/actions';
 
-import { AuthReducerActionType } from '../reduxStore/types';
+import { AuthReducerActionType } from '../reduxStore/slices/auth/types';
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import { Text, View } from '../components/Themed';

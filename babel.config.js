@@ -10,7 +10,8 @@ module.exports = function (api) {
       screens: './screens',
       navigation: './navigation',
       globalStyles: './globalStyles',
-      assets: './assets'
+      assets: './assets',
+      types: './types'
     }
   };
 

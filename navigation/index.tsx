@@ -27,15 +27,16 @@ import {
   RootTabParamList,
   RootTabScreenProps,
   UnauthorisedStackParamList
-} from '../types';
+} from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import type { Dispatch } from '@reduxjs/toolkit';
-import { EntireState, AuthReducerActionType } from '../reduxStore/types';
-import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/actions';
+import { EntireState } from '../reduxStore/types';
+import { AuthReducerActionType } from '../reduxStore/slices/auth/types'
+import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/slices/auth/actions';
 
 import {
   getTokenAsync,

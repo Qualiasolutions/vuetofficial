@@ -13,6 +13,8 @@ interface UnsuccessfulResponseType {
 
 type ResponseType<ResponseBodyType> = SuccessfulResponseType<ResponseBodyType> | UnsuccessfulResponseType
 
+const isSuccessfulResponseType = (x: any): x is SuccessfulResponseType<any> => x.success === true
+
 const makeAuthorisedRequest = async <ResponseBodyType>(
   authToken: string,
   url: string,
@@ -49,5 +51,6 @@ const makeAuthorisedRequest = async <ResponseBodyType>(
 export {
   makeAuthorisedRequest,
   SuccessfulResponseType,
-  UnsuccessfulResponseType
+  UnsuccessfulResponseType,
+  isSuccessfulResponseType
 };
