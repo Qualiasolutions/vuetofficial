@@ -3,7 +3,11 @@ import { StyleSheet, Button } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { blacklistTokenAsync } from '../utils/authRequests';
 
-import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/slices/auth/actions';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setUsername
+} from '../reduxStore/slices/auth/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

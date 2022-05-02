@@ -1,11 +1,15 @@
 import { StyleSheet } from 'react-native';
 import { Text, View } from 'components/Themed';
-import { TaskParsedType, isFixedTaskParsedType, isFlexibleTaskParsedType } from 'types/tasks'
-import { getTimeStringFromDateObject } from 'utils/datesAndTimes'
+import {
+  TaskParsedType,
+  isFixedTaskParsedType,
+  isFlexibleTaskParsedType
+} from 'types/tasks';
+import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
 
 type PropTypes = {
-  task: TaskParsedType
+  task: TaskParsedType;
 };
 
 export default function Task({ task }: PropTypes) {
@@ -21,8 +25,10 @@ export default function Task({ task }: PropTypes) {
           <Checkbox
             style={styles.checkbox}
             disabled={false}
-            value={true}
-            onValueChange={(newValue) => () => { console.log('test') }}
+            value={task.is_complete}
+            onValueChange={(newValue) => () => {
+              console.log('test');
+            }}
           />
         </View>
         <View style={styles.separator}></View>
@@ -36,7 +42,7 @@ export default function Task({ task }: PropTypes) {
       </View>
     );
   }
-  return null
+  return null;
 }
 
 const styles = StyleSheet.create({
@@ -62,5 +68,5 @@ const styles = StyleSheet.create({
     height: 1,
     width: '100%',
     backgroundColor: '#eee'
-  },
+  }
 });

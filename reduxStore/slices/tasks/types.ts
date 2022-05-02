@@ -1,13 +1,23 @@
 import allActionNames from './actionNames';
-import { TaskParsedType } from 'types/tasks'
+import { TaskParsedType } from 'types/tasks';
 
 type TasksState = {
   allTasks: TaskParsedType[];
 };
 
-type TasksReducerActionType = {
+type SetAllTasksReducerActionType = {
   type: keyof typeof allActionNames;
   value: TaskParsedType[];
 };
 
-export { TasksState, TasksReducerActionType };
+type SetTaskCompletionReducerActionType = {
+  type: keyof typeof allActionNames;
+  value: boolean;
+  taskId: number;
+};
+
+export {
+  TasksState,
+  SetAllTasksReducerActionType,
+  SetTaskCompletionReducerActionType
+};

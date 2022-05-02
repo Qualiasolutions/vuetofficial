@@ -25,4 +25,4 @@ const authReducer = (
   }
 };
 
-export { authReducer }
+export { authReducer };

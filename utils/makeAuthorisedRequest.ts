@@ -10,10 +10,12 @@ interface UnsuccessfulResponseType {
   error: object;
 }
 
+type ResponseType<ResponseBodyType> =
+  | SuccessfulResponseType<ResponseBodyType>
+  | UnsuccessfulResponseType;
 
-type ResponseType<ResponseBodyType> = SuccessfulResponseType<ResponseBodyType> | UnsuccessfulResponseType
-
-const isSuccessfulResponseType = (x: any): x is SuccessfulResponseType<any> => x.success === true
+const isSuccessfulResponseType = (x: any): x is SuccessfulResponseType<any> =>
+  x.success === true;
 
 const makeAuthorisedRequest = async <ResponseBodyType>(
   authToken: string,

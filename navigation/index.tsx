@@ -35,8 +35,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import type { Dispatch } from '@reduxjs/toolkit';
 import { EntireState } from '../reduxStore/types';
-import { AuthReducerActionType } from '../reduxStore/slices/auth/types'
-import { setAccessToken, setRefreshToken, setUsername } from '../reduxStore/slices/auth/actions';
+import { AuthReducerActionType } from '../reduxStore/slices/auth/types';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setUsername
+} from '../reduxStore/slices/auth/actions';
 
 import {
   getTokenAsync,
