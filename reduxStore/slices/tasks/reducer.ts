@@ -1,4 +1,3 @@
-import allActionNames from './actionNames';
 import { TasksState } from './types';
 import * as actions from './actions';
 
