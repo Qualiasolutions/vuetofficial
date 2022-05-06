@@ -1,4 +1,4 @@
-import { Category } from 'types/categories'
+import { Category } from 'types/categories';
 
 type AllCategories = {
   ids: number[];

@@ -5,7 +5,7 @@ import { CategoriesState } from './slices/categories/types';
 type EntireState = {
   authentication: AuthState;
   tasks: TasksState;
-  categories: CategoriesState
+  categories: CategoriesState;
 };
 
 export { EntireState };

@@ -12,8 +12,9 @@ const INITIAL_TASKS_STATE: CategoriesState = {
   }
 };
 
-const categoriesReducer = createReducer(INITIAL_TASKS_STATE)
-  .handleAction(actions.setAllCategories, (state, { payload }) => ({
+const categoriesReducer = createReducer(INITIAL_TASKS_STATE).handleAction(
+  actions.setAllCategories,
+  (state, { payload }) => ({
     ...state,
     allCategories: {
       ids: payload.map(({ id }) => id),
@@ -25,6 +26,7 @@ const categoriesReducer = createReducer(INITIAL_TASKS_STATE)
         {}
       )
     }
-  }))
+  })
+);
 
 export { categoriesReducer };
