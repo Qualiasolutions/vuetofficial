@@ -14,9 +14,10 @@ import { setAllCategories } from 'reduxStore/slices/categories/actions';
 
 import Constants from 'expo-constants';
 import { DARK } from 'globalStyles/colorScheme';
+import { Link } from '@react-navigation/native';
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
-export default function CategoriesScreen() {
+export default function CategoriesGrid({ navigation }: any) {
   const [loadingCategories, setLoadingCategories] =
     React.useState<boolean>(true);
 
@@ -51,7 +52,7 @@ export default function CategoriesScreen() {
       return (
         <Pressable
           onPress={() => {
-            console.log(category.id);
+            navigation.navigate('Transport');
           }}
           style={styles.gridSquare}
           disabled={!isEnabled}

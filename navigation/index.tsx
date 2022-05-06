@@ -19,13 +19,13 @@ import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
-import CategoriesScreen from '../screens/Categories/CategoriesScreen';
+import CategoriesNavigator from './CategoriesNavigator';
 import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import {
   RootStackParamList,
   RootTabParamList,
-  UnauthorisedStackParamList
+  UnauthorisedStackParamList,
 } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
@@ -110,7 +110,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Categories"
-        component={CategoriesScreen}
+        component={CategoriesNavigator}
         options={{
           title: 'Categories',
           headerShown: false,

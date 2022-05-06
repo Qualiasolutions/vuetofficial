@@ -16,14 +16,18 @@ const linking: LinkingOptions<RootStackParamList> = {
       Root: {
         screens: {
           Home: '',
-          Categories: 'categories',
+          Categories: {
+            screens: {
+              CategoriesGrid: 'categories-grid',
+              Transport: 'transport',
+            }
+          },
           Settings: 'settings',
           AddTask: 'add-task'
         }
       },
-      Login: 'login',
       Modal: 'modal',
-      NotFound: '*'
+      NotFound: '*',
     }
   }
 };

@@ -16,9 +16,43 @@ declare global {
   }
 }
 
+export type UnauthorisedStackParamList = {
+  Login: undefined;
+};
+
+export type UnauthorisedStackScreenProps<
+  Screen extends keyof UnauthorisedStackParamList
+> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
+
+export type UnauthorisedTabParamList = {
+  Login: undefined;
+};
+
+export type UnauthorisedTabScreenProps<
+  Screen extends keyof UnauthorisedTabParamList
+> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
+
+export type CategoriesStackParamList = {
+  CategoriesGrid: undefined;
+  Transport: undefined;
+}
+
+export type CategoriesStackScreenProps<
+  Screen extends keyof CategoriesStackParamList
+> = NativeStackScreenProps<CategoriesStackParamList, Screen>;
+
+export type CategoriesTabParamList = {
+  CategoriesGrid: undefined;
+  Transport: undefined;
+};
+
+export type CategoriesTabScreenProps<
+  Screen extends keyof CategoriesTabParamList
+> = NativeStackScreenProps<CategoriesStackParamList, Screen>;
+
+
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  Login: undefined;
   Modal: undefined;
   NotFound: undefined;
 };
@@ -38,23 +72,3 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >;
-
-export type UnauthorisedStackParamList = {
-  Login: undefined;
-};
-
-export type UnauthorisedStackScreenProps<
-  Screen extends keyof UnauthorisedStackParamList
-> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
-
-export type UnauthorisedTabParamList = {
-  Login: {
-    setAccessTokenProp: Function;
-    setRefreshTokenProp: Function;
-    setUsernameProp: Function;
-  };
-};
-
-export type UnauthorisedTabScreenProps<
-  Screen extends keyof UnauthorisedTabParamList
-> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
