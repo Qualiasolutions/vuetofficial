@@ -1,49 +1,16 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
+import { useSelector } from 'react-redux';
 import { selectAllCategories } from 'reduxStore/slices/categories/selectors';
-import {
-  isSuccessfulResponseType,
-  makeAuthorisedRequest
-} from 'utils/makeAuthorisedRequest';
 import { Category as CategoryType } from 'types/categories';
-import { setAllCategories } from 'reduxStore/slices/categories/actions';
 
-import Constants from 'expo-constants';
 import { DARK } from 'globalStyles/colorScheme';
-import { Link } from '@react-navigation/native';
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 export default function CategoriesGrid({ navigation }: any) {
-  const [loadingCategories, setLoadingCategories] =
-    React.useState<boolean>(true);
-
-  const dispatch = useDispatch();
-  const jwtAccessToken = useSelector(selectAccessToken);
   const allCategories = useSelector(selectAllCategories);
-
-  const getAllcategories = (): void => {
-    setLoadingCategories(true);
-    makeAuthorisedRequest<CategoryType[]>(
-      jwtAccessToken,
-      `http://${vuetApiUrl}/core/category/`
-    ).then((res) => {
-      if (isSuccessfulResponseType<CategoryType[]>(res)) {
-        dispatch(setAllCategories(res.response));
-        setLoadingCategories(false);
-      }
-    });
-  };
-  React.useEffect(getAllcategories, []);
-
-  const loadingScreen = (
-    <View style={styles.spinnerWrapper}>
-      <ActivityIndicator size="large" />
-    </View>
-  );
+  console.log(allCategories)
 
   const categoriesContent = Object.values(allCategories.byId).map(
     (category: CategoryType) => {
@@ -70,8 +37,7 @@ export default function CategoriesGrid({ navigation }: any) {
     <View style={styles.gridContainer}>{categoriesContent}</View>
   );
 
-  const pageContent = loadingCategories ? loadingScreen : categoriesPage;
-  return <View style={styles.container}>{pageContent}</View>;
+  return <View style={styles.container}>{categoriesPage}</View>;
 }
 
 const styles = StyleSheet.create({

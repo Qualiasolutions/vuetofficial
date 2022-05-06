@@ -11,7 +11,8 @@ module.exports = function (api) {
       navigation: './navigation',
       globalStyles: './globalStyles',
       assets: './assets',
-      types: './types'
+      types: './types',
+      hooks: './hooks'
     }
   };
 

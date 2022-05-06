@@ -11,7 +11,9 @@ const CategoriesStack =
 
 export default function CategoriesNavigator() {
   return (
-    <CategoriesStack.Navigator>
+    <CategoriesStack.Navigator
+      initialRouteName="CategoriesGrid"
+    >
       <CategoriesStack.Screen
         name="CategoriesGrid"
         component={CategoriesGrid}

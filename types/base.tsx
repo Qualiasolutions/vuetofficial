@@ -33,7 +33,7 @@ export type UnauthorisedTabScreenProps<
 > = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
 
 export type CategoriesStackParamList = {
-  CategoriesGrid: undefined;
+  CategoriesGrid: { initial: undefined, screen: undefined };
   Transport: undefined;
 }
 
@@ -62,7 +62,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 
 export type RootTabParamList = {
   Home: undefined;
-  Categories: undefined;
+  Categories: { initial: boolean, screen: string };
   Settings: undefined;
   AddTask: undefined;
 };

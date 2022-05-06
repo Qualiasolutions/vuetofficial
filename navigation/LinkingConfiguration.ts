@@ -9,7 +9,8 @@ import * as Linking from 'expo-linking';
 
 import { RootStackParamList } from '../types/base';
 
-const linking: LinkingOptions<RootStackParamList> = {
+// TODO - get typing working (LinkingOptions<RootStackParamList>)
+const linking: any = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {

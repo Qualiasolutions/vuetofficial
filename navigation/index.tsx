@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, TouchableOpacity } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -111,10 +111,12 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Categories"
         component={CategoriesNavigator}
+        // Force it to go to the base grid page here
+        initialParams={{initial: false, screen: 'CategoriesGrid'}}
         options={{
           title: 'Categories',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />
+          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />,
         }}
       />
       <BottomTab.Screen

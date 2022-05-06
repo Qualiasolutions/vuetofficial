@@ -1,10 +1,6 @@
 import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { Text, View } from 'components/Themed';
+import { View } from 'components/Themed';
 import DayCalendar from './components/DayCalendar/DayCalendar';
-import {
-  makeAuthorisedRequest,
-  isSuccessfulResponseType
-} from 'utils/makeAuthorisedRequest';
 import Constants from 'expo-constants';
 import React from 'react';
 
@@ -18,16 +14,12 @@ import {
   FixedTaskParsedType,
   FlexibleTaskResponseType,
   FlexibleTaskParsedType,
-  TaskResponseType,
   TaskParsedType,
   isFixedTaskResponseType,
   isFlexibleTaskResponseType
 } from 'types/tasks';
 
-import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
-
-import { setAllTasks } from 'reduxStore/slices/tasks/actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
@@ -59,27 +51,9 @@ const parseFlexibleTaskResponse = (
 };
 
 function CalendarScreen() {
-  const [loadingTasks, setLoadingTasks] = React.useState<boolean>(true);
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
 
-  const dispatch = useDispatch();
-  const jwtAccessToken = useSelector(selectAccessToken);
   const allTasks = useSelector(selectAllTasks);
-
-  // Gets all tasks and sets them in the redux store - is this the best place to do this?
-  const getAllTasks = (): void => {
-    setLoadingTasks(true);
-    makeAuthorisedRequest<TaskResponseType[]>(
-      jwtAccessToken,
-      `http://${vuetApiUrl}/core/task/`
-    ).then((res) => {
-      if (isSuccessfulResponseType<TaskResponseType[]>(res)) {
-        dispatch(setAllTasks(res.response));
-        setLoadingTasks(false);
-      }
-    });
-  };
-  React.useEffect(getAllTasks, []);
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -139,15 +113,7 @@ function CalendarScreen() {
       />
     ));
 
-  const loadingScreen = (
-    <View style={styles.spinnerWrapper}>
-      <ActivityIndicator size="large" />
-    </View>
-  );
-
-  const pageContent = loadingTasks ? loadingScreen : dayCalendars;
-
-  return <ScrollView style={styles.container}> {pageContent} </ScrollView>;
+  return <ScrollView style={styles.container}>{dayCalendars}</ScrollView>;
 }
 
 const styles = StyleSheet.create({
