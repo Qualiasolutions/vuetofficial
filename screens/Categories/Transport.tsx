@@ -1,58 +1,130 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from 'components/Themed';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
-import { selectAllCategories } from 'reduxStore/slices/categories/selectors';
-import {
-  isSuccessfulResponseType,
-  makeAuthorisedRequest
-} from 'utils/makeAuthorisedRequest';
-import { Category as CategoryType } from 'types/categories';
-import { setAllCategories } from 'reduxStore/slices/categories/actions';
+import { useSelector } from 'react-redux';
 
-import Constants from 'expo-constants';
-import { DARK } from 'globalStyles/colorScheme';
-import { Link } from '@react-navigation/native';
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
+import {
+  EntityResponseType,
+  CarResponseType,
+  CarParsedType
+} from 'types/entities';
+import { getDateStringFromDateObject } from 'utils/datesAndTimes';
+import { FontAwesome } from '@expo/vector-icons';
+
+const parseCarResponse = (res: CarResponseType): CarParsedType => {
+  return {
+    ...res,
+    MOT_due_date: res.MOT_due_date ? new Date(res.MOT_due_date) : null,
+    insurance_due_date: res.insurance_due_date
+      ? new Date(res.insurance_due_date)
+      : null,
+    service_due_date: res.service_due_date
+      ? new Date(res.service_due_date)
+      : null
+  };
+};
+
+const dueDateField = (name: string, date: Date | null) =>
+  date ? (
+    <View style={styles.dueDateField}>
+      <Text>{name}</Text>
+      <Text>{getDateStringFromDateObject(date)}</Text>
+    </View>
+  ) : null;
 
 export default function Transport({ navigation }: any) {
-  return null
+  const allEntities = useSelector(selectAllEntities);
+  const flatEntities = Object.values(allEntities.byId);
+  const allCars: CarParsedType[] = flatEntities
+    .filter((entity: EntityResponseType) => entity.resourcetype == 'Car')
+    .map((car) => parseCarResponse(car));
+  const carList = allCars.map((car: CarParsedType) => (
+    <View key={car.id} style={styles.entityListing}>
+      <View style={styles.entityData}>
+        <View style={styles.entityTopData}>
+          <Text style={[styles.entityName, styles.entityTopText]}>
+            {car.name}
+          </Text>
+          <Text style={styles.entityTopText}>{car.registration}</Text>
+        </View>
+        {dueDateField('MOT', car.MOT_due_date)}
+        {dueDateField('Insurance', car.insurance_due_date)}
+        {dueDateField('Service', car.service_due_date)}
+      </View>
+      <View style={styles.listingBottom}>
+        <TouchableOpacity
+          style={styles.squareButton}
+          onPress={() => {
+            // TODO - make view to navigate to
+            // navigation.navigate("TODO")
+          }}
+        >
+          <FontAwesome name="eye" size={30} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  ));
+  return (
+    <View style={styles.container}>
+      {carList}
+      <View style={styles.bottomButtons}>
+        <TouchableOpacity
+          style={styles.squareButton}
+          onPress={() => {
+            navigation.navigate('AddEntity', { entityType: 'Car' });
+          }}
+        >
+          <FontAwesome name="plus" size={30} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
     width: '100%',
     height: '100%',
     backgroundColor: 'white'
   },
-  spinnerWrapper: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
+  entityListing: {
+    paddingVertical: 20,
+    borderBottomWidth: 3,
+    borderBottomColor: '#efefef'
   },
-  gridContainer: {
-    flex: 1,
-    flexWrap: 'wrap',
+  entityData: {
+    maxWidth: 200
+  },
+  listingBottom: {
+    alignItems: 'flex-end'
+  },
+  entityTopData: {
+    marginBottom: 10
+  },
+  entityTopText: {
+    fontSize: 18
+  },
+  entityName: {
+    fontWeight: 'bold'
+  },
+  dueDateField: {
+    flexGrow: 0,
+    flexShrink: 1,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-between',
+    marginBottom: 3
   },
-  gridSquare: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '33%',
-    height: '33%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: DARK
+  squareButton: {
+    backgroundColor: '#cccccc',
+    padding: 5,
+    borderRadius: 5
   },
-  gridText: {
-    fontWeight: 'bold',
-    textAlign: 'center'
+  bottomButtons: {
+    alignItems: 'flex-end',
+    paddingTop: 20
   }
 });

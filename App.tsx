@@ -17,10 +17,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { RootAction } from 'reduxStore/actions';
-import loadTasks from 'hooks/loadAllTasks';
+import {
+  loadAllTasks,
+  loadAllCategories,
+  loadAllEntities
+} from 'hooks/loadObjects/loadObjectsHooks';
 import { View } from 'components/Themed';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import loadCategories from 'hooks/loadAllCategories';
 
 const persistConfig = {
   key: 'root',
@@ -47,11 +50,12 @@ const styles = StyleSheet.create({
 });
 
 // Any data that needs to be loaded at the start should be loaded here
-const DataProvider = ({ children }: {children: any}) => {
-  const loadedTasks = loadTasks();
-  const loadedCategories = loadCategories();
+const DataProvider = ({ children }: { children: any }) => {
+  const loadedTasks = loadAllTasks();
+  const loadedCategories = loadAllCategories();
+  const loadedEntities = loadAllEntities();
 
-  const allLoaded = loadedTasks && loadedCategories
+  const allLoaded = loadedTasks && loadedCategories && loadedEntities;
   if (allLoaded) {
     return children;
   }
@@ -60,8 +64,8 @@ const DataProvider = ({ children }: {children: any}) => {
       <ActivityIndicator size="large" />
     </View>
   );
-  return loadingScreen
-}
+  return loadingScreen;
+};
 
 export default function App() {
   const loadedCachedResources = useCachedResources();

@@ -33,9 +33,9 @@ export type UnauthorisedTabScreenProps<
 > = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
 
 export type CategoriesStackParamList = {
-  CategoriesGrid: { initial: undefined, screen: undefined };
+  CategoriesGrid: { initial: undefined; screen: undefined };
   Transport: undefined;
-}
+};
 
 export type CategoriesStackScreenProps<
   Screen extends keyof CategoriesStackParamList
@@ -50,7 +50,6 @@ export type CategoriesTabScreenProps<
   Screen extends keyof CategoriesTabParamList
 > = NativeStackScreenProps<CategoriesStackParamList, Screen>;
 
-
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Modal: undefined;
@@ -62,9 +61,11 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 
 export type RootTabParamList = {
   Home: undefined;
-  Categories: { initial: boolean, screen: string };
+  Categories: { initial: boolean; screen: string };
   Settings: undefined;
   AddTask: undefined;
+  Transport: undefined;
+  AddEntity: { entityType: string };
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

@@ -10,7 +10,7 @@ import { DARK } from 'globalStyles/colorScheme';
 
 export default function CategoriesGrid({ navigation }: any) {
   const allCategories = useSelector(selectAllCategories);
-  console.log(allCategories)
+  console.log(allCategories);
 
   const categoriesContent = Object.values(allCategories.byId).map(
     (category: CategoryType) => {

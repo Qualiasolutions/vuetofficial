@@ -19,13 +19,12 @@ import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
-import CategoriesNavigator from './CategoriesNavigator';
 import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import {
   RootStackParamList,
   RootTabParamList,
-  UnauthorisedStackParamList,
+  UnauthorisedStackParamList
 } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
@@ -42,6 +41,9 @@ import {
   selectAccessToken,
   selectRefreshToken
 } from 'reduxStore/slices/auth/selectors';
+import CategoriesGrid from 'screens/Categories/CategoriesGrid';
+import Transport from 'screens/Categories/Transport';
+import AddEntityScreen from 'screens/AddEntityScreen';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -110,13 +112,11 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Categories"
-        component={CategoriesNavigator}
-        // Force it to go to the base grid page here
-        initialParams={{initial: false, screen: 'CategoriesGrid'}}
+        component={CategoriesGrid}
         options={{
           title: 'Categories',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />
         }}
       />
       <BottomTab.Screen
@@ -133,6 +133,26 @@ function BottomTabNavigator() {
         component={AddTaskScreen}
         options={{
           title: 'AddTask',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
+        }}
+      />
+      <BottomTab.Screen
+        name="Transport"
+        component={Transport}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'AddTask',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
+        }}
+      />
+      <BottomTab.Screen
+        name="AddEntity"
+        component={AddEntityScreen}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'AddEntity',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
         }}

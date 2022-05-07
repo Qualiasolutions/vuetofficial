@@ -2,15 +2,12 @@ import React from 'react';
 
 import { StyleSheet, TextInput, Button, Image } from 'react-native';
 
-import { connect, useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useDispatch } from 'react-redux';
 import {
   setAccessToken,
   setRefreshToken,
   setUsername
 } from '../reduxStore/slices/auth/actions';
-
-import type { Dispatch } from '@reduxjs/toolkit';
 
 import { Text, View } from '../components/Themed';
 

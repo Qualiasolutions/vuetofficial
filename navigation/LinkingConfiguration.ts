@@ -9,26 +9,22 @@ import * as Linking from 'expo-linking';
 
 import { RootStackParamList } from '../types/base';
 
-// TODO - get typing working (LinkingOptions<RootStackParamList>)
-const linking: any = {
+const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
       Root: {
         screens: {
           Home: '',
-          Categories: {
-            screens: {
-              CategoriesGrid: 'categories-grid',
-              Transport: 'transport',
-            }
-          },
+          Categories: 'categories-grid',
+          Transport: 'transport',
           Settings: 'settings',
-          AddTask: 'add-task'
+          AddTask: 'add-task',
+          AddEntity: 'add-entity'
         }
       },
       Modal: 'modal',
-      NotFound: '*',
+      NotFound: '*'
     }
   }
 };
