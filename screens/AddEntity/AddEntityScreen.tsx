@@ -2,23 +2,26 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StyleSheet } from 'react-native';
 import { RootTabParamList } from 'types/base';
 
-import { Text, View } from '../components/Themed';
+import { Text, View } from 'components/Themed';
+import { carForm } from './formFieldTypes';
+import GenericForm from 'components/GenericForm';
 
 export default function AddEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddEntity'>) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        New {route?.params?.entityType || 'Entity'}
-      </Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-    </View>
-  );
+  const permittedEntityForms = ['Car'];
+  if (
+    route.params?.entityType &&
+    permittedEntityForms.includes(route.params?.entityType)
+  ) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>New {route.params.entityType}</Text>
+        <GenericForm fields={carForm} url="" method="POST"></GenericForm>
+      </View>
+    );
+  }
+  return null;
 }
 
 const styles = StyleSheet.create({

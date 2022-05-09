@@ -56,6 +56,7 @@ const makeAuthorisedRequest = async <ResponseBodyType>(
 };
 
 export {
+  MethodType,
   makeAuthorisedRequest,
   SuccessfulResponseType,
   UnsuccessfulResponseType,

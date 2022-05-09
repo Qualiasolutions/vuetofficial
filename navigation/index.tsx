@@ -43,7 +43,7 @@ import {
 } from 'reduxStore/slices/auth/selectors';
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import Transport from 'screens/Categories/Transport';
-import AddEntityScreen from 'screens/AddEntityScreen';
+import AddEntityScreen from 'screens/AddEntity/AddEntityScreen';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
