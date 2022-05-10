@@ -7,7 +7,7 @@ import Navigation from './navigation';
 import Splash from './screens/SplashScreen';
 
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import type { CombinedState } from '@reduxjs/toolkit';
 import reducer from './reduxStore/reducers';
 import { EntireState } from './reduxStore/types';
@@ -36,7 +36,12 @@ const pReducer = persistReducer<CombinedState<EntireState>, RootAction>(
   reducer
 );
 
-const store = configureStore({ reducer: pReducer });
+const store = configureStore({
+  reducer: pReducer,
+  middleware: getDefaultMiddleware => getDefaultMiddleware({
+    serializableCheck: false,
+  }),
+});
 const persistor = persistStore(store);
 
 const styles = StyleSheet.create({

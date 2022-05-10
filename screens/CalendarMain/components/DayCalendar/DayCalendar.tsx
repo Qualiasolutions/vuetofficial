@@ -14,8 +14,6 @@ export default function DayCalendar({ date, tasks }: PropTypes) {
   const taskViews = tasks.map((task) => (
     <Task task={task} key={task.id}></Task>
   ));
-  console.log(date.toLocaleString('default', { day: 'numeric' }));
-  console.log(date.toLocaleString('default', { month: 'numeric' }));
   return (
     <View>
       <View style={styles.container}>

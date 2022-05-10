@@ -1,5 +1,5 @@
-import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { BackHandler, Pressable, StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import { DARK } from 'globalStyles/colorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CategoriesGrid({ navigation }: any) {
+
   const allCategories = useSelector(selectAllCategories);
 
   const categoriesContent = Object.values(allCategories.byId).map(

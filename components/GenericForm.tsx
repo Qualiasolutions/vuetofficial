@@ -4,7 +4,6 @@ import { Text, View } from 'components/Themed';
 import React from 'react';
 import { MethodType } from 'utils/makeAuthorisedRequest';
 import { DARK } from 'globalStyles/colorScheme';
-import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import DateField from 'react-native-datefield';
 
 /* This type specifies the mapping of field names to
@@ -48,23 +47,6 @@ export default function Form({
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>({});
   const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>({});
-  const [showDatepicker, setShowDatepicker] = React.useState<boolean>(false);
-
-  let datePicker = null;
-  const showDatePicker = (fieldName: string) => {
-    datePicker = (
-      <DateTimePicker
-        mode="date"
-        value={formValues[fieldName]}
-        onChange={(event: Event, date: Date | undefined) => {
-          setFormValues({ ...formValues, [fieldName]: date });
-          datePicker = null;
-          setShowDatepicker(false);
-        }}
-      />
-    );
-    setShowDatepicker(true);
-  };
 
   const formFields = Object.keys(fields).map((field: string) => {
     const fieldType = fields[field];

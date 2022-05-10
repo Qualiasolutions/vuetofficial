@@ -22,8 +22,6 @@ import { useSelector } from 'react-redux';
 import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
-
 type SingleDateTasks = {
   dateObj: Date;
   tasks: TaskParsedType[];

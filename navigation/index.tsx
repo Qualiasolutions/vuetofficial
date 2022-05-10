@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable, TouchableOpacity } from 'react-native';
+import { ColorSchemeName } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -23,6 +23,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import {
   RootStackParamList,
+  RootStackScreenProps,
   RootTabParamList,
   UnauthorisedStackParamList
 } from '../types/base';
@@ -49,29 +50,8 @@ import AddEntityScreen from 'screens/AddEntity/AddEntityScreen';
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
-const Stack = createNativeStackNavigator<RootStackParamList>();
 const UnauthorisedStack =
   createNativeStackNavigator<UnauthorisedStackParamList>();
-
-function RootNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Root"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: 'Oops!' }}
-      />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-    </Stack.Navigator>
-  );
-}
 
 function UnauthorisedNavigator() {
   return (
@@ -100,6 +80,7 @@ function BottomTabNavigator() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint
       }}
+      backBehavior="history"
     >
       <BottomTab.Screen
         name="Home"
@@ -157,6 +138,14 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
         }}
       />
+      <BottomTab.Screen
+        name="NotFound"
+        component={NotFoundScreen}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'Oops!'
+        }}
+      />
     </BottomTab.Navigator>
   );
 }
@@ -205,7 +194,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   const navigatorComponent =
     jwtAccessToken && jwtRefreshToken ? (
-      <RootNavigator />
+      <BottomTabNavigator />
     ) : (
       <UnauthorisedNavigator />
     );

@@ -52,8 +52,6 @@ export type CategoriesTabScreenProps<
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  Modal: undefined;
-  NotFound: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
@@ -66,6 +64,7 @@ export type RootTabParamList = {
   AddTask: undefined;
   Transport: undefined;
   AddEntity: { entityType: string };
+  NotFound: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

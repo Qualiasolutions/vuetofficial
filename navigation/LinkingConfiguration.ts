@@ -7,23 +7,18 @@
 import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
-import { RootStackParamList } from '../types/base';
+import { RootTabParamList } from '../types/base';
 
-const linking: LinkingOptions<RootStackParamList> = {
+const linking: LinkingOptions<RootTabParamList> = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
-      Root: {
-        screens: {
-          Home: '',
-          Categories: 'categories-grid',
-          Transport: 'transport',
-          Settings: 'settings',
-          AddTask: 'add-task',
-          AddEntity: 'add-entity'
-        }
-      },
-      Modal: 'modal',
+      Home: 'home',
+      Categories: 'categories-grid',
+      Transport: 'transport',
+      Settings: 'settings',
+      AddTask: 'add-task',
+      AddEntity: 'add-entity',
       NotFound: '*'
     }
   }
