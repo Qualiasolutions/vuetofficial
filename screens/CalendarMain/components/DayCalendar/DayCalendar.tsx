@@ -2,8 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import Task from './components/Task';
-
 import { TaskParsedType } from 'types/tasks';
+import moment from 'moment';
 
 type PropTypes = {
   date: Date;
@@ -14,16 +14,14 @@ export default function DayCalendar({ date, tasks }: PropTypes) {
   const taskViews = tasks.map((task) => (
     <Task task={task} key={task.id}></Task>
   ));
+  console.log(date.toLocaleString('default', { day: 'numeric' }));
+  console.log(date.toLocaleString('default', { month: 'numeric' }));
   return (
     <View>
       <View style={styles.container}>
         <View style={styles.leftBar}>
-          <Text style={styles.dateDay}>
-            {date.toLocaleString('default', { day: 'numeric' })}{' '}
-          </Text>
-          <Text style={styles.dateMonth}>
-            {date.toLocaleString('default', { month: 'short' })}{' '}
-          </Text>
+          <Text style={styles.dateDay}>{moment(date).format('MMM')} </Text>
+          <Text style={styles.dateMonth}>{moment(date).format('DD')} </Text>
           <View style={styles.verticalLine}></View>
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
@@ -61,7 +59,6 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   leftBar: {
-    flex: 1,
     flexGrow: 0,
     marginRight: 20,
     height: '100%',

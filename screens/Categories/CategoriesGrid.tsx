@@ -7,10 +7,10 @@ import { selectAllCategories } from 'reduxStore/slices/categories/selectors';
 import { Category as CategoryType } from 'types/categories';
 
 import { DARK } from 'globalStyles/colorScheme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CategoriesGrid({ navigation }: any) {
   const allCategories = useSelector(selectAllCategories);
-  console.log(allCategories);
 
   const categoriesContent = Object.values(allCategories.byId).map(
     (category: CategoryType) => {
@@ -37,7 +37,11 @@ export default function CategoriesGrid({ navigation }: any) {
     <View style={styles.gridContainer}>{categoriesContent}</View>
   );
 
-  return <View style={styles.container}>{categoriesPage}</View>;
+  return (
+    <SafeAreaView>
+      <View style={styles.container}>{categoriesPage}</View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -64,9 +68,10 @@ const styles = StyleSheet.create({
   gridSquare: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '33%',
-    height: '33%',
+    width: '32%',
+    height: '32%',
     padding: 10,
+    margin: 1,
     borderWidth: 1,
     borderColor: DARK
   },

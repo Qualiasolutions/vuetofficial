@@ -4,6 +4,8 @@ import { Text, View } from 'components/Themed';
 import React from 'react';
 import { MethodType } from 'utils/makeAuthorisedRequest';
 import { DARK } from 'globalStyles/colorScheme';
+import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
+import DateField from 'react-native-datefield';
 
 /* This type specifies the mapping of field names to
   their associated types.
@@ -31,6 +33,10 @@ type FieldValueTypes = {
   [key: string]: any;
 };
 
+type FieldErrorTypes = {
+  [key: string]: string;
+};
+
 export default function Form({
   fields,
   url,
@@ -41,6 +47,24 @@ export default function Form({
   method: MethodType;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>({});
+  const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>({});
+  const [showDatepicker, setShowDatepicker] = React.useState<boolean>(false);
+
+  let datePicker = null;
+  const showDatePicker = (fieldName: string) => {
+    datePicker = (
+      <DateTimePicker
+        mode="date"
+        value={formValues[fieldName]}
+        onChange={(event: Event, date: Date | undefined) => {
+          setFormValues({ ...formValues, [fieldName]: date });
+          datePicker = null;
+          setShowDatepicker(false);
+        }}
+      />
+    );
+    setShowDatepicker(true);
+  };
 
   const formFields = Object.keys(fields).map((field: string) => {
     const fieldType = fields[field];
@@ -49,18 +73,50 @@ export default function Form({
       // TODO - add inputs for other field types
       case 'string':
         return (
-          <View key={field} style={styles.inputPair}>
-            <Text style={styles.inputLabel}>{field}</Text>
-            <TextInput
-              value={formValues[field]}
-              style={styles.textInput}
-              onChangeText={(newValue) =>
-                setFormValues({
-                  ...formValues,
-                  [field]: newValue
-                })
-              }
-            />
+          <View key={field} style={styles.inputBlock}>
+            <View key={field} style={styles.inputPair}>
+              <Text style={styles.inputLabel}>{field}</Text>
+              <TextInput
+                value={formValues[field]}
+                style={styles.textInput}
+                onChangeText={(newValue) =>
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  })
+                }
+              />
+            </View>
+          </View>
+        );
+      case 'Date':
+        return (
+          <View key={field} style={styles.inputBlock}>
+            {formErrors[field] ? (
+              <Text style={styles.formError}>{formErrors[field]}</Text>
+            ) : null}
+            <View style={styles.inputPair}>
+              <Text style={styles.inputLabel}>{field}</Text>
+              <DateField
+                value={formValues[field]}
+                minimumDate={new Date()}
+                onSubmit={(newValue) => {
+                  console.log(newValue);
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  setFormErrors({ ...formErrors, [field]: '' });
+                }}
+                handleErrors={() => {
+                  setFormErrors({
+                    ...formErrors,
+                    [field]:
+                      'Invalid date detected - please enter a date in the future'
+                  });
+                }}
+              />
+            </View>
           </View>
         );
     }
@@ -73,8 +129,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
+    width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'flex-start'
+  },
+  inputBlock: {
+    alignItems: 'center',
+    width: '100%'
   },
   inputPair: {
     flexDirection: 'row',
@@ -83,12 +144,18 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   inputLabel: {
-    textAlign: 'left',
-    minWidth: 90,
-    marginRight: 10
+    textAlign: 'right',
+    minWidth: 120,
+    marginRight: 30
   },
   textInput: {
     borderWidth: 1,
-    borderColor: DARK
+    borderColor: DARK,
+    minWidth: 100
+  },
+  formError: {
+    color: 'red',
+    maxWidth: 200,
+    textAlign: 'center'
   }
 });

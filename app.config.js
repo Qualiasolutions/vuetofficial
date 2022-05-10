@@ -1,5 +1,5 @@
 const extraData = {
-  vuetApiUrl: process.env.ENV === 'prod' ? 'api.vuet.app' : 'localhost:8000'
+  vuetApiUrl: process.env.ENV === 'prod' ? 'api.vuet.app' : '192.168.1.9:8000'
 };
 
 export default {

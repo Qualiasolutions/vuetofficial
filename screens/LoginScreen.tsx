@@ -30,8 +30,8 @@ const LoginScreen = () => {
     passwordToUse: string
   ) => {
     setErrorMessage('');
-    await getTokenAsync(usernameToUse, passwordToUse).then(
-      ({ access, refresh }) => {
+    await getTokenAsync(usernameToUse, passwordToUse)
+      .then(({ access, refresh }) => {
         if (access) {
           dispatch(setAccessToken(access));
           dispatch(setRefreshToken(refresh));
@@ -41,8 +41,13 @@ const LoginScreen = () => {
             'Failed to log in. Please check that you have entered your credentials correctly'
           );
         }
-      }
-    );
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorMessage(
+          'Failed to log in. Please check that you have entered your credentials correctly'
+        );
+      });
   };
 
   const errorContent = errorMessage ? (

@@ -1,5 +1,4 @@
-import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { View } from 'components/Themed';
+import { ScrollView, StyleSheet } from 'react-native';
 import DayCalendar from './components/DayCalendar/DayCalendar';
 import Constants from 'expo-constants';
 import React from 'react';
@@ -21,6 +20,7 @@ import {
 
 import { useSelector } from 'react-redux';
 import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -113,7 +113,11 @@ function CalendarScreen() {
       />
     ));
 
-  return <ScrollView style={styles.container}>{dayCalendars}</ScrollView>;
+  return (
+    <SafeAreaView>
+      <ScrollView style={styles.container}>{dayCalendars}</ScrollView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
