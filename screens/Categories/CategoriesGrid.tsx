@@ -17,6 +17,15 @@ export default function CategoriesGrid({ navigation }: any) {
     (category: CategoryType) => {
       const textColor = category.is_enabled ? DARK : DARK + '44';
       const isEnabled = category.is_enabled;
+
+      const isPremiumTag = category.is_premium ? (
+        <View style={styles.premiumTag}>
+          <Text style={styles.premiumTagText}>
+            Premium
+          </Text>
+        </View>
+      ) : null
+
       return (
         <Pressable
           onPress={() => {
@@ -29,6 +38,7 @@ export default function CategoriesGrid({ navigation }: any) {
           <Text style={[styles.gridText, { color: textColor }]}>
             {category.readable_name}
           </Text>
+          {isPremiumTag}
         </Pressable>
       );
     }
@@ -39,7 +49,7 @@ export default function CategoriesGrid({ navigation }: any) {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <View style={styles.container}>{categoriesPage}</View>
     </SafeAreaView>
   );
@@ -60,7 +70,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   gridContainer: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'center',
@@ -79,5 +90,18 @@ const styles = StyleSheet.create({
   gridText: {
     fontWeight: 'bold',
     textAlign: 'center'
+  },
+  premiumTag: {
+    backgroundColor: '#FFC700',
+    padding: 5,
+    margin: 5,
+    borderRadius: 5,
+    position: 'absolute',
+    bottom: 3,
+    right: 3,
+  },
+  premiumTagText: {
+    fontSize: 10,
+    color: 'white'
   }
 });
