@@ -12,15 +12,10 @@ const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 export const makeLoadObjects =
   <ObjectType>(apiEndpoint: string, dispatchAction: Function): Function =>
   () => {
-    const [loadedObjects, setLoadedObjects] = React.useState<boolean>(false);
-
     const dispatch = useDispatch();
     const jwtAccessToken = useSelector(selectAccessToken);
 
-    if (!jwtAccessToken) {
-      // Return true as we can't load the categories at this point
-      return true;
-    }
+    const [loadedObjects, setLoadedObjects] = React.useState<boolean>(false);
 
     const getAllCategories = (): void => {
       setLoadedObjects(true);
@@ -35,6 +30,11 @@ export const makeLoadObjects =
       });
     };
     React.useEffect(getAllCategories, []);
+
+    if (!jwtAccessToken) {
+      // Return true as we can't load the categories at this point
+      return true;
+    }
 
     return loadedObjects;
   };
