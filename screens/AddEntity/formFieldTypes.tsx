@@ -1,7 +1,17 @@
-export const carForm = {
+type PermittedTypes = 'string' | 'Date'
+
+type FormFieldTypes = {
+  [key: string]: {
+    type: PermittedTypes;
+    required: boolean;
+    displayName?: string | undefined;
+  }
+}
+
+export const carForm: FormFieldTypes = {
   name: {
     type: 'string',
-    required: true
+    required: true,
   },
   make: {
     type: 'string',
@@ -17,14 +27,17 @@ export const carForm = {
   },
   MOT_due_date: {
     type: 'Date',
-    required: false
+    required: false,
+    displayName: 'MOT Due'
   },
   insurance_due_date: {
     type: 'Date',
-    required: false
+    required: false,
+    displayName: 'Insurance Due'
   },
   service_due_date: {
     type: 'Date',
-    required: false
+    required: false,
+    displayName: 'Service Due'
   }
 };

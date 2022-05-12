@@ -18,6 +18,7 @@ type FieldTypes = {
   [key: string]: {
     type: string;
     required: boolean;
+    displayName?: string | undefined;
   };
 };
 
@@ -36,6 +37,13 @@ type FieldErrorTypes = {
   [key: string]: string;
 };
 
+const parseFieldName = (name: string) => {
+  return name
+    .split('_')
+    .map(part => part[0].toLocaleUpperCase() + part.slice(1))
+    .join(' ')
+}
+
 export default function Form({
   fields,
   url,
@@ -51,13 +59,19 @@ export default function Form({
   const formFields = Object.keys(fields).map((field: string) => {
     const fieldType = fields[field];
 
+    const produceLabelFromFieldName = (fieldName: string) => {
+      return <Text style={styles.inputLabel}>
+        {fields[fieldName].displayName || parseFieldName(fieldName)}{fields[fieldName].required ? '*' : ''}
+      </Text>
+    }
+
     switch (fieldType.type) {
       // TODO - add inputs for other field types
       case 'string':
         return (
           <View key={field} style={styles.inputBlock}>
             <View key={field} style={styles.inputPair}>
-              <Text style={styles.inputLabel}>{field}</Text>
+              {produceLabelFromFieldName(field)}
               <TextInput
                 value={formValues[field]}
                 style={styles.textInput}
@@ -78,9 +92,10 @@ export default function Form({
               <Text style={styles.formError}>{formErrors[field]}</Text>
             ) : null}
             <View style={styles.inputPair}>
-              <Text style={styles.inputLabel}>{field}</Text>
+              {produceLabelFromFieldName(field)}
               <DateField
                 value={formValues[field]}
+                styleInput={[styles.textInput, styles.dateFieldInput]}
                 minimumDate={new Date()}
                 onSubmit={(newValue) => {
                   console.log(newValue);
@@ -116,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   inputBlock: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: '100%'
   },
   inputPair: {
@@ -127,13 +142,22 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     textAlign: 'right',
-    minWidth: 120,
-    marginRight: 30
+    minWidth: 130,
+    marginRight: 30,
+    fontWeight: 'bold'
   },
   textInput: {
     borderWidth: 1,
-    borderColor: DARK,
-    minWidth: 100
+    borderColor: '#E5E5E5',
+    minWidth: 100,
+    backgroundColor: '#F3F2F2',
+    borderRadius: 3,
+    padding: 3
+  },
+  dateFieldInput: {
+    width: 50,
+    minWidth: 50,
+    marginRight: 2,
   },
   formError: {
     color: 'red',
