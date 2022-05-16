@@ -2,11 +2,12 @@ import { Button, StyleSheet, TextInput } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import React from 'react';
-import { makeAuthorisedRequest, MethodType } from 'utils/makeAuthorisedRequest';
+import { makeAuthorisedRequest } from 'utils/makeAuthorisedRequest';
 import DateField from 'react-native-datefield';
 import { useSelector } from 'react-redux';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import moment from 'moment';
+import SquareButton from '../molecules/SquareButton';
 
 /* This type specifies the mapping of field names to
   their associated types.
@@ -21,6 +22,7 @@ type FieldTypes = {
     type: string;
     required: boolean;
     displayName?: string | undefined;
+    initialValue?: string;
   };
 };
 
@@ -39,12 +41,28 @@ type FieldErrorTypes = {
   [key: string]: string;
 };
 
+type FormType = 'UPDATE' | 'CREATE';
+
 const createNullStringObject = (obj: object): { [key: string]: '' } => {
   const nullObj: { [key: string]: '' } = {};
   for (const key of Object.keys(obj)) {
     nullObj[key] = '';
   }
   return nullObj;
+};
+
+const createInitialObject = (fields: FieldTypes): { [key: string]: any } => {
+  const initialObj: { [key: string]: any } = {};
+  for (const key of Object.keys(fields)) {
+    if (fields[key].type === 'string') {
+      initialObj[key] = fields[key].initialValue || '';
+    } else if (fields[key].type === 'Date') {
+      initialObj[key] = fields[key].initialValue
+        ? new Date(fields[key].initialValue || '')
+        : null;
+    }
+  }
+  return initialObj;
 };
 
 const parseFieldName = (name: string) => {
@@ -57,20 +75,26 @@ const parseFieldName = (name: string) => {
 export default function Form({
   fields,
   url,
-  method = 'POST',
+  formType = 'CREATE',
   extraFields = {},
   onSubmitSuccess = () => {},
-  onSubmitFailure = () => {}
+  onSubmitFailure = () => {},
+  onDeleteSuccess = () => {},
+  onDeleteFailure = () => {},
+  clearOnSubmit = false
 }: {
   fields: FieldTypes;
   url: string;
-  method?: MethodType;
+  formType?: FormType;
   extraFields?: object;
   onSubmitSuccess?: Function;
   onSubmitFailure?: Function;
+  onDeleteSuccess?: Function;
+  onDeleteFailure?: Function;
+  clearOnSubmit?: boolean;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
-    createNullStringObject(fields)
+    createInitialObject(fields)
   );
   const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>(
     createNullStringObject(fields)
@@ -103,11 +127,13 @@ export default function Form({
       jwtToken,
       url,
       { ...parsedFormValues, ...extraFields },
-      method
+      formType === 'CREATE' ? 'POST' : 'PATCH'
     )
       .then((res) => {
         setSubmittingForm(false);
-        setFormValues(createNullStringObject(fields));
+        if (clearOnSubmit) {
+          setFormValues(createNullStringObject(fields));
+        }
         setSubmitError('');
         onSubmitSuccess(res.response);
       })
@@ -115,6 +141,21 @@ export default function Form({
         setSubmittingForm(false);
         setSubmitError(err.message || 'An unknown error occurred');
         onSubmitFailure(err);
+      });
+  };
+
+  const makeDeleteRequest = () => {
+    setSubmittingForm(true);
+    makeAuthorisedRequest(jwtToken, url, null, 'DELETE')
+      .then((res) => {
+        setSubmittingForm(false);
+        setSubmitError('');
+        onDeleteSuccess(res.response);
+      })
+      .catch((err) => {
+        setSubmittingForm(false);
+        setSubmitError(err.message || 'An unknown error occurred');
+        onDeleteFailure(err);
       });
   };
 
@@ -151,6 +192,7 @@ export default function Form({
               {produceLabelFromFieldName(field)}
               <DateField
                 value={formValues[field]}
+                defaultValue={formValues[field]}
                 styleInput={[styles.textInput, styles.dateFieldInput]}
                 minimumDate={new Date()}
                 onSubmit={(newValue) => {
@@ -182,7 +224,20 @@ export default function Form({
         ) : null}
         {formFields}
       </View>
-      <Button title="Submit" onPress={submitForm} disabled={submittingForm} />
+      <View style={styles.bottomButtons}>
+        <Button
+          title={formType === 'CREATE' ? 'Create' : 'Update'}
+          onPress={submitForm}
+          disabled={submittingForm}
+          color="#cccccc"
+        />
+        {formType === 'UPDATE' ? (
+          <SquareButton
+            fontAwesomeIconName="trash"
+            onPress={makeDeleteRequest}
+          />
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -233,5 +288,8 @@ const styles = StyleSheet.create({
     color: 'red',
     maxWidth: 200,
     textAlign: 'center'
+  },
+  bottomButtons: {
+    flexDirection: 'row'
   }
 });

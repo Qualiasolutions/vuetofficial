@@ -4,6 +4,7 @@ interface BaseEntityType {
   owner: number;
   category: number;
   resourcetype: string;
+  [key: string]: any;
 }
 
 interface CarResponseType extends BaseEntityType {

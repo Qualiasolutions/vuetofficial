@@ -1,10 +1,11 @@
 type PermittedTypes = 'string' | 'Date';
 
-type FormFieldTypes = {
+export type FormFieldTypes = {
   [key: string]: {
     type: PermittedTypes;
     required: boolean;
     displayName?: string | undefined;
+    initialValue?: PermittedTypes;
   };
 };
 

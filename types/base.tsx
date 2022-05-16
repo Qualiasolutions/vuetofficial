@@ -64,6 +64,8 @@ export type RootTabParamList = {
   AddTask: undefined;
   Transport: undefined;
   AddEntity: { entityType: string };
+  EditEntity: { entityId: number };
+  DeleteSuccess: { entityName: string };
   NotFound: undefined;
 };
 

@@ -44,7 +44,9 @@ import {
 } from 'reduxStore/slices/auth/selectors';
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import Transport from 'screens/Categories/Transport';
-import AddEntityScreen from 'screens/AddEntity/AddEntityScreen';
+import AddEntityScreen from 'screens/EntityForms/AddEntityScreen';
+import EditEntityScreen from 'screens/EntityForms/EditEntityScreen';
+import DeleteSuccess from 'screens/EntityForms/DeleteSuccess';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -124,8 +126,7 @@ function BottomTabNavigator() {
         options={{
           tabBarButton: (props) => null,
           title: 'AddTask',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
+          headerShown: false
         }}
       />
       <BottomTab.Screen
@@ -134,8 +135,25 @@ function BottomTabNavigator() {
         options={{
           tabBarButton: (props) => null,
           title: 'AddEntity',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
+          headerShown: false
+        }}
+      />
+      <BottomTab.Screen
+        name="EditEntity"
+        component={EditEntityScreen}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'EditEntity',
+          headerShown: false
+        }}
+      />
+      <BottomTab.Screen
+        name="DeleteSuccess"
+        component={DeleteSuccess}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'DeleteSuccess',
+          headerShown: false
         }}
       />
       <BottomTab.Screen

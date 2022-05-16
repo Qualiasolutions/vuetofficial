@@ -4,7 +4,7 @@ import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
 import { carForm } from './formFieldTypes';
-import GenericForm from 'components/GenericForm';
+import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
 import { setAllEntities } from 'reduxStore/slices/entities/actions';
@@ -26,6 +26,7 @@ export default function AddEntityScreen({
     route.params?.entityType &&
     permittedEntityForms.includes(route.params?.entityType)
   ) {
+    console.log(carForm);
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
@@ -33,11 +34,12 @@ export default function AddEntityScreen({
           <GenericForm
             fields={carForm}
             url={makeApiUrl(`/core/entity/`)}
-            method="POST"
+            formType="CREATE"
             extraFields={{
               resourcetype: route.params.entityType
             }}
             onSubmitSuccess={updateEntities}
+            clearOnSubmit={true}
           ></GenericForm>
         </View>
       </SafeAreaView>

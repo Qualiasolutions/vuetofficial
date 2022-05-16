@@ -19,6 +19,8 @@ const linking: LinkingOptions<RootTabParamList> = {
       Settings: 'settings',
       AddTask: 'add-task',
       AddEntity: 'add-entity',
+      EditEntity: 'edit-entity',
+      DeleteSuccess: 'delete-success',
       NotFound: '*'
     }
   }
