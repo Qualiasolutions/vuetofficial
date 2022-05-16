@@ -17,7 +17,7 @@ export const makeLoadObjects =
 
     const [loadedObjects, setLoadedObjects] = React.useState<boolean>(false);
 
-    const getAllCategories = (): void => {
+    const getAllObjects = (): void => {
       setLoadedObjects(true);
       makeAuthorisedRequest<ObjectType[]>(
         jwtAccessToken,
@@ -29,7 +29,7 @@ export const makeLoadObjects =
         }
       });
     };
-    React.useEffect(getAllCategories, []);
+    React.useEffect(getAllObjects, []);
 
     if (!jwtAccessToken) {
       // Return true as we can't load the categories at this point

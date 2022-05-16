@@ -10,7 +10,6 @@ import { DARK } from 'globalStyles/colorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CategoriesGrid({ navigation }: any) {
-
   const allCategories = useSelector(selectAllCategories);
 
   const categoriesContent = Object.values(allCategories.byId).map(
@@ -20,11 +19,9 @@ export default function CategoriesGrid({ navigation }: any) {
 
       const isPremiumTag = category.is_premium ? (
         <View style={styles.premiumTag}>
-          <Text style={styles.premiumTagText}>
-            Premium
-          </Text>
+          <Text style={styles.premiumTagText}>Premium</Text>
         </View>
-      ) : null
+      ) : null;
 
       return (
         <Pressable
@@ -98,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     position: 'absolute',
     bottom: 3,
-    right: 3,
+    right: 3
   },
   premiumTagText: {
     fontSize: 10,

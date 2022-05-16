@@ -1,10 +1,12 @@
-import { StyleSheet, TextInput } from 'react-native';
+import { Button, StyleSheet, TextInput } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import React from 'react';
-import { MethodType } from 'utils/makeAuthorisedRequest';
-import { DARK } from 'globalStyles/colorScheme';
+import { makeAuthorisedRequest, MethodType } from 'utils/makeAuthorisedRequest';
 import DateField from 'react-native-datefield';
+import { useSelector } from 'react-redux';
+import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
+import moment from 'moment';
 
 /* This type specifies the mapping of field names to
   their associated types.
@@ -37,36 +39,90 @@ type FieldErrorTypes = {
   [key: string]: string;
 };
 
+const createNullStringObject = (obj: object): { [key: string]: '' } => {
+  const nullObj: { [key: string]: '' } = {};
+  for (const key of Object.keys(obj)) {
+    nullObj[key] = '';
+  }
+  return nullObj;
+};
+
 const parseFieldName = (name: string) => {
   return name
     .split('_')
-    .map(part => part[0].toLocaleUpperCase() + part.slice(1))
-    .join(' ')
-}
+    .map((part) => part[0].toLocaleUpperCase() + part.slice(1))
+    .join(' ');
+};
 
 export default function Form({
   fields,
   url,
-  method = 'POST'
+  method = 'POST',
+  extraFields = {},
+  onSubmitSuccess = () => {},
+  onSubmitFailure = () => {}
 }: {
   fields: FieldTypes;
   url: string;
-  method: MethodType;
+  method?: MethodType;
+  extraFields?: object;
+  onSubmitSuccess?: Function;
+  onSubmitFailure?: Function;
 }) {
-  const [formValues, setFormValues] = React.useState<FieldValueTypes>({});
-  const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>({});
+  const [formValues, setFormValues] = React.useState<FieldValueTypes>(
+    createNullStringObject(fields)
+  );
+  const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>(
+    createNullStringObject(fields)
+  );
+  const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
+  const [submitError, setSubmitError] = React.useState<string>('');
+
+  const jwtToken = useSelector(selectAccessToken);
+
+  const produceLabelFromFieldName = (fieldName: string) => {
+    return (
+      <Text style={styles.inputLabel}>
+        {fields[fieldName].displayName || parseFieldName(fieldName)}
+        {fields[fieldName].required ? '*' : ''}
+      </Text>
+    );
+  };
+
+  const submitForm = () => {
+    setSubmittingForm(true);
+    const parsedFormValues = { ...formValues };
+    for (const field in parsedFormValues) {
+      if (fields[field].type === 'Date') {
+        parsedFormValues[field] = moment(parsedFormValues[field]).format(
+          'YYYY-MM-DD'
+        );
+      }
+    }
+    makeAuthorisedRequest(
+      jwtToken,
+      url,
+      { ...parsedFormValues, ...extraFields },
+      method
+    )
+      .then((res) => {
+        setSubmittingForm(false);
+        setFormValues(createNullStringObject(fields));
+        setSubmitError('');
+        onSubmitSuccess(res.response);
+      })
+      .catch((err) => {
+        setSubmittingForm(false);
+        setSubmitError(err.message || 'An unknown error occurred');
+        onSubmitFailure(err);
+      });
+  };
 
   const formFields = Object.keys(fields).map((field: string) => {
     const fieldType = fields[field];
 
-    const produceLabelFromFieldName = (fieldName: string) => {
-      return <Text style={styles.inputLabel}>
-        {fields[fieldName].displayName || parseFieldName(fieldName)}{fields[fieldName].required ? '*' : ''}
-      </Text>
-    }
-
+    // TODO - add inputs for other field types
     switch (fieldType.type) {
-      // TODO - add inputs for other field types
       case 'string':
         return (
           <View key={field} style={styles.inputBlock}>
@@ -98,7 +154,6 @@ export default function Form({
                 styleInput={[styles.textInput, styles.dateFieldInput]}
                 minimumDate={new Date()}
                 onSubmit={(newValue) => {
-                  console.log(newValue);
                   setFormValues({
                     ...formValues,
                     [field]: newValue
@@ -119,12 +174,27 @@ export default function Form({
     }
   });
 
-  return <View style={styles.container}>{formFields}</View>;
+  return (
+    <View style={styles.container}>
+      <View style={styles.fieldsContainer}>
+        {submitError ? (
+          <Text style={styles.formError}>{submitError}</Text>
+        ) : null}
+        {formFields}
+      </View>
+      <Button title="Submit" onPress={submitForm} disabled={submittingForm} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+  fieldsContainer: {
     margin: 10,
     width: '100%',
     alignItems: 'flex-start',
@@ -157,7 +227,7 @@ const styles = StyleSheet.create({
   dateFieldInput: {
     width: 50,
     minWidth: 50,
-    marginRight: 2,
+    marginRight: 2
   },
   formError: {
     color: 'red',

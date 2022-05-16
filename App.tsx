@@ -38,9 +38,10 @@ const pReducer = persistReducer<CombinedState<EntireState>, RootAction>(
 
 const store = configureStore({
   reducer: pReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware({
-    serializableCheck: false,
-  }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    })
 });
 const persistor = persistStore(store);
 

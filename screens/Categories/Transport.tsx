@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import { useSelector } from 'react-redux';
@@ -67,7 +67,7 @@ export default function Transport({ navigation }: any) {
     </View>
   ));
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {carList}
       <View style={styles.bottomButtons}>
         <TouchableOpacity
@@ -79,7 +79,7 @@ export default function Transport({ navigation }: any) {
           <FontAwesome name="plus" size={30} />
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

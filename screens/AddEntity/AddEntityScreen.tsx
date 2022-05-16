@@ -6,10 +6,21 @@ import { Text, View } from 'components/Themed';
 import { carForm } from './formFieldTypes';
 import GenericForm from 'components/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { makeApiUrl } from 'utils/urls';
+import { setAllEntities } from 'reduxStore/slices/entities/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
+import { CarResponseType } from 'types/entities';
 
 export default function AddEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddEntity'>) {
+  const dispatch = useDispatch();
+  const allEntities = useSelector(selectAllEntities);
+  const updateEntities = (res: CarResponseType) => {
+    dispatch(setAllEntities([...Object.values(allEntities.byId), res]));
+  };
+
   const permittedEntityForms = ['Car'];
   if (
     route.params?.entityType &&
@@ -19,7 +30,15 @@ export default function AddEntityScreen({
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
           <Text style={styles.title}>New {route.params.entityType}</Text>
-          <GenericForm fields={carForm} url="" method="POST"></GenericForm>
+          <GenericForm
+            fields={carForm}
+            url={makeApiUrl(`/core/entity/`)}
+            method="POST"
+            extraFields={{
+              resourcetype: route.params.entityType
+            }}
+            onSubmitSuccess={updateEntities}
+          ></GenericForm>
         </View>
       </SafeAreaView>
     );
@@ -34,15 +53,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold'
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%'
   }
 });

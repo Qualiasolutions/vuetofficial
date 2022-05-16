@@ -1,17 +1,17 @@
-type PermittedTypes = 'string' | 'Date'
+type PermittedTypes = 'string' | 'Date';
 
 type FormFieldTypes = {
   [key: string]: {
     type: PermittedTypes;
     required: boolean;
     displayName?: string | undefined;
-  }
-}
+  };
+};
 
 export const carForm: FormFieldTypes = {
   name: {
     type: 'string',
-    required: true,
+    required: true
   },
   make: {
     type: 'string',
