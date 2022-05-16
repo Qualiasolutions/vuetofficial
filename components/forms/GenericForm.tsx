@@ -1,7 +1,7 @@
 import { Button, StyleSheet, TextInput } from 'react-native';
 
 import { Text, View } from 'components/Themed';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { makeAuthorisedRequest } from 'utils/makeAuthorisedRequest';
 import DateField from 'react-native-datefield';
 import { useSelector } from 'react-redux';
@@ -81,6 +81,7 @@ export default function Form({
   onSubmitFailure = () => {},
   onDeleteSuccess = () => {},
   onDeleteFailure = () => {},
+  onValueChange = () => {},
   clearOnSubmit = false
 }: {
   fields: FieldTypes;
@@ -91,6 +92,7 @@ export default function Form({
   onSubmitFailure?: Function;
   onDeleteSuccess?: Function;
   onDeleteFailure?: Function;
+  onValueChange?: Function;
   clearOnSubmit?: boolean;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
@@ -103,6 +105,15 @@ export default function Form({
   const [submitError, setSubmitError] = React.useState<string>('');
 
   const jwtToken = useSelector(selectAccessToken);
+
+  const hasAllRequired = useMemo(() => {
+    for (const fieldName in fields) {
+      if (fields[fieldName].required && !formValues[fieldName]) {
+        return false
+      }
+    }
+    return true
+  }, [formValues])
 
   const produceLabelFromFieldName = (fieldName: string) => {
     return (
@@ -118,11 +129,16 @@ export default function Form({
     const parsedFormValues = { ...formValues };
     for (const field in parsedFormValues) {
       if (fields[field].type === 'Date') {
-        parsedFormValues[field] = moment(parsedFormValues[field]).format(
-          'YYYY-MM-DD'
-        );
+        if (parsedFormValues[field]) {
+          parsedFormValues[field] = moment(parsedFormValues[field]).format(
+            'YYYY-MM-DD'
+          );
+        } else {
+          delete parsedFormValues[field]
+        }
       }
     }
+    console.log(parsedFormValues)
     makeAuthorisedRequest(
       jwtToken,
       url,
@@ -172,11 +188,14 @@ export default function Form({
               <TextInput
                 value={formValues[field]}
                 style={styles.textInput}
-                onChangeText={(newValue) =>
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  })
+                onChangeText={
+                  (newValue) => {
+                    setFormValues({
+                      ...formValues,
+                      [field]: newValue
+                    })
+                    onValueChange()
+                  }
                 }
               />
             </View>
@@ -201,6 +220,7 @@ export default function Form({
                     [field]: newValue
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
+                  onValueChange()
                 }}
                 handleErrors={() => {
                   setFormErrors({
@@ -228,8 +248,8 @@ export default function Form({
         <Button
           title={formType === 'CREATE' ? 'Create' : 'Update'}
           onPress={submitForm}
-          disabled={submittingForm}
-          color="#cccccc"
+          disabled={submittingForm || !hasAllRequired}
+          color="#C4C4C4"
         />
         {formType === 'UPDATE' ? (
           <SquareButton

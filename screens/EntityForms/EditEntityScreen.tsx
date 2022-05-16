@@ -12,14 +12,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
-import { StackActions } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
+import DeleteSuccess from './DeleteSuccess';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function EditEntityScreen({
-  navigation,
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const dispatch = useDispatch();
   const allEntities = useSelector(selectAllEntities);
+  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false)
+  const [deletedEntityName, setDeletedEntityName] = useState<string>('')
+
+  useFocusEffect(
+    useCallback(() => {
+      setDeletedEntityName('')
+      setDeleteSuccessful(false)
+    }, [])
+  )
+
   const updateEntities = (res: CarResponseType) => {
     dispatch(
       setAllEntities([
@@ -40,13 +51,14 @@ export default function EditEntityScreen({
         }).filter((entity) => entity.id !== route.params.entityId)
       ])
     );
-    navigation.navigate('DeleteSuccess', { entityName });
-    // navigation.dispatch(
-    //   StackActions.replace('DeleteSuccess', {
-    //     entityName,
-    //   })
-    // );
+
+    setDeleteSuccessful(true)
+    setDeletedEntityName(entityName)
   };
+
+  if (deleteSuccessful) {
+    return <DeleteSuccess entityName={deletedEntityName}></DeleteSuccess>
+  }
 
   if (route.params?.entityId && allEntities.byId[route.params.entityId]) {
     const entityToEdit = allEntities.byId[route.params.entityId];
@@ -57,6 +69,7 @@ export default function EditEntityScreen({
         formFields[fieldName].initialValue = entityToEdit[fieldName] || null;
       }
     }
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
