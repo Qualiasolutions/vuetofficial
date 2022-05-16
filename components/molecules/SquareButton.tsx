@@ -31,8 +31,9 @@ export default function SquareButton({
 
 const styles = {
   squareButton: {
-    backgroundColor: '#cccccc',
+    backgroundColor: '#C4C4C4',
     padding: 5,
-    borderRadius: 5
+    borderRadius: 5,
+    marginHorizontal: 5
   }
 };

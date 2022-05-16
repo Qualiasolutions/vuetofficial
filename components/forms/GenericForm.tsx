@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import moment from 'moment';
 import SquareButton from '../molecules/SquareButton';
+import GenericButton from 'components/molecules/GenericButton';
 
 /* This type specifies the mapping of field names to
   their associated types.
@@ -245,11 +246,12 @@ export default function Form({
         {formFields}
       </View>
       <View style={styles.bottomButtons}>
-        <Button
-          title={formType === 'CREATE' ? 'Create' : 'Update'}
+        <GenericButton
+          title={formType === 'CREATE' ? 'CREATE' : 'UPDATE'}
           onPress={submitForm}
           disabled={submittingForm || !hasAllRequired}
-          color="#C4C4C4"
+          style={{backgroundColor: "#C4C4C4"}}
+          textStyle={{color: "black", fontWeight: "bold"}}
         />
         {formType === 'UPDATE' ? (
           <SquareButton
@@ -310,6 +312,6 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   bottomButtons: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   }
 });
