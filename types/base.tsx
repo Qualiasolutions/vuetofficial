@@ -67,6 +67,7 @@ export type RootTabParamList = {
   EditEntity: { entityId: number };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;
+  EntityScreen: { entityId: string };
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

@@ -23,11 +23,13 @@ export default function EditEntityScreen({
   const allEntities = useSelector(selectAllEntities);
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false)
   const [deletedEntityName, setDeletedEntityName] = useState<string>('')
+  const [updatedSuccessfully, setUpdatedSuccessfully] = useState<boolean>(false)
 
   useFocusEffect(
     useCallback(() => {
       setDeletedEntityName('')
       setDeleteSuccessful(false)
+      setUpdatedSuccessfully(false)
     }, [])
   )
 
@@ -40,6 +42,7 @@ export default function EditEntityScreen({
         })
       ])
     );
+    setUpdatedSuccessfully(true)
   };
 
   const onDeleteSuccess = (res: CarResponseType) => {
@@ -74,6 +77,7 @@ export default function EditEntityScreen({
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
           <Text style={styles.title}>Edit {entityToEdit.name}</Text>
+          {updatedSuccessfully ? <Text>Successfully updated {entityToEdit.name}</Text> : null}
           <GenericForm
             fields={formFields}
             url={makeApiUrl(`/core/entity/${entityToEdit.id}/`)}

@@ -20,6 +20,7 @@ const linking: LinkingOptions<RootTabParamList> = {
       AddTask: 'add-task',
       AddEntity: 'add-entity',
       EditEntity: 'edit-entity',
+      EntityScreen: 'entity',
       DeleteSuccess: 'delete-success',
       NotFound: '*'
     }

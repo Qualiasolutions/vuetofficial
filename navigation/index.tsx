@@ -16,7 +16,6 @@ import { ColorSchemeName } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -47,6 +46,7 @@ import Transport from 'screens/Categories/Transport';
 import AddEntityScreen from 'screens/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/EntityForms/EditEntityScreen';
 import DeleteSuccess from 'screens/EntityForms/DeleteSuccess';
+import { EntityScreen } from 'screens/EntityPages/EntityScreen';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -144,6 +144,15 @@ function BottomTabNavigator() {
         options={{
           tabBarButton: (props) => null,
           title: 'EditEntity',
+          headerShown: false
+        }}
+      />
+      <BottomTab.Screen
+        name="EntityScreen"
+        component={EntityScreen}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'EntityScreen',
           headerShown: false
         }}
       />
