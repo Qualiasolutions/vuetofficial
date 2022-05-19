@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "rootDir": ".",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "outDir": "build"
   }
 }

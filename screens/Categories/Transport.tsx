@@ -57,7 +57,7 @@ export default function Transport({ navigation }: any) {
         <TouchableOpacity
           style={styles.squareButton}
           onPress={() => {
-            navigation.navigate('EditEntity', { entityId: car.id });
+            navigation.navigate('EntityScreen', { entityId: car.id });
           }}
         >
           <FontAwesome name="eye" size={30} />

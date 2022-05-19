@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from 'components/Themed';
 import {
   TaskParsedType,
@@ -12,19 +12,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setTaskCompletion } from 'reduxStore/slices/tasks/actions';
 import React from 'react';
 import {
-  isSuccessfulResponseType,
   makeAuthorisedRequest
 } from 'utils/makeAuthorisedRequest';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import Constants from 'expo-constants';
+import SquareButton from 'components/molecules/SquareButton';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 type PropTypes = {
   task: TaskParsedType;
+  selected: boolean;
+  onPress: Function;
 };
 
-export default function Task({ task }: PropTypes) {
+export default function Task({ task, selected, onPress }: PropTypes) {
   const dispatch = useDispatch();
   const jwtAccessToken = useSelector(selectAccessToken);
 
@@ -39,9 +41,18 @@ export default function Task({ task }: PropTypes) {
     </View>
   );
 
+  const expandedOptions = selected ? (<View style={styles.expandedOptions}>
+    {task.description? <Text> DESCRIPTION </Text> : null}
+    <View style={styles.expandedButtons}>
+      <SquareButton fontAwesomeIconName='pencil' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
+      <SquareButton buttonText='+1 Day' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
+      <SquareButton buttonText='+1 Week' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
+    </View>
+  </View>) : null
+
   return (
     <View>
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={() => { onPress(task.id) }}>
         {leftInfo}
         <Text style={styles.title}> {task.title} </Text>
         <Checkbox
@@ -52,7 +63,7 @@ export default function Task({ task }: PropTypes) {
             makeAuthorisedRequest<FixedTaskResponseType>(
               jwtAccessToken,
               `http://${vuetApiUrl}/core/task/${task.id}/`,
-              { resourcetype: task.resourcetype, is_complete: true },
+              { resourcetype: task.resourcetype, is_complete: newValue },
               'PATCH'
             ).then((res) => {
               if (res.success) {
@@ -70,7 +81,8 @@ export default function Task({ task }: PropTypes) {
             });
           }}
         />
-      </View>
+      </TouchableOpacity>
+      {expandedOptions}
       <View style={styles.separator}></View>
     </View>
   );
@@ -78,7 +90,8 @@ export default function Task({ task }: PropTypes) {
 
 const styles = StyleSheet.create({
   title: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    maxWidth: '60%'
   },
   leftInfo: {
     marginRight: 20
@@ -99,5 +112,13 @@ const styles = StyleSheet.create({
     height: 1,
     width: '100%',
     backgroundColor: '#eee'
+  },
+  expandedOptions: {
+    marginTop: 10,
+    alignItems: 'flex-end'
+  },
+  expandedButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
   }
 });

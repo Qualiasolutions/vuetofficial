@@ -1,20 +1,39 @@
 import { FontAwesome } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { Text } from 'components/Themed';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function SquareButton({
   onPress,
   fontAwesomeIconName,
-  fontAwesomeIconSize = 30
+  fontAwesomeIconSize = 30,
+  buttonText = '',
+  buttonSize = 30
 }: {
   onPress: Function;
   fontAwesomeIconName?: keyof typeof FontAwesome.glyphMap;
   fontAwesomeIconSize?: number;
+  buttonText?: string;
+  buttonSize?: number;
 }) {
   let icon;
   if (fontAwesomeIconName) {
     icon = (
       <FontAwesome name={fontAwesomeIconName} size={fontAwesomeIconSize} />
     );
+  } else if (buttonText) {
+    icon = <Text
+      style={
+        [
+          styles.buttonText,
+          {
+            width: buttonSize,
+            height: buttonSize
+          }
+        ]
+      }
+    >
+      {buttonText}
+    </Text>;
   }
 
   return (
@@ -29,11 +48,14 @@ export default function SquareButton({
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   squareButton: {
     backgroundColor: '#C4C4C4',
     padding: 5,
     borderRadius: 5,
     marginHorizontal: 5
+  },
+  buttonText: {
+    fontWeight: 'bold'
   }
-};
+});

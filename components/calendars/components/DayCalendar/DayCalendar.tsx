@@ -8,12 +8,17 @@ import moment from 'moment';
 type PropTypes = {
   date: Date;
   tasks: TaskParsedType[];
+  selectedTaskId: number | null;
+  setSelectedTaskId: Function;
 };
 
-export default function DayCalendar({ date, tasks }: PropTypes) {
+export default function DayCalendar({ date, tasks, selectedTaskId, setSelectedTaskId }: PropTypes) {
   const taskViews = tasks.map((task) => (
-    <Task task={task} key={task.id}></Task>
+    <Task task={task} key={task.id} selected={task.id===selectedTaskId} onPress={setSelectedTaskId}></Task>
   ));
+  // console.log(moment(date))
+  // console.log(moment(date).format('MMM'))
+  // console.log(moment(date).format('DD'))
   return (
     <View>
       <View style={styles.container}>
@@ -33,7 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   dateDay: {
     fontSize: 20,
@@ -59,6 +64,7 @@ const styles = StyleSheet.create({
   leftBar: {
     flexGrow: 0,
     marginRight: 20,
+    width: 40,
     height: '100%',
     alignItems: 'center'
   },

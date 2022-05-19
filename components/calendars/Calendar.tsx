@@ -17,10 +17,8 @@ import {
   isFlexibleTaskResponseType,
   TaskResponseType
 } from 'types/tasks';
-
-import { useSelector } from 'react-redux';
-import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 type SingleDateTasks = {
   dateObj: Date;
@@ -49,8 +47,15 @@ const parseFlexibleTaskResponse = (
 };
 
 
-function Calendar({tasks}: {tasks: TaskResponseType[]}) {
+function Calendar({
+  tasks,
+  alwaysIncludeCurrentDate=false
+}: {
+  tasks: TaskResponseType[],
+  alwaysIncludeCurrentDate?: boolean
+}) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
+  const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(null);
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -61,6 +66,9 @@ function Calendar({tasks}: {tasks: TaskResponseType[]}) {
           getDateStringFromDateObject(parsedTask.start_datetime),
           getDateStringFromDateObject(parsedTask.end_datetime)
         );
+        console.log(parsedTask.start_datetime)
+        console.log(parsedTask.end_datetime)
+        console.log(taskDates)
 
         for (const taskDate of taskDates) {
           if (newTasksPerDate[taskDate]) {
@@ -87,13 +95,15 @@ function Calendar({tasks}: {tasks: TaskResponseType[]}) {
       }
     }
 
-    const currentDate = new Date();
-    const currentDateString = getDateStringFromDateObject(currentDate);
-    if (!(currentDateString in newTasksPerDate)) {
-      newTasksPerDate[currentDateString] = {
-        dateObj: currentDate,
-        tasks: []
-      };
+    if (alwaysIncludeCurrentDate) {
+      const currentDate = new Date();
+      const currentDateString = getDateStringFromDateObject(currentDate);
+      if (!(currentDateString in newTasksPerDate)) {
+        newTasksPerDate[currentDateString] = {
+          dateObj: currentDate,
+          tasks: []
+        };
+      }
     }
     setTasksPerDate(newTasksPerDate);
   };
@@ -107,14 +117,12 @@ function Calendar({tasks}: {tasks: TaskResponseType[]}) {
         date={tasksPerDate[date].dateObj}
         key={date}
         tasks={tasksPerDate[date].tasks}
+        selectedTaskId={selectedTaskId}
+        setSelectedTaskId={setSelectedTaskId}
       />
     ));
 
-  return (
-    <SafeAreaView>
-      <ScrollView style={styles.container}>{dayCalendars}</ScrollView>
-    </SafeAreaView>
-  );
+  return <ScrollView style={styles.container}>{dayCalendars}</ScrollView>;
 }
   
 const styles = StyleSheet.create({
