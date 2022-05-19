@@ -21,7 +21,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type SingleDateTasks = {
-  dateObj: Date;
   tasks: TaskParsedType[];
 };
 
@@ -63,19 +62,15 @@ function Calendar({
       if (isFixedTaskResponseType(task)) {
         const parsedTask: FixedTaskParsedType = parseFixedTaskResponse(task);
         const taskDates = getDateStringsBetween(
-          getDateStringFromDateObject(parsedTask.start_datetime),
-          getDateStringFromDateObject(parsedTask.end_datetime)
+          parsedTask.start_datetime,
+          parsedTask.end_datetime
         );
-        console.log(parsedTask.start_datetime)
-        console.log(parsedTask.end_datetime)
-        console.log(taskDates)
 
         for (const taskDate of taskDates) {
           if (newTasksPerDate[taskDate]) {
             newTasksPerDate[taskDate].tasks.push(parsedTask);
           } else {
             newTasksPerDate[taskDate] = {
-              dateObj: new Date(taskDate),
               tasks: [parsedTask]
             };
           }
@@ -88,7 +83,6 @@ function Calendar({
           newTasksPerDate[dueDate].tasks.push(parsedTask);
         } else {
           newTasksPerDate[dueDate] = {
-            dateObj: new Date(parsedTask.due_date),
             tasks: [parsedTask]
           };
         }
@@ -100,7 +94,6 @@ function Calendar({
       const currentDateString = getDateStringFromDateObject(currentDate);
       if (!(currentDateString in newTasksPerDate)) {
         newTasksPerDate[currentDateString] = {
-          dateObj: currentDate,
           tasks: []
         };
       }
@@ -114,7 +107,7 @@ function Calendar({
     .sort()
     .map((date) => (
       <DayCalendar
-        date={tasksPerDate[date].dateObj}
+        date={date}
         key={date}
         tasks={tasksPerDate[date].tasks}
         selectedTaskId={selectedTaskId}

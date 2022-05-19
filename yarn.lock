@@ -8726,6 +8726,11 @@
     "readable-stream" "~2.3.6"
     "xtend" "~4.0.1"
 
+"timezoned-date@^3.0.2":
+  "integrity" "sha1-uEVeLgB/dxp43Ka4NiMVmUPi6gc="
+  "resolved" "https://registry.npmjs.org/timezoned-date/-/timezoned-date-3.0.2.tgz"
+  "version" "3.0.2"
+
 "tmpl@1.0.5":
   "integrity" "sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw=="
   "resolved" "https://registry.npmjs.org/tmpl/-/tmpl-1.0.5.tgz"

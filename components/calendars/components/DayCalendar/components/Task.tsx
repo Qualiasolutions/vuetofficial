@@ -42,7 +42,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   );
 
   const expandedOptions = selected ? (<View style={styles.expandedOptions}>
-    {task.description? <Text> DESCRIPTION </Text> : null}
+    {/* {task.description? <Text> DESCRIPTION </Text> : null} */}
     <View style={styles.expandedButtons}>
       <SquareButton fontAwesomeIconName='pencil' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
       <SquareButton buttonText='+1 Day' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>

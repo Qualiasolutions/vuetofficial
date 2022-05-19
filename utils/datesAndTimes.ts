@@ -1,13 +1,11 @@
 import moment from 'moment'
 
 const getDateStringFromDateObject = (date: Date): string => {
-  console.log(date)
-  console.log(moment(date).format('YYYY-MM-DD'))
   return moment(date).format('YYYY-MM-DD')
 };
 
 const getTimeStringFromDateObject = (date: Date): string => {
-  return date.toISOString().slice(11, 16);
+  return moment(date).format('HH:mm');
 };
 
 const getDatesBetween = (start: string | Date, end: string | Date): Date[] => {

@@ -6,7 +6,7 @@ import { TaskParsedType } from 'types/tasks';
 import moment from 'moment';
 
 type PropTypes = {
-  date: Date;
+  date: string;
   tasks: TaskParsedType[];
   selectedTaskId: number | null;
   setSelectedTaskId: Function;
