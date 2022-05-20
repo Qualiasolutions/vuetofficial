@@ -1,4 +1,4 @@
-import { SET_ALL_TASKS, SET_TASK_COMPLETION } from './actionNames';
+import { SET_ALL_TASKS, SET_TASK_BY_ID, SET_TASK_COMPLETION } from './actionNames';
 
 import { TaskResponseType } from 'types/tasks';
 
@@ -10,4 +10,10 @@ const setTaskCompletion = createAction(SET_TASK_COMPLETION)<{
   value: boolean;
 }>();
 
-export { setAllTasks, setTaskCompletion };
+const setTaskById = createAction(SET_TASK_BY_ID)<{
+  taskId: number;
+  value: TaskResponseType;
+}>();
+
+
+export { setAllTasks, setTaskCompletion, setTaskById };

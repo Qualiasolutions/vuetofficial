@@ -1,19 +1,21 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { Text } from 'components/Themed';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 export default function SquareButton({
   onPress,
   fontAwesomeIconName,
   fontAwesomeIconSize = 30,
   buttonText = '',
-  buttonSize = 30
+  buttonSize = 30,
+  buttonStyle = {}
 }: {
   onPress: Function;
   fontAwesomeIconName?: keyof typeof FontAwesome.glyphMap;
   fontAwesomeIconSize?: number;
   buttonText?: string;
   buttonSize?: number;
+  buttonStyle?: ViewStyle;
 }) {
   let icon;
   if (fontAwesomeIconName) {
@@ -38,7 +40,7 @@ export default function SquareButton({
 
   return (
     <TouchableOpacity
-      style={styles.squareButton}
+      style={[styles.squareButton, buttonStyle]}
       onPress={() => {
         onPress();
       }}

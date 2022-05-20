@@ -4,19 +4,26 @@ import {
   TaskParsedType,
   isFixedTaskParsedType,
   isFlexibleTaskParsedType,
-  FixedTaskResponseType
+  FixedTaskResponseType,
+  isFixedTaskResponseType
 } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTaskCompletion } from 'reduxStore/slices/tasks/actions';
+import { setTaskById, setTaskCompletion } from 'reduxStore/slices/tasks/actions';
 import React from 'react';
 import {
+  isSuccessfulResponseType,
   makeAuthorisedRequest
 } from 'utils/makeAuthorisedRequest';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import Constants from 'expo-constants';
 import SquareButton from 'components/molecules/SquareButton';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList, RootStackScreenProps, RootTabParamList, RootTabScreenProps } from 'types/base';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { makeApiUrl } from 'utils/urls';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -29,6 +36,37 @@ type PropTypes = {
 export default function Task({ task, selected, onPress }: PropTypes) {
   const dispatch = useDispatch();
   const jwtAccessToken = useSelector(selectAccessToken);
+  const entity = useSelector(selectEntityById(task.entity));
+
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+
+  const addDays = (numDays=1) => {
+    if (isFixedTaskParsedType(task)) {
+      const newStart = new Date(task.start_datetime)
+      newStart.setDate(newStart.getDate() + numDays)
+
+      const newEnd = new Date(task.end_datetime)
+      newStart.setDate(newEnd.getDate() + numDays)
+
+      makeAuthorisedRequest<FixedTaskResponseType>(jwtAccessToken, makeApiUrl(`/core/task/${task.id}`), {
+        start_datetime: newStart,
+        end_datetime: newStart,
+        resourcetype: task.resourcetype
+      }, 'PATCH').then(res => {
+        if (isSuccessfulResponseType(res)) {
+          if (isFixedTaskResponseType(res.response)) {
+            dispatch(setTaskById({
+              taskId: task.id,
+              value: res.response
+            }))
+          }
+        } else {
+          /* TODO - handle errors */
+          console.log(res);
+        }
+      })
+    }
+  }
 
   const leftInfo = isFixedTaskParsedType(task) ? (
     <View style={styles.leftInfo}>
@@ -37,21 +75,38 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     </View>
   ) : (
     <View style={styles.leftInfo}>
-      <Text> DUE DATE </Text>
+      <Text> DUE </Text>
     </View>
   );
 
-  const expandedOptions = selected ? (<View style={styles.expandedOptions}>
-    {/* {task.description? <Text> DESCRIPTION </Text> : null} */}
-    <View style={styles.expandedButtons}>
-      <SquareButton fontAwesomeIconName='pencil' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
-      <SquareButton buttonText='+1 Day' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
-      <SquareButton buttonText='+1 Week' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
+  const expandedHeader = selected ? (
+    <View style={styles.expandedHeader}>
+      <Text style={styles.expandedTitle}>{entity.name}</Text>
+      <SquareButton
+        fontAwesomeIconName='eye'
+        onPress={() => navigation.navigate(
+          'EntityScreen',
+          {entityId: String(entity.id)})
+        }
+        buttonStyle={{backgroundColor: 'transparent'}}
+      />
     </View>
-  </View>) : null
+  ) : null
+
+  const expandedOptions = selected ? (
+    <View style={styles.expandedOptions}>
+      {/* {task.description? <Text> DESCRIPTION </Text> : null} */}
+      <View style={styles.expandedButtons}>
+        <SquareButton fontAwesomeIconName='pencil' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
+        <SquareButton buttonText='+1 Day' onPress={() => { addDays(1) }}></SquareButton>
+        <SquareButton buttonText='+1 Week' onPress={() => { addDays(7) }}></SquareButton>
+      </View>
+    </View>
+  ) : null
 
   return (
     <View>
+      {expandedHeader}
       <TouchableOpacity style={styles.container} onPress={() => { onPress(task.id) }}>
         {leftInfo}
         <Text style={styles.title}> {task.title} </Text>
@@ -112,6 +167,18 @@ const styles = StyleSheet.create({
     height: 1,
     width: '100%',
     backgroundColor: '#eee'
+  },
+  expandedHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#efefef'
+  },
+  expandedTitle: {
+    fontWeight: 'bold',
+    fontSize: 18
   },
   expandedOptions: {
     marginTop: 10,

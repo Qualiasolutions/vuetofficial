@@ -38,6 +38,16 @@ const tasksReducer = createReducer(INITIAL_TASKS_STATE)
         }
       }
     }
+  }))
+  .handleAction(actions.setTaskById, (state, { payload }) => ({
+    ...state,
+    allTasks: {
+      ids: state.allTasks.ids,
+      byId: {
+        ...state.allTasks.byId,
+        [payload.taskId]: payload.value
+      }
+    }
   }));
 
 export { tasksReducer };
