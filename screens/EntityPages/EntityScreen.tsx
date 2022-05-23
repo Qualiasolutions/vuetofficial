@@ -29,8 +29,8 @@ export const EntityScreen = ({
   console.log(tasks)
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
+    <SafeAreaView style={styles.safeAreaContainer}>
+      <View style={styles.contentContainer}>
         <View style={styles.entityHeader}>
           <Text style={styles.entityTitle}>{entity.name}</Text>
           <SquareButton
@@ -51,7 +51,10 @@ export const EntityScreen = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaContainer: {
+    height: '100%'
+  },
+  contentContainer: {
     padding: 10,
     height: '100%'
   },

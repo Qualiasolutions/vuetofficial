@@ -7,9 +7,9 @@
 import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
-import { RootTabParamList } from '../types/base';
+import { TabParamList } from '../types/base';
 
-const linking: LinkingOptions<RootTabParamList> = {
+const linking: LinkingOptions<TabParamList> = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
@@ -22,7 +22,8 @@ const linking: LinkingOptions<RootTabParamList> = {
       EditEntity: 'edit-entity',
       EntityScreen: 'entity',
       DeleteSuccess: 'delete-success',
-      NotFound: '*'
+      NotFound: '*',
+      Login: 'login',
     }
   }
 };

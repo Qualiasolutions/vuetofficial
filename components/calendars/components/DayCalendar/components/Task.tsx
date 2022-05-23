@@ -105,11 +105,13 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   ) : null
 
   return (
-    <View>
+    <View style={styles.container}>
       {expandedHeader}
-      <TouchableOpacity style={styles.container} onPress={() => { onPress(task.id) }}>
+      <TouchableOpacity style={styles.touchableContainer} onPress={() => { onPress(task.id) }}>
         {leftInfo}
-        <Text style={styles.title}> {task.title} </Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{task.title}</Text>
+        </View>
         <Checkbox
           style={styles.checkbox}
           disabled={false}
@@ -144,18 +146,26 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%'
+  },
+  titleContainer: {
+    width: '40%'
+  },
   title: {
     fontWeight: 'bold',
-    maxWidth: '60%'
+    textAlign: 'left'
   },
   leftInfo: {
+    width: '20%',
     marginRight: 20
   },
-  container: {
+  touchableContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   checkbox: {
     margin: 10,

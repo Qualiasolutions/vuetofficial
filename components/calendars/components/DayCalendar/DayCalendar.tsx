@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
   },
   taskViews: {
     paddingTop: 30,
-    paddingBottom: 60
+    paddingBottom: 60,
+    width: '70%'
   }
 });
