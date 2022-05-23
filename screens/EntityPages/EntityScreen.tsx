@@ -18,15 +18,12 @@ export const EntityScreen = ({
     return null
   }
 
-  const entity = useSelector(selectEntityById(parseInt(route.params.entityId)))
+  const entity = useSelector(selectEntityById(route.params.entityId))
   if (!entity) {
     navigation.navigate('NotFound')
     return null
   }
-  const tasks = useSelector(selectTasksByEntityId(parseInt(route.params.entityId)))
-  
-  console.log(entity)
-  console.log(tasks)
+  const tasks = useSelector(selectTasksByEntityId(route.params.entityId))
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -43,7 +40,7 @@ export const EntityScreen = ({
           <Calendar tasks={tasks}/>
         </View>
         <View style={styles.addTaskWrapper}>
-          <SquareButton fontAwesomeIconName='plus' onPress={() => navigation.navigate('AddTask')}/>
+          <SquareButton fontAwesomeIconName='plus' onPress={() => navigation.navigate('AddTask', { entityId: entity.id } )}/>
         </View>
       </View>
     </SafeAreaView>

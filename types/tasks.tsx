@@ -6,6 +6,7 @@ interface BaseTaskType {
   polymorphic_ctype: number;
   resourcetype: string;
   title: string;
+  [key: string]: any;
 }
 
 interface FixedTaskResponseType extends BaseTaskType {

@@ -86,7 +86,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
         fontAwesomeIconName='eye'
         onPress={() => navigation.navigate(
           'EntityScreen',
-          {entityId: String(entity.id)})
+          {entityId: entity.id})
         }
         buttonStyle={{backgroundColor: 'transparent'}}
       />
@@ -97,7 +97,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     <View style={styles.expandedOptions}>
       {/* {task.description? <Text> DESCRIPTION </Text> : null} */}
       <View style={styles.expandedButtons}>
-        <SquareButton fontAwesomeIconName='pencil' onPress={() => {}/* navigation.navigate('EditTask') */}></SquareButton>
+        <SquareButton fontAwesomeIconName='pencil' onPress={() => navigation.navigate('EditTask', { taskId: task.id }) }></SquareButton>
         <SquareButton buttonText='+1 Day' onPress={() => { addDays(1) }}></SquareButton>
         <SquareButton buttonText='+1 Week' onPress={() => { addDays(7) }}></SquareButton>
       </View>

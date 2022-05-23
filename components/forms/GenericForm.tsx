@@ -1,4 +1,4 @@
-import { Button, StyleSheet, TextInput } from 'react-native';
+import { Button, Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import React, { useMemo } from 'react';
@@ -9,6 +9,8 @@ import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import moment from 'moment';
 import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimeTextInput from './components/DateTimeTextInput';
 
 /* This type specifies the mapping of field names to
   their associated types.
@@ -58,6 +60,10 @@ const createInitialObject = (fields: FieldTypes): { [key: string]: any } => {
     if (fields[key].type === 'string') {
       initialObj[key] = fields[key].initialValue || '';
     } else if (fields[key].type === 'Date') {
+      initialObj[key] = fields[key].initialValue
+        ? new Date(fields[key].initialValue || '')
+        : null;
+    } else if (fields[key].type === 'DateTime') {
       initialObj[key] = fields[key].initialValue
         ? new Date(fields[key].initialValue || '')
         : null;
@@ -139,7 +145,7 @@ export default function Form({
         }
       }
     }
-    console.log(parsedFormValues)
+
     makeAuthorisedRequest(
       jwtToken,
       url,
@@ -148,6 +154,9 @@ export default function Form({
     )
       .then((res) => {
         setSubmittingForm(false);
+        if (!res.success) {
+          return setSubmitError(JSON.stringify(res.response));
+        }
         if (clearOnSubmit) {
           setFormValues(createNullStringObject(fields));
         }
@@ -230,6 +239,31 @@ export default function Form({
                       'Invalid date detected - please enter a date in the future'
                   });
                 }}
+              />
+            </View>
+          </View>
+        );
+      case 'DateTime':
+        return (
+          <View key={field} style={styles.inputBlock}>
+            {formErrors[field] ? (
+              <Text style={styles.formError}>{formErrors[field]}</Text>
+            ) : null}
+            <View style={styles.inputPair}>
+              {produceLabelFromFieldName(field)}
+              <DateTimeTextInput
+                value={formValues[field]}
+                textInputStyle={styles.textInput}
+                onValueChange={
+                  (newValue: Date) => {
+                    setFormValues({
+                      ...formValues,
+                      [field]: newValue
+                    });
+                    setFormErrors({ ...formErrors, [field]: '' });
+                    onValueChange()
+                  }
+                }
               />
             </View>
           </View>

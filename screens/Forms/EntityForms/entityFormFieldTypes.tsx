@@ -1,13 +1,4 @@
-type PermittedTypes = 'string' | 'Date';
-
-export type FormFieldTypes = {
-  [key: string]: {
-    type: PermittedTypes;
-    required: boolean;
-    displayName?: string | undefined;
-    initialValue?: PermittedTypes;
-  };
-};
+import { FormFieldTypes } from '../formFieldTypes'
 
 export const carForm: FormFieldTypes = {
   name: {

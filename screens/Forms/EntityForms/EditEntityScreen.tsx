@@ -1,9 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StyleSheet } from 'react-native';
 import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
-import { carForm, FormFieldTypes } from './formFieldTypes';
+import { carForm } from './entityFormFieldTypes';
+import { FormFieldTypes } from '../formFieldTypes';
+import { formStyles } from '../formStyles';
 import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
@@ -13,7 +14,7 @@ import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
-import DeleteSuccess from './DeleteSuccess';
+import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function EditEntityScreen({
@@ -60,7 +61,7 @@ export default function EditEntityScreen({
   };
 
   if (deleteSuccessful) {
-    return <DeleteSuccess entityName={deletedEntityName}></DeleteSuccess>
+    return <DeleteSuccess name={deletedEntityName}></DeleteSuccess>
   }
 
   if (route.params?.entityId && allEntities.byId[route.params.entityId]) {
@@ -74,9 +75,9 @@ export default function EditEntityScreen({
     }
 
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Edit {entityToEdit.name}</Text>
+      <SafeAreaView style={formStyles.container}>
+        <View style={formStyles.container}>
+          <Text style={formStyles.title}>Edit {entityToEdit.name}</Text>
           {updatedSuccessfully ? <Text>Successfully updated {entityToEdit.name}</Text> : null}
           <GenericForm
             fields={formFields}
@@ -94,19 +95,3 @@ export default function EditEntityScreen({
   }
   return null;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
-  }
-});

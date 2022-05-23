@@ -19,10 +19,8 @@ import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import AddTaskScreen from '../screens/AddTaskScreen';
+import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
 import {
-  RootStackParamList,
-  RootStackScreenProps,
   RootTabParamList,
   UnauthorisedStackParamList
 } from '../types/base';
@@ -43,9 +41,9 @@ import {
 } from 'reduxStore/slices/auth/selectors';
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import Transport from 'screens/Categories/Transport';
-import AddEntityScreen from 'screens/EntityForms/AddEntityScreen';
-import EditEntityScreen from 'screens/EntityForms/EditEntityScreen';
-import DeleteSuccess from 'screens/EntityForms/DeleteSuccess';
+import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
+import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
+import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import { EntityScreen } from 'screens/EntityPages/EntityScreen';
 
 /**
@@ -121,6 +119,15 @@ function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
+        name="EditTask"
+        component={EditTaskScreen}
+        options={{
+          tabBarButton: (props) => null,
+          title: 'EditTask',
+          headerShown: false
+        }}
+      />
+      <BottomTab.Screen
         name="Transport"
         component={Transport}
         options={{
@@ -153,15 +160,6 @@ function BottomTabNavigator() {
         options={{
           tabBarButton: (props) => null,
           title: 'EntityScreen',
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="DeleteSuccess"
-        component={DeleteSuccess}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'DeleteSuccess',
           headerShown: false
         }}
       />

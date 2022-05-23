@@ -11,9 +11,11 @@ export const selectEntityState = (state: EntireState): EntitiesState =>
 export const selectAllEntities: Selector<EntireState, AllEntities> =
   createSelector(selectEntityState, (entities: EntitiesState) => entities.allEntities);
 
-export const selectEntityById = (entityId: number): Selector<EntireState, EntityResponseType> => {
+export const selectEntityById = (entityId: number | string): Selector<EntireState, EntityResponseType> => {
+  // A bit weird - URL params are passed as strings so we need to parse as an integer
+  const integerEntityId = (typeof entityId === 'number') ? entityId : parseInt(entityId)
   return createSelector(
     selectEntityState,
-    (entities: EntitiesState) => entities.allEntities.byId[entityId]
+    (entities: EntitiesState) => entities.allEntities.byId[integerEntityId]
   );
 }

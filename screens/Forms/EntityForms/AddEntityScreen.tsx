@@ -1,9 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StyleSheet } from 'react-native';
 import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
-import { carForm } from './formFieldTypes';
+import { carForm } from './entityFormFieldTypes';
+import { formStyles } from '../formStyles';
 import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
@@ -38,9 +38,9 @@ export default function AddEntityScreen({
     permittedEntityForms.includes(route.params?.entityType)
   ) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.container}>
-          <Text style={styles.title}>New {route.params.entityType}</Text>
+      <SafeAreaView style={formStyles.container}>
+        <View style={formStyles.container}>
+          <Text style={formStyles.title}>New {route.params.entityType}</Text>
           {createSuccessful ? <Text>Successfully created new {route.params.entityType}</Text> : null} 
           <GenericForm
             fields={carForm}
@@ -59,19 +59,3 @@ export default function AddEntityScreen({
   }
   return null;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
-  }
-});

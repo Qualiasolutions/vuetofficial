@@ -12,6 +12,7 @@ import {
 } from 'types/entities';
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 import { FontAwesome } from '@expo/vector-icons';
+import { RootTabScreenProps } from 'types/base';
 
 const parseCarResponse = (res: CarResponseType): CarParsedType => {
   return {
@@ -34,7 +35,9 @@ const dueDateField = (name: string, date: Date | null) =>
     </View>
   ) : null;
 
-export default function Transport({ navigation }: any) {
+type TransportScreenProps = RootTabScreenProps<'Transport'>
+
+export default function Transport({ navigation }: TransportScreenProps) {
   const allEntities = useSelector(selectAllEntities);
   const flatEntities = Object.values(allEntities.byId);
   const allCars: CarParsedType[] = flatEntities

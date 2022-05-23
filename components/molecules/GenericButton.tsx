@@ -18,7 +18,6 @@ export default function GenericButton({
   disabledStyle?: ViewStyle;
   disabledTextStyle?: ViewStyle;
 }) {
-  console.log(disabled)
   return (
     <TouchableOpacity
       style={

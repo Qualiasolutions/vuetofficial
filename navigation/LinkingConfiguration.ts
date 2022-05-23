@@ -18,10 +18,10 @@ const linking: LinkingOptions<TabParamList> = {
       Transport: 'transport',
       Settings: 'settings',
       AddTask: 'add-task',
+      EditTask: 'edit-task',
       AddEntity: 'add-entity',
       EditEntity: 'edit-entity',
       EntityScreen: 'entity',
-      DeleteSuccess: 'delete-success',
       NotFound: '*',
       Login: 'login',
     }

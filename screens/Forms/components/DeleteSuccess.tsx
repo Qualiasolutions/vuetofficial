@@ -1,10 +1,10 @@
 import { Text } from 'components/Themed';
 import { StyleSheet } from 'react-native';
 
-export default ({ entityName } : { entityName: string }) => {
+export default ({ name } : { name: string }) => {
   return (
     <Text style={styles.message}>
-      Successfully deleted {entityName}
+      Successfully deleted {name}
     </Text>
   );
 };

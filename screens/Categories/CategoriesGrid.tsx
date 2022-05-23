@@ -8,8 +8,11 @@ import { Category as CategoryType } from 'types/categories';
 
 import { DARK } from 'globalStyles/colorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { RootTabScreenProps } from 'types/base';
 
-export default function CategoriesGrid({ navigation }: any) {
+type CategoriesTypes = RootTabScreenProps<'Categories'>
+
+export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const allCategories = useSelector(selectAllCategories);
 
   const categoriesContent = Object.values(allCategories.byId).map(
