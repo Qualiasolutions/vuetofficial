@@ -1,4 +1,4 @@
-import { FormFieldTypes } from '../formFieldTypes'
+import { FormFieldTypes } from '../formFieldTypes';
 
 const taskFieldTypes: FormFieldTypes = {
   title: {
@@ -8,8 +8,8 @@ const taskFieldTypes: FormFieldTypes = {
   location: {
     type: 'string',
     required: false
-  },
-}
+  }
+};
 
 export const fixedTaskForm: FormFieldTypes = {
   ...taskFieldTypes,
@@ -20,7 +20,7 @@ export const fixedTaskForm: FormFieldTypes = {
   end_datetime: {
     type: 'DateTime',
     required: true
-  },
+  }
 };
 
 export const flexibleTaskForm: FormFieldTypes = {

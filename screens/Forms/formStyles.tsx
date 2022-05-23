@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export const formStyles = StyleSheet.create({
   container: {
@@ -14,4 +14,4 @@ export const formStyles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   }
-})
+});

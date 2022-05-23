@@ -19,24 +19,24 @@ export default function AddTaskScreen({
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
   const dispatch = useDispatch();
   const allTasks = useSelector(selectAllTasks);
-  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false)
+  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
   const updateTasks = (res: TaskResponseType) => {
     dispatch(setAllTasks([...Object.values(allTasks.byId), res]));
-    setCreateSuccessful(true)
+    setCreateSuccessful(true);
   };
 
   useFocusEffect(
     useCallback(() => {
-      setCreateSuccessful(false)
+      setCreateSuccessful(false);
     }, [])
-  )
+  );
 
   return (
     <SafeAreaView style={formStyles.container}>
       <View style={formStyles.container}>
         <Text style={formStyles.title}>New task</Text>
-        {createSuccessful ? <Text>Successfully created new task</Text> : null} 
+        {createSuccessful ? <Text>Successfully created new task</Text> : null}
         <GenericForm
           fields={fixedTaskForm}
           url={makeApiUrl(`/core/task/`)}

@@ -19,18 +19,18 @@ export default function AddEntityScreen({
 }: NativeStackScreenProps<RootTabParamList, 'AddEntity'>) {
   const dispatch = useDispatch();
   const allEntities = useSelector(selectAllEntities);
-  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false)
+  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
   const updateEntities = (res: CarResponseType) => {
     dispatch(setAllEntities([...Object.values(allEntities.byId), res]));
-    setCreateSuccessful(true)
+    setCreateSuccessful(true);
   };
 
   useFocusEffect(
     useCallback(() => {
-      setCreateSuccessful(false)
+      setCreateSuccessful(false);
     }, [])
-  )
+  );
 
   const permittedEntityForms = ['Car'];
   if (
@@ -41,7 +41,9 @@ export default function AddEntityScreen({
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
           <Text style={formStyles.title}>New {route.params.entityType}</Text>
-          {createSuccessful ? <Text>Successfully created new {route.params.entityType}</Text> : null} 
+          {createSuccessful ? (
+            <Text>Successfully created new {route.params.entityType}</Text>
+          ) : null}
           <GenericForm
             fields={carForm}
             url={makeApiUrl(`/core/entity/`)}

@@ -22,15 +22,16 @@ export default function EditTaskScreen({
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
   const dispatch = useDispatch();
   const allTasks = useSelector(selectAllTasks);
-  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false)
-  const [updatedSuccessfully, setUpdatedSuccessfully] = useState<boolean>(false)
+  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
+  const [updatedSuccessfully, setUpdatedSuccessfully] =
+    useState<boolean>(false);
 
   useFocusEffect(
     useCallback(() => {
-      setDeleteSuccessful(false)
-      setUpdatedSuccessfully(false)
+      setDeleteSuccessful(false);
+      setUpdatedSuccessfully(false);
     }, [])
-  )
+  );
 
   const updateTasks = (res: TaskResponseType) => {
     dispatch(
@@ -41,7 +42,7 @@ export default function EditTaskScreen({
         })
       ])
     );
-    setUpdatedSuccessfully(true)
+    setUpdatedSuccessfully(true);
   };
 
   const onDeleteSuccess = (res: TaskResponseType) => {
@@ -53,11 +54,11 @@ export default function EditTaskScreen({
       ])
     );
 
-    setDeleteSuccessful(true)
+    setDeleteSuccessful(true);
   };
 
   if (deleteSuccessful) {
-    return <DeleteSuccess name='task'></DeleteSuccess>
+    return <DeleteSuccess name="task"></DeleteSuccess>;
   }
 
   if (route.params?.taskId && allTasks.byId[route.params.taskId]) {
@@ -70,7 +71,7 @@ export default function EditTaskScreen({
       }
     }
 
-    console.log(formFields)
+    console.log(formFields);
 
     return (
       <SafeAreaView style={formStyles.container}>
@@ -91,5 +92,5 @@ export default function EditTaskScreen({
     );
   }
 
-  return null
+  return null;
 }

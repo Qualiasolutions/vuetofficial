@@ -71,7 +71,7 @@ export type RootTabParamList = {
   EntityScreen: { entityId: number };
 };
 
-export type TabParamList = RootTabParamList & UnauthorisedTabParamList
+export type TabParamList = RootTabParamList & UnauthorisedTabParamList;
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<

@@ -12,11 +12,15 @@ export const selectAllTasks: Selector<EntireState, AllTasks> = createSelector(
   (tasks: TasksState) => tasks.allTasks
 );
 
-export const selectTasksByEntityId = (entityId: (number | string)): Selector<EntireState, TaskResponseType[]> => {
+export const selectTasksByEntityId = (
+  entityId: number | string
+): Selector<EntireState, TaskResponseType[]> => {
   // A bit weird - URL params are passed as strings so we need to parse as an integer
-  const integerEntityId = (typeof entityId === 'number') ? entityId : parseInt(entityId)
-  return createSelector(
-    selectTaskState,
-    (tasks: TasksState) => Object.values(tasks.allTasks.byId).filter(task => task.entity === integerEntityId)
+  const integerEntityId =
+    typeof entityId === 'number' ? entityId : parseInt(entityId);
+  return createSelector(selectTaskState, (tasks: TasksState) =>
+    Object.values(tasks.allTasks.byId).filter(
+      (task) => task.entity === integerEntityId
+    )
   );
-}
+};

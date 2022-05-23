@@ -1,4 +1,4 @@
-import { FormFieldTypes } from '../formFieldTypes'
+import { FormFieldTypes } from '../formFieldTypes';
 
 export const carForm: FormFieldTypes = {
   name: {

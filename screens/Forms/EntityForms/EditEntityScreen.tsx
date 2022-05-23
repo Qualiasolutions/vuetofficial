@@ -22,17 +22,18 @@ export default function EditEntityScreen({
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const dispatch = useDispatch();
   const allEntities = useSelector(selectAllEntities);
-  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false)
-  const [deletedEntityName, setDeletedEntityName] = useState<string>('')
-  const [updatedSuccessfully, setUpdatedSuccessfully] = useState<boolean>(false)
+  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
+  const [deletedEntityName, setDeletedEntityName] = useState<string>('');
+  const [updatedSuccessfully, setUpdatedSuccessfully] =
+    useState<boolean>(false);
 
   useFocusEffect(
     useCallback(() => {
-      setDeletedEntityName('')
-      setDeleteSuccessful(false)
-      setUpdatedSuccessfully(false)
+      setDeletedEntityName('');
+      setDeleteSuccessful(false);
+      setUpdatedSuccessfully(false);
     }, [])
-  )
+  );
 
   const updateEntities = (res: CarResponseType) => {
     dispatch(
@@ -43,7 +44,7 @@ export default function EditEntityScreen({
         })
       ])
     );
-    setUpdatedSuccessfully(true)
+    setUpdatedSuccessfully(true);
   };
 
   const onDeleteSuccess = (res: CarResponseType) => {
@@ -56,12 +57,12 @@ export default function EditEntityScreen({
       ])
     );
 
-    setDeleteSuccessful(true)
-    setDeletedEntityName(entityName)
+    setDeleteSuccessful(true);
+    setDeletedEntityName(entityName);
   };
 
   if (deleteSuccessful) {
-    return <DeleteSuccess name={deletedEntityName}></DeleteSuccess>
+    return <DeleteSuccess name={deletedEntityName}></DeleteSuccess>;
   }
 
   if (route.params?.entityId && allEntities.byId[route.params.entityId]) {
@@ -78,7 +79,9 @@ export default function EditEntityScreen({
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
           <Text style={formStyles.title}>Edit {entityToEdit.name}</Text>
-          {updatedSuccessfully ? <Text>Successfully updated {entityToEdit.name}</Text> : null}
+          {updatedSuccessfully ? (
+            <Text>Successfully updated {entityToEdit.name}</Text>
+          ) : null}
           <GenericForm
             fields={formFields}
             url={makeApiUrl(`/core/entity/${entityToEdit.id}/`)}

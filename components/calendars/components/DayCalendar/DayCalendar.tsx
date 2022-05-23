@@ -12,9 +12,19 @@ type PropTypes = {
   setSelectedTaskId: Function;
 };
 
-export default function DayCalendar({ date, tasks, selectedTaskId, setSelectedTaskId }: PropTypes) {
+export default function DayCalendar({
+  date,
+  tasks,
+  selectedTaskId,
+  setSelectedTaskId
+}: PropTypes) {
   const taskViews = tasks.map((task) => (
-    <Task task={task} key={task.id} selected={task.id===selectedTaskId} onPress={setSelectedTaskId}></Task>
+    <Task
+      task={task}
+      key={task.id}
+      selected={task.id === selectedTaskId}
+      onPress={setSelectedTaskId}
+    ></Task>
   ));
   // console.log(moment(date))
   // console.log(moment(date).format('MMM'))
@@ -38,7 +48,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   dateDay: {
     fontSize: 20,

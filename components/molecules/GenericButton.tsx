@@ -1,18 +1,24 @@
 import { Text } from 'components/Themed';
-import { StyleProp, StyleSheet, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle
+} from 'react-native';
 
 export default function GenericButton({
   onPress,
   title,
-  disabled=false,
-  style={},
-  textStyle={},
-  disabledStyle={},
-  disabledTextStyle={}
+  disabled = false,
+  style = {},
+  textStyle = {},
+  disabledStyle = {},
+  disabledTextStyle = {}
 }: {
   onPress: Function;
   title: string;
-  disabled?: boolean
+  disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
   disabledStyle?: ViewStyle;
@@ -21,20 +27,29 @@ export default function GenericButton({
   return (
     <TouchableOpacity
       style={
-        disabled ?
-          [styles.genericButton, style, styles.disabledButton, disabledStyle] :
-          [styles.genericButton, style]
+        disabled
+          ? [styles.genericButton, style, styles.disabledButton, disabledStyle]
+          : [styles.genericButton, style]
       }
       onPress={() => {
         onPress();
       }}
       disabled={disabled}
     >
-      <Text style={
-        disabled ?
-          [styles.genericButtonText, textStyle, styles.disabledText, disabledTextStyle] :
-          [styles.genericButtonText, textStyle]
-      }>{title}</Text>
+      <Text
+        style={
+          disabled
+            ? [
+                styles.genericButtonText,
+                textStyle,
+                styles.disabledText,
+                disabledTextStyle
+              ]
+            : [styles.genericButtonText, textStyle]
+        }
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -47,14 +62,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5,
     alignContent: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   genericButtonText: {
     fontWeight: 'bold',
     color: 'black'
   },
   disabledButton: {
-    backgroundColor: "#DDDDDD"
+    backgroundColor: '#DDDDDD'
   },
   disabledText: {
     color: 'white'

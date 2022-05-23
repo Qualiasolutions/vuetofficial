@@ -35,7 +35,7 @@ const dueDateField = (name: string, date: Date | null) =>
     </View>
   ) : null;
 
-type TransportScreenProps = RootTabScreenProps<'Transport'>
+type TransportScreenProps = RootTabScreenProps<'Transport'>;
 
 export default function Transport({ navigation }: TransportScreenProps) {
   const allEntities = useSelector(selectAllEntities);

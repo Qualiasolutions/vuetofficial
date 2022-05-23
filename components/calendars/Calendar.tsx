@@ -19,7 +19,6 @@ import {
 } from 'types/tasks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 type SingleDateTasks = {
   tasks: TaskParsedType[];
 };
@@ -45,16 +44,17 @@ const parseFlexibleTaskResponse = (
   };
 };
 
-
 function Calendar({
   tasks,
-  alwaysIncludeCurrentDate=false
+  alwaysIncludeCurrentDate = false
 }: {
-  tasks: TaskResponseType[],
-  alwaysIncludeCurrentDate?: boolean
+  tasks: TaskResponseType[];
+  alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
-  const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(
+    null
+  );
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -117,7 +117,7 @@ function Calendar({
 
   return <ScrollView style={styles.container}>{dayCalendars}</ScrollView>;
 }
-  
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -134,4 +134,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Calendar
+export default Calendar;

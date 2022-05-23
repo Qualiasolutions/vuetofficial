@@ -23,7 +23,7 @@ const linking: LinkingOptions<TabParamList> = {
       EditEntity: 'edit-entity',
       EntityScreen: 'entity',
       NotFound: '*',
-      Login: 'login',
+      Login: 'login'
     }
   }
 };

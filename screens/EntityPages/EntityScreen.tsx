@@ -15,15 +15,15 @@ export const EntityScreen = ({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EntityScreen'>) => {
   if (!route.params?.entityId) {
-    return null
+    return null;
   }
 
-  const entity = useSelector(selectEntityById(route.params.entityId))
+  const entity = useSelector(selectEntityById(route.params.entityId));
   if (!entity) {
-    navigation.navigate('NotFound')
-    return null
+    navigation.navigate('NotFound');
+    return null;
   }
-  const tasks = useSelector(selectTasksByEntityId(route.params.entityId))
+  const tasks = useSelector(selectTasksByEntityId(route.params.entityId));
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -31,21 +31,28 @@ export const EntityScreen = ({
         <View style={styles.entityHeader}>
           <Text style={styles.entityTitle}>{entity.name}</Text>
           <SquareButton
-            fontAwesomeIconName='pencil'
+            fontAwesomeIconName="pencil"
             fontAwesomeIconSize={20}
-            onPress={() => {navigation.navigate('EditEntity', { entityId: entity.id })}}
+            onPress={() => {
+              navigation.navigate('EditEntity', { entityId: entity.id });
+            }}
           />
         </View>
         <View style={styles.calendarContainer}>
-          <Calendar tasks={tasks}/>
+          <Calendar tasks={tasks} />
         </View>
         <View style={styles.addTaskWrapper}>
-          <SquareButton fontAwesomeIconName='plus' onPress={() => navigation.navigate('AddTask', { entityId: entity.id } )}/>
+          <SquareButton
+            fontAwesomeIconName="plus"
+            onPress={() =>
+              navigation.navigate('AddTask', { entityId: entity.id })
+            }
+          />
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   safeAreaContainer: {
@@ -82,4 +89,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingRight: 20
   }
-})
+});

@@ -9,7 +9,7 @@ import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import moment from 'moment';
 import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DateTimeTextInput from './components/DateTimeTextInput';
 
 /* This type specifies the mapping of field names to
@@ -116,11 +116,11 @@ export default function Form({
   const hasAllRequired = useMemo(() => {
     for (const fieldName in fields) {
       if (fields[fieldName].required && !formValues[fieldName]) {
-        return false
+        return false;
       }
     }
-    return true
-  }, [formValues])
+    return true;
+  }, [formValues]);
 
   const produceLabelFromFieldName = (fieldName: string) => {
     return (
@@ -141,7 +141,7 @@ export default function Form({
             'YYYY-MM-DD'
           );
         } else {
-          delete parsedFormValues[field]
+          delete parsedFormValues[field];
         }
       }
     }
@@ -198,15 +198,13 @@ export default function Form({
               <TextInput
                 value={formValues[field]}
                 style={styles.textInput}
-                onChangeText={
-                  (newValue) => {
-                    setFormValues({
-                      ...formValues,
-                      [field]: newValue
-                    })
-                    onValueChange()
-                  }
-                }
+                onChangeText={(newValue) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  onValueChange();
+                }}
               />
             </View>
           </View>
@@ -230,7 +228,7 @@ export default function Form({
                     [field]: newValue
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
-                  onValueChange()
+                  onValueChange();
                 }}
                 handleErrors={() => {
                   setFormErrors({
@@ -254,16 +252,14 @@ export default function Form({
               <DateTimeTextInput
                 value={formValues[field]}
                 textInputStyle={styles.textInput}
-                onValueChange={
-                  (newValue: Date) => {
-                    setFormValues({
-                      ...formValues,
-                      [field]: newValue
-                    });
-                    setFormErrors({ ...formErrors, [field]: '' });
-                    onValueChange()
-                  }
-                }
+                onValueChange={(newValue: Date) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  setFormErrors({ ...formErrors, [field]: '' });
+                  onValueChange();
+                }}
               />
             </View>
           </View>
@@ -284,8 +280,8 @@ export default function Form({
           title={formType === 'CREATE' ? 'CREATE' : 'UPDATE'}
           onPress={submitForm}
           disabled={submittingForm || !hasAllRequired}
-          style={{backgroundColor: "#C4C4C4"}}
-          textStyle={{color: "black", fontWeight: "bold"}}
+          style={{ backgroundColor: '#C4C4C4' }}
+          textStyle={{ color: 'black', fontWeight: 'bold' }}
         />
         {formType === 'UPDATE' ? (
           <SquareButton
@@ -346,6 +342,6 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   bottomButtons: {
-    flexDirection: 'row',
+    flexDirection: 'row'
   }
 });

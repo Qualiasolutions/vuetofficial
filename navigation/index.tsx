@@ -20,10 +20,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
-import {
-  RootTabParamList,
-  UnauthorisedStackParamList
-} from '../types/base';
+import { RootTabParamList, UnauthorisedStackParamList } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
 

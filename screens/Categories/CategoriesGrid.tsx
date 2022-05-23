@@ -10,7 +10,7 @@ import { DARK } from 'globalStyles/colorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootTabScreenProps } from 'types/base';
 
-type CategoriesTypes = RootTabScreenProps<'Categories'>
+type CategoriesTypes = RootTabScreenProps<'Categories'>;
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const allCategories = useSelector(selectAllCategories);

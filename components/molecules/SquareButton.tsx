@@ -23,19 +23,19 @@ export default function SquareButton({
       <FontAwesome name={fontAwesomeIconName} size={fontAwesomeIconSize} />
     );
   } else if (buttonText) {
-    icon = <Text
-      style={
-        [
+    icon = (
+      <Text
+        style={[
           styles.buttonText,
           {
             width: buttonSize,
             height: buttonSize
           }
-        ]
-      }
-    >
-      {buttonText}
-    </Text>;
+        ]}
+      >
+        {buttonText}
+      </Text>
+    );
   }
 
   return (
