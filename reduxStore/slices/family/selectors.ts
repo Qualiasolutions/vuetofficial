@@ -8,7 +8,4 @@ export const selectFamilyState = (state: EntireState): FamilyState =>
   state.family;
 
 export const selectFamily: Selector<EntireState, FamilyResponseType> =
-  createSelector(
-    selectFamilyState,
-    (family: FamilyState) => family.family
-  );
+  createSelector(selectFamilyState, (family: FamilyState) => family.family);

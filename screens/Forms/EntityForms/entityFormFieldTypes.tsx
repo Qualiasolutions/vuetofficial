@@ -43,5 +43,5 @@ export const carForm = (): FormFieldTypes => {
       permittedValues: family.users,
       valueToDisplay: (val: any) => val.username
     }
-  }
+  };
 };

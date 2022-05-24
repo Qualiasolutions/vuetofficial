@@ -8,6 +8,11 @@ export const deepCopy = <T>(instance: T): T => {
     return new Date(instance.getTime()) as any;
   }
 
+  // handle functions
+  if (instance instanceof Function) {
+    return instance;
+  }
+
   // handle Array types
   if (instance instanceof Array) {
     var cloneArr = [] as any[];

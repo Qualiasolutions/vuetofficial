@@ -21,7 +21,7 @@ import {
   loadAllTasks,
   loadAllCategories,
   loadAllEntities,
-  loadFamily,
+  loadFamily
 } from 'hooks/loadObjects/loadObjectsHooks';
 import { View } from 'components/Themed';
 import { ActivityIndicator, StyleSheet } from 'react-native';
@@ -63,10 +63,10 @@ const DataProvider = ({ children }: { children: any }) => {
     loadAllCategories,
     loadAllEntities,
     loadFamily
-  ]
+  ];
 
-  const loadedHooks = loadHooks.map(hook => hook())
-  const allLoaded = loadedHooks.every(val => val);
+  const loadedHooks = loadHooks.map((hook) => hook());
+  const allLoaded = loadedHooks.every((val) => val);
   if (allLoaded) {
     return children;
   }

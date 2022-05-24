@@ -11,8 +11,12 @@ import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
 import DateTimeTextInput from './components/DateTimeTextInput';
 import { FormFieldTypes, isRadioField } from 'screens/Forms/formFieldTypes';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel
+} from 'react-native-simple-radio-button';
+import RadioInput from './components/RadioInput';
 
 /* This type specifies the actual values of the fields.
 
@@ -39,19 +43,26 @@ const createNullStringObject = (obj: object): { [key: string]: '' } => {
   return nullObj;
 };
 
-const createInitialObject = (fields: FormFieldTypes): { [key: string]: any } => {
+const createInitialObject = (
+  fields: FormFieldTypes
+): { [key: string]: any } => {
   const initialObj: { [key: string]: any } = {};
   for (const key of Object.keys(fields)) {
-    if (fields[key].type === 'string') {
-      initialObj[key] = fields[key].initialValue || '';
-    } else if (fields[key].type === 'Date') {
-      initialObj[key] = fields[key].initialValue
-        ? new Date(fields[key].initialValue || '')
-        : null;
-    } else if (fields[key].type === 'DateTime') {
-      initialObj[key] = fields[key].initialValue
-        ? new Date(fields[key].initialValue || '')
-        : null;
+    switch (fields[key].type) {
+      case 'string':
+      case 'radio':
+        initialObj[key] = fields[key].initialValue || '';
+        continue;
+
+      case 'Date':
+      case 'DateTime':
+        initialObj[key] = fields[key].initialValue
+          ? new Date(fields[key].initialValue || '')
+          : null;
+        continue;
+
+      default:
+        initialObj[key] = null;
     }
   }
   return initialObj;
@@ -250,35 +261,37 @@ export default function Form({
           </View>
         );
       case 'radio':
-        const f = fields[field]
+        const f = fields[field];
         if (isRadioField(f)) {
-          const radioButtons = f.permittedValues.map((value: any, i: number) => {
-            const obj = {
+          const permittedValueObjects = f.permittedValues.map(
+            (value: any, i: number) => ({
               label: f.valueToDisplay(value),
               value
-            }
-            return (
-              <RadioButton labelHorizontal={true} key={i} >
-                <RadioButtonInput
-                  obj={obj}
-                  index={i}
-                  isSelected={formValues[field] === value}
-                  onPress={() => {}}
-                />
-                <RadioButtonLabel
-                  obj={obj}
-                  index={i}
-                  labelHorizontal={true}
-                  onPress={() => {}}
-                />
-              </RadioButton>
-            )
-          })
+            })
+          );
+
           return (
-            <RadioForm>
-              {radioButtons}
-            </RadioForm>
-          )
+            <View key={field} style={styles.inputBlock}>
+              {formErrors[field] ? (
+                <Text style={styles.formError}>{formErrors[field]}</Text>
+              ) : null}
+              <View style={styles.inputPair}>
+                {produceLabelFromFieldName(field)}
+                <RadioInput
+                  value={formValues[field]}
+                  permittedValues={permittedValueObjects}
+                  onValueChange={(value: any) => {
+                    setFormValues({
+                      ...formValues,
+                      [field]: value.pk
+                    });
+                    setFormErrors({ ...formErrors, [field]: '' });
+                    onValueChange();
+                  }}
+                />
+              </View>
+            </View>
+          );
         }
     }
   });

@@ -10,7 +10,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
 import { setAllEntities } from 'reduxStore/slices/entities/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
+import {
+  selectAllEntities,
+  selectEntityById
+} from 'reduxStore/slices/entities/selectors';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
@@ -22,6 +25,7 @@ export default function EditEntityScreen({
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const dispatch = useDispatch();
   const allEntities = useSelector(selectAllEntities);
+  const entityToEdit = useSelector(selectEntityById(route.params.entityId));
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [deletedEntityName, setDeletedEntityName] = useState<string>('');
   const [updatedSuccessfully, setUpdatedSuccessfully] =
@@ -66,10 +70,9 @@ export default function EditEntityScreen({
   }
 
   if (route.params?.entityId && allEntities.byId[route.params.entityId]) {
-    const entityToEdit = allEntities.byId[route.params.entityId];
     const formFields = deepCopy<FormFieldTypes>(carForm());
 
-    for (const fieldName in carForm) {
+    for (const fieldName in formFields) {
       if (fieldName in entityToEdit) {
         formFields[fieldName].initialValue = entityToEdit[fieldName] || null;
       }

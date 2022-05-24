@@ -20,6 +20,7 @@ export const selectEntityById = (
   // A bit weird - URL params are passed as strings so we need to parse as an integer
   const integerEntityId =
     typeof entityId === 'number' ? entityId : parseInt(entityId);
+
   return createSelector(
     selectEntityState,
     (entities: EntitiesState) => entities.allEntities.byId[integerEntityId]

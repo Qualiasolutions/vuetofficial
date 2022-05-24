@@ -5,17 +5,17 @@ type BaseField<TypeName, ValueType> = {
   required: boolean;
   displayName?: string | undefined;
   initialValue?: ValueType;
-}
+};
 
-type StringField = BaseField<'string', string>
-type DateField = BaseField<'Date', Date>
-type DateTimeField = BaseField<'DateTime', Date>
+type StringField = BaseField<'string', string>;
+type DateField = BaseField<'Date', Date>;
+type DateTimeField = BaseField<'DateTime', Date>;
 type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
   valueToDisplay: Function;
-}
+};
 
-type Field = StringField | DateField | DateTimeField | RadioField
+type Field = StringField | DateField | DateTimeField | RadioField;
 
 export type FormFieldTypes = {
   [key: string]: Field;
