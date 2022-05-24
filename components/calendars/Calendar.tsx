@@ -75,7 +75,7 @@ function Calendar({
             };
           }
         }
-      } else if (isFlexibleTaskResponseType(task)) {
+      } else if (task.due_date) {
         const parsedTask: FlexibleTaskParsedType =
           parseFlexibleTaskResponse(task);
         const dueDate = getDateStringFromDateObject(parsedTask.due_date);
