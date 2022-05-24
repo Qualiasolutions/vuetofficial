@@ -9,25 +9,10 @@ import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import moment from 'moment';
 import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DateTimeTextInput from './components/DateTimeTextInput';
+import { FormFieldTypes, isRadioField } from 'screens/Forms/formFieldTypes';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
-/* This type specifies the mapping of field names to
-  their associated types.
-
-  e.g. {
-    name: 'string',
-    age: 'integer'
-  }
-*/
-type FieldTypes = {
-  [key: string]: {
-    type: string;
-    required: boolean;
-    displayName?: string | undefined;
-    initialValue?: string;
-  };
-};
 
 /* This type specifies the actual values of the fields.
 
@@ -54,7 +39,7 @@ const createNullStringObject = (obj: object): { [key: string]: '' } => {
   return nullObj;
 };
 
-const createInitialObject = (fields: FieldTypes): { [key: string]: any } => {
+const createInitialObject = (fields: FormFieldTypes): { [key: string]: any } => {
   const initialObj: { [key: string]: any } = {};
   for (const key of Object.keys(fields)) {
     if (fields[key].type === 'string') {
@@ -91,7 +76,7 @@ export default function Form({
   onValueChange = () => {},
   clearOnSubmit = false
 }: {
-  fields: FieldTypes;
+  fields: FormFieldTypes;
   url: string;
   formType?: FormType;
   extraFields?: object;
@@ -264,6 +249,37 @@ export default function Form({
             </View>
           </View>
         );
+      case 'radio':
+        const f = fields[field]
+        if (isRadioField(f)) {
+          const radioButtons = f.permittedValues.map((value: any, i: number) => {
+            const obj = {
+              label: f.valueToDisplay(value),
+              value
+            }
+            return (
+              <RadioButton labelHorizontal={true} key={i} >
+                <RadioButtonInput
+                  obj={obj}
+                  index={i}
+                  isSelected={formValues[field] === value}
+                  onPress={() => {}}
+                />
+                <RadioButtonLabel
+                  obj={obj}
+                  index={i}
+                  labelHorizontal={true}
+                  onPress={() => {}}
+                />
+              </RadioButton>
+            )
+          })
+          return (
+            <RadioForm>
+              {radioButtons}
+            </RadioForm>
+          )
+        }
     }
   });
 

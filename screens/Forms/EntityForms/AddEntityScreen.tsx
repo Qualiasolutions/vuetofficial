@@ -45,7 +45,7 @@ export default function AddEntityScreen({
             <Text>Successfully created new {route.params.entityType}</Text>
           ) : null}
           <GenericForm
-            fields={carForm}
+            fields={carForm()}
             url={makeApiUrl(`/core/entity/`)}
             formType="CREATE"
             extraFields={{

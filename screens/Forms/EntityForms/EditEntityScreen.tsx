@@ -67,7 +67,7 @@ export default function EditEntityScreen({
 
   if (route.params?.entityId && allEntities.byId[route.params.entityId]) {
     const entityToEdit = allEntities.byId[route.params.entityId];
-    const formFields = deepCopy<FormFieldTypes>(carForm);
+    const formFields = deepCopy<FormFieldTypes>(carForm());
 
     for (const fieldName in carForm) {
       if (fieldName in entityToEdit) {

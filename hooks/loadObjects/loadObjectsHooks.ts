@@ -5,6 +5,8 @@ import { setAllTasks } from 'reduxStore/slices/tasks/actions';
 import { TaskResponseType } from 'types/tasks';
 import { setAllEntities } from 'reduxStore/slices/entities/actions';
 import { EntityResponseType } from 'types/entities';
+import { setFamily } from 'reduxStore/slices/family/actions';
+import { FamilyResponseType } from 'types/families';
 
 export const loadAllCategories = makeLoadObjects<CategoryType>(
   '/core/category/',
@@ -17,4 +19,8 @@ export const loadAllTasks = makeLoadObjects<TaskResponseType>(
 export const loadAllEntities = makeLoadObjects<EntityResponseType>(
   '/core/entity/',
   setAllEntities
+);
+export const loadFamily = makeLoadObjects<FamilyResponseType>(
+  '/core/family/',
+  setFamily
 );

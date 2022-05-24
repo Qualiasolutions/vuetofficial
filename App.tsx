@@ -20,7 +20,8 @@ import { RootAction } from 'reduxStore/actions';
 import {
   loadAllTasks,
   loadAllCategories,
-  loadAllEntities
+  loadAllEntities,
+  loadFamily,
 } from 'hooks/loadObjects/loadObjectsHooks';
 import { View } from 'components/Themed';
 import { ActivityIndicator, StyleSheet } from 'react-native';
@@ -57,11 +58,15 @@ const styles = StyleSheet.create({
 
 // Any data that needs to be loaded at the start should be loaded here
 const DataProvider = ({ children }: { children: any }) => {
-  const loadedTasks = loadAllTasks();
-  const loadedCategories = loadAllCategories();
-  const loadedEntities = loadAllEntities();
+  const loadHooks = [
+    loadAllTasks,
+    loadAllCategories,
+    loadAllEntities,
+    loadFamily
+  ]
 
-  const allLoaded = loadedTasks && loadedCategories && loadedEntities;
+  const loadedHooks = loadHooks.map(hook => hook())
+  const allLoaded = loadedHooks.every(val => val);
   if (allLoaded) {
     return children;
   }
