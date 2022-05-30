@@ -1,5 +1,5 @@
 const extraData = {
-  vuetApiUrl: process.env.ENV === 'prod' ? 'api.vuet.app' : '192.168.1.9:8000'
+  vuetApiUrl: process.env.ENV === 'LOCAL' ? '192.168.1.9:8000' : 'api.vuet.app'
 };
 
 export default {
@@ -8,6 +8,7 @@ export default {
     slug: 'vuet-app',
     version: '1.0.0',
     orientation: 'portrait',
+    owner: 'vuet',
     icon: './assets/images/icon.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',

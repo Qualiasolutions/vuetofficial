@@ -42,7 +42,7 @@ export default function AddTaskScreen({
           url={makeApiUrl(`/core/task/`)}
           formType="CREATE"
           extraFields={{
-            entity: route.params.entityId,
+            entity: route.params?.entityId,
             resourcetype: 'FixedTask'
           }}
           onSubmitSuccess={updateTasks}

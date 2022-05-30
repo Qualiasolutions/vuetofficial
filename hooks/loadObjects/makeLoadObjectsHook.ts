@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import {
@@ -18,7 +18,7 @@ export const makeLoadObjects =
     const [loadedObjects, setLoadedObjects] = React.useState<boolean>(false);
 
     const getAllObjects = (): void => {
-      setLoadedObjects(true);
+      setLoadedObjects(false);
       makeAuthorisedRequest<ObjectType[]>(
         jwtAccessToken,
         `http://${vuetApiUrl}${apiEndpoint}`
@@ -32,8 +32,7 @@ export const makeLoadObjects =
     React.useEffect(getAllObjects, []);
 
     if (!jwtAccessToken) {
-      // Return true as we can't load the categories at this point
-      return true;
+      return false;
     }
 
     return loadedObjects;

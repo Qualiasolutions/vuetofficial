@@ -17,14 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { RootAction } from 'reduxStore/actions';
-import {
-  loadAllTasks,
-  loadAllCategories,
-  loadAllEntities,
-  loadFamily
-} from 'hooks/loadObjects/loadObjectsHooks';
-import { View } from 'components/Themed';
-import { ActivityIndicator, StyleSheet } from 'react-native';
 
 const persistConfig = {
   key: 'root',
@@ -46,38 +38,6 @@ const store = configureStore({
 });
 const persistor = persistStore(store);
 
-const styles = StyleSheet.create({
-  spinnerWrapper: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
-
-// Any data that needs to be loaded at the start should be loaded here
-const DataProvider = ({ children }: { children: any }) => {
-  const loadHooks = [
-    loadAllTasks,
-    loadAllCategories,
-    loadAllEntities,
-    loadFamily
-  ];
-
-  const loadedHooks = loadHooks.map((hook) => hook());
-  const allLoaded = loadedHooks.every((val) => val);
-  if (allLoaded) {
-    return children;
-  }
-  const loadingScreen = (
-    <View style={styles.spinnerWrapper}>
-      <ActivityIndicator size="large" />
-    </View>
-  );
-  return loadingScreen;
-};
-
 export default function App() {
   const loadedCachedResources = useCachedResources();
   const colorScheme = useColorScheme();
@@ -89,9 +49,7 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={<Splash />} persistor={persistor}>
           <SafeAreaProvider>
-            <DataProvider>
-              <Navigation colorScheme={colorScheme} />
-            </DataProvider>
+            <Navigation colorScheme={colorScheme} />
             <StatusBar />
           </SafeAreaProvider>
         </PersistGate>

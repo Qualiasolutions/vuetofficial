@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
+import { ActivityIndicator, ColorSchemeName, StyleSheet } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -42,6 +42,46 @@ import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import { EntityScreen } from 'screens/EntityPages/EntityScreen';
+import {
+  loadAllTasks,
+  loadAllCategories,
+  loadAllEntities,
+  loadFamily
+} from 'hooks/loadObjects/loadObjectsHooks';
+import { View } from 'components/Themed';
+
+const styles = StyleSheet.create({
+  spinnerWrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+});
+
+// Any data that needs to be loaded at the start should be loaded here
+export const DataProvider = ({ children }: { children: any }) => {
+  const loadHooks = [
+    loadAllTasks,
+    loadAllCategories,
+    loadAllEntities,
+    loadFamily
+  ];
+
+  const loadedHooks = loadHooks.map((hook) => hook());
+  const allLoaded = loadedHooks.every((val) => val);
+
+  if (allLoaded) {
+    return children;
+  }
+  const loadingScreen = (
+    <View style={styles.spinnerWrapper}>
+      <ActivityIndicator size="large" color="#CCCCCC"/>
+    </View>
+  );
+  return loadingScreen;
+};
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -72,103 +112,105 @@ function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
   return (
-    <BottomTab.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint
-      }}
-      backBehavior="history"
-    >
-      <BottomTab.Screen
-        name="Home"
-        component={CalendarScreen}
-        options={{
-          title: 'Home',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />
+    <DataProvider>
+      <BottomTab.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme].tint
         }}
-      />
-      <BottomTab.Screen
-        name="Categories"
-        component={CategoriesGrid}
-        options={{
-          title: 'Categories',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />
-        }}
-      />
-      <BottomTab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          title: 'Settings',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />
-        }}
-      />
-      <BottomTab.Screen
-        name="AddTask"
-        component={AddTaskScreen}
-        options={{
-          title: 'AddTask',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
-        }}
-      />
-      <BottomTab.Screen
-        name="EditTask"
-        component={EditTaskScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'EditTask',
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="Transport"
-        component={Transport}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'AddTask',
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="AddEntity"
-        component={AddEntityScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'AddEntity',
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="EditEntity"
-        component={EditEntityScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'EditEntity',
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="EntityScreen"
-        component={EntityScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'EntityScreen',
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: 'Oops!'
-        }}
-      />
-    </BottomTab.Navigator>
+        backBehavior="history"
+      >
+        <BottomTab.Screen
+          name="Home"
+          component={CalendarScreen}
+          options={{
+            title: 'Home',
+            headerShown: false,
+            tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />
+          }}
+        />
+        <BottomTab.Screen
+          name="Categories"
+          component={CategoriesGrid}
+          options={{
+            title: 'Categories',
+            headerShown: false,
+            tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />
+          }}
+        />
+        <BottomTab.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            title: 'Settings',
+            headerShown: false,
+            tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />
+          }}
+        />
+        <BottomTab.Screen
+          name="AddTask"
+          component={AddTaskScreen}
+          options={{
+            title: 'AddTask',
+            headerShown: false,
+            tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
+          }}
+        />
+        <BottomTab.Screen
+          name="EditTask"
+          component={EditTaskScreen}
+          options={{
+            tabBarButton: (props) => null,
+            title: 'EditTask',
+            headerShown: false
+          }}
+        />
+        <BottomTab.Screen
+          name="Transport"
+          component={Transport}
+          options={{
+            tabBarButton: (props) => null,
+            title: 'AddTask',
+            headerShown: false
+          }}
+        />
+        <BottomTab.Screen
+          name="AddEntity"
+          component={AddEntityScreen}
+          options={{
+            tabBarButton: (props) => null,
+            title: 'AddEntity',
+            headerShown: false
+          }}
+        />
+        <BottomTab.Screen
+          name="EditEntity"
+          component={EditEntityScreen}
+          options={{
+            tabBarButton: (props) => null,
+            title: 'EditEntity',
+            headerShown: false
+          }}
+        />
+        <BottomTab.Screen
+          name="EntityScreen"
+          component={EntityScreen}
+          options={{
+            tabBarButton: (props) => null,
+            title: 'EntityScreen',
+            headerShown: false
+          }}
+        />
+        <BottomTab.Screen
+          name="NotFound"
+          component={NotFoundScreen}
+          options={{
+            tabBarButton: (props) => null,
+            title: 'Oops!'
+          }}
+        />
+      </BottomTab.Navigator>
+    </DataProvider>
   );
 }
 
