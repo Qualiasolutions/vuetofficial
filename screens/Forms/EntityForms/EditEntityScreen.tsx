@@ -25,7 +25,7 @@ export default function EditEntityScreen({
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const dispatch = useDispatch();
   const allEntities = useSelector(selectAllEntities);
-  const entityToEdit = useSelector(selectEntityById(route.params.entityId));
+  const entityToEdit = useSelector(selectEntityById(route.params?.entityId));
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [deletedEntityName, setDeletedEntityName] = useState<string>('');
   const [updatedSuccessfully, setUpdatedSuccessfully] =
@@ -44,7 +44,7 @@ export default function EditEntityScreen({
       setAllEntities([
         ...Object.values({
           ...allEntities.byId,
-          [route.params.entityId]: res
+          [route.params?.entityId]: res
         })
       ])
     );
@@ -52,12 +52,12 @@ export default function EditEntityScreen({
   };
 
   const onDeleteSuccess = (res: CarResponseType) => {
-    const entityName = allEntities.byId[route.params.entityId].name;
+    const entityName = allEntities.byId[route.params?.entityId].name;
     dispatch(
       setAllEntities([
         ...Object.values({
           ...allEntities.byId
-        }).filter((entity) => entity.id !== route.params.entityId)
+        }).filter((entity) => entity.id !== route.params?.entityId)
       ])
     );
 
