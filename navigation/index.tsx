@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 });
 
 // Any data that needs to be loaded at the start should be loaded here
-export const DataProvider = ({ children }: { children: any }) => {
+const DataProvider = ({ children }: { children: any }) => {
   const loadHooks = [
     loadAllTasks,
     loadAllCategories,

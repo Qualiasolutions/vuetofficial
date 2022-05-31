@@ -109,7 +109,6 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const expandedOptions = selected ? (
     <View style={styles.expandedOptions}>
-      {/* {task.description? <Text> DESCRIPTION </Text> : null} */}
       <View style={styles.expandedButtons}>
         <SquareButton
           fontAwesomeIconName="pencil"
