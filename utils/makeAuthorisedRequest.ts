@@ -39,7 +39,8 @@ const makeAuthorisedRequest = async <ResponseBodyType>(
     .then((response) => {
       const getJsonObject = async () => {
         return {
-          response: await response.json(),
+          response:
+            method === 'DELETE' ? { success: true } : await response.json(),
           success: response.ok,
           statusCode: response.status
         };

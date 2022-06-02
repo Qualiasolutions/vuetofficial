@@ -10,7 +10,7 @@ import moment from 'moment';
 import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
 import DateTimeTextInput from './components/DateTimeTextInput';
-import { FormFieldTypes, isRadioField } from 'screens/Forms/formFieldTypes';
+import { FormFieldTypes, isRadioField } from './formFieldTypes';
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
@@ -85,7 +85,8 @@ export default function Form({
   onDeleteSuccess = () => {},
   onDeleteFailure = () => {},
   onValueChange = () => {},
-  clearOnSubmit = false
+  clearOnSubmit = false,
+  submitText = ''
 }: {
   fields: FormFieldTypes;
   url: string;
@@ -97,6 +98,7 @@ export default function Form({
   onDeleteFailure?: Function;
   onValueChange?: Function;
   clearOnSubmit?: boolean;
+  submitText?: string;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -171,8 +173,10 @@ export default function Form({
     makeAuthorisedRequest(jwtToken, url, null, 'DELETE')
       .then((res) => {
         setSubmittingForm(false);
-        setSubmitError('');
-        onDeleteSuccess(res.response);
+        if (res.success) {
+          setSubmitError('');
+          onDeleteSuccess(res.response);
+        }
       })
       .catch((err) => {
         setSubmittingForm(false);
@@ -306,7 +310,7 @@ export default function Form({
       </View>
       <View style={styles.bottomButtons}>
         <GenericButton
-          title={formType === 'CREATE' ? 'CREATE' : 'UPDATE'}
+          title={submitText || (formType === 'CREATE' ? 'CREATE' : 'UPDATE')}
           onPress={submitForm}
           disabled={submittingForm || !hasAllRequired}
           style={{ backgroundColor: '#C4C4C4' }}

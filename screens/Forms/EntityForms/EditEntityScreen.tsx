@@ -3,29 +3,33 @@ import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
 import { carForm } from './entityFormFieldTypes';
-import { FormFieldTypes } from '../formFieldTypes';
+import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { formStyles } from '../formStyles';
 import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
-import { setAllEntities } from 'reduxStore/slices/entities/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectAllEntities,
-  selectEntityById
-} from 'reduxStore/slices/entities/selectors';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
 import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
+import {
+  useGetAllEntitiesQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api';
+import GenericError from 'components/molecules/GenericError';
 
 export default function EditEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
-  const dispatch = useDispatch();
-  const allEntities = useSelector(selectAllEntities);
-  const entityToEdit = useSelector(selectEntityById(route.params?.entityId));
+  const {
+    data: allEntities,
+    isLoading,
+    error,
+    refetch: fetchEntities
+  } = useGetAllEntitiesQuery();
+  const { refetch: fetchTasks } = useGetAllTasksQuery();
+  const formFields = deepCopy<FormFieldTypes>(carForm());
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [deletedEntityName, setDeletedEntityName] = useState<string>('');
   const [updatedSuccessfully, setUpdatedSuccessfully] =
@@ -39,39 +43,37 @@ export default function EditEntityScreen({
     }, [])
   );
 
+  if (isLoading || !allEntities || !route.params.entityId) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  const entityIdRaw = route.params.entityId;
+  const entityId =
+    typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
+  const entityToEdit = allEntities.byId[entityId];
+
   const updateEntities = (res: CarResponseType) => {
-    dispatch(
-      setAllEntities([
-        ...Object.values({
-          ...allEntities.byId,
-          [route.params?.entityId]: res
-        })
-      ])
-    );
+    fetchEntities();
+    fetchTasks();
     setUpdatedSuccessfully(true);
   };
 
   const onDeleteSuccess = (res: CarResponseType) => {
-    const entityName = allEntities.byId[route.params?.entityId].name;
-    dispatch(
-      setAllEntities([
-        ...Object.values({
-          ...allEntities.byId
-        }).filter((entity) => entity.id !== route.params?.entityId)
-      ])
-    );
-
-    setDeleteSuccessful(true);
+    const entityName = allEntities.byId[entityId].name;
+    fetchEntities();
     setDeletedEntityName(entityName);
+    setDeleteSuccessful(true);
   };
 
   if (deleteSuccessful) {
     return <DeleteSuccess name={deletedEntityName}></DeleteSuccess>;
   }
 
-  if (route.params?.entityId && allEntities.byId[route.params.entityId]) {
-    const formFields = deepCopy<FormFieldTypes>(carForm());
-
+  if (route.params?.entityId && allEntities.byId[entityId]) {
     for (const fieldName in formFields) {
       if (fieldName in entityToEdit) {
         formFields[fieldName].initialValue = entityToEdit[fieldName] || null;

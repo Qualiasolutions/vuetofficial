@@ -1,29 +1,61 @@
-import { FontAwesome } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Calendar from 'components/calendars/Calendar';
+import GenericError from 'components/molecules/GenericError';
 import SquareButton from 'components/molecules/SquareButton';
 import { Text, View } from 'components/Themed';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
-import { selectTasksByEntityId } from 'reduxStore/slices/tasks/selectors';
+import {
+  useGetAllEntitiesQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api';
+import { AllTasks } from 'reduxStore/slices/tasks/types';
 import { RootTabParamList } from 'types/base';
+
+const getTasksByEntityId = (allTasks: AllTasks, entityId: string | number) => {
+  const integerEntityId =
+    typeof entityId === 'number' ? entityId : parseInt(entityId);
+  return Object.values(allTasks.byId).filter(
+    (task) => task.entity === integerEntityId
+  );
+};
 
 export const EntityScreen = ({
   navigation,
   route
 }: NativeStackScreenProps<RootTabParamList, 'EntityScreen'>) => {
-  if (!route.params?.entityId) {
+  const {
+    data: allEntities,
+    isLoading: isLoadingEntities,
+    error: entitiesError
+  } = useGetAllEntitiesQuery();
+  const {
+    data: allTasks,
+    error: tasksError,
+    isLoading: isLoadingTasks
+  } = useGetAllTasksQuery();
+
+  const isLoading = isLoadingEntities || isLoadingTasks;
+
+  if (
+    isLoading ||
+    !allTasks ||
+    !allEntities ||
+    !route.params?.entityId ||
+    !allEntities
+  ) {
     return null;
   }
 
-  const entity = useSelector(selectEntityById(route.params.entityId));
-  if (!entity) {
-    navigation.navigate('NotFound');
-    return null;
+  if (entitiesError || tasksError) {
+    return <GenericError />;
   }
-  const tasks = useSelector(selectTasksByEntityId(route.params.entityId));
+
+  const entityIdRaw = route.params.entityId;
+  const entityId =
+    typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
+  const entity = allEntities.byId[entityId];
+  const entityTasks = getTasksByEntityId(allTasks, route.params.entityId);
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -39,7 +71,7 @@ export const EntityScreen = ({
           />
         </View>
         <View style={styles.calendarContainer}>
-          <Calendar tasks={tasks} />
+          <Calendar tasks={entityTasks} />
         </View>
         <View style={styles.addTaskWrapper}>
           <SquareButton

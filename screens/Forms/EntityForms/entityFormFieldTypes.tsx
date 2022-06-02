@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { selectFamily } from 'reduxStore/slices/family/selectors';
-import { FormFieldTypes } from '../formFieldTypes';
+import { FormFieldTypes } from 'components/forms/formFieldTypes';
 
 export const carForm = (): FormFieldTypes => {
   const family = useSelector(selectFamily);

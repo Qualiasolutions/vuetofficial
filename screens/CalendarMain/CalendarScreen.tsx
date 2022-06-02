@@ -1,14 +1,19 @@
 import Calendar from 'components/calendars/Calendar';
+import GenericError from 'components/molecules/GenericError';
+import { Text } from 'components/Themed';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { useSelector } from 'react-redux';
-import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
+import { useGetAllTasksQuery } from 'reduxStore/services/api';
 
 function CalendarScreen() {
-  const allTasks = useSelector(selectAllTasks);
-  return (
+  const { data: allTasks, error, isLoading } = useGetAllTasksQuery();
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  return isLoading || !allTasks ? null : (
     <SafeAreaView style={styles.container}>
       <Calendar
         tasks={Object.values(allTasks.byId)}

@@ -17,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { RootAction } from 'reduxStore/actions';
+import { vuetApi } from 'reduxStore/services/api';
+import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
 const persistConfig = {
   key: 'root',
@@ -34,9 +36,11 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    })
+    }).concat(vuetApi.middleware)
 });
 const persistor = persistStore(store);
+
+setupListeners(store.dispatch);
 
 export default function App() {
   const loadedCachedResources = useCachedResources();

@@ -63,6 +63,7 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
       {errorContent}
+      <Text>{vuetApiUrl}</Text>
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}

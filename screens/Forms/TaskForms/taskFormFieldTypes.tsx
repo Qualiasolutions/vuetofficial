@@ -1,4 +1,4 @@
-import { FormFieldTypes } from '../formFieldTypes';
+import { FormFieldTypes } from 'components/forms/formFieldTypes';
 
 const taskFieldTypes: FormFieldTypes = {
   title: {

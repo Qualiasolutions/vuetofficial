@@ -3,18 +3,13 @@ import { Text, View } from 'components/Themed';
 import {
   TaskParsedType,
   isFixedTaskParsedType,
-  isFlexibleTaskParsedType,
   FixedTaskResponseType,
   isFixedTaskResponseType
 } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  setTaskById,
-  setTaskCompletion
-} from 'reduxStore/slices/tasks/actions';
-import React from 'react';
+import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import {
   isSuccessfulResponseType,
   makeAuthorisedRequest
@@ -22,16 +17,16 @@ import {
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import Constants from 'expo-constants';
 import SquareButton from 'components/molecules/SquareButton';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { useNavigation } from '@react-navigation/native';
-import {
-  RootStackParamList,
-  RootStackScreenProps,
-  RootTabParamList,
-  RootTabScreenProps
-} from 'types/base';
+import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { makeApiUrl } from 'utils/urls';
+import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
+import {
+  useGetAllEntitiesQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api';
+import GenericError from 'components/molecules/GenericError';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -42,11 +37,23 @@ type PropTypes = {
 };
 
 export default function Task({ task, selected, onPress }: PropTypes) {
-  const dispatch = useDispatch();
   const jwtAccessToken = useSelector(selectAccessToken);
-  const entity = useSelector(selectEntityById(task.entity));
 
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
+
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
+  const { refetch: refetchTasks } = useGetAllTasksQuery();
+
+  if (isLoading || !allEntities) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  const entity = allEntities.byId[task.entity];
 
   const addDays = (numDays = 1) => {
     if (isFixedTaskParsedType(task)) {
@@ -68,12 +75,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       ).then((res) => {
         if (isSuccessfulResponseType(res)) {
           if (isFixedTaskResponseType(res.response)) {
-            dispatch(
-              setTaskById({
-                taskId: task.id,
-                value: res.response
-              })
-            );
+            refetchTasks();
           }
         } else {
           /* TODO - handle errors */
@@ -94,18 +96,19 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     </View>
   );
 
-  const expandedHeader = selected ? (
-    <View style={styles.expandedHeader}>
-      <Text style={styles.expandedTitle}>{entity.name}</Text>
-      <SquareButton
-        fontAwesomeIconName="eye"
-        onPress={() =>
-          navigation.navigate('EntityScreen', { entityId: entity.id })
-        }
-        buttonStyle={{ backgroundColor: 'transparent' }}
-      />
-    </View>
-  ) : null;
+  const expandedHeader =
+    entity && selected ? (
+      <View style={styles.expandedHeader}>
+        <Text style={styles.expandedTitle}>{entity.name}</Text>
+        <SquareButton
+          fontAwesomeIconName="eye"
+          onPress={() =>
+            navigation.navigate('EntityScreen', { entityId: entity.id })
+          }
+          buttonStyle={{ backgroundColor: 'transparent' }}
+        />
+      </View>
+    ) : null;
 
   const expandedOptions = selected ? (
     <View style={styles.expandedOptions}>
@@ -130,37 +133,49 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     </View>
   ) : null;
 
+  const taskTypesRequiringForm = ['BookMOTTask'];
+  const taskCompletionForm =
+    taskTypesRequiringForm.includes(task.resourcetype) && showTaskForm ? (
+      <TaskCompletionForm
+        task={task}
+        title={'Please provide some details regarding your MOT appointment'}
+      />
+    ) : null;
+
   return (
     <View style={styles.container}>
       {expandedHeader}
-      <TouchableOpacity
-        style={styles.touchableContainer}
-        onPress={() => {
-          onPress(task.id);
-        }}
-      >
-        {leftInfo}
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{task.title}</Text>
-        </View>
+      <View style={styles.touchableContainerWrapper}>
+        <TouchableOpacity
+          style={styles.touchableContainer}
+          onPress={() => {
+            onPress(task.id);
+          }}
+        >
+          {leftInfo}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{task.title}</Text>
+          </View>
+        </TouchableOpacity>
         <Checkbox
           style={styles.checkbox}
-          disabled={false}
+          disabled={task.is_complete}
           value={task.is_complete}
           onValueChange={(newValue) => {
+            if (taskTypesRequiringForm.includes(task.resourcetype)) {
+              return setShowTaskCompletionForm(true);
+            }
             makeAuthorisedRequest<FixedTaskResponseType>(
               jwtAccessToken,
-              `http://${vuetApiUrl}/core/task/${task.id}/`,
-              { resourcetype: task.resourcetype, is_complete: newValue },
-              'PATCH'
+              `http://${vuetApiUrl}/core/task_completion_form/`,
+              {
+                resourcetype: `${task.resourcetype}CompletionForm`,
+                task: task.id
+              },
+              'POST'
             ).then((res) => {
               if (res.success) {
-                dispatch(
-                  setTaskCompletion({
-                    taskId: task.id,
-                    value: newValue
-                  })
-                );
+                refetchTasks();
               } else {
                 /* TODO - handle errors */
                 console.log(res);
@@ -169,7 +184,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
             });
           }}
         />
-      </TouchableOpacity>
+      </View>
+      {taskCompletionForm}
       {expandedOptions}
       <View style={styles.separator}></View>
     </View>
@@ -189,12 +205,18 @@ const styles = StyleSheet.create({
   },
   leftInfo: {
     width: '20%',
-    marginRight: 20
+    marginRight: 30
+  },
+  touchableContainerWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%'
   },
   touchableContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%'
   },

@@ -7,22 +7,32 @@ import { formStyles } from '../formStyles';
 import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
-import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
-import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
-import { setAllTasks } from 'reduxStore/slices/tasks/actions';
+import { useGetAllTasksQuery } from 'reduxStore/services/api';
 
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
-  const dispatch = useDispatch();
-  const allTasks = useSelector(selectAllTasks);
+  const {
+    isLoading,
+    data: allTasks,
+    error,
+    refetch: refetchTasks
+  } = useGetAllTasksQuery();
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
+  if (isLoading || !allTasks) {
+    return null;
+  }
+
+  if (error) {
+    return <Text>An unexpected error ocurred</Text>;
+  }
+
   const updateTasks = (res: TaskResponseType) => {
-    dispatch(setAllTasks([...Object.values(allTasks.byId), res]));
+    refetchTasks();
     setCreateSuccessful(true);
   };
 

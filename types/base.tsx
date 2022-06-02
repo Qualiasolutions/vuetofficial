@@ -61,14 +61,14 @@ export type RootTabParamList = {
   Home: undefined;
   Categories: { initial: boolean; screen: string };
   Settings: undefined;
-  AddTask: { entityId: number };
+  AddTask: { entityId: number | string };
   EditTask: { taskId: number };
   Transport: undefined;
   AddEntity: { entityType: string };
-  EditEntity: { entityId: number };
+  EditEntity: { entityId: number | string };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;
-  EntityScreen: { entityId: number };
+  EntityScreen: { entityId: number | string };
 };
 
 export type TabParamList = RootTabParamList & UnauthorisedTabParamList;

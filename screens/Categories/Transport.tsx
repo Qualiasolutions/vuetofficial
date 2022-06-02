@@ -2,9 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from 'components/Themed';
-import { useSelector } from 'react-redux';
 
-import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
 import {
   EntityResponseType,
   CarResponseType,
@@ -13,6 +11,8 @@ import {
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 import { FontAwesome } from '@expo/vector-icons';
 import { RootTabScreenProps } from 'types/base';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api';
+import GenericError from 'components/molecules/GenericError';
 
 const parseCarResponse = (res: CarResponseType): CarParsedType => {
   return {
@@ -38,7 +38,16 @@ const dueDateField = (name: string, date: Date | null) =>
 type TransportScreenProps = RootTabScreenProps<'Transport'>;
 
 export default function Transport({ navigation }: TransportScreenProps) {
-  const allEntities = useSelector(selectAllEntities);
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
+
+  if (isLoading || !allEntities) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError />;
+  }
+
   const flatEntities = Object.values(allEntities.byId);
   const allCars: CarParsedType[] = flatEntities
     .filter((entity: EntityResponseType) => entity.resourcetype == 'Car')

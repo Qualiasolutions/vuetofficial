@@ -7,30 +7,43 @@ import { formStyles } from '../formStyles';
 import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
-import { setAllEntities } from 'reduxStore/slices/entities/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAllEntities } from 'reduxStore/slices/entities/selectors';
 import { CarResponseType } from 'types/entities';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
+import GenericError from 'components/molecules/GenericError';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api';
 
 export default function AddEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddEntity'>) {
-  const dispatch = useDispatch();
-  const allEntities = useSelector(selectAllEntities);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
-
-  const updateEntities = (res: CarResponseType) => {
-    dispatch(setAllEntities([...Object.values(allEntities.byId), res]));
-    setCreateSuccessful(true);
-  };
+  const carFields = carForm();
 
   useFocusEffect(
     useCallback(() => {
       setCreateSuccessful(false);
     }, [])
   );
+
+  const {
+    data: allEntities,
+    isLoading,
+    error,
+    refetch: refetchEntities
+  } = useGetAllEntitiesQuery();
+
+  if (isLoading || !allEntities) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  const updateEntities = (res: CarResponseType) => {
+    refetchEntities();
+    setCreateSuccessful(true);
+  };
 
   const permittedEntityForms = ['Car'];
   if (
@@ -45,7 +58,7 @@ export default function AddEntityScreen({
             <Text>Successfully created new {route.params.entityType}</Text>
           ) : null}
           <GenericForm
-            fields={carForm()}
+            fields={carFields}
             url={makeApiUrl(`/core/entity/`)}
             formType="CREATE"
             extraFields={{

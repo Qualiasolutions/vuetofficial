@@ -2,26 +2,37 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
-import { fixedTaskForm, flexibleTaskForm } from './taskFormFieldTypes';
+import { fixedTaskForm } from './taskFormFieldTypes';
 import { formStyles } from '../formStyles';
 import GenericForm from 'components/forms/GenericForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
-import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
-import { selectAllTasks } from 'reduxStore/slices/tasks/selectors';
-import { setAllTasks } from 'reduxStore/slices/tasks/actions';
 import { deepCopy } from 'utils/copy';
-import { FormFieldTypes } from '../formFieldTypes';
+import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import DeleteSuccess from '../components/DeleteSuccess';
+import { useGetAllTasksQuery } from 'reduxStore/services/api';
 
 export default function EditTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
-  const dispatch = useDispatch();
-  const allTasks = useSelector(selectAllTasks);
+  const {
+    isLoading,
+    data: allTasks,
+    error,
+    refetch: refetchTasks
+  } = useGetAllTasksQuery();
+
+  if (isLoading || !allTasks) {
+    return null;
+  }
+
+  if (error) {
+    return <Text>An unexpected error ocurred</Text>;
+  }
+
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [updatedSuccessfully, setUpdatedSuccessfully] =
     useState<boolean>(false);
@@ -34,26 +45,12 @@ export default function EditTaskScreen({
   );
 
   const updateTasks = (res: TaskResponseType) => {
-    dispatch(
-      setAllTasks([
-        ...Object.values({
-          ...allTasks.byId,
-          [route.params.taskId]: res
-        })
-      ])
-    );
+    refetchTasks();
     setUpdatedSuccessfully(true);
   };
 
   const onDeleteSuccess = (res: TaskResponseType) => {
-    dispatch(
-      setAllTasks([
-        ...Object.values({
-          ...allTasks.byId
-        }).filter((entity) => entity.id !== route.params.taskId)
-      ])
-    );
-
+    refetchTasks();
     setDeleteSuccessful(true);
   };
 
