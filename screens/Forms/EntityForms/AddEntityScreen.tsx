@@ -11,7 +11,7 @@ import { CarResponseType } from 'types/entities';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import GenericError from 'components/molecules/GenericError';
-import { useGetAllEntitiesQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetAllEntitiesQuery, useGetUserDetailsQuery, useGetAllTasksQuery } from 'reduxStore/services/api/api';
 
 export default function AddEntityScreen({
   route
@@ -33,6 +33,7 @@ export default function AddEntityScreen({
     error,
     refetch: refetchEntities
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  const { refetch: fetchTasks } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allEntities) {
     return null;
@@ -44,6 +45,7 @@ export default function AddEntityScreen({
 
   const updateEntities = (res: CarResponseType) => {
     refetchEntities();
+    fetchTasks();
     setCreateSuccessful(true);
   };
 

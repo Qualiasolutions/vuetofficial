@@ -63,7 +63,7 @@ export const EntityScreen = ({
     <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.contentContainer}>
         <View style={styles.entityHeader}>
-          <Text style={styles.entityTitle}>{entity.name}</Text>
+          <Text style={styles.entityTitle}>{entity?.name}</Text>
           <SquareButton
             fontAwesomeIconName="pencil"
             fontAwesomeIconSize={20}

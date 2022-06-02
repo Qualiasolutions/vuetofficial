@@ -102,7 +102,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const expandedHeader =
     entity && selected ? (
       <View style={styles.expandedHeader}>
-        <Text style={styles.expandedTitle}>{entity.name}</Text>
+        <Text style={styles.expandedTitle}>{entity?.name}</Text>
         <SquareButton
           fontAwesomeIconName="eye"
           onPress={() =>
@@ -142,6 +142,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       <TaskCompletionForm
         task={task}
         title={'Please provide some details regarding your MOT appointment'}
+        onSubmitSuccess={() => setShowTaskCompletionForm(false)}
       />
     ) : null;
 

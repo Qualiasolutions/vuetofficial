@@ -11,10 +11,12 @@ import { useGetAllTasksQuery, useGetUserDetailsQuery } from 'reduxStore/services
 
 export default function TaskCompletionForm({
   task,
-  title = ''
+  title = '',
+  onSubmitSuccess = () => {}
 }: {
   task: TaskParsedType;
   title?: string;
+  onSubmitSuccess?: Function;
 }) {
   const { data: userDetails } = useGetUserDetailsQuery()
 
@@ -37,6 +39,7 @@ export default function TaskCompletionForm({
   const updateTasks = () => {
     refetchTasks();
     setCreateSuccessful(true);
+    onSubmitSuccess()
   };
 
   useFocusEffect(

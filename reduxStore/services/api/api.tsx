@@ -36,6 +36,7 @@ export const vuetApi = createApi({
       return headers;
     }
   }),
+  refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
     getAllTasks: builder.query<AllTasks, number>({
       query: () => ({
