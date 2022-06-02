@@ -13,17 +13,20 @@ import { TaskResponseType } from 'types/tasks';
 import { deepCopy } from 'utils/copy';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import DeleteSuccess from '../components/DeleteSuccess';
-import { useGetAllTasksQuery } from 'reduxStore/services/api';
+import { useGetAllTasksQuery, useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/api';
 
 export default function EditTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
+
+  const { data: userDetails } = useGetUserDetailsQuery()
+
   const {
     isLoading,
     data: allTasks,
     error,
     refetch: refetchTasks
-  } = useGetAllTasksQuery();
+  } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allTasks) {
     return null;

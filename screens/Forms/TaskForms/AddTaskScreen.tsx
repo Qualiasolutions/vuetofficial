@@ -10,17 +10,18 @@ import { makeApiUrl } from 'utils/urls';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
-import { useGetAllTasksQuery } from 'reduxStore/services/api';
+import { useGetAllTasksQuery, useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/api';
 
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
+  const { data: userDetails } = useGetUserDetailsQuery()
   const {
     isLoading,
     data: allTasks,
     error,
     refetch: refetchTasks
-  } = useGetAllTasksQuery();
+  } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
   if (isLoading || !allTasks) {

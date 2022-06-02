@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ActivityIndicator, ColorSchemeName, StyleSheet } from 'react-native';
+import { ColorSchemeName, StyleSheet } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -42,14 +42,7 @@ import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import { EntityScreen } from 'screens/EntityPages/EntityScreen';
-import {
-  loadAllTasks,
-  loadAllCategories,
-  loadAllEntities,
-  loadFamily
-} from 'hooks/loadObjects/loadObjectsHooks';
-import { View } from 'components/Themed';
-import { useGetAllTasksQuery } from 'reduxStore/services/api';
+import { useGetAllEntitiesQuery, useGetAllTasksQuery, useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/api';
 
 const styles = StyleSheet.create({
   spinnerWrapper: {
@@ -88,6 +81,14 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+
+  const { data: userDetails, isLoading, error } = useGetUserDetailsQuery()
+  
+  if (userDetails && !isLoading && !error) {
+    useGetUserFullDetailsQuery(userDetails.user_id, { refetchOnMountOrArgChange: true })
+    useGetAllTasksQuery(userDetails.user_id, { refetchOnMountOrArgChange: true })
+    useGetAllEntitiesQuery(userDetails.user_id, { refetchOnMountOrArgChange: true })
+  }
 
   return (
     <BottomTab.Navigator

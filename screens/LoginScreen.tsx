@@ -17,6 +17,7 @@ import GLOBAL_STYLES from '../globalStyles/styles';
 import { SUCCESS } from '../globalStyles/colorScheme';
 
 import Constants from 'expo-constants';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 const logo = require('../assets/images/logo.png');
@@ -27,6 +28,8 @@ const LoginScreen = () => {
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const dispatch = useDispatch();
+
+  const { refetch: refetchUserDetails } = useGetUserDetailsQuery()
 
   const setTokenAsync = async (
     usernameToUse: string,
@@ -39,6 +42,8 @@ const LoginScreen = () => {
           dispatch(setAccessToken(access));
           dispatch(setRefreshToken(refresh));
           dispatch(setUsername(usernameToUse));
+
+          refetchUserDetails()
         } else {
           setErrorMessage(
             'Failed to log in. Please check that you have entered your credentials correctly'
@@ -63,7 +68,6 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
       {errorContent}
-      <Text>{vuetApiUrl}</Text>
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}

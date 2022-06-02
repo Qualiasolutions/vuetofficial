@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Constants from 'expo-constants';
-import { AllEntities } from 'reduxStore/slices/entities/types';
-import { AllTasks } from 'reduxStore/slices/tasks/types';
+import { AllEntities, UserFullDetails } from './types';
+import { AllTasks } from './types';
 import { EntireState } from 'reduxStore/types';
 import { EntityResponseType } from 'types/entities';
+import { FamilyResponseType } from 'types/families';
 import { TaskResponseType } from 'types/tasks';
+import { AuthDetails } from 'types/users';
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 const normalizeData = (data: { id: number }[]) => {
@@ -35,7 +37,7 @@ export const vuetApi = createApi({
     }
   }),
   endpoints: (builder) => ({
-    getAllTasks: builder.query<AllTasks, void>({
+    getAllTasks: builder.query<AllTasks, number>({
       query: () => ({
         url: 'core/task',
         responseHandler: async (response) => {
@@ -44,7 +46,7 @@ export const vuetApi = createApi({
         }
       })
     }),
-    getAllEntities: builder.query<AllEntities, void>({
+    getAllEntities: builder.query<AllEntities, number>({
       query: () => ({
         url: 'core/entity',
         responseHandler: async (response) => {
@@ -52,10 +54,20 @@ export const vuetApi = createApi({
           return normalizeData(responseJson);
         }
       })
-    })
+    }),
+    getUserFullDetails: builder.query<UserFullDetails, number>({
+      query: (user_id) => ({
+        url: `core/user/${user_id}`
+      })
+    }),
+    getUserDetails: builder.query<AuthDetails, void>({
+      query: () => ({
+        url: 'auth/details',
+      })
+    }),
   })
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllTasksQuery, useGetAllEntitiesQuery } = vuetApi;
+export const { useGetAllTasksQuery, useGetAllEntitiesQuery, useGetUserFullDetailsQuery, useGetUserDetailsQuery } = vuetApi;

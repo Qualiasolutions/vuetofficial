@@ -1,9 +1,19 @@
-import { useSelector } from 'react-redux';
-import { selectFamily } from 'reduxStore/slices/family/selectors';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
+import { useGetUserFullDetailsQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 
 export const carForm = (): FormFieldTypes => {
-  const family = useSelector(selectFamily);
+
+  const { data: userDetails, isLoading: isLoadingUserDetails, error: userDetailsError } = useGetUserDetailsQuery()
+
+  if (isLoadingUserDetails || userDetailsError || !userDetails) {
+    return {}
+  }
+
+  const { data: userFullDetails, isLoading: isLoadingFullDetails, error: fullDetailsError } = useGetUserFullDetailsQuery(userDetails.user_id)
+
+  if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
+    return {}
+  }
 
   return {
     name: {
@@ -40,7 +50,7 @@ export const carForm = (): FormFieldTypes => {
     owner: {
       type: 'radio',
       required: true,
-      permittedValues: family.users,
+      permittedValues: userFullDetails.family.users,
       valueToDisplay: (val: any) => val.username
     }
   };

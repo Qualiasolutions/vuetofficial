@@ -7,7 +7,7 @@ import { makeApiUrl } from 'utils/urls';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskParsedType } from 'types/tasks';
-import { useGetAllTasksQuery } from 'reduxStore/services/api';
+import { useGetAllTasksQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 
 export default function TaskCompletionForm({
   task,
@@ -16,12 +16,14 @@ export default function TaskCompletionForm({
   task: TaskParsedType;
   title?: string;
 }) {
+  const { data: userDetails } = useGetUserDetailsQuery()
+
   const {
     isLoading,
     data: allTasks,
     error,
     refetch: refetchTasks
-  } = useGetAllTasksQuery();
+  } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
   if (isLoading || !allTasks) {

@@ -11,7 +11,7 @@ import {
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 import { FontAwesome } from '@expo/vector-icons';
 import { RootTabScreenProps } from 'types/base';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api';
+import { useGetAllEntitiesQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 
 const parseCarResponse = (res: CarResponseType): CarParsedType => {
@@ -38,7 +38,8 @@ const dueDateField = (name: string, date: Date | null) =>
 type TransportScreenProps = RootTabScreenProps<'Transport'>;
 
 export default function Transport({ navigation }: TransportScreenProps) {
-  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
+  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allEntities) {
     return null;

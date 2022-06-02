@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { RootAction } from 'reduxStore/actions';
-import { vuetApi } from 'reduxStore/services/api';
+import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
 const persistConfig = {

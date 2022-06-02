@@ -15,3 +15,8 @@ export const selectRefreshToken: Selector<EntireState, string> = createSelector(
   selectAuthState,
   (auth: AuthState) => auth.jwtRefreshToken
 );
+
+export const selectUsername: Selector<EntireState, string> = createSelector(
+  selectAuthState,
+  (auth: AuthState) => auth.username
+);

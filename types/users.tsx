@@ -3,3 +3,9 @@ export type FamilyUser = {
   family: number;
   username: string;
 };
+
+export type AuthDetails = {
+  username: string;
+  email: string;
+  user_id: number;
+};

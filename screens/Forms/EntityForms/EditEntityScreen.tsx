@@ -15,20 +15,24 @@ import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   useGetAllEntitiesQuery,
-  useGetAllTasksQuery
-} from 'reduxStore/services/api';
+  useGetAllTasksQuery,
+  useGetUserDetailsQuery
+} from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 
 export default function EditEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
+
+  const { data: userDetails } = useGetUserDetailsQuery()
+
   const {
     data: allEntities,
     isLoading,
     error,
     refetch: fetchEntities
-  } = useGetAllEntitiesQuery();
-  const { refetch: fetchTasks } = useGetAllTasksQuery();
+  } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  const { refetch: fetchTasks } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const formFields = deepCopy<FormFieldTypes>(carForm());
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [deletedEntityName, setDeletedEntityName] = useState<string>('');

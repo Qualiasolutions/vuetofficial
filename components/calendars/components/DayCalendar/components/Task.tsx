@@ -24,8 +24,9 @@ import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import {
   useGetAllEntitiesQuery,
-  useGetAllTasksQuery
-} from 'reduxStore/services/api';
+  useGetAllTasksQuery,
+  useGetUserDetailsQuery
+} from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
@@ -42,8 +43,10 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
 
-  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
-  const { refetch: refetchTasks } = useGetAllTasksQuery();
+  const { data: userDetails } = useGetUserDetailsQuery()
+
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  const { refetch: refetchTasks } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allEntities) {
     return null;

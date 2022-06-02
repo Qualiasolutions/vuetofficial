@@ -4,10 +4,11 @@ import { Text } from 'components/Themed';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useGetAllTasksQuery } from 'reduxStore/services/api';
+import { useGetAllTasksQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 
 function CalendarScreen() {
-  const { data: allTasks, error, isLoading } = useGetAllTasksQuery();
+  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: allTasks, error, isLoading } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (error) {
     return <GenericError />;

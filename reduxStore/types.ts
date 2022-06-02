@@ -3,7 +3,7 @@ import { TasksState } from './slices/tasks/types';
 import { CategoriesState } from './slices/categories/types';
 import { EntitiesState } from './slices/entities/types';
 import { FamilyState } from './slices/family/types';
-import { vuetApi } from './services/api';
+import { vuetApi } from './services/api/api';
 
 type EntireState = {
   authentication: AuthState;
