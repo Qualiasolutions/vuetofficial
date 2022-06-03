@@ -1,14 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import Constants from 'expo-constants';
-import { AllEntities, UserFullDetails } from './types';
-import { AllTasks } from './types';
-import { EntireState } from 'reduxStore/types';
-import { EntityResponseType } from 'types/entities';
-import { TaskResponseType } from 'types/tasks';
+import { UserFullDetails } from './types';
 import { AuthDetails } from 'types/users';
 import customFetchBase from './customFetchBase';
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+import { AllCategories } from './types';
+import { Category } from 'types/categories';
 
 export const normalizeData = (data: { id: number }[]) => {
   return {
@@ -26,7 +23,7 @@ export const normalizeData = (data: { id: number }[]) => {
 // Define a service using a base URL and expected endpoints
 export const vuetApi = createApi({
   reducerPath: 'vuetApi',
-  tagTypes: ['Entity', 'Task'],
+  tagTypes: ['Entity', 'Task', 'TaskCompletionForm', 'Category'],
   baseQuery: customFetchBase,
   refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
@@ -39,6 +36,21 @@ export const vuetApi = createApi({
       query: () => ({
         url: 'auth/details'
       })
+    }),
+    getAllCategories: builder.query<AllCategories, void>({
+      query: () => ({
+        url: 'core/category',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: Category[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return await response.json();
+          }
+        }
+      }),
+      providesTags: ['Category']
     })
   })
 });
@@ -47,5 +59,6 @@ export const vuetApi = createApi({
 // auto-generated based on the defined endpoints
 export const {
   useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery
+  useGetUserDetailsQuery,
+  useGetAllCategoriesQuery
 } = vuetApi;

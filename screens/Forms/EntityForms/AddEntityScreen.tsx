@@ -13,10 +13,7 @@ import {
   useCreateEntityMutation,
   useGetAllEntitiesQuery
 } from 'reduxStore/services/api/entities';
-import {
-  useGetUserDetailsQuery,
-} from 'reduxStore/services/api/api';
-
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 
 export default function AddEntityScreen({
   route
@@ -35,7 +32,7 @@ export default function AddEntityScreen({
   const {
     data: allEntities,
     isLoading,
-    error,
+    error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allEntities) {
@@ -67,7 +64,9 @@ export default function AddEntityScreen({
             extraFields={{
               resourcetype: route.params.entityType
             }}
-            onSubmitSuccess={() => { setCreateSuccessful(true)}}
+            onSubmitSuccess={() => {
+              setCreateSuccessful(true);
+            }}
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
           />

@@ -4,11 +4,8 @@ import { Text } from 'components/Themed';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useGetUserDetailsQuery
-} from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
-
 
 function CalendarScreen() {
   const { data: userDetails } = useGetUserDetailsQuery();

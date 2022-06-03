@@ -6,12 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskParsedType } from 'types/tasks';
-import {
-  useGetUserDetailsQuery
-} from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
-
 
 export default function TaskCompletionForm({
   task,
@@ -64,7 +61,7 @@ export default function TaskCompletionForm({
           <RTKForm
             fields={completionFormFieldTypes[task.resourcetype]}
             methodHooks={{
-              'POST': useCreateTaskCompletionFormMutation
+              POST: useCreateTaskCompletionFormMutation
             }}
             formType="CREATE"
             extraFields={{

@@ -1,6 +1,6 @@
 import { AllTasks } from './types';
 import { vuetApi, normalizeData } from './api';
-import { TaskResponseType } from 'types/tasks';
+import { TaskParsedType, TaskResponseType } from 'types/tasks';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,7 +21,7 @@ const extendedApi = vuetApi.injectEndpoints({
     }),
     updateTask: builder.mutation<
       TaskResponseType,
-      Partial<TaskResponseType> & Pick<TaskResponseType, 'id'>
+      Partial<TaskParsedType> & Pick<TaskParsedType, 'id'>
     >({
       query: (body) => {
         console.log(body);
@@ -33,10 +33,7 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Task']
     }),
-    createTask: builder.mutation<
-      TaskResponseType,
-      Omit<TaskResponseType, 'id'>
-    >({
+    createTask: builder.mutation<TaskResponseType, Omit<TaskParsedType, 'id'>>({
       query: (body) => {
         console.log(body);
         return {

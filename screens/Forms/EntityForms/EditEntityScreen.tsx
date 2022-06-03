@@ -12,9 +12,7 @@ import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
 import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  useGetUserDetailsQuery
-} from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 
 import {
   useDeleteEntityMutation,
@@ -31,7 +29,7 @@ export default function EditEntityScreen({
   const {
     data: allEntities,
     isLoading,
-    error,
+    error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
   const formFields = deepCopy<FormFieldTypes>(carForm());
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
@@ -95,7 +93,9 @@ export default function EditEntityScreen({
               resourcetype: entityToEdit.resourcetype,
               id: entityToEdit.id
             }}
-            onSubmitSuccess={() => { setUpdatedSuccessfully(true) }}
+            onSubmitSuccess={() => {
+              setUpdatedSuccessfully(true);
+            }}
             onDeleteSuccess={onDeleteSuccess}
           />
         </View>

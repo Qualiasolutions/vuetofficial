@@ -1,11 +1,8 @@
-import { Button, Pressable, StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import React, { useEffect, useMemo } from 'react';
-import { makeAuthorisedRequest, MethodType } from 'utils/makeAuthorisedRequest';
 import DateField from 'react-native-datefield';
-import { useSelector } from 'react-redux';
-import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 import moment from 'moment';
 import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
@@ -14,8 +11,7 @@ import { FormFieldTypes, isRadioField } from './formFieldTypes';
 import RadioInput from './components/RadioInput';
 import {
   MutationTrigger,
-  UseMutation,
-  UseMutationStateResult
+  UseMutation
 } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 
 /* This type specifies the actual values of the fields.

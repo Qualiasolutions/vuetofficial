@@ -2,10 +2,7 @@ import { vuetApi } from './api';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    createTaskCompletionForm: builder.mutation<
-      object,
-      object
-    >({
+    createTaskCompletionForm: builder.mutation<object, object>({
       query: (body) => {
         console.log(body);
         return {
@@ -15,13 +12,11 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['TaskCompletionForm', 'Task']
-    }),
+    })
   }),
   overrideExisting: true
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const {
-  useCreateTaskCompletionFormMutation
-} = extendedApi;
+export const { useCreateTaskCompletionFormMutation } = extendedApi;

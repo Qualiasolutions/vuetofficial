@@ -23,7 +23,10 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import {
+  useGetAllTasksQuery,
+  useUpdateTaskMutation
+} from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 
@@ -48,9 +51,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     isLoading,
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-  const { refetch: refetchTasks } = useGetAllTasksQuery(
-    userDetails?.user_id || -1
-  );
+
+  const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
   if (isLoading || !allEntities) {
     return null;
@@ -68,26 +70,14 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       newStart.setDate(newStart.getDate() + numDays);
 
       const newEnd = new Date(task.end_datetime);
-      newStart.setDate(newEnd.getDate() + numDays);
+      newEnd.setDate(newEnd.getDate() + numDays);
 
-      makeAuthorisedRequest<FixedTaskResponseType>(
-        jwtAccessToken,
-        makeApiUrl(`/core/task/${task.id}`),
-        {
-          start_datetime: newStart,
-          end_datetime: newStart,
-          resourcetype: task.resourcetype
-        },
-        'PATCH'
-      ).then((res) => {
-        if (isSuccessfulResponseType(res)) {
-          if (isFixedTaskResponseType(res.response)) {
-            refetchTasks();
-          }
-        } else {
-          /* TODO - handle errors */
-          console.log(res);
-        }
+      /* TODO - handle errors */
+      triggerUpdateTask({
+        id: task.id,
+        start_datetime: newStart,
+        end_datetime: newEnd,
+        resourcetype: task.resourcetype
       });
     }
   };

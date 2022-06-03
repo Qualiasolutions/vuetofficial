@@ -9,11 +9,21 @@ import { Category as CategoryType } from 'types/categories';
 import { DARK } from 'globalStyles/colorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootTabScreenProps } from 'types/base';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import GenericError from 'components/molecules/GenericError';
 
 type CategoriesTypes = RootTabScreenProps<'Categories'>;
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
-  const allCategories = useSelector(selectAllCategories);
+  const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
+
+  if (isLoading || !allCategories) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError />;
+  }
 
   const categoriesContent = Object.values(allCategories.byId).map(
     (category: CategoryType) => {

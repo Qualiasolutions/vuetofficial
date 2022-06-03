@@ -14,8 +14,10 @@ import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/api';
-import { useCreateTaskMutation, useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
-
+import {
+  useCreateTaskMutation,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
 
 export default function AddTaskScreen({
   route
@@ -56,7 +58,7 @@ export default function AddTaskScreen({
         <RTKForm
           fields={fixedTaskForm}
           methodHooks={{
-            'POST': useCreateTaskMutation
+            POST: useCreateTaskMutation
           }}
           formType="CREATE"
           extraFields={{

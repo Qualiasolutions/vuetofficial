@@ -5,9 +5,7 @@ import SquareButton from 'components/molecules/SquareButton';
 import { Text, View } from 'components/Themed';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useGetUserDetailsQuery
-} from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';

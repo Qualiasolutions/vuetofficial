@@ -1,3 +1,9 @@
+/*
+DEPRECATED - this was replaced with RTKForm which uses the React Toolkit Query and React hooks
+to update state from the server etc. It is kept here in case we need it for some other purpose
+other than fetching data from the server, but should in general not be used where possible
+*/
+
 import { Button, Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { Text, View } from 'components/Themed';

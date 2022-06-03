@@ -11,10 +11,12 @@ import { useCallback, useState } from 'react';
 import { deepCopy } from 'utils/copy';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import DeleteSuccess from '../components/DeleteSuccess';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import {
-  useGetUserDetailsQuery,
-} from 'reduxStore/services/api/api';
-import { useDeleteTaskMutation, useGetAllTasksQuery, useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
+  useDeleteTaskMutation,
+  useGetAllTasksQuery,
+  useUpdateTaskMutation
+} from 'reduxStore/services/api/tasks';
 
 export default function EditTaskScreen({
   route
@@ -24,7 +26,7 @@ export default function EditTaskScreen({
   const {
     isLoading,
     data: allTasks,
-    error,
+    error
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allTasks) {
@@ -70,8 +72,8 @@ export default function EditTaskScreen({
           <RTKForm
             fields={formFields}
             methodHooks={{
-              'PATCH': useUpdateTaskMutation,
-              'DELETE': useDeleteTaskMutation
+              PATCH: useUpdateTaskMutation,
+              DELETE: useDeleteTaskMutation
             }}
             formType="UPDATE"
             extraFields={{ resourcetype: 'FixedTask' }}
