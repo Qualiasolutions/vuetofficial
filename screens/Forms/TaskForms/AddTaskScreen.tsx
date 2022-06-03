@@ -4,18 +4,23 @@ import { RootTabParamList } from 'types/base';
 import { Text, View } from 'components/Themed';
 import { fixedTaskForm, flexibleTaskForm } from './taskFormFieldTypes';
 import { formStyles } from '../formStyles';
-import GenericForm from 'components/forms/GenericForm';
+import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeApiUrl } from 'utils/urls';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
-import { useGetAllTasksQuery, useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/api';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/api';
+import { useCreateTaskMutation, useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+
 
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
-  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: userDetails } = useGetUserDetailsQuery();
   const {
     isLoading,
     data: allTasks,
@@ -48,9 +53,11 @@ export default function AddTaskScreen({
       <View style={formStyles.container}>
         <Text style={formStyles.title}>New task</Text>
         {createSuccessful ? <Text>Successfully created new task</Text> : null}
-        <GenericForm
+        <RTKForm
           fields={fixedTaskForm}
-          url={makeApiUrl(`/core/task/`)}
+          methodHooks={{
+            'POST': useCreateTaskMutation
+          }}
           formType="CREATE"
           extraFields={{
             entity: route.params?.entityId,
@@ -59,7 +66,7 @@ export default function AddTaskScreen({
           onSubmitSuccess={updateTasks}
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
-        ></GenericForm>
+        />
       </View>
     </SafeAreaView>
   );

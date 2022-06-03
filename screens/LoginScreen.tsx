@@ -29,7 +29,7 @@ const LoginScreen = () => {
 
   const dispatch = useDispatch();
 
-  const { refetch: refetchUserDetails } = useGetUserDetailsQuery()
+  const { refetch: refetchUserDetails } = useGetUserDetailsQuery();
 
   const setTokenAsync = async (
     usernameToUse: string,
@@ -43,7 +43,7 @@ const LoginScreen = () => {
           dispatch(setRefreshToken(refresh));
           dispatch(setUsername(usernameToUse));
 
-          refetchUserDetails()
+          refetchUserDetails();
         } else {
           setErrorMessage(
             'Failed to log in. Please check that you have entered your credentials correctly'

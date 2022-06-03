@@ -5,34 +5,34 @@ import { Text, View } from 'components/Themed';
 import { carForm } from './entityFormFieldTypes';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { formStyles } from '../formStyles';
-import GenericForm from 'components/forms/GenericForm';
+import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { makeApiUrl } from 'utils/urls';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
 import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  useGetAllEntitiesQuery,
-  useGetAllTasksQuery,
   useGetUserDetailsQuery
 } from 'reduxStore/services/api/api';
+
+import {
+  useDeleteEntityMutation,
+  useGetAllEntitiesQuery,
+  useUpdateEntityMutation
+} from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 
 export default function EditEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
-
-  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: userDetails } = useGetUserDetailsQuery();
 
   const {
     data: allEntities,
     isLoading,
     error,
-    refetch: fetchEntities
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-  const { refetch: fetchTasks } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const formFields = deepCopy<FormFieldTypes>(carForm());
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [deletedEntityName, setDeletedEntityName] = useState<string>('');
@@ -60,15 +60,8 @@ export default function EditEntityScreen({
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entityToEdit = allEntities.byId[entityId];
 
-  const updateEntities = (res: CarResponseType) => {
-    fetchEntities();
-    fetchTasks();
-    setUpdatedSuccessfully(true);
-  };
-
   const onDeleteSuccess = (res: CarResponseType) => {
     const entityName = allEntities.byId[entityId].name;
-    fetchEntities();
     setDeletedEntityName(entityName);
     setDeleteSuccessful(true);
   };
@@ -91,16 +84,20 @@ export default function EditEntityScreen({
           {updatedSuccessfully ? (
             <Text>Successfully updated {entityToEdit.name}</Text>
           ) : null}
-          <GenericForm
+          <RTKForm
             fields={formFields}
-            url={makeApiUrl(`/core/entity/${entityToEdit.id}/`)}
+            methodHooks={{
+              PATCH: useUpdateEntityMutation,
+              DELETE: useDeleteEntityMutation
+            }}
             formType="UPDATE"
             extraFields={{
-              resourcetype: entityToEdit.resourcetype
+              resourcetype: entityToEdit.resourcetype,
+              id: entityToEdit.id
             }}
-            onSubmitSuccess={updateEntities}
+            onSubmitSuccess={() => { setUpdatedSuccessfully(true) }}
             onDeleteSuccess={onDeleteSuccess}
-          ></GenericForm>
+          />
         </View>
       </SafeAreaView>
     );

@@ -6,10 +6,11 @@ import { Text, View } from 'components/Themed';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  useGetAllEntitiesQuery,
-  useGetAllTasksQuery,
   useGetUserDetailsQuery
 } from 'reduxStore/services/api/api';
+import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { AllTasks } from 'reduxStore/slices/tasks/types';
 import { RootTabParamList } from 'types/base';
 
@@ -25,7 +26,7 @@ export const EntityScreen = ({
   navigation,
   route
 }: NativeStackScreenProps<RootTabParamList, 'EntityScreen'>) => {
-  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: userDetails } = useGetUserDetailsQuery();
   const {
     data: allEntities,
     isLoading: isLoadingEntities,

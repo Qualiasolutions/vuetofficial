@@ -42,7 +42,12 @@ import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import { EntityScreen } from 'screens/EntityPages/EntityScreen';
-import { useGetAllEntitiesQuery, useGetAllTasksQuery, useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/api';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/api';
+import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 
 const styles = StyleSheet.create({
   spinnerWrapper: {
@@ -82,12 +87,18 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
-  const { data: userDetails, isLoading, error } = useGetUserDetailsQuery()
-  
+  const { data: userDetails, isLoading, error } = useGetUserDetailsQuery();
+
   if (userDetails && !isLoading && !error) {
-    useGetUserFullDetailsQuery(userDetails.user_id, { refetchOnMountOrArgChange: true })
-    useGetAllTasksQuery(userDetails.user_id, { refetchOnMountOrArgChange: true })
-    useGetAllEntitiesQuery(userDetails.user_id, { refetchOnMountOrArgChange: true })
+    useGetUserFullDetailsQuery(userDetails.user_id, {
+      refetchOnMountOrArgChange: true
+    });
+    useGetAllTasksQuery(userDetails.user_id, {
+      refetchOnMountOrArgChange: true
+    });
+    useGetAllEntitiesQuery(userDetails.user_id, {
+      refetchOnMountOrArgChange: true
+    });
   }
 
   return (
@@ -210,28 +221,28 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
 
-  React.useEffect(() => {
-    const verifyToken = async () => {
-      if (jwtAccessToken || jwtRefreshToken) {
-        const verifyAccessResponse = await verifyTokenAsync(jwtAccessToken);
-        if (verifyAccessResponse.code) {
-          const verifyRefreshResponse = await verifyTokenAsync(jwtRefreshToken);
-          if (verifyRefreshResponse.code) {
-            dispatch(setAccessToken(''));
-            dispatch(setRefreshToken(''));
-            dispatch(setUsername(''));
-          } else {
-            const refreshedAccessCode = (
-              await refreshTokenAsync(jwtRefreshToken)
-            ).access;
-            dispatch(setAccessToken(refreshedAccessCode));
-          }
-        }
-      }
-    };
+  // React.useEffect(() => {
+  //   const verifyToken = async () => {
+  //     if (jwtAccessToken || jwtRefreshToken) {
+  //       const verifyAccessResponse = await verifyTokenAsync(jwtAccessToken);
+  //       if (verifyAccessResponse.code) {
+  //         const verifyRefreshResponse = await verifyTokenAsync(jwtRefreshToken);
+  //         if (verifyRefreshResponse.code) {
+  //           dispatch(setAccessToken(''));
+  //           dispatch(setRefreshToken(''));
+  //           dispatch(setUsername(''));
+  //         } else {
+  //           const refreshedAccessCode = (
+  //             await refreshTokenAsync(jwtRefreshToken)
+  //           ).access;
+  //           dispatch(setAccessToken(refreshedAccessCode));
+  //         }
+  //       }
+  //     }
+  //   };
 
-    verifyToken();
-  }, [jwtAccessToken, jwtRefreshToken]);
+  //   verifyToken();
+  // }, [jwtAccessToken, jwtRefreshToken]);
 
   const navigatorComponent =
     jwtAccessToken && jwtRefreshToken ? (

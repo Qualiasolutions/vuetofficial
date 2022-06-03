@@ -4,28 +4,27 @@ import { RootTabParamList } from 'types/base';
 import { Text, View } from 'components/Themed';
 import { fixedTaskForm } from './taskFormFieldTypes';
 import { formStyles } from '../formStyles';
-import GenericForm from 'components/forms/GenericForm';
+import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { makeApiUrl } from 'utils/urls';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { TaskResponseType } from 'types/tasks';
 import { deepCopy } from 'utils/copy';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import DeleteSuccess from '../components/DeleteSuccess';
-import { useGetAllTasksQuery, useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/api';
+import {
+  useGetUserDetailsQuery,
+} from 'reduxStore/services/api/api';
+import { useDeleteTaskMutation, useGetAllTasksQuery, useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 
 export default function EditTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
-
-  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: userDetails } = useGetUserDetailsQuery();
 
   const {
     isLoading,
     data: allTasks,
     error,
-    refetch: refetchTasks
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allTasks) {
@@ -46,16 +45,6 @@ export default function EditTaskScreen({
       setUpdatedSuccessfully(false);
     }, [])
   );
-
-  const updateTasks = (res: TaskResponseType) => {
-    refetchTasks();
-    setUpdatedSuccessfully(true);
-  };
-
-  const onDeleteSuccess = (res: TaskResponseType) => {
-    refetchTasks();
-    setDeleteSuccessful(true);
-  };
 
   if (deleteSuccessful) {
     return <DeleteSuccess name="task"></DeleteSuccess>;
@@ -78,15 +67,18 @@ export default function EditTaskScreen({
         <View style={formStyles.container}>
           <Text style={formStyles.title}>Edit task</Text>
           {updatedSuccessfully ? <Text>Successfully updated task</Text> : null}
-          <GenericForm
+          <RTKForm
             fields={formFields}
-            url={makeApiUrl(`/core/task/${taskToEdit.id}/`)}
+            methodHooks={{
+              'PATCH': useUpdateTaskMutation,
+              'DELETE': useDeleteTaskMutation
+            }}
             formType="UPDATE"
             extraFields={{ resourcetype: 'FixedTask' }}
-            onSubmitSuccess={updateTasks}
-            onDeleteSuccess={onDeleteSuccess}
+            onSubmitSuccess={() => setUpdatedSuccessfully(true)}
+            onDeleteSuccess={() => setDeleteSuccessful(true)}
             onValueChange={() => setUpdatedSuccessfully(false)}
-          ></GenericForm>
+          />
         </View>
       </SafeAreaView>
     );

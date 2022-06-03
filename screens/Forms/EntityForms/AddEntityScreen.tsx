@@ -4,14 +4,19 @@ import { RootTabParamList } from 'types/base';
 import { Text, View } from 'components/Themed';
 import { carForm } from './entityFormFieldTypes';
 import { formStyles } from '../formStyles';
-import GenericForm from 'components/forms/GenericForm';
+import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { makeApiUrl } from 'utils/urls';
-import { CarResponseType } from 'types/entities';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import GenericError from 'components/molecules/GenericError';
-import { useGetAllEntitiesQuery, useGetUserDetailsQuery, useGetAllTasksQuery } from 'reduxStore/services/api/api';
+import {
+  useCreateEntityMutation,
+  useGetAllEntitiesQuery
+} from 'reduxStore/services/api/entities';
+import {
+  useGetUserDetailsQuery,
+} from 'reduxStore/services/api/api';
+
 
 export default function AddEntityScreen({
   route
@@ -25,15 +30,13 @@ export default function AddEntityScreen({
     }, [])
   );
 
-  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: userDetails } = useGetUserDetailsQuery();
 
   const {
     data: allEntities,
     isLoading,
     error,
-    refetch: refetchEntities
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-  const { refetch: fetchTasks } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (isLoading || !allEntities) {
     return null;
@@ -42,12 +45,6 @@ export default function AddEntityScreen({
   if (error) {
     return <GenericError />;
   }
-
-  const updateEntities = (res: CarResponseType) => {
-    refetchEntities();
-    fetchTasks();
-    setCreateSuccessful(true);
-  };
 
   const permittedEntityForms = ['Car'];
   if (
@@ -61,17 +58,19 @@ export default function AddEntityScreen({
           {createSuccessful ? (
             <Text>Successfully created new {route.params.entityType}</Text>
           ) : null}
-          <GenericForm
+          <RTKForm
             fields={carFields}
-            url={makeApiUrl(`/core/entity/`)}
+            methodHooks={{
+              POST: useCreateEntityMutation
+            }}
             formType="CREATE"
             extraFields={{
               resourcetype: route.params.entityType
             }}
-            onSubmitSuccess={updateEntities}
+            onSubmitSuccess={() => { setCreateSuccessful(true)}}
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
-          ></GenericForm>
+          />
         </View>
       </SafeAreaView>
     );

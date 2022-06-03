@@ -1,18 +1,28 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
-import { useGetUserFullDetailsQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import {
+  useGetUserFullDetailsQuery,
+  useGetUserDetailsQuery
+} from 'reduxStore/services/api/api';
 
 export const carForm = (): FormFieldTypes => {
-
-  const { data: userDetails, isLoading: isLoadingUserDetails, error: userDetailsError } = useGetUserDetailsQuery()
+  const {
+    data: userDetails,
+    isLoading: isLoadingUserDetails,
+    error: userDetailsError
+  } = useGetUserDetailsQuery();
 
   if (isLoadingUserDetails || userDetailsError || !userDetails) {
-    return {}
+    return {};
   }
 
-  const { data: userFullDetails, isLoading: isLoadingFullDetails, error: fullDetailsError } = useGetUserFullDetailsQuery(userDetails.user_id)
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserFullDetailsQuery(userDetails.user_id);
 
   if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
-    return {}
+    return {};
   }
 
   return {

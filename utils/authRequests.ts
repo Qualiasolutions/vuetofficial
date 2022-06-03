@@ -80,9 +80,18 @@ const refreshTokenAsync = async (refreshToken: string) => {
       body: JSON.stringify({ refresh: refreshToken })
     }
   )
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw Error('Failed to refresh token');
+      }
+    })
     .catch((err) => {
-      console.log(err);
+      return {
+        detail: 'Failed to refresh token',
+        code: 'failed_to_refresh_token'
+      };
     });
 
   return refreshResponse;

@@ -1,13 +1,17 @@
 import { Text, View } from 'components/Themed';
 import { completionFormFieldTypes } from './taskCompletionFormFieldTypes';
 import { formStyles } from '../../../screens/Forms/formStyles';
-import GenericForm from 'components/forms/GenericForm';
+import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { makeApiUrl } from 'utils/urls';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskParsedType } from 'types/tasks';
-import { useGetAllTasksQuery, useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import {
+  useGetUserDetailsQuery
+} from 'reduxStore/services/api/api';
+import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
+
 
 export default function TaskCompletionForm({
   task,
@@ -18,7 +22,7 @@ export default function TaskCompletionForm({
   title?: string;
   onSubmitSuccess?: Function;
 }) {
-  const { data: userDetails } = useGetUserDetailsQuery()
+  const { data: userDetails } = useGetUserDetailsQuery();
 
   const {
     isLoading,
@@ -39,7 +43,7 @@ export default function TaskCompletionForm({
   const updateTasks = () => {
     refetchTasks();
     setCreateSuccessful(true);
-    onSubmitSuccess()
+    onSubmitSuccess();
   };
 
   useFocusEffect(
@@ -57,9 +61,11 @@ export default function TaskCompletionForm({
           {createSuccessful ? (
             <Text>Successfully created new {task.resourcetype}</Text>
           ) : null}
-          <GenericForm
+          <RTKForm
             fields={completionFormFieldTypes[task.resourcetype]}
-            url={makeApiUrl(`/core/task_completion_form/`)}
+            methodHooks={{
+              'POST': useCreateTaskCompletionFormMutation
+            }}
             formType="CREATE"
             extraFields={{
               resourcetype: `${task.resourcetype}CompletionForm`,
@@ -69,7 +75,7 @@ export default function TaskCompletionForm({
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
             submitText="Mark complete"
-          ></GenericForm>
+          />
         </View>
       </SafeAreaView>
     );
