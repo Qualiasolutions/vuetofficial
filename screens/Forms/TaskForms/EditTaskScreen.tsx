@@ -17,6 +17,7 @@ import {
   useGetAllTasksQuery,
   useUpdateTaskMutation
 } from 'reduxStore/services/api/tasks';
+import GenericError from 'components/molecules/GenericError';
 
 export default function EditTaskScreen({
   route
@@ -29,14 +30,6 @@ export default function EditTaskScreen({
     error
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
-  if (isLoading || !allTasks) {
-    return null;
-  }
-
-  if (error) {
-    return <Text>An unexpected error ocurred</Text>;
-  }
-
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [updatedSuccessfully, setUpdatedSuccessfully] =
     useState<boolean>(false);
@@ -47,6 +40,14 @@ export default function EditTaskScreen({
       setUpdatedSuccessfully(false);
     }, [])
   );
+
+  if (isLoading || !allTasks) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError/>
+  }
 
   if (deleteSuccessful) {
     return <DeleteSuccess name="task"></DeleteSuccess>;
@@ -76,7 +77,7 @@ export default function EditTaskScreen({
               DELETE: useDeleteTaskMutation
             }}
             formType="UPDATE"
-            extraFields={{ resourcetype: 'FixedTask' }}
+            extraFields={{ resourcetype: 'FixedTask', id: route.params?.taskId }}
             onSubmitSuccess={() => setUpdatedSuccessfully(true)}
             onDeleteSuccess={() => setDeleteSuccessful(true)}
             onValueChange={() => setUpdatedSuccessfully(false)}

@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
-import Constants from 'expo-constants';
 import { UserFullDetails } from './types';
 import { AuthDetails } from 'types/users';
 import customFetchBase from './customFetchBase';
@@ -34,7 +33,7 @@ export const vuetApi = createApi({
     }),
     getUserDetails: builder.query<AuthDetails, void>({
       query: () => ({
-        url: 'auth/details'
+        url: 'auth/details/'
       })
     }),
     getAllCategories: builder.query<AllCategories, void>({

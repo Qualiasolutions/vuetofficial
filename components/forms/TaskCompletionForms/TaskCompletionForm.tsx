@@ -19,26 +19,9 @@ export default function TaskCompletionForm({
   title?: string;
   onSubmitSuccess?: Function;
 }) {
-  const { data: userDetails } = useGetUserDetailsQuery();
-
-  const {
-    isLoading,
-    data: allTasks,
-    error,
-    refetch: refetchTasks
-  } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
-  if (isLoading || !allTasks) {
-    return null;
-  }
-
-  if (error) {
-    return <Text>An unexpected error ocurred</Text>;
-  }
-
   const updateTasks = () => {
-    refetchTasks();
     setCreateSuccessful(true);
     onSubmitSuccess();
   };

@@ -87,19 +87,17 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
-  const { data: userDetails, isLoading, error } = useGetUserDetailsQuery();
+  const { data: userDetails } = useGetUserDetailsQuery();
 
-  if (userDetails && !isLoading && !error) {
-    useGetUserFullDetailsQuery(userDetails.user_id, {
-      refetchOnMountOrArgChange: true
-    });
-    useGetAllTasksQuery(userDetails.user_id, {
-      refetchOnMountOrArgChange: true
-    });
-    useGetAllEntitiesQuery(userDetails.user_id, {
-      refetchOnMountOrArgChange: true
-    });
-  }
+  useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
+    refetchOnMountOrArgChange: true
+  });
+  useGetAllTasksQuery(userDetails?.user_id || -1, {
+    refetchOnMountOrArgChange: true
+  });
+  useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+    refetchOnMountOrArgChange: true
+  });
 
   return (
     <BottomTab.Navigator
