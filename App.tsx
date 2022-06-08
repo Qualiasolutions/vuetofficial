@@ -20,6 +20,8 @@ import { RootAction } from 'reduxStore/actions';
 import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
+import './i18n/i18n';
+
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,

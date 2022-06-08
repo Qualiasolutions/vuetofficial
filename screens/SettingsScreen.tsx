@@ -11,9 +11,12 @@ import {
 
 import { selectRefreshToken } from '../reduxStore/slices/auth/selectors';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const jwtRefreshToken = useSelector(selectRefreshToken);
 
@@ -26,14 +29,14 @@ const SettingsScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
+      <Text style={styles.title}>{t("screens.settings.title")}</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
       <View>
-        <Button title="Log Out" onPress={logOut} />
+        <Button title={t("screens.settings.logOutText")} onPress={logOut} />
       </View>
     </View>
   );

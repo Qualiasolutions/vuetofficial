@@ -3,6 +3,8 @@ import React from 'react';
 import { StyleSheet, TextInput, Button, Image } from 'react-native';
 
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
 import {
   setAccessToken,
   setRefreshToken,
@@ -26,6 +28,8 @@ const LoginScreen = () => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
@@ -72,18 +76,18 @@ const LoginScreen = () => {
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
         style={GLOBAL_STYLES.textInput}
-        placeholder="Username"
+        placeholder={t("screens.logIn.username")}
       />
       <TextInput
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
         style={GLOBAL_STYLES.textInput}
-        placeholder="Password"
+        placeholder={t("screens.logIn.password")}
       />
       <View style={styles.loginButtonWrapper}>
         <Button
-          title="Log In"
+          title={t("screens.logIn.logInText")}
           onPress={() => setTokenAsync(username, password)}
           color={SUCCESS}
         />

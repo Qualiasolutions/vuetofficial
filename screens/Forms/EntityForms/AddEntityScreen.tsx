@@ -14,6 +14,7 @@ import {
   useGetAllEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useTranslation } from 'react-i18next';
 
 export default function AddEntityScreen({
   route
@@ -26,6 +27,8 @@ export default function AddEntityScreen({
       setCreateSuccessful(false);
     }, [])
   );
+
+  const { t } = useTranslation()
 
   const { data: userDetails } = useGetUserDetailsQuery();
 
@@ -51,9 +54,9 @@ export default function AddEntityScreen({
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
-          <Text style={formStyles.title}>New {route.params.entityType}</Text>
+          <Text style={formStyles.title}>{t("screens.addEntity.title", { entityType: route.params.entityType })}</Text>
           {createSuccessful ? (
-            <Text>Successfully created new {route.params.entityType}</Text>
+            <Text>{t("screens.addEntity.createSuccess", { entityType: route.params.entityType })}</Text>
           ) : null}
           <RTKForm
             fields={carFields}

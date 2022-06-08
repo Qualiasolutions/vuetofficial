@@ -6,23 +6,24 @@ import { fixedTaskForm, flexibleTaskForm } from './taskFormFieldTypes';
 import { formStyles } from '../formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { makeApiUrl } from 'utils/urls';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
 import {
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/api';
 import {
   useCreateTaskMutation,
   useGetAllTasksQuery
 } from 'reduxStore/services/api/tasks';
 
+import { useTranslation } from 'react-i18next';
+
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
   const { data: userDetails } = useGetUserDetailsQuery();
+  const { t } = useTranslation();
   const {
     isLoading,
     data: allTasks,
@@ -30,6 +31,8 @@ export default function AddTaskScreen({
     refetch: refetchTasks
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
+
+  const fixedTaskFormFields = fixedTaskForm()
 
   if (isLoading || !allTasks) {
     return null;
@@ -53,10 +56,10 @@ export default function AddTaskScreen({
   return (
     <SafeAreaView style={formStyles.container}>
       <View style={formStyles.container}>
-        <Text style={formStyles.title}>New task</Text>
-        {createSuccessful ? <Text>Successfully created new task</Text> : null}
+        <Text style={formStyles.title}>{t("screens.addTask.title")}</Text>
+        {createSuccessful ? <Text>{t("screens.addTask.createSuccess")}</Text> : null}
         <RTKForm
-          fields={fixedTaskForm}
+          fields={fixedTaskFormFields}
           methodHooks={{
             POST: useCreateTaskMutation
           }}

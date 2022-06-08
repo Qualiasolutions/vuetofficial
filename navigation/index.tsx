@@ -24,11 +24,7 @@ import { RootTabParamList, UnauthorisedStackParamList } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from '../screens/LoginScreen';
 
-import {
-  setAccessToken,
-  setRefreshToken,
-  setUsername
-} from '../reduxStore/slices/auth/actions';
+import { useTranslation } from 'react-i18next';
 
 import { verifyTokenAsync, refreshTokenAsync } from '../utils/authRequests';
 import { useDispatch, useSelector } from 'react-redux';
@@ -86,6 +82,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
   const { data: userDetails } = useGetUserDetailsQuery();
 
@@ -111,7 +108,7 @@ function BottomTabNavigator() {
         name="Home"
         component={CalendarScreen}
         options={{
-          title: 'Home',
+          title: t('pageTitles.home'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />
         }}
@@ -120,7 +117,7 @@ function BottomTabNavigator() {
         name="Categories"
         component={CategoriesGrid}
         options={{
-          title: 'Categories',
+          title: t('pageTitles.categories'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />
         }}
@@ -129,7 +126,7 @@ function BottomTabNavigator() {
         name="Settings"
         component={SettingsScreen}
         options={{
-          title: 'Settings',
+          title: t('pageTitles.settings'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />
         }}
@@ -138,7 +135,7 @@ function BottomTabNavigator() {
         name="AddTask"
         component={AddTaskScreen}
         options={{
-          title: 'AddTask',
+          title: t('pageTitles.addTask'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
         }}
@@ -148,7 +145,7 @@ function BottomTabNavigator() {
         component={EditTaskScreen}
         options={{
           tabBarButton: (props) => null,
-          title: 'EditTask',
+          title: t('pageTitles.editTask'),
           headerShown: false
         }}
       />
@@ -157,7 +154,7 @@ function BottomTabNavigator() {
         component={Transport}
         options={{
           tabBarButton: (props) => null,
-          title: 'AddTask',
+          title: t('pageTitles.transport'),
           headerShown: false
         }}
       />
@@ -166,7 +163,7 @@ function BottomTabNavigator() {
         component={AddEntityScreen}
         options={{
           tabBarButton: (props) => null,
-          title: 'AddEntity',
+          title: t('pageTitles.addEntity'),
           headerShown: false
         }}
       />
@@ -175,7 +172,7 @@ function BottomTabNavigator() {
         component={EditEntityScreen}
         options={{
           tabBarButton: (props) => null,
-          title: 'EditEntity',
+          title: t('pageTitles.editEntity'),
           headerShown: false
         }}
       />
@@ -184,7 +181,7 @@ function BottomTabNavigator() {
         component={EntityScreen}
         options={{
           tabBarButton: (props) => null,
-          title: 'EntityScreen',
+          title: t('pageTitles.entity'),
           headerShown: false
         }}
       />
@@ -193,7 +190,7 @@ function BottomTabNavigator() {
         component={NotFoundScreen}
         options={{
           tabBarButton: (props) => null,
-          title: 'Oops!'
+          title: t('pageTitles.oops'),
         }}
       />
     </BottomTab.Navigator>

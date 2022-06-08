@@ -3,6 +3,8 @@ import {
   useGetUserFullDetailsQuery,
   useGetUserDetailsQuery
 } from 'reduxStore/services/api/api';
+import { useTranslation } from 'react-i18next';
+
 
 export const carForm = (): FormFieldTypes => {
   const {
@@ -10,6 +12,8 @@ export const carForm = (): FormFieldTypes => {
     isLoading: isLoadingUserDetails,
     error: userDetailsError
   } = useGetUserDetailsQuery();
+
+  const { t } = useTranslation('modelFields')
 
   if (isLoadingUserDetails || userDetailsError || !userDetails) {
     return {};
@@ -28,40 +32,45 @@ export const carForm = (): FormFieldTypes => {
   return {
     name: {
       type: 'string',
-      required: true
+      required: true,
+      displayName: t("entities.entity.name")
     },
     make: {
       type: 'string',
-      required: true
+      required: true,
+      displayName: t("entities.car.make")
     },
     model: {
       type: 'string',
-      required: true
+      required: true,
+      displayName: t("entities.car.model")
     },
     registration: {
       type: 'string',
-      required: true
+      required: true,
+      displayName: t("entities.car.registration")
     },
     MOT_due_date: {
       type: 'Date',
       required: false,
-      displayName: 'MOT Due'
+      displayName: t("entities.car.MOT_due_date")
     },
     insurance_due_date: {
       type: 'Date',
       required: false,
-      displayName: 'Insurance Due'
+      displayName: t("entities.car.insurance_due_date")
     },
     service_due_date: {
       type: 'Date',
       required: false,
-      displayName: 'Service Due'
+      displayName: t("entities.car.service_due_date")
     },
     owner: {
       type: 'radio',
       required: true,
       permittedValues: userFullDetails.family.users,
-      valueToDisplay: (val: any) => val.username
+      valueToDisplay: (val: any) => val.username,
+      displayName: t("entities.car.owner")
     }
   };
 };

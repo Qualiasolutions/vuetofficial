@@ -1,0 +1,42 @@
+{
+  "pageTitles": {
+    "home": "Home",
+    "categories": "Categories",
+    "settings": "Settings",
+    "addTask": "Add Task",
+    "editTask": "Edit Task",
+    "transport": "Transport",
+    "addEntity": "Add Entity",
+    "editEntity": "Edit Entity",
+    "entity": "View Entity",
+    "oops": "Oops!"
+  },
+  "screens": {
+    "logIn": {
+      "username": "Username",
+      "password": "Password",
+      "logInText": "Log In"
+    },
+    "settings": {
+      "logOutText": "Log Out",
+      "title": "Settings"
+    },
+    "addTask": {
+      "title": "Add Task",
+      "createSuccess": "Successfully created new task"
+    },
+    "addEntity": {
+      "title": "New {{entityType}}",
+      "createSuccess": "Successfully created new {{entityType}}"
+    },
+    "editEntity": {
+      "title": "Edit {{entityName}}",
+      "updateSuccess": "Successfully updated {{entityName}}"
+    }
+  },
+  "components": {
+    "deleteSuccess": {
+      "successfullyDeleted": "Successfully deleted {{name}}"
+    }
+  }
+}

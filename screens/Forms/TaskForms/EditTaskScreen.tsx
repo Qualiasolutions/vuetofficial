@@ -41,6 +41,8 @@ export default function EditTaskScreen({
     }, [])
   );
 
+  const fixedTaskFormFields = fixedTaskForm()
+
   if (isLoading || !allTasks) {
     return null;
   }
@@ -55,15 +57,13 @@ export default function EditTaskScreen({
 
   if (route.params?.taskId && allTasks.byId[route.params.taskId]) {
     const taskToEdit = allTasks.byId[route.params.taskId];
-    const formFields = deepCopy<FormFieldTypes>(fixedTaskForm);
+    const formFields = deepCopy<FormFieldTypes>(fixedTaskFormFields);
 
-    for (const fieldName in fixedTaskForm) {
+    for (const fieldName in fixedTaskFormFields) {
       if (fieldName in taskToEdit) {
         formFields[fieldName].initialValue = taskToEdit[fieldName] || null;
       }
     }
-
-    console.log(formFields);
 
     return (
       <SafeAreaView style={formStyles.container}>

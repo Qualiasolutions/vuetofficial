@@ -1,9 +1,12 @@
+import { UseTranslationResponse } from 'react-i18next';
+
+
 type PermittedTypes = 'string' | 'Date' | 'DateTime' | 'radio';
 
 type BaseField<TypeName, ValueType> = {
   type: TypeName;
   required: boolean;
-  displayName?: string | undefined;
+  displayName?: string | UseTranslationResponse<string> | undefined;
   initialValue?: ValueType;
 };
 

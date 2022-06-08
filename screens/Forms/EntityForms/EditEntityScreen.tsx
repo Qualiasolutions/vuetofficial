@@ -13,6 +13,7 @@ import { useCallback, useState } from 'react';
 import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useTranslation } from 'react-i18next';
 
 import {
   useDeleteEntityMutation,
@@ -25,6 +26,7 @@ export default function EditEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const { data: userDetails } = useGetUserDetailsQuery();
+  const { t } = useTranslation()
 
   const {
     data: allEntities,
@@ -78,9 +80,9 @@ export default function EditEntityScreen({
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
-          <Text style={formStyles.title}>Edit {entityToEdit.name}</Text>
+          <Text style={formStyles.title}>{t("screens.editEntity.title", {entityName: entityToEdit.name})}</Text>
           {updatedSuccessfully ? (
-            <Text>Successfully updated {entityToEdit.name}</Text>
+            <Text>{t("screens.editEntity.updateSuccess", {entityName: entityToEdit.name})}</Text>
           ) : null}
           <RTKForm
             fields={formFields}
