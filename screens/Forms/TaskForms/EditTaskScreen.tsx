@@ -41,14 +41,14 @@ export default function EditTaskScreen({
     }, [])
   );
 
-  const fixedTaskFormFields = fixedTaskForm()
+  const fixedTaskFormFields = fixedTaskForm();
 
   if (isLoading || !allTasks) {
     return null;
   }
 
   if (error) {
-    return <GenericError/>
+    return <GenericError />;
   }
 
   if (deleteSuccessful) {
@@ -77,7 +77,10 @@ export default function EditTaskScreen({
               DELETE: useDeleteTaskMutation
             }}
             formType="UPDATE"
-            extraFields={{ resourcetype: 'FixedTask', id: route.params?.taskId }}
+            extraFields={{
+              resourcetype: 'FixedTask',
+              id: route.params?.taskId
+            }}
             onSubmitSuccess={() => setUpdatedSuccessfully(true)}
             onDeleteSuccess={() => setDeleteSuccessful(true)}
             onValueChange={() => setUpdatedSuccessfully(false)}

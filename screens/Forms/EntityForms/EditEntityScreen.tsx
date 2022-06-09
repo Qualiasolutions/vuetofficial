@@ -26,7 +26,7 @@ export default function EditEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const { data: userDetails } = useGetUserDetailsQuery();
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const {
     data: allEntities,
@@ -80,9 +80,15 @@ export default function EditEntityScreen({
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
-          <Text style={formStyles.title}>{t("screens.editEntity.title", {entityName: entityToEdit.name})}</Text>
+          <Text style={formStyles.title}>
+            {t('screens.editEntity.title', { entityName: entityToEdit.name })}
+          </Text>
           {updatedSuccessfully ? (
-            <Text>{t("screens.editEntity.updateSuccess", {entityName: entityToEdit.name})}</Text>
+            <Text>
+              {t('screens.editEntity.updateSuccess', {
+                entityName: entityToEdit.name
+              })}
+            </Text>
           ) : null}
           <RTKForm
             fields={formFields}

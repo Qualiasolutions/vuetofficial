@@ -76,18 +76,18 @@ const LoginScreen = () => {
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
         style={GLOBAL_STYLES.textInput}
-        placeholder={t("screens.logIn.username")}
+        placeholder={t('screens.logIn.username')}
       />
       <TextInput
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
         style={GLOBAL_STYLES.textInput}
-        placeholder={t("screens.logIn.password")}
+        placeholder={t('screens.logIn.password')}
       />
       <View style={styles.loginButtonWrapper}>
         <Button
-          title={t("screens.logIn.logInText")}
+          title={t('screens.logIn.logInText')}
           onPress={() => setTokenAsync(username, password)}
           color={SUCCESS}
         />

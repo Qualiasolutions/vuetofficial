@@ -23,9 +23,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-import {
-  useUpdateTaskMutation
-} from 'reduxStore/services/api/tasks';
+import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -47,7 +45,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const { data: userDetails } = useGetUserDetailsQuery();
 
-  const [ triggerCreateCompletionForm, createCompletionFormResult ] = useCreateTaskCompletionFormMutation()
+  const [triggerCreateCompletionForm, createCompletionFormResult] =
+    useCreateTaskCompletionFormMutation();
 
   const {
     data: allEntities,
@@ -169,7 +168,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
             triggerCreateCompletionForm({
               resourcetype: `${task.resourcetype}CompletionForm`,
               task: task.id
-            })
+            });
           }}
         />
       </View>

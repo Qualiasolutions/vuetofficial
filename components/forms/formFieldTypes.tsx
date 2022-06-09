@@ -1,6 +1,5 @@
 import { UseTranslationResponse } from 'react-i18next';
 
-
 type PermittedTypes = 'string' | 'Date' | 'DateTime' | 'radio';
 
 type BaseField<TypeName, ValueType> = {

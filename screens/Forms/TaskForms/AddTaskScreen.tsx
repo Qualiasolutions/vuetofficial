@@ -9,9 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
-import {
-  useGetUserDetailsQuery,
-} from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import {
   useCreateTaskMutation,
   useGetAllTasksQuery
@@ -32,7 +30,7 @@ export default function AddTaskScreen({
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
-  const fixedTaskFormFields = fixedTaskForm()
+  const fixedTaskFormFields = fixedTaskForm();
 
   if (isLoading || !allTasks) {
     return null;
@@ -56,8 +54,10 @@ export default function AddTaskScreen({
   return (
     <SafeAreaView style={formStyles.container}>
       <View style={formStyles.container}>
-        <Text style={formStyles.title}>{t("screens.addTask.title")}</Text>
-        {createSuccessful ? <Text>{t("screens.addTask.createSuccess")}</Text> : null}
+        <Text style={formStyles.title}>{t('screens.addTask.title')}</Text>
+        {createSuccessful ? (
+          <Text>{t('screens.addTask.createSuccess')}</Text>
+        ) : null}
         <RTKForm
           fields={fixedTaskFormFields}
           methodHooks={{

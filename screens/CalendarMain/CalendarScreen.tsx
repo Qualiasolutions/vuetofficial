@@ -16,7 +16,7 @@ function CalendarScreen() {
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
 
   if (error) {
-    return <GenericError/>;
+    return <GenericError />;
   }
 
   return isLoading || !allTasks ? null : (

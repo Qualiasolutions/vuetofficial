@@ -190,7 +190,7 @@ function BottomTabNavigator() {
         component={NotFoundScreen}
         options={{
           tabBarButton: (props) => null,
-          title: t('pageTitles.oops'),
+          title: t('pageTitles.oops')
         }}
       />
     </BottomTab.Navigator>

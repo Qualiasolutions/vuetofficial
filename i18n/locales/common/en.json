@@ -48,6 +48,9 @@
   "components": {
     "deleteSuccess": {
       "successfullyDeleted": "Successfully deleted {{name}}"
+    },
+    "genericError": {
+      "message": "An unexpected error occurred"
     }
   }
 }
