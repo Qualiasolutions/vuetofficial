@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { getLocales } from 'react-native-localize';
 
-import LanguageDetector from 'i18next-browser-languagedetector';
 import translationEN from './locales/common/en';
 import translationES from './locales/common/es';
 import modelFieldsEN from './locales/modelFields/en';
@@ -31,6 +31,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     resources,
+    lng: getLocales()[0].languageCode,
     fallbackLng: 'en',
     debug: true,
 

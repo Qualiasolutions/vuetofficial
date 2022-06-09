@@ -47,6 +47,7 @@
     "react-i18next": "^11.17.0",
     "react-native": "0.64.3",
     "react-native-datefield": "^0.3.5",
+    "react-native-localize": "^2.2.2",
     "react-native-modal-datetime-picker": "^13.1.2",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",

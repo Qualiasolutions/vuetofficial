@@ -1,0 +1,60 @@
+{
+  "pageTitles": {
+    "home": "Home",
+    "categories": "Categories",
+    "settings": "Settings",
+    "addTask": "Add Task",
+    "editTask": "Edit Task",
+    "transport": "Transport",
+    "addEntity": "Add Entity",
+    "editEntity": "Edit Entity",
+    "entity": "View Entity",
+    "oops": "Oops!"
+  },
+  "categories": {
+    "FAMILY": "Family",
+    "PETS": "Pets",
+    "SOCIAL_INTERESTS": "Social Interests",
+    "EDUCATION_CAREER": "Education & Career",
+    "TRAVEL": "Travel",
+    "HEALTH_BEAUTY": "Health & Beauty",
+    "HOME_GARDEN": "Home & Garden",
+    "FINANCE": "Finance",
+    "TRANSPORT": "Transport"
+  },
+  "screens": {
+    "logIn": {
+      "username": "Username",
+      "password": "Password",
+      "logInText": "Log In"
+    },
+    "settings": {
+      "logOutText": "Log Out",
+      "title": "Settings"
+    },
+    "addTask": {
+      "title": "Add Task",
+      "createSuccess": "Successfully created new task"
+    },
+    "addEntity": {
+      "title": "New {{entityType}}",
+      "createSuccess": "Successfully created new {{entityType}}"
+    },
+    "editEntity": {
+      "title": "Edit {{entityName}}",
+      "updateSuccess": "Successfully updated {{entityName}}"
+    },
+    "notFound": {
+      "noScreen": "This screen doesn't exist.",
+      "goHome": "Go to home screen!"
+    }
+  },
+  "components": {
+    "deleteSuccess": {
+      "successfullyDeleted": "Successfully deleted {{name}}"
+    },
+    "genericError": {
+      "message": "An unexpected error occurred"
+    }
+  }
+}
