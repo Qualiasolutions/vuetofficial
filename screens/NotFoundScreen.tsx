@@ -2,18 +2,20 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types/base';
+import { useTranslation } from 'react-i18next';
 
 export default function NotFoundScreen({
   navigation
 }: RootTabScreenProps<'NotFound'>) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>This screen doesn't exist.</Text>
+      <Text style={styles.title}>{t('screens.notFound.noScreen')}</Text>
       <TouchableOpacity
         onPress={() => navigation.navigate('Home')}
         style={styles.link}
       >
-        <Text style={styles.linkText}>Go to home screen!</Text>
+        <Text style={styles.linkText}>{t('screens.notFound.goHome')}</Text>
       </TouchableOpacity>
     </View>
   );

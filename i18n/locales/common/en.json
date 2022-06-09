@@ -43,6 +43,10 @@
     "editEntity": {
       "title": "Edit {{entityName}}",
       "updateSuccess": "Successfully updated {{entityName}}"
+    },
+    "notFound": {
+      "noScreen": "This screen doesn't exist.",
+      "goHome": "Go to home screen!"
     }
   },
   "components": {

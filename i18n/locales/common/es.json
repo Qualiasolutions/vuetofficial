@@ -43,11 +43,18 @@
     "editEntity": {
       "title": "Cambia {{entityName}}",
       "updateSuccess": "Actualizo {{entityName}} con exito"
+    },
+    "notFound": {
+      "noScreen": "This screen doesn't exist.",
+      "goHome": "Go to home screen!"
     }
   },
   "components": {
     "deleteSuccess": {
       "successfullyDeleted": "Borro {{name}} con exito"
+    },
+    "genericError": {
+      "message": "Ocurrio un error imprevisble"
     }
   }
 }
