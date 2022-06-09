@@ -4126,10 +4126,10 @@ expo-linking@~3.0.0:
     qs "^6.9.1"
     url-parse "^1.4.4"
 
-expo-localization@^13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-13.0.0.tgz#f78969151e8db18abc2ebb8fc423b836e21ab918"
-  integrity sha512-SlgHQYaX1D/4d78EQB836Yfx6iuC04pHdMNKoY7pxqEE+hC/X4Mnu0FfhbelfwXTPHFNNFFU1kV6XVF2Mu3dlg==
+expo-localization@~12.0.0:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-12.0.1.tgz#81799920abe4f8de790da01a0d4a1c9ca63854bf"
+  integrity sha512-nfTalbofqXrT8kgoFZDUxgIvs+YDmZx99IWLiKrd9jFacGn/B7KoO1f0hSAu89kmuo8DCxt53WHaqKqlytQQPg==
   dependencies:
     rtl-detect "^1.0.2"
 
@@ -7554,11 +7554,6 @@ react-native-datefield@^0.3.5:
   version "0.3.5"
   resolved "https://registry.npmjs.org/react-native-datefield/-/react-native-datefield-0.3.5.tgz"
   integrity sha512-bQ/HFKTjbF0sBcMxLSJcxixi1jsaKBQqVnxUSRLJG75DZZtKqoST5hjelTn8c+YHzmcLvZKttrvW4YT9rE5IQw==
-
-react-native-localize@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-2.2.2.tgz#a1c6369000c9dae6800eded8ddb1673bf090f84e"
-  integrity sha512-j9aAYyuZblq27XPW3h/cZuBP2WA1OOsEPjTHszPQ/YcM9VrrrYnfpJObP4IyghxmS8i+7Jhoh7qp8CjunfrFjw==
 
 react-native-modal-datetime-picker@^13.1.2:
   version "13.1.2"

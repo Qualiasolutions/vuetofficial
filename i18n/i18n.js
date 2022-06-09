@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { getLocales } from 'react-native-localize';
+import * as Localization from 'expo-localization';
 
 import translationEN from './locales/common/en';
 import translationES from './locales/common/es';
@@ -9,6 +9,8 @@ import modelFieldsES from './locales/modelFields/es';
 // don't want to use this?
 // have a look at the Quick start guide
 // for passing in lng and translations on init
+
+console.log(Localization.locale);
 
 const resources = {
   en: {
@@ -31,7 +33,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     resources,
-    lng: getLocales()[0].languageCode,
+    lng: Localization.locale.lng,
     fallbackLng: 'en',
     debug: true,
 
