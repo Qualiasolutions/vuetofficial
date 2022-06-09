@@ -18,9 +18,7 @@ import { getTokenAsync } from '../utils/authRequests';
 import GLOBAL_STYLES from '../globalStyles/styles';
 import { SUCCESS } from '../globalStyles/colorScheme';
 
-import Constants from 'expo-constants';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 const logo = require('../assets/images/logo.png');
 
