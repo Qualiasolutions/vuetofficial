@@ -1,0 +1,13 @@
+export default {
+  task: {
+    title: 'Titulo',
+    location: 'Ubicacion'
+  },
+  fixedTask: {
+    start_datetime: 'Hora de Inicio',
+    end_datetime: 'Hora de Terminacion'
+  },
+  flexibleTask: {
+    due_date: 'Fecha'
+  }
+};
