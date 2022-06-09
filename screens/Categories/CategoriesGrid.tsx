@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
-import { BackHandler, Pressable, StyleSheet } from 'react-native';
+import React from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
-import { useSelector } from 'react-redux';
-import { selectAllCategories } from 'reduxStore/slices/categories/selectors';
 import { Category as CategoryType } from 'types/categories';
 
 import { DARK } from 'globalStyles/colorScheme';
@@ -11,11 +9,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
+import { useTranslation } from 'react-i18next';
 
 type CategoriesTypes = RootTabScreenProps<'Categories'>;
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
+  const { t } = useTranslation();
 
   if (isLoading || !allCategories) {
     return null;
@@ -46,7 +46,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
           key={category.id}
         >
           <Text style={[styles.gridText, { color: textColor }]}>
-            {category.readable_name}
+            {t(`categories.${category.name}`)}
           </Text>
           {isPremiumTag}
         </Pressable>
