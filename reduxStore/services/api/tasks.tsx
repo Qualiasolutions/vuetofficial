@@ -6,7 +6,7 @@ const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllTasks: builder.query<AllTasks, number>({
       query: () => ({
-        url: 'core/task',
+        url: 'core/scheduled_task',
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: TaskResponseType[] = await response.json();

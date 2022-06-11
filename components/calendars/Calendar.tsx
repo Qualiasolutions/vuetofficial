@@ -48,7 +48,7 @@ function Calendar({
   tasks,
   alwaysIncludeCurrentDate = false
 }: {
-  tasks: TaskResponseType[];
+  tasks: FixedTaskResponseType[];
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
@@ -59,30 +59,17 @@ function Calendar({
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
     for (const task of Object.values(tasks)) {
-      if (isFixedTaskResponseType(task)) {
-        const parsedTask: FixedTaskParsedType = parseFixedTaskResponse(task);
-        const taskDates = getDateStringsBetween(
-          parsedTask.start_datetime,
-          parsedTask.end_datetime
-        );
+      const parsedTask: FixedTaskParsedType = parseFixedTaskResponse(task);
+      const taskDates = getDateStringsBetween(
+        parsedTask.start_datetime,
+        parsedTask.end_datetime
+      );
 
-        for (const taskDate of taskDates) {
-          if (newTasksPerDate[taskDate]) {
-            newTasksPerDate[taskDate].tasks.push(parsedTask);
-          } else {
-            newTasksPerDate[taskDate] = {
-              tasks: [parsedTask]
-            };
-          }
-        }
-      } else if (task.due_date) {
-        const parsedTask: FlexibleTaskParsedType =
-          parseFlexibleTaskResponse(task);
-        const dueDate = getDateStringFromDateObject(parsedTask.due_date);
-        if (newTasksPerDate[dueDate]) {
-          newTasksPerDate[dueDate].tasks.push(parsedTask);
+      for (const taskDate of taskDates) {
+        if (newTasksPerDate[taskDate]) {
+          newTasksPerDate[taskDate].tasks.push(parsedTask);
         } else {
-          newTasksPerDate[dueDate] = {
+          newTasksPerDate[taskDate] = {
             tasks: [parsedTask]
           };
         }

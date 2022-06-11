@@ -84,16 +84,10 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     }
   };
 
-  const leftInfo = isFixedTaskParsedType(task) ? (
-    <View style={styles.leftInfo}>
-      <Text> {getTimeStringFromDateObject(task.start_datetime)} </Text>
-      <Text> {getTimeStringFromDateObject(task.end_datetime)} </Text>
-    </View>
-  ) : (
-    <View style={styles.leftInfo}>
-      <Text> DUE </Text>
-    </View>
-  );
+  const leftInfo = <View style={styles.leftInfo}>
+    <Text> {getTimeStringFromDateObject(task.start_datetime)} </Text>
+    <Text> {getTimeStringFromDateObject(task.end_datetime)} </Text>
+  </View>
 
   const expandedHeader =
     entity && selected ? (
