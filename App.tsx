@@ -19,7 +19,6 @@ import { PersistGate } from 'redux-persist/lib/integration/react';
 import { RootAction } from 'reduxStore/actions';
 import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
-
 import './i18n/i18n';
 
 const persistConfig = {

@@ -2,6 +2,11 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as Localization from 'expo-localization';
 
+import dayjs from 'dayjs';
+// Need to import any locales that we want to support
+import 'dayjs/locale/es-us';
+import 'dayjs/locale/en-gb';
+
 import translationEN from './locales/common/en';
 import translationES from './locales/common/es';
 import modelFieldsEN from './locales/modelFields/en';
@@ -10,7 +15,7 @@ import modelFieldsES from './locales/modelFields/es';
 // have a look at the Quick start guide
 // for passing in lng and translations on init
 
-console.log(Localization.locale);
+dayjs.locale(Localization.locale);
 
 const resources = {
   en: {

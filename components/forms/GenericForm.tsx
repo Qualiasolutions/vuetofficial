@@ -12,7 +12,7 @@ import { makeAuthorisedRequest } from 'utils/makeAuthorisedRequest';
 import DateField from 'react-native-datefield';
 import { useSelector } from 'react-redux';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
 import DateTimeTextInput from './components/DateTimeTextInput';
@@ -141,7 +141,7 @@ export default function Form({
     for (const field in parsedFormValues) {
       if (fields[field].type === 'Date') {
         if (parsedFormValues[field]) {
-          parsedFormValues[field] = moment(parsedFormValues[field]).format(
+          parsedFormValues[field] = dayjs(parsedFormValues[field]).format(
             'YYYY-MM-DD'
           );
         } else {

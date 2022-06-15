@@ -1,11 +1,11 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const getDateStringFromDateObject = (date: Date): string => {
-  return moment(date).format('YYYY-MM-DD');
+  return dayjs(date).format('YYYY-MM-DD');
 };
 
 const getTimeStringFromDateObject = (date: Date): string => {
-  return moment(date).format('HH:mm');
+  return dayjs(date).format('HH:mm');
 };
 
 const getDatesBetween = (start: string | Date, end: string | Date): Date[] => {

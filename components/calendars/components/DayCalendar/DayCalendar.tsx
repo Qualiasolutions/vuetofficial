@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 import { Text, View } from 'components/Themed';
 import Task from './components/Task';
 import { TaskParsedType } from 'types/tasks';
-import moment from 'moment';
+import dayjs from 'dayjs';
+
 
 type PropTypes = {
   date: string;
@@ -26,15 +27,12 @@ export default function DayCalendar({
       onPress={setSelectedTaskId}
     ></Task>
   ));
-  // console.log(moment(date))
-  // console.log(moment(date).format('MMM'))
-  // console.log(moment(date).format('DD'))
   return (
     <View>
       <View style={styles.container}>
         <View style={styles.leftBar}>
-          <Text style={styles.dateDay}>{moment(date).format('MMM')} </Text>
-          <Text style={styles.dateMonth}>{moment(date).format('DD')} </Text>
+          <Text style={styles.dateDay}>{dayjs(date).format('MMM')} </Text>
+          <Text style={styles.dateMonth}>{dayjs(date).format('DD')} </Text>
           <View style={styles.verticalLine}></View>
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
