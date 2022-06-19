@@ -69,6 +69,10 @@ export type RootTabParamList = {
   DeleteSuccess: { entityName: string };
   NotFound: undefined;
   EntityScreen: { entityId: number | string };
+  CalendarScreen: {
+    startDate: Date;
+    endDate: Date;
+  };
 };
 
 export type TabParamList = RootTabParamList & UnauthorisedTabParamList;

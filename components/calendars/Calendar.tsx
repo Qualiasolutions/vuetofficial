@@ -15,19 +15,21 @@ import {
   TaskParsedType,
   isFixedTaskResponseType,
   isFlexibleTaskResponseType,
+  ScheduledTaskResponseType,
+  ScheduledTaskParsedType,
   TaskResponseType
 } from 'types/tasks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type SingleDateTasks = {
-  tasks: TaskParsedType[];
+  tasks: ScheduledTaskParsedType[];
 };
 
 type AllDateTasks = { [key: string]: SingleDateTasks };
 
 const parseFixedTaskResponse = (
-  res: FixedTaskResponseType
-): FixedTaskParsedType => {
+  res: ScheduledTaskResponseType
+): ScheduledTaskParsedType => {
   return {
     ...res,
     end_datetime: new Date(res.end_datetime),
@@ -48,18 +50,21 @@ function Calendar({
   tasks,
   alwaysIncludeCurrentDate = false
 }: {
-  tasks: FixedTaskResponseType[];
+  tasks: ScheduledTaskResponseType[];
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
   const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(
     null
   );
+  const [selectedRecurrenceIndex, setSelectedRecurrenceIndex] = React.useState<
+    number | null
+  >(null);
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
     for (const task of Object.values(tasks)) {
-      const parsedTask: FixedTaskParsedType = parseFixedTaskResponse(task);
+      const parsedTask: ScheduledTaskParsedType = parseFixedTaskResponse(task);
       const taskDates = getDateStringsBetween(
         parsedTask.start_datetime,
         parsedTask.end_datetime
@@ -98,7 +103,9 @@ function Calendar({
         key={date}
         tasks={tasksPerDate[date].tasks}
         selectedTaskId={selectedTaskId}
+        selectedRecurrenceIndex={selectedRecurrenceIndex}
         setSelectedTaskId={setSelectedTaskId}
+        setSelectedRecurrenceIndex={setSelectedRecurrenceIndex}
       />
     ));
 

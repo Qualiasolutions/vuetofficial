@@ -5,9 +5,7 @@ import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { TaskParsedType } from 'types/tasks';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import { ScheduledTaskParsedType } from 'types/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 export default function TaskCompletionForm({
@@ -15,7 +13,7 @@ export default function TaskCompletionForm({
   title = '',
   onSubmitSuccess = () => {}
 }: {
-  task: TaskParsedType;
+  task: ScheduledTaskParsedType;
   title?: string;
   onSubmitSuccess?: Function;
 }) {
@@ -49,6 +47,7 @@ export default function TaskCompletionForm({
             formType="CREATE"
             extraFields={{
               resourcetype: `${task.resourcetype}CompletionForm`,
+              recurrence_index: task.recurrence_index,
               task: task.id
             }}
             onSubmitSuccess={updateTasks}

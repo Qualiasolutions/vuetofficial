@@ -4,7 +4,8 @@ import {
   TaskParsedType,
   isFixedTaskParsedType,
   FixedTaskResponseType,
-  isFixedTaskResponseType
+  isFixedTaskResponseType,
+  ScheduledTaskParsedType
 } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
@@ -32,7 +33,7 @@ import GenericError from 'components/molecules/GenericError';
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 type PropTypes = {
-  task: TaskParsedType;
+  task: ScheduledTaskParsedType;
   selected: boolean;
   onPress: Function;
 };
@@ -64,7 +65,10 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     return <GenericError />;
   }
 
+  console.log(allEntities);
+  console.log(task.entity);
   const entity = allEntities.byId[task.entity];
+  console.log(entity);
 
   const addDays = (numDays = 1) => {
     if (isFixedTaskParsedType(task)) {
@@ -84,10 +88,12 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     }
   };
 
-  const leftInfo = <View style={styles.leftInfo}>
-    <Text> {getTimeStringFromDateObject(task.start_datetime)} </Text>
-    <Text> {getTimeStringFromDateObject(task.end_datetime)} </Text>
-  </View>
+  const leftInfo = (
+    <View style={styles.leftInfo}>
+      <Text> {getTimeStringFromDateObject(task.start_datetime)} </Text>
+      <Text> {getTimeStringFromDateObject(task.end_datetime)} </Text>
+    </View>
+  );
 
   const expandedHeader =
     entity && selected ? (
@@ -143,7 +149,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
-            onPress(task.id);
+            onPress(task);
           }}
         >
           {leftInfo}
@@ -161,6 +167,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
             }
             triggerCreateCompletionForm({
               resourcetype: `${task.resourcetype}CompletionForm`,
+              recurrence_index: task.recurrence_index,
               task: task.id
             });
           }}

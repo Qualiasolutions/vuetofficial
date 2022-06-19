@@ -1,19 +1,38 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Calendar from 'components/calendars/Calendar';
 import GenericError from 'components/molecules/GenericError';
 import { Text } from 'components/Themed';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 
 function CalendarScreen() {
   const { data: userDetails } = useGetUserDetailsQuery();
+
+  const currentMonthStart = new Date();
+  currentMonthStart.setDate(1);
+  const nextMonthStart = new Date();
+  nextMonthStart.setMonth(nextMonthStart.getMonth() + 1);
+  nextMonthStart.setDate(1);
+  const [startDate, setStartDate] = React.useState<Date>(currentMonthStart);
+  const [endDate, setEndDate] = React.useState<Date>(nextMonthStart);
   const {
     data: allTasks,
     error,
     isLoading
-  } = useGetAllTasksQuery(userDetails?.user_id || -1);
+  } = useGetAllScheduledTasksQuery({
+    start_datetime: `${startDate.getFullYear()}${(
+      '0' +
+      (startDate.getMonth() + 1)
+    ).slice(-2)}01T00:00:00Z`,
+    end_datetime: `${endDate.getFullYear()}${(
+      '0' +
+      (endDate.getMonth() + 1)
+    ).slice(-2)}01T00:00:00Z`,
+    user_id: userDetails?.user_id || -1
+  });
 
   if (error) {
     return <GenericError />;
@@ -21,9 +40,14 @@ function CalendarScreen() {
 
   return isLoading || !allTasks ? null : (
     <SafeAreaView style={styles.container}>
-      <Calendar
-        tasks={Object.values(allTasks.byId)}
-        alwaysIncludeCurrentDate={true}
+      <Calendar tasks={allTasks} alwaysIncludeCurrentDate={true} />
+      <Button
+        title="LOAD MORE DATES"
+        onPress={() => {
+          const newEndDate = new Date(endDate);
+          newEndDate.setMonth(newEndDate.getMonth() + 1);
+          setEndDate(newEndDate);
+        }}
       />
     </SafeAreaView>
   );

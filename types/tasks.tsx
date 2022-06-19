@@ -31,6 +31,16 @@ interface FlexibleTaskParsedType extends BaseTaskType {
   resourcetype: 'FlexibleTask';
 }
 
+interface ScheduledTaskResponseType extends BaseTaskType {
+  start_datetime: string;
+  end_datetime: string;
+}
+
+interface ScheduledTaskParsedType extends BaseTaskType {
+  start_datetime: Date;
+  end_datetime: Date;
+}
+
 type TaskResponseType = FixedTaskResponseType | FlexibleTaskResponseType;
 type TaskParsedType = FixedTaskParsedType | FlexibleTaskParsedType;
 
@@ -51,6 +61,8 @@ export {
   FlexibleTaskParsedType,
   TaskResponseType,
   TaskParsedType,
+  ScheduledTaskResponseType,
+  ScheduledTaskParsedType,
   isFixedTaskResponseType,
   isFlexibleTaskResponseType,
   isFixedTaskParsedType,

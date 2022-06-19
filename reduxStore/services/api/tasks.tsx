@@ -1,12 +1,34 @@
 import { AllTasks } from './types';
 import { vuetApi, normalizeData } from './api';
-import { TaskParsedType, TaskResponseType } from 'types/tasks';
+import {
+  TaskParsedType,
+  TaskResponseType,
+  ScheduledTaskResponseType
+} from 'types/tasks';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
+    getAllScheduledTasks: builder.query<
+      ScheduledTaskResponseType[],
+      { start_datetime: string; end_datetime: string; user_id: number }
+    >({
+      query: ({ start_datetime, end_datetime }) => ({
+        url: `core/scheduled_task?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: TaskResponseType[] = await response.json();
+            return responseJson;
+          } else {
+            // Just return the error data
+            return await response.json();
+          }
+        }
+      }),
+      providesTags: ['Task']
+    }),
     getAllTasks: builder.query<AllTasks, number>({
       query: () => ({
-        url: 'core/scheduled_task',
+        url: 'core/task/',
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: TaskResponseType[] = await response.json();
@@ -24,7 +46,6 @@ const extendedApi = vuetApi.injectEndpoints({
       Partial<TaskParsedType> & Pick<TaskParsedType, 'id'>
     >({
       query: (body) => {
-        console.log(body);
         return {
           url: `core/task/${body.id}/`,
           method: 'PATCH',
@@ -35,7 +56,6 @@ const extendedApi = vuetApi.injectEndpoints({
     }),
     createTask: builder.mutation<TaskResponseType, Omit<TaskParsedType, 'id'>>({
       query: (body) => {
-        console.log(body);
         return {
           url: 'core/task/',
           method: 'POST',
@@ -49,7 +69,6 @@ const extendedApi = vuetApi.injectEndpoints({
       Pick<TaskResponseType, 'id'>
     >({
       query: (body) => {
-        console.log(body);
         return {
           url: `core/task/${body.id}/`,
           method: 'DELETE'
@@ -65,6 +84,7 @@ const extendedApi = vuetApi.injectEndpoints({
 // auto-generated based on the defined endpoints
 export const {
   useGetAllTasksQuery,
+  useGetAllScheduledTasksQuery,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
   useCreateTaskMutation

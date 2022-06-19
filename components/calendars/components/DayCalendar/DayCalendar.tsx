@@ -2,29 +2,38 @@ import { StyleSheet } from 'react-native';
 
 import { Text, View } from 'components/Themed';
 import Task from './components/Task';
-import { TaskParsedType } from 'types/tasks';
+import { ScheduledTaskParsedType, TaskParsedType } from 'types/tasks';
 import dayjs from 'dayjs';
-
 
 type PropTypes = {
   date: string;
-  tasks: TaskParsedType[];
+  tasks: ScheduledTaskParsedType[];
   selectedTaskId: number | null;
+  selectedRecurrenceIndex: number | null;
   setSelectedTaskId: Function;
+  setSelectedRecurrenceIndex: Function;
 };
 
 export default function DayCalendar({
   date,
   tasks,
   selectedTaskId,
-  setSelectedTaskId
+  selectedRecurrenceIndex,
+  setSelectedTaskId,
+  setSelectedRecurrenceIndex
 }: PropTypes) {
   const taskViews = tasks.map((task) => (
     <Task
       task={task}
       key={task.id}
-      selected={task.id === selectedTaskId}
-      onPress={setSelectedTaskId}
+      selected={
+        task.id === selectedTaskId &&
+        task.recurrence_index === selectedRecurrenceIndex
+      }
+      onPress={(task: ScheduledTaskParsedType) => {
+        setSelectedTaskId(task.id);
+        setSelectedRecurrenceIndex(task.recurrence_index);
+      }}
     ></Task>
   ));
   return (

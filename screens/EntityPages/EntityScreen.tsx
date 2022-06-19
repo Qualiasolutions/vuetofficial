@@ -3,21 +3,23 @@ import Calendar from 'components/calendars/Calendar';
 import GenericError from 'components/molecules/GenericError';
 import SquareButton from 'components/molecules/SquareButton';
 import { Text, View } from 'components/Themed';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Button, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { AllTasks } from 'reduxStore/slices/tasks/types';
 import { RootTabParamList } from 'types/base';
+import { ScheduledTaskResponseType } from 'types/tasks';
+import React from 'react';
 
-const getTasksByEntityId = (allTasks: AllTasks, entityId: string | number) => {
+const getTasksByEntityId = (
+  allTasks: ScheduledTaskResponseType[],
+  entityId: string | number
+) => {
   const integerEntityId =
     typeof entityId === 'number' ? entityId : parseInt(entityId);
-  return Object.values(allTasks.byId).filter(
-    (task) => task.entity === integerEntityId
-  );
+  return allTasks.filter((task) => task.entity === integerEntityId);
 };
 
 export const EntityScreen = ({
@@ -30,11 +32,29 @@ export const EntityScreen = ({
     isLoading: isLoadingEntities,
     error: entitiesError
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+
+  const currentMonthStart = new Date();
+  currentMonthStart.setDate(1);
+  const nextMonthStart = new Date();
+  nextMonthStart.setMonth(nextMonthStart.getMonth() + 1);
+  nextMonthStart.setDate(1);
+  const [startDate, setStartDate] = React.useState<Date>(currentMonthStart);
+  const [endDate, setEndDate] = React.useState<Date>(nextMonthStart);
   const {
     data: allTasks,
     error: tasksError,
     isLoading: isLoadingTasks
-  } = useGetAllTasksQuery(userDetails?.user_id || -1);
+  } = useGetAllScheduledTasksQuery({
+    start_datetime: `${startDate.getFullYear()}${(
+      '0' +
+      (startDate.getMonth() + 1)
+    ).slice(-2)}01T00:00:00Z`,
+    end_datetime: `${endDate.getFullYear()}${(
+      '0' +
+      (endDate.getMonth() + 1)
+    ).slice(-2)}01T00:00:00Z`,
+    user_id: userDetails?.user_id || -1
+  });
 
   const isLoading = isLoadingEntities || isLoadingTasks;
 
@@ -73,6 +93,14 @@ export const EntityScreen = ({
         </View>
         <View style={styles.calendarContainer}>
           <Calendar tasks={entityTasks} />
+          <Button
+            title="LOAD MORE DATES"
+            onPress={() => {
+              const newEndDate = new Date(endDate);
+              newEndDate.setMonth(newEndDate.getMonth() + 1);
+              setEndDate(newEndDate);
+            }}
+          />
         </View>
         <View style={styles.addTaskWrapper}>
           <SquareButton

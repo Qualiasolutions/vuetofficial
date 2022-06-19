@@ -24,7 +24,6 @@ const extendedApi = vuetApi.injectEndpoints({
       Partial<EntityResponseType> & Pick<EntityResponseType, 'id'>
     >({
       query: (body) => {
-        console.log(body);
         return {
           url: `core/entity/${body.id}/`,
           method: 'PATCH',
@@ -38,7 +37,6 @@ const extendedApi = vuetApi.injectEndpoints({
       Omit<EntityResponseType, 'id'>
     >({
       query: (body) => {
-        console.log(body);
         return {
           url: 'core/entity/',
           method: 'POST',
@@ -52,7 +50,6 @@ const extendedApi = vuetApi.injectEndpoints({
       Pick<EntityResponseType, 'id'>
     >({
       query: (body) => {
-        console.log(body);
         return {
           url: `core/entity/${body.id}/`,
           method: 'DELETE'

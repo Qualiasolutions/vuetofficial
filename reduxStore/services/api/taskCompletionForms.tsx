@@ -4,7 +4,6 @@ const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     createTaskCompletionForm: builder.mutation<object, object>({
       query: (body) => {
-        console.log(body);
         return {
           url: 'core/task_completion_form/',
           method: 'POST',
