@@ -1,4 +1,4 @@
-# Running on WSL2
+## Running on WSL2
 
 The script at `powershell-scripts/forward-wsl-ports.ps1` should be run as described here:
 https://medium.com/weavik/react-native-expo-on-wsl2-aff04b1639f8
