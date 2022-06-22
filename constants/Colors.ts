@@ -5,15 +5,20 @@ export default {
   light: {
     text: '#000',
     background: '#fff',
+    buttonDefault: '#3E3647',
+    buttonTextDefault: '#fff',
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight
   },
+  // TODO - implement different dark mode colors
   dark: {
-    text: '#fff',
-    background: '#000',
-    tint: tintColorDark,
+    text: '#000',
+    background: '#fff',
+    buttonDefault: '#3E3647',
+    buttonTextDefault: '#fff',
+    tint: tintColorLight,
     tabIconDefault: '#ccc',
-    tabIconSelected: tintColorDark
+    tabIconSelected: tintColorLight
   }
 };

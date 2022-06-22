@@ -24,9 +24,14 @@
   },
   "screens": {
     "logIn": {
-      "username": "Username",
       "password": "Password",
-      "logInText": "Log In"
+      "welcomeBack": "Welcome back!",
+      "enterNumber": "Please enter your phone number to log in",
+      "phoneNumber": "Phone number",
+      "confirm": "Confirm",
+      "forgotPassword": "Forgot password",
+      "dontHaveAccount": "Don't have an account?",
+      "signUp": "Sign up"
     },
     "settings": {
       "logOutText": "Log Out",

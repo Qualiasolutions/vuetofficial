@@ -16,7 +16,7 @@ type RefreshResponse = { access: string };
 
 type BlacklistResponse = { success: boolean };
 
-const getTokenAsync = async (username: string, password: string) => {
+const getTokenAsync = async (phoneNumber: string, password: string) => {
   const loginResponse: LoginResponse = await fetch(
     `http://${vuetApiUrl}/auth/token/`,
     {
@@ -26,7 +26,7 @@ const getTokenAsync = async (username: string, password: string) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username,
+        phone_number: phoneNumber,
         password
       })
     }

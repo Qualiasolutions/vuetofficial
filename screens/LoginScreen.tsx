@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet, TextInput, Button, Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import {
   setUsername
 } from '../reduxStore/slices/auth/actions';
 
-import { Text, View } from '../components/Themed';
+import { Text, View, TextInput, Button } from '../components/Themed';
 
 import { getTokenAsync } from '../utils/authRequests';
 
@@ -68,28 +68,42 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.logo} />
+      <Text style={styles.header}>{t('screens.logIn.welcomeBack')}</Text>
+      <Text style={styles.subheader}>{t('screens.logIn.enterNumber')}</Text>
       {errorContent}
+      <View style={styles.inputLabelWrapper}>
+        <Text style={styles.inputLabel}>{t('screens.logIn.phoneNumber')}</Text>
+      </View>
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
-        style={GLOBAL_STYLES.textInput}
-        placeholder={t('screens.logIn.username')}
       />
+      <View style={styles.inputLabelWrapper}>
+        <Text style={styles.inputLabel}>{t('screens.logIn.password')}</Text>
+      </View>
       <TextInput
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
-        style={GLOBAL_STYLES.textInput}
-        placeholder={t('screens.logIn.password')}
       />
-      <View style={styles.loginButtonWrapper}>
-        <Button
-          title={t('screens.logIn.logInText')}
-          onPress={() => setTokenAsync(username, password)}
-          color={SUCCESS}
-        />
+      <View style={styles.forgotPasswordWrapper}>
+        <Text
+          style={styles.forgotPassword}
+          lightColor="#AC3201"
+          darkColor="#AC3201"
+        >{t('screens.logIn.forgotPassword')}</Text>
       </View>
+      <Button
+        title={t('screens.logIn.confirm')}
+        onPress={() => setTokenAsync(username, password)}
+        style={styles.confirmButton}
+      />
+      <Text>{t('screens.logIn.dontHaveAccount')}</Text>
+      <Text
+        lightColor="#AC3201"
+        darkColor="#AC3201"
+        style={styles.signUp}
+      >{t('screens.logIn.signUp')}</Text>
     </View>
   );
 };
@@ -98,14 +112,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    padding: 40,
+    backgroundColor: '#EFEFEF'
   },
-  logo: {
-    width: 200,
-    aspectRatio: 1
+  header: {
+    fontSize: 26,
+    color: "#AC3201",
+    marginBottom: 20,
+    fontWeight: 'bold'
   },
-  loginButtonWrapper: {
-    marginTop: 30
+  subheader: {
+    fontSize: 14,
+    color: "#707070",
+    marginBottom: 20,
+  },
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%',
+    backgroundColor: '#EFEFEF'
+  },
+  inputLabel: {
+    fontSize: 12,
+    color: "#707070",
+    textAlign: 'left'
+  },
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15,
+  },
+  forgotPasswordWrapper: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    width: '100%',
+    backgroundColor: '#EFEFEF'
+  },
+  forgotPassword: {
+    fontWeight: "bold"
+  },
+  signUp: {
+    fontWeight: 'bold'
   }
 });
 

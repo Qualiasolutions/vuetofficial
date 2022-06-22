@@ -3,7 +3,14 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, View as DefaultView } from 'react-native';
+import {
+  Text as DefaultText,
+  View as DefaultView,
+  TextInput as DefaultTextInput,
+  Pressable,
+  StyleSheet,
+  GestureResponderEvent
+} from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -29,12 +36,13 @@ type ThemeProps = {
 
 export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
+export type TextInputProps = ThemeProps & DefaultTextInput['props'];
 
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
-  return <DefaultText style={[{ color }, style]} {...otherProps} />;
+  return <DefaultText style={[{ color }, styles.text, style]} {...otherProps} />;
 }
 
 export function View(props: ViewProps) {
@@ -46,3 +54,85 @@ export function View(props: ViewProps) {
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
+
+export function TextInput(props: TextInputProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'background'
+  );
+  const color = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'text'
+  );
+
+  return <DefaultTextInput style={[
+    {
+      backgroundColor,
+      color,
+    },
+    styles.textInput,
+    style
+  ]} {...otherProps} />;
+}
+
+export function Button(
+  props: (
+    ThemeProps & {
+      onPress: (event: GestureResponderEvent) => void,
+      title: string,
+      style?: object
+    }
+  )
+) {
+  const { style, title, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'buttonDefault'
+  );
+  const textColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'buttonTextDefault'
+  );
+  const color = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'text'
+  );
+
+  return <Pressable style={[
+    {
+      backgroundColor,
+      color,
+    },
+    styles.button,
+    style
+  ]}
+  {...otherProps}>
+    <Text style={[{color: textColor}, styles.buttonText]}>{title}</Text>
+  </Pressable>;
+}
+
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: 'Poppins'
+  },
+  textInput: {
+    borderRadius: 10,
+    height: 35,
+    marginVertical: 5,
+    padding: 10,
+    borderWidth: 1,
+    width: '100%',
+    borderColor: '#D8D8D8',
+    fontFamily: 'Poppins'
+  },
+  button: {
+    borderRadius: 10,
+    padding: 15,
+    textAlign: 'center',
+    width: '100%',
+  },
+  buttonText: {
+    fontWeight: 'bold'
+  }
+})
