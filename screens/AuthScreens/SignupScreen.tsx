@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -9,22 +9,19 @@ import {
   setAccessToken,
   setRefreshToken,
   setUsername
-} from '../reduxStore/slices/auth/actions';
+} from 'reduxStore/slices/auth/actions';
 
-import { Text, View, TextInput, Button } from '../components/Themed';
+import { Text, View, TextInput, Button } from 'components/Themed';
 
-import { getTokenAsync } from '../utils/authRequests';
+import { getTokenAsync } from 'utils/authRequests';
 
-import GLOBAL_STYLES from '../globalStyles/styles';
-import { SUCCESS } from '../globalStyles/colorScheme';
+import GLOBAL_STYLES from 'globalStyles/styles';
 
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { UnauthorisedTabScreenProps } from 'types/base';
 
-const logo = require('../assets/images/logo.png');
-
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
   const [username, onChangeUsername] = React.useState<string>('');
-  const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const { t } = useTranslation();
@@ -68,8 +65,12 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{t('screens.logIn.welcomeBack')}</Text>
-      <Text style={styles.subheader}>{t('screens.logIn.enterNumber')}</Text>
+      <Text
+        darkColor="#AC3201"
+        lightColor="#AC3201"
+        style={styles.header}
+    >{t('screens.signUp.welcome')}</Text>
+      <Text style={styles.subheader}>{t('screens.signUp.usePhoneNumber')}</Text>
       {errorContent}
       <View style={styles.inputLabelWrapper}>
         <Text style={styles.inputLabel}>{t('screens.logIn.phoneNumber')}</Text>
@@ -78,32 +79,20 @@ const LoginScreen = () => {
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
       />
-      <View style={styles.inputLabelWrapper}>
-        <Text style={styles.inputLabel}>{t('screens.logIn.password')}</Text>
-      </View>
-      <TextInput
-        value={password}
-        secureTextEntry={true}
-        onChangeText={(text) => onChangePassword(text)}
-      />
-      <View style={styles.forgotPasswordWrapper}>
-        <Text
-          style={styles.forgotPassword}
-          lightColor="#AC3201"
-          darkColor="#AC3201"
-        >{t('screens.logIn.forgotPassword')}</Text>
-      </View>
       <Button
-        title={t('screens.logIn.confirm')}
-        onPress={() => setTokenAsync(username, password)}
+        title={t('common.confirm')}
+        onPress={() => {}}
         style={styles.confirmButton}
       />
-      <Text>{t('screens.logIn.dontHaveAccount')}</Text>
+      <Text>{t('screens.signUp.alreadyHaveAccount')}</Text>
+      <Pressable onPress={() => {
+        navigation.navigate('Login')}}>
       <Text
         lightColor="#AC3201"
         darkColor="#AC3201"
         style={styles.signUp}
-      >{t('screens.logIn.signUp')}</Text>
+      >{t('screens.signUp.logIn')}</Text>
+        </Pressable>
     </View>
   );
 };
@@ -118,7 +107,6 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 26,
-    color: "#AC3201",
     marginBottom: 20,
     fontWeight: 'bold'
   },

@@ -22,7 +22,8 @@ import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
 import { RootTabParamList, UnauthorisedStackParamList } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
-import LoginScreen from '../screens/LoginScreen';
+import LoginScreen from 'screens/AuthScreens/LoginScreen';
+import SignupScreen from 'screens/AuthScreens/SignupScreen';
 
 import { useTranslation } from 'react-i18next';
 
@@ -68,6 +69,11 @@ function UnauthorisedNavigator() {
       <UnauthorisedStack.Screen
         name="Login"
         component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <UnauthorisedStack.Screen
+        name="Signup"
+        component={SignupScreen}
         options={{ headerShown: false }}
       />
     </UnauthorisedStack.Navigator>

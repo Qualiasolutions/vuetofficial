@@ -18,6 +18,7 @@ declare global {
 
 export type UnauthorisedStackParamList = {
   Login: undefined;
+  Signup: undefined;
 };
 
 export type UnauthorisedStackScreenProps<
