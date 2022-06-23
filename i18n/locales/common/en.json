@@ -23,7 +23,8 @@
     "TRANSPORT": "Transport"
   },
   "common": {
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "verify": "Verify"
   },
   "screens": {
     "logIn": {
@@ -40,7 +41,22 @@
       "usePhoneNumber": "Use your phone number to create an account",
       "phoneNumber": "Phone number",
       "alreadyHaveAccount": "Already have an account?",
-      "logIn": "Log in"
+      "logIn": "Log in",
+      "phoneError": "Oops, something went wrong. Are you sure you entered your phone number correctly?"
+    },
+    "validatePhone": {
+      "title": "Verification code",
+      "enterCode": "Please enter the 6-digit code we've sent to your mobile number",
+      "didntGetCode": "Didn't get the code?",
+      "codeError": "Hmm, we didn't recognise that code. Are you sure you entered it correctly?",
+      "resend": "Resend"
+    },
+    "createPassword": {
+      "title": "Verified!",
+      "addPassword": "Please add your password to complete your account set up",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "passwordError": "Hmm, something went wrong - make sure your password is secure (at least 8 letters and not too common) and that your passwords match"
     },
     "settings": {
       "logOutText": "Log Out",

@@ -7,26 +7,32 @@ import { Text, View, TextInput, Button } from 'components/Themed';
 import GLOBAL_STYLES from 'globalStyles/styles';
 
 import { UnauthorisedTabScreenProps } from 'types/base';
-import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
+import { useCreateAccountMutation, useCreatePhoneValidationMutation, useUpdatePhoneValidationMutation } from 'reduxStore/services/api/signup';
 
-const SignupScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
-  const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
+const CreatePasswordScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
+  const [password, onChangePassword] = React.useState<string>('');
+  const [passwordConfirm, onChangePasswordConfirm] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-  const [createPhoneValidation, result] = useCreatePhoneValidationMutation({
+
+  const [createPhoneValidation, createValidationResult] = useCreatePhoneValidationMutation({
     fixedCacheKey: 'shared-create-phone-validation',
   })
 
-  const { t } = useTranslation();
+  const [createAccount, createAccountResult] = useCreateAccountMutation({
+    fixedCacheKey: 'shared-create-account',
+  })
 
   useEffect(() => {
-    if (result.isSuccess) {
-      navigation.navigate("ValidatePhone")
+    if (createAccountResult.isSuccess) {
+      navigation.navigate("Login")
     } else {
-      if (result.error) {
-        setErrorMessage(t('screens.signUp.phoneError'))
+      if (createAccountResult.error) {
+        setErrorMessage(t('screens.createPassword.passwordError'))
       }
     }
-  }, [result])
+  }, [createAccountResult])
+
+  const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
     <View>
@@ -40,32 +46,38 @@ const SignupScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
         darkColor="#AC3201"
         lightColor="#AC3201"
         style={styles.header}
-      >{t('screens.signUp.welcome')}</Text>
-      <Text style={styles.subheader}>{t('screens.signUp.usePhoneNumber')}</Text>
+      >{t('screens.createPassword.title')}</Text>
+      <Text style={styles.subheader}>{t('screens.createPassword.addPassword')}</Text>
       {errorContent}
       <View style={styles.inputLabelWrapper}>
-        <Text style={styles.inputLabel}>{t('screens.logIn.phoneNumber')}</Text>
+        <Text style={styles.inputLabel}>{t('screens.createPassword.password')}</Text>
       </View>
       <TextInput
-        value={phoneNumber}
-        onChangeText={(text) => onChangePhoneNumber(text)}
+        value={password}
+        onChangeText={(text) => onChangePassword(text)}
+        secureTextEntry={true}
+      />
+      <View style={styles.inputLabelWrapper}>
+        <Text style={styles.inputLabel}>{t('screens.createPassword.confirmPassword')}</Text>
+      </View>
+      <TextInput
+        value={passwordConfirm}
+        onChangeText={(text) => onChangePasswordConfirm(text)}
+        secureTextEntry={true}
       />
       <Button
-        title={t('common.confirm')}
+        title={t('common.verify')}
         onPress={() => {
-          createPhoneValidation({phone_number: phoneNumber})
+          if (createValidationResult.data) {
+            createAccount({
+              password,
+              password2: passwordConfirm,
+              phone_number: createValidationResult.data?.phone_number
+            })
+          }
         }}
         style={styles.confirmButton}
       />
-      <Text>{t('screens.signUp.alreadyHaveAccount')}</Text>
-      <Pressable onPress={() => {
-        navigation.navigate('Login')}}>
-      <Text
-        lightColor="#AC3201"
-        darkColor="#AC3201"
-        style={styles.signUp}
-      >{t('screens.signUp.logIn')}</Text>
-        </Pressable>
     </View>
   );
 }
@@ -117,4 +129,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SignupScreen;
+export default CreatePasswordScreen;
