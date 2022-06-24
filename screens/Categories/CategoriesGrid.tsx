@@ -4,7 +4,6 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Text, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';
 
-import { DARK } from 'globalStyles/colorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
@@ -27,7 +26,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
 
   const categoriesContent = Object.values(allCategories.byId).map(
     (category: CategoryType) => {
-      const textColor = category.is_enabled ? DARK : DARK + '44';
+      const textColor = category.is_enabled ? '#000000' : '#00000044';
       const isEnabled = category.is_enabled;
 
       const isPremiumTag = category.is_premium ? (
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 1,
     borderWidth: 1,
-    borderColor: DARK
+    borderColor: '#000000'
   },
   gridText: {
     fontWeight: 'bold',
