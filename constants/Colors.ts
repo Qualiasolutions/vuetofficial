@@ -1,24 +1,56 @@
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
+const lightColors = {
+  primary: "#AC3201",
+  secondary: "#3E3647",
+  error: "#ff0000",
+  tintColor: '#2f95dc',
+  almostBlack: "#707070",
+  black: "#000",
+  white: "#fff",
+  almostWhite: "#efefef",
+  transparent: 'rgba(0, 0, 0, 0)'
+}
+
+// TODO - dark theme
+const darkColors = lightColors
 
 export default {
   light: {
-    text: '#000',
-    background: '#fff',
-    buttonDefault: '#3E3647',
-    buttonTextDefault: '#fff',
-    tint: tintColorLight,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight
+    transparent: lightColors.transparent,
+    text: lightColors.black,
+    errorText: lightColors.error,
+    errorBackground: lightColors.error + "22",
+    primary: lightColors.primary,
+    black: lightColors.black,
+    white: lightColors.white,
+    almostBlack: lightColors.almostBlack,
+    almostWhite: lightColors.almostWhite,
+    headerText: lightColors.primary,
+    subheaderText: lightColors.almostBlack,
+    backgroundWhite: lightColors.white,
+    backgroundGrey: lightColors.almostWhite,
+    buttonDefault: lightColors.secondary,
+    buttonTextDefault: lightColors.white,
+    tint: lightColors.tintColor,
+    tabIconSelected: lightColors.tintColor
   },
   // TODO - implement different dark mode colors
   dark: {
-    text: '#000',
-    background: '#fff',
-    buttonDefault: '#3E3647',
-    buttonTextDefault: '#fff',
-    tint: tintColorLight,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight
-  }
+    transparent: darkColors.transparent,
+    text: darkColors.black,
+    errorText: darkColors.error,
+    errorBackground: darkColors.error + "22",
+    primary: darkColors.primary,
+    black: darkColors.black,
+    white: darkColors.white,
+    almostBlack: darkColors.almostBlack,
+    almostWhite: darkColors.almostWhite,
+    headerText: darkColors.primary,
+    subheaderText: darkColors.almostBlack,
+    backgroundWhite: darkColors.white,
+    backgroundGrey: darkColors.almostWhite,
+    buttonDefault: darkColors.secondary,
+    buttonTextDefault: darkColors.white,
+    tint: darkColors.tintColor,
+    tabIconSelected: darkColors.tintColor
+  },
 };

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -11,14 +11,15 @@ import {
   setUsername
 } from 'reduxStore/slices/auth/actions';
 
-import { Text, View, TextInput, Button } from 'components/Themed';
+import { Text, TextInput, Button } from 'components/Themed';
 
 import { getTokenAsync } from 'utils/authRequests';
 
-import GLOBAL_STYLES from 'globalStyles/styles';
-
 import { UnauthorisedTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { PageTitle, PageSubtitle, PrimaryText, AlmostBlackText } from 'components/molecules/TextComponents';
+import { AlmostWhiteContainerView, TransparentView } from 'components/molecules/ViewComponents';
+import { ErrorBox } from 'components/molecules/Errors';
 
 const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'> ) => {
   const [username, onChangeUsername] = React.useState<string>('');
@@ -54,43 +55,36 @@ const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParam
       });
   };
 
-  const errorContent = errorMessage ? (
-    <View>
-      <Text style={GLOBAL_STYLES.errorMessage}>{errorMessage}</Text>
-    </View>
-  ) : null;
+  const errorContent = errorMessage
+    ? <ErrorBox errorText={errorMessage}></ErrorBox>
+    : null;
 
   return (
-    <View style={styles.container}>
-      <Text
-        darkColor="#AC3201"
-        lightColor="#AC3201"
-        style={styles.header}
-      >{t('screens.logIn.welcomeBack')}</Text>
-      <Text style={styles.subheader}>{t('screens.logIn.enterNumber')}</Text>
+    <AlmostWhiteContainerView>
+      <PageTitle text={t('screens.logIn.welcomeBack')}/>
+      <PageSubtitle text={t('screens.logIn.enterNumber')}/>
       {errorContent}
-      <View style={styles.inputLabelWrapper}>
-        <Text style={styles.inputLabel}>{t('screens.logIn.phoneNumber')}</Text>
-      </View>
+      <TransparentView style={styles.inputLabelWrapper}>
+        <AlmostBlackText style={styles.inputLabel} text={t('screens.logIn.phoneNumber')}/>
+      </TransparentView>
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
       />
-      <View style={styles.inputLabelWrapper}>
-        <Text style={styles.inputLabel}>{t('screens.logIn.password')}</Text>
-      </View>
+      <TransparentView style={styles.inputLabelWrapper}>
+        <AlmostBlackText style={styles.inputLabel} text={t('screens.logIn.password')}/>
+      </TransparentView>
       <TextInput
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
       />
-      <View style={styles.forgotPasswordWrapper}>
-        <Text
+      <TransparentView style={styles.forgotPasswordWrapper}>
+        <PrimaryText
           style={styles.forgotPassword}
-          lightColor="#AC3201"
-          darkColor="#AC3201"
-        >{t('screens.logIn.forgotPassword')}</Text>
-      </View>
+          text={t('screens.logIn.forgotPassword')}
+        />
+      </TransparentView>
       <Button
         title={t('common.confirm')}
         onPress={() => setTokenAsync(username, password)}
@@ -98,45 +92,24 @@ const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParam
       />
       <Text>{t('screens.logIn.dontHaveAccount')}</Text>
       <Pressable onPress={() => {
-        console.log("PRESS")
         navigation.navigate('Signup')}}>
-        <Text
-          lightColor="#AC3201"
-          darkColor="#AC3201"
+        <PrimaryText
           style={styles.signUp}
-        >{t('screens.logIn.signUp')}</Text>
+          text={t('screens.logIn.signUp')}
+        />
       </Pressable>
-    </View>
+    </AlmostWhiteContainerView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-    backgroundColor: '#EFEFEF'
-  },
-  header: {
-    fontSize: 26,
-    marginBottom: 20,
-    fontWeight: 'bold'
-  },
-  subheader: {
-    fontSize: 14,
-    color: "#707070",
-    marginBottom: 20,
-  },
   inputLabelWrapper: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     width: '100%',
-    backgroundColor: '#EFEFEF'
   },
   inputLabel: {
     fontSize: 12,
-    color: "#707070",
     textAlign: 'left'
   },
   confirmButton: {
@@ -147,7 +120,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     width: '100%',
-    backgroundColor: '#EFEFEF'
   },
   forgotPassword: {
     fontWeight: "bold"

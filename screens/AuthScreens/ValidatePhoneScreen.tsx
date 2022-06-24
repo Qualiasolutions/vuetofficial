@@ -2,14 +2,15 @@ import React, { useEffect } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, View, TextInput, Button } from 'components/Themed';
-
-import GLOBAL_STYLES from 'globalStyles/styles';
+import { Text, TextInput, Button } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation, useUpdatePhoneValidationMutation } from 'reduxStore/services/api/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { isFieldErrorCodeError } from 'types/signup';
+import { PageTitle, PageSubtitle, PrimaryText, AlmostBlackText } from 'components/molecules/TextComponents';
+import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
+import { ErrorBox } from 'components/molecules/Errors';
 
 const ValidatePhoneScreen = ({ navigation, route }: NativeStackScreenProps<UnauthorisedTabParamList, 'ValidatePhone'> ) => {
   const [validationCode, onChangeValidationCode] = React.useState<string>('');
@@ -35,20 +36,14 @@ const ValidatePhoneScreen = ({ navigation, route }: NativeStackScreenProps<Unaut
     }
   }, [result])
 
-  const errorContent = errorMessage ? (
-    <View>
-      <Text style={GLOBAL_STYLES.errorMessage}>{errorMessage}</Text>
-    </View>
-  ) : null;
+  const errorContent = errorMessage
+    ? <ErrorBox errorText={errorMessage}></ErrorBox>
+    : null;
 
   return (
-    <View style={styles.container}>
-      <Text
-        darkColor="#AC3201"
-        lightColor="#AC3201"
-        style={styles.header}
-      >{t('screens.validatePhone.title')}</Text>
-      <Text style={styles.subheader}>{t('screens.validatePhone.enterCode')}</Text>
+    <AlmostWhiteContainerView>
+      <PageTitle text={t('screens.validatePhone.title')}/>
+      <PageSubtitle text={t('screens.validatePhone.enterCode')}/>
       {errorContent}
       <TextInput
         value={validationCode}
@@ -70,59 +65,18 @@ const ValidatePhoneScreen = ({ navigation, route }: NativeStackScreenProps<Unaut
           phone_number: route.params?.phoneNumber
         })
       }}>
-      <Text
-        lightColor="#AC3201"
-        darkColor="#AC3201"
-        style={styles.signUp}
-      >{t('screens.validatePhone.resend')}</Text>
-        </Pressable>
-    </View>
+        <PrimaryText style={styles.resend} text={t('screens.validatePhone.resend')} />
+      </Pressable>
+    </AlmostWhiteContainerView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-    backgroundColor: '#EFEFEF'
-  },
-  header: {
-    fontSize: 26,
-    marginBottom: 20,
-    fontWeight: 'bold'
-  },
-  subheader: {
-    fontSize: 14,
-    color: "#707070",
-    marginBottom: 20,
-  },
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%',
-    backgroundColor: '#EFEFEF'
-  },
-  inputLabel: {
-    fontSize: 12,
-    color: "#707070",
-    textAlign: 'left'
-  },
   confirmButton: {
     marginTop: 30,
     marginBottom: 15,
   },
-  forgotPasswordWrapper: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    width: '100%',
-    backgroundColor: '#EFEFEF'
-  },
-  forgotPassword: {
-    fontWeight: "bold"
-  },
-  signUp: {
+  resend: {
     fontWeight: 'bold'
   }
 });

@@ -7,6 +7,5 @@ export default function GenericError({
   errorMessage?: string;
 }) {
   const { t } = useTranslation();
-  console.log(errorMessage);
   return <Text>{t('components.genericError.message')}</Text>;
 }

@@ -4,12 +4,13 @@ import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text, View, TextInput, Button } from 'components/Themed';
 
-import GLOBAL_STYLES from 'globalStyles/styles';
-
 import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
 import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { PageTitle, PageSubtitle, PrimaryText, AlmostBlackText } from 'components/molecules/TextComponents';
+import { AlmostWhiteContainerView, TransparentView } from 'components/molecules/ViewComponents';
+import { ErrorBox } from 'components/molecules/Errors';
 
 const SignupScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'> ) => {
   const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
@@ -38,24 +39,18 @@ const SignupScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabPara
     }
   }, [result])
 
-  const errorContent = errorMessage ? (
-    <View>
-      <Text style={GLOBAL_STYLES.errorMessage}>{errorMessage}</Text>
-    </View>
-  ) : null;
+  const errorContent = errorMessage
+    ? <ErrorBox errorText={errorMessage}></ErrorBox>
+    : null;
 
   return (
-    <View style={styles.container}>
-      <Text
-        darkColor="#AC3201"
-        lightColor="#AC3201"
-        style={styles.header}
-      >{t('screens.signUp.welcome')}</Text>
-      <Text style={styles.subheader}>{t('screens.signUp.usePhoneNumber')}</Text>
+    <AlmostWhiteContainerView>
+      <PageTitle text={t('screens.signUp.welcome')}/>
+      <PageSubtitle text={t('screens.signUp.usePhoneNumber')}/>
       {errorContent}
-      <View style={styles.inputLabelWrapper}>
-        <Text style={styles.inputLabel}>{t('screens.logIn.phoneNumber')}</Text>
-      </View>
+      <TransparentView style={styles.inputLabelWrapper}>
+        <AlmostBlackText style={styles.inputLabel} text={t('screens.signUp.phoneNumber')}/>
+      </TransparentView>
       <TextInput
         value={phoneNumber}
         onChangeText={(text) => onChangePhoneNumber(text)}
@@ -69,60 +64,29 @@ const SignupScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabPara
       />
       <Text>{t('screens.signUp.alreadyHaveAccount')}</Text>
       <Pressable onPress={() => {
-        navigation.navigate('Login')}}>
-      <Text
-        lightColor="#AC3201"
-        darkColor="#AC3201"
-        style={styles.signUp}
-      >{t('screens.signUp.logIn')}</Text>
-        </Pressable>
-    </View>
+        navigation.navigate('Login')
+      }}>
+        <PrimaryText style={styles.login} text={t('screens.signUp.logIn')} />
+      </Pressable>
+    </AlmostWhiteContainerView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-    backgroundColor: '#EFEFEF'
-  },
-  header: {
-    fontSize: 26,
-    marginBottom: 20,
-    fontWeight: 'bold'
-  },
-  subheader: {
-    fontSize: 14,
-    color: "#707070",
-    marginBottom: 20,
-  },
   inputLabelWrapper: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     width: '100%',
-    backgroundColor: '#EFEFEF'
   },
   inputLabel: {
     fontSize: 12,
-    color: "#707070",
     textAlign: 'left'
   },
   confirmButton: {
     marginTop: 30,
     marginBottom: 15,
   },
-  forgotPasswordWrapper: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    width: '100%',
-    backgroundColor: '#EFEFEF'
-  },
-  forgotPassword: {
-    fontWeight: "bold"
-  },
-  signUp: {
+  login: {
     fontWeight: 'bold'
   }
 });
