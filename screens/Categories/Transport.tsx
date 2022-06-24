@@ -14,6 +14,8 @@ import { RootTabScreenProps } from 'types/base';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
+import { useSelector } from 'react-redux';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 const parseCarResponse = (res: CarResponseType): CarParsedType => {
   return {
@@ -39,7 +41,8 @@ const dueDateField = (name: string, date: Date | null) =>
 type TransportScreenProps = RootTabScreenProps<'Transport'>;
 
 export default function Transport({ navigation }: TransportScreenProps) {
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
     data: allEntities,
     isLoading,

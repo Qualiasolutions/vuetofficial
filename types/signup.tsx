@@ -1,3 +1,5 @@
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+
 export type CreatePhoneValidationRequest = {
     phone_number: string;
 }
@@ -22,4 +24,52 @@ export type RegisterAccountRequest = {
 
 export type RegisterAccountResponse = {
     phone_number: string;
+    access_token: string;
+    refresh_token: string;
+}
+
+export function isInvalidPhoneNumberError(
+  error: unknown
+): error is { data: { phone_number: ["Enter a valid phone number."]} } {
+  return (
+    typeof error === "object"
+      && error !== null
+      && "data" in error
+      && typeof (error as any).data === "object"
+      && typeof ((error as any).data as any) === "object"
+      && typeof ((error as any).data as any).phone_number === "object"
+      && (((error as any).data as any).phone_number as any)["0"] === "Enter a valid phone number."
+  )
+}
+
+/*
+This helper function produces type-checking functions which return true if the
+fieldName field has an error of code errorCode. i.e. if the error returned is
+of the form:
+
+{
+  data: {
+    [fieldName]: {
+      code: errorCode,
+      ...
+    }
+  },
+  ...
+}
+*/
+export function isFieldErrorCodeError(
+  fieldName: string,
+  errorCode: string,
+): ((error: any) => boolean) {
+  return (error) => {
+    return (
+      typeof error === "object"
+        && error !== null
+        && "data" in error
+        && typeof (error as any).data === "object"
+        && typeof ((error as any).data as any) === "object"
+        && typeof ((error as any).data as any)[fieldName] === "object"
+        && (((error as any).data as any)[fieldName] as any).code === errorCode
+    )
+  }
 }

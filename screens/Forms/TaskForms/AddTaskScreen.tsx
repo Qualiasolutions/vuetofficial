@@ -16,11 +16,14 @@ import {
 } from 'reduxStore/services/api/tasks';
 
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
   const {
     isLoading,

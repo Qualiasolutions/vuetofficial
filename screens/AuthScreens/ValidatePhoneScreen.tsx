@@ -6,28 +6,31 @@ import { Text, View, TextInput, Button } from 'components/Themed';
 
 import GLOBAL_STYLES from 'globalStyles/styles';
 
-import { UnauthorisedTabScreenProps } from 'types/base';
+import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation, useUpdatePhoneValidationMutation } from 'reduxStore/services/api/signup';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { isFieldErrorCodeError } from 'types/signup';
 
-const ValidatePhoneScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
+const ValidatePhoneScreen = ({ navigation, route }: NativeStackScreenProps<UnauthorisedTabParamList, 'ValidatePhone'> ) => {
   const [validationCode, onChangeValidationCode] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-  const [updatePhoneValidation, result] = useUpdatePhoneValidationMutation({
-    fixedCacheKey: 'shared-update-phone-validation',
-  })
-
-  const [createPhoneValidation, createResult] = useCreatePhoneValidationMutation({
-    fixedCacheKey: 'shared-create-phone-validation',
-  })
+  const [updatePhoneValidation, result] = useUpdatePhoneValidationMutation()
+  const [createPhoneValidation, createPhoneResult] = useCreatePhoneValidationMutation()
 
   const { t } = useTranslation();
 
   useEffect(() => {
     if (result.isSuccess) {
-      navigation.navigate("CreatePassword")
+      navigation.navigate("CreatePassword", {
+        phoneNumber: route.params.phoneNumber
+      })
     } else {
       if (result.error) {
-        setErrorMessage(t('screens.validatePhone.codeError'))
+        if (isFieldErrorCodeError("code", "invalid_code")) {
+          setErrorMessage(t('screens.validatePhone.invalidCodeError'))
+        } else {
+          setErrorMessage(t('common.genericError'))
+        }
       }
     }
   }, [result])
@@ -54,22 +57,18 @@ const ValidatePhoneScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'>
       <Button
         title={t('common.verify')}
         onPress={() => {
-          if (createResult.data) {
-            updatePhoneValidation({
-              code: validationCode,
-              id: createResult.data?.id
-            })
-          }
+          updatePhoneValidation({
+            code: validationCode,
+            id: route.params?.validationId
+          })
         }}
         style={styles.confirmButton}
       />
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
       <Pressable onPress={() => {
-        if (createResult.data) {
-          createPhoneValidation({
-            phone_number: createResult.data.phone_number
-          })
-        }
+        createPhoneValidation({
+          phone_number: route.params?.phoneNumber
+        })
       }}>
       <Text
         lightColor="#AC3201"

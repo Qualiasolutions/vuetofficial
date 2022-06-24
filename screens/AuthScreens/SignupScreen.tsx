@@ -6,24 +6,34 @@ import { Text, View, TextInput, Button } from 'components/Themed';
 
 import GLOBAL_STYLES from 'globalStyles/styles';
 
-import { UnauthorisedTabScreenProps } from 'types/base';
+import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
+import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const SignupScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
+const SignupScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'> ) => {
   const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-  const [createPhoneValidation, result] = useCreatePhoneValidationMutation({
-    fixedCacheKey: 'shared-create-phone-validation',
-  })
+  
+  const [createPhoneValidation, result] = useCreatePhoneValidationMutation()
 
   const { t } = useTranslation();
 
   useEffect(() => {
     if (result.isSuccess) {
-      navigation.navigate("ValidatePhone")
+      navigation.navigate("ValidatePhone", {
+        validationId: result.data.id,
+        phoneNumber: result.data.phone_number
+      })
     } else {
       if (result.error) {
-        setErrorMessage(t('screens.signUp.phoneError'))
+        if (isFieldErrorCodeError('phone_number', 'phone_number_used')(result.error)) {
+          setErrorMessage(t('screens.signUp.phoneUsedError'))
+        } else if (isInvalidPhoneNumberError(result.error)) {
+          setErrorMessage(t('screens.signUp.phoneInvalidError'))
+        } else {
+          setErrorMessage(t('common.genericError'))
+        }
       }
     }
   }, [result])

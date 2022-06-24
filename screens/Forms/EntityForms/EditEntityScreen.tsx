@@ -25,7 +25,8 @@ import GenericError from 'components/molecules/GenericError';
 export default function EditEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
 
   const {

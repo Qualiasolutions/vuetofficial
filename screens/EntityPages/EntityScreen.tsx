@@ -12,6 +12,8 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { RootTabParamList } from 'types/base';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 const getTasksByEntityId = (
   allTasks: ScheduledTaskResponseType[],
@@ -26,7 +28,8 @@ export const EntityScreen = ({
   navigation,
   route
 }: NativeStackScreenProps<RootTabParamList, 'EntityScreen'>) => {
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
     data: allEntities,
     isLoading: isLoadingEntities,

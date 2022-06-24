@@ -6,28 +6,35 @@ import { Text, View, TextInput, Button } from 'components/Themed';
 
 import GLOBAL_STYLES from 'globalStyles/styles';
 
-import { UnauthorisedTabScreenProps } from 'types/base';
+import { UnauthorisedTabParamList } from 'types/base';
 import { useCreateAccountMutation, useCreatePhoneValidationMutation, useUpdatePhoneValidationMutation } from 'reduxStore/services/api/signup';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Constants from 'expo-constants';
+import { useDispatch } from 'react-redux';
+import { setAccessToken, setRefreshToken, setUsername } from 'reduxStore/slices/auth/actions';
 
-const CreatePasswordScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
+const ENV = Constants.manifest?.extra?.processEnv;
+
+const CreatePasswordScreen = ({ navigation, route }: NativeStackScreenProps<UnauthorisedTabParamList, 'CreatePassword'> ) => {
   const [password, onChangePassword] = React.useState<string>('');
   const [passwordConfirm, onChangePasswordConfirm] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const [createPhoneValidation, createValidationResult] = useCreatePhoneValidationMutation({
-    fixedCacheKey: 'shared-create-phone-validation',
-  })
+  const [createPhoneValidation, createValidationResult] = useCreatePhoneValidationMutation()
+  const [createAccount, createAccountResult] = useCreateAccountMutation()
 
-  const [createAccount, createAccountResult] = useCreateAccountMutation({
-    fixedCacheKey: 'shared-create-account',
-  })
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (createAccountResult.isSuccess) {
-      navigation.navigate("Login")
+      const {access_token, refresh_token, phone_number} = createAccountResult.data
+
+      dispatch(setAccessToken(access_token));
+      dispatch(setRefreshToken(refresh_token));
+      dispatch(setUsername(phone_number));
     } else {
       if (createAccountResult.error) {
-        setErrorMessage(t('screens.createPassword.passwordError'))
+        setErrorMessage(t('common.genericError'))
       }
     }
   }, [createAccountResult])
@@ -68,11 +75,16 @@ const CreatePasswordScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'
       <Button
         title={t('common.verify')}
         onPress={() => {
-          if (createValidationResult.data) {
+          const minimumPasswordLength = ENV === "PROD" ? 8 : 2
+          if (password.length < minimumPasswordLength) {
+            setErrorMessage(t('screens.createPassword.passwordTooShort', { minimumLength: minimumPasswordLength }))
+          } else if (password !== passwordConfirm) {
+            setErrorMessage(t('screens.createPassword.passwordsDontMatch'))
+          } else {
             createAccount({
               password,
               password2: passwordConfirm,
-              phone_number: createValidationResult.data?.phone_number
+              phone_number: route.params.phoneNumber
             })
           }
         }}

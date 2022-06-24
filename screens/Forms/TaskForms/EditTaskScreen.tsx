@@ -18,11 +18,14 @@ import {
   useUpdateTaskMutation
 } from 'reduxStore/services/api/tasks';
 import GenericError from 'components/molecules/GenericError';
+import { useSelector } from 'react-redux';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export default function EditTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const {
     isLoading,

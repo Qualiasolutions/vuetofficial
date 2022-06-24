@@ -17,10 +17,7 @@ declare global {
 }
 
 export type UnauthorisedStackParamList = {
-  Login: undefined;
-  Signup: undefined;
-  ValidatePhone: undefined;
-  CreatePassword: undefined;
+  Unauthorised: NavigatorScreenParams<UnauthorisedTabParamList> | undefined;
 };
 
 export type UnauthorisedStackScreenProps<
@@ -29,29 +26,19 @@ export type UnauthorisedStackScreenProps<
 
 export type UnauthorisedTabParamList = {
   Login: undefined;
+  Signup: undefined;
+  ValidatePhone: {
+    phoneNumber: string;
+    validationId: number;
+  };
+  CreatePassword: {
+    phoneNumber: string;
+  };
 };
 
 export type UnauthorisedTabScreenProps<
   Screen extends keyof UnauthorisedTabParamList
-> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
-
-export type CategoriesStackParamList = {
-  CategoriesGrid: { initial: undefined; screen: undefined };
-  Transport: undefined;
-};
-
-export type CategoriesStackScreenProps<
-  Screen extends keyof CategoriesStackParamList
-> = NativeStackScreenProps<CategoriesStackParamList, Screen>;
-
-export type CategoriesTabParamList = {
-  CategoriesGrid: undefined;
-  Transport: undefined;
-};
-
-export type CategoriesTabScreenProps<
-  Screen extends keyof CategoriesTabParamList
-> = NativeStackScreenProps<CategoriesStackParamList, Screen>;
+> = NativeStackScreenProps<UnauthorisedTabParamList, Screen>;
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;

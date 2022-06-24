@@ -15,7 +15,7 @@ import {
   isSuccessfulResponseType,
   makeAuthorisedRequest
 } from 'utils/makeAuthorisedRequest';
-import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
+import { selectAccessToken, selectUsername } from 'reduxStore/slices/auth/selectors';
 import Constants from 'expo-constants';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
@@ -40,11 +40,12 @@ type PropTypes = {
 
 export default function Task({ task, selected, onPress }: PropTypes) {
   const jwtAccessToken = useSelector(selectAccessToken);
+  const username = useSelector(selectUsername);
 
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
 
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const [triggerCreateCompletionForm, createCompletionFormResult] =
     useCreateTaskCompletionFormMutation();

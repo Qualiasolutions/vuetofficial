@@ -30,7 +30,8 @@ export default function AddEntityScreen({
 
   const { t } = useTranslation();
 
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const {
     data: allEntities,

@@ -5,11 +5,14 @@ import { Text } from 'components/Themed';
 import React from 'react';
 import { Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 function CalendarScreen() {
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const currentMonthStart = new Date();
   currentMonthStart.setDate(1);

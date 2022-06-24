@@ -20,7 +20,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
-import { RootTabParamList, UnauthorisedStackParamList } from '../types/base';
+import { RootTabParamList, UnauthorisedTabParamList } from '../types/base';
 import LinkingConfiguration from './LinkingConfiguration';
 import LoginScreen from 'screens/AuthScreens/LoginScreen';
 import SignupScreen from 'screens/AuthScreens/SignupScreen';
@@ -29,11 +29,11 @@ import CreatePasswordScreen from 'screens/AuthScreens/CreatePasswordScreen';
 
 import { useTranslation } from 'react-i18next';
 
-import { verifyTokenAsync, refreshTokenAsync } from '../utils/authRequests';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectAccessToken,
-  selectRefreshToken
+  selectRefreshToken,
+  selectUsername
 } from 'reduxStore/slices/auth/selectors';
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import Transport from 'screens/Categories/Transport';
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
  * https://reactnavigation.org/docs/modal
  */
 const UnauthorisedStack =
-  createNativeStackNavigator<UnauthorisedStackParamList>();
+  createNativeStackNavigator<UnauthorisedTabParamList>();
 
 function UnauthorisedNavigator() {
   return (
@@ -102,7 +102,8 @@ function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   const { t } = useTranslation();
 
-  const { data: userDetails } = useGetUserDetailsQuery();
+  const username = useSelector(selectUsername)
+  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
     refetchOnMountOrArgChange: true

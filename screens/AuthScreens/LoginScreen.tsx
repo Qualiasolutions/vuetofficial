@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -17,10 +17,10 @@ import { getTokenAsync } from 'utils/authRequests';
 
 import GLOBAL_STYLES from 'globalStyles/styles';
 
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
-import { UnauthorisedTabScreenProps } from 'types/base';
+import { UnauthorisedTabParamList } from 'types/base';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const LoginScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
+const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'> ) => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
@@ -28,8 +28,6 @@ const LoginScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
-
-  const { refetch: refetchUserDetails } = useGetUserDetailsQuery();
 
   const setTokenAsync = async (
     usernameToUse: string,
@@ -42,8 +40,6 @@ const LoginScreen = ({ navigation }: UnauthorisedTabScreenProps<'Login'> ) => {
           dispatch(setAccessToken(access));
           dispatch(setRefreshToken(refresh));
           dispatch(setUsername(usernameToUse));
-
-          refetchUserDetails();
         } else {
           setErrorMessage(
             'Failed to log in. Please check that you have entered your credentials correctly'

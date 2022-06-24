@@ -31,7 +31,7 @@ export const vuetApi = createApi({
         url: `core/user/${user_id}`
       })
     }),
-    getUserDetails: builder.query<AuthDetails, void>({
+    getUserDetails: builder.query<AuthDetails, string>({
       query: () => ({
         url: 'auth/details/'
       })
