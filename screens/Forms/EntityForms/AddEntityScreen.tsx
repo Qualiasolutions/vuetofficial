@@ -15,6 +15,8 @@ import {
 } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export default function AddEntityScreen({
   route
