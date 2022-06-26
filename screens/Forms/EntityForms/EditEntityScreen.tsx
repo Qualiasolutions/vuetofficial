@@ -21,6 +21,8 @@ import {
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
+import { useSelector } from 'react-redux';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export default function EditEntityScreen({
   route
