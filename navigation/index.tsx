@@ -160,7 +160,6 @@ function BottomTabNavigator() {
         headerTitleAlign: 'center',
         tabBarShowLabel: false,
         tabBarStyle: {
-          position: 'absolute',
           bottom: -10,
           left: 0,
           right: 0,
@@ -200,6 +199,7 @@ function BottomTabNavigator() {
         name="Categories"
         component={CategoriesGrid}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
               <Image
