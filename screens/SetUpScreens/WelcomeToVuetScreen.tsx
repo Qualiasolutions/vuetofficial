@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -57,6 +57,10 @@ const WelcomeToVuetScreen = ({
 
   return (
     <AlmostWhiteContainerView>
+      <Image
+        source={require('../../assets/images/icons/tick-circle.png')}
+        style={styles.tickIcon}
+      />
       <PageTitle
         text={t('screens.welcomeToVuet.title', {
           name: userFullDetails?.first_name
@@ -83,6 +87,11 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
+  },
+  tickIcon: {
+    height: 50,
+    width: 50,
+    marginBottom: 40
   }
 });
 

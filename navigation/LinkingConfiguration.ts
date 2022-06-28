@@ -23,7 +23,13 @@ const linking: LinkingOptions<TabParamList> = {
       EditEntity: 'edit-entity',
       EntityScreen: 'entity',
       Login: 'login',
-      NotFound: '*'
+      Signup: 'signup',
+      ValidatePhone: 'validate-phone',
+      CreatePassword: 'create-password',
+      NotFound: '*',
+      CreateAccount: 'create-account',
+      AddFamily: 'add-family',
+      WelcomeToVuet: 'welcome'
     }
   }
 };

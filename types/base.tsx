@@ -82,7 +82,7 @@ export type RootTabParamList = {
   };
 };
 
-export type TabParamList = RootTabParamList & UnauthorisedTabParamList;
+export type TabParamList = RootTabParamList & UnauthorisedTabParamList & SetupTabParamList;
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<
