@@ -11,7 +11,7 @@ import {
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 import { FontAwesome } from '@expo/vector-icons';
 import { RootTabScreenProps } from 'types/base';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
@@ -41,7 +41,7 @@ const dueDateField = (name: string, date: Date | null) =>
 type TransportScreenProps = RootTabScreenProps<'Transport'>;
 
 export default function Transport({ navigation }: TransportScreenProps) {
-  const username = useSelector(selectUsername)
+  const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
     data: allEntities,

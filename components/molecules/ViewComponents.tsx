@@ -1,16 +1,14 @@
 import { useThemeColor } from 'components/Themed';
 import { StyleSheet } from 'react-native';
-import {
-  View as DefaultView,
-} from 'react-native';  
-  
+import { View as DefaultView } from 'react-native';
+
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
 };
 
 export type ViewProps = ThemeProps & DefaultView['props'];
-  
+
 export function WhiteContainerView(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
@@ -18,7 +16,12 @@ export function WhiteContainerView(props: ViewProps) {
     'white'
   );
 
-  return <DefaultView style={[{ backgroundColor }, styles.container, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor }, styles.container, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function AlmostWhiteContainerView(props: ViewProps) {
@@ -28,7 +31,22 @@ export function AlmostWhiteContainerView(props: ViewProps) {
     'almostWhite'
   );
 
-  return <DefaultView style={[{ backgroundColor }, styles.container, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor }, styles.container, style]}
+      {...otherProps}
+    />
+  );
+}
+
+export function WhiteView(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'white'
+  );
+
+  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
 export function AlmostWhiteView(props: ViewProps) {
@@ -51,11 +69,35 @@ export function TransparentView(props: ViewProps) {
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
+export function WhiteBox(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'white'
+  );
+  const borderColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'grey'
+  );
+
+  return (
+    <DefaultView
+      style={[{ backgroundColor, borderColor }, styles.box, style]}
+      {...otherProps}
+    />
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
+    padding: 40
   },
-})
+  box: {
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1
+  }
+});

@@ -1,45 +1,46 @@
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 export type CreatePhoneValidationRequest = {
-    phone_number: string;
-}
+  phone_number: string;
+};
 
 export type UpdatePhoneValidationRequest = {
-    id: number;
-    code: string;
-}
+  id: number;
+  code: string;
+};
 
 export type PhoneValidationResponse = {
-    id: number;
-    phone_number: string;
-    validated: boolean;
-    created_at: string;
-}
+  id: number;
+  phone_number: string;
+  validated: boolean;
+  created_at: string;
+};
 
 export type RegisterAccountRequest = {
-    password: string;
-    password2: string;
-    phone_number: string;
-}
+  password: string;
+  password2: string;
+  phone_number: string;
+};
 
 export type RegisterAccountResponse = {
-    phone_number: string;
-    access_token: string;
-    refresh_token: string;
-}
+  phone_number: string;
+  access_token: string;
+  refresh_token: string;
+};
 
 export function isInvalidPhoneNumberError(
   error: unknown
-): error is { data: { phone_number: ["Enter a valid phone number."]} } {
+): error is { data: { phone_number: ['Enter a valid phone number.'] } } {
   return (
-    typeof error === "object"
-      && error !== null
-      && "data" in error
-      && typeof (error as any).data === "object"
-      && typeof ((error as any).data as any) === "object"
-      && typeof ((error as any).data as any).phone_number === "object"
-      && (((error as any).data as any).phone_number as any)["0"] === "Enter a valid phone number."
-  )
+    typeof error === 'object' &&
+    error !== null &&
+    'data' in error &&
+    typeof (error as any).data === 'object' &&
+    typeof ((error as any).data as any) === 'object' &&
+    typeof ((error as any).data as any).phone_number === 'object' &&
+    (((error as any).data as any).phone_number as any)['0'] ===
+      'Enter a valid phone number.'
+  );
 }
 
 /*
@@ -59,17 +60,17 @@ of the form:
 */
 export function isFieldErrorCodeError(
   fieldName: string,
-  errorCode: string,
-): ((error: any) => boolean) {
+  errorCode: string
+): (error: any) => boolean {
   return (error) => {
     return (
-      typeof error === "object"
-        && error !== null
-        && "data" in error
-        && typeof (error as any).data === "object"
-        && typeof ((error as any).data as any) === "object"
-        && typeof ((error as any).data as any)[fieldName] === "object"
-        && (((error as any).data as any)[fieldName] as any).code === errorCode
-    )
-  }
+      typeof error === 'object' &&
+      error !== null &&
+      'data' in error &&
+      typeof (error as any).data === 'object' &&
+      typeof ((error as any).data as any) === 'object' &&
+      typeof ((error as any).data as any)[fieldName] === 'object' &&
+      (((error as any).data as any)[fieldName] as any).code === errorCode
+    );
+  };
 }

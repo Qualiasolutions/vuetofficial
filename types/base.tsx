@@ -40,6 +40,23 @@ export type UnauthorisedTabScreenProps<
   Screen extends keyof UnauthorisedTabParamList
 > = NativeStackScreenProps<UnauthorisedTabParamList, Screen>;
 
+export type SetupTabParamList = {
+  CreateAccount: undefined;
+  AddFamily: undefined;
+  AddFamilyMember: undefined;
+  WelcomeToVuet: undefined;
+};
+
+export type SetupStackParamList = {
+  Unauthorised: NavigatorScreenParams<SetupTabParamList> | undefined;
+};
+
+export type SetupStackScreenProps<Screen extends keyof SetupStackParamList> =
+  NativeStackScreenProps<SetupStackParamList, Screen>;
+
+export type SetupTabScreenProps<Screen extends keyof SetupTabParamList> =
+  NativeStackScreenProps<SetupTabParamList, Screen>;
+
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
 };

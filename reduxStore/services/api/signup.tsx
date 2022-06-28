@@ -1,5 +1,11 @@
 import { vuetApi } from './api';
-import { CreatePhoneValidationRequest, PhoneValidationResponse, RegisterAccountRequest, RegisterAccountResponse, UpdatePhoneValidationRequest } from 'types/signup';
+import {
+  CreatePhoneValidationRequest,
+  PhoneValidationResponse,
+  RegisterAccountRequest,
+  RegisterAccountResponse,
+  UpdatePhoneValidationRequest
+} from 'types/signup';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -15,7 +21,10 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       }
     }),
-    createPhoneValidation: builder.mutation<PhoneValidationResponse, CreatePhoneValidationRequest>({
+    createPhoneValidation: builder.mutation<
+      PhoneValidationResponse,
+      CreatePhoneValidationRequest
+    >({
       query: (body) => {
         return {
           url: 'auth/phone-validation/',
@@ -24,15 +33,18 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       }
     }),
-    createAccount:  builder.mutation<RegisterAccountResponse, RegisterAccountRequest>({
-        query: (body) => {
-          return {
-            url: 'auth/register/',
-            method: 'POST',
-            body
-          };
-        }
-      }),
+    createAccount: builder.mutation<
+      RegisterAccountResponse,
+      RegisterAccountRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'auth/register/',
+          method: 'POST',
+          body
+        };
+      }
+    })
   }),
   overrideExisting: true
 });

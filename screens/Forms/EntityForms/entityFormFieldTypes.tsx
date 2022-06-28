@@ -2,13 +2,13 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import {
   useGetUserFullDetailsQuery,
   useGetUserDetailsQuery
-} from 'reduxStore/services/api/api';
+} from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export const carForm = (): FormFieldTypes => {
-  const username = useSelector(selectUsername)
+  const username = useSelector(selectUsername);
   const {
     data: userDetails,
     isLoading: isLoadingUserDetails,

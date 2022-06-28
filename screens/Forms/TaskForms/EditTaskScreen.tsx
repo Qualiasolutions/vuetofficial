@@ -11,7 +11,7 @@ import { useCallback, useState } from 'react';
 import { deepCopy } from 'utils/copy';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import DeleteSuccess from '../components/DeleteSuccess';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import {
   useDeleteTaskMutation,
   useGetAllTasksQuery,
@@ -24,7 +24,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 export default function EditTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
-  const username = useSelector(selectUsername)
+  const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const {

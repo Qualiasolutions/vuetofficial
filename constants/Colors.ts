@@ -1,29 +1,31 @@
 const lightColors = {
-  primary: "#AC3201",
-  secondary: "#3E3647",
-  error: "#ff0000",
+  primary: '#AC3201',
+  secondary: '#3E3647',
+  error: '#ff0000',
   tintColor: '#2f95dc',
-  almostBlack: "#707070",
-  black: "#000",
-  white: "#fff",
-  almostWhite: "#efefef",
-  transparent: 'rgba(0, 0, 0, 0)'
-}
+  almostBlack: '#707070',
+  black: '#000',
+  white: '#fff',
+  almostWhite: '#efefef',
+  transparent: 'rgba(0, 0, 0, 0)',
+  grey: '#D8D8D8'
+};
 
 // TODO - dark theme
-const darkColors = lightColors
+const darkColors = lightColors;
 
 export default {
   light: {
     transparent: lightColors.transparent,
     text: lightColors.black,
     errorText: lightColors.error,
-    errorBackground: lightColors.error + "22",
+    errorBackground: lightColors.error + '22',
     primary: lightColors.primary,
     black: lightColors.black,
     white: lightColors.white,
     almostBlack: lightColors.almostBlack,
     almostWhite: lightColors.almostWhite,
+    grey: lightColors.grey,
     headerText: lightColors.primary,
     subheaderText: lightColors.almostBlack,
     backgroundWhite: lightColors.white,
@@ -38,12 +40,13 @@ export default {
     transparent: darkColors.transparent,
     text: darkColors.black,
     errorText: darkColors.error,
-    errorBackground: darkColors.error + "22",
+    errorBackground: darkColors.error + '22',
     primary: darkColors.primary,
     black: darkColors.black,
     white: darkColors.white,
     almostBlack: darkColors.almostBlack,
     almostWhite: darkColors.almostWhite,
+    grey: darkColors.grey,
     headerText: darkColors.primary,
     subheaderText: darkColors.almostBlack,
     backgroundWhite: darkColors.white,
@@ -52,5 +55,5 @@ export default {
     buttonTextDefault: darkColors.white,
     tint: darkColors.tintColor,
     tabIconSelected: darkColors.tintColor
-  },
+  }
 };

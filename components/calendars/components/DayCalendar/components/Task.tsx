@@ -15,7 +15,10 @@ import {
   isSuccessfulResponseType,
   makeAuthorisedRequest
 } from 'utils/makeAuthorisedRequest';
-import { selectAccessToken, selectUsername } from 'reduxStore/slices/auth/selectors';
+import {
+  selectAccessToken,
+  selectUsername
+} from 'reduxStore/slices/auth/selectors';
 import Constants from 'expo-constants';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
@@ -23,7 +26,7 @@ import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
@@ -66,10 +69,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     return <GenericError />;
   }
 
-  console.log(allEntities);
-  console.log(task.entity);
   const entity = allEntities.byId[task.entity];
-  console.log(entity);
 
   const addDays = (numDays = 1) => {
     if (isFixedTaskParsedType(task)) {

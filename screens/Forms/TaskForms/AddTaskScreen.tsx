@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { TaskResponseType } from 'types/tasks';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import {
   useCreateTaskMutation,
   useGetAllTasksQuery
@@ -22,7 +22,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
-  const username = useSelector(selectUsername)
+  const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
   const {

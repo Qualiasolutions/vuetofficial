@@ -1,17 +1,15 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Calendar from 'components/calendars/Calendar';
 import GenericError from 'components/molecules/GenericError';
-import { Text } from 'components/Themed';
 import React from 'react';
-import { Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 function CalendarScreen() {
-  const username = useSelector(selectUsername)
+  const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const currentMonthStart = new Date();

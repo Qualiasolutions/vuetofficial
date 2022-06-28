@@ -35,6 +35,9 @@ type UserFullDetails = {
   is_staff: boolean;
   is_active: boolean;
   date_joined: string;
+  member_colour: string;
+  dob: string;
+  has_done_setup: boolean;
 };
 
 export { AllTasks, AllEntities, AllCategories, UserFullDetails };

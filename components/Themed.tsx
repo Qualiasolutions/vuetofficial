@@ -42,7 +42,9 @@ export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
-  return <DefaultText style={[{ color }, styles.text, style]} {...otherProps} />;
+  return (
+    <DefaultText style={[{ color }, styles.text, style]} {...otherProps} />
+  );
 }
 
 export function View(props: ViewProps) {
@@ -61,29 +63,29 @@ export function TextInput(props: TextInputProps) {
     { light: lightColor, dark: darkColor },
     'backgroundWhite'
   );
-  const color = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'text'
-  );
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
-  return <DefaultTextInput style={[
-    {
-      backgroundColor,
-      color,
-    },
-    styles.textInput,
-    style
-  ]} {...otherProps} />;
+  return (
+    <DefaultTextInput
+      style={[
+        {
+          backgroundColor,
+          color
+        },
+        styles.textInput,
+        style
+      ]}
+      {...otherProps}
+    />
+  );
 }
 
 export function Button(
-  props: (
-    ThemeProps & {
-      onPress: (event: GestureResponderEvent) => void,
-      title: string,
-      style?: object
-    }
-  )
+  props: ThemeProps & {
+    onPress: (event: GestureResponderEvent) => void;
+    title: string;
+    style?: object;
+  }
 ) {
   const { style, title, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
@@ -94,22 +96,23 @@ export function Button(
     { light: lightColor, dark: darkColor },
     'buttonTextDefault'
   );
-  const color = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'text'
-  );
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
-  return <Pressable style={[
-    {
-      backgroundColor,
-      color,
-    },
-    styles.button,
-    style
-  ]}
-  {...otherProps}>
-    <Text style={[{color: textColor}, styles.buttonText]}>{title}</Text>
-  </Pressable>;
+  return (
+    <Pressable
+      style={[
+        {
+          backgroundColor,
+          color
+        },
+        styles.button,
+        style
+      ]}
+      {...otherProps}
+    >
+      <Text style={[{ color: textColor }, styles.buttonText]}>{title}</Text>
+    </Pressable>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -137,4 +140,4 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold'
   }
-})
+});

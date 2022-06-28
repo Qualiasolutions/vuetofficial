@@ -22,20 +22,10 @@ export const normalizeData = (data: { id: number }[]) => {
 // Define a service using a base URL and expected endpoints
 export const vuetApi = createApi({
   reducerPath: 'vuetApi',
-  tagTypes: ['Entity', 'Task', 'TaskCompletionForm', 'Category'],
+  tagTypes: ['Entity', 'Task', 'TaskCompletionForm', 'Category', 'User'],
   baseQuery: customFetchBase,
   refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
-    getUserFullDetails: builder.query<UserFullDetails, number>({
-      query: (user_id) => ({
-        url: `core/user/${user_id}`
-      })
-    }),
-    getUserDetails: builder.query<AuthDetails, string>({
-      query: () => ({
-        url: 'auth/details/'
-      })
-    }),
     getAllCategories: builder.query<AllCategories, void>({
       query: () => ({
         url: 'core/category',
@@ -56,8 +46,4 @@ export const vuetApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const {
-  useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery,
-  useGetAllCategoriesQuery
-} = vuetApi;
+export const { useGetAllCategoriesQuery } = vuetApi;

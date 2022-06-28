@@ -9,8 +9,8 @@ export default function DateTimeTextInput({
   textInputStyle,
   onValueChange
 }: {
-  value: Date;
-  textInputStyle: ViewStyle;
+  value: Date | null;
+  textInputStyle?: ViewStyle;
   onValueChange: Function;
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
@@ -22,7 +22,7 @@ export default function DateTimeTextInput({
         <View pointerEvents="none">
           <TextInput
             value={value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : ''}
-            style={textInputStyle}
+            style={textInputStyle || {}}
           />
         </View>
       </Pressable>

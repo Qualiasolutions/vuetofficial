@@ -20,8 +20,6 @@ import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import './i18n/i18n';
 
-
-
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
@@ -47,7 +45,6 @@ setupListeners(store.dispatch);
 export default function App() {
   const loadedCachedResources = useCachedResources();
   const colorScheme = useColorScheme();
-
 
   if (!loadedCachedResources) {
     return null;

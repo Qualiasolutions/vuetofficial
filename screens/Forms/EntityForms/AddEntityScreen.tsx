@@ -13,7 +13,7 @@ import {
   useCreateEntityMutation,
   useGetAllEntitiesQuery
 } from 'reduxStore/services/api/entities';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/api';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
@@ -32,7 +32,7 @@ export default function AddEntityScreen({
 
   const { t } = useTranslation();
 
-  const username = useSelector(selectUsername)
+  const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const {

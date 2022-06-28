@@ -26,7 +26,9 @@
   "common": {
     "confirm": "Confirm",
     "verify": "Verify",
-    "genericError": "Oops, something went wrong. Please try again later."
+    "genericError": "Oops, something went wrong. Please try again later.",
+    "next": "Next",
+    "continue": "Continue"
   },
   "screens": {
     "logIn": {
@@ -62,6 +64,25 @@
       "passwordTooShort": "Your password must be at least {{minimumLength}} letters long",
       "passwordsDontMatch": "Those passwords don't match",
       "passwordError": "Hmm, something went wrong - make sure your password is secure (at least 8 letters and not too common) and that your passwords match"
+    },
+    "createAccount": {
+      "title": "Create an account",
+      "addDetails": "Add your details to start using Vuet App",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "dob": "Date of Birth",
+      "memberColour": "Member colour",
+      "invalidDateMessage": "Invalid date detected - please enter a date in the past",
+      "allFieldsRequiredError": "All fields on this page must be completed"
+    },
+    "addFamily": {
+      "title": "Add family members",
+      "startAdding": "Start by adding a thumbnail to your group"
+    },
+    "welcomeToVuet": {
+      "title": "Welcome to Vuet App {{name}}",
+      "createdSuccessfully": "Your account has been created successfully.",
+      "willSend": "We'll send all the members a welcome notification."
     },
     "settings": {
       "logOutText": "Log Out",

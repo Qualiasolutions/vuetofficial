@@ -17,11 +17,21 @@ import { getTokenAsync } from 'utils/authRequests';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PageTitle, PageSubtitle, PrimaryText, AlmostBlackText } from 'components/molecules/TextComponents';
-import { AlmostWhiteContainerView, TransparentView } from 'components/molecules/ViewComponents';
+import {
+  PageTitle,
+  PageSubtitle,
+  PrimaryText,
+  AlmostBlackText
+} from 'components/molecules/TextComponents';
+import {
+  AlmostWhiteContainerView,
+  TransparentView
+} from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 
-const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'> ) => {
+const LoginScreen = ({
+  navigation
+}: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'>) => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
@@ -55,24 +65,30 @@ const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParam
       });
   };
 
-  const errorContent = errorMessage
-    ? <ErrorBox errorText={errorMessage}></ErrorBox>
-    : null;
+  const errorContent = errorMessage ? (
+    <ErrorBox errorText={errorMessage}></ErrorBox>
+  ) : null;
 
   return (
     <AlmostWhiteContainerView>
-      <PageTitle text={t('screens.logIn.welcomeBack')}/>
-      <PageSubtitle text={t('screens.logIn.enterNumber')}/>
+      <PageTitle text={t('screens.logIn.welcomeBack')} />
+      <PageSubtitle text={t('screens.logIn.enterNumber')} />
       {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText style={styles.inputLabel} text={t('screens.logIn.phoneNumber')}/>
+        <AlmostBlackText
+          style={styles.inputLabel}
+          text={t('screens.logIn.phoneNumber')}
+        />
       </TransparentView>
       <TextInput
         value={username}
         onChangeText={(text) => onChangeUsername(text)}
       />
       <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText style={styles.inputLabel} text={t('screens.logIn.password')}/>
+        <AlmostBlackText
+          style={styles.inputLabel}
+          text={t('screens.logIn.password')}
+        />
       </TransparentView>
       <TextInput
         value={password}
@@ -91,12 +107,12 @@ const LoginScreen = ({ navigation }: NativeStackScreenProps<UnauthorisedTabParam
         style={styles.confirmButton}
       />
       <Text>{t('screens.logIn.dontHaveAccount')}</Text>
-      <Pressable onPress={() => {
-        navigation.navigate('Signup')}}>
-        <PrimaryText
-          style={styles.signUp}
-          text={t('screens.logIn.signUp')}
-        />
+      <Pressable
+        onPress={() => {
+          navigation.navigate('Signup');
+        }}
+      >
+        <PrimaryText style={styles.signUp} text={t('screens.logIn.signUp')} />
       </Pressable>
     </AlmostWhiteContainerView>
   );
@@ -106,7 +122,7 @@ const styles = StyleSheet.create({
   inputLabelWrapper: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    width: '100%',
+    width: '100%'
   },
   inputLabel: {
     fontSize: 12,
@@ -114,15 +130,15 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     marginTop: 30,
-    marginBottom: 15,
+    marginBottom: 15
   },
   forgotPasswordWrapper: {
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    width: '100%',
+    width: '100%'
   },
   forgotPassword: {
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   signUp: {
     fontWeight: 'bold'
