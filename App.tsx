@@ -5,7 +5,6 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import Splash from './screens/SplashScreen';
-
 import { Provider } from 'react-redux';
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import type { CombinedState } from '@reduxjs/toolkit';
@@ -20,6 +19,8 @@ import { RootAction } from 'reduxStore/actions';
 import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import './i18n/i18n';
+
+
 
 const persistConfig = {
   key: 'root',
@@ -46,6 +47,7 @@ setupListeners(store.dispatch);
 export default function App() {
   const loadedCachedResources = useCachedResources();
   const colorScheme = useColorScheme();
+
 
   if (!loadedCachedResources) {
     return null;

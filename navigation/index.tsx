@@ -12,9 +12,15 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, StyleSheet } from 'react-native';
+import {
+  ColorSchemeName,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity
+} from 'react-native';
 
-import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
@@ -49,12 +55,20 @@ import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 
 const styles = StyleSheet.create({
-  spinnerWrapper: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+  shadow: {
+    shadowColor: '#7F5DF0',
+    shadowOffset: {
+      width: 0,
+      height: 10
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5
+  },
+  icon: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    top: -5
   }
 });
 
@@ -92,6 +106,29 @@ function UnauthorisedNavigator() {
   );
 }
 
+const AddButton = ({ children, onPress }: { [key: string]: any }) => (
+  <TouchableOpacity
+    style={{
+      top: -30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...styles.shadow
+    }}
+    onPress={onPress}
+  >
+    <View
+      style={{
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: '#e32f45'
+      }}
+    >
+      {children}
+    </View>
+  </TouchableOpacity>
+);
+
 /**
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
@@ -119,7 +156,19 @@ function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint
+        headerShown: true,
+        headerTitleAlign: 'center',
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          position: 'absolute',
+          bottom: -10,
+          left: 0,
+          right: 0,
+          backgroundColor: '#ffffff',
+          borderRadius: 15,
+          height: 90,
+          ...styles.shadow
+        }
       }}
       backBehavior="history"
     >
@@ -127,45 +176,114 @@ function BottomTabNavigator() {
         name="Home"
         component={CalendarScreen}
         options={{
-          title: t('pageTitles.home'),
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.icon}>
+              <Image
+                source={require('../assets/images/Home.png')}
+                resizeMode="contain"
+                style={{
+                  width: 25,
+                  height: 25,
+                  tintColor: focused ? '#e32f45' : '#748c94'
+                }}
+              />
+              <Text
+                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
+              >
+                {t('pageTitles.home')}
+              </Text>
+            </View>
+          )
         }}
       />
       <BottomTab.Screen
         name="Categories"
         component={CategoriesGrid}
         options={{
-          title: t('pageTitles.categories'),
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="th" color={color} />
-        }}
-      />
-      <BottomTab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          title: t('pageTitles.settings'),
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.icon}>
+              <Image
+                source={require('../assets/images/Dashboard.png')}
+                resizeMode="contain"
+                style={{
+                  width: 25,
+                  height: 25,
+                  tintColor: focused ? '#e32f45' : '#748c94'
+                }}
+              />
+              <Text
+                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
+              >
+                {t('pageTitles.categories')}
+              </Text>
+            </View>
+          )
         }}
       />
       <BottomTab.Screen
         name="AddTask"
         component={AddTaskScreen}
         options={{
-          title: t('pageTitles.addTask'),
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('../assets/images/plus_icon.png')}
+              resizeMode="contain"
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: '#fff'
+              }}
+            />
+          ),
+          tabBarButton: (props) => <AddButton {...props} />
         }}
       />
       <BottomTab.Screen
-        name="EditTask"
-        component={EditTaskScreen}
+        name="EntityScreen"
+        component={EntityScreen}
         options={{
-          tabBarButton: (props) => null,
-          title: t('pageTitles.editTask'),
-          headerShown: false
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.icon}>
+              <Image
+                source={require('../assets/images/Calendar.png')}
+                resizeMode="contain"
+                style={{
+                  width: 25,
+                  height: 25,
+                  tintColor: focused ? '#e32f45' : '#748c94'
+                }}
+              />
+              <Text
+                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
+              >
+                {t('pageTitles.calendar')}
+              </Text>
+            </View>
+          )
+        }}
+      />
+      <BottomTab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.icon}>
+              <Image
+                source={require('../assets/images/Chat.png')}
+                resizeMode="contain"
+                style={{
+                  width: 25,
+                  height: 25,
+                  tintColor: focused ? '#e32f45' : '#748c94'
+                }}
+              />
+              <Text
+                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
+              >
+                {t('pageTitles.settings')}
+              </Text>
+            </View>
+          )
         }}
       />
       <BottomTab.Screen
@@ -175,6 +293,14 @@ function BottomTabNavigator() {
           tabBarButton: (props) => null,
           title: t('pageTitles.transport'),
           headerShown: false
+        }}
+      />
+      <BottomTab.Screen
+        name="NotFound"
+        component={NotFoundScreen}
+        options={{
+          tabBarButton: (props) => null,
+          title: t('pageTitles.oops')
         }}
       />
       <BottomTab.Screen
@@ -196,20 +322,12 @@ function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="EntityScreen"
-        component={EntityScreen}
+        name="EditTask"
+        component={EditTaskScreen}
         options={{
           tabBarButton: (props) => null,
-          title: t('pageTitles.entity'),
+          title: t('pageTitles.editTask'),
           headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: t('pageTitles.oops')
         }}
       />
     </BottomTab.Navigator>

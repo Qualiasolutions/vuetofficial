@@ -1,7 +1,7 @@
 {
   "pageTitles": {
-    "home": "Home",
-    "categories": "Categories",
+    "home": "Today",
+    "categories": "Things",
     "settings": "Settings",
     "addTask": "Add Task",
     "editTask": "Edit Task",
@@ -9,6 +9,7 @@
     "addEntity": "Add Entity",
     "editEntity": "Edit Entity",
     "entity": "View Entity",
+    "calendar": "Calendar",
     "oops": "Oops!"
   },
   "categories": {
