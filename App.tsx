@@ -40,8 +40,6 @@ const store = configureStore({
 });
 const persistor = persistStore(store);
 
-// persistor.purge()
-
 setupListeners(store.dispatch);
 
 export default function App() {
