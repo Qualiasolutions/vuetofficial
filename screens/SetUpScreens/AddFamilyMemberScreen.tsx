@@ -53,7 +53,7 @@ const AddFamilyMemberScreen = ({
   
   useEffect(() => {
     if (result.isSuccess) {
-      navigation.navigate('AddFamily');
+      navigation.push('AddFamily');
     } else {
       if (result.error) {
         setErrorMessage(t('common.genericError'));
@@ -132,7 +132,6 @@ const AddFamilyMemberScreen = ({
       <Button
         title={t('screens.addFamilyMember.add')}
         onPress={() => {
-          console.log(userFullDetails)
           if (
             firstName
             && lastName

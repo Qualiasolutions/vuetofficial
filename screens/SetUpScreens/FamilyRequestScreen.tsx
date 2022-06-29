@@ -64,7 +64,7 @@ const FamilyRequestScreen = ({
   
   useEffect(() => {
     if (userFullDetails && userInvites && !firstInviteForUser) {
-      navigation.navigate('CreateAccount')
+      navigation.push('CreateAccount')
     }
   }, [firstInviteForUser, userInvites]);
 

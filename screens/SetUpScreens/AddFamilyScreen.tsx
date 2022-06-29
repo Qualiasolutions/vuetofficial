@@ -62,19 +62,19 @@ const AddFamilyScreen = ({
       <Button
         title={t('screens.addFamily.addMember')}
         onPress={() => {
-          navigation.navigate('AddFamilyMember');
+          navigation.push('AddFamilyMember');
         }}
         style={styles.confirmButton}
       />
       <Pressable
         onPress={() => {
-          navigation.navigate('WelcomeToVuet');
+          navigation.push('WelcomeToVuet');
         }}
       >
         <Button
           title={t('common.next')}
           onPress={() => {
-            navigation.navigate('WelcomeToVuet');
+            navigation.push('WelcomeToVuet');
           }}
           style={styles.confirmButton}
         />

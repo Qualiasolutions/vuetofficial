@@ -12,7 +12,7 @@ const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
 export function SetupNavigator() {
   return (
-    <SetupStack.Navigator>
+    <SetupStack.Navigator initialRouteName="FamilyRequest">
       <SetupStack.Screen
         name="FamilyRequest"
         component={FamilyRequestScreen}

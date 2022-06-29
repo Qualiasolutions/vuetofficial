@@ -38,9 +38,6 @@ const CreateAccountScreen = ({
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
     userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true
-    }
   );
 
   const [firstName, onChangeFirstName] = React.useState<string>('');
@@ -53,7 +50,7 @@ const CreateAccountScreen = ({
 
   useEffect(() => {
     if (result.isSuccess) {
-      navigation.navigate('AddFamily');
+      navigation.push('AddFamily');
     } else {
       if (result.error) {
         setErrorMessage(t('common.genericError'));
@@ -68,7 +65,7 @@ const CreateAccountScreen = ({
       userFullDetails?.last_name &&
       userFullDetails?.dob
     ) {
-      navigation.navigate('AddFamily');
+      navigation.push('AddFamily');
     }
   }, [userDetails, userFullDetails]);
 
