@@ -45,6 +45,7 @@ export type SetupTabParamList = {
   AddFamily: undefined;
   AddFamilyMember: undefined;
   WelcomeToVuet: undefined;
+  FamilyRequest: undefined;
 };
 
 export type SetupStackParamList = {

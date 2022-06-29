@@ -14,11 +14,12 @@ import {
   PageSubtitle,
   AlmostBlackText
 } from 'components/molecules/TextComponents';
-import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
+import { AlmostWhiteContainerView, TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import {
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
+  useGetUserFullDetailsQuery,
+  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
@@ -37,20 +38,32 @@ const AddFamilyScreen = ({
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
+  const { data: userInvites } =  useGetUserInvitesQuery(userFullDetails?.family?.id || -1)
+
   const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
 
+  const addedMembersContent = (userInvites && (userInvites.length > 0))
+    ? userInvites.map(invite => (<TransparentView key={invite.id}>
+      <AlmostBlackText text={`${invite.first_name} ${invite.last_name}`}/>
+    </TransparentView>)
+    )
+    : <AlmostBlackText text={t('screens.addFamily.currentlyNone')}/>
+
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.addFamily.title')} />
       <PageSubtitle text={t('screens.addFamily.startAdding')} />
-      <WhiteImagePicker onImageSelect={(imageLocation) => {}} />
+      <WhiteImagePicker style={styles.imagePicker} onImageSelect={(imageLocation) => {}} />
+      {addedMembersContent}
       <Button
-        title={t('common.next')}
-        onPress={() => {}}
+        title={t('screens.addFamily.addMember')}
+        onPress={() => {
+          navigation.navigate('AddFamilyMember');
+        }}
         style={styles.confirmButton}
       />
       <Pressable
@@ -58,7 +71,13 @@ const AddFamilyScreen = ({
           navigation.navigate('WelcomeToVuet');
         }}
       >
-        <AlmostBlackText text="Later" />
+        <Button
+          title={t('common.next')}
+          onPress={() => {
+            navigation.navigate('WelcomeToVuet');
+          }}
+          style={styles.confirmButton}
+        />
       </Pressable>
     </AlmostWhiteContainerView>
   );
@@ -68,6 +87,13 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
+  },
+  imagePicker: {
+    marginBottom: 30
+  },
+  addedMembers: {
+    width: '100%',
+    marginTop: 30
   }
 });
 

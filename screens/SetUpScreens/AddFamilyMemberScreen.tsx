@@ -21,19 +21,18 @@ import {
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import {
+  useCreateUserInviteMutation,
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
-  useUpdateUserDetailsMutation
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteDateInput } from 'components/forms/components/DateInputs';
 import { ColorPicker } from 'components/forms/components/ColorPickers';
-import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import dayjs from 'dayjs';
 
-const CreateAccountScreen = ({
+const AddFamilyMemberScreen = ({
   navigation
-}: NativeStackScreenProps<SetupTabParamList, 'CreateAccount'>) => {
+}: NativeStackScreenProps<SetupTabParamList, 'AddFamilyMember'>) => {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
@@ -46,11 +45,12 @@ const CreateAccountScreen = ({
   const [firstName, onChangeFirstName] = React.useState<string>('');
   const [lastName, onChangeLastName] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
   const [dateOfBirth, setDateOfBirth] = React.useState<Date | null>(null);
   const [memberColour, setMemberColour] = React.useState<string>('');
 
-  const [updateUserDetails, result] = useUpdateUserDetailsMutation();
-
+  const [createUserInvite, result] = useCreateUserInviteMutation();
+  
   useEffect(() => {
     if (result.isSuccess) {
       navigation.navigate('AddFamily');
@@ -61,46 +61,20 @@ const CreateAccountScreen = ({
     }
   }, [result]);
 
-  useEffect(() => {
-    if (
-      userFullDetails?.member_colour &&
-      userFullDetails?.first_name &&
-      userFullDetails?.last_name &&
-      userFullDetails?.dob
-    ) {
-      navigation.navigate('AddFamily');
-    }
-  }, [userDetails, userFullDetails]);
-
   const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
 
-  if (!userFullDetails) {
-    return null
-  }
-
-  if (
-    userFullDetails?.member_colour &&
-    userFullDetails?.first_name &&
-    userFullDetails?.last_name &&
-    userFullDetails?.dob
-  ) {
-    return null
-  }
-
   return (
     <AlmostWhiteContainerView>
-      <PageTitle text={t('screens.createAccount.title')} />
-      <PageSubtitle text={t('screens.createAccount.addDetails')} />
-      <WhiteImagePicker onImageSelect={(imageLocation) => {}} />
+      <PageTitle text={t('screens.addFamilyMember.title')} />
       {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
-          text={t('screens.createAccount.firstName')}
+          text={t('screens.addFamilyMember.firstName')}
         />
       </TransparentView>
       <TextInput
@@ -110,7 +84,7 @@ const CreateAccountScreen = ({
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
-          text={t('screens.createAccount.lastName')}
+          text={t('screens.addFamilyMember.lastName')}
         />
       </TransparentView>
       <TextInput
@@ -120,7 +94,7 @@ const CreateAccountScreen = ({
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
-          text={t('screens.createAccount.dob')}
+          text={t('screens.addFamilyMember.dob')}
         />
       </TransparentView>
       <WhiteDateInput
@@ -130,13 +104,13 @@ const CreateAccountScreen = ({
           setDateOfBirth(newValue);
         }}
         handleErrors={() => {
-          setErrorMessage(t('screens.createAccount.invalidDateMessage'));
+          setErrorMessage(t('screens.addFamilyMember.invalidDateMessage'));
         }}
       />
       <WhiteBox style={styles.memberColorBox}>
         <AlmostBlackText
           style={styles.inputLabel}
-          text={t('screens.createAccount.memberColour')}
+          text={t('screens.addFamilyMember.memberColour')}
         />
         <ColorPicker
           value={memberColour}
@@ -145,19 +119,39 @@ const CreateAccountScreen = ({
           }}
         />
       </WhiteBox>
+      <TransparentView style={styles.inputLabelWrapper}>
+        <AlmostBlackText
+          style={styles.inputLabel}
+          text={t('screens.addFamilyMember.phoneNumber')}
+        />
+      </TransparentView>
+      <TextInput
+        value={phoneNumber}
+        onChangeText={(text) => onChangePhoneNumber(text)}
+      />
       <Button
-        title={t('common.next')}
+        title={t('screens.addFamilyMember.add')}
         onPress={() => {
-          if (firstName && lastName && dateOfBirth && memberColour) {
-            updateUserDetails({
-              user_id: userDetails?.user_id || -1,
+          console.log(userFullDetails)
+          if (
+            firstName
+            && lastName
+            && dateOfBirth
+            && memberColour
+            && phoneNumber
+            && userFullDetails?.family?.id
+          ) {
+            createUserInvite({
+              family: userFullDetails?.family?.id,
+              invitee: userFullDetails?.id,
               first_name: firstName,
               last_name: lastName,
               dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
-              member_colour: memberColour
+              member_colour: memberColour,
+              phone_number: phoneNumber
             });
           } else {
-            setErrorMessage(t('screens.createAccount.allFieldsRequiredError'));
+            setErrorMessage(t('screens.addFamilyMember.allFieldsRequiredError'));
           }
         }}
         style={styles.confirmButton}
@@ -183,6 +177,7 @@ const styles = StyleSheet.create({
   memberColorBox: {
     width: '100%',
     marginTop: 15,
+    marginBottom: 15,
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
@@ -190,4 +185,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CreateAccountScreen;
+export default AddFamilyMemberScreen;

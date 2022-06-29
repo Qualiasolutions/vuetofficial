@@ -17,11 +17,6 @@ import SquareButton from '../molecules/SquareButton';
 import GenericButton from 'components/molecules/GenericButton';
 import DateTimeTextInput from './components/DateTimeTextInput';
 import { FormFieldTypes, isRadioField } from './formFieldTypes';
-import RadioForm, {
-  RadioButton,
-  RadioButtonInput,
-  RadioButtonLabel
-} from 'react-native-simple-radio-button';
 import RadioInput from './components/RadioInput';
 
 /* This type specifies the actual values of the fields.

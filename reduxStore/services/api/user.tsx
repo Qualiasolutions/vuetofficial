@@ -1,6 +1,6 @@
 import { UserFullDetails } from './types';
 import { vuetApi } from './api';
-import { AuthDetails, UpdateUserRequest, UserResponse } from 'types/users';
+import { AuthDetails, CreateUserInviteRequest, UpdateUserInviteRequest, UpdateUserRequest, UserInviteResponse, UserResponse } from 'types/users';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,12 +18,34 @@ const extendedApi = vuetApi.injectEndpoints({
     }),
     updateUserDetails: builder.mutation<UserResponse, UpdateUserRequest>({
       query: (body) => ({
-        url: `core/user/${body.user_id}/`,
+        url: `core/user-simple/${body.user_id}/`,
         method: 'PATCH',
         body
       }),
       invalidatesTags: ['User']
-    })
+    }),
+    getUserInvites: builder.query<UserInviteResponse[], number>({
+      query: (familyId) => ({
+        url: 'core/full-user-invite/'
+      }),
+      providesTags: ['UserInvite']
+    }),
+    createUserInvite: builder.mutation<UserInviteResponse, CreateUserInviteRequest>({
+      query: (body) => ({
+        url: 'core/user-invite/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['UserInvite']
+    }),
+    updateUserInvite: builder.mutation<UserInviteResponse, UpdateUserInviteRequest>({
+      query: (body) => ({
+        url: `core/user-invite/${body.id}/`,
+        method: 'PATCH',
+        body
+      }),
+      invalidatesTags: ['UserInvite']
+    }),
   }),
   overrideExisting: true
 });
@@ -31,5 +53,8 @@ const extendedApi = vuetApi.injectEndpoints({
 export const {
   useGetUserFullDetailsQuery,
   useGetUserDetailsQuery,
-  useUpdateUserDetailsMutation
+  useUpdateUserDetailsMutation,
+  useGetUserInvitesQuery,
+  useCreateUserInviteMutation,
+  useUpdateUserInviteMutation
 } = extendedApi;

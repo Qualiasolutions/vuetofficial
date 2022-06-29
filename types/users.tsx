@@ -10,8 +10,49 @@ export type AuthDetails = {
   user_id: number;
 };
 
+
+export type CreateUserInviteRequest = {
+  family: number;
+  invitee: number;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  dob: string;
+  member_colour: string;
+}
+
+export type UpdateUserInviteRequest = {
+  id: number;
+  family?: number;
+  invitee?: number;
+  first_name?: string;
+  last_name?: string;
+  phone_number?: string;
+  dob?: string;
+  member_colour?: string;
+  rejected?: boolean;
+}
+
+export type UserInviteResponse = {
+  id: number;
+  family: number;
+  invitee: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  };
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  dob: string;
+  member_colour: string;
+  accepted: boolean;
+  rejected: boolean;
+}
+
 export type UpdateUserRequest = {
-  user_id?: number;
+  user_id: number;
+  family?: number;
   username?: string;
   first_name?: string;
   last_name?: string;

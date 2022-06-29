@@ -29,7 +29,8 @@ const linking: LinkingOptions<TabParamList> = {
       NotFound: '*',
       CreateAccount: 'create-account',
       AddFamily: 'add-family',
-      WelcomeToVuet: 'welcome'
+      WelcomeToVuet: 'welcome',
+      FamilyRequest: 'family-request'
     }
   }
 };

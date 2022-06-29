@@ -1,15 +1,17 @@
 import { useThemeColor } from 'components/Themed';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image, Text, ViewStyle } from 'react-native';
 
 export function ImagePicker({
   onImageSelect,
-  backgroundColor = '#ffffff'
+  backgroundColor = '#ffffff',
+  style = {}
 }: {
   onImageSelect: (imageLocation: string) => any;
   backgroundColor: string;
+  style?: ViewStyle
 }) {
   return (
-    <View style={[{ backgroundColor }, styles.container]}>
+    <View style={[{ backgroundColor }, styles.container, style]}>
       <Image
         style={styles.placeholderImage}
         source={require('../../../assets/images/icons/camera.png')}
@@ -21,12 +23,14 @@ export function ImagePicker({
 }
 
 export function WhiteImagePicker({
-  onImageSelect
+  onImageSelect,
+  style
 }: {
   onImageSelect: (imageLocation: string) => any;
+  style?: ViewStyle
 }) {
   const backgroundColor = useThemeColor({}, 'white');
-  return ImagePicker({ onImageSelect, backgroundColor });
+  return ImagePicker({ onImageSelect, backgroundColor, style });
 }
 
 const styles = StyleSheet.create({

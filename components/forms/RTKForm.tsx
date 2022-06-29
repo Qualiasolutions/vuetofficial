@@ -315,7 +315,7 @@ export default function Form({
                   onValueChange={(value: any) => {
                     setFormValues({
                       ...formValues,
-                      [field]: value.pk
+                      [field]: value.id
                     });
                     setFormErrors({ ...formErrors, [field]: '' });
                     onValueChange();

@@ -23,13 +23,15 @@ import { ErrorBox } from 'components/molecules/Errors';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
-  useUpdateUserDetailsMutation
+  useGetUserInvitesQuery,
+  useUpdateUserDetailsMutation,
+  useUpdateUserInviteMutation
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
-const WelcomeToVuetScreen = ({
+const FamilyRequestScreen = ({
   navigation
-}: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
+}: NativeStackScreenProps<SetupTabParamList, 'FamilyRequest'>) => {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
@@ -39,43 +41,69 @@ const WelcomeToVuetScreen = ({
     }
   );
 
+  const { data: userInvites } =  useGetUserInvitesQuery(userFullDetails?.family?.id || -1)
+
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
+  const [updateUserInvite, userInviteResult] = useUpdateUserInviteMutation();
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-
+  
   const { t } = useTranslation();
-
+  
+  const invitesForUser = userInvites?.filter(
+    invite => (
+      (invite.phone_number === userFullDetails?.phone_number)
+      && (!invite.rejected)
+      && userFullDetails.family
+      && userFullDetails.family.id !== invite.family
+    )
+  )
+  const firstInviteForUser = (invitesForUser && invitesForUser.length > 0)
+    ? invitesForUser[0]
+    : null
+  
   useEffect(() => {
-    if (result.error) {
-      setErrorMessage(t('common.genericError'));
+    if (userFullDetails && userInvites && !firstInviteForUser) {
+      navigation.navigate('CreateAccount')
     }
-  }, [result]);
+  }, [firstInviteForUser, userInvites]);
 
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
 
+  if (!(userInvites && userFullDetails)) {
+    return null
+  }
+
   return (
     <AlmostWhiteContainerView>
-      <Image
-        source={require('../../assets/images/icons/tick-circle.png')}
-        style={styles.tickIcon}
-      />
       <PageTitle
-        text={t('screens.welcomeToVuet.title', {
+        text={t('screens.familyRequest.title', {
           name: userFullDetails?.first_name
         })}
       />
-      <PageSubtitle text={t('screens.welcomeToVuet.createdSuccessfully')} />
-      <PageSubtitle text={t('screens.welcomeToVuet.willSend')} />
+      <PageSubtitle text={t('screens.familyRequest.subtitle', {
+        name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+      })} />
       {errorContent}
       <Button
-        title={t('common.continue')}
+        title={t('common.accept')}
         onPress={() => {
-          // This should trigger texts to be sent out to invited members
           updateUserDetails({
-            user_id: userDetails?.user_id || -1,
+            ...firstInviteForUser,
+            user_id: userFullDetails?.id || -1,
             has_done_setup: true
+          });
+        }}
+        style={styles.confirmButton}
+      />
+      <Button
+        title={t('common.reject')}
+        onPress={() => {
+          updateUserInvite({
+            id: invitesForUser ? invitesForUser[0].id : -1,
+            rejected: true,
           });
         }}
         style={styles.confirmButton}
@@ -86,14 +114,8 @@ const WelcomeToVuetScreen = ({
 
 const styles = StyleSheet.create({
   confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
+    marginTop: 20,
   },
-  tickIcon: {
-    height: 50,
-    width: 50,
-    marginBottom: 40
-  }
 });
 
-export default WelcomeToVuetScreen;
+export default FamilyRequestScreen;

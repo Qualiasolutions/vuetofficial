@@ -19,7 +19,7 @@ export default function RadioInput({
         <RadioButtonInput
           obj={obj}
           index={i}
-          isSelected={value === obj.value.pk}
+          isSelected={value === obj.value.id}
           onPress={() => {
             onValueChange(obj.value);
           }}

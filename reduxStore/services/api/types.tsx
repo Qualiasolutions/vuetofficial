@@ -25,6 +25,7 @@ type AllCategories = {
 };
 
 type UserFullDetails = {
+  id: number;
   family: FamilyResponseType;
   last_login: string;
   is_superuser: boolean;
@@ -32,6 +33,7 @@ type UserFullDetails = {
   first_name: string;
   last_name: string;
   email: string;
+  phone_number: string;
   is_staff: boolean;
   is_active: boolean;
   date_joined: string;

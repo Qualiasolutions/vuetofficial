@@ -28,7 +28,10 @@
     "verify": "Verify",
     "genericError": "Oops, something went wrong. Please try again later.",
     "next": "Next",
-    "continue": "Continue"
+    "continue": "Continue",
+    "skip": "Skip",
+    "accept": "Accept",
+    "reject": "Reject"
   },
   "screens": {
     "logIn": {
@@ -77,12 +80,29 @@
     },
     "addFamily": {
       "title": "Add family members",
-      "startAdding": "Start by adding a thumbnail to your group"
+      "startAdding": "Start by adding a thumbnail to your group",
+      "currentlyNone": "You currently have no family members added",
+      "addMember": "Add member"
+    },
+    "addFamilyMember": {
+      "title": "Add a member",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "dob": "Date of Birth",
+      "memberColour": "Member colour",
+      "phoneNumber": "Phone number",
+      "add": "Add",
+      "invalidDateMessage": "Invalid date detected - please enter a date in the past",
+      "allFieldsRequiredError": "All fields on this page must be completed"
     },
     "welcomeToVuet": {
       "title": "Welcome to Vuet App {{name}}",
       "createdSuccessfully": "Your account has been created successfully.",
       "willSend": "We'll send all the members a welcome notification."
+    },
+    "familyRequest": {
+      "title": "Family request",
+      "subtitle": "{{name}} wants to add you to their family."
     },
     "settings": {
       "logOutText": "Log Out",

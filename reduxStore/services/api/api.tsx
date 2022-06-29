@@ -22,7 +22,7 @@ export const normalizeData = (data: { id: number }[]) => {
 // Define a service using a base URL and expected endpoints
 export const vuetApi = createApi({
   reducerPath: 'vuetApi',
-  tagTypes: ['Entity', 'Task', 'TaskCompletionForm', 'Category', 'User'],
+  tagTypes: ['Entity', 'Task', 'TaskCompletionForm', 'Category', 'User', 'UserInvite'],
   baseQuery: customFetchBase,
   refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({

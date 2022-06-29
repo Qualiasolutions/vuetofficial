@@ -71,7 +71,7 @@ export const carForm = (): FormFieldTypes => {
       type: 'radio',
       required: true,
       permittedValues: userFullDetails.family.users,
-      valueToDisplay: (val: any) => val.username,
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.car.owner')
     }
   };
