@@ -23,6 +23,7 @@ import {
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
+import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 
 const AddFamilyScreen = ({
   navigation
@@ -39,6 +40,20 @@ const AddFamilyScreen = ({
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const { data: userInvites } =  useGetUserInvitesQuery(userFullDetails?.family?.id || -1)
+
+  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation()
+
+  const uploadProfileImage = (image: File) => {
+    if (userFullDetails) {
+      const data = new FormData();
+      data.append('image', image);
+      updateFamilyDetails({
+        familyId: userFullDetails.family.id,
+        formData: data
+      })
+    }
+  }
+
 
   const { t } = useTranslation();
 
@@ -57,7 +72,11 @@ const AddFamilyScreen = ({
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.addFamily.title')} />
       <PageSubtitle text={t('screens.addFamily.startAdding')} />
-      <WhiteImagePicker style={styles.imagePicker} onImageSelect={(imageLocation) => {}} />
+      <WhiteImagePicker
+        style={styles.imagePicker}
+        onImageSelect={(image) => { uploadProfileImage(image) }}
+        defaultImageUrl={userFullDetails?.family?.image}
+      />
       {addedMembersContent}
       <Button
         title={t('screens.addFamily.addMember')}
