@@ -8,7 +8,7 @@ const extendedApi = vuetApi.injectEndpoints({
         url: `core/family/${payload.familyId}/`,
         method: 'PATCH',
         headers: {
-          'Content-Type': 'multipart/form-data;',
+          'Content-Type': 'multipart/form-data;'
         },
         body: payload.formData
       }),
@@ -18,6 +18,4 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
-export const {
-  useUpdateFamilyDetailsMutation
-} = extendedApi;
+export const { useUpdateFamilyDetailsMutation } = extendedApi;

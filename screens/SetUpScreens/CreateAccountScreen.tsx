@@ -51,7 +51,8 @@ const CreateAccountScreen = ({
   const [memberColour, setMemberColour] = React.useState<string>('');
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
-  const [formUpdateUserDetails, formUpdateResult] = useFormUpdateUserDetailsMutation();
+  const [formUpdateUserDetails, formUpdateResult] =
+    useFormUpdateUserDetailsMutation();
 
   const uploadProfileImage = (image: File) => {
     if (userFullDetails) {
@@ -60,10 +61,9 @@ const CreateAccountScreen = ({
       formUpdateUserDetails({
         userId: userFullDetails.id,
         formData: data
-      })
+      });
     }
-  }
-
+  };
 
   useEffect(() => {
     if (result.isSuccess) {
@@ -93,7 +93,7 @@ const CreateAccountScreen = ({
   ) : null;
 
   if (!userFullDetails) {
-    return null
+    return null;
   }
 
   if (
@@ -102,7 +102,7 @@ const CreateAccountScreen = ({
     userFullDetails?.last_name &&
     userFullDetails?.dob
   ) {
-    return null
+    return null;
   }
 
   return (
@@ -110,7 +110,9 @@ const CreateAccountScreen = ({
       <PageTitle text={t('screens.createAccount.title')} />
       <PageSubtitle text={t('screens.createAccount.addDetails')} />
       <WhiteImagePicker
-        onImageSelect={(image) => { uploadProfileImage(image) }}
+        onImageSelect={(image) => {
+          uploadProfileImage(image);
+        }}
         defaultImageUrl={userFullDetails?.profile_image}
       />
       {errorContent}

@@ -6,7 +6,6 @@ export type FamilyResponseType = {
   image: string;
 };
 
-
 export type UpdateFamilyRequest = {
   familyId: number;
   formData?: FormData;

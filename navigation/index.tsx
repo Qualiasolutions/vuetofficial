@@ -35,70 +35,41 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const username = useSelector(selectUsername);
 
-
   ///////////// Load the data
 
-  const {
-    data: userDetails,
-    isLoading: isLoadingUserDetails,
-  } = useGetUserDetailsQuery(
-    username,
-    {
+  const { data: userDetails, isLoading: isLoadingUserDetails } =
+    useGetUserDetailsQuery(username, {
       refetchOnMountOrArgChange: true,
-      // skip: !(jwtAccessToken && username)
-    }
-  );
+      skip: !(jwtAccessToken && username)
+    });
 
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingUserFullDetails,
-  } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
+  const { data: userFullDetails, isLoading: isLoadingUserFullDetails } =
+    useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
       refetchOnMountOrArgChange: true,
       skip: !(jwtAccessToken && userDetails?.user_id)
-    }
-  );
+    });
 
-  const {
-    data: userInvites,
-    isLoading: isLoadingUserInvites
-  } =  useGetUserInvitesQuery(
-    userFullDetails?.family?.id || -1,
-    {
+  const { data: userInvites, isLoading: isLoadingUserInvites } =
+    useGetUserInvitesQuery(userFullDetails?.family?.id || -1, {
       refetchOnMountOrArgChange: true,
       skip: !(jwtAccessToken && userFullDetails?.family?.id)
-    }
-  )
+    });
 
-  const isLoading = isLoadingUserDetails
-    || isLoadingUserFullDetails
-    || isLoadingUserInvites
-
+  const isLoading =
+    isLoadingUserDetails || isLoadingUserFullDetails || isLoadingUserInvites;
 
   ///////////// Filter any relevant family invites
 
   const invitesForUser = userInvites?.filter(
-    invite => (
-      (invite.phone_number === userFullDetails?.phone_number)
-      && (!invite.rejected)
-      && userFullDetails?.family?.id !== invite.family
-    )
-  )
-  const firstInviteForUser = (invitesForUser && invitesForUser.length > 0)
-    ? invitesForUser[0]
-    : null
+    (invite) =>
+      invite.phone_number === userFullDetails?.phone_number &&
+      !invite.rejected &&
+      userFullDetails?.family?.id !== invite.family
+  );
+  const firstInviteForUser =
+    invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
   /////////////
-
-  
-  console.log(userDetails)
-  console.log(userFullDetails)
-  console.log(userInvites)
-  console.log(isLoading)
-  console.log(isLoadingUserFullDetails)
-  console.log(isLoadingUserInvites)
-  console.log(isLoadingUserFullDetails)
 
   let navigatorComponent = null;
 
@@ -107,7 +78,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       navigatorComponent = <UnauthorisedNavigator />;
     } else if (userFullDetails && userInvites) {
       if (firstInviteForUser) {
-        navigatorComponent = <FamilyRequestNavigator />
+        navigatorComponent = <FamilyRequestNavigator />;
       } else if (!userFullDetails.has_done_setup) {
         navigatorComponent = <SetupNavigator />;
       } else {

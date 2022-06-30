@@ -232,7 +232,7 @@ export function BottomTabNavigator() {
         name="FamilySettings"
         component={FamilySettingsScreen}
         options={{
-          tabBarButton: (props) => null,
+          tabBarButton: (props) => null
         }}
       />
       <BottomTab.Screen

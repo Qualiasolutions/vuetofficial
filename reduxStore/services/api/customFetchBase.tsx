@@ -34,9 +34,12 @@ const baseQuery = fetchBaseQuery({
     // a boundary on the content-type header. This happens automatically
     // if we delete the content type here
     if (headers.get('Content-Type')?.includes('form-data')) {
-      headers.delete('Content-Type')
+      headers.delete('Content-Type');
     } else {
-      headers.set('Content-Type', headers.get('Content-Type') || 'application/json');
+      headers.set(
+        'Content-Type',
+        headers.get('Content-Type') || 'application/json'
+      );
     }
     return headers;
   }

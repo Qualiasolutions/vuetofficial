@@ -23,7 +23,7 @@ import { ErrorBox } from 'components/molecules/Errors';
 import {
   useCreateUserInviteMutation,
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
+  useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteDateInput } from 'components/forms/components/DateInputs';
@@ -51,7 +51,7 @@ const AddFamilyMemberScreen = ({
   const [memberColour, setMemberColour] = React.useState<string>('');
 
   const [createUserInvite, result] = useCreateUserInviteMutation();
-  
+
   useEffect(() => {
     if (result.isSuccess) {
       navigation.push('AddFamily');
@@ -134,12 +134,12 @@ const AddFamilyMemberScreen = ({
         title={t('screens.addFamilyMember.add')}
         onPress={() => {
           if (
-            firstName
-            && lastName
-            && dateOfBirth
-            && memberColour
-            && phoneNumber
-            && userFullDetails?.family?.id
+            firstName &&
+            lastName &&
+            dateOfBirth &&
+            memberColour &&
+            phoneNumber &&
+            userFullDetails?.family?.id
           ) {
             createUserInvite({
               family: userFullDetails?.family?.id,
@@ -151,7 +151,9 @@ const AddFamilyMemberScreen = ({
               phone_number: phoneNumber
             });
           } else {
-            setErrorMessage(t('screens.addFamilyMember.allFieldsRequiredError'));
+            setErrorMessage(
+              t('screens.addFamilyMember.allFieldsRequiredError')
+            );
           }
         }}
         style={styles.confirmButton}

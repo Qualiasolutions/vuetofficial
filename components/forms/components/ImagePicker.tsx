@@ -1,5 +1,12 @@
 import { useThemeColor } from 'components/Themed';
-import { StyleSheet, View, Image, Text, ViewStyle, Pressable } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  ViewStyle,
+  Pressable
+} from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { useEffect, useState } from 'react';
 
@@ -8,7 +15,7 @@ type ImagePickerProps = {
   backgroundColor: string;
   defaultImageUrl?: string;
   style?: ViewStyle;
-}
+};
 
 export function ImagePicker({
   onImageSelect,
@@ -16,30 +23,43 @@ export function ImagePicker({
   defaultImageUrl = '',
   style = {}
 }: ImagePickerProps) {
-  const [selectedImage, setSelectedImage] = useState<DocumentPicker.DocumentResult | null>(null)
+  const [selectedImage, setSelectedImage] =
+    useState<DocumentPicker.DocumentResult | null>(null);
 
   useEffect(() => {
-    if (selectedImage && selectedImage.type === 'success' && selectedImage.file) {
-      onImageSelect(selectedImage.file)
+    if (
+      selectedImage &&
+      selectedImage.type === 'success' &&
+      selectedImage.file
+    ) {
+      onImageSelect(selectedImage.file);
     }
-  }, [selectedImage])
+  }, [selectedImage]);
 
   const chooseImage = async () => {
     const res = await DocumentPicker.getDocumentAsync({
       type: 'image/*'
-    })
+    });
     if (res.type === 'success') {
-      setSelectedImage(res)
+      setSelectedImage(res);
     } else {
-      setSelectedImage(null)
+      setSelectedImage(null);
     }
-  }
+  };
   return (
-    <Pressable onPress = { chooseImage }>
+    <Pressable onPress={chooseImage}>
       <View style={[{ backgroundColor }, styles.container, style]}>
         <Image
-          style={(selectedImage || defaultImageUrl) ? styles.selectedImage : styles.placeholderImage}
-          source={selectedImage || defaultImageUrl || require('../../../assets/images/icons/camera.png')}
+          style={
+            selectedImage || defaultImageUrl
+              ? styles.selectedImage
+              : styles.placeholderImage
+          }
+          source={
+            selectedImage ||
+            defaultImageUrl ||
+            require('../../../assets/images/icons/camera.png')
+          }
           resizeMode="contain"
         />
       </View>

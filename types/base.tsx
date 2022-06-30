@@ -57,9 +57,6 @@ export type SetupStackScreenProps<Screen extends keyof SetupStackParamList> =
 export type SetupTabScreenProps<Screen extends keyof SetupTabParamList> =
   NativeStackScreenProps<SetupTabParamList, Screen>;
 
-
-
-
 export type FamilyRequestTabParamList = {
   FamilyRequest: undefined;
 };
@@ -68,16 +65,13 @@ export type FamilyRequestStackParamList = {
   Unauthorised: NavigatorScreenParams<FamilyRequestTabParamList> | undefined;
 };
 
-export type FamilyRequestStackScreenProps<Screen extends keyof FamilyRequestStackParamList> =
-  NativeStackScreenProps<FamilyRequestStackParamList, Screen>;
+export type FamilyRequestStackScreenProps<
+  Screen extends keyof FamilyRequestStackParamList
+> = NativeStackScreenProps<FamilyRequestStackParamList, Screen>;
 
-export type FamilyRequestTabScreenProps<Screen extends keyof FamilyRequestTabParamList> =
-  NativeStackScreenProps<FamilyRequestTabParamList, Screen>;
-
-
-
-
-  
+export type FamilyRequestTabScreenProps<
+  Screen extends keyof FamilyRequestTabParamList
+> = NativeStackScreenProps<FamilyRequestTabParamList, Screen>;
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
@@ -105,10 +99,10 @@ export type RootTabParamList = {
   };
 };
 
-export type TabParamList = RootTabParamList
-& UnauthorisedTabParamList
-& SetupTabParamList
-& FamilyRequestTabParamList;
+export type TabParamList = RootTabParamList &
+  UnauthorisedTabParamList &
+  SetupTabParamList &
+  FamilyRequestTabParamList;
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<

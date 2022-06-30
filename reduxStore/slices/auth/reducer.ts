@@ -11,18 +11,27 @@ const INITIAL_AUTH_STATE: AuthState = {
 };
 
 const authReducer = createReducer(INITIAL_AUTH_STATE)
-  .handleAction(actions.setAccessToken, (state: AuthState, action: { payload: string }) => ({
-    ...state,
-    jwtAccessToken: action.payload
-  }))
-  .handleAction(actions.setRefreshToken, (state: AuthState, action: { payload: string }) => ({
-    ...state,
-    jwtRefreshToken: action.payload
-  }))
-  .handleAction(actions.setUsername, (state: AuthState, action: { payload: string }) => ({
-    ...state,
-    username: action.payload
-  }))
+  .handleAction(
+    actions.setAccessToken,
+    (state: AuthState, action: { payload: string }) => ({
+      ...state,
+      jwtAccessToken: action.payload
+    })
+  )
+  .handleAction(
+    actions.setRefreshToken,
+    (state: AuthState, action: { payload: string }) => ({
+      ...state,
+      jwtRefreshToken: action.payload
+    })
+  )
+  .handleAction(
+    actions.setUsername,
+    (state: AuthState, action: { payload: string }) => ({
+      ...state,
+      username: action.payload
+    })
+  )
   .handleAction(actions.logOut, (state: AuthState) => ({
     ...state,
     username: '',

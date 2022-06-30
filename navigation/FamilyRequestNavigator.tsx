@@ -4,7 +4,8 @@ import * as React from 'react';
 import { FamilyRequestTabParamList } from '../types/base';
 import FamilyRequestScreen from 'screens/FamilyRequestScreens/FamilyRequestScreen';
 
-const FamilyRequestStack = createNativeStackNavigator<FamilyRequestTabParamList>();
+const FamilyRequestStack =
+  createNativeStackNavigator<FamilyRequestTabParamList>();
 
 export function FamilyRequestNavigator() {
   return (

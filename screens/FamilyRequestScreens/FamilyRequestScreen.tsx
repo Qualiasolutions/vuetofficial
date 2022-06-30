@@ -7,10 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/Themed';
 
-import {
-  PageTitle,
-  PageSubtitle,
-} from 'components/molecules/TextComponents';
+import { PageTitle, PageSubtitle } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import {
@@ -33,32 +30,32 @@ const FamilyRequestScreen = () => {
     }
   );
 
-  const { data: userInvites } =  useGetUserInvitesQuery(userFullDetails?.family?.id || -1)
+  const { data: userInvites } = useGetUserInvitesQuery(
+    userFullDetails?.family?.id || -1
+  );
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
   const [updateUserInvite, userInviteResult] = useUpdateUserInviteMutation();
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-  
+
   const { t } = useTranslation();
-  
+
   const invitesForUser = userInvites?.filter(
-    invite => (
-      (invite.phone_number === userFullDetails?.phone_number)
-      && (!invite.rejected)
-      && userFullDetails?.family?.id !== invite.family
-    )
-  )
-  const firstInviteForUser = (invitesForUser && invitesForUser.length > 0)
-    ? invitesForUser[0]
-    : null
+    (invite) =>
+      invite.phone_number === userFullDetails?.phone_number &&
+      !invite.rejected &&
+      userFullDetails?.family?.id !== invite.family
+  );
+  const firstInviteForUser =
+    invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
 
   if (!(userInvites && userFullDetails)) {
-    return null
+    return null;
   }
 
   return (
@@ -68,9 +65,11 @@ const FamilyRequestScreen = () => {
           name: userFullDetails?.first_name
         })}
       />
-      <PageSubtitle text={t('screens.familyRequest.subtitle', {
-        name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
-      })} />
+      <PageSubtitle
+        text={t('screens.familyRequest.subtitle', {
+          name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+        })}
+      />
       {errorContent}
       <Button
         title={t('common.accept')}
@@ -93,7 +92,7 @@ const FamilyRequestScreen = () => {
           if (invitesForUser) {
             updateUserInvite({
               id: invitesForUser[0].id,
-              rejected: true,
+              rejected: true
             });
           }
         }}
@@ -105,8 +104,8 @@ const FamilyRequestScreen = () => {
 
 const styles = StyleSheet.create({
   confirmButton: {
-    marginTop: 20,
-  },
+    marginTop: 20
+  }
 });
 
 export default FamilyRequestScreen;

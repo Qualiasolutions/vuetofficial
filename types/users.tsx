@@ -10,7 +10,6 @@ export type AuthDetails = {
   user_id: number;
 };
 
-
 export type CreateUserInviteRequest = {
   family: number;
   invitee: number;
@@ -19,7 +18,7 @@ export type CreateUserInviteRequest = {
   phone_number: string;
   dob: string;
   member_colour: string;
-}
+};
 
 export type UpdateUserInviteRequest = {
   id: number;
@@ -31,7 +30,7 @@ export type UpdateUserInviteRequest = {
   dob?: string;
   member_colour?: string;
   rejected?: boolean;
-}
+};
 
 export type UserInviteResponse = {
   id: number;
@@ -48,7 +47,7 @@ export type UserInviteResponse = {
   member_colour: string;
   accepted: boolean;
   rejected: boolean;
-}
+};
 
 export type UpdateUserRequest = {
   user_id: number;

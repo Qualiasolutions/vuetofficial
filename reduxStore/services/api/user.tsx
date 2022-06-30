@@ -1,6 +1,14 @@
 import { UserFullDetails } from './types';
 import { vuetApi } from './api';
-import { AuthDetails, CreateUserInviteRequest, FormUpdateUserRequest, UpdateUserInviteRequest, UpdateUserRequest, UserInviteResponse, UserResponse } from 'types/users';
+import {
+  AuthDetails,
+  CreateUserInviteRequest,
+  FormUpdateUserRequest,
+  UpdateUserInviteRequest,
+  UpdateUserRequest,
+  UserInviteResponse,
+  UserResponse
+} from 'types/users';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -24,12 +32,15 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['User']
     }),
-    formUpdateUserDetails: builder.mutation<UserResponse, FormUpdateUserRequest>({
+    formUpdateUserDetails: builder.mutation<
+      UserResponse,
+      FormUpdateUserRequest
+    >({
       query: (payload) => ({
         url: `core/user-simple/${payload.userId}/`,
         method: 'PATCH',
         headers: {
-          'Content-Type': 'multipart/form-data;',
+          'Content-Type': 'multipart/form-data;'
         },
         body: payload.formData
       }),
@@ -41,7 +52,10 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['UserInvite']
     }),
-    createUserInvite: builder.mutation<UserInviteResponse, CreateUserInviteRequest>({
+    createUserInvite: builder.mutation<
+      UserInviteResponse,
+      CreateUserInviteRequest
+    >({
       query: (body) => ({
         url: 'core/user-invite/',
         method: 'POST',
@@ -49,14 +63,17 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['UserInvite']
     }),
-    updateUserInvite: builder.mutation<UserInviteResponse, UpdateUserInviteRequest>({
+    updateUserInvite: builder.mutation<
+      UserInviteResponse,
+      UpdateUserInviteRequest
+    >({
       query: (body) => ({
         url: `core/user-invite/${body.id}/`,
         method: 'PATCH',
         body
       }),
       invalidatesTags: ['UserInvite']
-    }),
+    })
   }),
   overrideExisting: true
 });

@@ -14,7 +14,11 @@ import {
   PageSubtitle,
   AlmostBlackText
 } from 'components/molecules/TextComponents';
-import { AlmostWhiteContainerView, TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
+import {
+  AlmostWhiteContainerView,
+  TransparentView,
+  WhiteBox
+} from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import {
   useGetUserDetailsQuery,
@@ -38,7 +42,7 @@ const FamilySettingsScreen = ({
     }
   );
 
-  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation()
+  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
 
   const uploadProfileImage = (image: File) => {
     if (userFullDetails) {
@@ -47,15 +51,17 @@ const FamilySettingsScreen = ({
       updateFamilyDetails({
         familyId: userFullDetails.family.id,
         formData: data
-      })
+      });
     }
-  }
+  };
 
   return (
     <AlmostWhiteContainerView>
       <WhiteImagePicker
         style={styles.imagePicker}
-        onImageSelect={(image) => { uploadProfileImage(image) }}
+        onImageSelect={(image) => {
+          uploadProfileImage(image);
+        }}
         defaultImageUrl={userFullDetails?.family?.image}
       />
     </AlmostWhiteContainerView>

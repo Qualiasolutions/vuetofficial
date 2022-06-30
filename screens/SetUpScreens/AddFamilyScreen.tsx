@@ -14,7 +14,11 @@ import {
   PageSubtitle,
   AlmostBlackText
 } from 'components/molecules/TextComponents';
-import { AlmostWhiteContainerView, TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
+import {
+  AlmostWhiteContainerView,
+  TransparentView,
+  WhiteBox
+} from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import {
   useGetUserDetailsQuery,
@@ -40,9 +44,11 @@ const AddFamilyScreen = ({
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const { data: userInvites } =  useGetUserInvitesQuery(userFullDetails?.family?.id || -1)
+  const { data: userInvites } = useGetUserInvitesQuery(
+    userFullDetails?.family?.id || -1
+  );
 
-  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation()
+  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
 
   const uploadProfileImage = (image: File) => {
     if (userFullDetails) {
@@ -51,10 +57,9 @@ const AddFamilyScreen = ({
       updateFamilyDetails({
         familyId: userFullDetails.family.id,
         formData: data
-      })
+      });
     }
-  }
-
+  };
 
   const { t } = useTranslation();
 
@@ -62,12 +67,16 @@ const AddFamilyScreen = ({
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
 
-  const addedMembersContent = (userInvites && (userInvites.length > 0))
-    ? userInvites.map(invite => (<TransparentView key={invite.id}>
-      <AlmostBlackText text={`${invite.first_name} ${invite.last_name}`}/>
-    </TransparentView>)
-    )
-    : <AlmostBlackText text={t('screens.addFamily.currentlyNone')}/>
+  const addedMembersContent =
+    userInvites && userInvites.length > 0 ? (
+      userInvites.map((invite) => (
+        <TransparentView key={invite.id}>
+          <AlmostBlackText text={`${invite.first_name} ${invite.last_name}`} />
+        </TransparentView>
+      ))
+    ) : (
+      <AlmostBlackText text={t('screens.addFamily.currentlyNone')} />
+    );
 
   return (
     <AlmostWhiteContainerView>
@@ -75,7 +84,9 @@ const AddFamilyScreen = ({
       <PageSubtitle text={t('screens.addFamily.startAdding')} />
       <WhiteImagePicker
         style={styles.imagePicker}
-        onImageSelect={(image) => { uploadProfileImage(image) }}
+        onImageSelect={(image) => {
+          uploadProfileImage(image);
+        }}
         defaultImageUrl={userFullDetails?.family?.image}
       />
       {addedMembersContent}

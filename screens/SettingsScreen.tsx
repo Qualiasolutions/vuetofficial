@@ -4,9 +4,7 @@ import { Text, View } from '../components/Themed';
 import { blacklistTokenAsync } from '../utils/authRequests';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  logOut as logOutAction
-} from '../reduxStore/slices/auth/actions';
+import { logOut as logOutAction } from '../reduxStore/slices/auth/actions';
 
 import { selectRefreshToken } from '../reduxStore/slices/auth/selectors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,19 +12,23 @@ import { useTranslation } from 'react-i18next';
 import Navigation from 'navigation';
 import { RootTabParamList } from 'types/base';
 
-const SettingsScreen = ({ navigation }: NativeStackScreenProps<RootTabParamList, 'Settings'>) => {
+const SettingsScreen = ({
+  navigation
+}: NativeStackScreenProps<RootTabParamList, 'Settings'>) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const jwtRefreshToken = useSelector(selectRefreshToken);
 
   const logOut = () => {
-    blacklistTokenAsync(jwtRefreshToken).then(() => {
-      dispatch(logOutAction())
-    }).catch(() => {
-      // Ignore errors and logout the frontend anyway
-      dispatch(logOutAction())
-    });
+    blacklistTokenAsync(jwtRefreshToken)
+      .then(() => {
+        dispatch(logOutAction());
+      })
+      .catch(() => {
+        // Ignore errors and logout the frontend anyway
+        dispatch(logOutAction());
+      });
   };
   return (
     <View style={styles.container}>
@@ -38,10 +40,13 @@ const SettingsScreen = ({ navigation }: NativeStackScreenProps<RootTabParamList,
       />
       <View>
         <Button title={t('screens.settings.logOutText')} onPress={logOut} />
-        <Button title="FAMILY SETTINGS" onPress={() => {
-          console.log("GO FAMILY SETTINGS")
-          navigation.navigate('FamilySettings')
-          }}/>
+        <Button
+          title="FAMILY SETTINGS"
+          onPress={() => {
+            console.log('GO FAMILY SETTINGS');
+            navigation.navigate('FamilySettings');
+          }}
+        />
       </View>
     </View>
   );
