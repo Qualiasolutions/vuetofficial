@@ -25,6 +25,7 @@ import {
 } from 'reduxStore/services/api/user';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -222,6 +223,13 @@ export function BottomTabNavigator() {
               </Text>
             </View>
           )
+        }}
+      />
+      <BottomTab.Screen
+        name="FamilySettings"
+        component={FamilySettingsScreen}
+        options={{
+          tabBarButton: (props) => null,
         }}
       />
       <BottomTab.Screen

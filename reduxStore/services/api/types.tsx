@@ -40,6 +40,7 @@ type UserFullDetails = {
   member_colour: string;
   dob: string;
   has_done_setup: boolean;
+  profile_image: string;
 };
 
 export { AllTasks, AllEntities, AllCategories, UserFullDetails };

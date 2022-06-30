@@ -69,6 +69,7 @@ export type RootTabParamList = {
   Home: undefined;
   Categories: { initial: boolean; screen: string };
   Settings: undefined;
+  FamilySettings: undefined;
   AddTask: { entityId: number | string };
   EditTask: { taskId: number };
   Transport: undefined;

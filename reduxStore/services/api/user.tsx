@@ -1,6 +1,6 @@
 import { UserFullDetails } from './types';
 import { vuetApi } from './api';
-import { AuthDetails, CreateUserInviteRequest, UpdateUserInviteRequest, UpdateUserRequest, UserInviteResponse, UserResponse } from 'types/users';
+import { AuthDetails, CreateUserInviteRequest, FormUpdateUserRequest, UpdateUserInviteRequest, UpdateUserRequest, UserInviteResponse, UserResponse } from 'types/users';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,6 +23,17 @@ const extendedApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['User']
+    }),
+    formUpdateUserDetails: builder.mutation<UserResponse, FormUpdateUserRequest>({
+      query: (payload) => ({
+        url: `core/user-simple/${payload.userId}/`,
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'multipart/form-data;',
+        },
+        body: payload.formData
+      }),
+      invalidatesTags: ['Family', 'User']
     }),
     getUserInvites: builder.query<UserInviteResponse[], number>({
       query: (familyId) => ({
@@ -54,6 +65,7 @@ export const {
   useGetUserFullDetailsQuery,
   useGetUserDetailsQuery,
   useUpdateUserDetailsMutation,
+  useFormUpdateUserDetailsMutation,
   useGetUserInvitesQuery,
   useCreateUserInviteMutation,
   useUpdateUserInviteMutation

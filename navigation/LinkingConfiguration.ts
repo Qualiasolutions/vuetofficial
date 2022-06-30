@@ -17,6 +17,7 @@ const linking: LinkingOptions<TabParamList> = {
       Categories: 'categories-grid',
       Transport: 'transport',
       Settings: 'settings',
+      FamilySettings: 'settings/family',
       AddTask: 'add-task',
       EditTask: 'edit-task',
       AddEntity: 'add-entity',

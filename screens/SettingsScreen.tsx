@@ -2,6 +2,7 @@ import { StyleSheet, Button } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import { blacklistTokenAsync } from '../utils/authRequests';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
   setAccessToken,
@@ -12,8 +13,10 @@ import {
 import { selectRefreshToken } from '../reduxStore/slices/auth/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import Navigation from 'navigation';
+import { RootTabParamList } from 'types/base';
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }: NativeStackScreenProps<RootTabParamList, 'Settings'>) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -36,6 +39,10 @@ const SettingsScreen = () => {
       />
       <View>
         <Button title={t('screens.settings.logOutText')} onPress={logOut} />
+        <Button title="FAMILY SETTINGS" onPress={() => {
+          console.log("GO FAMILY SETTINGS")
+          navigation.navigate('FamilySettings')
+          }}/>
       </View>
     </View>
   );

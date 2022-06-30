@@ -21,6 +21,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import {
+  useFormUpdateUserDetailsMutation,
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
   useUpdateUserDetailsMutation
@@ -47,6 +48,19 @@ const CreateAccountScreen = ({
   const [memberColour, setMemberColour] = React.useState<string>('');
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
+  const [formUpdateUserDetails, formUpdateResult] = useFormUpdateUserDetailsMutation();
+
+  const uploadProfileImage = (image: File) => {
+    if (userFullDetails) {
+      const data = new FormData();
+      data.append('profile_image', image);
+      formUpdateUserDetails({
+        userId: userFullDetails.id,
+        formData: data
+      })
+    }
+  }
+
 
   useEffect(() => {
     if (result.isSuccess) {
@@ -92,7 +106,10 @@ const CreateAccountScreen = ({
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.createAccount.title')} />
       <PageSubtitle text={t('screens.createAccount.addDetails')} />
-      <WhiteImagePicker onImageSelect={(imageLocation) => {}} />
+      <WhiteImagePicker
+        onImageSelect={(image) => { uploadProfileImage(image) }}
+        defaultImageUrl={userFullDetails?.profile_image}
+      />
       {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText

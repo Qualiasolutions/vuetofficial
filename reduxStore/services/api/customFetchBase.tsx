@@ -26,8 +26,17 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
     }
+
     headers.set('Accept', 'application/json');
-    headers.set('Content-Type', 'application/json');
+
+    // Something weird here - when we have form data we need to set
+    // a boundary on the content-type header. This happens automatically
+    // if we delete the content type here
+    if (headers.get('Content-Type')?.includes('form-data')) {
+      headers.delete('Content-Type')
+    } else {
+      headers.set('Content-Type', headers.get('Content-Type') || 'application/json');
+    }
     return headers;
   }
 });

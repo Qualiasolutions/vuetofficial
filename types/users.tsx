@@ -61,6 +61,11 @@ export type UpdateUserRequest = {
   has_done_setup?: boolean;
 };
 
+export type FormUpdateUserRequest = {
+  userId: number;
+  formData?: FormData;
+};
+
 export type UserResponse = {
   username: string;
   first_name: string;
@@ -68,4 +73,5 @@ export type UserResponse = {
   dob: string;
   member_colour: string;
   has_done_setup: boolean;
+  profile_image: string;
 };
