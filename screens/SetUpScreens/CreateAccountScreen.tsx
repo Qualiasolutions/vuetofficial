@@ -39,6 +39,9 @@ const CreateAccountScreen = ({
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
     userDetails?.user_id || -1,
+    {
+      skip: !userDetails?.user_id
+    }
   );
 
   const [firstName, onChangeFirstName] = React.useState<string>('');
@@ -163,13 +166,15 @@ const CreateAccountScreen = ({
         title={t('common.next')}
         onPress={() => {
           if (firstName && lastName && dateOfBirth && memberColour) {
-            updateUserDetails({
-              user_id: userDetails?.user_id || -1,
-              first_name: firstName,
-              last_name: lastName,
-              dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
-              member_colour: memberColour
-            });
+            if (userDetails?.user_id) {
+              updateUserDetails({
+                user_id: userDetails?.user_id,
+                first_name: firstName,
+                last_name: lastName,
+                dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
+                member_colour: memberColour
+              });
+            }
           } else {
             setErrorMessage(t('screens.createAccount.allFieldsRequiredError'));
           }

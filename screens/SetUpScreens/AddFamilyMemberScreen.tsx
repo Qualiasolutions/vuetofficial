@@ -38,7 +38,8 @@ const AddFamilyMemberScreen = ({
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
     userDetails?.user_id || -1,
     {
-      refetchOnMountOrArgChange: true
+      refetchOnMountOrArgChange: true,
+      skip: !userDetails?.user_id
     }
   );
 

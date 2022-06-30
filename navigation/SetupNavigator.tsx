@@ -6,18 +6,12 @@ import CreateAccountScreen from 'screens/SetUpScreens/CreateAccountScreen';
 import AddFamilyScreen from 'screens/SetUpScreens/AddFamilyScreen';
 import WelcomeToVuetScreen from 'screens/SetUpScreens/WelcomeToVuetScreen';
 import AddFamilyMemberScreen from 'screens/SetUpScreens/AddFamilyMemberScreen';
-import FamilyRequestScreen from 'screens/SetUpScreens/FamilyRequestScreen';
 
 const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
 export function SetupNavigator() {
   return (
-    <SetupStack.Navigator initialRouteName="FamilyRequest">
-      <SetupStack.Screen
-        name="FamilyRequest"
-        component={FamilyRequestScreen}
-        options={{ headerShown: false }}
-      />
+    <SetupStack.Navigator initialRouteName="CreateAccount">
       <SetupStack.Screen
         name="CreateAccount"
         component={CreateAccountScreen}

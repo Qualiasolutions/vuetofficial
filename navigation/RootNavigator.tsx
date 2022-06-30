@@ -82,13 +82,16 @@ export function BottomTabNavigator() {
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
   useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-    refetchOnMountOrArgChange: true
+    refetchOnMountOrArgChange: true,
+    skip: !userDetails?.user_id
   });
   useGetAllTasksQuery(userDetails?.user_id || -1, {
-    refetchOnMountOrArgChange: true
+    refetchOnMountOrArgChange: true,
+    skip: !userDetails?.user_id
   });
   useGetAllEntitiesQuery(userDetails?.user_id || -1, {
-    refetchOnMountOrArgChange: true
+    refetchOnMountOrArgChange: true,
+    skip: !userDetails?.user_id
   });
 
   return (

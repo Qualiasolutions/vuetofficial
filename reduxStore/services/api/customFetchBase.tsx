@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
 import {
+  logOut,
   setAccessToken,
   setRefreshToken,
   setUsername
@@ -22,7 +23,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: (headers, { getState }) => {
     // By default, if we have a token in the store, let's use that for authenticated requests
-    const token = (getState() as EntireState).authentication.jwtAccessToken;
+    const token = (getState() as EntireState)?.authentication.jwtAccessToken;
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
     }
@@ -52,15 +53,13 @@ const customFetchBase: BaseQueryFn<
   if ((result.error?.data as any)?.code === 'token_not_valid') {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
-      const jwtRefreshToken = (api.getState() as EntireState).authentication
+      const jwtRefreshToken = (api.getState() as EntireState)?.authentication
         .jwtRefreshToken;
       try {
         if (jwtRefreshToken) {
           const verifyRefreshResponse = await verifyTokenAsync(jwtRefreshToken);
           if (verifyRefreshResponse.code) {
-            api.dispatch(setAccessToken(''));
-            api.dispatch(setRefreshToken(''));
-            api.dispatch(setUsername(''));
+            api.dispatch(logOut());
           } else {
             const refreshedAccessCode = (
               await refreshTokenAsync(jwtRefreshToken)

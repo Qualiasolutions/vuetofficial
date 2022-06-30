@@ -1,7 +1,0 @@
-const SET_ALL_CATEGORIES = 'SET_ALL_CATEGORIES';
-
-export default {
-  SET_ALL_CATEGORIES
-};
-
-export { SET_ALL_CATEGORIES };

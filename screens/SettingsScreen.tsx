@@ -5,9 +5,7 @@ import { blacklistTokenAsync } from '../utils/authRequests';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
-  setAccessToken,
-  setRefreshToken,
-  setUsername
+  logOut as logOutAction
 } from '../reduxStore/slices/auth/actions';
 
 import { selectRefreshToken } from '../reduxStore/slices/auth/selectors';
@@ -24,9 +22,10 @@ const SettingsScreen = ({ navigation }: NativeStackScreenProps<RootTabParamList,
 
   const logOut = () => {
     blacklistTokenAsync(jwtRefreshToken).then(() => {
-      dispatch(setAccessToken(''));
-      dispatch(setRefreshToken(''));
-      dispatch(setUsername(''));
+      dispatch(logOutAction())
+    }).catch(() => {
+      // Ignore errors and logout the frontend anyway
+      dispatch(logOutAction())
     });
   };
   return (

@@ -35,7 +35,8 @@ const WelcomeToVuetScreen = ({
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
     userDetails?.user_id || -1,
     {
-      refetchOnMountOrArgChange: true
+      refetchOnMountOrArgChange: true,
+      skip: !userDetails?.user_id
     }
   );
 
@@ -73,10 +74,12 @@ const WelcomeToVuetScreen = ({
         title={t('common.continue')}
         onPress={() => {
           // This should trigger texts to be sent out to invited members
-          updateUserDetails({
-            user_id: userDetails?.user_id || -1,
-            has_done_setup: true
-          });
+          if (userDetails?.user_id) {
+            updateUserDetails({
+              user_id: userDetails?.user_id,
+              has_done_setup: true
+            });
+          }
         }}
         style={styles.confirmButton}
       />

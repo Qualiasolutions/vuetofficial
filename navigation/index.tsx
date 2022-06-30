@@ -17,12 +17,14 @@ import {
 
 import {
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
+  useGetUserFullDetailsQuery,
+  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 
 import { UnauthorisedNavigator } from './UnauthorisedNavigator';
 import { BottomTabNavigator } from './RootNavigator';
 import { SetupNavigator } from './SetupNavigator';
+import { FamilyRequestNavigator } from './FamilyRequestNavigator';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -32,22 +34,86 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
+
+
+  ///////////// Load the data
+
+  const {
+    data: userDetails,
+    isLoading: isLoadingUserDetails,
+  } = useGetUserDetailsQuery(
+    username,
     {
-      refetchOnMountOrArgChange: true
+      refetchOnMountOrArgChange: true,
+      // skip: !(jwtAccessToken && username)
     }
   );
 
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingUserFullDetails,
+  } = useGetUserFullDetailsQuery(
+    userDetails?.user_id || -1,
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !(jwtAccessToken && userDetails?.user_id)
+    }
+  );
+
+  const {
+    data: userInvites,
+    isLoading: isLoadingUserInvites
+  } =  useGetUserInvitesQuery(
+    userFullDetails?.family?.id || -1,
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !(jwtAccessToken && userFullDetails?.family?.id)
+    }
+  )
+
+  const isLoading = isLoadingUserDetails
+    || isLoadingUserFullDetails
+    || isLoadingUserInvites
+
+
+  ///////////// Filter any relevant family invites
+
+  const invitesForUser = userInvites?.filter(
+    invite => (
+      (invite.phone_number === userFullDetails?.phone_number)
+      && (!invite.rejected)
+      && userFullDetails?.family?.id !== invite.family
+    )
+  )
+  const firstInviteForUser = (invitesForUser && invitesForUser.length > 0)
+    ? invitesForUser[0]
+    : null
+
+  /////////////
+
+  
+  console.log(userDetails)
+  console.log(userFullDetails)
+  console.log(userInvites)
+  console.log(isLoading)
+  console.log(isLoadingUserFullDetails)
+  console.log(isLoadingUserInvites)
+  console.log(isLoadingUserFullDetails)
+
   let navigatorComponent = null;
 
-  if (!(jwtAccessToken && jwtRefreshToken)) {
-    navigatorComponent = <UnauthorisedNavigator />;
-  } else if (!userFullDetails?.has_done_setup) {
-    navigatorComponent = <SetupNavigator />;
-  } else {
-    navigatorComponent = <BottomTabNavigator />;
+  if (!isLoading) {
+    if (!(jwtAccessToken && jwtRefreshToken)) {
+      navigatorComponent = <UnauthorisedNavigator />;
+    } else if (userFullDetails && userInvites) {
+      if (firstInviteForUser) {
+        navigatorComponent = <FamilyRequestNavigator />
+      } else if (!userFullDetails.has_done_setup) {
+        navigatorComponent = <SetupNavigator />;
+      } else {
+        navigatorComponent = <BottomTabNavigator />;
+      }
+    }
   }
 
   return (
