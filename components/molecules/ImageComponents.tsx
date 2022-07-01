@@ -7,7 +7,8 @@ type ThemeProps = {
   darkColor?: string;
 };
 
-export type ImageProps = ThemeProps & DefaultImage['props'] & { tinted: boolean};
+export type ImageProps = ThemeProps &
+  DefaultImage['props'] & { tinted: boolean };
 
 export function ConditionallyTintedImage(props: ImageProps) {
   const { style, lightColor, darkColor, tinted, ...otherProps } = props;

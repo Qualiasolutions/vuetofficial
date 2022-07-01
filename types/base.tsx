@@ -73,6 +73,22 @@ export type FamilyRequestTabScreenProps<
   Screen extends keyof FamilyRequestTabParamList
 > = NativeStackScreenProps<FamilyRequestTabParamList, Screen>;
 
+export type SettingsTabParamList = {
+  Settings: undefined;
+  FamilySettings: undefined;
+};
+
+export type SettingsStackParamList = {
+  Unauthorised: NavigatorScreenParams<SettingsTabParamList> | undefined;
+};
+
+export type SettingsStackScreenProps<
+  Screen extends keyof SettingsStackParamList
+> = NativeStackScreenProps<SettingsStackParamList, Screen>;
+
+export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
+  NativeStackScreenProps<SettingsTabParamList, Screen>;
+
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
 };
@@ -83,8 +99,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 export type RootTabParamList = {
   Home: undefined;
   Categories: { initial: boolean; screen: string };
-  Settings: undefined;
-  FamilySettings: undefined;
+  SettingsNavigator: undefined;
   AddTask: { entityId: number | string };
   EditTask: { taskId: number };
   Transport: undefined;
@@ -102,7 +117,8 @@ export type RootTabParamList = {
 export type TabParamList = RootTabParamList &
   UnauthorisedTabParamList &
   SetupTabParamList &
-  FamilyRequestTabParamList;
+  FamilyRequestTabParamList &
+  SettingsTabParamList;
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<

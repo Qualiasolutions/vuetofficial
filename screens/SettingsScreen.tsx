@@ -15,6 +15,7 @@ import { RootTabParamList } from 'types/base';
 const SettingsScreen = ({
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'Settings'>) => {
+  console.log('RENDER SETTINGS');
   const dispatch = useDispatch();
   const { t } = useTranslation();
 

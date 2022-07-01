@@ -26,7 +26,10 @@ import {
   useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
+import {
+  PickedFile,
+  WhiteImagePicker
+} from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 
 const AddFamilyScreen = ({
@@ -37,7 +40,7 @@ const AddFamilyScreen = ({
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
     userDetails?.user_id || -1,
     {
-      refetchOnMountOrArgChange: true,
+      // refetchOnMountOrArgChange: true,
       skip: !userDetails?.user_id
     }
   );
@@ -50,10 +53,10 @@ const AddFamilyScreen = ({
 
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
 
-  const uploadProfileImage = (image: File) => {
+  const uploadProfileImage = (image: PickedFile) => {
     if (userFullDetails) {
       const data = new FormData();
-      data.append('image', image);
+      data.append('image', image as any);
       updateFamilyDetails({
         familyId: userFullDetails.family.id,
         formData: data

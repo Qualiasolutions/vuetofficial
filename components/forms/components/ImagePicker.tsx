@@ -20,9 +20,9 @@ export type CustomFile = {
   size: number;
   uri: string;
   type: string;
-}
+};
 
-export type PickedFile = CustomFile | File
+export type PickedFile = CustomFile | File;
 
 type ImagePickerProps = {
   onImageSelect: (image: PickedFile) => any;
@@ -30,7 +30,6 @@ type ImagePickerProps = {
   defaultImageUrl?: string;
   style?: ViewStyle;
 };
-
 
 export function ImagePicker({
   onImageSelect,
@@ -46,7 +45,7 @@ export function ImagePicker({
       if (selectedImage.file) {
         onImageSelect(selectedImage.file);
       } else if (selectedImage.uri && selectedImage.size) {
-        const { name, size, uri } = selectedImage
+        const { name, size, uri } = selectedImage;
         const nameParts = name.split('.');
         const fileType = nameParts[nameParts.length - 1];
 
@@ -55,9 +54,9 @@ export function ImagePicker({
             name,
             size,
             uri,
-            type: "application/" + fileType
+            type: 'application/' + fileType
           });
-        })
+        });
       }
     }
   }, [selectedImage]);
@@ -66,13 +65,23 @@ export function ImagePicker({
     const res = await DocumentPicker.getDocumentAsync({
       type: 'image/*'
     });
-    console.log(res)
+    console.log('####################');
+    console.log(res);
     if (res.type === 'success') {
       setSelectedImage(res);
     } else {
+      console.log('SETTING NULL');
       setSelectedImage(null);
     }
   };
+
+  const imageSource =
+    (selectedImage?.type === 'success' &&
+      selectedImage?.uri && { uri: selectedImage.uri }) ||
+    (defaultImageUrl && {
+      uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])
+    }) ||
+    require('../../../assets/images/icons/camera.png');
 
   return (
     <Pressable onPress={chooseImage}>
@@ -84,11 +93,7 @@ export function ImagePicker({
               : styles.placeholderImage
           }
           // Some hacky string replacement for local dev (ensure can access localstack S3)
-          source={
-            (selectedImage?.type === "success" && selectedImage?.uri && { uri: selectedImage.uri }) ||
-            (defaultImageUrl && { uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0]) }) ||
-            require('../../../assets/images/icons/camera.png')
-          }
+          source={imageSource}
           resizeMode="contain"
         />
       </View>
@@ -107,6 +112,21 @@ export function WhiteImagePicker({
     backgroundColor,
     defaultImageUrl,
     style
+  });
+}
+
+export function FullWidthImagePicker({
+  onImageSelect,
+  defaultImageUrl = '',
+  style = {}
+}: Omit<ImagePickerProps, 'backgroundColor'>) {
+  const backgroundColor = useThemeColor({}, 'grey');
+
+  return ImagePicker({
+    onImageSelect,
+    backgroundColor,
+    defaultImageUrl,
+    style: [styles.fullWidth, style] as ViewStyle
   });
 }
 
@@ -133,5 +153,10 @@ const styles = StyleSheet.create({
   selectedImage: {
     width: '100%',
     height: '100%'
+  },
+  fullWidth: {
+    borderRadius: 0,
+    height: 160,
+    width: '100%'
   }
 });

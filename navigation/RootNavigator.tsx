@@ -27,8 +27,13 @@ import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
 import { ConditionallyTintedImage } from 'components/molecules/ImageComponents';
-import { AlmostBlackText, PrimaryText } from 'components/molecules/TextComponents';
+import {
+  AlmostBlackText,
+  PrimaryText
+} from 'components/molecules/TextComponents';
 import { PrimaryColouredView } from 'components/molecules/ViewComponents';
+import { useThemeColor } from 'components/Themed';
+import { SettingsNavigator } from './SettingsNavigator';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -62,7 +67,7 @@ const AddButton = ({ children, onPress }: { [key: string]: any }) => (
       style={{
         width: 70,
         height: 70,
-        borderRadius: 35,
+        borderRadius: 35
       }}
     >
       {children}
@@ -127,19 +132,20 @@ export function BottomTabNavigator() {
                 tinted={focused}
                 style={{
                   width: 25,
-                  height: 25,
+                  height: 25
                 }}
               />
-              {
-                focused
-                  ? <PrimaryText
-                    text={t('pageTitles.home')}
-                    style={{fontSize: 10}}
-                  /> : <AlmostBlackText
-                    text={t('pageTitles.home')}
-                    style={{fontSize: 10}}
-                  />
-              }
+              {focused ? (
+                <PrimaryText
+                  text={t('pageTitles.home')}
+                  style={{ fontSize: 10 }}
+                />
+              ) : (
+                <AlmostBlackText
+                  text={t('pageTitles.home')}
+                  style={{ fontSize: 10 }}
+                />
+              )}
             </View>
           )
         }}
@@ -157,19 +163,20 @@ export function BottomTabNavigator() {
                 tinted={focused}
                 style={{
                   width: 25,
-                  height: 25,
+                  height: 25
                 }}
               />
-              {
-                focused
-                  ? <PrimaryText
-                    text={t('pageTitles.categories')}
-                    style={{fontSize: 10}}
-                  /> : <AlmostBlackText
-                    text={t('pageTitles.categories')}
-                    style={{fontSize: 10}}
-                  />
-              }
+              {focused ? (
+                <PrimaryText
+                  text={t('pageTitles.categories')}
+                  style={{ fontSize: 10 }}
+                />
+              ) : (
+                <AlmostBlackText
+                  text={t('pageTitles.categories')}
+                  style={{ fontSize: 10 }}
+                />
+              )}
             </View>
           )
         }}
@@ -204,27 +211,29 @@ export function BottomTabNavigator() {
                 tinted={focused}
                 style={{
                   width: 25,
-                  height: 25,
+                  height: 25
                 }}
               />
-              {
-                focused
-                  ? <PrimaryText
-                    text={t('pageTitles.calendar')}
-                    style={{fontSize: 10}}
-                  /> : <AlmostBlackText
-                    text={t('pageTitles.calendar')}
-                    style={{fontSize: 10}}
-                  />
-              }
+              {focused ? (
+                <PrimaryText
+                  text={t('pageTitles.calendar')}
+                  style={{ fontSize: 10 }}
+                />
+              ) : (
+                <AlmostBlackText
+                  text={t('pageTitles.calendar')}
+                  style={{ fontSize: 10 }}
+                />
+              )}
             </View>
           )
         }}
       />
       <BottomTab.Screen
-        name="Settings"
-        component={SettingsScreen}
+        name="SettingsNavigator"
+        component={SettingsNavigator}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
               <ConditionallyTintedImage
@@ -233,28 +242,22 @@ export function BottomTabNavigator() {
                 tinted={focused}
                 style={{
                   width: 25,
-                  height: 25,
+                  height: 25
                 }}
               />
-              {
-                focused
-                  ? <PrimaryText
-                    text={t('pageTitles.settings')}
-                    style={{fontSize: 10}}
-                  /> : <AlmostBlackText
-                    text={t('pageTitles.settings')}
-                    style={{fontSize: 10}}
-                  />
-              }
+              {focused ? (
+                <PrimaryText
+                  text={t('pageTitles.settings')}
+                  style={{ fontSize: 10 }}
+                />
+              ) : (
+                <AlmostBlackText
+                  text={t('pageTitles.settings')}
+                  style={{ fontSize: 10 }}
+                />
+              )}
             </View>
           )
-        }}
-      />
-      <BottomTab.Screen
-        name="FamilySettings"
-        component={FamilySettingsScreen}
-        options={{
-          tabBarButton: (props) => null
         }}
       />
       <BottomTab.Screen

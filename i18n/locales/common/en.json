@@ -10,7 +10,8 @@
     "editEntity": "Edit Entity",
     "entity": "View Entity",
     "calendar": "Calendar",
-    "oops": "Oops!"
+    "oops": "Oops!",
+    "familySettings": "Family settings"
   },
   "categories": {
     "FAMILY": "Family",

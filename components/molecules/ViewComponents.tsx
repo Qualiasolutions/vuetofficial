@@ -10,30 +10,26 @@ type ThemeProps = {
 export type ViewProps = ThemeProps & DefaultView['props'];
 
 export function WhiteContainerView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'white'
-  );
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'white');
+  const borderColor = useThemeColor({}, 'grey');
 
   return (
     <DefaultView
-      style={[{ backgroundColor }, styles.container, style]}
+      style={[{ backgroundColor, borderColor }, styles.container, style]}
       {...otherProps}
     />
   );
 }
 
 export function AlmostWhiteContainerView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'almostWhite'
-  );
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'almostWhite');
+  const borderColor = useThemeColor({}, 'grey');
 
   return (
     <DefaultView
-      style={[{ backgroundColor }, styles.container, style]}
+      style={[{ backgroundColor, borderColor }, styles.container, style]}
       {...otherProps}
     />
   );
@@ -42,32 +38,47 @@ export function AlmostWhiteContainerView(props: ViewProps) {
 export function WhiteView(props: ViewProps) {
   const { style, ...otherProps } = props;
   const backgroundColor = useThemeColor({}, 'white');
+  const borderColor = useThemeColor({}, 'grey');
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor, borderColor }, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function AlmostWhiteView(props: ViewProps) {
   const { style, ...otherProps } = props;
-  const backgroundColor = useThemeColor( {}, 'almostWhite' );
+  const backgroundColor = useThemeColor({}, 'almostWhite');
+  const borderColor = useThemeColor({}, 'grey');
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor, borderColor }, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function PrimaryColouredView(props: ViewProps) {
   const { style, ...otherProps } = props;
-  const backgroundColor = useThemeColor( {}, 'primary' );
+  const backgroundColor = useThemeColor({}, 'primary');
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
 export function TransparentView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'transparent'
-  );
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'transparent');
+  const borderColor = useThemeColor({}, 'grey');
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor, borderColor }, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function WhiteBox(props: ViewProps) {

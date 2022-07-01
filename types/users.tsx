@@ -1,10 +1,4 @@
-import { FamilyResponse } from "./families";
-
-export type FamilyUser = {
-  pk: number;
-  family: number;
-  username: string;
-};
+import { FamilyResponse } from './families';
 
 export type AuthDetails = {
   username: string;
@@ -79,7 +73,6 @@ export type UserResponse = {
   profile_image: string;
   presigned_profile_image_url: string;
 };
-
 
 export type UserFullResponse = {
   id: number;

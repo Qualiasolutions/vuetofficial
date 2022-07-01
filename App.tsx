@@ -28,7 +28,7 @@ const persistConfig = {
 
 const pReducer = persistReducer<CombinedState<EntireState>, RootAction>(
   persistConfig,
-  reducer
+  reducer as any
 );
 
 const store = configureStore({

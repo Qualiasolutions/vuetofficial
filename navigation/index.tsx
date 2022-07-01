@@ -39,19 +39,16 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   const { data: userDetails, isLoading: isLoadingUserDetails } =
     useGetUserDetailsQuery(username, {
-      refetchOnMountOrArgChange: true,
       skip: !(jwtAccessToken && username)
     });
 
   const { data: userFullDetails, isLoading: isLoadingUserFullDetails } =
     useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-      refetchOnMountOrArgChange: true,
       skip: !(jwtAccessToken && userDetails?.user_id)
     });
 
   const { data: userInvites, isLoading: isLoadingUserInvites } =
     useGetUserInvitesQuery(userFullDetails?.family?.id || -1, {
-      refetchOnMountOrArgChange: true,
       skip: !(jwtAccessToken && userFullDetails?.family?.id)
     });
 
@@ -73,18 +70,28 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   let navigatorComponent = null;
 
+  console.log(userFullDetails);
+
   if (!isLoading) {
     if (!(jwtAccessToken && jwtRefreshToken)) {
+      console.log('UNAUTH');
       navigatorComponent = <UnauthorisedNavigator />;
-    } else if (userFullDetails && userInvites) {
+    } else if (userDetails && userFullDetails && userInvites) {
       if (firstInviteForUser) {
+        console.log('FAMILYREQUEST');
         navigatorComponent = <FamilyRequestNavigator />;
       } else if (!userFullDetails.has_done_setup) {
+        console.log('SETUP');
         navigatorComponent = <SetupNavigator />;
       } else {
+        console.log('BOTTOM TAB');
         navigatorComponent = <BottomTabNavigator />;
       }
     }
+  }
+
+  if (!navigatorComponent) {
+    console.log('RENDERING NULL');
   }
 
   return (
