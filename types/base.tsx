@@ -76,6 +76,7 @@ export type FamilyRequestTabScreenProps<
 export type SettingsTabParamList = {
   Settings: undefined;
   FamilySettings: undefined;
+  AddFamilyMember: undefined;
 };
 
 export type SettingsStackParamList = {

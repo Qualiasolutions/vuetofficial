@@ -13,11 +13,16 @@ const linking: LinkingOptions<TabParamList> = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
-      Home: 'home',
+      Home: '',
       Categories: 'categories-grid',
       Transport: 'transport',
-      Settings: 'settings',
-      FamilySettings: 'settings/family',
+      SettingsNavigator: {
+        path: 'settings',
+        screens: {
+          Settings: '',
+          FamilySettings: 'family'
+        }
+      },
       AddTask: 'add-task',
       EditTask: 'edit-task',
       AddEntity: 'add-entity',
@@ -30,6 +35,7 @@ const linking: LinkingOptions<TabParamList> = {
       NotFound: '*',
       CreateAccount: 'create-account',
       AddFamily: 'add-family',
+      AddFamilyMember: 'add-family-member',
       WelcomeToVuet: 'welcome',
       FamilyRequest: 'family-request'
     }

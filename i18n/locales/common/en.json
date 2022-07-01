@@ -11,7 +11,8 @@
     "entity": "View Entity",
     "calendar": "Calendar",
     "oops": "Oops!",
-    "familySettings": "Family settings"
+    "familySettings": "Family settings",
+    "addFamilyMember": "Add family member"
   },
   "categories": {
     "FAMILY": "Family",
@@ -108,6 +109,10 @@
     "settings": {
       "logOutText": "Log Out",
       "title": "Settings"
+    },
+    "familySettings": {
+      "family": "Family",
+      "familyMembers": "Family members"
     },
     "addTask": {
       "title": "Add Task",

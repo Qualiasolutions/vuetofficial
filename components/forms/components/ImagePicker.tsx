@@ -65,12 +65,9 @@ export function ImagePicker({
     const res = await DocumentPicker.getDocumentAsync({
       type: 'image/*'
     });
-    console.log('####################');
-    console.log(res);
     if (res.type === 'success') {
       setSelectedImage(res);
     } else {
-      console.log('SETTING NULL');
       setSelectedImage(null);
     }
   };

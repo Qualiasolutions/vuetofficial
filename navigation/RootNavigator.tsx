@@ -5,7 +5,6 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
 import { RootTabParamList } from '../types/base';
 
@@ -25,7 +24,6 @@ import {
 } from 'reduxStore/services/api/user';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
 import { ConditionallyTintedImage } from 'components/molecules/ImageComponents';
 import {
   AlmostBlackText,

@@ -1,21 +1,19 @@
 import { StyleSheet, Button } from 'react-native';
 
-import { Text, View } from '../components/Themed';
-import { blacklistTokenAsync } from '../utils/authRequests';
+import { Text, View } from 'components/Themed';
+import { blacklistTokenAsync } from 'utils/authRequests';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { logOut as logOutAction } from '../reduxStore/slices/auth/actions';
+import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
 
-import { selectRefreshToken } from '../reduxStore/slices/auth/selectors';
+import { selectRefreshToken } from 'reduxStore/slices/auth/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import Navigation from 'navigation';
-import { RootTabParamList } from 'types/base';
+import { SettingsTabParamList } from 'types/base';
 
 const SettingsScreen = ({
   navigation
-}: NativeStackScreenProps<RootTabParamList, 'Settings'>) => {
-  console.log('RENDER SETTINGS');
+}: NativeStackScreenProps<SettingsTabParamList, 'Settings'>) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 

@@ -18,7 +18,8 @@ import {
 } from 'components/molecules/ViewComponents';
 import {
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
+  useGetUserFullDetailsQuery,
+  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
@@ -29,6 +30,7 @@ import {
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { View } from 'components/Themed';
+import { UserFullResponse, UserInviteResponse } from 'types/users';
 
 const FamilySettingsScreen = ({
   navigation
@@ -43,7 +45,13 @@ const FamilySettingsScreen = ({
     }
   );
 
+  const { data: userInvites } = useGetUserInvitesQuery(
+    userDetails?.user_id || -1
+  );
+
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
+
+  const { t } = useTranslation();
 
   const uploadProfileImage = (image: PickedFile) => {
     if (userFullDetails) {
@@ -57,38 +65,55 @@ const FamilySettingsScreen = ({
     }
   };
 
-  const familyMemberList = userFullDetails?.family.users.map((user) => {
-    return (
-      <TransparentView style={styles.listElement} key={user.id}>
-        <TransparentView>
-          <AlmostBlackText
-            style={styles.listElementText}
-            text={`${user.first_name} ${user.last_name}`}
-          />
-          <View
-            style={[
-              styles.colourBar,
-              { backgroundColor: `#${user.member_colour}` }
-            ]}
-          />
-        </TransparentView>
-        <TransparentView style={styles.listRight}>
-          <Pressable onPress={() => {}}>
-            <Image
-              style={styles.editIcon}
-              source={require('../../assets/images/icons/feather-edit.png')}
-            />
-          </Pressable>
-          <Pressable onPress={() => {}}>
-            <Image
-              style={styles.editIcon}
-              source={require('../../assets/images/icons/remove-circle.png')}
-            />
-          </Pressable>
-        </TransparentView>
+  const familyPhoneNumbers =
+    userFullDetails?.family.users.map((user) => user.phone_number) || [];
+
+  const familyInvites = userInvites?.filter(
+    (invite) =>
+      invite.family === userFullDetails?.family.id &&
+      !familyPhoneNumbers.includes(invite.phone_number)
+  );
+
+  const userToListElement = (
+    user: UserFullResponse | UserInviteResponse,
+    nameSuffix = ''
+  ) => (
+    <TransparentView style={styles.listElement} key={user.id}>
+      <TransparentView>
+        <AlmostBlackText
+          style={styles.listElementText}
+          text={`${user.first_name} ${user.last_name}${nameSuffix}`}
+        />
+        <View
+          style={[
+            styles.colourBar,
+            { backgroundColor: `#${user.member_colour}` }
+          ]}
+        />
       </TransparentView>
-    );
-  });
+      <TransparentView style={styles.listRight}>
+        <Pressable onPress={() => {}}>
+          <Image
+            style={styles.editIcon}
+            source={require('../../assets/images/icons/feather-edit.png')}
+          />
+        </Pressable>
+        <Pressable onPress={() => {}}>
+          <Image
+            style={styles.editIcon}
+            source={require('../../assets/images/icons/remove-circle.png')}
+          />
+        </Pressable>
+      </TransparentView>
+    </TransparentView>
+  );
+
+  const familyMemberList = userFullDetails?.family.users.map((user) =>
+    userToListElement(user)
+  );
+  const familyInvitesList = familyInvites?.map((user) =>
+    userToListElement(user, ' (pending)')
+  );
 
   return (
     <TransparentView style={styles.container}>
@@ -101,17 +126,30 @@ const FamilySettingsScreen = ({
         />
       </AlmostWhiteView>
       <AlmostWhiteView style={styles.familyHeader}>
-        <AlmostBlackText style={styles.familyHeaderText} text="Family" />
+        <AlmostBlackText
+          style={styles.familyHeaderText}
+          text={t('screens.familySettings.family')}
+        />
       </AlmostWhiteView>
       <WhiteView style={styles.listContainer}>
         <TransparentView style={[styles.listElement, styles.listHeader]}>
-          <AlmostBlackText style={styles.headerText} text="Family members" />
-          <Image
-            style={styles.plusIcon}
-            source={require('../../assets/images/icons/plus-square.png')}
+          <AlmostBlackText
+            style={styles.headerText}
+            text={t('screens.familySettings.familyMembers')}
           />
+          <Pressable
+            onPress={() => {
+              navigation.navigate('AddFamilyMember');
+            }}
+          >
+            <Image
+              style={styles.plusIcon}
+              source={require('../../assets/images/icons/plus-square.png')}
+            />
+          </Pressable>
         </TransparentView>
         {familyMemberList}
+        {familyInvitesList}
       </WhiteView>
     </TransparentView>
   );

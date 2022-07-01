@@ -2,10 +2,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 
 import { SettingsTabParamList } from '../types/base';
-import SettingsScreen from 'screens/SettingsScreen';
+import SettingsScreen from 'screens/SettingsScreens/SettingsScreen';
 import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
 import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
+import AddFamilyMemberScreen from 'screens/SettingsScreens/Forms/AddFamilyMemberScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
 
@@ -28,6 +29,14 @@ export function SettingsNavigator() {
         component={FamilySettingsScreen}
         options={{
           title: t('pageTitles.familySettings'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="AddFamilyMember"
+        component={AddFamilyMemberScreen}
+        options={{
+          title: t('pageTitles.addFamilyMember'),
           headerTintColor
         }}
       />
