@@ -40,21 +40,22 @@ export function AlmostWhiteContainerView(props: ViewProps) {
 }
 
 export function WhiteView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'white'
-  );
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'white');
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
 export function AlmostWhiteView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'almostWhite'
-  );
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor( {}, 'almostWhite' );
+
+  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+}
+
+export function PrimaryColouredView(props: ViewProps) {
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor( {}, 'primary' );
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }

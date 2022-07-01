@@ -26,6 +26,9 @@ import {
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
+import { ConditionallyTintedImage } from 'components/molecules/ImageComponents';
+import { AlmostBlackText, PrimaryText } from 'components/molecules/TextComponents';
+import { PrimaryColouredView } from 'components/molecules/ViewComponents';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -55,16 +58,15 @@ const AddButton = ({ children, onPress }: { [key: string]: any }) => (
     }}
     onPress={onPress}
   >
-    <View
+    <PrimaryColouredView
       style={{
         width: 70,
         height: 70,
         borderRadius: 35,
-        backgroundColor: '#e32f45'
       }}
     >
       {children}
-    </View>
+    </PrimaryColouredView>
   </TouchableOpacity>
 );
 
@@ -119,20 +121,25 @@ export function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
-              <Image
+              <ConditionallyTintedImage
                 source={require('../assets/images/Home.png')}
                 resizeMode="contain"
+                tinted={focused}
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? '#e32f45' : '#748c94'
                 }}
               />
-              <Text
-                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
-              >
-                {t('pageTitles.home')}
-              </Text>
+              {
+                focused
+                  ? <PrimaryText
+                    text={t('pageTitles.home')}
+                    style={{fontSize: 10}}
+                  /> : <AlmostBlackText
+                    text={t('pageTitles.home')}
+                    style={{fontSize: 10}}
+                  />
+              }
             </View>
           )
         }}
@@ -144,20 +151,25 @@ export function BottomTabNavigator() {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
-              <Image
+              <ConditionallyTintedImage
                 source={require('../assets/images/Dashboard.png')}
                 resizeMode="contain"
+                tinted={focused}
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? '#e32f45' : '#748c94'
                 }}
               />
-              <Text
-                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
-              >
-                {t('pageTitles.categories')}
-              </Text>
+              {
+                focused
+                  ? <PrimaryText
+                    text={t('pageTitles.categories')}
+                    style={{fontSize: 10}}
+                  /> : <AlmostBlackText
+                    text={t('pageTitles.categories')}
+                    style={{fontSize: 10}}
+                  />
+              }
             </View>
           )
         }}
@@ -186,20 +198,25 @@ export function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
-              <Image
+              <ConditionallyTintedImage
                 source={require('../assets/images/Calendar.png')}
                 resizeMode="contain"
+                tinted={focused}
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? '#e32f45' : '#748c94'
                 }}
               />
-              <Text
-                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
-              >
-                {t('pageTitles.calendar')}
-              </Text>
+              {
+                focused
+                  ? <PrimaryText
+                    text={t('pageTitles.calendar')}
+                    style={{fontSize: 10}}
+                  /> : <AlmostBlackText
+                    text={t('pageTitles.calendar')}
+                    style={{fontSize: 10}}
+                  />
+              }
             </View>
           )
         }}
@@ -210,20 +227,25 @@ export function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
-              <Image
+              <ConditionallyTintedImage
                 source={require('../assets/images/Chat.png')}
                 resizeMode="contain"
+                tinted={focused}
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? '#e32f45' : '#748c94'
                 }}
               />
-              <Text
-                style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 10 }}
-              >
-                {t('pageTitles.settings')}
-              </Text>
+              {
+                focused
+                  ? <PrimaryText
+                    text={t('pageTitles.settings')}
+                    style={{fontSize: 10}}
+                  /> : <AlmostBlackText
+                    text={t('pageTitles.settings')}
+                    style={{fontSize: 10}}
+                  />
+              }
             </View>
           )
         }}
