@@ -111,9 +111,9 @@ const CreateAccountScreen = ({
       <PageSubtitle text={t('screens.createAccount.addDetails')} />
       <WhiteImagePicker
         onImageSelect={(image) => {
-          uploadProfileImage(image);
+          uploadProfileImage(image as any);
         }}
-        defaultImageUrl={userFullDetails?.profile_image}
+        defaultImageUrl={userFullDetails?.presigned_profile_image_url}
       />
       {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>

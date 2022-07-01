@@ -17,7 +17,7 @@ import {
   useGetUserFullDetailsQuery,
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
+import { PickedFile, WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 
 const FamilySettingsScreen = ({
@@ -35,10 +35,11 @@ const FamilySettingsScreen = ({
 
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
 
-  const uploadProfileImage = (image: File) => {
+  const uploadProfileImage = (image: PickedFile) => {
     if (userFullDetails) {
       const data = new FormData();
-      data.append('image', image);
+      // typescript complaining about `image` not being a Blob but it works :shrug: 
+      data.append('image', image as any);
       updateFamilyDetails({
         familyId: userFullDetails.family.id,
         formData: data
@@ -53,7 +54,7 @@ const FamilySettingsScreen = ({
         onImageSelect={(image) => {
           uploadProfileImage(image);
         }}
-        defaultImageUrl={userFullDetails?.family?.image}
+        defaultImageUrl={userFullDetails?.family?.presigned_image_url}
       />
     </AlmostWhiteContainerView>
   );

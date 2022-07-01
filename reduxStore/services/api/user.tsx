@@ -1,4 +1,3 @@
-import { UserFullDetails } from './types';
 import { vuetApi } from './api';
 import {
   AuthDetails,
@@ -7,12 +6,13 @@ import {
   UpdateUserInviteRequest,
   UpdateUserRequest,
   UserInviteResponse,
-  UserResponse
+  UserResponse,
+  UserFullResponse
 } from 'types/users';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUserFullDetails: builder.query<UserFullDetails, number>({
+    getUserFullDetails: builder.query<UserFullResponse, number>({
       query: (user_id) => ({
         url: `core/user/${user_id}`
       }),

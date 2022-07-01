@@ -15,15 +15,17 @@ import { useEffect, useState } from 'react';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
-type CustomFile = {
+export type CustomFile = {
   name: string;
   size: number;
   uri: string;
   type: string;
 }
 
+export type PickedFile = CustomFile | File
+
 type ImagePickerProps = {
-  onImageSelect: (image: File | CustomFile) => any;
+  onImageSelect: (image: PickedFile) => any;
   backgroundColor: string;
   defaultImageUrl?: string;
   style?: ViewStyle;

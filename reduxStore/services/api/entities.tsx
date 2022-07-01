@@ -1,4 +1,4 @@
-import { AllEntities, UserFullDetails } from './types';
+import { AllEntities } from './types';
 import { EntityResponseType } from 'types/entities';
 import { vuetApi, normalizeData } from './api';
 

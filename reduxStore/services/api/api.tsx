@@ -1,7 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { UserFullDetails } from './types';
-import { AuthDetails } from 'types/users';
 import customFetchBase from './customFetchBase';
 import { AllCategories } from './types';
 import { Category } from 'types/categories';

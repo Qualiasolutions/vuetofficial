@@ -6,7 +6,7 @@ import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import Splash from './screens/SplashScreen';
 import { Provider } from 'react-redux';
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import type { CombinedState } from '@reduxjs/toolkit';
 import reducer from './reduxStore/reducers';
 import { EntireState } from './reduxStore/types';

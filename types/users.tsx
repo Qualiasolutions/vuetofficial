@@ -1,3 +1,5 @@
+import { FamilyResponse } from "./families";
+
 export type FamilyUser = {
   pk: number;
   family: number;
@@ -66,11 +68,35 @@ export type FormUpdateUserRequest = {
 };
 
 export type UserResponse = {
+  id: number;
   username: string;
+  family: number;
   first_name: string;
   last_name: string;
   dob: string;
   member_colour: string;
   has_done_setup: boolean;
   profile_image: string;
+  presigned_profile_image_url: string;
+};
+
+
+export type UserFullResponse = {
+  id: number;
+  family: FamilyResponse;
+  last_login: string;
+  is_superuser: boolean;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  is_staff: boolean;
+  is_active: boolean;
+  date_joined: string;
+  member_colour: string;
+  dob: string;
+  has_done_setup: boolean;
+  profile_image: string;
+  presigned_profile_image_url: string;
 };

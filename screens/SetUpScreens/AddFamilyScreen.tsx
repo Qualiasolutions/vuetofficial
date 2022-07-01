@@ -85,9 +85,9 @@ const AddFamilyScreen = ({
       <WhiteImagePicker
         style={styles.imagePicker}
         onImageSelect={(image) => {
-          uploadProfileImage(image);
+          uploadProfileImage(image as any);
         }}
-        defaultImageUrl={userFullDetails?.family?.image}
+        defaultImageUrl={userFullDetails?.family?.presigned_image_url}
       />
       {addedMembersContent}
       <Button
