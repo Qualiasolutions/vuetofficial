@@ -4085,7 +4085,7 @@ expo-error-recovery@~3.0.5:
   resolved "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.0.5.tgz"
   integrity sha512-VM6OOecjt0aPu5/eCdGGJfNjvAZIemaQym0JF/+SA5IlLiPpEfbVCDTO/5yiS8Zb5fKpeABx+GCRmtfnFqvRRw==
 
-expo-file-system@~13.1.3:
+expo-file-system@~13.1.3, expo-file-system@~13.1.4:
   version "13.1.4"
   resolved "https://registry.npmjs.org/expo-file-system/-/expo-file-system-13.1.4.tgz"
   integrity sha512-/C2FKCzrdWuEt4m8Pzl9J4MhKgfU0denVLbqoKjidv8DnsLQrscFNlLhXuiooqWwsxB2OWAtGEVnPGJBWVuNEQ==

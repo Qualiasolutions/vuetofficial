@@ -7,15 +7,28 @@ import {
   ViewStyle,
   Pressable
 } from 'react-native';
+import Constants from 'expo-constants';
 import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
+
 import { useEffect, useState } from 'react';
 
+const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+
+type CustomFile = {
+  name: string;
+  size: number;
+  uri: string;
+  type: string;
+}
+
 type ImagePickerProps = {
-  onImageSelect: (image: File) => any;
+  onImageSelect: (image: File | CustomFile) => any;
   backgroundColor: string;
   defaultImageUrl?: string;
   style?: ViewStyle;
 };
+
 
 export function ImagePicker({
   onImageSelect,
@@ -27,12 +40,23 @@ export function ImagePicker({
     useState<DocumentPicker.DocumentResult | null>(null);
 
   useEffect(() => {
-    if (
-      selectedImage &&
-      selectedImage.type === 'success' &&
-      selectedImage.file
-    ) {
-      onImageSelect(selectedImage.file);
+    if (selectedImage && selectedImage.type === 'success') {
+      if (selectedImage.file) {
+        onImageSelect(selectedImage.file);
+      } else if (selectedImage.uri && selectedImage.size) {
+        const { name, size, uri } = selectedImage
+        const nameParts = name.split('.');
+        const fileType = nameParts[nameParts.length - 1];
+
+        FileSystem.readAsStringAsync(selectedImage.uri).then((res) => {
+          onImageSelect({
+            name,
+            size,
+            uri,
+            type: "application/" + fileType
+          });
+        })
+      }
     }
   }, [selectedImage]);
 
@@ -40,12 +64,14 @@ export function ImagePicker({
     const res = await DocumentPicker.getDocumentAsync({
       type: 'image/*'
     });
+    console.log(res)
     if (res.type === 'success') {
       setSelectedImage(res);
     } else {
       setSelectedImage(null);
     }
   };
+
   return (
     <Pressable onPress={chooseImage}>
       <View style={[{ backgroundColor }, styles.container, style]}>
@@ -55,9 +81,10 @@ export function ImagePicker({
               ? styles.selectedImage
               : styles.placeholderImage
           }
+          // Some hacky string replacement for local dev (ensure can access localstack S3)
           source={
-            selectedImage ||
-            defaultImageUrl ||
+            (selectedImage?.type === "success" && selectedImage?.uri && { uri: selectedImage.uri }) ||
+            (defaultImageUrl && { uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0]) }) ||
             require('../../../assets/images/icons/camera.png')
           }
           resizeMode="contain"

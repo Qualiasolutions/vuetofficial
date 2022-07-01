@@ -43,7 +43,6 @@ const SettingsScreen = ({
         <Button
           title="FAMILY SETTINGS"
           onPress={() => {
-            console.log('GO FAMILY SETTINGS');
             navigation.navigate('FamilySettings');
           }}
         />
