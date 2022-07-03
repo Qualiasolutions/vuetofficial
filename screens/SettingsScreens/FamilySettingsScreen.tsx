@@ -5,7 +5,7 @@ import { Image, Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { SetupTabParamList } from 'types/base';
+import { SettingsTabParamList, SetupTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -34,7 +34,7 @@ import { UserFullResponse, UserInviteResponse } from 'types/users';
 
 const FamilySettingsScreen = ({
   navigation
-}: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
+}: NativeStackScreenProps<SettingsTabParamList, 'FamilySettings'>) => {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: userFullDetails } = useGetUserFullDetailsQuery(
@@ -92,7 +92,9 @@ const FamilySettingsScreen = ({
         />
       </TransparentView>
       <TransparentView style={styles.listRight}>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={() => {
+          navigation.navigate('EditFamilyMember', { id: user.id });
+        }}>
           <Image
             style={styles.editIcon}
             source={require('../../assets/images/icons/feather-edit.png')}

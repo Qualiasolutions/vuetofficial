@@ -1,6 +1,6 @@
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { Text, View } from 'components/Themed';
+import { Text, View, TextInput, Button } from 'components/Themed';
 import React, { useEffect, useMemo } from 'react';
 import DateField from 'react-native-datefield';
 import dayjs from 'dayjs';
@@ -13,6 +13,10 @@ import {
   MutationTrigger,
   UseMutation
 } from '@reduxjs/toolkit/dist/query/react/buildHooks';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { WhiteDateInput } from './components/DateInputs';
+import { ColorPicker } from './components/ColorPickers';
 
 /* This type specifies the actual values of the fields.
 
@@ -174,10 +178,10 @@ export default function Form({
 
   const produceLabelFromFieldName = (fieldName: string) => {
     return (
-      <Text style={styles.inputLabel}>
-        {fields[fieldName].displayName || parseFieldName(fieldName)}
-        {fields[fieldName].required ? '*' : ''}
-      </Text>
+      <AlmostBlackText
+        text={`${fields[fieldName].displayName || parseFieldName(fieldName)}${fields[fieldName].required ? '*' : ''}`}
+        style={styles.inputLabel}
+      />
     );
   };
 
@@ -220,12 +224,13 @@ export default function Form({
     switch (fieldType.type) {
       case 'string':
         return (
-          <View key={field} style={styles.inputBlock}>
-            <View key={field} style={styles.inputPair}>
-              {produceLabelFromFieldName(field)}
+          <TransparentView key={field}>
+            <TransparentView key={field}>
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
               <TextInput
                 value={formValues[field]}
-                style={styles.textInput}
                 onChangeText={(newValue) => {
                   setFormValues({
                     ...formValues,
@@ -234,23 +239,20 @@ export default function Form({
                   onValueChange();
                 }}
               />
-            </View>
-          </View>
+            </TransparentView>
+          </TransparentView>
         );
       case 'Date':
         return (
-          <View key={field} style={styles.inputBlock}>
+          <TransparentView key={field}>
             {formErrors[field] ? (
-              <Text style={styles.formError}>{formErrors[field]}</Text>
+              <Text>{formErrors[field]}</Text>
             ) : null}
-            <View style={styles.inputPair}>
+            <TransparentView>
               {produceLabelFromFieldName(field)}
-              <DateField
+              <WhiteDateInput
                 value={formValues[field]}
-                defaultValue={formValues[field]}
-                styleInput={[styles.textInput, styles.dateFieldInput]}
-                minimumDate={new Date()}
-                onSubmit={(newValue) => {
+                onSubmit={(newValue: Date) => {
                   setFormValues({
                     ...formValues,
                     [field]: newValue
@@ -266,20 +268,19 @@ export default function Form({
                   });
                 }}
               />
-            </View>
-          </View>
+            </TransparentView>
+          </TransparentView>
         );
       case 'DateTime':
         return (
-          <View key={field} style={styles.inputBlock}>
+          <TransparentView key={field}>
             {formErrors[field] ? (
-              <Text style={styles.formError}>{formErrors[field]}</Text>
+              <Text>{formErrors[field]}</Text>
             ) : null}
-            <View style={styles.inputPair}>
+            <TransparentView>
               {produceLabelFromFieldName(field)}
               <DateTimeTextInput
                 value={formValues[field]}
-                textInputStyle={styles.textInput}
                 onValueChange={(newValue: Date) => {
                   setFormValues({
                     ...formValues,
@@ -289,8 +290,8 @@ export default function Form({
                   onValueChange();
                 }}
               />
-            </View>
-          </View>
+            </TransparentView>
+          </TransparentView>
         );
       case 'radio':
         const f = fields[field];
@@ -303,11 +304,11 @@ export default function Form({
           );
 
           return (
-            <View key={field} style={styles.inputBlock}>
+            <TransparentView key={field}>
               {formErrors[field] ? (
-                <Text style={styles.formError}>{formErrors[field]}</Text>
+                <Text>{formErrors[field]}</Text>
               ) : null}
-              <View style={styles.inputPair}>
+              <TransparentView>
                 {produceLabelFromFieldName(field)}
                 <RadioInput
                   value={formValues[field]}
@@ -321,37 +322,58 @@ export default function Form({
                     onValueChange();
                   }}
                 />
-              </View>
-            </View>
+              </TransparentView>
+            </TransparentView>
           );
         }
+      case 'colour':
+        return (
+          <WhiteBox key={field} style={styles.colourBox}>
+            {formErrors[field] ? (
+              <Text>{formErrors[field]}</Text>
+            ) : null}
+            {produceLabelFromFieldName(field)}
+            <ColorPicker
+              value={formValues[field]}
+              onValueChange={(value: string) => {
+                setFormValues({
+                  ...formValues,
+                  [field]: value
+                });
+                setFormErrors({ ...formErrors, [field]: '' });
+                onValueChange();
+              }}
+            />
+          </WhiteBox>
+        )
     }
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.fieldsContainer}>
+    <TransparentView style={styles.container}>
+      <TransparentView>
         {submitError ? (
-          <Text style={styles.formError}>{submitError}</Text>
+          <Text>{submitError}</Text>
         ) : null}
         {formFields}
-      </View>
-      <View style={styles.bottomButtons}>
-        <GenericButton
+      </TransparentView>
+      <TransparentView style={styles.bottomButtons}>
+        <Button
           title={submitText || (formType === 'CREATE' ? 'CREATE' : 'UPDATE')}
           onPress={submitForm}
           disabled={submittingForm || !hasAllRequired}
-          style={{ backgroundColor: '#C4C4C4' }}
-          textStyle={{ color: 'black', fontWeight: 'bold' }}
+          style={styles.button}
         />
         {formType === 'UPDATE' ? (
-          <SquareButton
-            fontAwesomeIconName="trash"
+          <Button
+            title="DELETE"
             onPress={makeDeleteRequest}
+            disabled={submittingForm}
+            style={[styles.button, styles.deleteButton]}
           />
         ) : null}
-      </View>
-    </View>
+      </TransparentView>
+    </TransparentView>
   );
 }
 
@@ -359,50 +381,33 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  },
-  fieldsContainer: {
-    margin: 10,
-    width: '100%',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start'
-  },
-  inputBlock: {
-    alignItems: 'flex-start',
-    width: '100%'
-  },
-  inputPair: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'space-between',
-    marginVertical: 5
   },
   inputLabel: {
-    textAlign: 'right',
-    minWidth: 130,
-    marginRight: 30,
-    fontWeight: 'bold'
+    fontSize: 12,
+    textAlign: 'left'
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    minWidth: 100,
-    backgroundColor: '#F3F2F2',
-    borderRadius: 3,
-    padding: 3
-  },
-  dateFieldInput: {
-    width: 50,
-    minWidth: 50,
-    marginRight: 2
-  },
-  formError: {
-    color: 'red',
-    maxWidth: 200,
-    textAlign: 'center'
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%'
   },
   bottomButtons: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: '100%'
+  },
+  button: {
+    width: 'auto'
+  },
+  deleteButton: {
+    marginLeft: 10
+  },
+  colourBox: {
+    width: '100%',
+    marginTop: 15,
+    marginBottom: 15,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   }
 });

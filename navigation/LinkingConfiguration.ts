@@ -36,6 +36,7 @@ const linking: LinkingOptions<TabParamList> = {
       CreateAccount: 'create-account',
       AddFamily: 'add-family',
       AddFamilyMember: 'add-family-member',
+      EditFamilyMember: 'edit-family-member',
       WelcomeToVuet: 'welcome',
       FamilyRequest: 'family-request'
     }

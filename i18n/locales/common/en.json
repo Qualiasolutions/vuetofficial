@@ -12,7 +12,8 @@
     "calendar": "Calendar",
     "oops": "Oops!",
     "familySettings": "Family settings",
-    "addFamilyMember": "Add family member"
+    "addFamilyMember": "Add family member",
+    "editFamilyMember": "Edit {{fullName}}"
   },
   "categories": {
     "FAMILY": "Family",

@@ -7,6 +7,7 @@ import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
 import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
 import AddFamilyMemberScreen from 'screens/SettingsScreens/Forms/AddFamilyMemberScreen';
+import EditFamilyMemberScreen from 'screens/SettingsScreens/Forms/EditFamilyMemberScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
 
@@ -37,6 +38,14 @@ export function SettingsNavigator() {
         component={AddFamilyMemberScreen}
         options={{
           title: t('pageTitles.addFamilyMember'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="EditFamilyMember"
+        component={EditFamilyMemberScreen}
+        options={{
+          title: "",
           headerTintColor
         }}
       />

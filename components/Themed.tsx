@@ -85,6 +85,7 @@ export function Button(
     onPress: (event: GestureResponderEvent) => void;
     title: string;
     style?: object;
+    disabled?: boolean;
   }
 ) {
   const { style, title, lightColor, darkColor, ...otherProps } = props;

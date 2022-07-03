@@ -23,6 +23,7 @@ import './i18n/i18n';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  blacklist: [vuetApi.reducerPath],
   stateReconciler: autoMergeLevel2
 };
 

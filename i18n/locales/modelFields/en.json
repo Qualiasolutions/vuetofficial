@@ -25,5 +25,12 @@
       "service_due_date": "Service Due",
       "owner": "Owner"
     }
+  },
+  "familyMember": {
+    "first_name": "First name",
+    "last_name": "Last name",
+    "dob": "Date of birth",
+    "member_colour": "Member colour",
+    "phone_number": "Phone number"
   }
 }
