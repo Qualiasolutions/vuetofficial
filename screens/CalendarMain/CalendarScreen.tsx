@@ -2,11 +2,11 @@ import Calendar from 'components/calendars/Calendar';
 import GenericError from 'components/molecules/GenericError';
 import React from 'react';
 import { Button, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { WhiteView } from 'components/molecules/ViewComponents';
 
 function CalendarScreen() {
   const username = useSelector(selectUsername);
@@ -40,7 +40,7 @@ function CalendarScreen() {
   }
 
   return isLoading || !allTasks ? null : (
-    <SafeAreaView style={styles.container}>
+    <WhiteView style={styles.container}>
       <Calendar tasks={allTasks} alwaysIncludeCurrentDate={true} />
       <Button
         title="LOAD MORE DATES"
@@ -50,7 +50,7 @@ function CalendarScreen() {
           setEndDate(newEndDate);
         }}
       />
-    </SafeAreaView>
+    </WhiteView>
   );
 }
 

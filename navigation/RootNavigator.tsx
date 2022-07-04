@@ -107,12 +107,11 @@ export function BottomTabNavigator() {
         headerTitleAlign: 'center',
         tabBarShowLabel: false,
         tabBarStyle: {
-          bottom: -10,
           left: 0,
           right: 0,
-          backgroundColor: '#ffffff',
-          borderRadius: 15,
-          height: 90,
+          backgroundColor: useThemeColor({}, 'white'),
+          height: 80,
+          padding: 10,
           ...styles.shadow
         }
       }}
