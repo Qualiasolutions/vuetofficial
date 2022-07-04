@@ -34,8 +34,6 @@ export default function EditEntityScreen({
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
 
-  console.log(userDetails);
-
   const {
     data: userFullDetails,
     isLoading,
