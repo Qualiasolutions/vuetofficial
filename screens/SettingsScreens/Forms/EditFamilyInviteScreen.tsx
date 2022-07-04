@@ -55,7 +55,7 @@ export default function EditEntityScreen({
       ? familyInviteIdRaw
       : parseInt(familyInviteIdRaw);
 
-  const familyInviteToEdit = allUserInvites.filter(
+  const familyInviteToEdit = allUserInvites?.filter(
     (familyMember) => familyMember.id === familyInviteId
   )[0];
   const fullName =
