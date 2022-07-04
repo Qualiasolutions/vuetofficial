@@ -1,13 +1,19 @@
-import { ColourField, DateField, FormFieldTypes, PhoneNumberField, StringField } from 'components/forms/formFieldTypes';
+import {
+  ColourField,
+  DateField,
+  FormFieldTypes,
+  PhoneNumberField,
+  StringField
+} from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 
 export type FamilyMemberFormFieldTypes = {
-  first_name: StringField
-  last_name: StringField
-  dob: DateField
-  member_colour: ColourField
-  phone_number: PhoneNumberField
-}
+  first_name: StringField;
+  last_name: StringField;
+  dob: DateField;
+  member_colour: ColourField;
+  phone_number: PhoneNumberField;
+};
 
 export const familyMemberForm = (): FamilyMemberFormFieldTypes => {
   const { t } = useTranslation('modelFields');

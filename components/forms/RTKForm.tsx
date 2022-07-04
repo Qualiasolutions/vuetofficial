@@ -68,11 +68,28 @@ const createInitialObject = (
   for (const key of Object.keys(fields)) {
     switch (fields[key].type) {
       case 'string':
+      case 'colour':
+      case 'phoneNumber':
       case 'radio':
         initialObj[key] = fields[key].initialValue || '';
         continue;
 
       case 'Date':
+        if (fields[key].initialValue) {
+          const parsedDate = new Date(fields[key].initialValue || '');
+          // Date fields should be the same in all timezones
+          const timezoneIgnorantDate = new Date(
+            parsedDate.getUTCFullYear(),
+            parsedDate.getUTCMonth(),
+            parsedDate.getUTCDate()
+          );
+
+          initialObj[key] = timezoneIgnorantDate;
+        } else {
+          initialObj[key] = null;
+        }
+        continue;
+
       case 'DateTime':
         initialObj[key] = fields[key].initialValue
           ? new Date(fields[key].initialValue || '')
@@ -179,7 +196,9 @@ export default function Form({
   const produceLabelFromFieldName = (fieldName: string) => {
     return (
       <AlmostBlackText
-        text={`${fields[fieldName].displayName || parseFieldName(fieldName)}${fields[fieldName].required ? '*' : ''}`}
+        text={`${fields[fieldName].displayName || parseFieldName(fieldName)}${
+          fields[fieldName].required ? '*' : ''
+        }`}
         style={styles.inputLabel}
       />
     );
@@ -223,6 +242,7 @@ export default function Form({
     // TODO - add inputs for other field types
     switch (fieldType.type) {
       case 'string':
+      case 'phoneNumber':
         return (
           <TransparentView key={field}>
             <TransparentView key={field}>
@@ -245,13 +265,12 @@ export default function Form({
       case 'Date':
         return (
           <TransparentView key={field}>
-            {formErrors[field] ? (
-              <Text>{formErrors[field]}</Text>
-            ) : null}
+            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
             <TransparentView>
               {produceLabelFromFieldName(field)}
               <WhiteDateInput
                 value={formValues[field]}
+                defaultValue={formValues[field]}
                 onSubmit={(newValue: Date) => {
                   setFormValues({
                     ...formValues,
@@ -274,9 +293,7 @@ export default function Form({
       case 'DateTime':
         return (
           <TransparentView key={field}>
-            {formErrors[field] ? (
-              <Text>{formErrors[field]}</Text>
-            ) : null}
+            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
             <TransparentView>
               {produceLabelFromFieldName(field)}
               <DateTimeTextInput
@@ -305,9 +322,7 @@ export default function Form({
 
           return (
             <TransparentView key={field}>
-              {formErrors[field] ? (
-                <Text>{formErrors[field]}</Text>
-              ) : null}
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               <TransparentView>
                 {produceLabelFromFieldName(field)}
                 <RadioInput
@@ -329,9 +344,7 @@ export default function Form({
       case 'colour':
         return (
           <WhiteBox key={field} style={styles.colourBox}>
-            {formErrors[field] ? (
-              <Text>{formErrors[field]}</Text>
-            ) : null}
+            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
             {produceLabelFromFieldName(field)}
             <ColorPicker
               value={formValues[field]}
@@ -345,16 +358,14 @@ export default function Form({
               }}
             />
           </WhiteBox>
-        )
+        );
     }
   });
 
   return (
     <TransparentView style={styles.container}>
       <TransparentView>
-        {submitError ? (
-          <Text>{submitError}</Text>
-        ) : null}
+        {submitError ? <Text>{submitError}</Text> : null}
         {formFields}
       </TransparentView>
       <TransparentView style={styles.bottomButtons}>
@@ -364,7 +375,7 @@ export default function Form({
           disabled={submittingForm || !hasAllRequired}
           style={styles.button}
         />
-        {formType === 'UPDATE' ? (
+        {formType === 'UPDATE' && methodHookTriggers['DELETE'] ? (
           <Button
             title="DELETE"
             onPress={makeDeleteRequest}
@@ -380,7 +391,7 @@ export default function Form({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
   inputLabel: {
     fontSize: 12,
@@ -393,7 +404,8 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     flexDirection: 'row',
-    width: '100%'
+    width: '100%',
+    marginTop: 10
   },
   button: {
     width: 'auto'

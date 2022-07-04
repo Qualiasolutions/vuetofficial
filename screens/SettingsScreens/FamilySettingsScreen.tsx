@@ -76,13 +76,15 @@ const FamilySettingsScreen = ({
 
   const userToListElement = (
     user: UserFullResponse | UserInviteResponse,
-    nameSuffix = ''
+    isPending: boolean = false
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
       <TransparentView>
         <AlmostBlackText
           style={styles.listElementText}
-          text={`${user.first_name} ${user.last_name}${nameSuffix}`}
+          text={`${user.first_name} ${user.last_name}${
+            isPending ? ' (pending)' : ''
+          }`}
         />
         <View
           style={[
@@ -92,9 +94,14 @@ const FamilySettingsScreen = ({
         />
       </TransparentView>
       <TransparentView style={styles.listRight}>
-        <Pressable onPress={() => {
-          navigation.navigate('EditFamilyMember', { id: user.id });
-        }}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate(
+              isPending ? 'EditFamilyInvite' : 'EditFamilyMember',
+              { id: user.id }
+            );
+          }}
+        >
           <Image
             style={styles.editIcon}
             source={require('../../assets/images/icons/feather-edit.png')}
@@ -114,7 +121,7 @@ const FamilySettingsScreen = ({
     userToListElement(user)
   );
   const familyInvitesList = familyInvites?.map((user) =>
-    userToListElement(user, ' (pending)')
+    userToListElement(user, true)
   );
 
   return (

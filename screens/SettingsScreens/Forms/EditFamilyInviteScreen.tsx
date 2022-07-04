@@ -13,7 +13,9 @@ import { deepCopy } from 'utils/copy';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
-  useUpdateUserDetailsMutation
+  useGetUserInvitesQuery,
+  useUpdateUserDetailsMutation,
+  useUpdateUserInviteMutation
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +34,8 @@ export default function EditEntityScreen({
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
 
+  console.log(userDetails);
+
   const {
     data: userFullDetails,
     isLoading,
@@ -40,18 +44,25 @@ export default function EditEntityScreen({
     skip: !userDetails?.user_id
   });
 
-  const familyMemberIdRaw = route.params.id;
-  const familyMemberId =
-    typeof familyMemberIdRaw === 'number'
-      ? familyMemberIdRaw
-      : parseInt(familyMemberIdRaw);
+  const { data: allUserInvites } = useGetUserInvitesQuery(
+    userFullDetails?.family?.id || -1,
+    {
+      skip: !userFullDetails?.family?.id
+    }
+  );
 
-  const familyMemberToEdit = userFullDetails?.family.users.filter(
-    (familyMember) => familyMember.id === familyMemberId
+  const familyInviteIdRaw = route.params.id;
+  const familyInviteId =
+    typeof familyInviteIdRaw === 'number'
+      ? familyInviteIdRaw
+      : parseInt(familyInviteIdRaw);
+
+  const familyInviteToEdit = allUserInvites.filter(
+    (familyMember) => familyMember.id === familyInviteId
   )[0];
   const fullName =
-    familyMemberToEdit &&
-    `${familyMemberToEdit.first_name} ${familyMemberToEdit.last_name}`;
+    familyInviteToEdit &&
+    `${familyInviteToEdit.first_name} ${familyInviteToEdit.last_name}`;
 
   useEffect(() => {
     navigation.setOptions({
@@ -69,11 +80,11 @@ export default function EditEntityScreen({
     return <GenericError />;
   }
 
-  if (route.params?.id && familyMemberToEdit) {
+  if (route.params?.id && familyInviteToEdit) {
     let fieldName: keyof typeof formFields;
     for (fieldName in formFields) {
-      if (fieldName in familyMemberToEdit) {
-        formFields[fieldName].initialValue = familyMemberToEdit[fieldName];
+      if (fieldName in familyInviteToEdit) {
+        formFields[fieldName].initialValue = familyInviteToEdit[fieldName];
       }
     }
 
@@ -82,10 +93,10 @@ export default function EditEntityScreen({
         <RTKForm
           fields={formFields}
           methodHooks={{
-            PATCH: useUpdateUserDetailsMutation
+            PATCH: useUpdateUserInviteMutation
           }}
           formType="UPDATE"
-          extraFields={{ user_id: familyMemberToEdit.id }}
+          extraFields={{ id: familyInviteToEdit.id }}
           onSubmitSuccess={() => {
             navigation.navigate('FamilySettings');
           }}

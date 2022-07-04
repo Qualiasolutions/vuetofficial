@@ -20,7 +20,10 @@ const linking: LinkingOptions<TabParamList> = {
         path: 'settings',
         screens: {
           Settings: '',
-          FamilySettings: 'family'
+          FamilySettings: 'family',
+          EditFamilyMember: 'edit-family-member',
+          EditFamilyInvite: 'edit-family-invite',
+          AddFamilyMember: 'add-family-member'
         }
       },
       AddTask: 'add-task',
@@ -36,7 +39,6 @@ const linking: LinkingOptions<TabParamList> = {
       CreateAccount: 'create-account',
       AddFamily: 'add-family',
       AddFamilyMember: 'add-family-member',
-      EditFamilyMember: 'edit-family-member',
       WelcomeToVuet: 'welcome',
       FamilyRequest: 'family-request'
     }

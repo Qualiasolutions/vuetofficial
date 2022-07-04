@@ -17,7 +17,7 @@ export function ColorPicker({
   value: string;
   onValueChange: (value: string) => any;
 }) {
-  const [color, setColor] = useState<string>(generateRandomColor());
+  const [color, setColor] = useState<string>(value || generateRandomColor());
 
   useEffect(() => {
     if (!color) {

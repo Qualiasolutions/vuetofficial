@@ -78,6 +78,7 @@ export type SettingsTabParamList = {
   FamilySettings: undefined;
   AddFamilyMember: undefined;
   EditFamilyMember: { id: number | string };
+  EditFamilyInvite: { id: number | string };
 };
 
 export type SettingsStackParamList = {
