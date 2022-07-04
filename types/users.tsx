@@ -65,10 +65,17 @@ export type UserResponse = {
   id: number;
   username: string;
   family: number;
+  last_login: string;
+  is_superuser: boolean;
   first_name: string;
   last_name: string;
-  dob: string;
+  email: string;
+  phone_number: string;
+  is_staff: boolean;
+  is_active: boolean;
+  date_joined: string;
   member_colour: string;
+  dob: string;
   has_done_setup: boolean;
   profile_image: string;
   presigned_profile_image_url: string;

@@ -9,6 +9,7 @@ import {
   UserResponse,
   UserFullResponse
 } from 'types/users';
+import { DeleteRequest } from 'types/apiBase';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -73,7 +74,18 @@ const extendedApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['UserInvite']
-    })
+    }),
+    deleteUserInvite: builder.mutation<
+      null,
+      DeleteRequest
+    >({
+      query: (body) => ({
+        url: `core/user-invite/${body.id}/`,
+        method: 'DELETE',
+        body
+      }),
+      invalidatesTags: ['UserInvite']
+    }),
   }),
   overrideExisting: true
 });
@@ -85,5 +97,6 @@ export const {
   useFormUpdateUserDetailsMutation,
   useGetUserInvitesQuery,
   useCreateUserInviteMutation,
-  useUpdateUserInviteMutation
+  useUpdateUserInviteMutation,
+  useDeleteUserInviteMutation
 } = extendedApi;

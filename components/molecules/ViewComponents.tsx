@@ -35,6 +35,18 @@ export function AlmostWhiteContainerView(props: ViewProps) {
   );
 }
 
+export function TransparentContainerView(props: ViewProps) {
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'transparent');
+
+  return (
+    <DefaultView
+      style={[{ backgroundColor }, styles.container, style]}
+      {...otherProps}
+    />
+  );
+}
+
 export function WhiteView(props: ViewProps) {
   const { style, ...otherProps } = props;
   const backgroundColor = useThemeColor({}, 'white');

@@ -34,7 +34,9 @@
     "continue": "Continue",
     "skip": "Skip",
     "accept": "Accept",
-    "reject": "Reject"
+    "reject": "Reject",
+    "yes": "Yes",
+    "no": "No"
   },
   "screens": {
     "logIn": {

@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Image, Pressable, StyleSheet } from 'react-native';
 
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { SettingsTabParamList, SetupTabParamList } from 'types/base';
+import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
-  AlmostWhiteContainerView,
   AlmostWhiteView,
   TransparentView,
-  WhiteBox,
-  WhiteContainerView,
   WhiteView
 } from 'components/molecules/ViewComponents';
 import {
+  useDeleteUserInviteMutation,
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
   useGetUserInvitesQuery
@@ -25,12 +23,12 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
   FullWidthImagePicker,
   PickedFile,
-  WhiteImagePicker
 } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { View } from 'components/Themed';
-import { UserFullResponse, UserInviteResponse } from 'types/users';
+import { UserInviteResponse, UserResponse } from 'types/users';
+import { YesNoModal } from 'components/molecules/Modals';
 
 const FamilySettingsScreen = ({
   navigation
@@ -45,11 +43,15 @@ const FamilySettingsScreen = ({
     }
   );
 
+  const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null)
+  const [userInviteToDelete, setUserInviteToDelete] = useState<UserInviteResponse | null>(null)
+  
   const { data: userInvites } = useGetUserInvitesQuery(
     userDetails?.user_id || -1
   );
 
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
+  const [deleteUserInvite, deleteUserInviteResult] = useDeleteUserInviteMutation();
 
   const { t } = useTranslation();
 
@@ -75,7 +77,7 @@ const FamilySettingsScreen = ({
   );
 
   const userToListElement = (
-    user: UserFullResponse | UserInviteResponse,
+    user: UserResponse | UserInviteResponse,
     isPending: boolean = false
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
@@ -107,7 +109,14 @@ const FamilySettingsScreen = ({
             source={require('../../assets/images/icons/feather-edit.png')}
           />
         </Pressable>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={() => {
+          const isUserInvite = (user: any): user is UserInviteResponse => isPending;
+          if (isUserInvite(user)) {
+            setUserInviteToDelete(user)
+          } else {
+            setUserToDelete(user)
+          }
+        }}>
           <Image
             style={styles.editIcon}
             source={require('../../assets/images/icons/remove-circle.png')}
@@ -126,6 +135,25 @@ const FamilySettingsScreen = ({
 
   return (
     <TransparentView style={styles.container}>
+      <YesNoModal
+        title="Before you proceed"
+        question={`Are you sure you want to remove ${userToDelete?.first_name} ${userToDelete?.last_name} from the family?`}
+        visible={!!userToDelete}
+        onYes={() => {}}
+        onNo={() => { setUserToDelete(null) }}
+      />
+      <YesNoModal
+        title="Before you proceed"
+        question={`Are you sure you want to remove ${userInviteToDelete?.first_name} ${userInviteToDelete?.last_name} from the family?`}
+        visible={!!userInviteToDelete}
+        onYes={() => {
+          if (userInviteToDelete) {
+            deleteUserInvite({id: userInviteToDelete.id})
+            setUserInviteToDelete(null)
+          }
+        }}
+        onNo={() => { setUserInviteToDelete(null) }}
+      />
       <AlmostWhiteView>
         <FullWidthImagePicker
           onImageSelect={(image) => {
@@ -212,6 +240,15 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     margin: 5
+  },
+  opaqueBackground: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    color: '#000000',
+    opacity: 0.5
   }
 });
 

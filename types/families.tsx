@@ -1,4 +1,4 @@
-import { UserFullResponse } from './users';
+import { UserResponse } from './users';
 
 export type UpdateFamilyRequest = {
   familyId: number;
@@ -7,7 +7,7 @@ export type UpdateFamilyRequest = {
 
 export type FamilyResponse = {
   id: number;
-  users: UserFullResponse[];
+  users: UserResponse[];
   image: string;
   presigned_image_url: string;
 };
