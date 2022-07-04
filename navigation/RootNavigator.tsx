@@ -183,6 +183,7 @@ export function BottomTabNavigator() {
         name="AddTask"
         component={AddTaskScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Image
               source={require('../assets/images/plus_icon.png')}

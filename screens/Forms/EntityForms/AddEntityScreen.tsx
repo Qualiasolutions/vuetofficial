@@ -83,6 +83,7 @@ export default function AddEntityScreen({
             }}
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
+            inlineFields={true}
           />
         </View>
       </SafeAreaView>

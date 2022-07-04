@@ -1,7 +1,7 @@
-import { Text, View } from 'components/Themed';
+import { Text, View, TextInput } from 'components/Themed';
 import dayjs from 'dayjs';
 import React from 'react';
-import { Pressable, TextInput, ViewStyle } from 'react-native';
+import { Pressable, ViewStyle } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function DateTimeTextInput({

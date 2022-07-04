@@ -35,16 +35,16 @@ export function WhiteDateInput(props: DateFieldProps) {
 
   return (
     <DateField
-      containerStyle={[containerStyle, styles.container]}
-      styleInputYear={[styleInputYear, styles.yearInput]}
+      containerStyle={[styles.container, containerStyle]}
+      styleInputYear={[styles.yearInput, styleInputYear]}
       styleInput={[
         {
           backgroundColor,
           color: textColor,
           borderColor
         },
-        styleInput,
-        styles.textInput
+        styles.textInput,
+        styleInput
       ]}
       {...otherProps}
     />
@@ -77,16 +77,16 @@ export function AlmostWhiteDateInput(props: DateFieldProps) {
 
   return (
     <DateField
-      containerStyle={[containerStyle, styles.container]}
-      styleInputYear={[styleInputYear, styles.yearInput]}
+      containerStyle={[styles.container, containerStyle]}
+      styleInputYear={[styles.yearInput, styleInputYear]}
       styleInput={[
         {
           backgroundColor,
           color: textColor,
           borderColor
         },
+        styles.textInput,
         styleInput,
-        styles.textInput
       ]}
       {...otherProps}
     />

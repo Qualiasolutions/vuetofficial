@@ -33,6 +33,12 @@ export default function AddTaskScreen({
   } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      setCreateSuccessful(false);
+    }, [])
+  );
+
   const fixedTaskFormFields = fixedTaskForm();
 
   if (isLoading || !allTasks) {
@@ -48,11 +54,6 @@ export default function AddTaskScreen({
     setCreateSuccessful(true);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      setCreateSuccessful(false);
-    }, [])
-  );
 
   return (
     <SafeAreaView style={formStyles.container}>

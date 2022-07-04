@@ -1,11 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-import { Text, View, TextInput, Button } from 'components/Themed';
+import { Text, TextInput, Button } from 'components/Themed';
 import React, { useEffect, useMemo } from 'react';
-import DateField from 'react-native-datefield';
 import dayjs from 'dayjs';
-import SquareButton from '../molecules/SquareButton';
-import GenericButton from 'components/molecules/GenericButton';
 import DateTimeTextInput from './components/DateTimeTextInput';
 import { FormFieldTypes, isRadioField } from './formFieldTypes';
 import RadioInput from './components/RadioInput';
@@ -121,7 +118,8 @@ export default function Form({
   onDeleteFailure = () => {},
   onValueChange = () => {},
   clearOnSubmit = false,
-  submitText = ''
+  submitText = '',
+  inlineFields = false,
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -134,6 +132,7 @@ export default function Form({
   onValueChange?: Function;
   clearOnSubmit?: boolean;
   submitText?: string;
+  inlineFields?: boolean;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -245,7 +244,7 @@ export default function Form({
       case 'phoneNumber':
         return (
           <TransparentView key={field}>
-            <TransparentView key={field}>
+            <TransparentView key={field} style={inlineFields ? styles.inlineInputPair : {}}>
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
@@ -266,8 +265,10 @@ export default function Form({
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView>
-              {produceLabelFromFieldName(field)}
+            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
               <WhiteDateInput
                 value={formValues[field]}
                 defaultValue={formValues[field]}
@@ -279,6 +280,9 @@ export default function Form({
                   setFormErrors({ ...formErrors, [field]: '' });
                   onValueChange();
                 }}
+                styleInput={inlineFields ? styles.inlineDateInput : {}}
+                styleInputYear={inlineFields ? styles.inlineDateInput : {}}
+                containerStyle={inlineFields ? styles.inlineDateContainer : {}}
                 handleErrors={() => {
                   setFormErrors({
                     ...formErrors,
@@ -294,8 +298,10 @@ export default function Form({
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView>
-              {produceLabelFromFieldName(field)}
+            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
               <DateTimeTextInput
                 value={formValues[field]}
                 onValueChange={(newValue: Date) => {
@@ -393,6 +399,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+  inlineInputPair: {
+    flexDirection: 'row'
+  },
   inputLabel: {
     fontSize: 12,
     textAlign: 'left'
@@ -400,7 +409,14 @@ const styles = StyleSheet.create({
   inputLabelWrapper: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    width: '100%'
+    minWidth: 100
+  },
+  inlineDateContainer: {
+    width: 'auto'
+  },
+  inlineDateInput: {
+    flex: 0,
+    width: 75
   },
   bottomButtons: {
     flexDirection: 'row',
