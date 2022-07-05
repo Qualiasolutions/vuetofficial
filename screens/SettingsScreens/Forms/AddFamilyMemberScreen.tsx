@@ -21,6 +21,7 @@ import {
 import { deepCopy } from 'utils/copy';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { ScrollView } from 'react-native';
 
 const AddFamilyMemberScreen = ({
   navigation
@@ -46,26 +47,28 @@ const AddFamilyMemberScreen = ({
   ) : null;
 
   return (
-    <AlmostWhiteContainerView>
-      {errorContent}
-      <RTKForm
-        fields={formFields}
-        methodHooks={{
-          POST: useCreateUserInviteMutation
-        }}
-        formType="CREATE"
-        onSubmitSuccess={() => {
-          navigation.navigate('FamilySettings');
-        }}
-        onSubmitFailure={() => {
-          setErrorMessage(t('common.genericError'));
-        }}
-        extraFields={{
-          family: userFullDetails?.family.id,
-          invitee: userFullDetails?.id
-        }}
-      />
-    </AlmostWhiteContainerView>
+    <ScrollView>
+      <AlmostWhiteContainerView>
+        {errorContent}
+        <RTKForm
+          fields={formFields}
+          methodHooks={{
+            POST: useCreateUserInviteMutation
+          }}
+          formType="CREATE"
+          onSubmitSuccess={() => {
+            navigation.navigate('FamilySettings');
+          }}
+          onSubmitFailure={() => {
+            setErrorMessage(t('common.genericError'));
+          }}
+          extraFields={{
+            family: userFullDetails?.family.id,
+            invitee: userFullDetails?.id
+          }}
+        />
+      </AlmostWhiteContainerView>
+    </ScrollView>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -81,7 +81,7 @@ const FamilySettingsScreen = ({
     isPending: boolean = false
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
-      <TransparentView>
+      <TransparentView style={styles.listLeft}>
         <AlmostBlackText
           style={styles.listElementText}
           text={`${user.first_name} ${user.last_name}${
@@ -134,7 +134,7 @@ const FamilySettingsScreen = ({
   );
 
   return (
-    <TransparentView style={styles.container}>
+    <ScrollView style={styles.scrollContainer}>
       <YesNoModal
         title="Before you proceed"
         question={`Are you sure you want to remove ${userToDelete?.first_name} ${userToDelete?.last_name} from the family?`}
@@ -188,7 +188,7 @@ const FamilySettingsScreen = ({
         {familyMemberList}
         {familyInvitesList}
       </WhiteView>
-    </TransparentView>
+    </ScrollView>
   );
 };
 
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20
   },
   familyHeaderText: { fontSize: 22 },
-  container: {
-    justifyContent: 'flex-start'
+  scrollContainer: {
+    height: '100%'
   },
   colourBar: {
     width: 70,
@@ -228,6 +228,9 @@ const styles = StyleSheet.create({
   listElementText: {
     fontSize: 18
   },
+  listLeft: {
+    maxWidth: '80%'
+  },
   listRight: {
     flexDirection: 'row'
   },
@@ -241,15 +244,6 @@ const styles = StyleSheet.create({
     height: 50,
     margin: 5
   },
-  opaqueBackground: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    color: '#000000',
-    opacity: 0.5
-  }
 });
 
 export default FamilySettingsScreen;

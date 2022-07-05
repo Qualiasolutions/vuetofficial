@@ -23,6 +23,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { useEffect } from 'react';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
+import { ScrollView } from 'react-native';
 
 export default function EditEntityScreen({
   route,
@@ -78,19 +79,21 @@ export default function EditEntityScreen({
     }
 
     return (
-      <AlmostWhiteContainerView>
-        <RTKForm
-          fields={formFields}
-          methodHooks={{
-            PATCH: useUpdateUserDetailsMutation
-          }}
-          formType="UPDATE"
-          extraFields={{ user_id: familyMemberToEdit.id }}
-          onSubmitSuccess={() => {
-            navigation.navigate('FamilySettings');
-          }}
-        />
-      </AlmostWhiteContainerView>
+      <ScrollView>
+        <AlmostWhiteContainerView>
+          <RTKForm
+            fields={formFields}
+            methodHooks={{
+              PATCH: useUpdateUserDetailsMutation
+            }}
+            formType="UPDATE"
+            extraFields={{ user_id: familyMemberToEdit.id }}
+            onSubmitSuccess={() => {
+              navigation.navigate('FamilySettings');
+            }}
+          />
+        </AlmostWhiteContainerView>
+      </ScrollView>
     );
   }
   return null;
