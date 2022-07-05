@@ -8,16 +8,10 @@ import {
 } from 'utils/datesAndTimes';
 
 import {
-  FixedTaskResponseType,
-  FixedTaskParsedType,
   FlexibleTaskResponseType,
   FlexibleTaskParsedType,
-  TaskParsedType,
-  isFixedTaskResponseType,
-  isFlexibleTaskResponseType,
   ScheduledTaskResponseType,
   ScheduledTaskParsedType,
-  TaskResponseType
 } from 'types/tasks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -106,6 +100,7 @@ function Calendar({
         selectedRecurrenceIndex={selectedRecurrenceIndex}
         setSelectedTaskId={setSelectedTaskId}
         setSelectedRecurrenceIndex={setSelectedRecurrenceIndex}
+        highlight={date === getDateStringFromDateObject(new Date())}
       />
     ));
 
@@ -114,10 +109,9 @@ function Calendar({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     width: '100%',
     height: '100%',
-    backgroundColor: 'white'
   },
   spinnerWrapper: {
     flex: 1,

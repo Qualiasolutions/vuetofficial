@@ -58,11 +58,19 @@ export function PrimaryText(props: TextProps & { text: string }) {
 }
 
 export function AlmostBlackText(props: TextProps & { text: string }) {
-  const { style, text, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'almostBlack'
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'almostBlack');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
   );
+}
+
+export function BlackText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'black');
 
   return (
     <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>

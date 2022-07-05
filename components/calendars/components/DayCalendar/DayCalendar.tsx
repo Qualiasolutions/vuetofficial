@@ -12,6 +12,7 @@ type PropTypes = {
   selectedRecurrenceIndex: number | null;
   setSelectedTaskId: Function;
   setSelectedRecurrenceIndex: Function;
+  highlight: boolean;
 };
 
 export default function DayCalendar({
@@ -20,7 +21,8 @@ export default function DayCalendar({
   selectedTaskId,
   selectedRecurrenceIndex,
   setSelectedTaskId,
-  setSelectedRecurrenceIndex
+  setSelectedRecurrenceIndex,
+  highlight
 }: PropTypes) {
   const taskViews = tasks.map((task) => (
     <Task
@@ -40,8 +42,8 @@ export default function DayCalendar({
     <View>
       <View style={styles.container}>
         <View style={styles.leftBar}>
-          <Text style={styles.dateDay}>{dayjs(date).format('MMM')} </Text>
-          <Text style={styles.dateMonth}>{dayjs(date).format('DD')} </Text>
+          <Text style={[styles.dateDay, highlight ? styles.highlight : {}]}>{dayjs(date).format('MMM')} </Text>
+          <Text style={[styles.dateMonth, highlight ? styles.highlight : {}]}>{dayjs(date).format('DD')} </Text>
           <View style={styles.verticalLine}></View>
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
@@ -59,11 +61,13 @@ const styles = StyleSheet.create({
   },
   dateDay: {
     fontSize: 20,
-    fontWeight: 'bold'
   },
   dateMonth: {
     fontSize: 15,
-    fontWeight: 'bold'
+  },
+  highlight: {
+    fontWeight: 'bold',
+    fontSize: 24
   },
   separator: {
     marginVertical: 30,
@@ -71,7 +75,7 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   verticalLine: {
-    width: 2,
+    width: 1,
     flex: 1,
     flexGrow: 1,
     minHeight: 10,

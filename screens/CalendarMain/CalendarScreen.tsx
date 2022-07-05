@@ -1,36 +1,33 @@
 import Calendar from 'components/calendars/Calendar';
 import GenericError from 'components/molecules/GenericError';
 import React from 'react';
-import { Button, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { WhiteView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
+import { AlmostBlackText, BlackText, PrimaryText } from 'components/molecules/TextComponents';
+import dayjs from 'dayjs';
 
 function CalendarScreen() {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
+  const currentMonth = `${new Date().getFullYear()}-${new Date().getMonth() + 1}`
+  const [shownMonth, setShownMonth] = React.useState<Date>(new Date());
 
-  const currentMonthStart = new Date();
-  currentMonthStart.setDate(1);
-  const nextMonthStart = new Date();
-  nextMonthStart.setMonth(nextMonthStart.getMonth() + 1);
-  nextMonthStart.setDate(1);
-  const [startDate, setStartDate] = React.useState<Date>(currentMonthStart);
-  const [endDate, setEndDate] = React.useState<Date>(nextMonthStart);
   const {
     data: allTasks,
     error,
     isLoading
   } = useGetAllScheduledTasksQuery({
-    start_datetime: `${startDate.getFullYear()}${(
+    start_datetime: `${shownMonth.getFullYear()}${(
       '0' +
-      (startDate.getMonth() + 1)
+      (shownMonth.getMonth() + 1)
     ).slice(-2)}01T00:00:00Z`,
-    end_datetime: `${endDate.getFullYear()}${(
+    end_datetime: `${shownMonth.getFullYear()}${(
       '0' +
-      (endDate.getMonth() + 1)
+      (shownMonth.getMonth() + 2)
     ).slice(-2)}01T00:00:00Z`,
     user_id: userDetails?.user_id || -1
   });
@@ -39,17 +36,30 @@ function CalendarScreen() {
     return <GenericError />;
   }
 
+  const onChangeMonth = (month: Date) => {
+    setShownMonth(month)
+  }
+
   return isLoading || !allTasks ? null : (
     <WhiteView style={styles.container}>
-      <Calendar tasks={allTasks} alwaysIncludeCurrentDate={true} />
-      <Button
-        title="LOAD MORE DATES"
-        onPress={() => {
-          const newEndDate = new Date(endDate);
-          newEndDate.setMonth(newEndDate.getMonth() + 1);
-          setEndDate(newEndDate);
-        }}
-      />
+      <TransparentView style={styles.monthPicker}>
+        <Pressable style={styles.monthPickerArrowWrapper} onPress={() => {
+          const prevMonth = new Date(shownMonth.getTime())
+          prevMonth.setMonth(prevMonth.getMonth() - 1)
+          setShownMonth(prevMonth)
+        }}>
+          <BlackText text="<" style={styles.monthPickerArrow}/>
+        </Pressable>
+        <BlackText text={dayjs(shownMonth).format('MMM')} style={styles.monthPickerText}/>
+        <Pressable style={styles.monthPickerArrowWrapper} onPress={() => {
+          const nextMonth = new Date(shownMonth.getTime())
+          nextMonth.setMonth(nextMonth.getMonth() + 1)
+          setShownMonth(nextMonth)
+        }}>
+          <BlackText text=">" style={styles.monthPickerArrow}/>
+        </Pressable>
+      </TransparentView>
+      <Calendar tasks={allTasks} alwaysIncludeCurrentDate={currentMonth === `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`} />
     </WhiteView>
   );
 }
@@ -57,7 +67,24 @@ function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-    width: '100%'
+    width: '100%',
+  },
+  monthPicker: {
+    flexDirection: 'row',
+    paddingHorizontal: 40,
+    alignItems: 'center',
+  },
+  monthPickerText: {
+    fontSize: 22,
+  },
+  monthPickerArrowWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  monthPickerArrow: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginHorizontal: 10
   }
 });
 
