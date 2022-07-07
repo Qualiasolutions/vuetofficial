@@ -15,7 +15,7 @@ const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserFullDetails: builder.query<UserFullResponse, number>({
       query: (user_id) => ({
-        url: `core/user/${user_id}`
+        url: `core/user/${user_id}/`
       }),
       providesTags: ['User']
     }),

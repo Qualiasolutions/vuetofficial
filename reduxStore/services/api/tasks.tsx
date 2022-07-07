@@ -13,7 +13,7 @@ const extendedApi = vuetApi.injectEndpoints({
       { start_datetime: string; end_datetime: string; user_id: number }
     >({
       query: ({ start_datetime, end_datetime }) => ({
-        url: `core/scheduled_task?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
+        url: `core/scheduled_task/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: TaskResponseType[] = await response.json();
