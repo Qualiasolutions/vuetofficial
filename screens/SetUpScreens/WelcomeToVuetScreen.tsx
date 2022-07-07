@@ -73,7 +73,6 @@ const WelcomeToVuetScreen = ({
       <Button
         title={t('common.continue')}
         onPress={() => {
-          // This should trigger texts to be sent out to invited members
           if (userDetails?.user_id) {
             updateUserDetails({
               user_id: userDetails?.user_id,
