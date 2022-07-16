@@ -25,7 +25,6 @@ import { UnauthorisedNavigator } from './UnauthorisedNavigator';
 import { BottomTabNavigator } from './RootNavigator';
 import { SetupNavigator } from './SetupNavigator';
 import { FamilyRequestNavigator } from './FamilyRequestNavigator';
-import setupPushNotifications from 'hooks/setupPushNotifications';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -35,8 +34,6 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const username = useSelector(selectUsername);
-
-  setupPushNotifications();
 
   ///////////// Load the data
 

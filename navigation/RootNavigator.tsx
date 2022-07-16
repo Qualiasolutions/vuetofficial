@@ -32,6 +32,7 @@ import {
 import { PrimaryColouredView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
 import { SettingsNavigator } from './SettingsNavigator';
+import setupPushNotifications from 'hooks/setupPushNotifications';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -98,6 +99,8 @@ export function BottomTabNavigator() {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
+
+  setupPushNotifications();
 
   return (
     <BottomTab.Navigator

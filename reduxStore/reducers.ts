@@ -4,9 +4,11 @@ import { vuetApi } from './services/api/api';
 import { logOut } from './slices/auth/actions';
 import { Action, getType } from 'typesafe-actions';
 import { EntireState } from './types';
+import { notificationsReducer } from './slices/notifications/reducer';
 
 const appReducer = combineReducers({
   authentication: authReducer,
+  notifications: notificationsReducer,
   [vuetApi.reducerPath]: vuetApi.reducer
 });
 

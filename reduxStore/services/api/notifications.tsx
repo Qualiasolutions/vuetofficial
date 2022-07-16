@@ -1,5 +1,5 @@
 import { vuetApi } from './api';
-import { CreatePushTokenRequest, PushTokenResponse } from 'types/notifications';
+import { CreatePushTokenRequest, PushTokenResponse, UpdatePushTokenRequest } from 'types/notifications';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -7,6 +7,14 @@ const extendedApi = vuetApi.injectEndpoints({
       query: (body) => ({
         url: 'notifications/push-token/',
         method: 'POST',
+        body: body
+      }),
+      invalidatesTags: ['PushToken']
+    }),
+    updatePushToken: builder.mutation<PushTokenResponse, UpdatePushTokenRequest>({
+      query: (body) => ({
+        url: `notifications/push-token/${body.id}/`,
+        method: 'PATCH',
         body: body
       }),
       invalidatesTags: ['PushToken']
@@ -22,4 +30,4 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
-export const { useCreatePushTokenMutation, useGetPushTokensQuery } = extendedApi;
+export const { useCreatePushTokenMutation, useUpdatePushTokenMutation, useGetPushTokensQuery } = extendedApi;

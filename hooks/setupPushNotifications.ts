@@ -2,10 +2,11 @@ import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
 import { Platform } from 'react-native';
 import { useEffect, useState } from 'react';
-import { useCreatePushTokenMutation, useGetPushTokensQuery } from 'reduxStore/services/api/notifications';
+import { useCreatePushTokenMutation, useGetPushTokensQuery, useUpdatePushTokenMutation } from 'reduxStore/services/api/notifications';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { setPushToken } from 'reduxStore/slices/notifications/actions';
 
 const getPushToken = async (): Promise<string | undefined> => {
   if (Device.isDevice && Platform.OS !== 'web') {
@@ -37,16 +38,34 @@ export default function setupPushNotifications() {
       skip: !userDetails?.user_id
     }
   );
+  const [ updatePushToken, updatePushTokenResult ] = useUpdatePushTokenMutation();
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const setUp = async () => {
+      // If no PushToken object exists in the backend for this device then
+      // we must create a new one
       const token = await getPushToken()
-      const activePushTokens = pushTokens && pushTokens.filter(token => token.active)
-
-      if (token && activePushTokens && (activePushTokens.length == 0)) {
-        await createPushToken({ token })
+      if (token) {
+        dispatch(setPushToken(token))
       }
 
+      if (pushTokens) {
+        const matchingTokens = pushTokens?.filter(pushToken => (
+          (pushToken.token === token) && (pushToken.active)
+        ))
+  
+        if (token && matchingTokens && (matchingTokens.length === 0)) {
+          await createPushToken({ token })
+        } else if (matchingTokens) {
+          for (const token of matchingTokens) {
+            // Ensure that last_active is updated to now
+            await updatePushToken({ id: token.id})
+          }
+        }
+      }
+
+      // Set notification config
       Notifications.setNotificationHandler({
         handleNotification: async () => ({
           shouldShowAlert: true,
@@ -55,6 +74,7 @@ export default function setupPushNotifications() {
         }),
       });
 
+      // Set more notification config
       if (Platform.OS === 'android') {
         Notifications.setNotificationChannelAsync('default', {
           name: 'default',

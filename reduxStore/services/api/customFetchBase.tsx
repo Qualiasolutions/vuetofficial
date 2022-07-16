@@ -64,11 +64,12 @@ const customFetchBase: BaseQueryFn<
           if (verifyRefreshResponse.code) {
             api.dispatch(logOut());
           } else {
-            const refreshedAccessCode = (
-              await refreshTokenAsync(jwtRefreshToken)
-            ).access;
+            const jwtRefreshResponse = await refreshTokenAsync(jwtRefreshToken)
+            const refreshedAccessCode = jwtRefreshResponse.access;
+            const refreshedRefreshCode = jwtRefreshResponse.refresh;
 
             api.dispatch(setAccessToken(refreshedAccessCode));
+            api.dispatch(setRefreshToken(refreshedRefreshCode));
             result = await baseQuery(args, api, extraOptions);
           }
         }
