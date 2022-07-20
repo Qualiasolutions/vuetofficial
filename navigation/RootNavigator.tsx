@@ -6,6 +6,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
+import CreateTask from 'screens/CreateTask/CreateTask'
 import { RootTabParamList } from '../types/base';
 
 import { useTranslation } from 'react-i18next';
@@ -185,10 +186,9 @@ export function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="AddTask"
-        component={AddTaskScreen}
+        name="CreateTask"
+        component={CreateTask}
         options={{
-          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Image
               source={require('../assets/images/plus_icon.png')}
@@ -200,7 +200,10 @@ export function BottomTabNavigator() {
               }}
             />
           ),
-          tabBarButton: (props) => <AddButton {...props} />
+          tabBarButton: (props) => <AddButton {...props} />,
+          headerStyle:{backgroundColor:'#FFF'},
+          headerTintColor: '#000',
+          title:t('pageTitles.createTask'),
         }}
       />
       <BottomTab.Screen
@@ -324,6 +327,15 @@ export function BottomTabNavigator() {
           tabBarButton: (props) => null,
           title: t('pageTitles.editTask'),
           headerShown: false
+        }}
+      />
+      <BottomTab.Screen
+        name="AddTask"
+        component={AddTaskScreen}
+        options={{
+          headerShown: false,
+          tabBarButton: (props) => null,
+          title:'Add'
         }}
       />
     </BottomTab.Navigator>

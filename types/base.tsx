@@ -106,6 +106,7 @@ export type RootTabParamList = {
   EntityList: { entityType: string };
   SettingsNavigator: undefined;
   AddTask: { entityId: number | string };
+  CreateTask: undefined,
   EditTask: { taskId: number };
   Transport: undefined;
   AddEntity: { entityType: string };

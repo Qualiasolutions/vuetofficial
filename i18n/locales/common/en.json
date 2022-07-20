@@ -13,7 +13,8 @@
     "oops": "Oops!",
     "familySettings": "Family settings",
     "addFamilyMember": "Add family member",
-    "editFamilyMember": "Edit {{fullName}}"
+    "editFamilyMember": "Edit {{fullName}}",
+    "createTask": "Add"
   },
   "categories": {
     "FAMILY": "Family",
@@ -40,7 +41,11 @@
     "accept": "Accept",
     "reject": "Reject",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "search": "Type any keyword to search",
+    "category": "Category",
+    "thing": "Thing",
+    "pleaseSelect": "Please select"
   },
   "screens": {
     "logIn": {

@@ -1,8 +1,12 @@
+import React, {useEffect, useRef} from "react";
 import { Text, useThemeColor, View } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
-import { GestureResponderEvent, Modal as DefaultModal, Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { GestureResponderEvent, Modal as DefaultModal, Pressable, SafeAreaView, ScrollView, StyleSheet, ViewStyle } from 'react-native';
 import { AlmostBlackText, PageTitle, PrimaryText } from './TextComponents';
-import { TransparentContainerView, TransparentView, WhiteBox } from './ViewComponents';
+import { TransparentContainerView, TransparentView, WhiteBox, WhiteView } from './ViewComponents';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import Colors from '../../constants/Colors';
+import Search from "./Search";
 
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
@@ -65,6 +69,62 @@ export function YesNoModal(props: YesNoModalProps) {
   );
 }
 
+export function ListingModal(props: ListingModalProps) {
+  const bottomSheetRef = useRef<RBSheet>(null);
+  const { visible, data = [], onClose, onSelect, translate = true } = props;
+  const { t } = useTranslation();
+
+  useEffect(()=>{
+    if(visible) bottomSheetRef?.current?.open();
+    else  bottomSheetRef?.current?.close();
+  },[visible])
+
+  return (
+    <RBSheet
+      ref={bottomSheetRef}
+      height={600}
+      onClose={onClose}
+      customStyles={{
+        container: {
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20
+        },
+      }}
+      dragFromTopOnly={true}
+      closeOnDragDown={true}
+      
+    >
+        <ScrollView>
+        <WhiteView style={styles.bottomContainer}>
+          <Search />
+          <SafeAreaView>
+            {data?.length > 0 &&
+              data.map((item: any) => {
+                return (
+                  <Pressable
+                    style={styles.listItem}
+                    key={`item_${item.id}_${item.name}`}
+                    onPress={()=>onSelect(item)}
+                  >
+                    <Text>{!translate ? item.name : t(`categories.${item.name}`)}</Text>
+                  </Pressable>
+                );
+              })}
+          </SafeAreaView>
+        </WhiteView>
+        </ScrollView>
+    </RBSheet>
+  );
+}
+
+type ListingModalProps = {
+  visible: boolean;
+  data: any;
+  onClose: () => void;
+  onSelect: (category: any) => void;
+  translate?: boolean
+};
+
 const styles = StyleSheet.create({
   opaqueBackground: {
     position: 'absolute',
@@ -105,5 +165,18 @@ const styles = StyleSheet.create({
   },
   yesButton: {
     borderRightWidth: 1
+  },
+  modalView: {
+    flex: 1,
+    padding: 0,
+  },
+  bottomContainer: {
+    width: '100%',
+    padding: 23
+  },
+  listItem: {
+    paddingVertical: 17,
+    borderBottomColor: Colors['light'].disabledGrey,
+    borderBottomWidth: 1
   }
 })
