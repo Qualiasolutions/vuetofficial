@@ -15,7 +15,7 @@ import { t } from 'i18next';
 import { Text } from 'components/Themed';
 import { RootTabParamList } from 'types/base';
 import { Category } from 'types/categories';
-import { EntityParsedType } from 'types/entities';
+import { EntityParsedType, EntityResponseType } from 'types/entities';
 import { ListingModal } from 'components/molecules/Modals';
 import Search from 'components/molecules/Search';
 import Asterisk from 'components/molecules/Asterisk';
@@ -24,9 +24,9 @@ export default function CreateTask({
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'CreateTask'>) {
   const [showListing, setShowListing] = useState(false);
-  const [modalData, setModalData] = useState<Category[]>();
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [selectedEntity, setSelectedEntity] = useState<EntityParsedType>();
+  const [modalData, setModalData] = useState<Category[] | EntityResponseType[]>();
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>();
+  const [selectedEntity, setSelectedEntity] = useState<EntityParsedType | null>();
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: Categories, isLoading, error } = useGetAllCategoriesQuery();
@@ -99,7 +99,7 @@ export default function CreateTask({
             onPress={() => {
               setModalData(
                 allEntities.filter(
-                  (entity) => entity.category == selectedCategory.id
+                  (entity) => entity.category == selectedCategory?.id
                 )
               );
               setShowEntityListing(!showEntityListing);
