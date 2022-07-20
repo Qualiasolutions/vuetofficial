@@ -1,16 +1,11 @@
 import React, { useEffect } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { RootTabScreenProps } from 'types/base';
+import { EntityTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import ListLink from 'components/molecules/ListLink';
 
-type EntityTypeListScreenProps = RootTabScreenProps<'EntityTypeList'>;
+type EntityTypeListScreenProps = EntityTabScreenProps<'EntityTypeList'>;
 
 export default function EntityTypeListScreen({
   navigation,
@@ -30,14 +25,17 @@ export default function EntityTypeListScreen({
     });
   }, [allCategories]);
 
-  const listLinks = permittedResourceTypes?.map((resourceType) => (
-    <ListLink
-      text={t(`entityTypes.${resourceType}`)}
-      key={resourceType}
-      toScreen="EntityList"
-      toScreenParams={{ entityType: resourceType }}
-    />
-  ));
+  const listLinks = permittedResourceTypes?.map((resourceType) => {
+    return (
+      <ListLink
+        text={t(`entityTypes.${resourceType}`)}
+        key={resourceType}
+        navMethod="push"
+        toScreen="EntityList"
+        toScreenParams={{ entityType: resourceType }}
+      />
+    );
+  });
 
   return <TransparentView>{listLinks}</TransparentView>;
 }

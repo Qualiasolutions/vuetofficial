@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { RootTabScreenProps } from 'types/base';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { EntityTabScreenProps } from 'types/base';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
@@ -13,7 +8,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 
-type EntityListScreenProps = RootTabScreenProps<'EntityList'>;
+type EntityListScreenProps = EntityTabScreenProps<'EntityList'>;
 
 export default function EntityListScreen({
   navigation,
@@ -45,6 +40,7 @@ export default function EntityListScreen({
       toScreen="EntityScreen"
       toScreenParams={{ entityId: entity.id }}
       key={entity.id}
+      navMethod="push"
     />
   ));
 

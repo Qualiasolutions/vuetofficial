@@ -16,14 +16,7 @@ declare global {
   }
 }
 
-export type UnauthorisedStackParamList = {
-  Unauthorised: NavigatorScreenParams<UnauthorisedTabParamList> | undefined;
-};
-
-export type UnauthorisedStackScreenProps<
-  Screen extends keyof UnauthorisedStackParamList
-> = NativeStackScreenProps<UnauthorisedStackParamList, Screen>;
-
+// Unauthorised Stack
 export type UnauthorisedTabParamList = {
   Login: undefined;
   Signup: undefined;
@@ -40,6 +33,7 @@ export type UnauthorisedTabScreenProps<
   Screen extends keyof UnauthorisedTabParamList
 > = NativeStackScreenProps<UnauthorisedTabParamList, Screen>;
 
+// Setup Stack
 export type SetupTabParamList = {
   CreateAccount: undefined;
   AddFamily: undefined;
@@ -47,32 +41,19 @@ export type SetupTabParamList = {
   WelcomeToVuet: undefined;
 };
 
-export type SetupStackParamList = {
-  Unauthorised: NavigatorScreenParams<SetupTabParamList> | undefined;
-};
-
-export type SetupStackScreenProps<Screen extends keyof SetupStackParamList> =
-  NativeStackScreenProps<SetupStackParamList, Screen>;
-
 export type SetupTabScreenProps<Screen extends keyof SetupTabParamList> =
   NativeStackScreenProps<SetupTabParamList, Screen>;
 
+// Family Request Stack
 export type FamilyRequestTabParamList = {
   FamilyRequest: undefined;
 };
-
-export type FamilyRequestStackParamList = {
-  Unauthorised: NavigatorScreenParams<FamilyRequestTabParamList> | undefined;
-};
-
-export type FamilyRequestStackScreenProps<
-  Screen extends keyof FamilyRequestStackParamList
-> = NativeStackScreenProps<FamilyRequestStackParamList, Screen>;
 
 export type FamilyRequestTabScreenProps<
   Screen extends keyof FamilyRequestTabParamList
 > = NativeStackScreenProps<FamilyRequestTabParamList, Screen>;
 
+// Settings Stack
 export type SettingsTabParamList = {
   Settings: undefined;
   FamilySettings: undefined;
@@ -81,30 +62,29 @@ export type SettingsTabParamList = {
   EditFamilyInvite: { id: number | string };
 };
 
-export type SettingsStackParamList = {
-  Unauthorised: NavigatorScreenParams<SettingsTabParamList> | undefined;
-};
-
-export type SettingsStackScreenProps<
-  Screen extends keyof SettingsStackParamList
-> = NativeStackScreenProps<SettingsStackParamList, Screen>;
-
 export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
   NativeStackScreenProps<SettingsTabParamList, Screen>;
 
+// Entities Stack
+export type EntityTabParamList = {
+  Categories: { initial: boolean; screen: string };
+  EntityTypeList: { categoryId: number };
+  EntityList: { entityType: string };
+  EntityScreen: { entityId: number | string };
+};
+
+export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
+  NativeStackScreenProps<EntityTabParamList, Screen>;
+
+// Root Stack
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
 };
 
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
-  NativeStackScreenProps<RootStackParamList, Screen>;
-
 export type RootTabParamList = {
   Home: undefined;
-  Categories: { initial: boolean; screen: string };
-  EntityTypeList: { categoryId: number };
-  EntityList: { entityType: string };
   SettingsNavigator: undefined;
+  EntityNavigator: undefined;
   AddTask: { entityId: number | string };
   CreateTask: undefined;
   EditTask: { taskId: number };
@@ -113,21 +93,20 @@ export type RootTabParamList = {
   EditEntity: { entityId: number | string };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;
-  EntityScreen: { entityId: number | string };
   CalendarScreen: {
     startDate: Date;
     endDate: Date;
   };
 };
 
-export type TabParamList = RootTabParamList &
-  UnauthorisedTabParamList &
-  SetupTabParamList &
-  FamilyRequestTabParamList &
-  SettingsTabParamList;
-
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >;
+
+export type TabParamList = RootTabParamList &
+  UnauthorisedTabParamList &
+  SetupTabParamList &
+  FamilyRequestTabParamList &
+  SettingsTabParamList;

@@ -37,6 +37,7 @@ export default function ChildEntityListScreen({
       toScreen="EntityScreen"
       toScreenParams={{ entityId: id }}
       key={id}
+      navMethod="push"
     />
   ));
 

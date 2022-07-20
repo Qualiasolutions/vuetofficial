@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 
 import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -13,14 +13,11 @@ import { useTranslation } from 'react-i18next';
 
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import CategoriesGrid from 'screens/Categories/CategoriesGrid';
-import EntityTypeListScreen from 'screens/EntityPages/EntityTypeListScreen';
 
 import Transport from 'screens/Categories/Transport';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
-import { EntityScreen } from 'screens/EntityPages/EntityScreen/EntityScreen';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery
@@ -36,7 +33,7 @@ import { PrimaryColouredView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
 import { SettingsNavigator } from './SettingsNavigator';
 import setupPushNotifications from 'hooks/setupPushNotifications';
-import EntityListScreen from 'screens/EntityPages/EntityListScreen';
+import { EntityNavigator } from './EntityNavigator';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -155,8 +152,8 @@ export function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Categories"
-        component={CategoriesGrid}
+        name="EntityNavigator"
+        component={EntityNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -207,8 +204,8 @@ export function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="EntityScreen"
-        component={EntityScreen}
+        name="Calendar" // This is just a placeholder really, not sure where it's supposed to go
+        component={CalendarScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.icon}>
@@ -274,24 +271,6 @@ export function BottomTabNavigator() {
           tabBarButton: (props) => null,
           title: t('pageTitles.transport'),
           headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="EntityTypeList"
-        component={EntityTypeListScreen}
-        options={{
-          tabBarButton: (props) => null,
-          headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
-        }}
-      />
-      <BottomTab.Screen
-        name="EntityList"
-        component={EntityListScreen}
-        options={{
-          tabBarButton: (props) => null,
-          headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <BottomTab.Screen

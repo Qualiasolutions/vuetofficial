@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { RootTabParamList, RootTabScreenProps } from 'types/base';
+import {
+  EntityTabParamList,
+  RootTabParamList,
+  RootTabScreenProps
+} from 'types/base';
 import {
   TransparentView,
   WhiteView
@@ -13,28 +17,37 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { StackNavigationProp } from '@react-navigation/stack';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
 type ListLinkProps = {
   text: string;
-  toScreen: keyof RootTabParamList;
+  toScreen: keyof RootTabParamList | keyof EntityTabParamList;
   toScreenParams?: object;
-  key: any;
+  navMethod?: 'push' | 'navigate';
 };
 
 export default function ListLink({
   text,
   toScreen,
-  key,
+  navMethod = 'navigate',
   toScreenParams = {}
 }: ListLinkProps) {
-  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const navigation = useNavigation<
+    | BottomTabNavigationProp<RootTabParamList>
+    | StackNavigationProp<EntityTabParamList>
+  >();
 
   return (
     <Pressable
-      key={key}
-      onPress={() => navigation.navigate(toScreen, toScreenParams as any)}
+      onPress={() => {
+        if (navMethod === 'push') {
+          (navigation as any).push(toScreen, toScreenParams);
+        } else {
+          (navigation.navigate as any)(toScreen, toScreenParams);
+        }
+      }}
     >
       <WhiteView style={styles.listEntry}>
         <AlmostBlackText text={text} style={styles.listEntryText} />
