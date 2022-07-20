@@ -102,6 +102,8 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 export type RootTabParamList = {
   Home: undefined;
   Categories: { initial: boolean; screen: string };
+  EntityTypeList: { categoryId: number };
+  EntityList: { entityType: string };
   SettingsNavigator: undefined;
   AddTask: { entityId: number | string };
   EditTask: { taskId: number };

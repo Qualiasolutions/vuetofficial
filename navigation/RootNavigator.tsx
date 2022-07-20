@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
+import EntityTypeListScreen from 'screens/EntityPages/EntityTypeListScreen';
+
 import Transport from 'screens/Categories/Transport';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
@@ -33,6 +35,7 @@ import { PrimaryColouredView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
 import { SettingsNavigator } from './SettingsNavigator';
 import setupPushNotifications from 'hooks/setupPushNotifications';
+import EntityListScreen from 'screens/EntityPages/EntityListScreen';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -268,6 +271,24 @@ export function BottomTabNavigator() {
           tabBarButton: (props) => null,
           title: t('pageTitles.transport'),
           headerShown: false
+        }}
+      />
+      <BottomTab.Screen
+        name="EntityTypeList"
+        component={EntityTypeListScreen}
+        options={{
+          tabBarButton: (props) => null,
+          headerShown: true,
+          headerStyle: { backgroundColor: 'transparent' }
+        }}
+      />
+      <BottomTab.Screen
+        name="EntityList"
+        component={EntityListScreen}
+        options={{
+          tabBarButton: (props) => null,
+          headerShown: true,
+          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <BottomTab.Screen

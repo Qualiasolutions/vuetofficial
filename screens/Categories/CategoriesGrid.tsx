@@ -38,7 +38,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       return (
         <Pressable
           onPress={() => {
-            navigation.navigate('Transport');
+            navigation.navigate('EntityTypeList', { categoryId: category.id });
           }}
           style={styles.gridSquare}
           disabled={!isEnabled}
