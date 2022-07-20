@@ -64,7 +64,7 @@ const customFetchBase: BaseQueryFn<
           if (verifyRefreshResponse.code) {
             api.dispatch(logOut());
           } else {
-            const jwtRefreshResponse = await refreshTokenAsync(jwtRefreshToken)
+            const jwtRefreshResponse = await refreshTokenAsync(jwtRefreshToken);
             const refreshedAccessCode = jwtRefreshResponse.access;
             const refreshedRefreshCode = jwtRefreshResponse.refresh;
 

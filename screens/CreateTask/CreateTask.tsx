@@ -24,20 +24,23 @@ export default function CreateTask({
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'CreateTask'>) {
   const [showListing, setShowListing] = useState(false);
-  const [modalData, setModalData] = useState<Category[] | EntityResponseType[]>();
+  const [modalData, setModalData] = useState<
+    Category[] | EntityResponseType[]
+  >();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>();
-  const [selectedEntity, setSelectedEntity] = useState<EntityParsedType | null>();
+  const [selectedEntity, setSelectedEntity] =
+    useState<EntityParsedType | null>();
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: Categories, isLoading, error } = useGetAllCategoriesQuery();
   const { data: Entities } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
-  useEffect(()=>{
-    navigation.addListener('focus',()=> {
-      setSelectedCategory(null)
-      setSelectedEntity(null)
-    })
-  },[navigation])
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      setSelectedCategory(null);
+      setSelectedEntity(null);
+    });
+  }, [navigation]);
 
   const [showEntityListing, setShowEntityListing] = useState(false);
 

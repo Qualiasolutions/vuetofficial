@@ -54,7 +54,6 @@ export default function AddTaskScreen({
     setCreateSuccessful(true);
   };
 
-
   return (
     <SafeAreaView style={formStyles.container}>
       <View style={formStyles.container}>

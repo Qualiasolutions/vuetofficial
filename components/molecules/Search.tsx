@@ -26,19 +26,19 @@ const Search = ({ onChangeText = () => {} }) => {
 export default Search;
 
 const styles = StyleSheet.create({
-    searchView: {
-        flexDirection:'row',
-        alignItems:'center',
-        height: 53,
-        backgroundColor: Colors.light.lightGrey,
-        borderRadius: 60,
-        marginTop: 10,
-        paddingLeft: 18
-    },
-    textInput: {
-        flex:1,
-        paddingHorizontal: 20,
-        fontFamily: 'Poppins',
-        fontSize: 16,
-    }
-})
+  searchView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 53,
+    backgroundColor: Colors.light.lightGrey,
+    borderRadius: 60,
+    marginTop: 10,
+    paddingLeft: 18
+  },
+  textInput: {
+    flex: 1,
+    paddingHorizontal: 20,
+    fontFamily: 'Poppins',
+    fontSize: 16
+  }
+});

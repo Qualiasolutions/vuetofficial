@@ -1,6 +1,6 @@
 type ModelType = {
   model_name: string;
-}
+};
 
 type Category = {
   is_enabled: boolean;

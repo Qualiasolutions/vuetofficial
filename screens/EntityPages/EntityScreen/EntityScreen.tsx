@@ -3,7 +3,14 @@ import Calendar from 'components/calendars/Calendar';
 import GenericError from 'components/molecules/GenericError';
 import SquareButton from 'components/molecules/SquareButton';
 import { Text, View } from 'components/Themed';
-import { Button, Image, Pressable, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Button,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
@@ -18,7 +25,6 @@ import ListEntityScreen from './components/ListEntityScreen';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import ChildEntityListScreen from './components/ChildEntityListScreen';
-
 
 export const EntityScreen = ({
   navigation,
@@ -40,15 +46,12 @@ export const EntityScreen = ({
   useEffect(() => {
     navigation.setOptions({
       headerTitle: entity?.name
-    })
-  }, [entity])
+    });
+  }, [entity]);
 
   const isLoading = isLoadingEntities;
 
-  if (
-    isLoading ||
-    !entity
-  ) {
+  if (isLoading || !entity) {
     return null;
   }
 
@@ -57,8 +60,8 @@ export const EntityScreen = ({
   }
 
   if (entity.resourcetype === 'List') {
-    return <ListEntityScreen entityId={entityId}/>
+    return <ListEntityScreen entityId={entityId} />;
   } else {
-    return <ChildEntityListScreen entityId={entityId} />
+    return <ChildEntityListScreen entityId={entityId} />;
   }
 };

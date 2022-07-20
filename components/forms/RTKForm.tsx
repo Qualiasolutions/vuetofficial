@@ -119,7 +119,7 @@ export default function Form({
   onValueChange = () => {},
   clearOnSubmit = false,
   submitText = '',
-  inlineFields = false,
+  inlineFields = false
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -244,7 +244,10 @@ export default function Form({
       case 'phoneNumber':
         return (
           <TransparentView key={field}>
-            <TransparentView key={field} style={inlineFields ? styles.inlineInputPair : {}}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>

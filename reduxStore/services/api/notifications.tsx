@@ -1,9 +1,16 @@
 import { vuetApi } from './api';
-import { CreatePushTokenRequest, PushTokenResponse, UpdatePushTokenRequest } from 'types/notifications';
+import {
+  CreatePushTokenRequest,
+  PushTokenResponse,
+  UpdatePushTokenRequest
+} from 'types/notifications';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    createPushToken: builder.mutation<PushTokenResponse, CreatePushTokenRequest>({
+    createPushToken: builder.mutation<
+      PushTokenResponse,
+      CreatePushTokenRequest
+    >({
       query: (body) => ({
         url: 'notifications/push-token/',
         method: 'POST',
@@ -11,7 +18,10 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['PushToken']
     }),
-    updatePushToken: builder.mutation<PushTokenResponse, UpdatePushTokenRequest>({
+    updatePushToken: builder.mutation<
+      PushTokenResponse,
+      UpdatePushTokenRequest
+    >({
       query: (body) => ({
         url: `notifications/push-token/${body.id}/`,
         method: 'PATCH',
@@ -20,14 +30,18 @@ const extendedApi = vuetApi.injectEndpoints({
       invalidatesTags: ['PushToken']
     }),
     getPushTokens: builder.query<PushTokenResponse[], number>({
-        query: (userId) => ({
-          url: 'notifications/push-token/',
-          method: 'GET',
-        }),
-        providesTags: ['PushToken']
+      query: (userId) => ({
+        url: 'notifications/push-token/',
+        method: 'GET'
       }),
+      providesTags: ['PushToken']
+    })
   }),
   overrideExisting: true
 });
 
-export const { useCreatePushTokenMutation, useUpdatePushTokenMutation, useGetPushTokensQuery } = extendedApi;
+export const {
+  useCreatePushTokenMutation,
+  useUpdatePushTokenMutation,
+  useGetPushTokensQuery
+} = extendedApi;

@@ -1,4 +1,4 @@
-import { ListEntryResponse } from "./lists";
+import { ListEntryResponse } from './lists';
 
 interface BaseEntityType {
   id: number;
@@ -31,13 +31,20 @@ interface CarParsedType extends BaseEntityType {
 }
 
 interface ListResponseType extends BaseEntityType {
-  list_entries: ListEntryResponse[]
+  list_entries: ListEntryResponse[];
 }
 
-const isListEntity = (x: any): x is ListResponseType => !!x.list_entries
+const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
 
 // This should be a big OR statement of all entities
 type EntityResponseType = CarResponseType | ListResponseType;
 type EntityParsedType = CarParsedType | ListResponseType;
 
-export { BaseEntityType, CarResponseType, CarParsedType, EntityResponseType, EntityParsedType, isListEntity };
+export {
+  BaseEntityType,
+  CarResponseType,
+  CarParsedType,
+  EntityResponseType,
+  EntityParsedType,
+  isListEntity
+};

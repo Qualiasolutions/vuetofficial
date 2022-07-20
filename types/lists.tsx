@@ -1,4 +1,4 @@
-import { BaseEntityType}  from './entities'
+import { BaseEntityType } from './entities';
 
 export type ListEntryResponse = {
   id: number;
@@ -9,7 +9,7 @@ export type ListEntryResponse = {
   notes: string;
   phone_number: string;
   image_200_200: string;
-}
+};
 
 export type ListEntryCreateRequest = {
   list: number;
@@ -18,7 +18,7 @@ export type ListEntryCreateRequest = {
   image?: string;
   notes?: string;
   phone_number?: string;
-}
+};
 
 export type ListEntryUpdateRequest = {
   id: number;
@@ -28,4 +28,4 @@ export type ListEntryUpdateRequest = {
   image?: string;
   notes?: string;
   phone_number?: string;
-}
+};

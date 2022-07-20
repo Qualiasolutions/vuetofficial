@@ -6,11 +6,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
 
-import { selectRefreshToken, selectUsername } from 'reduxStore/slices/auth/selectors';
+import {
+  selectRefreshToken,
+  selectUsername
+} from 'reduxStore/slices/auth/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { SettingsTabParamList } from 'types/base';
-import { useGetPushTokensQuery, useUpdatePushTokenMutation } from 'reduxStore/services/api/notifications';
+import {
+  useGetPushTokensQuery,
+  useUpdatePushTokenMutation
+} from 'reduxStore/services/api/notifications';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { selectPushToken } from 'reduxStore/slices/notifications/selectors';
 
@@ -23,31 +29,31 @@ const SettingsScreen = ({
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const username = useSelector(selectUsername);
   const devicePushToken = useSelector(selectPushToken);
-  const { data: userDetails } = useGetUserDetailsQuery(username, { skip: !username });
-  const { data: pushTokens, isLoading: isLoadingPushTokens } = useGetPushTokensQuery(
-    userDetails?.user_id || -1,
-    {
+  const { data: userDetails } = useGetUserDetailsQuery(username, {
+    skip: !username
+  });
+  const { data: pushTokens, isLoading: isLoadingPushTokens } =
+    useGetPushTokensQuery(userDetails?.user_id || -1, {
       skip: !userDetails?.user_id
-    }
-  );
-  const [ updatePushToken, updatePushTokenResult ] = useUpdatePushTokenMutation();
+    });
+  const [updatePushToken, updatePushTokenResult] = useUpdatePushTokenMutation();
 
-  const matchingTokens = pushTokens?.filter(pushToken => (
-    (pushToken.token === devicePushToken) && (pushToken.active)
-  ))
+  const matchingTokens = pushTokens?.filter(
+    (pushToken) => pushToken.token === devicePushToken && pushToken.active
+  );
 
   const logOut = async () => {
     if (matchingTokens) {
       for (const token of matchingTokens) {
-        await updatePushToken({ id: token.id, active: false })
+        await updatePushToken({ id: token.id, active: false });
       }
     }
     if (jwtRefreshToken) {
       try {
-        await blacklistTokenAsync(jwtRefreshToken)
+        await blacklistTokenAsync(jwtRefreshToken);
       } catch (err) {
         // Silence errors and log out anyway
-        console.error(err)
+        console.error(err);
       }
     }
     dispatch(logOutAction());

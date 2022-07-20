@@ -29,10 +29,7 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Entity']
     }),
-    deleteListEntry: builder.mutation<
-      void,
-      number
-    >({
+    deleteListEntry: builder.mutation<void, number>({
       query: (id) => {
         return {
           url: `core/list-entry/${id}/`,
@@ -50,5 +47,5 @@ const extendedApi = vuetApi.injectEndpoints({
 export const {
   useUpdateListEntryMutation,
   useCreateListEntryMutation,
-  useDeleteListEntryMutation,
+  useDeleteListEntryMutation
 } = extendedApi;

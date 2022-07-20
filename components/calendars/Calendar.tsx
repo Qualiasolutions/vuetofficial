@@ -11,7 +11,7 @@ import {
   FlexibleTaskResponseType,
   FlexibleTaskParsedType,
   ScheduledTaskResponseType,
-  ScheduledTaskParsedType,
+  ScheduledTaskParsedType
 } from 'types/tasks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
   spinnerWrapper: {
     flex: 1,

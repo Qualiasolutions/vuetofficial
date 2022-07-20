@@ -86,7 +86,7 @@ export function AlmostWhiteDateInput(props: DateFieldProps) {
           borderColor
         },
         styles.textInput,
-        styleInput,
+        styleInput
       ]}
       {...otherProps}
     />
