@@ -10,35 +10,22 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 
-type EntityListScreenProps = RootTabScreenProps<'EntityList'>;
 
-export default function EntityListScreen({ navigation, route }: EntityListScreenProps) {
+export default function ChildEntityListScreen({ entityId }: { entityId: number }) {
     const username = useSelector(selectUsername);
     const { data: userDetails } = useGetUserDetailsQuery(username);
     const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
         skip: !userDetails?.user_id
     });
-  const entityData = Object.values(allEntities?.byId || {}).filter(entity => entity.resourcetype === route.params.entityType)
+  const entityData = allEntities?.byId[entityId]
   const { t } = useTranslation()
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: t(`entityTypes.${route.params.entityType}`)
-    });
-  }, [route.params.entityType]);
-
-  const listLinks = entityData?.map(entity => (
-    <ListLink
-      text={t(entity.name)}
-      toScreen='EntityScreen'
-      toScreenParams={{entityId: entity.id}}
-      key={entity.id}
-    />
+  const childEntityIds = entityData?.child_entities || []
+  const childEntityList = childEntityIds.map((id) => (
+    <ListLink text={allEntities?.byId[id].name || ''} toScreen='EntityScreen' toScreenParams={{entityId: id}} key={id}/>
   ))
 
-  return (
-    <TransparentView>
-      {listLinks}
-    </TransparentView>
-  );
+  return <ScrollView>
+    {childEntityList}
+  </ScrollView>
 }

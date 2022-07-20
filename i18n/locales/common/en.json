@@ -136,6 +136,9 @@
     "notFound": {
       "noScreen": "This screen doesn't exist.",
       "goHome": "Go to home screen!"
+    },
+    "listEntity": {
+      "typeOrUpload": "Type an item or upload a photo"
     }
   },
   "components": {

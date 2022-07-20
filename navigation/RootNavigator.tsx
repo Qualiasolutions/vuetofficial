@@ -19,7 +19,7 @@ import Transport from 'screens/Categories/Transport';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
-import { EntityScreen } from 'screens/EntityPages/EntityScreen';
+import { EntityScreen } from 'screens/EntityPages/EntityScreen/EntityScreen';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery

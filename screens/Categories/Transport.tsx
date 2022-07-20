@@ -1,3 +1,8 @@
+/*
+DEPRECATED - this page is no longer used but contains some functionality that may
+be useful at some point in the future so it is left here for now
+*/
+
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
