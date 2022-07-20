@@ -79,6 +79,18 @@ export function BlackText(props: TextProps & { text: string }) {
   );
 }
 
+
+export function WhiteText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'white');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
 const styles = StyleSheet.create({
   common: {
     fontFamily: 'Poppins'

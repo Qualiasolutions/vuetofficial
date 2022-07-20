@@ -1,6 +1,6 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { Text } from 'components/Themed';
-import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 export default function SquareButton({
   onPress,
@@ -8,7 +8,8 @@ export default function SquareButton({
   fontAwesomeIconSize = 30,
   buttonText = '',
   buttonSize = 30,
-  buttonStyle = {}
+  buttonStyle = {},
+  buttonTextStyle = {}
 }: {
   onPress: Function;
   fontAwesomeIconName?: keyof typeof FontAwesome.glyphMap;
@@ -16,6 +17,7 @@ export default function SquareButton({
   buttonText?: string;
   buttonSize?: number;
   buttonStyle?: ViewStyle;
+  buttonTextStyle?:TextStyle
 }) {
   let icon;
   if (fontAwesomeIconName) {
@@ -30,7 +32,8 @@ export default function SquareButton({
           {
             width: buttonSize,
             height: buttonSize
-          }
+          },
+          buttonTextStyle 
         ]}
       >
         {buttonText}

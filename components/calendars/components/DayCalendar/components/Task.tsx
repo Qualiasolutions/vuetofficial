@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from 'components/Themed';
 import {
   TaskParsedType,
@@ -32,6 +32,9 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
+import Colors from '../../../../../constants/Colors';
+import { WhiteText } from 'components/molecules/TextComponents';
+import Layout from '../../../../../constants/Layout'
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -99,14 +102,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const expandedHeader =
     entity && selected ? (
       <View style={styles.expandedHeader}>
-        <Text style={styles.expandedTitle}>{entity?.name}</Text>
-        <SquareButton
-          fontAwesomeIconName="eye"
-          onPress={() =>
-            navigation.navigate('EntityScreen', { entityId: entity.id })
-          }
-          buttonStyle={{ backgroundColor: 'transparent' }}
-        />
+        <WhiteText text={entity?.name} style={styles.expandedTitle} />
+        <Image source={require('../../../../../assets/images/edit.png')} style={styles.editImage} />
       </View>
     ) : null;
 
@@ -116,19 +113,21 @@ export default function Task({ task, selected, onPress }: PropTypes) {
         <SquareButton
           fontAwesomeIconName="pencil"
           onPress={() => navigation.navigate('EditTask', { taskId: task.id })}
-        ></SquareButton>
+        />
         <SquareButton
-          buttonText="+1 Day"
+          buttonText={'+1\nDay'}
           onPress={() => {
             addDays(1);
           }}
-        ></SquareButton>
+          buttonStyle={styles.buttonStyle}
+          buttonTextStyle={styles.buttonTextStyle}
+        />
         <SquareButton
           buttonText="+1 Week"
           onPress={() => {
             addDays(7);
           }}
-        ></SquareButton>
+        />
       </View>
     </View>
   ) : null;
@@ -144,7 +143,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     ) : null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,  entity && selected && styles.selectedTask]}>
       {expandedHeader}
       <View style={styles.touchableContainerWrapper}>
         <TouchableOpacity
@@ -183,10 +182,10 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%'
+    width: Layout.window.width - 100
   },
   titleContainer: {
-    width: '40%'
+    width: '40%',
   },
   title: {
     fontWeight: 'bold',
@@ -194,7 +193,8 @@ const styles = StyleSheet.create({
   },
   leftInfo: {
     width: '20%',
-    marginRight: 30
+    marginRight: 30,
+    marginLeft: 13
   },
   touchableContainerWrapper: {
     flex: 1,
@@ -225,12 +225,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 5,
-    paddingHorizontal: 10,
-    backgroundColor: '#efefef'
+    paddingHorizontal: 13,
+    backgroundColor: Colors.light.primary,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    height: 53
   },
   expandedTitle: {
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 18,
   },
   expandedOptions: {
     marginTop: 10,
@@ -239,5 +242,24 @@ const styles = StyleSheet.create({
   expandedButtons: {
     flexDirection: 'row',
     justifyContent: 'flex-end'
+  },
+  editImage: {
+    height: 27,
+    width: 31
+  },
+  selectedTask: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginVertical:15,
+    shadowColor: '#000000',
+    shadowOffset: {height:0 ,width: 2},
+    shadowRadius: 5,
+    shadowOpacity: 0.16
+  },
+  buttonStyle: {
+    backgroundColor: Colors.light.primary,
+  },
+  buttonTextStyle: {
+    color: '#fff'
   }
 });
