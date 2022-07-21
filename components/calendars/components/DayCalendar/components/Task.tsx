@@ -180,7 +180,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       {expandedOptions}
       <View style={styles.separator}></View>
         <ColourBarContainer>
-          <ColourBar userId={userDetails?.user_id || -1} />
+          <ColourBar userId={entity.owner} />
         </ColourBarContainer>
       </View>
   );
