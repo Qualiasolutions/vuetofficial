@@ -32,6 +32,8 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
+import ColourBar from '../../../../molecules/ColourBar';
+import ColourBarContainer from 'components/molecules/ColourBarContainer';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -177,12 +179,16 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       {taskCompletionForm}
       {expandedOptions}
       <View style={styles.separator}></View>
-    </View>
+        <ColourBarContainer>
+          <ColourBar userId={userDetails?.user_id || -1} />
+        </ColourBarContainer>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     width: '100%'
   },
   titleContainer: {
