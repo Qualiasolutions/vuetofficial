@@ -1,8 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ImageSourcePropType } from 'react-native';
 
-import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
@@ -14,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
-import Transport from 'screens/Categories/Transport';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
@@ -29,60 +27,52 @@ import {
   AlmostBlackText,
   PrimaryText
 } from 'components/molecules/TextComponents';
-import { PrimaryColouredView } from 'components/molecules/ViewComponents';
-import { useThemeColor } from 'components/Themed';
 import { SettingsNavigator } from './SettingsNavigator';
 import setupPushNotifications from 'hooks/setupPushNotifications';
 import { EntityNavigator } from './EntityNavigator';
+import BottomNavBar from 'components/navBar/BottomNavBar';
 
 const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: '#7F5DF0',
-    shadowOffset: {
-      width: 0,
-      height: 10
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5
-  },
   icon: {
     alignItems: 'center',
     justifyContent: 'center',
-    top: -5
+    top: -5,
+    width: 60,
+  },
+  barIconImage: {
+    width: 26,
+    height: 26
+  },
+  barIconText: {
+    fontSize: 10,
   }
 });
 
-const AddButton = ({ children, onPress }: { [key: string]: any }) => (
-  <TouchableOpacity
-    style={{
-      top: -30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...styles.shadow
-    }}
-    onPress={onPress}
-  >
-    <PrimaryColouredView
-      style={{
-        width: 70,
-        height: 70,
-        borderRadius: 35
-      }}
-    >
-      {children}
-    </PrimaryColouredView>
-  </TouchableOpacity>
-);
-
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
+const BarIcon = ({ focused, imageSource, title }: { focused: boolean, imageSource: ImageSourcePropType, title: string }) => {
+  return <View style={styles.icon}>
+    <ConditionallyTintedImage
+      source={imageSource}
+      resizeMode="contain"
+      tinted={focused}
+      style={styles.barIconImage}
+    />
+    {focused ? (
+      <PrimaryText
+        text={title}
+        style={styles.barIconText}
+      />
+    ) : (
+      <AlmostBlackText
+        text={title}
+        style={styles.barIconText}
+      />
+    )}
+  </View>
+}
+
 export function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
   const { t } = useTranslation();
 
   const username = useSelector(selectUsername);
@@ -109,45 +99,20 @@ export function BottomTabNavigator() {
       screenOptions={{
         headerShown: true,
         headerTitleAlign: 'center',
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          left: 0,
-          right: 0,
-          backgroundColor: useThemeColor({}, 'white'),
-          height: 80,
-          padding: 10,
-          ...styles.shadow
-        }
       }}
       backBehavior="history"
+      tabBar={(props) => <BottomNavBar { ...props }/>}
     >
       <BottomTab.Screen
         name="Home"
         component={CalendarScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={styles.icon}>
-              <ConditionallyTintedImage
-                source={require('../assets/images/Home.png')}
-                resizeMode="contain"
-                tinted={focused}
-                style={{
-                  width: 25,
-                  height: 25
-                }}
-              />
-              {focused ? (
-                <PrimaryText
-                  text={t('pageTitles.home')}
-                  style={{ fontSize: 10 }}
-                />
-              ) : (
-                <AlmostBlackText
-                  text={t('pageTitles.home')}
-                  style={{ fontSize: 10 }}
-                />
-              )}
-            </View>
+            <BarIcon
+              focused={focused}
+              imageSource={require('../assets/images/Home.png')}
+              title={t('pageTitles.home')}
+            />
           )
         }}
       />
@@ -157,79 +122,28 @@ export function BottomTabNavigator() {
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <View style={styles.icon}>
-              <ConditionallyTintedImage
-                source={require('../assets/images/Dashboard.png')}
-                resizeMode="contain"
-                tinted={focused}
-                style={{
-                  width: 25,
-                  height: 25
-                }}
-              />
-              {focused ? (
-                <PrimaryText
-                  text={t('pageTitles.categories')}
-                  style={{ fontSize: 10 }}
-                />
-              ) : (
-                <AlmostBlackText
-                  text={t('pageTitles.categories')}
-                  style={{ fontSize: 10 }}
-                />
-              )}
-            </View>
+            <BarIcon
+              focused={focused}
+              imageSource={require('../assets/images/Dashboard.png')}
+              title={t('pageTitles.categories')}
+            />
           )
         }}
       />
       <BottomTab.Screen
         name="CreateTask"
         component={CreateTask}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={require('../assets/images/plus_icon.png')}
-              resizeMode="contain"
-              style={{
-                width: 30,
-                height: 30,
-                tintColor: '#fff'
-              }}
-            />
-          ),
-          tabBarButton: (props) => <AddButton {...props} />,
-          headerStyle: { backgroundColor: '#FFF' },
-          headerTintColor: '#000',
-          title: t('pageTitles.createTask')
-        }}
       />
       <BottomTab.Screen
         name="Calendar" // This is just a placeholder really, not sure where it's supposed to go
         component={CalendarScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={styles.icon}>
-              <ConditionallyTintedImage
-                source={require('../assets/images/Calendar.png')}
-                resizeMode="contain"
-                tinted={focused}
-                style={{
-                  width: 25,
-                  height: 25
-                }}
-              />
-              {focused ? (
-                <PrimaryText
-                  text={t('pageTitles.calendar')}
-                  style={{ fontSize: 10 }}
-                />
-              ) : (
-                <AlmostBlackText
-                  text={t('pageTitles.calendar')}
-                  style={{ fontSize: 10 }}
-                />
-              )}
-            </View>
+            <BarIcon
+              focused={focused}
+              imageSource={require('../assets/images/Calendar.png')}
+              title={t('pageTitles.calendar')}
+            />
           )
         }}
       />
@@ -239,38 +153,12 @@ export function BottomTabNavigator() {
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <View style={styles.icon}>
-              <ConditionallyTintedImage
-                source={require('../assets/images/Chat.png')}
-                resizeMode="contain"
-                tinted={focused}
-                style={{
-                  width: 25,
-                  height: 25
-                }}
-              />
-              {focused ? (
-                <PrimaryText
-                  text={t('pageTitles.settings')}
-                  style={{ fontSize: 10 }}
-                />
-              ) : (
-                <AlmostBlackText
-                  text={t('pageTitles.settings')}
-                  style={{ fontSize: 10 }}
-                />
-              )}
-            </View>
+            <BarIcon
+              focused={focused}
+              imageSource={require('../assets/images/Chat.png')}
+              title={t('pageTitles.messages')}
+            />
           )
-        }}
-      />
-      <BottomTab.Screen
-        name="Transport"
-        component={Transport}
-        options={{
-          tabBarButton: (props) => null,
-          title: t('pageTitles.transport'),
-          headerShown: false
         }}
       />
       <BottomTab.Screen

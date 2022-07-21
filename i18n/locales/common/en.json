@@ -2,6 +2,7 @@
   "pageTitles": {
     "home": "Today",
     "categories": "Things",
+    "messages": "Messages",
     "settings": "Settings",
     "addTask": "Add Task",
     "editTask": "Edit Task",

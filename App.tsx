@@ -19,6 +19,7 @@ import { RootAction } from 'reduxStore/actions';
 import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import './i18n/i18n';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const persistConfig = {
   key: 'root',
@@ -54,7 +55,9 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={<Splash />} persistor={persistor}>
           <SafeAreaProvider>
-            <Navigation colorScheme={colorScheme} />
+            <GestureHandlerRootView style={{width: '100%', height: '100%'}}>
+              <Navigation colorScheme={colorScheme} />
+            </GestureHandlerRootView>
             <StatusBar />
           </SafeAreaProvider>
         </PersistGate>
