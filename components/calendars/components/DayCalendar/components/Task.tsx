@@ -27,8 +27,8 @@ import GenericError from 'components/molecules/GenericError';
 import ColourBar from '../../../../molecules/ColourBar';
 import ColourBarContainer from 'components/molecules/ColourBarContainer';
 import { UserFullResponse } from 'types/users';
+import { colourService } from 'utils/colourService';
 
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -45,15 +45,6 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: userFullDetails } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
-
-  function getMemberColourByIdFromUserDetails(id: number, user: UserFullResponse) {
-    if(id === user.id) {
-        return user.member_colour
-    } else {
-        const colour = user.family.users.find(x=> x.id === id)?.member_colour
-        return colour || ""; 
-    }
-}  
 
   const colourHexcodes = [];
 
@@ -78,9 +69,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const entity = allEntities.byId[task.entity];
 
-  colourHexcodes.push(getMemberColourByIdFromUserDetails(entity.owner, userFullDetails!));
+  colourHexcodes.push(colourService.getMemberColourByIdFromUserDetails(entity.owner, userFullDetails!));
   task.members.forEach((id: number) => {1
-    colourHexcodes.push(getMemberColourByIdFromUserDetails(id, userFullDetails!));
+    colourHexcodes.push(colourService.getMemberColourByIdFromUserDetails(id, userFullDetails!));
   });
 
   const addDays = (numDays = 1) => {
