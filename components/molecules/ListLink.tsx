@@ -3,7 +3,8 @@ import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
-  RootTabScreenProps
+  RootTabScreenProps,
+  SettingsTabParamList
 } from 'types/base';
 import {
   TransparentView,
@@ -23,7 +24,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 // this for more sub-navigators
 type ListLinkProps = {
   text: string;
-  toScreen: keyof RootTabParamList | keyof EntityTabParamList;
+  toScreen: keyof RootTabParamList | keyof EntityTabParamList | keyof SettingsTabParamList;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
 };
@@ -37,6 +38,7 @@ export default function ListLink({
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
+    | StackNavigationProp<SettingsTabParamList>
   >();
 
   return (

@@ -69,7 +69,10 @@ export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
 export type EntityTabParamList = {
   Categories: { initial: boolean; screen: string };
   EntityTypeList: { categoryId: number };
-  EntityList: { entityType: string };
+  EntityList: {
+    entityTypes: string[],
+    entityTypeName: string
+  };
   EntityScreen: { entityId: number | string };
 };
 

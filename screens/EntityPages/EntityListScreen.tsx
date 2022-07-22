@@ -24,15 +24,15 @@ export default function EntityListScreen({
     skip: !userDetails?.user_id
   });
   const entityData = Object.values(allEntities?.byId || {}).filter(
-    (entity) => entity.resourcetype === route.params.entityType
+    (entity) => route.params.entityTypes.includes(entity.resourcetype)
   );
   const { t } = useTranslation();
 
   useEffect(() => {
     navigation.setOptions({
-      title: t(`entityTypes.${route.params.entityType}`)
+      title: t(`entityTypes.${route.params.entityTypeName}`)
     });
-  }, [route.params.entityType]);
+  }, [route.params.entityTypeName]);
 
   const listLinks = entityData?.map((entity) => (
     <ListLink

@@ -14,7 +14,6 @@ const linking: LinkingOptions<TabParamList> = {
   config: {
     screens: {
       Home: '',
-      Categories: 'categories-grid',
       Transport: 'transport',
       SettingsNavigator: {
         path: 'settings',
@@ -26,11 +25,19 @@ const linking: LinkingOptions<TabParamList> = {
           AddFamilyMember: 'add-family-member'
         }
       },
+      EntityNavigator: {
+        path: 'entities',
+        screens: {
+          Categories: 'categories-grid',
+          EntityTypeList: 'entity-type-list',
+          EntityList: 'entity-list',
+          EntityScreen: 'entity-screen'
+        }
+      },
       AddTask: 'add-task',
       EditTask: 'edit-task',
       AddEntity: 'add-entity',
       EditEntity: 'edit-entity',
-      EntityScreen: 'entity',
       Login: 'login',
       Signup: 'signup',
       ValidatePhone: 'validate-phone',
