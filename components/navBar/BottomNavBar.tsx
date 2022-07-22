@@ -37,7 +37,7 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
     let nestedState: any = { ...state }
     while (true) {
       const route = nestedState.routes[nestedState.index]
-      if (route.state) {
+      if (route?.state?.index) {
         nestedState = { ...route.state }
       } else {
         return route
@@ -47,8 +47,6 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
 
   useEffect(() => {
     const { name, params } = getCurrentScreenAndParams()
-    console.log(name)
-    console.log(params)
     setCurrentScreen(name)
     setCurrentScreenParams(params)
   }, [state])
