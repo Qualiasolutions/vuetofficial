@@ -1,11 +1,9 @@
 import { useGetUserFullDetailsQuery } from "reduxStore/services/api/user";
 
-export default function ColourBar({userId}: {userId: number}) {
+export default function ColourBar({colourHex}: {colourHex: string}) {
 
-    const { data: userFullDetails } = useGetUserFullDetailsQuery(userId);
-    const colourString = userFullDetails?.member_colour;
     const style = {
-        backgroundColor: `#${colourString}`,
+        backgroundColor: `#${colourHex}`,
         width: '90px',
         height: '10px',
     }
