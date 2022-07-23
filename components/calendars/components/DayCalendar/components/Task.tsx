@@ -10,7 +10,7 @@ import {
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
 import { useSelector } from 'react-redux';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   isSuccessfulResponseType,
   makeAuthorisedRequest
@@ -26,7 +26,7 @@ import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
+import { useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
@@ -36,6 +36,8 @@ import Colors from '../../../../../constants/Colors';
 import { WhiteText } from 'components/molecules/TextComponents';
 import Layout from '../../../../../constants/Layout'
 import { Feather } from '@expo/vector-icons';
+import { TransparentView } from 'components/molecules/ViewComponents';
+import { ColorPicker } from 'components/forms/components/ColorPickers';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -48,7 +50,6 @@ type PropTypes = {
 export default function Task({ task, selected, onPress }: PropTypes) {
   const jwtAccessToken = useSelector(selectAccessToken);
   const username = useSelector(selectUsername);
-  console.log(task);
 
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
@@ -64,6 +65,12 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
+
   const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
   if (isLoading || !allEntities) {
@@ -73,6 +80,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   if (error) {
     return <GenericError />;
   }
+
+  const membersList = userFullDetails?.family?.users?.filter((item:any) => task.members.includes(item.id))
 
   const entity = allEntities.byId[task.entity];
 
@@ -139,6 +148,14 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     </View>
   ) : null;
 
+  const member_color = <TransparentView pointerEvents='none' style={styles.memberColor}>
+  {
+    membersList?.map(({member_colour}) => {
+     return <ColorPicker value={member_colour} onValueChange={()=>{}} height={9} width={83} />
+    })
+  }
+</TransparentView>
+
   const taskTypesRequiringForm = ['BookMOTTask'];
   const taskCompletionForm =
     taskTypesRequiringForm.includes(task.resourcetype) && showTaskForm ? (
@@ -152,7 +169,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   return (
     <View style={[styles.container,  entity && selected && styles.selectedTask]}>
       {expandedHeader}
-      <View style={styles.touchableContainerWrapper}>
+      <View style={[styles.touchableContainerWrapper, selected &&  styles.selectedTouchableContainer]}>
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
@@ -182,7 +199,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       </View>
       {taskCompletionForm}
       {expandedOptions}
-      <View style={styles.separator}></View>
+      {member_color}
+      {!selected&&<View style={styles.separator}></View>}
     </View>
   );
 }
@@ -207,7 +225,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
   },
   touchableContainer: {
     flex: 1,
@@ -262,7 +280,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOffset: {height:0 ,width: 2},
     shadowRadius: 5,
-    shadowOpacity: 0.16
+    shadowOpacity: 0.16,
+    height: 245
   },
   buttonStyle: {
     backgroundColor: Colors.light.primary,
@@ -271,5 +290,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign:'center',
     fontSize: 12,
-  }
+  },
+  selectedTouchableContainer: { alignItems:'flex-start', marginTop:20},
+  memberColor: {flexDirection:'row', justifyContent:'flex-end',alignItems:'flex-end', marginTop: 13}
 });

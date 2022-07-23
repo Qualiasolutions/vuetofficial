@@ -12,10 +12,14 @@ const generateRandomColor = () => {
 };
 export function ColorPicker({
   value,
-  onValueChange
+  onValueChange,
+  height,
+  width
 }: {
   value: string;
   onValueChange: (value: string) => any;
+  height?: number,
+  width?: number
 }) {
   const [color, setColor] = useState<string>(value || generateRandomColor());
 
@@ -33,7 +37,9 @@ export function ColorPicker({
           styles.colorView,
           {
             backgroundColor: `#${color}`
-          }
+          },
+          height ? {height:height} : null,
+          width ? {width:width} : null
         ]}
       ></View>
     </Pressable>

@@ -7,6 +7,7 @@ interface BaseTaskType {
   resourcetype: string;
   title: string;
   [key: string]: any;
+  members: any[]
 }
 
 interface FixedTaskResponseType extends BaseTaskType {
