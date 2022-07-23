@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from 'components/Themed';
 import {
   TaskParsedType,
@@ -35,6 +35,7 @@ import GenericError from 'components/molecules/GenericError';
 import Colors from '../../../../../constants/Colors';
 import { WhiteText } from 'components/molecules/TextComponents';
 import Layout from '../../../../../constants/Layout'
+import { Feather } from '@expo/vector-icons';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -47,6 +48,7 @@ type PropTypes = {
 export default function Task({ task, selected, onPress }: PropTypes) {
   const jwtAccessToken = useSelector(selectAccessToken);
   const username = useSelector(selectUsername);
+  console.log(task);
 
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
@@ -101,32 +103,37 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const expandedHeader =
     entity && selected ? (
-      <View style={styles.expandedHeader}>
+      <Pressable  onPress={() => navigation.navigate('EntityScreen', { entityId: entity.id }) } style={styles.expandedHeader}>
         <WhiteText text={entity?.name} style={styles.expandedTitle} />
         <Image source={require('../../../../../assets/images/edit.png')} style={styles.editImage} />
-      </View>
+      </Pressable>
     ) : null;
 
   const expandedOptions = selected ? (
     <View style={styles.expandedOptions}>
       <View style={styles.expandedButtons}>
         <SquareButton
-          fontAwesomeIconName="pencil"
-          onPress={() => navigation.navigate('EditTask', { taskId: task.id })}
-        />
-        <SquareButton
-          buttonText={'+1\nDay'}
+          buttonText={`+1\nDay`}
           onPress={() => {
             addDays(1);
           }}
           buttonStyle={styles.buttonStyle}
           buttonTextStyle={styles.buttonTextStyle}
+          buttonSize={35}
         />
         <SquareButton
-          buttonText="+1 Week"
+          buttonText={'+1\nWeek'}
           onPress={() => {
             addDays(7);
           }}
+          buttonStyle={styles.buttonStyle}
+          buttonTextStyle={styles.buttonTextStyle}
+          buttonSize={35}
+        />
+        <SquareButton
+          customIcon={<Feather name='calendar' color={'#fff'} size={25}/>}
+          onPress={() => navigation.navigate('EditTask', { taskId: task.id })}
+          buttonStyle={{...styles.buttonStyle, padding: 8}}
         />
       </View>
     </View>
@@ -241,7 +248,8 @@ const styles = StyleSheet.create({
   },
   expandedButtons: {
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    paddingRight: 5
   },
   editImage: {
     height: 27,
@@ -260,6 +268,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.primary,
   },
   buttonTextStyle: {
-    color: '#fff'
+    color: '#fff',
+    textAlign:'center',
+    fontSize: 12,
   }
 });
