@@ -9,6 +9,7 @@ import {
   NavigatorScreenParams
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { EntityTypeName } from './entities';
 
 declare global {
   namespace ReactNavigation {
@@ -92,7 +93,7 @@ export type RootTabParamList = {
   CreateTask: undefined;
   EditTask: { taskId: number };
   Transport: undefined;
-  AddEntity: { entityType: string };
+  AddEntity: { entityType: EntityTypeName };
   EditEntity: { entityId: number | string };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;

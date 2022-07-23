@@ -79,8 +79,11 @@ export default function BottomNavBar({
                     entityId: (currentScreenParams as RouteParams).entityId
                   });
                 } else if (currentScreen === 'EntityList') {
+                  // TODO - this should instead bring up a list of
+                  // all entity types on this page if entityTypes
+                  // has length > 1
                   navigation.navigate('AddEntity', {
-                    entityType: (currentScreenParams as any).entityType
+                    entityType: (currentScreenParams as any).entityTypes[0]
                   });
                 } else {
                   navigation.navigate('CreateTask');

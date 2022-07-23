@@ -117,7 +117,7 @@ export default function Form({
   onDeleteSuccess = () => {},
   onDeleteFailure = () => {},
   onValueChange = () => {},
-  clearOnSubmit = false,
+  clearOnSubmit = true,
   submitText = '',
   inlineFields = false
 }: {
@@ -143,6 +143,11 @@ export default function Form({
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
 
+  const resetState = () => {
+    setFormValues(createInitialObject(fields))
+    setFormErrors(createNullStringObject(fields))
+  }
+
   const methodHookTriggers: {
     [key: string]: {
       trigger: MutationTrigger<any>;
@@ -164,6 +169,9 @@ export default function Form({
         if (res.isSuccess) {
           setSubmitError('');
           onSubmitSuccess();
+          if (clearOnSubmit) {
+            resetState();
+          }
         } else if (res.isError) {
           setSubmitError('An unexpected error occurred');
           onSubmitFailure(res.error);
@@ -224,9 +232,12 @@ export default function Form({
     methodHookTriggers[submitMethod].trigger({
       ...parsedFormValues,
       ...extraFields
+    }).then(() => {
+      setSubmittingForm(false);
+    }).catch(() => {
+      setSubmittingForm(false);
     });
 
-    setSubmittingForm(false);
   };
 
   const makeDeleteRequest = () => {
