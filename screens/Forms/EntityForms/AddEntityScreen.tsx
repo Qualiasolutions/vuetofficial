@@ -16,7 +16,7 @@ import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import * as forms from './entityFormFieldTypes'
+import * as forms from './entityFormFieldTypes';
 
 export default function AddEntityScreen({
   route
@@ -26,7 +26,7 @@ export default function AddEntityScreen({
     Car: forms.car(),
     Birthday: forms.birthday(),
     Event: forms.event()
-  }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -52,7 +52,6 @@ export default function AddEntityScreen({
   if (error) {
     return <GenericError />;
   }
-
 
   if (
     route.params?.entityType &&

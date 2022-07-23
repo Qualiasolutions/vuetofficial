@@ -144,9 +144,9 @@ export default function Form({
   const [submitError, setSubmitError] = React.useState<string>('');
 
   const resetState = () => {
-    setFormValues(createInitialObject(fields))
-    setFormErrors(createNullStringObject(fields))
-  }
+    setFormValues(createInitialObject(fields));
+    setFormErrors(createNullStringObject(fields));
+  };
 
   const methodHookTriggers: {
     [key: string]: {
@@ -229,15 +229,17 @@ export default function Form({
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
 
     // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
-    methodHookTriggers[submitMethod].trigger({
-      ...parsedFormValues,
-      ...extraFields
-    }).then(() => {
-      setSubmittingForm(false);
-    }).catch(() => {
-      setSubmittingForm(false);
-    });
-
+    methodHookTriggers[submitMethod]
+      .trigger({
+        ...parsedFormValues,
+        ...extraFields
+      })
+      .then(() => {
+        setSubmittingForm(false);
+      })
+      .catch(() => {
+        setSubmittingForm(false);
+      });
   };
 
   const makeDeleteRequest = () => {

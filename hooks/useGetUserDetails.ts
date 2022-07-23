@@ -1,8 +1,11 @@
-import { useSelector } from "react-redux";
-import { useGetUserDetailsQuery, useGetUserFullDetailsQuery } from "reduxStore/services/api/user";
-import { selectUsername } from "reduxStore/slices/auth/selectors";
+import { useSelector } from 'react-redux';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
-export default function getUserFullDetails () {
+export default function getUserFullDetails() {
   const username = useSelector(selectUsername);
   const {
     data: userDetails,
@@ -22,5 +25,5 @@ export default function getUserFullDetails () {
     data: userFullDetails,
     isLoading: isLoadingUserDetails || isLoadingFullDetails,
     error: userDetailsError || fullDetailsError
-  }
+  };
 }

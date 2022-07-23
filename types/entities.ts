@@ -34,11 +34,9 @@ export interface ListResponseType extends BaseEntityType {
   list_entries: ListEntryResponse[];
 }
 
-export type EntityTypeName = 'Car'
-  | 'Birthday'
-  | 'Event'
+export type EntityTypeName = 'Car' | 'Birthday' | 'Event';
 
-  export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
+export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
 
 // This should be a big OR statement of all entities
 export type EntityResponseType = CarResponseType | ListResponseType;

@@ -1,13 +1,13 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
-import useGetUserDetails from 'hooks/useGetUserDetails'
+import useGetUserDetails from 'hooks/useGetUserDetails';
 
 export const eventForm = (): FormFieldTypes => {
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
-  } = useGetUserDetails()
+  } = useGetUserDetails();
 
   const { t } = useTranslation('modelFields');
 
