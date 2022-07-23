@@ -1,20 +1,22 @@
-import { PrimaryColouredView, TransparentView, WhiteView } from "components/molecules/ViewComponents";
-import { Button, useThemeColor, View } from "components/Themed"
-import { Image, Pressable, StyleSheet } from "react-native";
-import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
+import {
+  PrimaryColouredView,
+  TransparentView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
+import { Button, useThemeColor, View } from 'components/Themed';
+import { Image, Pressable, StyleSheet } from 'react-native';
+import {
+  TouchableHighlight,
+  TouchableOpacity
+} from 'react-native-gesture-handler';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { useEffect, useState } from "react";
-import { EntityTabParamList, RootTabParamList } from "types/base";
+import { useEffect, useState } from 'react';
+import { EntityTabParamList, RootTabParamList } from 'types/base';
 
 const AddButton = ({ children, onPress }: { [key: string]: any }) => (
   <TransparentView style={styles.addButtonWrapper}>
-    <TouchableHighlight
-      style={styles.addButtonPressable}
-      onPress={onPress}
-    >
-      <PrimaryColouredView
-        style={styles.addButton}
-      >
+    <TouchableHighlight style={styles.addButtonPressable} onPress={onPress}>
+      <PrimaryColouredView style={styles.addButton}>
         <Image
           source={require('../../assets/images/plus_icon.png')}
           resizeMode="contain"
@@ -29,60 +31,78 @@ const AddButton = ({ children, onPress }: { [key: string]: any }) => (
   </TransparentView>
 );
 
-export default function BottomNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const [ currentScreen, setCurrentScreen ] = useState<string>('')
-  const [ currentScreenParams, setCurrentScreenParams ] = useState<object>({})
-  
+export default function BottomNavBar({
+  state,
+  descriptors,
+  navigation
+}: BottomTabBarProps) {
+  const [currentScreen, setCurrentScreen] = useState<string>('');
+  const [currentScreenParams, setCurrentScreenParams] = useState<object>({});
+
   const getCurrentScreenAndParams = () => {
-    let nestedState: any = { ...state }
+    let nestedState: any = { ...state };
     while (true) {
-      const route = nestedState.routes[nestedState.index]
+      const route = nestedState.routes[nestedState.index];
       if (route?.state?.index) {
-        nestedState = { ...route.state }
+        nestedState = { ...route.state };
       } else {
-        return route
+        return route;
       }
     }
-  }
+  };
 
   useEffect(() => {
-    const { name, params } = getCurrentScreenAndParams()
-    setCurrentScreen(name)
-    setCurrentScreenParams(params)
-  }, [state])
+    const { name, params } = getCurrentScreenAndParams();
+    setCurrentScreen(name);
+    setCurrentScreenParams(params);
+  }, [state]);
 
   return (
-    <WhiteView style={[{ borderTopColor: useThemeColor({}, 'lightGrey') }, styles.bar ]}>
-      {
-        state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const isFocused = state?.index === index;
+    <WhiteView
+      style={[{ borderTopColor: useThemeColor({}, 'lightGrey') }, styles.bar]}
+    >
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const isFocused = state?.index === index;
 
-          if(route.name === "CreateTask"){
-            return <AddButton key={index} onPress={() => {
-              const ignoredScreens = ['AddTask', 'CreateTask']
-              if (ignoredScreens.includes(currentScreen)) {
-                return
-              } else if (currentScreen === 'EntityScreen') {
-                type RouteParams = EntityTabParamList['EntityScreen']
-                navigation.navigate('AddTask', { entityId: (currentScreenParams as RouteParams).entityId })
-              } else if (currentScreen === 'EntityList') {
-                navigation.navigate('AddEntity', { entityType: (currentScreenParams as any).entityType })
-              }else {
-                navigation.navigate('CreateTask')
-              }
-            }}/>
-          } else if (options.tabBarIcon) {
-            return <Pressable key={index} onPress={() => navigation.navigate(route.name)}>
+        if (route.name === 'CreateTask') {
+          return (
+            <AddButton
+              key={index}
+              onPress={() => {
+                const ignoredScreens = ['AddTask', 'CreateTask'];
+                if (ignoredScreens.includes(currentScreen)) {
+                  return;
+                } else if (currentScreen === 'EntityScreen') {
+                  type RouteParams = EntityTabParamList['EntityScreen'];
+                  navigation.navigate('AddTask', {
+                    entityId: (currentScreenParams as RouteParams).entityId
+                  });
+                } else if (currentScreen === 'EntityList') {
+                  navigation.navigate('AddEntity', {
+                    entityType: (currentScreenParams as any).entityType
+                  });
+                } else {
+                  navigation.navigate('CreateTask');
+                }
+              }}
+            />
+          );
+        } else if (options.tabBarIcon) {
+          return (
+            <Pressable
+              key={index}
+              onPress={() => navigation.navigate(route.name)}
+            >
               {options.tabBarIcon({ focused: isFocused, color: '', size: 0 })}
             </Pressable>
-          }
-        })
-      }
+          );
+        }
+      })}
     </WhiteView>
-  )
+  );
 }
-  
+
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
@@ -95,7 +115,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 3,
     elevation: 5,
-    borderTopWidth: 1,
+    borderTopWidth: 1
   },
   addButtonPressable: {
     width: 80,
@@ -132,5 +152,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     top: -5
-  },
+  }
 });

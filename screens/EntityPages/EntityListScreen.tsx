@@ -23,8 +23,8 @@ export default function EntityListScreen({
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
     skip: !userDetails?.user_id
   });
-  const entityData = Object.values(allEntities?.byId || {}).filter(
-    (entity) => route.params.entityTypes.includes(entity.resourcetype)
+  const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
+    route.params.entityTypes.includes(entity.resourcetype)
   );
   const { t } = useTranslation();
 

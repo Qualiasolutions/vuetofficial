@@ -37,40 +37,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     top: -5,
-    width: 60,
+    width: 60
   },
   barIconImage: {
     width: 26,
     height: 26
   },
   barIconText: {
-    fontSize: 10,
+    fontSize: 10
   }
 });
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-const BarIcon = ({ focused, imageSource, title }: { focused: boolean, imageSource: ImageSourcePropType, title: string }) => {
-  return <View style={styles.icon}>
-    <ConditionallyTintedImage
-      source={imageSource}
-      resizeMode="contain"
-      tinted={focused}
-      style={styles.barIconImage}
-    />
-    {focused ? (
-      <PrimaryText
-        text={title}
-        style={styles.barIconText}
+const BarIcon = ({
+  focused,
+  imageSource,
+  title
+}: {
+  focused: boolean;
+  imageSource: ImageSourcePropType;
+  title: string;
+}) => {
+  return (
+    <View style={styles.icon}>
+      <ConditionallyTintedImage
+        source={imageSource}
+        resizeMode="contain"
+        tinted={focused}
+        style={styles.barIconImage}
       />
-    ) : (
-      <AlmostBlackText
-        text={title}
-        style={styles.barIconText}
-      />
-    )}
-  </View>
-}
+      {focused ? (
+        <PrimaryText text={title} style={styles.barIconText} />
+      ) : (
+        <AlmostBlackText text={title} style={styles.barIconText} />
+      )}
+    </View>
+  );
+};
 
 export function BottomTabNavigator() {
   const { t } = useTranslation();
@@ -98,10 +102,10 @@ export function BottomTabNavigator() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: true,
-        headerTitleAlign: 'center',
+        headerTitleAlign: 'center'
       }}
       backBehavior="history"
-      tabBar={(props) => <BottomNavBar { ...props }/>}
+      tabBar={(props) => <BottomNavBar {...props} />}
     >
       <BottomTab.Screen
         name="Home"
@@ -130,10 +134,7 @@ export function BottomTabNavigator() {
           )
         }}
       />
-      <BottomTab.Screen
-        name="CreateTask"
-        component={CreateTask}
-      />
+      <BottomTab.Screen name="CreateTask" component={CreateTask} />
       <BottomTab.Screen
         name="Calendar" // This is just a placeholder really, not sure where it's supposed to go
         component={CalendarScreen}

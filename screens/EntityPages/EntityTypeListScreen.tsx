@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { EntityTabParamList, EntityTabScreenProps, RootTabParamList, SettingsTabParamList } from 'types/base';
+import {
+  EntityTabParamList,
+  EntityTabScreenProps,
+  RootTabParamList,
+  SettingsTabParamList
+} from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +18,7 @@ const CATEGORY_LINKS = {
       navMethod: 'navigate',
       toScreen: 'SettingsNavigator',
       toScreenParams: { screen: 'FamilySettings' }
-    },
+    }
   ],
   PETS: [],
   SOCIAL_INTERESTS: [
@@ -52,7 +57,7 @@ const CATEGORY_LINKS = {
       }
     }
   ]
-}
+};
 
 type EntityTypeListScreenProps = EntityTabScreenProps<'EntityTypeList'>;
 
@@ -74,7 +79,7 @@ export default function EntityTypeListScreen({
   }, [allCategories]);
 
   if (!categoryData) {
-    return <FullPageSpinner/>
+    return <FullPageSpinner />;
   }
 
   const listLinks = CATEGORY_LINKS[categoryData.name]?.map((resourceType) => {
@@ -82,11 +87,12 @@ export default function EntityTypeListScreen({
       <ListLink
         text={t(`linkTitles.${resourceType.name}`)}
         key={resourceType.name}
-        navMethod={(resourceType.navMethod || "push") as "navigate" | "push"}
+        navMethod={(resourceType.navMethod || 'push') as 'navigate' | 'push'}
         toScreen={
-          resourceType.toScreen as keyof EntityTabParamList |
-            keyof RootTabParamList |
-            keyof SettingsTabParamList
+          resourceType.toScreen as
+            | keyof EntityTabParamList
+            | keyof RootTabParamList
+            | keyof SettingsTabParamList
         }
         toScreenParams={resourceType.toScreenParams}
       />

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import ListEntityScreen from './components/ListEntityScreen';
 import ChildEntityListScreen from './components/ChildEntityListScreen';
+import BirthdayScreen from './components/BirthdayScreen';
 
 export default function EntityScreen({
   navigation,
@@ -44,6 +45,8 @@ export default function EntityScreen({
 
   if (entity.resourcetype === 'List') {
     return <ListEntityScreen entityId={entityId} />;
+  } else if (entity.resourcetype === 'Birthday') {
+    return <BirthdayScreen entityId={entityId} />;
   } else {
     return <ChildEntityListScreen entityId={entityId} />;
   }

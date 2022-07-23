@@ -55,7 +55,7 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={<Splash />} persistor={persistor}>
           <SafeAreaProvider>
-            <GestureHandlerRootView style={{width: '100%', height: '100%'}}>
+            <GestureHandlerRootView style={{ width: '100%', height: '100%' }}>
               <Navigation colorScheme={colorScheme} />
             </GestureHandlerRootView>
             <StatusBar />

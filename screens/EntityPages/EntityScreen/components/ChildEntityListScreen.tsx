@@ -1,11 +1,5 @@
-import React, { useEffect } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { RootTabScreenProps } from 'types/base';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import React from 'react';
+import { ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';

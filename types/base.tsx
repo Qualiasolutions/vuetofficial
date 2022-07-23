@@ -70,8 +70,8 @@ export type EntityTabParamList = {
   Categories: { initial: boolean; screen: string };
   EntityTypeList: { categoryId: number };
   EntityList: {
-    entityTypes: string[],
-    entityTypeName: string
+    entityTypes: string[];
+    entityTypeName: string;
   };
   EntityScreen: { entityId: number | string };
 };

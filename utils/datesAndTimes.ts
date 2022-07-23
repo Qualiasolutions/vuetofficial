@@ -8,6 +8,14 @@ const getTimeStringFromDateObject = (date: Date): string => {
   return dayjs(date).format('HH:mm');
 };
 
+const getDateWithoutTimezone = (date: string): Date => {
+  return new Date(`${date}T00:00:00`);
+};
+
+const getLongDateFromDateObject = (date: Date): string => {
+  return dayjs(date).format('MMM DD, YYYY');
+};
+
 const getDatesBetween = (start: string | Date, end: string | Date): Date[] => {
   const datesArray = [];
   for (
@@ -31,6 +39,8 @@ const getDateStringsBetween = (
 export {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
+  getDateWithoutTimezone,
+  getLongDateFromDateObject,
   getDatesBetween,
   getDateStringsBetween
 };

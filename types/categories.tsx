@@ -1,12 +1,13 @@
-type CategoryName = 'FAMILY' |
-  'PETS' |
-  'SOCIAL_INTERESTS' |
-  'EDUCATION_CAREER' |
-  'TRAVEL' |
-  'HEALTH_BEAUTY' |
-  'HOME_GARDEN' |
-  'FINANCE' |
-  'TRANSPORT'
+type CategoryName =
+  | 'FAMILY'
+  | 'PETS'
+  | 'SOCIAL_INTERESTS'
+  | 'EDUCATION_CAREER'
+  | 'TRAVEL'
+  | 'HEALTH_BEAUTY'
+  | 'HOME_GARDEN'
+  | 'FINANCE'
+  | 'TRANSPORT';
 
 type Category = {
   is_enabled: boolean;
