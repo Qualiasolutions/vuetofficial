@@ -25,7 +25,6 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import ColourBar from '../../../../molecules/ColourBar';
-import ColourBarContainer from 'components/molecules/ColourBarContainer';
 import { UserFullResponse } from 'types/users';
 import { colourService } from 'utils/colourService';
 
@@ -69,8 +68,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const entity = allEntities.byId[task.entity];
 
+  const uniqueMembers = task.members.filter((x: number)=> x !== entity.owner);
   colourHexcodes.push(colourService.getMemberColourByIdFromUserDetails(entity.owner, userFullDetails!));
-  task.members.forEach((id: number) => {1
+  uniqueMembers.forEach((id: number) => {1
     colourHexcodes.push(colourService.getMemberColourByIdFromUserDetails(id, userFullDetails!));
   });
 
@@ -180,11 +180,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       {taskCompletionForm}
       {expandedOptions}
       <View style={styles.separator}></View>
-        <ColourBarContainer>
-          {colourHexcodes.map((colour: string)=> {
-            return <ColourBar colourHex={colour} />
-          })}
-        </ColourBarContainer>
+      <ColourBar colourHexcodes={colourHexcodes} />
       </View>
   );
 }
