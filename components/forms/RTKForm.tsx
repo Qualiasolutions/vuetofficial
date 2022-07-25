@@ -1,10 +1,9 @@
-import { StyleSheet } from 'react-native';
-
-import { Text, TextInput, Button } from 'components/Themed';
 import React, { useEffect, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
-import { FormFieldTypes, isRadioField } from './formFieldTypes';
+import { FormFieldTypes, hasPermittedValues } from './formFieldTypes';
 import RadioInput from './components/RadioInput';
 import {
   MutationTrigger,
@@ -14,6 +13,7 @@ import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { WhiteDateInput } from './components/DateInputs';
 import { ColorPicker } from './components/ColorPickers';
+import MemberSelector from 'components/forms/components/MemberSelector';
 import PhoneNumberInput from './components/PhoneNumberInput';
 
 /* This type specifies the actual values of the fields.
@@ -357,7 +357,7 @@ export default function Form({
         );
       case 'radio':
         const f = fields[field];
-        if (isRadioField(f)) {
+        if (hasPermittedValues(f)) {
           const permittedValueObjects = f.permittedValues.map(
             (value: any, i: number) => ({
               label: f.valueToDisplay(value),
@@ -404,6 +404,26 @@ export default function Form({
             />
           </WhiteBox>
         );
+      case 'addMembers': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <TransparentView key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <MemberSelector
+                data={f.permittedValues}
+                onValueChange={(data: any) => {
+                  setFormValues({
+                    ...formValues,
+                    members: data.map((member: any) => member.id)
+                  });
+                }}
+              />
+            </TransparentView>
+          );
+        }
+      }
     }
   });
 

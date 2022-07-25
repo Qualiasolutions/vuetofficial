@@ -20,13 +20,12 @@ import {
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Colors from '../../constants/Colors';
 import Search from './Search';
+import Checkbox from 'components/molecules/Checkbox';
 
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
 export function Modal(props: ModalProps) {
   const { style, children, boxStyle, ...otherProps } = props;
-  const backgroundColor = useThemeColor({}, 'white');
-  const borderColor = useThemeColor({}, 'grey');
 
   return (
     <DefaultModal animationType="fade" transparent={true} {...otherProps}>
@@ -46,7 +45,6 @@ type YesNoModalProps = ModalProps & {
 };
 
 export function YesNoModal(props: YesNoModalProps) {
-  const backgroundColor = useThemeColor({}, 'white');
   const borderColor = useThemeColor({}, 'grey');
   const { t } = useTranslation();
 
@@ -85,7 +83,15 @@ export function YesNoModal(props: YesNoModalProps) {
 
 export function ListingModal(props: ListingModalProps) {
   const bottomSheetRef = useRef<RBSheet>(null);
-  const { visible, data = [], onClose, onSelect, translate = true } = props;
+  const {
+    visible,
+    data = [],
+    onClose,
+    onSelect,
+    translate = true,
+    type = 'member',
+    selectedMembers
+  } = props;
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -112,16 +118,36 @@ export function ListingModal(props: ListingModalProps) {
           <Search />
           <SafeAreaView>
             {data?.length > 0 &&
-              data.map((item: any) => {
+              data.map((item: any, index: Number) => {
                 return (
                   <Pressable
                     style={styles.listItem}
-                    key={`item_${item.id}_${item.name}`}
+                    key={`item_${item.id}_${item.name}_${index}`}
                     onPress={() => onSelect(item)}
                   >
-                    <Text>
-                      {!translate ? item.name : t(`categories.${item.name}`)}
-                    </Text>
+                    <TransparentView
+                      style={type == 'members' && styles.membersItem}
+                    >
+                      <TransparentView>
+                        <Text>
+                          {!translate
+                            ? item.name
+                            : t(`categories.${item.name}`)}
+                        </Text>
+                        {type == 'members' && (
+                          <View
+                            style={[styles.memberColour, { backgroundColor: item.member_colour }]}
+                          />
+                        )}
+                      </TransparentView>
+                      {type == 'members' && (
+                        <Checkbox
+                          checked={selectedMembers?.some(
+                            (i) => i.id == item.id
+                          )}
+                        />
+                      )}
+                    </TransparentView>
                   </Pressable>
                 );
               })}
@@ -138,6 +164,8 @@ type ListingModalProps = {
   onClose: () => void;
   onSelect: (category: any) => void;
   translate?: boolean;
+  type?: string;
+  selectedMembers?: any[];
 };
 
 const styles = StyleSheet.create({
@@ -193,5 +221,15 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     borderBottomColor: Colors['light'].disabledGrey,
     borderBottomWidth: 1
+  },
+  membersItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  memberColour: {
+    height: 9,
+    width: 78,
+    marginTop: 5
   }
-});
+})
