@@ -25,7 +25,8 @@ export default function AddEntityScreen({
   const entityForms = {
     Car: forms.car(),
     Birthday: forms.birthday(),
-    Event: forms.event()
+    Event: forms.event(),
+    Hobby: forms.hobby()
   };
 
   useFocusEffect(
