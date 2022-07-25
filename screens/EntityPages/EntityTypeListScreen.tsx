@@ -39,6 +39,15 @@ const CATEGORY_LINKS = {
         entityTypes: ['Event'],
         entityTypeName: 'events'
       }
+    },
+    {
+      name: 'hobbies',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Hobby'],
+        entityTypeName: 'hobbies'
+      }
     }
   ],
   EDUCATION_CAREER: [],

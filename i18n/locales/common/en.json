@@ -31,13 +31,15 @@
   "linkTitles": {
     "cars": "Cars & Motorcycles",
     "anniversaries": "Birthdays & Anniversaries",
+    "hobbies": "Interests & Hobbies",
     "events": "Celebration / Event Planning",
     "familyMembers": "Family Members"
   },
   "entityTypes": {
     "cars": "Cars & Motorcycles",
     "events": "Celebration / Event Planning",
-    "anniversaries": "Birthdays & Anniversaries"
+    "anniversaries": "Birthdays & Anniversaries",
+    "hobbies": "Interests & Hobbies"
   },
   "common": {
     "confirm": "Confirm",

@@ -16,7 +16,7 @@ export default function Checkbox({ checked = false }) {
     <View style={[activeStyle, { backgroundColor }]}>
       {checked && (
         <Image
-          source={require('../../assets/images/icons/check.png')}
+          source={require('assets/images/icons/check.png')}
           style={styles.check}
         />
       )}

@@ -45,7 +45,7 @@ export default function MemberSelector({ data, onValueChange }: any) {
         style={styles.addMemberButton}
       >
         <Image
-          source={require('../../assets/images/icons/plus.png')}
+          source={require('assets/images/icons/plus.png')}
           style={styles.addIcon}
         />
         <PrimaryText text="Add new member" />
