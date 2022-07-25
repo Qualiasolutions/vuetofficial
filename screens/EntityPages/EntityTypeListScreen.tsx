@@ -6,7 +6,7 @@ import {
   SettingsTabParamList
 } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
@@ -99,5 +99,5 @@ export default function EntityTypeListScreen({
     );
   });
 
-  return <TransparentView>{listLinks}</TransparentView>;
+  return <WhiteView style={{height: '100%'}}>{listLinks}</WhiteView>;
 }

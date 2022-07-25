@@ -1,19 +1,29 @@
 import React, { useEffect } from 'react';
 import { EntityTabScreenProps } from 'types/base';
-import { TransparentView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
+import { AnniversaryCard } from 'components/entityCards/AnniversaryCard';
+import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 type EntityListScreenProps = EntityTabScreenProps<'EntityList'>;
+
+const cards = {
+  anniversaries: AnniversaryCard
+}
 
 export default function EntityListScreen({
   navigation,
   route
 }: EntityListScreenProps) {
+  const entityName = route.params.entityTypeName
+  let CardComponent = ListLink;
+
+  if(entityName == 'anniversaries') CardComponent = cards['anniversaries'];  
+  
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
@@ -35,7 +45,7 @@ export default function EntityListScreen({
   }, [route.params.entityTypeName]);
 
   const listLinks = entityData?.map((entity) => (
-    <ListLink
+    <CardComponent
       text={t(entity.name)}
       toScreen="EntityScreen"
       toScreenParams={{ entityId: entity.id }}
@@ -44,5 +54,5 @@ export default function EntityListScreen({
     />
   ));
 
-  return <TransparentView>{listLinks}</TransparentView>;
+  return <WhiteFullPageScrollView contentContainerStyle={{paddingBottom: 100}}>{listLinks}</WhiteFullPageScrollView>;
 }

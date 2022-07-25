@@ -54,7 +54,7 @@ export function WhiteView(props: ViewProps) {
 
   return (
     <DefaultView
-      style={[{ backgroundColor, borderColor }, style]}
+      style={[{ backgroundColor, borderColor}, style]}
       {...otherProps}
     />
   );
