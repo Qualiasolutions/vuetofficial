@@ -14,6 +14,7 @@ import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { WhiteDateInput } from './components/DateInputs';
 import { ColorPicker } from './components/ColorPickers';
+import PhoneNumberInput from './components/PhoneNumberInput';
 
 /* This type specifies the actual values of the fields.
 
@@ -254,7 +255,6 @@ export default function Form({
     // TODO - add inputs for other field types
     switch (fieldType.type) {
       case 'string':
-      case 'phoneNumber':
         return (
           <TransparentView key={field}>
             <TransparentView
@@ -267,6 +267,29 @@ export default function Form({
               <TextInput
                 value={formValues[field]}
                 onChangeText={(newValue) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  onValueChange();
+                }}
+              />
+            </TransparentView>
+          </TransparentView>
+        );
+      case 'phoneNumber':
+        return (
+          <TransparentView key={field}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
+              <PhoneNumberInput
+                defaultValue={formValues[field]}
+                onChangeFormattedText={(newValue) => {
                   setFormValues({
                     ...formValues,
                     [field]: newValue

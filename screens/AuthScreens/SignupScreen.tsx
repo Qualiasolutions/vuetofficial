@@ -19,14 +19,13 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
-import PhoneInput from "react-native-phone-number-input";
+import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 
 const SignupScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'>) => {
   const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-  const phoneInput = useRef<PhoneInput>(null);
 
   const [createPhoneValidation, result] = useCreatePhoneValidationMutation();
 
@@ -71,16 +70,10 @@ const SignupScreen = ({
           text={t('screens.signUp.phoneNumber')}
         />
       </TransparentView>
-      <PhoneInput
-            ref={phoneInput}
-            defaultValue={phoneNumber}
-            defaultCode="GB"
-            layout="second"
-            onChangeFormattedText={(text)=>{
-              onChangePhoneNumber(text);
-            }}
-            autoFocus
-            containerStyle={styles.textInputContainer}
+      <PhoneNumberInput
+        onChangeFormattedText={(text) => {
+          onChangePhoneNumber(text);
+        }}
       />
       <Button
         title={t('common.confirm')}
@@ -117,8 +110,7 @@ const styles = StyleSheet.create({
   },
   login: {
     fontWeight: 'bold'
-  },
-  textInputContainer: {borderRadius: 8, overflow:'hidden', marginTop: 10}
+  }
 });
 
 export default SignupScreen;
