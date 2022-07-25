@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, TextInput, Button } from 'components/Themed';
+import { Text,  Button } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import {
@@ -15,10 +15,10 @@ import {
   PageTitle,
   PageSubtitle,
   PrimaryText,
-  AlmostBlackText
 } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
+import CodeInput from 'react-native-code-input';
 
 const ValidatePhoneScreen = ({
   navigation,
@@ -57,9 +57,18 @@ const ValidatePhoneScreen = ({
       <PageTitle text={t('screens.validatePhone.title')} />
       <PageSubtitle text={t('screens.validatePhone.enterCode')} />
       {errorContent}
-      <TextInput
-        value={validationCode}
-        onChangeText={(text) => onChangeValidationCode(text)}
+      <CodeInput
+        space={10}
+        size={50}
+        keyboardType="numeric"
+        codeLength={6}
+        autoFocus={true}
+        inputPosition="center"
+        onFulfill={(code: any) => onChangeValidationCode(code)}
+        activeColor="#000"
+        inactiveColor="#000"
+        codeInputStyle={styles.codeInputStyle}
+        containerStyle={styles.containerStyle}
       />
       <Button
         title={t('common.verify')}
@@ -95,7 +104,14 @@ const styles = StyleSheet.create({
   },
   resend: {
     fontWeight: 'bold'
-  }
+  },
+  codeInputStyle: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    height: 72,
+    fontSize: 30
+  },
+  containerStyle: { flex: 0, marginBottom: 30 }
 });
 
 export default ValidatePhoneScreen;

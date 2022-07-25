@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, View, TextInput, Button } from 'components/Themed';
+import { Text, Button } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
@@ -19,12 +19,14 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
+import PhoneInput from "react-native-phone-number-input";
 
 const SignupScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'>) => {
   const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const phoneInput = useRef<PhoneInput>(null);
 
   const [createPhoneValidation, result] = useCreatePhoneValidationMutation();
 
@@ -69,9 +71,16 @@ const SignupScreen = ({
           text={t('screens.signUp.phoneNumber')}
         />
       </TransparentView>
-      <TextInput
-        value={phoneNumber}
-        onChangeText={(text) => onChangePhoneNumber(text)}
+      <PhoneInput
+            ref={phoneInput}
+            defaultValue={phoneNumber}
+            defaultCode="GB"
+            layout="second"
+            onChangeFormattedText={(text)=>{
+              onChangePhoneNumber(text);
+            }}
+            autoFocus
+            containerStyle={styles.textInputContainer}
       />
       <Button
         title={t('common.confirm')}
@@ -108,7 +117,8 @@ const styles = StyleSheet.create({
   },
   login: {
     fontWeight: 'bold'
-  }
+  },
+  textInputContainer: {borderRadius: 8, overflow:'hidden', marginTop: 10}
 });
 
 export default SignupScreen;
