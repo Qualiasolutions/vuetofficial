@@ -81,6 +81,11 @@ export function YesNoModal(props: YesNoModalProps) {
   );
 }
 
+// TODO - this should take a component as a prop that
+// is rendered in the list. If the member selector cannot
+// fit this way of doing things then it should be a
+// separate component rather than trying to hack it into
+// this component
 export function ListingModal(props: ListingModalProps) {
   const bottomSheetRef = useRef<RBSheet>(null);
   const {

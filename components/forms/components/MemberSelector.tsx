@@ -1,7 +1,7 @@
 import { ListingModal } from 'components/molecules/Modals';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import UserWithColor from 'components/UserWithColor';
+import UserWithColor from 'components/molecules/UserWithColor';
 import { useCallback, useState } from 'react';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import { UserFullResponse } from 'types/users';
