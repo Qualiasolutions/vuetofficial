@@ -1,5 +1,11 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 const taskFieldTypes = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -19,6 +25,17 @@ const taskFieldTypes = (): FormFieldTypes => {
 
 export const fixedTaskForm = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
+  const username = useSelector(selectUsername);
+  const {
+    data: userDetails,
+    isLoading: isLoadingUserDetails,
+    error: userDetailsError
+  } = useGetUserDetailsQuery(username);
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
 
   return {
     ...taskFieldTypes(),
@@ -31,6 +48,13 @@ export const fixedTaskForm = (): FormFieldTypes => {
       type: 'DateTime',
       required: true,
       displayName: t('tasks.fixedTask.end_datetime')
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: userFullDetails?.family?.users || [],
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('entities.entity.members')
     }
   };
 };

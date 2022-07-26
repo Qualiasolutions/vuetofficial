@@ -92,7 +92,7 @@ export default function Transport({ navigation }: TransportScreenProps) {
     </View>
   ));
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {carList}
       <View style={styles.bottomButtons}>
         <TouchableOpacity

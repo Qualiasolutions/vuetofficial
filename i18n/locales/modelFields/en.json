@@ -14,7 +14,9 @@
   },
   "entities": {
     "entity": {
-      "name": "Name"
+      "name": "Name",
+      "owner": "Owner",
+      "members": "Members"
     },
     "car": {
       "make": "Make",
@@ -22,8 +24,14 @@
       "registration": "Registration",
       "MOT_due_date": "MOT Due",
       "insurance_due_date": "Insurance Due",
-      "service_due_date": "Service Due",
-      "owner": "Owner"
+      "owner": "Owner",
+      "service_due_date": "Service Due"
+    },
+    "birthday": {
+      "start_date": "Date of birth"
+    },
+    "event": {
+      "date": "Date"
     }
   },
   "familyMember": {

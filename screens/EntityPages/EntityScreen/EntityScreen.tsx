@@ -6,8 +6,20 @@ import { EntityTabParamList } from 'types/base';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import ListEntityScreen from './components/ListEntityScreen';
-import ChildEntityListScreen from './components/ChildEntityListScreen';
+import ListEntityPage from './components/ListEntityPage';
+import ChildEntityList from './components/ChildEntityList';
+import BirthdayPage from './components/BirthdayPage';
+import HobbyPage from './components/HobbyPage';
+
+const resourceTypeToComponent = {
+  List: ListEntityPage,
+  Birthday: BirthdayPage,
+  Hobby: HobbyPage,
+  default: ChildEntityList
+} as {
+  default: React.ElementType,
+  [key: string]: React.ElementType | undefined
+}
 
 export default function EntityScreen({
   navigation,
@@ -42,9 +54,9 @@ export default function EntityScreen({
     return <GenericError />;
   }
 
-  if (entity.resourcetype === 'List') {
-    return <ListEntityScreen entityId={entityId} />;
-  } else {
-    return <ChildEntityListScreen entityId={entityId} />;
-  }
+  const Screen: React.ElementType | undefined = resourceTypeToComponent[entity.resourcetype]
+  const DefaultScreen: React.ElementType = resourceTypeToComponent.default
+  return Screen ?
+    <Screen entityId={entityId} /> :
+    <DefaultScreen entityId={entityId} />
 }

@@ -9,6 +9,7 @@ import {
   NavigatorScreenParams
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { EntityTypeName } from './entities';
 
 declare global {
   namespace ReactNavigation {
@@ -69,8 +70,15 @@ export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
 export type EntityTabParamList = {
   Categories: { initial: boolean; screen: string };
   EntityTypeList: { categoryId: number };
-  EntityList: { entityType: string };
+  EntityList: {
+    entityTypes: string[];
+    entityTypeName: string;
+  };
   EntityScreen: { entityId: number | string };
+  ChildEntitiesScreen: {
+    entityId: number | string;
+    entityTypes: string[];
+  };
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
@@ -89,7 +97,10 @@ export type RootTabParamList = {
   CreateTask: undefined;
   EditTask: { taskId: number };
   Transport: undefined;
-  AddEntity: { entityType: string };
+  AddEntity: {
+    entityType: EntityTypeName;
+    parentId: number | string;
+  };
   EditEntity: { entityId: number | string };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;

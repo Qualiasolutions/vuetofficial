@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 
@@ -28,6 +28,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
+import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 
 const LoginScreen = ({
   navigation
@@ -80,9 +81,10 @@ const LoginScreen = ({
           text={t('screens.logIn.phoneNumber')}
         />
       </TransparentView>
-      <TextInput
-        value={username}
-        onChangeText={(text) => onChangeUsername(text)}
+      <PhoneNumberInput
+        onChangeFormattedText={(username) => {
+          onChangeUsername(username);
+        }}
       />
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText

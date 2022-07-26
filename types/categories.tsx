@@ -1,14 +1,20 @@
-type ModelType = {
-  model_name: string;
-};
+type CategoryName =
+  | 'FAMILY'
+  | 'PETS'
+  | 'SOCIAL_INTERESTS'
+  | 'EDUCATION_CAREER'
+  | 'TRAVEL'
+  | 'HEALTH_BEAUTY'
+  | 'HOME_GARDEN'
+  | 'FINANCE'
+  | 'TRANSPORT';
 
 type Category = {
   is_enabled: boolean;
   is_premium: boolean;
   id: number;
-  name: string;
+  name: CategoryName;
   readable_name: string;
-  model_types: ModelType[];
 };
 
-export { Category };
+export { CategoryName, Category };

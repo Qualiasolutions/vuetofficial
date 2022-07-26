@@ -1,22 +1,18 @@
-import React, { useEffect } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { RootTabScreenProps } from 'types/base';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
+import { ScrollView } from 'react-native';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 export default function ChildEntityListScreen({
-  entityId
+  entityId,
+  entityTypes=null
 }: {
   entityId: number;
+  entityTypes: string[] | null;
 }) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
@@ -28,15 +24,24 @@ export default function ChildEntityListScreen({
     skip: !userDetails?.user_id
   });
   const entityData = allEntities?.byId[entityId];
-  const { t } = useTranslation();
 
-  const childEntityIds = entityData?.child_entities || [];
-  const childEntityList = childEntityIds.map((id) => (
+  if (isLoading || !entityData) {
+    return <FullPageSpinner/>
+  }
+
+  const childEntityIds = entityData.child_entities || [];
+  let childEntities = childEntityIds.map((id) => allEntities?.byId[id])
+
+  if (entityTypes) {
+    childEntities = childEntities.filter(entity => entityTypes.includes(entity.resourcetype))
+  }
+
+  const childEntityList = childEntities.map((entity) => (
     <ListLink
-      text={allEntities?.byId[id].name || ''}
+      text={entity.name || ''}
       toScreen="EntityScreen"
-      toScreenParams={{ entityId: id }}
-      key={id}
+      toScreenParams={{ entityId: entity.id }}
+      key={entity.id}
       navMethod="push"
     />
   ));

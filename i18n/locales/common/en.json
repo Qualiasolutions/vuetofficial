@@ -2,6 +2,7 @@
   "pageTitles": {
     "home": "Today",
     "categories": "Things",
+    "messages": "Messages",
     "settings": "Settings",
     "addTask": "Add Task",
     "editTask": "Edit Task",
@@ -27,9 +28,18 @@
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
   },
+  "linkTitles": {
+    "cars": "Cars & Motorcycles",
+    "anniversaries": "Birthdays & Anniversaries",
+    "hobbies": "Interests & Hobbies",
+    "events": "Celebration / Event Planning",
+    "familyMembers": "Family Members"
+  },
   "entityTypes": {
-    "Car": "Cars & Motorcycles",
-    "Event": "Celebration / Event Planning"
+    "cars": "Cars & Motorcycles",
+    "events": "Celebration / Event Planning",
+    "anniversaries": "Birthdays & Anniversaries",
+    "hobbies": "Interests & Hobbies"
   },
   "common": {
     "confirm": "Confirm",

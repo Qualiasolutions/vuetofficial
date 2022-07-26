@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
+import React from 'react';
+import { Image, Pressable, StyleSheet, ViewStyle } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
-  RootTabScreenProps
+  SettingsTabParamList
 } from 'types/base';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
+import { WhiteView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { useTranslation } from 'react-i18next';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -23,20 +15,26 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 // this for more sub-navigators
 type ListLinkProps = {
   text: string;
-  toScreen: keyof RootTabParamList | keyof EntityTabParamList;
+  toScreen:
+    | keyof RootTabParamList
+    | keyof EntityTabParamList
+    | keyof SettingsTabParamList;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
+  style?: ViewStyle;
 };
 
 export default function ListLink({
   text,
   toScreen,
   navMethod = 'navigate',
-  toScreenParams = {}
+  toScreenParams = {},
+  style = {}
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
+    | StackNavigationProp<SettingsTabParamList>
   >();
 
   return (
@@ -49,9 +47,12 @@ export default function ListLink({
         }
       }}
     >
-      <WhiteView style={styles.listEntry}>
+      <WhiteView style={[styles.listEntry, style]}>
         <AlmostBlackText text={text} style={styles.listEntryText} />
-        <Image source={require('../../assets/images/icons/arrow-right.png')} />
+        <Image
+          source={require('../../assets/images/icons/arrow-right.png')}
+          style={styles.arrow}
+        />
       </WhiteView>
     </Pressable>
   );
@@ -71,5 +72,9 @@ const styles = StyleSheet.create({
   },
   listEntryText: {
     fontSize: 20
+  },
+  arrow: {
+    width: 15,
+    height: 15
   }
 });

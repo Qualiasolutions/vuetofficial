@@ -2,6 +2,7 @@
   "pageTitles": {
     "home": "Hogar",
     "categories": "Categorias",
+    "messages": "Mensajes",
     "settings": "Configuracion",
     "addTask": "Agrega Tarea",
     "editTask": "Cambia Tarea",
