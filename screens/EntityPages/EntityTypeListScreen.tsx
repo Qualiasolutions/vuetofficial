@@ -10,20 +10,52 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import { StyleSheet } from 'react-native';
 
 const CATEGORY_LINKS = {
   FAMILY: [
     {
-      name: 'familyMembers',
+      name: 'family.familyMembers',
       navMethod: 'navigate',
       toScreen: 'SettingsNavigator',
       toScreenParams: { screen: 'FamilySettings' }
     }
   ],
-  PETS: [],
+  PETS: [
+    {
+      name: 'pets.myPets',
+      navMethod: 'push',
+      toScreen: '',
+      toScreenParams: {}
+    },
+    {
+      name: 'pets.feedingSchedule',
+      navMethod: 'push',
+      toScreen: '',
+      toScreenParams: {}
+    },
+    {
+      name: 'pets.physicalMental',
+      navMethod: 'push',
+      toScreen: '',
+      toScreenParams: {}
+    },
+    {
+      name: 'pets.cleaningGrooming',
+      navMethod: 'push',
+      toScreen: '',
+      toScreenParams: {}
+    },
+    {
+      name: 'pets.vetsMedsMeasurements',
+      navMethod: 'push',
+      toScreen: '',
+      toScreenParams: {}
+    },
+  ],
   SOCIAL_INTERESTS: [
     {
-      name: 'anniversaries',
+      name: 'social.anniversaries',
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
@@ -32,7 +64,19 @@ const CATEGORY_LINKS = {
       }
     },
     {
-      name: 'events',
+      name: 'social.recurringSocial',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'social.socialMedia',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'social.events',
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
@@ -41,7 +85,7 @@ const CATEGORY_LINKS = {
       }
     },
     {
-      name: 'hobbies',
+      name: 'social.hobbies',
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
@@ -50,20 +94,128 @@ const CATEGORY_LINKS = {
       }
     }
   ],
-  EDUCATION_CAREER: [],
-  TRAVEL: [],
-  HEALTH_BEAUTY: [],
-  HOME_GARDEN: [],
-  FINANCE: [],
+  EDUCATION_CAREER: [
+    {
+      name: 'educationCareer.education',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'educationCareer.career',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    }
+  ],
+  TRAVEL: [
+    {
+      name: 'travel.myTrips',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'travel.wishlists',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'travel.travelChecklists',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    }
+  ],
+  HEALTH_BEAUTY: [
+    {
+      name: 'healthBeauty.foodExercise',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'healthBeauty.appointments',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'healthBeauty.measurements',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    }
+  ],
+  HOME_GARDEN: [
+    {
+      name: 'homeGarden.myHome',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'homeGarden.food',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'homeGarden.clothing',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    }
+  ],
+  FINANCE: [
+    {
+      name: 'finance.billsAdmin',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'finance.filing',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'finance.taxPlanning',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+    {
+      name: 'finance.netWorth',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+  ],
   TRANSPORT: [
     {
-      name: 'cars',
+      name: 'transport.cars',
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
         entityTypes: ['Car'],
         entityTypeName: 'cars'
       }
+    },
+    {
+      name: 'transport.boats',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
+    },
+
+    {
+      name: 'transport.publicTransport',
+      toScreen: '',
+      navMethod: 'push',
+      toScreenParams: {}
     }
   ]
 };
@@ -104,9 +256,16 @@ export default function EntityTypeListScreen({
             | keyof SettingsTabParamList
         }
         toScreenParams={resourceType.toScreenParams}
+        style={styles.listLink}
       />
     );
   });
 
   return <TransparentView>{listLinks}</TransparentView>;
 }
+
+const styles = StyleSheet.create({
+  listLink: {
+    marginBottom: 3
+  }
+})
