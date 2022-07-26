@@ -40,7 +40,7 @@
       "vetsMedsMeasurements": "Vets, Meds and Measurements"
     },
     "social": {
-      "anniversaries": "Birthdays & Anniversaries",
+      "annualDates": "Annual Dates to Remember",
       "events": "Celebration / Event Planning",
       "recurringSocial": "Recurring Social (Non-birthday)",
       "socialMedia": "Social Media",
@@ -75,7 +75,14 @@
       "cars": "Cars & Motorcycles",
       "boats": "Boats",
       "publicTransport": "Public Transport"
+    },
+    "annualDates": {
+      "anniversaries": "Birthdays & Anniversaries",
+      "nationalHolidays": "Holidays I Celebrate"
     }
+  },
+  "linkListTitles": {
+    "annualDates": "Annual Dates to Remember"
   },
   "entityTypes": {
     "cars": "Cars & Motorcycles",

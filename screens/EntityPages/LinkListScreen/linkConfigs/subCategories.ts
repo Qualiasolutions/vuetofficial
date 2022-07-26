@@ -1,18 +1,6 @@
-import React, { useEffect } from 'react';
-import {
-  EntityTabParamList,
-  EntityTabScreenProps,
-  RootTabParamList,
-  SettingsTabParamList
-} from 'types/base';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { TransparentView } from 'components/molecules/ViewComponents';
-import { useTranslation } from 'react-i18next';
-import ListLink from 'components/molecules/ListLink';
-import { FullPageSpinner } from 'components/molecules/Spinners';
-import { StyleSheet } from 'react-native';
+import { List } from "./types"
 
-const CATEGORY_LINKS = {
+export default {
   FAMILY: [
     {
       name: 'family.familyMembers',
@@ -55,13 +43,10 @@ const CATEGORY_LINKS = {
   ],
   SOCIAL_INTERESTS: [
     {
-      name: 'social.anniversaries',
-      toScreen: 'EntityList',
+      name: 'social.annualDates',
+      toScreen: 'LinkList',
       navMethod: 'push',
-      toScreenParams: {
-        entityTypes: ['Birthday', 'Anniversary'],
-        entityTypeName: 'anniversaries'
-      }
+      toScreenParams: { listName: 'annualDates' }
     },
     {
       name: 'social.recurringSocial',
@@ -218,54 +203,6 @@ const CATEGORY_LINKS = {
       toScreenParams: {}
     }
   ]
-};
-
-type EntityTypeListScreenProps = EntityTabScreenProps<'EntityTypeList'>;
-
-export default function EntityTypeListScreen({
-  navigation,
-  route
-}: EntityTypeListScreenProps) {
-  const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
-  const categoryData = allCategories?.byId[route.params.categoryId];
-
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    if (categoryData) {
-      navigation.setOptions({
-        title: t(`categories.${categoryData.name as string}`)
-      });
-    }
-  }, [allCategories]);
-
-  if (!categoryData) {
-    return <FullPageSpinner />;
-  }
-
-  const listLinks = CATEGORY_LINKS[categoryData.name]?.map((resourceType) => {
-    return (
-      <ListLink
-        text={t(`linkTitles.${resourceType.name}`)}
-        key={resourceType.name}
-        navMethod={(resourceType.navMethod || 'push') as 'navigate' | 'push'}
-        toScreen={
-          resourceType.toScreen as
-            | keyof EntityTabParamList
-            | keyof RootTabParamList
-            | keyof SettingsTabParamList
-        }
-        toScreenParams={resourceType.toScreenParams}
-        style={styles.listLink}
-      />
-    );
-  });
-
-  return <TransparentView>{listLinks}</TransparentView>;
+} as {
+  [key: string]: List[]
 }
-
-const styles = StyleSheet.create({
-  listLink: {
-    marginBottom: 3
-  }
-})
