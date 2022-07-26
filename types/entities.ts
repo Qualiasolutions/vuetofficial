@@ -1,11 +1,13 @@
 import { ListEntryResponse } from './lists';
 
+export type EntityTypeName = 'Car' | 'Birthday' | 'Event' | 'Hobby';
+
 export interface BaseEntityType {
   id: number;
   name: string;
   owner: number;
   category: number;
-  resourcetype: string;
+  resourcetype: EntityTypeName;
   child_entities: number[];
   [key: string]: any;
 }
@@ -33,8 +35,6 @@ export interface CarParsedType extends BaseEntityType {
 export interface ListResponseType extends BaseEntityType {
   list_entries: ListEntryResponse[];
 }
-
-export type EntityTypeName = 'Car' | 'Birthday' | 'Event';
 
 export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
 

@@ -26,7 +26,8 @@ export default function AddEntityScreen({
     Car: forms.car(),
     Birthday: forms.birthday(),
     Event: forms.event(),
-    Hobby: forms.hobby()
+    Hobby: forms.hobby(),
+    List: forms.list()
   };
 
   useFocusEffect(
@@ -58,6 +59,16 @@ export default function AddEntityScreen({
     route.params?.entityType &&
     Object.keys(entityForms).includes(route.params?.entityType)
   ) {
+    const extraFields = {
+      resourcetype: route.params.entityType
+    } as any
+
+    if (route.params.parentId) {
+      const parentId = route.params.parentId
+      const parsedId = ((typeof parentId === 'number') ? parentId : parseInt(parentId))
+      extraFields.parent = parsedId
+    }
+
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
@@ -79,9 +90,7 @@ export default function AddEntityScreen({
               POST: useCreateEntityMutation
             }}
             formType="CREATE"
-            extraFields={{
-              resourcetype: route.params.entityType
-            }}
+            extraFields={extraFields}
             onSubmitSuccess={() => {
               setCreateSuccessful(true);
             }}
