@@ -94,6 +94,9 @@ const createInitialObject = (
           : null;
         continue;
 
+      case 'addMembers':
+        initialObj[key] = fields[key].initialValue || [];
+
       default:
         initialObj[key] = null;
     }
@@ -252,7 +255,6 @@ export default function Form({
   const formFields = Object.keys(fields).map((field: string) => {
     const fieldType = fields[field];
 
-    // TODO - add inputs for other field types
     switch (fieldType.type) {
       case 'string':
         return (
@@ -413,10 +415,11 @@ export default function Form({
               {produceLabelFromFieldName(field)}
               <MemberSelector
                 data={f.permittedValues}
-                onValueChange={(data: any) => {
+                onValueChange={(selectedMembers: any) => {
+                  const memberIds = selectedMembers.map((member: any) => member.id)
                   setFormValues({
                     ...formValues,
-                    members: data.map((member: any) => member.id)
+                    [field]: [...memberIds]
                   });
                 }}
               />

@@ -10,7 +10,7 @@ import {
   StyleSheet,
   ViewStyle
 } from 'react-native';
-import { AlmostBlackText, PageTitle, PrimaryText } from './TextComponents';
+import { AlmostBlackText, PrimaryText } from './TextComponents';
 import {
   TransparentContainerView,
   TransparentView,
@@ -20,7 +20,6 @@ import {
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Colors from '../../constants/Colors';
 import Search from './Search';
-import Checkbox from 'components/molecules/Checkbox';
 
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
@@ -133,7 +132,7 @@ export function ListingModal(props: ListingModalProps) {
                 return (
                   <Pressable
                     style={styles.listItem}
-                    key={`item_${item.id}_${item.name}_${index}`}
+                    key={item.id}
                     onPress={() => onSelect(item)}
                   >
                     <ListItemComponent item={item} itemToName={itemToName}/>
@@ -152,7 +151,7 @@ type ListingModalProps = {
   data: any;
   itemToName?: (item: any) => string
   onClose: () => void;
-  onSelect: (category: any) => void;
+  onSelect: (item: any) => void;
   ListItemComponent?: React.ElementType;
 };
 

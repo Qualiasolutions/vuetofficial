@@ -17,7 +17,7 @@ function ModalListing ({ item }: { item: (UserFullResponse & { selected: boolean
           style={[styles.memberColour, { backgroundColor: `#${item.member_colour}` }]}
         />
     </TransparentView>
-    <Checkbox  checked={item.selected} />
+    <Checkbox checked={item.selected} />
   </TransparentView>
 }
 
@@ -25,20 +25,17 @@ export default function MemberSelector({ data, onValueChange }: any) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
   const [selectedMembers, setSelectedMembers] = useState<UserFullResponse[]>([]);
 
-  const onSelectMember = useCallback(
-    (member) => {
-      if (selectedMembers.some((i) => i.id == member.id)) {
-        setSelectedMembers([
-          ...selectedMembers.filter((i) => i.id != member.id)
-        ]);
-        onValueChange([...selectedMembers.filter((i) => i.id != member.id)]);
-      } else {
-        setSelectedMembers([...selectedMembers, member]);
-        onValueChange([...selectedMembers, member]);
-      }
-    },
-    [setSelectedMembers, selectedMembers]
-  );
+  const onSelectMember = (member: UserFullResponse) => {
+    if (selectedMembers.some((i) => i.id == member.id)) {
+      setSelectedMembers([
+        ...selectedMembers.filter((i) => i.id != member.id)
+      ]);
+      onValueChange([...selectedMembers.filter((i) => i.id != member.id)]);
+    } else {
+      setSelectedMembers([...selectedMembers, member]);
+      onValueChange([...selectedMembers, member]);
+    }
+  }
 
   const onCloseMembersList = useCallback(() => {
     setShowMembersList(false);
