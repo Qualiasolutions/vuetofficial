@@ -81,23 +81,29 @@ export function YesNoModal(props: YesNoModalProps) {
   );
 }
 
-// TODO - this should take a component as a prop that
-// is rendered in the list. If the member selector cannot
-// fit this way of doing things then it should be a
-// separate component rather than trying to hack it into
-// this component
+function DefaultListItemComponent ({ item, itemToName }: {
+  item: any,
+  itemToName: (item: any) => string
+}){
+  return (
+    <TransparentView>
+      <TransparentView>
+        <Text> {itemToName(item)} </Text>
+      </TransparentView>
+    </TransparentView>
+  )
+}
+
 export function ListingModal(props: ListingModalProps) {
   const bottomSheetRef = useRef<RBSheet>(null);
   const {
     visible,
     data = [],
+    itemToName = item => item.name,
     onClose,
     onSelect,
-    translate = true,
-    type = 'member',
-    selectedMembers
+    ListItemComponent = DefaultListItemComponent,
   } = props;
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (visible) bottomSheetRef?.current?.open();
@@ -130,29 +136,7 @@ export function ListingModal(props: ListingModalProps) {
                     key={`item_${item.id}_${item.name}_${index}`}
                     onPress={() => onSelect(item)}
                   >
-                    <TransparentView
-                      style={type == 'members' && styles.membersItem}
-                    >
-                      <TransparentView>
-                        <Text>
-                          {!translate
-                            ? item.name
-                            : t(`categories.${item.name}`)}
-                        </Text>
-                        {type == 'members' && (
-                          <View
-                            style={[styles.memberColour, { backgroundColor: item.member_colour }]}
-                          />
-                        )}
-                      </TransparentView>
-                      {type == 'members' && (
-                        <Checkbox
-                          checked={selectedMembers?.some(
-                            (i) => i.id == item.id
-                          )}
-                        />
-                      )}
-                    </TransparentView>
+                    <ListItemComponent item={item} itemToName={itemToName}/>
                   </Pressable>
                 );
               })}
@@ -166,11 +150,10 @@ export function ListingModal(props: ListingModalProps) {
 type ListingModalProps = {
   visible: boolean;
   data: any;
+  itemToName?: (item: any) => string
   onClose: () => void;
   onSelect: (category: any) => void;
-  translate?: boolean;
-  type?: string;
-  selectedMembers?: any[];
+  ListItemComponent?: React.ElementType;
 };
 
 const styles = StyleSheet.create({
@@ -226,15 +209,5 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     borderBottomColor: Colors['light'].disabledGrey,
     borderBottomWidth: 1
-  },
-  membersItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  memberColour: {
-    height: 9,
-    width: 78,
-    marginTop: 5
   }
 })

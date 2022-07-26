@@ -7,7 +7,7 @@ export default function UserWithColor({ name = '', memberColour = '' }) {
   return (
     <TransparentView>
       <AlmostBlackText text={name} />
-      <View style={[styles.memberColour, { backgroundColor: memberColour }]} />
+      <View style={[styles.memberColour, { backgroundColor: `#${memberColour}` }]} />
     </TransparentView>
   );
 }

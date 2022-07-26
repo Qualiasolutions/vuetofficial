@@ -5,6 +5,21 @@ import UserWithColor from 'components/molecules/UserWithColor';
 import { useCallback, useState } from 'react';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import { UserFullResponse } from 'types/users';
+import { Text, View } from 'components/Themed';
+import Checkbox from 'components/molecules/Checkbox';
+
+
+function ModalListing ({ item }: { item: (UserFullResponse & { selected: boolean }) }) {
+  return <TransparentView style={styles.membersItem}>
+    <TransparentView>
+      <Text> {`${item.first_name} ${item.last_name}`} </Text>
+        <View
+          style={[styles.memberColour, { backgroundColor: `#${item.member_colour}` }]}
+        />
+    </TransparentView>
+    <Checkbox  checked={item.selected} />
+  </TransparentView>
+}
 
 export default function MemberSelector({ data, onValueChange }: any) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
@@ -37,6 +52,16 @@ export default function MemberSelector({ data, onValueChange }: any) {
     ));
   }, [selectedMembers]);
 
+  const preparedData = useCallback(
+    () => {
+      return data.map((member: UserFullResponse) => ({
+        ...member,
+        selected: selectedMembers.map(m => m.id).includes(member.id)
+      }))
+    },
+    [selectedMembers]
+  );
+
   return (
     <TransparentView>
       {selectedMembersList()}
@@ -53,11 +78,9 @@ export default function MemberSelector({ data, onValueChange }: any) {
       <ListingModal
         visible={showMembersList}
         onClose={onCloseMembersList}
-        data={data}
+        data={preparedData()}
         onSelect={onSelectMember}
-        type="members"
-        selectedMembers={selectedMembers}
-        translate={false}
+        ListItemComponent={ModalListing}
       />
     </TransparentView>
   );
@@ -74,5 +97,15 @@ const styles = StyleSheet.create({
     height: 27,
     width: 27,
     marginRight: 12
+  },
+  membersItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  memberColour: {
+    height: 9,
+    width: 78,
+    marginTop: 5
   }
 });
