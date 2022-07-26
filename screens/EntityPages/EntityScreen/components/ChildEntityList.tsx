@@ -9,7 +9,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 
 export default function ChildEntityListScreen({
   entityId,
-  entityTypes=null
+  entityTypes = null
 }: {
   entityId: number;
   entityTypes: string[] | null;
@@ -26,14 +26,16 @@ export default function ChildEntityListScreen({
   const entityData = allEntities?.byId[entityId];
 
   if (isLoading || !entityData) {
-    return <FullPageSpinner/>
+    return <FullPageSpinner />;
   }
 
   const childEntityIds = entityData.child_entities || [];
-  let childEntities = childEntityIds.map((id) => allEntities?.byId[id])
+  let childEntities = childEntityIds.map((id) => allEntities?.byId[id]);
 
   if (entityTypes) {
-    childEntities = childEntities.filter(entity => entityTypes.includes(entity.resourcetype))
+    childEntities = childEntities.filter((entity) =>
+      entityTypes.includes(entity.resourcetype)
+    );
   }
 
   const childEntityList = childEntities.map((entity) => (

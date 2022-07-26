@@ -416,7 +416,9 @@ export default function Form({
               <MemberSelector
                 data={f.permittedValues}
                 onValueChange={(selectedMembers: any) => {
-                  const memberIds = selectedMembers.map((member: any) => member.id)
+                  const memberIds = selectedMembers.map(
+                    (member: any) => member.id
+                  );
                   setFormValues({
                     ...formValues,
                     [field]: [...memberIds]

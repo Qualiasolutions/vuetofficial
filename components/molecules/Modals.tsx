@@ -80,17 +80,20 @@ export function YesNoModal(props: YesNoModalProps) {
   );
 }
 
-function DefaultListItemComponent ({ item, itemToName }: {
-  item: any,
-  itemToName: (item: any) => string
-}){
+function DefaultListItemComponent({
+  item,
+  itemToName
+}: {
+  item: any;
+  itemToName: (item: any) => string;
+}) {
   return (
     <TransparentView>
       <TransparentView>
         <Text> {itemToName(item)} </Text>
       </TransparentView>
     </TransparentView>
-  )
+  );
 }
 
 export function ListingModal(props: ListingModalProps) {
@@ -98,10 +101,10 @@ export function ListingModal(props: ListingModalProps) {
   const {
     visible,
     data = [],
-    itemToName = item => item.name,
+    itemToName = (item) => item.name,
     onClose,
     onSelect,
-    ListItemComponent = DefaultListItemComponent,
+    ListItemComponent = DefaultListItemComponent
   } = props;
 
   useEffect(() => {
@@ -135,7 +138,7 @@ export function ListingModal(props: ListingModalProps) {
                     key={item.id}
                     onPress={() => onSelect(item)}
                   >
-                    <ListItemComponent item={item} itemToName={itemToName}/>
+                    <ListItemComponent item={item} itemToName={itemToName} />
                   </Pressable>
                 );
               })}
@@ -149,7 +152,7 @@ export function ListingModal(props: ListingModalProps) {
 type ListingModalProps = {
   visible: boolean;
   data: any;
-  itemToName?: (item: any) => string
+  itemToName?: (item: any) => string;
   onClose: () => void;
   onSelect: (item: any) => void;
   ListItemComponent?: React.ElementType;
@@ -209,4 +212,4 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors['light'].disabledGrey,
     borderBottomWidth: 1
   }
-})
+});

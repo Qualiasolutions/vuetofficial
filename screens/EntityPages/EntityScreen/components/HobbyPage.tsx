@@ -5,7 +5,7 @@ import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
 import {
   TransparentContainerView,
-  WhiteBox,
+  WhiteBox
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
@@ -16,7 +16,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
     data: userDetails,
     isLoading: isLoadingUserDetails,
     error: userError
-  } = useGetUserDetails()
+  } = useGetUserDetails();
 
   const {
     data: allEntities,
@@ -27,13 +27,14 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
   });
 
   const { t } = useTranslation();
-  
-  const isLoading = isLoadingUserDetails || isLoadingEntities
+
+  const isLoading = isLoadingUserDetails || isLoadingEntities;
   if (isLoading) {
-    return <FullPageSpinner/>
+    return <FullPageSpinner />;
   }
-  
-  const entityIdParsed = typeof entityId === 'number' ? entityId : parseInt(entityId);
+
+  const entityIdParsed =
+    typeof entityId === 'number' ? entityId : parseInt(entityId);
 
   const listLink = (
     <WhiteBox style={styles.linkWrapper}>

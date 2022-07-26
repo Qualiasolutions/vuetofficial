@@ -1,9 +1,6 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from 'components/Themed';
-import {
-  isFixedTaskParsedType,
-  ScheduledTaskParsedType
-} from 'types/tasks';
+import { isFixedTaskParsedType, ScheduledTaskParsedType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
 import { useSelector } from 'react-redux';
@@ -18,16 +15,17 @@ import { useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
 import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import ColourBar from '../../../../molecules/ColourBar';
-import { UserFullResponse } from 'types/users';
+import ColourBar from 'components/molecules/ColourBar';
 import { colourService } from 'utils/colourService';
-
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -43,7 +41,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
 
   const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
+  const { data: userFullDetails } = useGetUserFullDetailsQuery(
+    userDetails?.user_id || -1
+  );
 
   const colourHexcodes = [];
 
@@ -68,10 +68,18 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const entity = allEntities.byId[task.entity];
 
-  const uniqueMembers = task.members.filter((x: number)=> x !== entity.owner);
-  colourHexcodes.push(colourService.getMemberColourByIdFromUserDetails(entity.owner, userFullDetails!));
-  uniqueMembers.forEach((id: number) => {1
-    colourHexcodes.push(colourService.getMemberColourByIdFromUserDetails(id, userFullDetails!));
+  const uniqueMembers = task.members.filter((x: number) => x !== entity.owner);
+  colourHexcodes.push(
+    colourService.getMemberColourByIdFromUserDetails(
+      entity.owner,
+      userFullDetails!
+    )
+  );
+  uniqueMembers.forEach((id: number) => {
+    1;
+    colourHexcodes.push(
+      colourService.getMemberColourByIdFromUserDetails(id, userFullDetails!)
+    );
   });
 
   const addDays = (numDays = 1) => {
@@ -181,7 +189,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       {expandedOptions}
       <View style={styles.separator}></View>
       <ColourBar colourHexcodes={colourHexcodes} />
-      </View>
+    </View>
   );
 }
 

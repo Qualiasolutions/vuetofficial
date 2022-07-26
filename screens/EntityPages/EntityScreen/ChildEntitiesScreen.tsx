@@ -39,5 +39,10 @@ export default function EntityScreen({
     return <GenericError />;
   }
 
-  return <ChildEntityList entityId={entityId} entityTypes={route.params.entityTypes}/>
+  return (
+    <ChildEntityList
+      entityId={entityId}
+      entityTypes={route.params.entityTypes}
+    />
+  );
 }

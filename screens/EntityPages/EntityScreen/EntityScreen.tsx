@@ -17,9 +17,9 @@ const resourceTypeToComponent = {
   Hobby: HobbyPage,
   default: ChildEntityList
 } as {
-  default: React.ElementType,
-  [key: string]: React.ElementType | undefined
-}
+  default: React.ElementType;
+  [key: string]: React.ElementType | undefined;
+};
 
 export default function EntityScreen({
   navigation,
@@ -54,9 +54,12 @@ export default function EntityScreen({
     return <GenericError />;
   }
 
-  const Screen: React.ElementType | undefined = resourceTypeToComponent[entity.resourcetype]
-  const DefaultScreen: React.ElementType = resourceTypeToComponent.default
-  return Screen ?
-    <Screen entityId={entityId} /> :
+  const Screen: React.ElementType | undefined =
+    resourceTypeToComponent[entity.resourcetype];
+  const DefaultScreen: React.ElementType = resourceTypeToComponent.default;
+  return Screen ? (
+    <Screen entityId={entityId} />
+  ) : (
     <DefaultScreen entityId={entityId} />
+  );
 }
