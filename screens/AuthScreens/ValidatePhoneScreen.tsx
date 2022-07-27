@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text,  Button } from 'components/Themed';
+import { Text, Button } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import {
@@ -14,7 +14,7 @@ import { isFieldErrorCodeError } from 'types/signup';
 import {
   PageTitle,
   PageSubtitle,
-  PrimaryText,
+  PrimaryText
 } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';

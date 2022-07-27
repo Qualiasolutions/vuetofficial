@@ -1,20 +1,10 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from 'components/Themed';
-import {
-  TaskParsedType,
-  isFixedTaskParsedType,
-  FixedTaskResponseType,
-  isFixedTaskResponseType,
-  ScheduledTaskParsedType
-} from 'types/tasks';
+import { isFixedTaskParsedType, ScheduledTaskParsedType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
 import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
-import {
-  isSuccessfulResponseType,
-  makeAuthorisedRequest
-} from 'utils/makeAuthorisedRequest';
 import {
   selectAccessToken,
   selectUsername
@@ -24,16 +14,18 @@ import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
 import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+import ColourBar from 'components/molecules/ColourBar';
+import { colourService } from 'utils/colourService';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -49,6 +41,11 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
 
   const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userFullDetails } = useGetUserFullDetailsQuery(
+    userDetails?.user_id || -1
+  );
+
+  const colourHexcodes = [];
 
   const [triggerCreateCompletionForm, createCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
@@ -70,6 +67,20 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   }
 
   const entity = allEntities.byId[task.entity];
+
+  const uniqueMembers = task.members.filter((x: number) => x !== entity.owner);
+  colourHexcodes.push(
+    colourService.getMemberColourByIdFromUserDetails(
+      entity.owner,
+      userFullDetails!
+    )
+  );
+  uniqueMembers.forEach((id: number) => {
+    1;
+    colourHexcodes.push(
+      colourService.getMemberColourByIdFromUserDetails(id, userFullDetails!)
+    );
+  });
 
   const addDays = (numDays = 1) => {
     if (isFixedTaskParsedType(task)) {
@@ -177,12 +188,14 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       {taskCompletionForm}
       {expandedOptions}
       <View style={styles.separator}></View>
+      <ColourBar colourHexcodes={colourHexcodes} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     width: '100%'
   },
   titleContainer: {

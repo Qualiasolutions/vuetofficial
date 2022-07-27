@@ -78,12 +78,24 @@ export default function BottomNavBar({
                   navigation.navigate('AddTask', {
                     entityId: (currentScreenParams as RouteParams).entityId
                   });
+                } else if (currentScreen === 'ChildEntitiesScreen') {
+                  // TODO - this should instead bring up a list of
+                  // all entity types on this page if entityTypes
+                  // has length > 1
+                  type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
+                  navigation.navigate('AddEntity', {
+                    entityType: (currentScreenParams as RouteParams)
+                      .entityTypes[0],
+                    parentId: (currentScreenParams as RouteParams).entityId
+                  });
                 } else if (currentScreen === 'EntityList') {
                   // TODO - this should instead bring up a list of
                   // all entity types on this page if entityTypes
                   // has length > 1
+                  type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
                   navigation.navigate('AddEntity', {
-                    entityType: (currentScreenParams as any).entityTypes[0]
+                    entityType: (currentScreenParams as RouteParams)
+                      .entityTypes[0]
                   });
                 } else {
                   navigation.navigate('CreateTask');

@@ -74,7 +74,14 @@ export type EntityTabParamList = {
     entityTypes: string[];
     entityTypeName: string;
   };
+  LinkList: {
+    listName: 'annualDates';
+  },
   EntityScreen: { entityId: number | string };
+  ChildEntitiesScreen: {
+    entityId: number | string;
+    entityTypes: string[];
+  };
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
@@ -93,7 +100,10 @@ export type RootTabParamList = {
   CreateTask: undefined;
   EditTask: { taskId: number };
   Transport: undefined;
-  AddEntity: { entityType: EntityTypeName };
+  AddEntity: {
+    entityType: EntityTypeName;
+    parentId: number | string;
+  };
   EditEntity: { entityId: number | string };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;

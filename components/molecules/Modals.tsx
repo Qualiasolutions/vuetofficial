@@ -10,7 +10,7 @@ import {
   StyleSheet,
   ViewStyle
 } from 'react-native';
-import { AlmostBlackText, PageTitle, PrimaryText } from './TextComponents';
+import { AlmostBlackText, PrimaryText } from './TextComponents';
 import {
   TransparentContainerView,
   TransparentView,
@@ -25,8 +25,6 @@ export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
 export function Modal(props: ModalProps) {
   const { style, children, boxStyle, ...otherProps } = props;
-  const backgroundColor = useThemeColor({}, 'white');
-  const borderColor = useThemeColor({}, 'grey');
 
   return (
     <DefaultModal animationType="fade" transparent={true} {...otherProps}>
@@ -46,7 +44,6 @@ type YesNoModalProps = ModalProps & {
 };
 
 export function YesNoModal(props: YesNoModalProps) {
-  const backgroundColor = useThemeColor({}, 'white');
   const borderColor = useThemeColor({}, 'grey');
   const { t } = useTranslation();
 
@@ -83,10 +80,32 @@ export function YesNoModal(props: YesNoModalProps) {
   );
 }
 
+function DefaultListItemComponent({
+  item,
+  itemToName
+}: {
+  item: any;
+  itemToName: (item: any) => string;
+}) {
+  return (
+    <TransparentView>
+      <TransparentView>
+        <Text> {itemToName(item)} </Text>
+      </TransparentView>
+    </TransparentView>
+  );
+}
+
 export function ListingModal(props: ListingModalProps) {
   const bottomSheetRef = useRef<RBSheet>(null);
-  const { visible, data = [], onClose, onSelect, translate = true } = props;
-  const { t } = useTranslation();
+  const {
+    visible,
+    data = [],
+    itemToName = (item) => item.name,
+    onClose,
+    onSelect,
+    ListItemComponent = DefaultListItemComponent
+  } = props;
 
   useEffect(() => {
     if (visible) bottomSheetRef?.current?.open();
@@ -112,16 +131,14 @@ export function ListingModal(props: ListingModalProps) {
           <Search />
           <SafeAreaView>
             {data?.length > 0 &&
-              data.map((item: any) => {
+              data.map((item: any, index: Number) => {
                 return (
                   <Pressable
                     style={styles.listItem}
-                    key={`item_${item.id}_${item.name}`}
+                    key={item.id}
                     onPress={() => onSelect(item)}
                   >
-                    <Text>
-                      {!translate ? item.name : t(`categories.${item.name}`)}
-                    </Text>
+                    <ListItemComponent item={item} itemToName={itemToName} />
                   </Pressable>
                 );
               })}
@@ -135,9 +152,10 @@ export function ListingModal(props: ListingModalProps) {
 type ListingModalProps = {
   visible: boolean;
   data: any;
+  itemToName?: (item: any) => string;
   onClose: () => void;
-  onSelect: (category: any) => void;
-  translate?: boolean;
+  onSelect: (item: any) => void;
+  ListItemComponent?: React.ElementType;
 };
 
 const styles = StyleSheet.create({

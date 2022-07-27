@@ -114,6 +114,7 @@ export default function CreateTask({
       <ListingModal
         visible={showListing}
         data={modalData}
+        itemToName={(item) => t(`categories.${item.name}`)}
         onClose={onCloseCategory}
         onSelect={onselectCategory}
       />
@@ -123,7 +124,6 @@ export default function CreateTask({
         data={modalData}
         onClose={onCloseEntity}
         onSelect={onSelectEntity}
-        translate={false}
       />
     </WhiteView>
   );

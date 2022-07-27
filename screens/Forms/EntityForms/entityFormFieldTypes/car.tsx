@@ -1,7 +1,8 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import {
   useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery
+  useGetUserDetailsQuery,
+  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -26,6 +27,10 @@ export const carForm = (): FormFieldTypes => {
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails.user_id);
+
+  const { data: userInvites } = useGetUserInvitesQuery(
+    userDetails?.user_id || -1
+  );
 
   if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
     return {};
@@ -70,9 +75,16 @@ export const carForm = (): FormFieldTypes => {
     owner: {
       type: 'radio',
       required: true,
-      permittedValues: userFullDetails.family.users,
+      permittedValues: userFullDetails?.family?.users,
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.owner')
+      displayName: t('entities.car.owner')
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: userFullDetails?.family?.users || [],
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('entities.entity.members')
     }
   };
 };

@@ -1,6 +1,6 @@
+import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
-
 import { Text, View } from 'components/Themed';
 import { formStyles } from '../formStyles';
 import RTKForm from 'components/forms/RTKForm';
@@ -25,7 +25,9 @@ export default function AddEntityScreen({
   const entityForms = {
     Car: forms.car(),
     Birthday: forms.birthday(),
-    Event: forms.event()
+    Event: forms.event(),
+    Hobby: forms.hobby(),
+    List: forms.list()
   };
 
   useFocusEffect(
@@ -57,6 +59,17 @@ export default function AddEntityScreen({
     route.params?.entityType &&
     Object.keys(entityForms).includes(route.params?.entityType)
   ) {
+    const extraFields = {
+      resourcetype: route.params.entityType
+    } as any;
+
+    if (route.params.parentId) {
+      const parentId = route.params.parentId;
+      const parsedId =
+        typeof parentId === 'number' ? parentId : parseInt(parentId);
+      extraFields.parent = parsedId;
+    }
+
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
@@ -78,9 +91,7 @@ export default function AddEntityScreen({
               POST: useCreateEntityMutation
             }}
             formType="CREATE"
-            extraFields={{
-              resourcetype: route.params.entityType
-            }}
+            extraFields={extraFields}
             onSubmitSuccess={() => {
               setCreateSuccessful(true);
             }}

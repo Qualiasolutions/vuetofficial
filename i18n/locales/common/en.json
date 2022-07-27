@@ -29,15 +29,66 @@
     "TRANSPORT": "Transport"
   },
   "linkTitles": {
-    "cars": "Cars & Motorcycles",
-    "anniversaries": "Birthdays & Anniversaries",
-    "events": "Celebration / Event Planning",
-    "familyMembers": "Family Members"
+    "family": {
+      "familyMembers": "Family Members"
+    },
+    "pets": {
+      "myPets": "My Pets",
+      "feedingSchedule": "Feeding Schedule",
+      "physicalMental": "Physical / Mental Schedule",
+      "cleaningGrooming": "Cleaning / Grooming Schedule",
+      "vetsMedsMeasurements": "Vets, Meds and Measurements"
+    },
+    "social": {
+      "annualDates": "Annual Dates to Remember",
+      "events": "Celebration / Event Planning",
+      "recurringSocial": "Recurring Social (Non-birthday)",
+      "socialMedia": "Social Media",
+      "hobbies": "Interests & Hobbies"
+    },
+    "educationCareer": {
+      "education": "Education",
+      "career": "Career"
+    },
+    "travel": {
+      "myTrips": "My Trips",
+      "wishlists": "Wishlists",
+      "travelChecklists": "Travel Checklists"
+    },
+    "healthBeauty": {
+      "foodExercise": "Food & Exercise",
+      "appointments": "Appointments",
+      "measurements": "Measurements"
+    },
+    "homeGarden": {
+      "myHome": "My home(s)",
+      "food": "Food",
+      "clothing": "Clothing"
+    },
+    "finance": {
+      "billsAdmin": "Bills and Admin",
+      "filing": "Filing",
+      "taxPlanning": "Tax planning",
+      "netWorth": "Net worth"
+    },
+    "transport": {
+      "cars": "Cars & Motorcycles",
+      "boats": "Boats",
+      "publicTransport": "Public Transport"
+    },
+    "annualDates": {
+      "anniversaries": "Birthdays & Anniversaries",
+      "nationalHolidays": "Holidays I Celebrate"
+    }
+  },
+  "linkListTitles": {
+    "annualDates": "Annual Dates to Remember"
   },
   "entityTypes": {
     "cars": "Cars & Motorcycles",
     "events": "Celebration / Event Planning",
-    "anniversaries": "Birthdays & Anniversaries"
+    "anniversaries": "Birthdays & Anniversaries",
+    "hobbies": "Interests & Hobbies"
   },
   "common": {
     "confirm": "Confirm",
