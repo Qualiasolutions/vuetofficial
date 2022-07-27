@@ -36,6 +36,12 @@
     "trip": {
       "start_date": "Start Date",
       "end_date": "End Date"
+    },
+    "trip-transport": {
+      "transport_type": "Type",
+      "flight_number": "Booking No.",
+      "start_datetime": "Start Time",
+      "end_datetime": "End Time"
     }
   },
   "familyMember": {

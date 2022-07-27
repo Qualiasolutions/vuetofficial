@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import ChildEntityList from './components/ChildEntityList';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export default function EntityScreen({
+export default function ChildEntitiesScreen({
   navigation,
   route
 }: NativeStackScreenProps<EntityTabParamList, 'ChildEntitiesScreen'>) {
@@ -43,6 +43,7 @@ export default function EntityScreen({
     <ChildEntityList
       entityId={entityId}
       entityTypes={route.params.entityTypes}
+      showCreateForm={route.params.showCreateForm}
     />
   );
 }

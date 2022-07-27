@@ -6,13 +6,37 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import AddEntityForm from 'components/forms/AddEntityForm';
+import { EntityResponseType, EntityTypeName } from 'types/entities';
+import TripAccommodationCard from 'components/forms/entityCards/TripAccommodationCard';
+import TripTransportCard from 'components/forms/entityCards/TripTransportCard';
 
-export default function ChildEntityListScreen({
+type LinkMapping = {
+  [key in EntityTypeName]?: React.ElementType
+}
+
+function DefaultLink ({ entity }: { entity: EntityResponseType }) {
+  return <ListLink
+    text={entity.name || ''}
+    toScreen="EntityScreen"
+    toScreenParams={{ entityId: entity.id }}
+    navMethod="push"
+  />
+}
+
+const linkMapping = {
+  TripTransport: TripTransportCard,
+  TripAccommodation: TripAccommodationCard
+} as LinkMapping
+
+export default function ChildEntityList({
   entityId,
-  entityTypes = null
+  entityTypes = null,
+  showCreateForm = false,
 }: {
   entityId: number;
-  entityTypes: string[] | null;
+  entityTypes: EntityTypeName[] | null;
+  showCreateForm: boolean;
 }) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
@@ -38,15 +62,19 @@ export default function ChildEntityListScreen({
     );
   }
 
-  const childEntityList = childEntities.map((entity) => (
-    <ListLink
-      text={entity.name || ''}
-      toScreen="EntityScreen"
-      toScreenParams={{ entityId: entity.id }}
-      key={entity.id}
-      navMethod="push"
-    />
-  ));
+  const childEntityList = childEntities.map((entity) => {
+    const resourceType = entity.resourcetype
+    const Link = (linkMapping[resourceType]) || DefaultLink
+    return <Link key={entity.id} entity={entity}/>
+  })
 
-  return <ScrollView>{childEntityList}</ScrollView>;
+  return <ScrollView>
+    {childEntityList}
+    {
+      (showCreateForm && entityTypes?.length === 1) && <AddEntityForm
+        entityType={entityTypes && entityTypes[0]}
+        parentId={entityId}
+      />
+    }
+  </ScrollView>;
 }

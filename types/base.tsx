@@ -71,7 +71,7 @@ export type EntityTabParamList = {
   Categories: { initial: boolean; screen: string };
   EntityTypeList: { categoryId: number };
   EntityList: {
-    entityTypes: string[];
+    entityTypes: EntityTypeName[];
     entityTypeName: string;
   };
   LinkList: {
@@ -80,7 +80,8 @@ export type EntityTabParamList = {
   EntityScreen: { entityId: number | string };
   ChildEntitiesScreen: {
     entityId: number | string;
-    entityTypes: string[];
+    entityTypes: EntityTypeName[];
+    showCreateForm: boolean;
   };
 };
 
