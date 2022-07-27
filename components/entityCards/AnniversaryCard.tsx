@@ -3,18 +3,16 @@ import {
   LightBlack,
   PrimaryText
 } from 'components/molecules/TextComponents';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import Colors from '../../constants/Colors';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import Helper from 'utils/Helper';
 import { getDateWithoutTimezone } from 'utils/datesAndTimes';
+import { useNavigation } from '@react-navigation/native';
 
 type ListLinkProps = {
   text: string;
@@ -45,9 +43,20 @@ export const AnniversaryCard = ({
 
   const { age, days, monthName, date } = Helper.getDaysToAge(startDate);
 
+  const navigation = useNavigation();
+
   return (
-    <WhiteView style={styles.card}>
-      <TransparentView style={{flex:1}}>
+    <Pressable
+      onPress={() => {
+        if (navMethod === 'push') {
+          (navigation as any).push(toScreen, toScreenParams);
+        } else {
+          (navigation.navigate as any)(toScreen, toScreenParams);
+        }
+      }}
+      style={styles.card}
+    >
+      <TransparentView style={{ flex: 1 }}>
         <LightBlack text={text} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 15 }}
@@ -61,7 +70,7 @@ export const AnniversaryCard = ({
         <View style={styles.divider} />
         <PrimaryText text={`${days}\ndays`} style={{ textAlign: 'center' }} />
       </View>
-    </WhiteView>
+    </Pressable>
   );
 };
 
@@ -77,7 +86,7 @@ const styles = StyleSheet.create({
     padding: 13,
     marginTop: 10,
     flexDirection: 'row',
-    alignItems:'center',
+    alignItems: 'center',
     justifyContent: 'space-between'
   },
   listEntryText: {
@@ -90,10 +99,10 @@ const styles = StyleSheet.create({
     marginRight: 24,
     marginLeft: 17.5
   },
- greenDot: {
+  greenDot: {
     backgroundColor: Colors.light.green,
     height: 15,
     width: 15,
-    borderRadius: 15/2
- } 
+    borderRadius: 15 / 2
+  }
 });

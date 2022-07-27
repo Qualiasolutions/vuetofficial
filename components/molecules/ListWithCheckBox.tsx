@@ -10,6 +10,8 @@ import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import Layout from '../../constants/Layout';
+import Checkbox from 'expo-checkbox';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -24,7 +26,7 @@ type ListLinkProps = {
   style?: ViewStyle;
 };
 
-export default function ListLink({
+export default function ListWithCheckBox({
   text,
   toScreen,
   navMethod = 'navigate',
@@ -48,6 +50,7 @@ export default function ListLink({
       }}
     >
       <WhiteView style={[styles.listEntry, style]}>
+        <Checkbox />
         <AlmostBlackText text={text} style={styles.listEntryText} />
         <Image
           source={require('../../assets/images/icons/arrow-right.png')}
@@ -60,6 +63,7 @@ export default function ListLink({
 
 const styles = StyleSheet.create({
   listEntry: {
+    width: Layout.window.width - 48,
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -69,6 +73,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 3,
     elevation: 5,
+    marginTop: 15,
+    borderRadius: 16
   },
   listEntryText: {
     fontSize: 20

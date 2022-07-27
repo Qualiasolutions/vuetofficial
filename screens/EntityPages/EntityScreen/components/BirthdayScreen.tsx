@@ -18,6 +18,7 @@ import {
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
+import ListWithCheckBox from 'components/molecules/ListWithCheckBox';
 
 const getNextDate = (startDate: Date): Date => {
   const startDateCopy = new Date(startDate.getTime());
@@ -69,21 +70,32 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
   const childEntityIds = entityData?.child_entities || [];
   const childEntityList = childEntityIds.map((id) => (
-    <WhiteBox key={id} style={styles.linkWrapper}>
-      <ListLink
+    <ListWithCheckBox
+      key={id}
         text={allEntities?.byId[id].name || ''}
         toScreen="EntityScreen"
         toScreenParams={{ entityId: id }}
         style={styles.listLink}
         navMethod="push"
       />
-    </WhiteBox>
   ));
 
   const eventLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Event"
+    <ListWithCheckBox
+    text="Event"
+    toScreen="EntityList"
+    toScreenParams={{
+      entityTypes: ['Event'],
+      entityTypeName: 'events'
+    }}
+    style={styles.listLink}
+    navMethod="push"
+  />
+  );
+
+  const phoneLink = (
+    <ListWithCheckBox
+        text="Phone or text"
         toScreen="EntityList"
         toScreenParams={{
           entityTypes: ['Event'],
@@ -92,7 +104,19 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
         style={styles.listLink}
         navMethod="push"
       />
-    </WhiteBox>
+  );
+
+  const customLink = (
+    <ListWithCheckBox
+        text="PCustom - Define later"
+        toScreen="EntityList"
+        toScreenParams={{
+          entityTypes: ['Event'],
+          entityTypeName: 'events'
+        }}
+        style={styles.listLink}
+        navMethod="push"
+      />
   );
 
   return (
@@ -101,6 +125,8 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
         {birthdayDetails}
         {childEntityList}
         {eventLink}
+        {phoneLink}
+        {customLink}
       </TransparentContainerView>
     </WhiteFullPageScrollView>
   );
@@ -117,6 +143,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0
   },
   listLink: {
-    shadowColor: 'transparent'
+    // shadowColor: 'transparent'
   }
 });
