@@ -1,17 +1,19 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, ViewStyle } from 'react-native';
+import {  Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
-import { WhiteView } from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
+import {  BlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import Layout from '../../constants/Layout';
-import Checkbox from 'expo-checkbox';
+import Checkbox from './Checkbox';
+import { Feather } from '@expo/vector-icons';
+import { useThemeColor } from 'components/Themed';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -24,6 +26,7 @@ type ListLinkProps = {
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
+  selected?: boolean
 };
 
 export default function ListWithCheckBox({
@@ -31,7 +34,8 @@ export default function ListWithCheckBox({
   toScreen,
   navMethod = 'navigate',
   toScreenParams = {},
-  style = {}
+  style = {},
+  selected = false
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -50,12 +54,14 @@ export default function ListWithCheckBox({
       }}
     >
       <WhiteView style={[styles.listEntry, style]}>
-        <Checkbox />
-        <AlmostBlackText text={text} style={styles.listEntryText} />
-        <Image
-          source={require('../../assets/images/icons/arrow-right.png')}
-          style={styles.arrow}
-        />
+       <TransparentView style={styles.row}>
+       <Checkbox checked={selected} />
+        <BlackText text={text} style={styles.listEntryText} />
+       </TransparentView>
+       <TransparentView style={styles.row}>
+        <View style={styles.dot()} />
+        <Feather name='chevron-right' size={30} />
+       </TransparentView>
       </WhiteView>
     </Pressable>
   );
@@ -64,7 +70,8 @@ export default function ListWithCheckBox({
 const styles = StyleSheet.create({
   listEntry: {
     width: Layout.window.width - 48,
-    padding: 20,
+    paddingHorizontal: 20,
+    height: 65,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -77,10 +84,15 @@ const styles = StyleSheet.create({
     borderRadius: 16
   },
   listEntryText: {
-    fontSize: 20
+    fontSize: 18,
+    marginLeft: 23
   },
-  arrow: {
+  dot: () => ({
+    height: 15,
     width: 15,
-    height: 15
-  }
+    backgroundColor: useThemeColor({}, 'primary'),
+    borderRadius: 15/2,
+    marginRight: 24
+  }),
+  row: {flexDirection: 'row', alignItems:'center'}
 });

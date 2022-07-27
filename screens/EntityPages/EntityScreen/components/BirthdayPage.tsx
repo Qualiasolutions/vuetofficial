@@ -17,8 +17,9 @@ import {
   getDateWithoutTimezone,
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { AlmostBlackText, BlackText } from 'components/molecules/TextComponents';
 import ListWithCheckBox from 'components/molecules/ListWithCheckBox';
+import { Feather } from '@expo/vector-icons';
 
 const getNextDate = (startDate: Date): Date => {
   const startDateCopy = new Date(startDate.getTime());
@@ -57,14 +58,15 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   });
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();
+  
 
   const startDate = getDateWithoutTimezone(entityData?.start_date);
   const { days, age } = getDaysToAge(startDate);
 
   const birthdayDetails = (
     <TransparentView style={styles.detailsContainer}>
-      <AlmostBlackText text={getLongDateFromDateObject(startDate)} />
-      <AlmostBlackText text={`Turns ${age} in ${days} days`} />
+      <AlmostBlackText style={styles.birthDetail}  text={getLongDateFromDateObject(startDate)} />
+      <AlmostBlackText style={styles.birthDetail} text={`Turns ${age} in ${days} days`} />
     </TransparentView>
   );
 
@@ -72,56 +74,47 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const childEntityList = childEntityIds.map((id) => (
     <ListWithCheckBox
       key={id}
-        text={allEntities?.byId[id].name || ''}
-        toScreen="EntityScreen"
-        toScreenParams={{ entityId: id }}
-        style={styles.listLink}
-        navMethod="push"
-      />
+      text={allEntities?.byId[id].name || ''}
+      toScreen="EntityScreen"
+      toScreenParams={{ entityId: id }}
+      navMethod="push"
+      selected={true}
+    />
   ));
 
   const eventLink = (
     <ListWithCheckBox
-    text="Event"
-    toScreen="EntityList"
-    toScreenParams={{
-      entityTypes: ['Event'],
-      entityTypeName: 'events'
-    }}
-    style={styles.listLink}
-    navMethod="push"
-  />
+      text="Event"
+      toScreen="EntityList"
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      navMethod="push"
+    />
   );
 
   const phoneLink = (
     <ListWithCheckBox
-        text="Phone or text"
-        toScreen="EntityList"
-        toScreenParams={{
-          entityTypes: ['Event'],
-          entityTypeName: 'events'
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
+      text="Phone or text"
+      toScreen=""
+      navMethod="push"
+    />
   );
 
   const customLink = (
     <ListWithCheckBox
-        text="PCustom - Define later"
-        toScreen="EntityList"
-        toScreenParams={{
-          entityTypes: ['Event'],
-          entityTypeName: 'events'
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
+      text="Custom - Define later"
+      toScreen=""
+      navMethod="push"
+    />
   );
 
   return (
     <WhiteFullPageScrollView>
       <TransparentContainerView>
+        <Feather name='user' size={100} />
+        <BlackText text={entityData?.name || ''} style={styles.name} />
         {birthdayDetails}
         {childEntityList}
         {eventLink}
@@ -137,12 +130,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20
   },
-  linkWrapper: {
-    width: '100%',
-    margin: 8,
-    paddingVertical: 0
+  name: {
+    fontSize: 26,
   },
-  listLink: {
-    // shadowColor: 'transparent'
+  birthDetail: {
+    fontSize: 18,
   }
 });
