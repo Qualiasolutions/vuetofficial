@@ -5,7 +5,6 @@ import {
   ScheduledTaskParsedType
 } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import Checkbox from 'expo-checkbox';
 import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
 import {
@@ -34,6 +33,7 @@ import Layout from '../../../../../constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { ColorPicker } from 'components/forms/components/ColorPickers';
+import Checkbox from 'components/molecules/Checkbox';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -199,10 +199,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
             <Text style={styles.title}>{task.title}</Text>
           </View>
         </TouchableOpacity>
-        <Checkbox
+        <Checkbox 
           style={styles.checkbox}
-          disabled={task.is_complete}
-          value={task.is_complete}
+          checked={task.is_complete}
           onValueChange={(newValue) => {
             if (taskTypesRequiringForm.includes(task.resourcetype)) {
               return setShowTaskCompletionForm(true);
@@ -213,7 +212,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
               task: task.id
             });
           }}
-        />
+         />
       </View>
       {taskCompletionForm}
       {expandedOptions}
@@ -254,8 +253,8 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     margin: 10,
-    height: 25,
-    width: 25
+    // height: 25,
+    // width: 25
   },
   separator: {
     marginTop: 20,
