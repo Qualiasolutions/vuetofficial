@@ -42,6 +42,22 @@
       "flight_number": "Booking No.",
       "start_datetime": "Start Time",
       "end_datetime": "End Time"
+    },
+    "trip-accommodation": {
+      "accommodation_type": "Type",
+      "carrier": "Carrier",
+      "confirmation_number": "Booking No.",
+      "checkin_datetime": "Start Time",
+      "checkout_datetime": "End Time"
+    },
+    "trip-activity": {
+      "name": "Activity",
+      "company": "Company",
+      "confirmation_number": "Booking No.",
+      "start_datetime": "Start Time",
+      "end_datetime": "End Time",
+      "contact_phone": "Contact Phone",
+      "contact_email": "Contact Email"
     }
   },
   "familyMember": {

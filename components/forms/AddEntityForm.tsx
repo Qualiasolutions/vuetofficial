@@ -44,6 +44,8 @@ export default function AddEntityForm({
     List: forms.list(),
     Trip: forms.trip(),
     TripTransport: forms.tripTransport(),
+    TripAccommodation: forms.tripAccommodation(),
+    TripActivity: forms.tripActivity(),
   };
 
   useFocusEffect(

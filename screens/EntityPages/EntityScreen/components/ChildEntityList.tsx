@@ -10,6 +10,7 @@ import AddEntityForm from 'components/forms/AddEntityForm';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import TripAccommodationCard from 'components/forms/entityCards/TripAccommodationCard';
 import TripTransportCard from 'components/forms/entityCards/TripTransportCard';
+import TripActivityCard from 'components/forms/entityCards/TripActivityCard';
 
 type LinkMapping = {
   [key in EntityTypeName]?: React.ElementType
@@ -26,7 +27,8 @@ function DefaultLink ({ entity }: { entity: EntityResponseType }) {
 
 const linkMapping = {
   TripTransport: TripTransportCard,
-  TripAccommodation: TripAccommodationCard
+  TripAccommodation: TripAccommodationCard,
+  TripActivity: TripActivityCard,
 } as LinkMapping
 
 export default function ChildEntityList({
