@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
@@ -19,7 +19,7 @@ import { useThemeColor } from 'components/Themed';
 // We will need to add more types here as we use
 // this for more sub-navigators
 type ListLinkProps = {
-  text: string;
+  text: string | Text | JSX.Element;
   toScreen:
     | keyof RootTabParamList
     | keyof EntityTabParamList

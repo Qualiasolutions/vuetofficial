@@ -4,9 +4,10 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { useThemeColor } from 'components/Themed';
+import { OrangeText, PrimaryText } from 'components/molecules/TextComponents';
 
 export default function HobbyScreen({ entityId }: { entityId: number }) {
   const {
@@ -77,7 +78,11 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
 
   const travelLink = (
     <ListLink
-      text="Travel - Link to travel"
+      text={
+        <Text>
+          Travel - <OrangeText text="Link to travel" />
+        </Text>
+      }
       toScreen=""
       toScreenParams={{}}
       style={styles.listLink}
@@ -89,7 +94,11 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
 
   const customLink = (
     <ListLink
-      text="Travel - Link to travel"
+      text={
+        <Text>
+          Custom - <PrimaryText text="Define later" />{' '}
+        </Text>
+      }
       toScreen=""
       toScreenParams={{
         entityTypes: ['Event'],

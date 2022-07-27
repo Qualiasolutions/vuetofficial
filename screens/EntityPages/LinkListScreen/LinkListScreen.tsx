@@ -19,5 +19,5 @@ export default function LinkListScreen({
   navigation.setOptions({
     headerTitle: t(`linkListTitles.${route.params.listName}`)
   })
-  return <LinkList links={listNameToLinks[route.params.listName]} />
+  return <LinkList links={listNameToLinks[route.params.listName]} style={{marginTop:0}} />
 }
