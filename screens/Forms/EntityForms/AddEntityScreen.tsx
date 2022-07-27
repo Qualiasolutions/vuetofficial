@@ -1,8 +1,7 @@
+import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
-
 import { Text, View } from 'components/Themed';
-import { carForm } from './entityFormFieldTypes';
 import { formStyles } from '../formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,12 +16,19 @@ import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import * as forms from './entityFormFieldTypes';
 
 export default function AddEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddEntity'>) {
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
-  const carFields = carForm();
+  const entityForms = {
+    Car: forms.car(),
+    Birthday: forms.birthday(),
+    Event: forms.event(),
+    Hobby: forms.hobby(),
+    List: forms.list()
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -49,11 +55,21 @@ export default function AddEntityScreen({
     return <GenericError />;
   }
 
-  const permittedEntityForms = ['Car'];
   if (
     route.params?.entityType &&
-    permittedEntityForms.includes(route.params?.entityType)
+    Object.keys(entityForms).includes(route.params?.entityType)
   ) {
+    const extraFields = {
+      resourcetype: route.params.entityType
+    } as any;
+
+    if (route.params.parentId) {
+      const parentId = route.params.parentId;
+      const parsedId =
+        typeof parentId === 'number' ? parentId : parseInt(parentId);
+      extraFields.parent = parsedId;
+    }
+
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
@@ -70,14 +86,12 @@ export default function AddEntityScreen({
             </Text>
           ) : null}
           <RTKForm
-            fields={carFields}
+            fields={entityForms[route.params?.entityType]}
             methodHooks={{
               POST: useCreateEntityMutation
             }}
             formType="CREATE"
-            extraFields={{
-              resourcetype: route.params.entityType
-            }}
+            extraFields={extraFields}
             onSubmitSuccess={() => {
               setCreateSuccessful(true);
             }}

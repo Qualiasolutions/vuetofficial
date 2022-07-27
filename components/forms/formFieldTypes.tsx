@@ -6,7 +6,8 @@ export type PermittedTypes =
   | 'DateTime'
   | 'radio'
   | 'colour'
-  | 'phoneNumber';
+  | 'phoneNumber'
+  | 'addMembers';
 
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
@@ -22,6 +23,10 @@ export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
   valueToDisplay: Function;
 };
+export type AddMembersField = BaseField<'addMembers', any> & {
+  permittedValues: any[];
+  valueToDisplay: Function;
+};
 
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;
@@ -33,7 +38,8 @@ export type Field =
   | DateTimeField
   | RadioField
   | ColourField
-  | PhoneNumberField;
+  | PhoneNumberField
+  | AddMembersField;
 
 export type FormFieldTypes = {
   [key: string]: Field;
@@ -41,3 +47,6 @@ export type FormFieldTypes = {
 
 export const isRadioField = (x: any): x is RadioField =>
   x.permittedValues && x.valueToDisplay;
+
+export const hasPermittedValues = (x: any): x is AddMembersField | RadioField =>
+  !!x.permittedValues;

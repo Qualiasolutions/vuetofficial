@@ -1,10 +1,9 @@
-import { StyleSheet } from 'react-native';
-
-import { Text, TextInput, Button } from 'components/Themed';
 import React, { useEffect, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
-import { FormFieldTypes, isRadioField } from './formFieldTypes';
+import { FormFieldTypes, hasPermittedValues } from './formFieldTypes';
 import RadioInput from './components/RadioInput';
 import {
   MutationTrigger,
@@ -14,6 +13,8 @@ import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { WhiteDateInput } from './components/DateInputs';
 import { ColorPicker } from './components/ColorPickers';
+import MemberSelector from 'components/forms/components/MemberSelector';
+import PhoneNumberInput from './components/PhoneNumberInput';
 
 /* This type specifies the actual values of the fields.
 
@@ -93,6 +94,9 @@ const createInitialObject = (
           : null;
         continue;
 
+      case 'addMembers':
+        initialObj[key] = fields[key].initialValue || [];
+
       default:
         initialObj[key] = null;
     }
@@ -117,9 +121,9 @@ export default function Form({
   onDeleteSuccess = () => {},
   onDeleteFailure = () => {},
   onValueChange = () => {},
-  clearOnSubmit = false,
+  clearOnSubmit = true,
   submitText = '',
-  inlineFields = false,
+  inlineFields = false
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -143,6 +147,11 @@ export default function Form({
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
 
+  const resetState = () => {
+    setFormValues(createInitialObject(fields));
+    setFormErrors(createNullStringObject(fields));
+  };
+
   const methodHookTriggers: {
     [key: string]: {
       trigger: MutationTrigger<any>;
@@ -164,6 +173,9 @@ export default function Form({
         if (res.isSuccess) {
           setSubmitError('');
           onSubmitSuccess();
+          if (clearOnSubmit) {
+            resetState();
+          }
         } else if (res.isError) {
           setSubmitError('An unexpected error occurred');
           onSubmitFailure(res.error);
@@ -221,12 +233,17 @@ export default function Form({
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
 
     // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
-    methodHookTriggers[submitMethod].trigger({
-      ...parsedFormValues,
-      ...extraFields
-    });
-
-    setSubmittingForm(false);
+    methodHookTriggers[submitMethod]
+      .trigger({
+        ...parsedFormValues,
+        ...extraFields
+      })
+      .then(() => {
+        setSubmittingForm(false);
+      })
+      .catch(() => {
+        setSubmittingForm(false);
+      });
   };
 
   const makeDeleteRequest = () => {
@@ -238,19 +255,43 @@ export default function Form({
   const formFields = Object.keys(fields).map((field: string) => {
     const fieldType = fields[field];
 
-    // TODO - add inputs for other field types
     switch (fieldType.type) {
       case 'string':
-      case 'phoneNumber':
         return (
           <TransparentView key={field}>
-            <TransparentView key={field} style={inlineFields ? styles.inlineInputPair : {}}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
               <TextInput
                 value={formValues[field]}
                 onChangeText={(newValue) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  onValueChange();
+                }}
+              />
+            </TransparentView>
+          </TransparentView>
+        );
+      case 'phoneNumber':
+        return (
+          <TransparentView key={field}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
+              <PhoneNumberInput
+                defaultValue={formValues[field]}
+                onChangeFormattedText={(newValue) => {
                   setFormValues({
                     ...formValues,
                     [field]: newValue
@@ -318,7 +359,7 @@ export default function Form({
         );
       case 'radio':
         const f = fields[field];
-        if (isRadioField(f)) {
+        if (hasPermittedValues(f)) {
           const permittedValueObjects = f.permittedValues.map(
             (value: any, i: number) => ({
               label: f.valueToDisplay(value),
@@ -365,6 +406,29 @@ export default function Form({
             />
           </WhiteBox>
         );
+      case 'addMembers': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <TransparentView key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <MemberSelector
+                data={f.permittedValues}
+                onValueChange={(selectedMembers: any) => {
+                  const memberIds = selectedMembers.map(
+                    (member: any) => member.id
+                  );
+                  setFormValues({
+                    ...formValues,
+                    [field]: [...memberIds]
+                  });
+                }}
+              />
+            </TransparentView>
+          );
+        }
+      }
     }
   });
 

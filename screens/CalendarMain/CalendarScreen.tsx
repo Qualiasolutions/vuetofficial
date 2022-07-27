@@ -6,14 +6,23 @@ import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
-import { AlmostBlackText, BlackText, PrimaryText } from 'components/molecules/TextComponents';
+import {
+  TransparentView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
+import {
+  AlmostBlackText,
+  BlackText,
+  PrimaryText
+} from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 
 function CalendarScreen() {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
-  const currentMonth = `${new Date().getFullYear()}-${new Date().getMonth() + 1}`
+  const currentMonth = `${new Date().getFullYear()}-${
+    new Date().getMonth() + 1
+  }`;
   const [shownMonth, setShownMonth] = React.useState<Date>(new Date());
 
   const {
@@ -37,29 +46,44 @@ function CalendarScreen() {
   }
 
   const onChangeMonth = (month: Date) => {
-    setShownMonth(month)
-  }
+    setShownMonth(month);
+  };
 
   return isLoading || !allTasks ? null : (
     <WhiteView style={styles.container}>
       <TransparentView style={styles.monthPicker}>
-        <Pressable style={styles.monthPickerArrowWrapper} onPress={() => {
-          const prevMonth = new Date(shownMonth.getTime())
-          prevMonth.setMonth(prevMonth.getMonth() - 1)
-          setShownMonth(prevMonth)
-        }}>
-          <BlackText text="<" style={styles.monthPickerArrow}/>
+        <Pressable
+          style={styles.monthPickerArrowWrapper}
+          onPress={() => {
+            const prevMonth = new Date(shownMonth.getTime());
+            prevMonth.setMonth(prevMonth.getMonth() - 1);
+            setShownMonth(prevMonth);
+          }}
+        >
+          <BlackText text="<" style={styles.monthPickerArrow} />
         </Pressable>
-        <BlackText text={dayjs(shownMonth).format('MMM')} style={styles.monthPickerText}/>
-        <Pressable style={styles.monthPickerArrowWrapper} onPress={() => {
-          const nextMonth = new Date(shownMonth.getTime())
-          nextMonth.setMonth(nextMonth.getMonth() + 1)
-          setShownMonth(nextMonth)
-        }}>
-          <BlackText text=">" style={styles.monthPickerArrow}/>
+        <BlackText
+          text={dayjs(shownMonth).format('MMM')}
+          style={styles.monthPickerText}
+        />
+        <Pressable
+          style={styles.monthPickerArrowWrapper}
+          onPress={() => {
+            const nextMonth = new Date(shownMonth.getTime());
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            setShownMonth(nextMonth);
+          }}
+        >
+          <BlackText text=">" style={styles.monthPickerArrow} />
         </Pressable>
       </TransparentView>
-      <Calendar tasks={allTasks} alwaysIncludeCurrentDate={currentMonth === `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`} />
+      <Calendar
+        tasks={allTasks}
+        alwaysIncludeCurrentDate={
+          currentMonth ===
+          `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
+        }
+      />
     </WhiteView>
   );
 }
@@ -67,19 +91,19 @@ function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-    width: '100%',
+    width: '100%'
   },
   monthPicker: {
     flexDirection: 'row',
     paddingHorizontal: 40,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   monthPickerText: {
-    fontSize: 22,
+    fontSize: 22
   },
   monthPickerArrowWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   monthPickerArrow: {
     fontSize: 40,

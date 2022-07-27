@@ -1,20 +1,13 @@
 import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, useThemeColor, View } from 'components/Themed';
 import {
-  TaskParsedType,
   isFixedTaskParsedType,
-  FixedTaskResponseType,
-  isFixedTaskResponseType,
   ScheduledTaskParsedType
 } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import Checkbox from 'expo-checkbox';
 import { useSelector } from 'react-redux';
-import React, { useMemo, useState } from 'react';
-import {
-  isSuccessfulResponseType,
-  makeAuthorisedRequest
-} from 'utils/makeAuthorisedRequest';
+import React, { useState } from 'react';
 import {
   selectAccessToken,
   selectUsername

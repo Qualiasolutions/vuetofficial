@@ -8,7 +8,13 @@ const lightColors = {
   white: '#fff',
   almostWhite: '#efefef',
   transparent: 'rgba(0, 0, 0, 0)',
-  grey: '#D8D8D8'
+  grey: '#D8D8D8',
+  lightGrey: '#E9E9E9',
+  mediumGrey: '#686868',
+  lightBlack: '#212121',
+  offWhite: '#F2F2F2',
+  mediumLightGrey: '#9B9B9B',
+  disabledGrey: '#D5D5D5'
 };
 
 // TODO - dark theme
@@ -33,7 +39,13 @@ export default {
     buttonDefault: lightColors.secondary,
     buttonTextDefault: lightColors.white,
     tint: lightColors.tintColor,
-    tabIconSelected: lightColors.tintColor
+    tabIconSelected: lightColors.tintColor,
+    lightGrey: lightColors.lightGrey,
+    lightBlack: lightColors.lightBlack,
+    mediumGrey: lightColors.mediumGrey,
+    offWhite: lightColors.offWhite,
+    mediumLightGrey: lightColors.mediumLightGrey,
+    disabledGrey: lightColors.disabledGrey
   },
   // TODO - implement different dark mode colors
   dark: {
@@ -54,6 +66,12 @@ export default {
     buttonDefault: darkColors.secondary,
     buttonTextDefault: darkColors.white,
     tint: darkColors.tintColor,
-    tabIconSelected: darkColors.tintColor
+    tabIconSelected: darkColors.tintColor,
+    lightGrey: darkColors.lightGrey,
+    lightBlack: darkColors.lightBlack,
+    mediumGrey: darkColors.mediumGrey,
+    offWhite: darkColors.offWhite,
+    mediumLightGrey: darkColors.mediumLightGrey,
+    disabledGrey: darkColors.disabledGrey
   }
 };

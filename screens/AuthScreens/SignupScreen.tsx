@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, View, TextInput, Button } from 'components/Themed';
+import { Text, Button } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
@@ -19,6 +19,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
+import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 
 const SignupScreen = ({
   navigation
@@ -69,9 +70,10 @@ const SignupScreen = ({
           text={t('screens.signUp.phoneNumber')}
         />
       </TransparentView>
-      <TextInput
-        value={phoneNumber}
-        onChangeText={(text) => onChangePhoneNumber(text)}
+      <PhoneNumberInput
+        onChangeFormattedText={(text) => {
+          onChangePhoneNumber(text);
+        }}
       />
       <Button
         title={t('common.confirm')}

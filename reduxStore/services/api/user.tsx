@@ -75,17 +75,14 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['UserInvite']
     }),
-    deleteUserInvite: builder.mutation<
-      null,
-      DeleteRequest
-    >({
+    deleteUserInvite: builder.mutation<null, DeleteRequest>({
       query: (body) => ({
         url: `core/user-invite/${body.id}/`,
         method: 'DELETE',
         body
       }),
       invalidatesTags: ['UserInvite']
-    }),
+    })
   }),
   overrideExisting: true
 });

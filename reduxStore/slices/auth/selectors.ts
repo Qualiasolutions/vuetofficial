@@ -3,20 +3,20 @@ import { AuthState } from './types';
 import { EntireState } from '../../types';
 import { createSelector } from '@reduxjs/toolkit';
 
-export const selectAuthState = (state: EntireState): AuthState =>
-  state.authentication;
+export const selectAuthState = (state: EntireState): AuthState | undefined =>
+  state?.authentication;
 
 export const selectAccessToken: Selector<EntireState, string> = createSelector(
   selectAuthState,
-  (auth: AuthState) => auth.jwtAccessToken
+  (auth: AuthState | undefined) => auth?.jwtAccessToken || ''
 );
 
 export const selectRefreshToken: Selector<EntireState, string> = createSelector(
   selectAuthState,
-  (auth: AuthState) => auth.jwtRefreshToken
+  (auth: AuthState | undefined) => auth?.jwtRefreshToken || ''
 );
 
 export const selectUsername: Selector<EntireState, string> = createSelector(
   selectAuthState,
-  (auth: AuthState) => auth.username
+  (auth: AuthState | undefined) => auth?.username || ''
 );

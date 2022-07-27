@@ -2,6 +2,7 @@
   "pageTitles": {
     "home": "Hogar",
     "categories": "Categorias",
+    "messages": "Mensajes",
     "settings": "Configuracion",
     "addTask": "Agrega Tarea",
     "editTask": "Cambia Tarea",
@@ -9,7 +10,8 @@
     "addEntity": "Agrega Entidad",
     "editEntity": "Cambia Entidad",
     "entity": "Ver Entidad",
-    "oops": "Oops!"
+    "oops": "Oops!",
+    "createTask": "Agregar"
   },
   "categories": {
     "FAMILY": "Familia",
@@ -21,6 +23,12 @@
     "HOME_GARDEN": "Hogar & Jardin",
     "FINANCE": "Finanzas",
     "TRANSPORT": "Transito"
+  },
+  "common": {
+    "search": "Escriba cualquier palabra clave para buscar",
+    "category": "Categoría",
+    "thing": "Cosa",
+    "pleaseSelect": "Por favor selecciona"
   },
   "screens": {
     "logIn": {

@@ -42,8 +42,12 @@ export default function DayCalendar({
     <View>
       <View style={styles.container}>
         <View style={styles.leftBar}>
-          <Text style={[styles.dateDay, highlight ? styles.highlight : {}]}>{dayjs(date).format('MMM')} </Text>
-          <Text style={[styles.dateMonth, highlight ? styles.highlight : {}]}>{dayjs(date).format('DD')} </Text>
+          <Text style={[styles.dateDay, highlight ? styles.highlight : {}]}>
+            {dayjs(date).format('MMM')}{' '}
+          </Text>
+          <Text style={[styles.dateMonth, highlight ? styles.highlight : {}]}>
+            {dayjs(date).format('DD')}{' '}
+          </Text>
           <View style={styles.verticalLine}></View>
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
@@ -60,10 +64,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   dateDay: {
-    fontSize: 20,
+    fontSize: 20
   },
   dateMonth: {
-    fontSize: 15,
+    fontSize: 15
   },
   highlight: {
     fontWeight: 'bold',

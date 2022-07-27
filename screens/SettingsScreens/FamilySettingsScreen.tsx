@@ -22,7 +22,7 @@ import {
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
   FullWidthImagePicker,
-  PickedFile,
+  PickedFile
 } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
@@ -43,15 +43,17 @@ const FamilySettingsScreen = ({
     }
   );
 
-  const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null)
-  const [userInviteToDelete, setUserInviteToDelete] = useState<UserInviteResponse | null>(null)
-  
+  const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null);
+  const [userInviteToDelete, setUserInviteToDelete] =
+    useState<UserInviteResponse | null>(null);
+
   const { data: userInvites } = useGetUserInvitesQuery(
     userDetails?.user_id || -1
   );
 
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
-  const [deleteUserInvite, deleteUserInviteResult] = useDeleteUserInviteMutation();
+  const [deleteUserInvite, deleteUserInviteResult] =
+    useDeleteUserInviteMutation();
 
   const { t } = useTranslation();
 
@@ -109,14 +111,17 @@ const FamilySettingsScreen = ({
             source={require('../../assets/images/icons/feather-edit.png')}
           />
         </Pressable>
-        <Pressable onPress={() => {
-          const isUserInvite = (user: any): user is UserInviteResponse => isPending;
-          if (isUserInvite(user)) {
-            setUserInviteToDelete(user)
-          } else {
-            setUserToDelete(user)
-          }
-        }}>
+        <Pressable
+          onPress={() => {
+            const isUserInvite = (user: any): user is UserInviteResponse =>
+              isPending;
+            if (isUserInvite(user)) {
+              setUserInviteToDelete(user);
+            } else {
+              setUserToDelete(user);
+            }
+          }}
+        >
           <Image
             style={styles.editIcon}
             source={require('../../assets/images/icons/remove-circle.png')}
@@ -140,7 +145,9 @@ const FamilySettingsScreen = ({
         question={`Are you sure you want to remove ${userToDelete?.first_name} ${userToDelete?.last_name} from the family?`}
         visible={!!userToDelete}
         onYes={() => {}}
-        onNo={() => { setUserToDelete(null) }}
+        onNo={() => {
+          setUserToDelete(null);
+        }}
       />
       <YesNoModal
         title="Before you proceed"
@@ -148,11 +155,13 @@ const FamilySettingsScreen = ({
         visible={!!userInviteToDelete}
         onYes={() => {
           if (userInviteToDelete) {
-            deleteUserInvite({id: userInviteToDelete.id})
-            setUserInviteToDelete(null)
+            deleteUserInvite({ id: userInviteToDelete.id });
+            setUserInviteToDelete(null);
           }
         }}
-        onNo={() => { setUserInviteToDelete(null) }}
+        onNo={() => {
+          setUserInviteToDelete(null);
+        }}
       />
       <AlmostWhiteView>
         <FullWidthImagePicker
@@ -243,7 +252,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     margin: 5
-  },
+  }
 });
 
 export default FamilySettingsScreen;

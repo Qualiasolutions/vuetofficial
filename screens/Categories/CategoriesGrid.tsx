@@ -5,12 +5,12 @@ import { Text, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootTabScreenProps } from 'types/base';
+import { EntityTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 import { useTranslation } from 'react-i18next';
 
-type CategoriesTypes = RootTabScreenProps<'Categories'>;
+type CategoriesTypes = EntityTabScreenProps<'Categories'>;
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
@@ -38,7 +38,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       return (
         <Pressable
           onPress={() => {
-            navigation.navigate('Transport');
+            navigation.navigate('EntityTypeList', { categoryId: category.id });
           }}
           style={styles.gridSquare}
           disabled={!isEnabled}

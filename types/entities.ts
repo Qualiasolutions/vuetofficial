@@ -1,13 +1,18 @@
-interface BaseEntityType {
+import { ListEntryResponse } from './lists';
+
+export type EntityTypeName = 'Car' | 'Birthday' | 'Event' | 'Hobby';
+
+export interface BaseEntityType {
   id: number;
   name: string;
   owner: number;
   category: number;
-  resourcetype: string;
+  resourcetype: EntityTypeName;
+  child_entities: number[];
   [key: string]: any;
 }
 
-interface CarResponseType extends BaseEntityType {
+export interface CarResponseType extends BaseEntityType {
   category: number;
   make: string;
   model: string;
@@ -17,7 +22,7 @@ interface CarResponseType extends BaseEntityType {
   service_due_date: string | null;
 }
 
-interface CarParsedType extends BaseEntityType {
+export interface CarParsedType extends BaseEntityType {
   category: number;
   make: string;
   model: string;
@@ -27,8 +32,12 @@ interface CarParsedType extends BaseEntityType {
   service_due_date: Date | null;
 }
 
-// This should be a big OR statement of all entities
-type EntityResponseType = CarResponseType;
-type EntityParsedType = CarParsedType;
+export interface ListResponseType extends BaseEntityType {
+  list_entries: ListEntryResponse[];
+}
 
-export { CarResponseType, CarParsedType, EntityResponseType, EntityParsedType };
+export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
+
+// This should be a big OR statement of all entities
+export type EntityResponseType = CarResponseType | ListResponseType;
+export type EntityParsedType = CarParsedType | ListResponseType;

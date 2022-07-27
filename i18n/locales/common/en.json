@@ -2,6 +2,7 @@
   "pageTitles": {
     "home": "Today",
     "categories": "Things",
+    "messages": "Messages",
     "settings": "Settings",
     "addTask": "Add Task",
     "editTask": "Edit Task",
@@ -13,18 +14,81 @@
     "oops": "Oops!",
     "familySettings": "Family settings",
     "addFamilyMember": "Add family member",
-    "editFamilyMember": "Edit {{fullName}}"
+    "editFamilyMember": "Edit {{fullName}}",
+    "createTask": "Add"
   },
   "categories": {
     "FAMILY": "Family",
     "PETS": "Pets",
-    "SOCIAL_INTERESTS": "Social Interests",
+    "SOCIAL_INTERESTS": "Social & Interests",
     "EDUCATION_CAREER": "Education & Career",
     "TRAVEL": "Travel",
     "HEALTH_BEAUTY": "Health & Beauty",
     "HOME_GARDEN": "Home & Garden",
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
+  },
+  "linkTitles": {
+    "family": {
+      "familyMembers": "Family Members"
+    },
+    "pets": {
+      "myPets": "My Pets",
+      "feedingSchedule": "Feeding Schedule",
+      "physicalMental": "Physical / Mental Schedule",
+      "cleaningGrooming": "Cleaning / Grooming Schedule",
+      "vetsMedsMeasurements": "Vets, Meds and Measurements"
+    },
+    "social": {
+      "annualDates": "Annual Dates to Remember",
+      "events": "Celebration / Event Planning",
+      "recurringSocial": "Recurring Social (Non-birthday)",
+      "socialMedia": "Social Media",
+      "hobbies": "Interests & Hobbies"
+    },
+    "educationCareer": {
+      "education": "Education",
+      "career": "Career"
+    },
+    "travel": {
+      "myTrips": "My Trips",
+      "wishlists": "Wishlists",
+      "travelChecklists": "Travel Checklists"
+    },
+    "healthBeauty": {
+      "foodExercise": "Food & Exercise",
+      "appointments": "Appointments",
+      "measurements": "Measurements"
+    },
+    "homeGarden": {
+      "myHome": "My home(s)",
+      "food": "Food",
+      "clothing": "Clothing"
+    },
+    "finance": {
+      "billsAdmin": "Bills and Admin",
+      "filing": "Filing",
+      "taxPlanning": "Tax planning",
+      "netWorth": "Net worth"
+    },
+    "transport": {
+      "cars": "Cars & Motorcycles",
+      "boats": "Boats",
+      "publicTransport": "Public Transport"
+    },
+    "annualDates": {
+      "anniversaries": "Birthdays & Anniversaries",
+      "nationalHolidays": "Holidays I Celebrate"
+    }
+  },
+  "linkListTitles": {
+    "annualDates": "Annual Dates to Remember"
+  },
+  "entityTypes": {
+    "cars": "Cars & Motorcycles",
+    "events": "Celebration / Event Planning",
+    "anniversaries": "Birthdays & Anniversaries",
+    "hobbies": "Interests & Hobbies"
   },
   "common": {
     "confirm": "Confirm",
@@ -36,7 +100,11 @@
     "accept": "Accept",
     "reject": "Reject",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "search": "Type any keyword to search",
+    "category": "Category",
+    "thing": "Thing",
+    "pleaseSelect": "Please select"
   },
   "screens": {
     "logIn": {
@@ -132,6 +200,9 @@
     "notFound": {
       "noScreen": "This screen doesn't exist.",
       "goHome": "Go to home screen!"
+    },
+    "listEntity": {
+      "typeOrUpload": "Type an item or upload a photo"
     }
   },
   "components": {

@@ -12,7 +12,10 @@ type VerifyResponse = {
   code?: string;
 };
 
-type RefreshResponse = { access: string };
+type RefreshResponse = {
+  access: string;
+  refresh: string;
+};
 
 type BlacklistResponse = { success: boolean };
 
