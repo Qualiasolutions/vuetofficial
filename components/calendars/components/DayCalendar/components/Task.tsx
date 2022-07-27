@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, View } from 'components/Themed';
+import { Text, useThemeColor, View } from 'components/Themed';
 import {
   TaskParsedType,
   isFixedTaskParsedType,
@@ -26,7 +26,10 @@ import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
 import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
@@ -34,7 +37,7 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import Colors from '../../../../../constants/Colors';
 import { WhiteText } from 'components/molecules/TextComponents';
-import Layout from '../../../../../constants/Layout'
+import Layout from '../../../../../constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { ColorPicker } from 'components/forms/components/ColorPickers';
@@ -81,7 +84,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     return <GenericError />;
   }
 
-  const membersList = userFullDetails?.family?.users?.filter((item:any) => task.members.includes(item.id))
+  const membersList = userFullDetails?.family?.users?.filter((item: any) =>
+    task.members.includes(item.id)
+  );
 
   const entity = allEntities.byId[task.entity];
 
@@ -112,9 +117,17 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const expandedHeader =
     entity && selected ? (
-      <Pressable  onPress={() => navigation.navigate('EntityScreen', { entityId: entity.id }) } style={styles.expandedHeader}>
+      <Pressable
+        onPress={() =>
+          navigation.navigate('EntityScreen', { entityId: entity.id })
+        }
+        style={styles.expandedHeader}
+      >
         <WhiteText text={entity?.name} style={styles.expandedTitle} />
-        <Image source={require('../../../../../assets/images/edit.png')} style={styles.editImage} />
+        <Image
+          source={require('../../../../../assets/images/edit.png')}
+          style={styles.editImage}
+        />
       </Pressable>
     ) : null;
 
@@ -140,21 +153,28 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           buttonSize={35}
         />
         <SquareButton
-          customIcon={<Feather name='calendar' color={'#fff'} size={25}/>}
+          customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
           onPress={() => navigation.navigate('EditTask', { taskId: task.id })}
-          buttonStyle={{...styles.buttonStyle, padding: 8}}
+          buttonStyle={{ ...styles.buttonStyle, padding: 8 }}
         />
       </View>
     </View>
   ) : null;
 
-  const member_color = <TransparentView pointerEvents='none' style={styles.memberColor}>
-  {
-    membersList?.map(({member_colour}) => {
-     return <ColorPicker value={member_colour} onValueChange={()=>{}} height={9} width={83} />
-    })
-  }
-</TransparentView>
+  const memberColour = (
+    <TransparentView pointerEvents="none" style={styles.memberColor}>
+      {membersList?.map(({ member_colour }) => {
+        return (
+          <ColorPicker
+            value={member_colour}
+            onValueChange={() => {}}
+            height={9}
+            width={83}
+          />
+        );
+      })}
+    </TransparentView>
+  );
 
   const taskTypesRequiringForm = ['BookMOTTask'];
   const taskCompletionForm =
@@ -167,9 +187,14 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     ) : null;
 
   return (
-    <View style={[styles.container,  entity && selected && styles.selectedTask]}>
+    <View style={[styles.container, entity && selected && styles.selectedTask]}>
       {expandedHeader}
-      <View style={[styles.touchableContainerWrapper, selected &&  styles.selectedTouchableContainer]}>
+      <View
+        style={[
+          styles.touchableContainerWrapper,
+          selected && styles.selectedTouchableContainer
+        ]}
+      >
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
@@ -199,8 +224,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       </View>
       {taskCompletionForm}
       {expandedOptions}
-      {member_color}
-      {!selected&&<View style={styles.separator}></View>}
+      {memberColour}
+      {!selected && <View style={styles.separator}></View>}
     </View>
   );
 }
@@ -210,7 +235,7 @@ const styles = StyleSheet.create({
     width: Layout.window.width - 100
   },
   titleContainer: {
-    width: '40%',
+    width: '40%'
   },
   title: {
     fontWeight: 'bold',
@@ -225,7 +250,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
+    width: '100%'
   },
   touchableContainer: {
     flex: 1,
@@ -245,20 +270,20 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#eee'
   },
-  expandedHeader: {
+  expandedHeader: () => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 13,
-    backgroundColor: Colors.light.primary,
+    backgroundColor: useThemeColor({}, 'primary'),
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     height: 53
-  },
+  }),
   expandedTitle: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 18
   },
   expandedOptions: {
     marginTop: 10,
@@ -276,21 +301,26 @@ const styles = StyleSheet.create({
   selectedTask: {
     backgroundColor: '#fff',
     borderRadius: 10,
-    marginVertical:15,
+    marginVertical: 15,
     shadowColor: '#000000',
-    shadowOffset: {height:0 ,width: 2},
+    shadowOffset: { height: 0, width: 2 },
     shadowRadius: 5,
     shadowOpacity: 0.16,
     height: 245
   },
   buttonStyle: {
-    backgroundColor: Colors.light.primary,
+    backgroundColor: Colors.light.primary
   },
   buttonTextStyle: {
     color: '#fff',
-    textAlign:'center',
-    fontSize: 12,
+    textAlign: 'center',
+    fontSize: 12
   },
-  selectedTouchableContainer: { alignItems:'flex-start', marginTop:20},
-  memberColor: {flexDirection:'row', justifyContent:'flex-end',alignItems:'flex-end', marginTop: 13}
+  selectedTouchableContainer: { alignItems: 'flex-start', marginTop: 20 },
+  memberColor: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    marginTop: 13
+  }
 });
