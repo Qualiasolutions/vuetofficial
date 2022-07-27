@@ -27,7 +27,8 @@ export default function AddEntityScreen({
     Birthday: forms.birthday(),
     Event: forms.event(),
     Hobby: forms.hobby(),
-    List: forms.list()
+    List: forms.list(),
+    Trip: forms.trip(),
   };
 
   useFocusEffect(

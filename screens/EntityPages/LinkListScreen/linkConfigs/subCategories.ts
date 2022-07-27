@@ -96,9 +96,12 @@ export default {
   TRAVEL: [
     {
       name: 'travel.myTrips',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['Trip'],
+        entityTypeName: 'trips'
+      }
     },
     {
       name: 'travel.wishlists',

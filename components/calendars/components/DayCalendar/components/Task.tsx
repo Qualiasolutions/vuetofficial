@@ -9,7 +9,6 @@ import {
   selectAccessToken,
   selectUsername
 } from 'reduxStore/slices/auth/selectors';
-import Constants from 'expo-constants';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from 'types/base';
@@ -114,7 +113,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
         <SquareButton
           fontAwesomeIconName="eye"
           onPress={() =>
-            navigation.navigate('EntityScreen', { entityId: entity.id })
+            navigation.navigate('EntityScreen' as any, { entityId: entity.id })
           }
           buttonStyle={{ backgroundColor: 'transparent' }}
         />

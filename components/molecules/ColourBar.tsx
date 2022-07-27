@@ -6,9 +6,10 @@ export default function ColourBar({
 }: {
   colourHexcodes: string[];
 }) {
-  const bars = colourHexcodes.map((colour: string) => {
+  const bars = colourHexcodes.map((colour: string, i: number) => {
     return (
       <TransparentView
+        key={i}
         style={[styles.colourBar, { backgroundColor: `#${colour}` }]}
       ></TransparentView>
     );

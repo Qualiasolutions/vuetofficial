@@ -3,3 +3,4 @@ export { carForm as car } from './car';
 export { eventForm as event } from './event';
 export { hobbyForm as hobby } from './hobby';
 export { listForm as list } from './list';
+export { tripForm as trip } from './trip';
