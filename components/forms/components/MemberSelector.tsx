@@ -8,34 +8,42 @@ import { UserFullResponse } from 'types/users';
 import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
 
-
-function ModalListing ({ item }: { item: (UserFullResponse & { selected: boolean }) }) {
-  return <TransparentView style={styles.membersItem}>
-    <TransparentView>
-      <Text> {`${item.first_name} ${item.last_name}`} </Text>
+function ModalListing({
+  item
+}: {
+  item: UserFullResponse & { selected: boolean };
+}) {
+  return (
+    <TransparentView style={styles.membersItem}>
+      <TransparentView>
+        <Text> {`${item.first_name} ${item.last_name}`} </Text>
         <View
-          style={[styles.memberColour, { backgroundColor: `#${item.member_colour}` }]}
+          style={[
+            styles.memberColour,
+            { backgroundColor: `#${item.member_colour}` }
+          ]}
         />
+      </TransparentView>
+      <Checkbox checked={item.selected} />
     </TransparentView>
-    <Checkbox checked={item.selected} />
-  </TransparentView>
+  );
 }
 
 export default function MemberSelector({ data, onValueChange }: any) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
-  const [selectedMembers, setSelectedMembers] = useState<UserFullResponse[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<UserFullResponse[]>(
+    []
+  );
 
   const onSelectMember = (member: UserFullResponse) => {
     if (selectedMembers.some((i) => i.id == member.id)) {
-      setSelectedMembers([
-        ...selectedMembers.filter((i) => i.id != member.id)
-      ]);
+      setSelectedMembers([...selectedMembers.filter((i) => i.id != member.id)]);
       onValueChange([...selectedMembers.filter((i) => i.id != member.id)]);
     } else {
       setSelectedMembers([...selectedMembers, member]);
       onValueChange([...selectedMembers, member]);
     }
-  }
+  };
 
   const onCloseMembersList = useCallback(() => {
     setShowMembersList(false);
@@ -43,21 +51,24 @@ export default function MemberSelector({ data, onValueChange }: any) {
 
   const selectedMembersList = useCallback(() => {
     return selectedMembers.map((member: any) => (
-      <TransparentView key={member.id} style={{ marginLeft: 70, marginTop: 11 }}>
-        <UserWithColor name={`${member.first_name} ${member.last_name}`} memberColour={member.member_colour} />
+      <TransparentView
+        key={member.id}
+        style={{ marginLeft: 70, marginTop: 11 }}
+      >
+        <UserWithColor
+          name={`${member.first_name} ${member.last_name}`}
+          memberColour={member.member_colour}
+        />
       </TransparentView>
     ));
   }, [selectedMembers]);
 
-  const preparedData = useCallback(
-    () => {
-      return data.map((member: UserFullResponse) => ({
-        ...member,
-        selected: selectedMembers.map(m => m.id).includes(member.id)
-      }))
-    },
-    [selectedMembers]
-  );
+  const preparedData = useCallback(() => {
+    return data.map((member: UserFullResponse) => ({
+      ...member,
+      selected: selectedMembers.map((m) => m.id).includes(member.id)
+    }));
+  }, [selectedMembers]);
 
   return (
     <TransparentView>

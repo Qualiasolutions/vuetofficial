@@ -74,6 +74,9 @@ export type EntityTabParamList = {
     entityTypes: string[];
     entityTypeName: string;
   };
+  LinkList: {
+    listName: 'annualDates';
+  },
   EntityScreen: { entityId: number | string };
   ChildEntitiesScreen: {
     entityId: number | string;

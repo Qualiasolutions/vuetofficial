@@ -32,7 +32,7 @@ const linking: LinkingOptions<TabParamList> = {
           EntityTypeList: 'entity-type-list',
           EntityList: 'entity-list',
           EntityScreen: 'entity-screen',
-          ChildEntitiesScreen: 'child-entities-screen',
+          ChildEntitiesScreen: 'child-entities-screen'
         }
       },
       AddTask: 'add-task',

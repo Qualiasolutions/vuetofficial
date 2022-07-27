@@ -1,26 +1,34 @@
-export default function ColourBar({colourHexcodes}: {colourHexcodes: string[]}) {
+import { StyleSheet } from 'react-native';
+import { TransparentView } from './ViewComponents';
 
-    const containerStyle = {
-        bottom: 0,
-        right: 0,
-        height: '10px',
-        display:'flex',
-        'flex-direction':'row-reverse',
-        width:'100%',
-        position: 'absolute',
-    }
+export default function ColourBar({
+  colourHexcodes
+}: {
+  colourHexcodes: string[];
+}) {
+  const bars = colourHexcodes.map((colour: string) => {
+    return (
+      <TransparentView
+        style={[styles.colourBar, { backgroundColor: `#${colour}` }]}
+      ></TransparentView>
+    );
+  });
 
-    const getBarStyle = (colourHex: string) => {
-        return ({
-            backgroundColor: `#${colourHex}`,
-            width: '90px',
-            height: '10px',
-        })
-    }
-  
-    const bars =  colourHexcodes.map((colour: string) => {
-        return <div style={getBarStyle(colour)}></div> 
-    });
-
-    return <div style={containerStyle}>{bars}</div>
+  return <TransparentView style={styles.container}>{bars}</TransparentView>;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    bottom: 0,
+    right: 0,
+    height: 10,
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    width: '100%',
+    position: 'absolute'
+  },
+  colourBar: {
+    width: 90,
+    height: 10
+  }
+});

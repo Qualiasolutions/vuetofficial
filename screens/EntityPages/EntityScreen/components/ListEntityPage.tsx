@@ -45,7 +45,7 @@ export default function ListScreen({ entityId }: { entityId: number }) {
       <Pressable onPress={() => deleteListEntry(listEntry.id)}>
         <Image
           source={require('../../../../assets/images/icons/remove-circle.png')}
-          />
+        />
       </Pressable>
     </WhiteBox>
   ));

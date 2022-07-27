@@ -61,12 +61,13 @@ export default function AddEntityScreen({
   ) {
     const extraFields = {
       resourcetype: route.params.entityType
-    } as any
+    } as any;
 
     if (route.params.parentId) {
-      const parentId = route.params.parentId
-      const parsedId = ((typeof parentId === 'number') ? parentId : parseInt(parentId))
-      extraFields.parent = parsedId
+      const parentId = route.params.parentId;
+      const parsedId =
+        typeof parentId === 'number' ? parentId : parseInt(parentId);
+      extraFields.parent = parsedId;
     }
 
     return (

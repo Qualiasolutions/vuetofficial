@@ -84,7 +84,8 @@ export default function BottomNavBar({
                   // has length > 1
                   type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
                   navigation.navigate('AddEntity', {
-                    entityType: (currentScreenParams as RouteParams).entityTypes[0],
+                    entityType: (currentScreenParams as RouteParams)
+                      .entityTypes[0],
                     parentId: (currentScreenParams as RouteParams).entityId
                   });
                 } else if (currentScreen === 'EntityList') {
@@ -93,7 +94,8 @@ export default function BottomNavBar({
                   // has length > 1
                   type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
                   navigation.navigate('AddEntity', {
-                    entityType: (currentScreenParams as RouteParams).entityTypes[0]
+                    entityType: (currentScreenParams as RouteParams)
+                      .entityTypes[0]
                   });
                 } else {
                   navigation.navigate('CreateTask');
