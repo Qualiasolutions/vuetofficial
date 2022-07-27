@@ -108,5 +108,9 @@ export default function EntityTypeListScreen({
     );
   });
 
-  return <TransparentView>{listLinks}</TransparentView>;
+  return (
+    <TransparentView style={{ paddingHorizontal: 14 }}>
+      {listLinks}
+    </TransparentView>
+  );
 }

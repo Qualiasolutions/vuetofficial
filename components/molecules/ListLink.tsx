@@ -5,11 +5,16 @@ import {
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
-import { WhiteView } from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import {
+  TransparentView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { Feather } from '@expo/vector-icons';
+import { useThemeColor } from 'components/Themed';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -18,10 +23,13 @@ type ListLinkProps = {
   toScreen:
     | keyof RootTabParamList
     | keyof EntityTabParamList
-    | keyof SettingsTabParamList;
+    | keyof SettingsTabParamList
+    | string;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
+  showDot?: boolean;
+  dotStyle?: ViewStyle;
 };
 
 export default function ListLink({
@@ -29,7 +37,9 @@ export default function ListLink({
   toScreen,
   navMethod = 'navigate',
   toScreenParams = {},
-  style = {}
+  style = {},
+  showDot = false,
+  dotStyle = {}
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -48,11 +58,12 @@ export default function ListLink({
       }}
     >
       <WhiteView style={[styles.listEntry, style]}>
-        <AlmostBlackText text={text} style={styles.listEntryText} />
-        <Image
-          source={require('../../assets/images/icons/arrow-right.png')}
-          style={styles.arrow}
-        />
+        <BlackText text={text} style={styles.listEntryText} />
+
+        <TransparentView style={styles.row}>
+          {showDot && <TransparentView style={[styles.dot(), dotStyle]} />}
+          <Feather name="chevron-right" size={25} />
+        </TransparentView>
       </WhiteView>
     </Pressable>
   );
@@ -65,16 +76,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.4,
+    shadowOffset: { width: 1, height: 0 },
+    shadowOpacity: 0.16,
     shadowRadius: 3,
-    elevation: 5
+    elevation: 5,
+    marginTop: 10,
+    borderRadius: 10
   },
   listEntryText: {
-    fontSize: 20
+    fontSize: 18
   },
   arrow: {
     width: 15,
     height: 15
+  },
+  dot: () => ({
+    backgroundColor: useThemeColor({}, 'primary'),
+    height: 15,
+    width: 15,
+    borderRadius: 15,
+    marginRight: 23
+  }),
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });

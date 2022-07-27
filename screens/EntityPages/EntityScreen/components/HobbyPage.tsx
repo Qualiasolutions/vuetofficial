@@ -3,20 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
-import {
-  TransparentContainerView,
-  WhiteBox,
-} from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import { useThemeColor } from 'components/Themed';
 
 export default function HobbyScreen({ entityId }: { entityId: number }) {
   const {
     data: userDetails,
     isLoading: isLoadingUserDetails,
     error: userError
-  } = useGetUserDetails()
+  } = useGetUserDetails();
 
   const {
     data: allEntities,
@@ -27,50 +24,91 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
   });
 
   const { t } = useTranslation();
-  
-  const isLoading = isLoadingUserDetails || isLoadingEntities
+
+  const isLoading = isLoadingUserDetails || isLoadingEntities;
   if (isLoading) {
-    return <FullPageSpinner/>
+    return <FullPageSpinner />;
   }
-  
-  const entityIdParsed = typeof entityId === 'number' ? entityId : parseInt(entityId);
+
+  const entityIdParsed =
+    typeof entityId === 'number' ? entityId : parseInt(entityId);
 
   const listLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Lists"
-        toScreen="ChildEntitiesScreen"
-        toScreenParams={{
-          entityTypes: ['List'],
-          entityId: entityIdParsed
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Create a list"
+      toScreen="ChildEntitiesScreen"
+      toScreenParams={{
+        entityTypes: ['List'],
+        entityId: entityIdParsed
+      }}
+      style={styles.listLink}
+      navMethod="push"
+      showDot
+      dotStyle={styles.dotStyle()}
+    />
   );
 
   const eventLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Event"
-        toScreen="EntityList"
-        toScreenParams={{
-          entityTypes: ['Event'],
-          entityTypeName: 'events'
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Plan an Event"
+      toScreen="EntityList"
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      style={styles.listLink}
+      navMethod="push"
+      showDot
+      dotStyle={styles.dotStyle()}
+    />
+  );
+
+  const scheduleLink = (
+    <ListLink
+      text="Create a schedule"
+      toScreen=""
+      toScreenParams={{}}
+      style={styles.listLink}
+      navMethod="push"
+      showDot
+      dotStyle={styles.dotStyle()}
+    />
+  );
+
+  const travelLink = (
+    <ListLink
+      text="Travel - Link to travel"
+      toScreen=""
+      toScreenParams={{}}
+      style={styles.listLink}
+      navMethod="push"
+      showDot
+      dotStyle={styles.dotStyle()}
+    />
+  );
+
+  const customLink = (
+    <ListLink
+      text="Travel - Link to travel"
+      toScreen=""
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      style={styles.listLink}
+      navMethod="push"
+      showDot
+      dotStyle={styles.dotStyle()}
+    />
   );
 
   return (
-    <WhiteFullPageScrollView>
-      <TransparentContainerView>
-        {listLink}
-        {eventLink}
-      </TransparentContainerView>
+    <WhiteFullPageScrollView contentContainerStyle={styles.container}>
+      {scheduleLink}
+      {listLink}
+      {eventLink}
+      {travelLink}
+      {customLink}
     </WhiteFullPageScrollView>
   );
 }
@@ -80,12 +118,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20
   },
-  linkWrapper: {
-    width: '100%',
-    margin: 8,
-    paddingVertical: 0
-  },
+  container: { paddingHorizontal: 23 },
   listLink: {
-    shadowColor: 'transparent'
-  }
+    borderRadius: 16,
+    marginTop: 15
+  },
+  dotStyle: () => ({
+    marginRight: 10,
+    backgroundColor: useThemeColor({}, 'blue')
+  })
 });

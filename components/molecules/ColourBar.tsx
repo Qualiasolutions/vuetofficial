@@ -1,3 +1,5 @@
+import { View } from "react-native";
+
 export default function ColourBar({colourHexcodes}: {colourHexcodes: string[]}) {
 
     const containerStyle = {
@@ -19,8 +21,8 @@ export default function ColourBar({colourHexcodes}: {colourHexcodes: string[]}) 
     }
   
     const bars =  colourHexcodes.map((colour: string) => {
-        return <div style={getBarStyle(colour)}></div> 
+        return <View style={getBarStyle(colour)}></View> 
     });
 
-    return <div style={containerStyle}>{bars}</div>
+    return <View style={containerStyle}>{bars}</View>
 }

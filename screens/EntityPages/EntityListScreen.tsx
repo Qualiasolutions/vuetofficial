@@ -41,8 +41,13 @@ export default function EntityListScreen({
       toScreenParams={{ entityId: entity.id }}
       key={entity.id}
       navMethod="push"
+      showDot={true}
     />
   ));
 
-  return <TransparentView>{listLinks}</TransparentView>;
+  return (
+    <TransparentView style={{ paddingHorizontal: 14 }}>
+      {listLinks}
+    </TransparentView>
+  );
 }
