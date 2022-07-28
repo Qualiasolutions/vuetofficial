@@ -42,7 +42,6 @@ export default function ListLink({
     | StackNavigationProp<EntityTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
-
   return (
     <Pressable
       onPress={() => {

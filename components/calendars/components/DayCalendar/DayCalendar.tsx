@@ -24,10 +24,10 @@ export default function DayCalendar({
   setSelectedRecurrenceIndex,
   highlight
 }: PropTypes) {
-  const taskViews = tasks.map((task) => (
+  const taskViews = tasks.map((task, i) => (
     <Task
       task={task}
-      key={task.id}
+      key={`${task.id}_${i}`}
       selected={
         task.id === selectedTaskId &&
         task.recurrence_index === selectedRecurrenceIndex
@@ -38,6 +38,7 @@ export default function DayCalendar({
       }}
     ></Task>
   ));
+
   return (
     <View>
       <View style={styles.container}>
@@ -96,6 +97,5 @@ const styles = StyleSheet.create({
   taskViews: {
     paddingTop: 30,
     paddingBottom: 60,
-    width: '70%'
   }
 });

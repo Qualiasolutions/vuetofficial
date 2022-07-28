@@ -1,26 +1,32 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { Text } from 'components/Themed';
-import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { Image, StyleSheet, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 export default function SquareButton({
   onPress,
   fontAwesomeIconName,
   fontAwesomeIconSize = 30,
+  fontAwesomeIconColor= '#000',
   buttonText = '',
   buttonSize = 30,
-  buttonStyle = {}
+  buttonStyle = {},
+  buttonTextStyle = {},
+  customIcon = undefined
 }: {
   onPress: Function;
   fontAwesomeIconName?: keyof typeof FontAwesome.glyphMap;
   fontAwesomeIconSize?: number;
+  fontAwesomeIconColor?: string,
   buttonText?: string;
   buttonSize?: number;
   buttonStyle?: ViewStyle;
+  buttonTextStyle?:TextStyle,
+  customIcon?: JSX.Element
 }) {
   let icon;
   if (fontAwesomeIconName) {
     icon = (
-      <FontAwesome name={fontAwesomeIconName} size={fontAwesomeIconSize} />
+      <FontAwesome name={fontAwesomeIconName} size={fontAwesomeIconSize} color={fontAwesomeIconColor} />
     );
   } else if (buttonText) {
     icon = (
@@ -30,13 +36,17 @@ export default function SquareButton({
           {
             width: buttonSize,
             height: buttonSize
-          }
+          },
+          buttonTextStyle 
         ]}
       >
         {buttonText}
       </Text>
     );
+  } else if(customIcon) {
+     icon = customIcon
   }
+
 
   return (
     <TouchableOpacity
