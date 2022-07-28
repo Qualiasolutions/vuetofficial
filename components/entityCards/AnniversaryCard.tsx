@@ -13,55 +13,28 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
+import { EntityResponseType } from 'types/entities';
 
-type ListLinkProps = {
-  text: string;
-  toScreen: any;
-  toScreenParams?: object;
-  navMethod?: 'push' | 'navigate';
-  style?: ViewStyle;
-};
-
-export const AnniversaryCard = ({
-  text,
-  toScreen,
-  navMethod = 'navigate',
-  toScreenParams = {},
-  style = {}
-}: ListLinkProps) => {
-  const { entityId } = toScreenParams;
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const {
-    data: allEntities,
-    isLoading: isLoadingEntities,
-    error: entitiesError
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
-  });
-
-  const entity = allEntities?.byId[entityId];
+export default function AnniversaryCard ({
+  entity
+}: {
+  entity: EntityResponseType;
+}) {
   const startDate = getDateWithoutTimezone(entity?.start_date);
-
   const { age, days, monthName, date } = getDaysToAge(startDate);
   const whiteColor = useThemeColor({}, 'white');
   const almostBlackColor = useThemeColor({}, 'almostBlack');
-
   const navigation = useNavigation();
 
   return (
     <Pressable
       onPress={() => {
-        if (navMethod === 'push') {
-          (navigation as any).push(toScreen, toScreenParams);
-        } else {
-          (navigation.navigate as any)(toScreen, toScreenParams);
-        }
+        (navigation as any).push('EntityScreen', { entityId: entity.id });
       }}
-      style={styles.card(whiteColor)}
+      style={[styles.card, {backgroundColor: whiteColor}]}
     >
       <TransparentView style={{ flex: 1 }}>
-        <LightBlackText text={text} style={styles.listEntryText} />
+        <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 15 }}
           text={`Turns ${age} on ${monthName} ${date}`}
@@ -69,7 +42,7 @@ export const AnniversaryCard = ({
       </TransparentView>
 
       <View style={{ flexDirection: 'row' }}>
-        <View style={styles.divider(almostBlackColor)} />
+        <View style={[styles.divider, { backgroundColor: almostBlackColor }]} />
         <PrimaryText text={`${days}\ndays`} style={{ textAlign: 'center' }} />
       </View>
     </Pressable>
@@ -77,8 +50,7 @@ export const AnniversaryCard = ({
 };
 
 const styles = StyleSheet.create({
-  card: (color) => ({
-    backgroundColor: color,
+  card: {
     borderRadius: 16,
     shadowColor: '#000',
     shadowOpacity: 0.3,
@@ -87,18 +59,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 13,
     padding: 13,
     marginTop: 10,
+    elevation: 3,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
-  }),
+  },
   listEntryText: {
     fontSize: 18
   },
-  divider: (color) => ({
-    backgroundColor: color,
+  divider: {
     height: 45,
     width: 0.5,
     marginRight: 24,
     marginLeft: 17.5
-  })
+  }
 });

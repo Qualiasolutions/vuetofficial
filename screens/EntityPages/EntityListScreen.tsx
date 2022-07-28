@@ -8,7 +8,7 @@ import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import linkMapping from 'components/forms/entityCards';
+import linkMapping from 'components/entityCards';
 import { EntityResponseType } from 'types/entities';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 

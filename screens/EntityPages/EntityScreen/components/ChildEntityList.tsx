@@ -8,7 +8,7 @@ import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
-import linkMapping from 'components/forms/entityCards';
+import linkMapping from 'components/entityCards';
 import { TransparentView } from 'components/molecules/ViewComponents';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
