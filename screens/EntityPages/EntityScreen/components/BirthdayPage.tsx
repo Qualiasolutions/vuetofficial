@@ -18,7 +18,7 @@ import {
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
 import { AlmostBlackText, BlackText } from 'components/molecules/TextComponents';
-import ListWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
+import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
 import { Feather } from '@expo/vector-icons';
 
 const getNextDate = (startDate: Date): Date => {
@@ -72,7 +72,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
   const childEntityIds = entityData?.child_entities || [];
   const childEntityList = childEntityIds.map((id) => (
-    <ListWithCheckBox
+    <ListLinkWithCheckBox
       key={id}
       text={allEntities?.byId[id].name || ''}
       toScreen="EntityScreen"
@@ -83,7 +83,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   ));
 
   const eventLink = (
-    <ListWithCheckBox
+    <ListLinkWithCheckBox
       text="Event"
       toScreen="EntityList"
       toScreenParams={{
@@ -95,7 +95,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   );
 
   const phoneLink = (
-    <ListWithCheckBox
+    <ListLinkWithCheckBox
       text="Phone or text"
       toScreen=""
       navMethod="push"
@@ -103,7 +103,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   );
 
   const customLink = (
-    <ListWithCheckBox
+    <ListLinkWithCheckBox
       text="Custom - Define later"
       toScreen=""
       navMethod="push"

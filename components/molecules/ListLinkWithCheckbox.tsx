@@ -1,11 +1,11 @@
 import React from 'react';
-import {  Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import {  Pressable, StyleSheet, ViewStyle } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
-import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteBox, WhiteView } from 'components/molecules/ViewComponents';
 import {  BlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -13,7 +13,6 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import Layout from '../../constants/Layout';
 import Checkbox from './Checkbox';
 import { Feather } from '@expo/vector-icons';
-import { useThemeColor } from 'components/Themed';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -53,14 +52,14 @@ export default function ListLinkWithCheckbox({
         }
       }}
     >
-      <WhiteView style={[styles.listEntry, style]}>
+      <WhiteBox style={[styles.listEntry, style]}>
        <TransparentView style={styles.row}>
        <Checkbox checked={selected} />
         <BlackText text={text} style={styles.listEntryText} />
        </TransparentView>
  
         <Feather name='chevron-right' size={30} />
-      </WhiteView>
+      </WhiteBox>
     </Pressable>
   );
 }
@@ -73,13 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 5,
-    marginTop: 15,
-    borderRadius: 16
+    marginTop: 15
   },
   listEntryText: {
     fontSize: 18,
