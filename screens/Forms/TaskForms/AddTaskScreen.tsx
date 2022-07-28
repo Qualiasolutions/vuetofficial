@@ -3,7 +3,7 @@ import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
 import { fixedTaskForm, flexibleTaskForm } from './taskFormFieldTypes';
-import { formStyles } from '../formStyles';
+import { formStyles } from '../../../components/forms/formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';

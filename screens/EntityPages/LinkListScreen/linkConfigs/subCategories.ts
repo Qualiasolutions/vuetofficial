@@ -1,4 +1,4 @@
-import { List } from "./types"
+import { List } from './types';
 
 export default {
   FAMILY: [
@@ -13,8 +13,12 @@ export default {
     {
       name: 'pets.myPets',
       navMethod: 'push',
-      toScreen: '',
-      toScreenParams: {}
+      toScreen: 'EntityList',
+      toScreenParams: {
+        entityTypes: ['Pet'],
+        entityTypeName: 'pets',
+        showCreateForm: true
+      }
     },
     {
       name: 'pets.feedingSchedule',
@@ -39,7 +43,7 @@ export default {
       navMethod: 'push',
       toScreen: '',
       toScreenParams: {}
-    },
+    }
   ],
   SOCIAL_INTERESTS: [
     {
@@ -96,9 +100,12 @@ export default {
   TRAVEL: [
     {
       name: 'travel.myTrips',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['Trip'],
+        entityTypeName: 'trips'
+      }
     },
     {
       name: 'travel.wishlists',
@@ -177,7 +184,7 @@ export default {
       toScreen: '',
       navMethod: 'push',
       toScreenParams: {}
-    },
+    }
   ],
   TRANSPORT: [
     {
@@ -204,5 +211,5 @@ export default {
     }
   ]
 } as {
-  [key: string]: List[]
-}
+  [key: string]: List[];
+};

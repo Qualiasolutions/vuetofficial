@@ -4,7 +4,7 @@ import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { useTranslation } from 'react-i18next';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { StyleSheet } from 'react-native';
-import linkConfig from './linkConfigs/subCategories'
+import linkConfig from './linkConfigs/subCategories';
 import LinkList from './components/LinkList';
 
 type EntityTypeListScreenProps = EntityTabScreenProps<'EntityTypeList'>;
@@ -30,5 +30,5 @@ export default function EntityTypeListScreen({
     return <FullPageSpinner />;
   }
 
-  return <LinkList links={linkConfig[categoryData.name]} />
+  return <LinkList links={linkConfig[categoryData.name]} />;
 }
