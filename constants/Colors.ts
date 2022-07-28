@@ -22,7 +22,7 @@ const lightColors = {
 // TODO - dark theme
 const darkColors = lightColors;
 
-export default {
+const colors = {
   light: {
     transparent: lightColors.transparent,
     text: lightColors.black,
@@ -81,3 +81,7 @@ export default {
     orange: darkColors.orange
   }
 };
+
+export type ColorName = keyof typeof colors.light & keyof typeof colors.dark
+
+export default colors

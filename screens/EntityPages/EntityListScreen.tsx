@@ -10,6 +10,8 @@ import AddEntityForm from 'components/forms/AddEntityForm';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import linkMapping from 'components/forms/entityCards';
 import { EntityResponseType } from 'types/entities';
+import { TransparentContainerView, TransparentPaddedView, TransparentView } from 'components/molecules/ViewComponents';
+import { StyleSheet } from 'react-native';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -57,10 +59,12 @@ export default function EntityListScreen({
 
   return (
     <WhiteFullPageScrollView>
-      {listLinks}
-      {showCreateForm && entityTypes?.length === 1 && (
-        <AddEntityForm entityType={entityTypes && entityTypes[0]} />
-      )}
+      <TransparentPaddedView>
+        {listLinks}
+        {showCreateForm && entityTypes?.length === 1 && (
+          <AddEntityForm entityType={entityTypes && entityTypes[0]} />
+        )}
+      </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
 }

@@ -26,7 +26,6 @@ type ListLinkProps = {
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
-  dotStyle?: ViewStyle;
 };
 
 export default function ListLink({
@@ -35,7 +34,6 @@ export default function ListLink({
   navMethod = 'navigate',
   toScreenParams = {},
   style = {},
-  dotStyle = {}
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>

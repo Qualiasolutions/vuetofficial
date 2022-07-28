@@ -9,6 +9,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import linkMapping from 'components/forms/entityCards';
+import { TransparentView } from 'components/molecules/ViewComponents';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -61,7 +62,7 @@ export default function ChildEntityList({
   });
 
   return (
-    <ScrollView>
+    <TransparentView>
       {childEntityList}
       {showCreateForm && entityTypes?.length === 1 && (
         <AddEntityForm
@@ -69,6 +70,6 @@ export default function ChildEntityList({
           parentId={entityId}
         />
       )}
-    </ScrollView>
+    </TransparentView>
   );
 }

@@ -4,10 +4,9 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import { useThemeColor } from 'components/Themed';
-import { OrangeText, PrimaryText } from 'components/molecules/TextComponents';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function HobbyScreen({ entityId }: { entityId: number }) {
   const {
@@ -44,7 +43,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       }}
       style={styles.listLink}
       navMethod="push"
-      dotStyle={styles.dotStyle()}
     />
   );
 
@@ -58,7 +56,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       }}
       style={styles.listLink}
       navMethod="push"
-      dotStyle={styles.dotStyle()}
     />
   );
 
@@ -69,7 +66,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       toScreenParams={{}}
       style={styles.listLink}
       navMethod="push"
-      dotStyle={styles.dotStyle()}
     />
   );
 
@@ -80,7 +76,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       toScreenParams={{}}
       style={styles.listLink}
       navMethod="push"
-      dotStyle={styles.dotStyle()}
     />
   );
 
@@ -94,33 +89,25 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       }}
       style={styles.listLink}
       navMethod="push"
-      dotStyle={styles.dotStyle()}
     />
   );
 
   return (
-    <WhiteFullPageScrollView contentContainerStyle={styles.container}>
-      {scheduleLink}
-      {listLink}
-      {eventLink}
-      {travelLink}
-      {customLink}
+    <WhiteFullPageScrollView>
+      <TransparentPaddedView>
+        {scheduleLink}
+        {listLink}
+        {eventLink}
+        {travelLink}
+        {customLink}
+      </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  detailsContainer: {
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  container: { paddingHorizontal: 23 },
   listLink: {
     borderRadius: 16,
-    marginTop: 15
-  },
-  dotStyle: () => ({
-    marginRight: 10,
-    backgroundColor: useThemeColor({}, 'blue')
-  })
+    marginBottom: 15
+  }
 });

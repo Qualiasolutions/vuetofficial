@@ -93,6 +93,11 @@ export function TransparentView(props: ViewProps) {
   );
 }
 
+export function TransparentPaddedView(props: ViewProps) {
+  const { style, ...otherProps } = props;
+  return <TransparentView style={[styles.padded, style]} { ...otherProps } />
+}
+
 export function WhiteBox(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
@@ -118,6 +123,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 40
+  },
+  padded: {
+    paddingHorizontal: 23,
+    paddingVertical: 10
   },
   box: {
     padding: 10,

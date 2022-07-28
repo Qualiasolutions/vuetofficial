@@ -1,4 +1,5 @@
 import { useThemeColor } from 'components/Themed';
+import { ColorName } from 'constants/Colors';
 import { StyleSheet } from 'react-native';
 import { ScrollView as DefaultScrollView } from 'react-native';
 
@@ -9,18 +10,23 @@ type ThemeProps = {
 
 export type ViewProps = ThemeProps & DefaultScrollView['props'];
 
-export function WhiteFullPageScrollView(props: ViewProps) {
-  const { style, ...otherProps } = props;
-  const backgroundColor = useThemeColor({}, 'white');
-  const borderColor = useThemeColor({}, 'grey');
-
-  return (
-    <DefaultScrollView
-      style={[{ backgroundColor, borderColor }, styles.container, style]}
-      {...otherProps}
-    />
-  );
+function ScrollViewWithColor(backgroundColorName: ColorName, borderColorName: ColorName): (props: ViewProps) => JSX.Element {
+  return function ColouredScrollView(props: ViewProps) {
+    const { style, ...otherProps } = props;
+    const backgroundColor = useThemeColor({}, backgroundColorName);
+    const borderColor = useThemeColor({}, borderColorName);
+  
+    return (
+      <DefaultScrollView
+        style={[{ backgroundColor, borderColor }, styles.container, style]}
+        {...otherProps}
+      />
+    );
+  }
 }
+
+export const WhiteFullPageScrollView = ScrollViewWithColor('white', 'grey')
+export const TransparentFullPageScrollView = ScrollViewWithColor('transparent', 'grey')
 
 const styles = StyleSheet.create({
   container: {
