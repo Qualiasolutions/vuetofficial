@@ -15,5 +15,5 @@ export default {
   TripActivity: TripActivityCard,
   TripTransport: TripTransportCard,
   Anniversary: AnniversaryCard,
-  Birthday: AnniversaryCard,
+  Birthday: AnniversaryCard
 } as LinkMapping;

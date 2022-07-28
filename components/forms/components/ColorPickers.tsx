@@ -18,8 +18,8 @@ export function ColorPicker({
 }: {
   value: string;
   onValueChange: (value: string) => any;
-  height?: number,
-  width?: number
+  height?: number;
+  width?: number;
 }) {
   const [color, setColor] = useState<string>(value || generateRandomColor());
 
@@ -38,8 +38,8 @@ export function ColorPicker({
           {
             backgroundColor: `#${color}`
           },
-          height ? {height:height} : null,
-          width ? {width:width} : null
+          height ? { height: height } : null,
+          width ? { width: width } : null
         ]}
       ></View>
     </Pressable>

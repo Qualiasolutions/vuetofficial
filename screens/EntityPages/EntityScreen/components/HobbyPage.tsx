@@ -71,7 +71,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
 
   const travelLink = (
     <ListLink
-      text={"Travel - Link to travel"}
+      text={'Travel - Link to travel'}
       toScreen=""
       toScreenParams={{}}
       style={styles.listLink}
@@ -81,7 +81,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
 
   const customLink = (
     <ListLink
-      text={"Custom - Define later"}
+      text={'Custom - Define later'}
       toScreen=""
       toScreenParams={{
         entityTypes: ['Event'],

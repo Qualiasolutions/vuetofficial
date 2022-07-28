@@ -1,12 +1,16 @@
 import React from 'react';
-import {  Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
-import { TransparentView, WhiteBox, WhiteView } from 'components/molecules/ViewComponents';
-import {  BlackText } from 'components/molecules/TextComponents';
+import {
+  TransparentView,
+  WhiteBox,
+  WhiteView
+} from 'components/molecules/ViewComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -25,7 +29,7 @@ type ListLinkProps = {
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
-  selected?: boolean
+  selected?: boolean;
 };
 
 export default function ListLinkWithCheckbox({
@@ -53,12 +57,12 @@ export default function ListLinkWithCheckbox({
       }}
     >
       <WhiteBox style={[styles.listEntry, style]}>
-       <TransparentView style={styles.row}>
-       <Checkbox checked={selected} />
-        <BlackText text={text} style={styles.listEntryText} />
-       </TransparentView>
- 
-        <Feather name='chevron-right' size={30} />
+        <TransparentView style={styles.row}>
+          <Checkbox checked={selected} />
+          <BlackText text={text} style={styles.listEntryText} />
+        </TransparentView>
+
+        <Feather name="chevron-right" size={30} />
       </WhiteBox>
     </Pressable>
   );
@@ -78,5 +82,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 23
   },
-  row: {flexDirection: 'row', alignItems:'center'}
+  row: { flexDirection: 'row', alignItems: 'center' }
 });

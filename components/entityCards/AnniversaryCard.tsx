@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
 
-export default function AnniversaryCard ({
+export default function AnniversaryCard({
   entity
 }: {
   entity: EntityResponseType;
@@ -29,7 +29,10 @@ export default function AnniversaryCard ({
     >
       <WhiteBox style={styles.card}>
         <TransparentView style={{ flex: 1 }}>
-          <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
+          <LightBlackText
+            text={entity.name || ''}
+            style={styles.listEntryText}
+          />
           <AlmostBlackText
             style={{ fontSize: 15 }}
             text={`Turns ${age} on ${monthName} ${date}`}
@@ -37,13 +40,15 @@ export default function AnniversaryCard ({
         </TransparentView>
 
         <View style={{ flexDirection: 'row' }}>
-          <View style={[styles.divider, { backgroundColor: almostBlackColor }]} />
+          <View
+            style={[styles.divider, { backgroundColor: almostBlackColor }]}
+          />
           <PrimaryText text={`${days}\ndays`} style={{ textAlign: 'center' }} />
         </View>
       </WhiteBox>
     </Pressable>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -52,7 +57,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   listEntryText: {
     fontSize: 18

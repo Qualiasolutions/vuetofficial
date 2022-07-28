@@ -10,23 +10,29 @@ type ThemeProps = {
 
 export type ViewProps = ThemeProps & DefaultScrollView['props'];
 
-function ScrollViewWithColor(backgroundColorName: ColorName, borderColorName: ColorName): (props: ViewProps) => JSX.Element {
+function ScrollViewWithColor(
+  backgroundColorName: ColorName,
+  borderColorName: ColorName
+): (props: ViewProps) => JSX.Element {
   return function ColouredScrollView(props: ViewProps) {
     const { style, ...otherProps } = props;
     const backgroundColor = useThemeColor({}, backgroundColorName);
     const borderColor = useThemeColor({}, borderColorName);
-  
+
     return (
       <DefaultScrollView
         style={[{ backgroundColor, borderColor }, styles.container, style]}
         {...otherProps}
       />
     );
-  }
+  };
 }
 
-export const WhiteFullPageScrollView = ScrollViewWithColor('white', 'grey')
-export const TransparentFullPageScrollView = ScrollViewWithColor('transparent', 'grey')
+export const WhiteFullPageScrollView = ScrollViewWithColor('white', 'grey');
+export const TransparentFullPageScrollView = ScrollViewWithColor(
+  'transparent',
+  'grey'
+);
 
 const styles = StyleSheet.create({
   container: {

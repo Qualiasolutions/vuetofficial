@@ -1,6 +1,17 @@
 import dayjs from 'dayjs';
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
 ];
 
 const getDateStringFromDateObject = (date: Date): string => {
@@ -49,7 +60,13 @@ function getNextDate(startDate: Date): Date {
   return startDateCopy;
 }
 
-function getDaysToAge(startDate: Date): { days: number; age: number, month: number, monthName: string, date: number } {
+function getDaysToAge(startDate: Date): {
+  days: number;
+  age: number;
+  month: number;
+  monthName: string;
+  date: number;
+} {
   const nextOccurrence = getNextDate(startDate);
   const todayDate = new Date();
   const millisecondsDifference = nextOccurrence.getTime() - todayDate.getTime();

@@ -4,12 +4,9 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import ListLink from 'components/molecules/ListLink';
 import {
   TransparentContainerView,
-  TransparentView,
-  WhiteBox,
-  WhiteContainerView
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
@@ -17,7 +14,10 @@ import {
   getDateWithoutTimezone,
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
-import { AlmostBlackText, BlackText } from 'components/molecules/TextComponents';
+import {
+  AlmostBlackText,
+  BlackText
+} from 'components/molecules/TextComponents';
 import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
 import { Feather } from '@expo/vector-icons';
 
@@ -58,15 +58,20 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   });
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();
-  
 
   const startDate = getDateWithoutTimezone(entityData?.start_date);
   const { days, age } = getDaysToAge(startDate);
 
   const birthdayDetails = (
     <TransparentView style={styles.detailsContainer}>
-      <AlmostBlackText style={styles.birthDetail}  text={getLongDateFromDateObject(startDate)} />
-      <AlmostBlackText style={styles.birthDetail} text={`Turns ${age} in ${days} days`} />
+      <AlmostBlackText
+        style={styles.birthDetail}
+        text={getLongDateFromDateObject(startDate)}
+      />
+      <AlmostBlackText
+        style={styles.birthDetail}
+        text={`Turns ${age} in ${days} days`}
+      />
     </TransparentView>
   );
 
@@ -95,11 +100,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   );
 
   const phoneLink = (
-    <ListLinkWithCheckBox
-      text="Phone or text"
-      toScreen=""
-      navMethod="push"
-    />
+    <ListLinkWithCheckBox text="Phone or text" toScreen="" navMethod="push" />
   );
 
   const customLink = (
@@ -113,7 +114,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   return (
     <WhiteFullPageScrollView>
       <TransparentContainerView>
-        <Feather name='user' size={100} />
+        <Feather name="user" size={100} />
         <BlackText text={entityData?.name || ''} style={styles.name} />
         {birthdayDetails}
         {childEntityList}
@@ -131,9 +132,9 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   name: {
-    fontSize: 26,
+    fontSize: 26
   },
   birthDetail: {
-    fontSize: 18,
+    fontSize: 18
   }
 });

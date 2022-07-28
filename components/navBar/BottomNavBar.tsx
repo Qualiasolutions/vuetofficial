@@ -108,7 +108,7 @@ export default function BottomNavBar({
             <Pressable
               key={index}
               onPress={() => {
-                navigation.navigate(route.name)
+                navigation.navigate(route.name);
               }}
             >
               {options.tabBarIcon({ focused: isFocused, color: '', size: 0 })}

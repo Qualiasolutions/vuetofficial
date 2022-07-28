@@ -22,7 +22,7 @@ type ListLinkProps = {
   toScreen:
     | keyof RootTabParamList
     | keyof EntityTabParamList
-    | keyof SettingsTabParamList,
+    | keyof SettingsTabParamList;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
@@ -33,7 +33,7 @@ export default function ListLink({
   toScreen,
   navMethod = 'navigate',
   toScreenParams = {},
-  style = {},
+  style = {}
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>

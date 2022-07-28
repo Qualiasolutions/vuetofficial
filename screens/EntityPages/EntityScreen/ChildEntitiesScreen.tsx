@@ -5,8 +5,14 @@ import { EntityTabParamList } from 'types/base';
 import React, { useEffect } from 'react';
 import ChildEntityList from './components/ChildEntityList';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { TransparentFullPageScrollView, WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { TransparentContainerView, TransparentPaddedView } from 'components/molecules/ViewComponents';
+import {
+  TransparentFullPageScrollView,
+  WhiteFullPageScrollView
+} from 'components/molecules/ScrollViewComponents';
+import {
+  TransparentContainerView,
+  TransparentPaddedView
+} from 'components/molecules/ViewComponents';
 
 export default function ChildEntitiesScreen({
   navigation,

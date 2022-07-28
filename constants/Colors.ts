@@ -85,6 +85,6 @@ const colors = {
   }
 };
 
-export type ColorName = keyof typeof colors.light & keyof typeof colors.dark
+export type ColorName = keyof typeof colors.light & keyof typeof colors.dark;
 
-export default colors
+export default colors;

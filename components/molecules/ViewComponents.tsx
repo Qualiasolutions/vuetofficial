@@ -54,7 +54,7 @@ export function WhiteView(props: ViewProps) {
 
   return (
     <DefaultView
-      style={[{ backgroundColor, borderColor}, style]}
+      style={[{ backgroundColor, borderColor }, style]}
       {...otherProps}
     />
   );
@@ -95,7 +95,7 @@ export function TransparentView(props: ViewProps) {
 
 export function TransparentPaddedView(props: ViewProps) {
   const { style, ...otherProps } = props;
-  return <TransparentView style={[styles.padded, style]} { ...otherProps } />
+  return <TransparentView style={[styles.padded, style]} {...otherProps} />;
 }
 
 export function WhiteBox(props: ViewProps) {

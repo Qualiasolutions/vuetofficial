@@ -90,7 +90,7 @@ export function BlackText(props: TextProps & { text: string }) {
   );
 }
 
-export function OrangeText(props: TextProps & { text: string | Text}) {
+export function OrangeText(props: TextProps & { text: string | Text }) {
   const { style, text, ...otherProps } = props;
   const color = useThemeColor({}, 'orange');
 
