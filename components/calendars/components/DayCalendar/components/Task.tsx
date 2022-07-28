@@ -114,7 +114,11 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     entity && selected ? (
       <Pressable
         onPress={() =>
-          (navigation.navigate as any)('EntityNavigator', { screen: 'EntityScreen', params: { entityId: entity.id } })
+          (navigation.navigate as any)('EntityNavigator', {
+            screen: 'EntityScreen',
+            initial: false,
+            params: { entityId: entity.id }
+          })
         }
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
