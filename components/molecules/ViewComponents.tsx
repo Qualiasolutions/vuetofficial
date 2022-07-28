@@ -129,8 +129,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   box: {
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { height: 2, width: 2 },
+    elevation: 3,
     padding: 10,
-    borderRadius: 10,
     borderWidth: 1
   }
 });

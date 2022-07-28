@@ -3,13 +3,8 @@ import {
   LightBlackText,
   PrimaryText
 } from 'components/molecules/TextComponents';
-import { TransparentView } from 'components/molecules/ViewComponents';
-import Colors from '../../constants/Colors';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
@@ -31,38 +26,33 @@ export default function AnniversaryCard ({
       onPress={() => {
         (navigation as any).push('EntityScreen', { entityId: entity.id });
       }}
-      style={[styles.card, {backgroundColor: whiteColor}]}
     >
-      <TransparentView style={{ flex: 1 }}>
-        <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
-        <AlmostBlackText
-          style={{ fontSize: 15 }}
-          text={`Turns ${age} on ${monthName} ${date}`}
-        />
-      </TransparentView>
+      <WhiteBox style={styles.card}>
+        <TransparentView style={{ flex: 1 }}>
+          <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
+          <AlmostBlackText
+            style={{ fontSize: 15 }}
+            text={`Turns ${age} on ${monthName} ${date}`}
+          />
+        </TransparentView>
 
-      <View style={{ flexDirection: 'row' }}>
-        <View style={[styles.divider, { backgroundColor: almostBlackColor }]} />
-        <PrimaryText text={`${days}\ndays`} style={{ textAlign: 'center' }} />
-      </View>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={[styles.divider, { backgroundColor: almostBlackColor }]} />
+          <PrimaryText text={`${days}\ndays`} style={{ textAlign: 'center' }} />
+        </View>
+      </WhiteBox>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    shadowOffset: { height: 2, width: 2 },
     marginHorizontal: 13,
     padding: 13,
     marginTop: 10,
-    elevation: 3,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   listEntryText: {
     fontSize: 18
