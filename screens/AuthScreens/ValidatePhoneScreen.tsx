@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, Button } from 'components/Themed';
+import { Text, Button, useThemeColor } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import {
@@ -59,6 +59,9 @@ const ValidatePhoneScreen = ({
     }
   }, [result]);
 
+  const greyColor = useThemeColor({},'grey')
+  const whiteColor = useThemeColor({},'white')
+
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
@@ -79,7 +82,7 @@ const ValidatePhoneScreen = ({
         renderCell={({ index, symbol, isFocused }) => (
           <Text
             key={index}
-            style={[styles.cell, isFocused && styles.focusCell]}
+            style={[styles.cell, { borderColor: greyColor, backgroundColor: whiteColor}, isFocused && {borderColor: greyColor}]}
             onLayout={getCellOnLayoutHandler(index)}
           >
             {symbol || (isFocused ? <Cursor /> : null)}
@@ -136,14 +139,9 @@ const styles = StyleSheet.create({
     lineHeight: 68,
     fontSize: 30,
     borderWidth: 1,
-    borderColor: '#D8D8D8',
-    backgroundColor: '#fff',
     margin: 4,
     textAlign: 'center',
     overflow: 'hidden'
-  },
-  focusCell: {
-    borderColor: '#D8D8D8'
   }
 });
 
