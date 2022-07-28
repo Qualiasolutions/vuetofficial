@@ -68,7 +68,7 @@ export function AlmostBlackText(props: TextProps & { text: string }) {
   );
 }
 
-export function LightBlack(props: TextProps & { text: string }) {
+export function LightBlackText(props: TextProps & { text: string }) {
   const { style, text, ...otherProps } = props;
   const color = useThemeColor({}, 'lightBlack');
 

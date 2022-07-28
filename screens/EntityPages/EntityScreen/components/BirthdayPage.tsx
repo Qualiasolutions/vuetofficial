@@ -18,7 +18,7 @@ import {
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
 import { AlmostBlackText, BlackText } from 'components/molecules/TextComponents';
-import ListWithCheckBox from 'components/molecules/ListWithCheckBox';
+import ListWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
 import { Feather } from '@expo/vector-icons';
 
 const getNextDate = (startDate: Date): Date => {

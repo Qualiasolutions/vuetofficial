@@ -29,7 +29,7 @@ type ListLinkProps = {
   selected?: boolean
 };
 
-export default function ListWithCheckBox({
+export default function ListLinkWithCheckbox({
   text,
   toScreen,
   navMethod = 'navigate',
@@ -58,10 +58,8 @@ export default function ListWithCheckBox({
        <Checkbox checked={selected} />
         <BlackText text={text} style={styles.listEntryText} />
        </TransparentView>
-       <TransparentView style={styles.row}>
-        <View style={styles.dot()} />
+ 
         <Feather name='chevron-right' size={30} />
-       </TransparentView>
       </WhiteView>
     </Pressable>
   );
@@ -87,12 +85,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 23
   },
-  dot: () => ({
-    height: 15,
-    width: 15,
-    backgroundColor: useThemeColor({}, 'primary'),
-    borderRadius: 15/2,
-    marginRight: 24
-  }),
   row: {flexDirection: 'row', alignItems:'center'}
 });
