@@ -2,11 +2,11 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 
 const TRANPORT_TYPE_PERMITTED_VALUES = [
-    { id: 'FLIGHT' },
-    { id: 'TRAIN' },
-    { id: 'CAR' },
-    { id: 'OTHER' },
-]
+  { id: 'FLIGHT' },
+  { id: 'TRAIN' },
+  { id: 'CAR' },
+  { id: 'OTHER' }
+];
 
 export const tripTransportForm = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -33,6 +33,6 @@ export const tripTransportForm = (): FormFieldTypes => {
       type: 'DateTime',
       required: true,
       displayName: t('entities.trip-transport.end_datetime')
-    },
+    }
   };
 };

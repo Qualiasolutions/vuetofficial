@@ -17,7 +17,7 @@ type Link = {
 };
 
 export default function LinkList({ links }: { links: Link[] }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const listLinks = links?.map((link) => {
     return (
@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
   listLink: {
     marginBottom: 3
   }
-})
+});

@@ -4,10 +4,17 @@ import { WhiteView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { EntityResponseType } from 'types/entities';
 
-export default function TripAccommodationCard({ entity }: { entity: EntityResponseType }) {
+export default function TripAccommodationCard({
+  entity
+}: {
+  entity: EntityResponseType;
+}) {
   return (
     <WhiteView style={styles.listEntry}>
-      <AlmostBlackText text={`${entity.accommodation_type} ${entity.confirmation_number}`} style={styles.listEntryText} />
+      <AlmostBlackText
+        text={`${entity.accommodation_type} ${entity.confirmation_number}`}
+        style={styles.listEntryText}
+      />
     </WhiteView>
   );
 }

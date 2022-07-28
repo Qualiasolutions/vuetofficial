@@ -18,23 +18,25 @@ import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 
 type FieldsMapping = {
-  [key in EntityTypeName]?: (parent: EntityResponseType) => any
-}
+  [key in EntityTypeName]?: (parent: EntityResponseType) => any;
+};
 
 const extraFieldsMapping = {
   TripTransport: (parent: EntityResponseType) => ({
     name: `${parent.name} transport`
   }),
-  TripAccommodation:(parent: EntityResponseType) => ({
+  TripAccommodation: (parent: EntityResponseType) => ({
     name: `${parent.name} accommodation`
   })
-} as FieldsMapping
-
+} as FieldsMapping;
 
 export default function AddEntityForm({
   entityType,
   parentId
-}: { entityType: EntityTypeName, parentId?: number }) {
+}: {
+  entityType: EntityTypeName;
+  parentId?: number;
+}) {
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
   const entityForms = {
     Car: forms.car(),
@@ -46,6 +48,7 @@ export default function AddEntityForm({
     TripTransport: forms.tripTransport(),
     TripAccommodation: forms.tripAccommodation(),
     TripActivity: forms.tripActivity(),
+    Pet: forms.pet()
   };
 
   useFocusEffect(
@@ -73,19 +76,14 @@ export default function AddEntityForm({
     return <GenericError />;
   }
 
-  const parentEntity = parentId ? allEntities.byId[parentId] : null
+  const parentEntity = parentId ? allEntities.byId[parentId] : null;
 
-  if (
-    entityType &&
-    Object.keys(entityForms).includes(entityType)
-  ) {
-    const extraFieldsFunction = extraFieldsMapping[entityType]
-    const computedExtraFields = (
-      parentEntity &&
-      extraFieldsFunction
-    )
-      ? extraFieldsFunction(parentEntity)
-      : {}
+  if (entityType && Object.keys(entityForms).includes(entityType)) {
+    const extraFieldsFunction = extraFieldsMapping[entityType];
+    const computedExtraFields =
+      parentEntity && extraFieldsFunction
+        ? extraFieldsFunction(parentEntity)
+        : {};
     const extraFields = {
       ...computedExtraFields,
       resourcetype: entityType
@@ -99,9 +97,7 @@ export default function AddEntityForm({
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
           {createSuccessful ? (
-            <Text>
-              {t('screens.addEntity.createSuccess', { entityType })}
-            </Text>
+            <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
           ) : null}
           <RTKForm
             fields={entityForms[entityType]}

@@ -4,10 +4,17 @@ import { WhiteView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { EntityResponseType } from 'types/entities';
 
-export default function TripActivityCard({ entity }: { entity: EntityResponseType }) {
+export default function TripActivityCard({
+  entity
+}: {
+  entity: EntityResponseType;
+}) {
   return (
     <WhiteView style={styles.listEntry}>
-      <AlmostBlackText text={`${entity.name} ${entity.company}`} style={styles.listEntryText} />
+      <AlmostBlackText
+        text={`${entity.name} ${entity.company}`}
+        style={styles.listEntryText}
+      />
     </WhiteView>
   );
 }

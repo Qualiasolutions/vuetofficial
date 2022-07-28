@@ -179,7 +179,7 @@ export default function Form({
         } else if (res.isError) {
           setSubmitError('An unexpected error occurred');
           onSubmitFailure(res.error);
-          console.log(res.error)
+          console.log(res.error);
         }
       }, [methodHookTriggers[method].result]);
     } else if (method === 'DELETE') {

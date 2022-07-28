@@ -4,15 +4,11 @@ import { WhiteView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { EntityResponseType } from 'types/entities';
 
-export default function TripTransportCard({
-  entity
-}: {
-  entity: EntityResponseType;
-}) {
+export default function PetCard({ entity }: { entity: EntityResponseType }) {
   return (
     <WhiteView style={styles.listEntry}>
       <AlmostBlackText
-        text={`${entity.transport_type} ${entity.flight_number}`}
+        text={`${entity.type} ${entity.name}`}
         style={styles.listEntryText}
       />
     </WhiteView>

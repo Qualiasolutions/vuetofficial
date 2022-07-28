@@ -1,10 +1,7 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 
-const ACCOMMODATION_TYPE_PERMITTED_VALUES = [
-    { id: 'HOTEL' },
-    { id: 'OTHER' }
-]
+const ACCOMMODATION_TYPE_PERMITTED_VALUES = [{ id: 'HOTEL' }, { id: 'OTHER' }];
 
 export const tripAccommodationForm = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -36,6 +33,6 @@ export const tripAccommodationForm = (): FormFieldTypes => {
       type: 'DateTime',
       required: true,
       displayName: t('entities.trip-accommodation.checkout_datetime')
-    },
+    }
   };
 };

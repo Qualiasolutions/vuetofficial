@@ -3,4 +3,4 @@ export type List = {
   navMethod: 'push' | 'navigate';
   toScreen: string;
   toScreenParams: any;
-}
+};

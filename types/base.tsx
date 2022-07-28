@@ -73,10 +73,11 @@ export type EntityTabParamList = {
   EntityList: {
     entityTypes: EntityTypeName[];
     entityTypeName: string;
+    showCreateForm: boolean;
   };
   LinkList: {
     listName: 'annualDates';
-  },
+  };
   EntityScreen: { entityId: number | string };
   ChildEntitiesScreen: {
     entityId: number | string;

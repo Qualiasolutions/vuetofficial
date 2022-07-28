@@ -1,7 +1,7 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import {
   useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery,
+  useGetUserDetailsQuery
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';

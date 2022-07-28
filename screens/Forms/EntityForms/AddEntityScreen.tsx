@@ -9,19 +9,22 @@ import { PageTitle } from 'components/molecules/TextComponents';
 export default function AddEntityScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddEntity'>) {
-  const { t } = useTranslation()
-  const parentId = route.params.parentId
-  const parsedId = parentId ?
-    typeof parentId === 'number' ? parentId : parseInt(parentId) :
-    undefined
+  const { t } = useTranslation();
+  const parentId = route.params.parentId;
+  const parsedId = parentId
+    ? typeof parentId === 'number'
+      ? parentId
+      : parseInt(parentId)
+    : undefined;
 
   return (
     <WhiteContainerView>
-      <PageTitle text={t('screens.addEntity.title', { entityType: route.params.entityType })}/>
-      <AddEntityForm
-        entityType={route.params.entityType}
-        parentId={parsedId}
+      <PageTitle
+        text={t('screens.addEntity.title', {
+          entityType: route.params.entityType
+        })}
       />
+      <AddEntityForm entityType={route.params.entityType} parentId={parsedId} />
     </WhiteContainerView>
-  )
+  );
 }

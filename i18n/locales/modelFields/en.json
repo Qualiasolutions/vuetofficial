@@ -58,6 +58,12 @@
       "end_datetime": "End Time",
       "contact_phone": "Contact Phone",
       "contact_email": "Contact Email"
+    },
+    "pet": {
+      "type": "Type",
+      "breed": "Breed",
+      "dob": "Date of birth",
+      "microchip_number": "Microchip number"
     }
   },
   "familyMember": {

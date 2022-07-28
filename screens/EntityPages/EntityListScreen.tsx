@@ -1,12 +1,26 @@
 import React, { useEffect } from 'react';
 import { EntityTabScreenProps } from 'types/base';
-import { TransparentView } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
+import AddEntityForm from 'components/forms/AddEntityForm';
+import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import linkMapping from 'components/forms/entityCards';
+import { EntityResponseType } from 'types/entities';
+
+function DefaultLink({ entity }: { entity: EntityResponseType }) {
+  return (
+    <ListLink
+      text={entity.name || ''}
+      toScreen="EntityScreen"
+      toScreenParams={{ entityId: entity.id }}
+      navMethod="push"
+    />
+  );
+}
 
 type EntityListScreenProps = EntityTabScreenProps<'EntityList'>;
 
@@ -14,6 +28,7 @@ export default function EntityListScreen({
   navigation,
   route
 }: EntityListScreenProps) {
+  const { entityTypes, showCreateForm } = route.params;
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
@@ -24,7 +39,7 @@ export default function EntityListScreen({
     skip: !userDetails?.user_id
   });
   const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
-    route.params.entityTypes.includes(entity.resourcetype)
+    entityTypes.includes(entity.resourcetype)
   );
   const { t } = useTranslation();
 
@@ -34,15 +49,18 @@ export default function EntityListScreen({
     });
   }, [route.params.entityTypeName]);
 
-  const listLinks = entityData?.map((entity) => (
-    <ListLink
-      text={t(entity.name)}
-      toScreen="EntityScreen"
-      toScreenParams={{ entityId: entity.id }}
-      key={entity.id}
-      navMethod="push"
-    />
-  ));
+  const listLinks = entityData.map((entity) => {
+    const resourceType = entity.resourcetype;
+    const Link = linkMapping[resourceType] || DefaultLink;
+    return <Link key={entity.id} entity={entity} />;
+  });
 
-  return <TransparentView>{listLinks}</TransparentView>;
+  return (
+    <WhiteFullPageScrollView>
+      {listLinks}
+      {showCreateForm && entityTypes?.length === 1 && (
+        <AddEntityForm entityType={entityTypes && entityTypes[0]} />
+      )}
+    </WhiteFullPageScrollView>
+  );
 }

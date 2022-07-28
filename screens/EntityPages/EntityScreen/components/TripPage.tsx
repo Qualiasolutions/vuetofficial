@@ -7,7 +7,7 @@ import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import {
   TransparentContainerView,
-  WhiteBox,
+  WhiteBox
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
@@ -36,14 +36,13 @@ export default function TripPage({ entityId }: { entityId: number }) {
         toScreenParams={{
           entityTypes: ['TripTransport'],
           entityId: entityIdParsed,
-          showCreateForm: true,
+          showCreateForm: true
         }}
         style={styles.listLink}
         navMethod="push"
       />
     </WhiteBox>
   );
-
 
   const accommodationLink = (
     <WhiteBox style={styles.linkWrapper}>
@@ -53,7 +52,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
         toScreenParams={{
           entityTypes: ['TripAccommodation'],
           entityId: entityIdParsed,
-          showCreateForm: true,
+          showCreateForm: true
         }}
         style={styles.listLink}
         navMethod="push"
@@ -69,7 +68,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
         toScreenParams={{
           entityTypes: ['TripActivity'],
           entityId: entityIdParsed,
-          showCreateForm: true,
+          showCreateForm: true
         }}
         style={styles.listLink}
         navMethod="push"
@@ -78,21 +77,19 @@ export default function TripPage({ entityId }: { entityId: number }) {
   );
 
   const childEntityIds = entityData?.child_entities || [];
-  const childEntityList = childEntityIds.map((id) => (
-    allEntities?.byId[id].resourcetype === 'List'
-    ? (
-    <WhiteBox key={id} style={styles.linkWrapper}>
-      <ListLink
-        text={allEntities?.byId[id].name || ''}
-        toScreen="EntityScreen"
-        toScreenParams={{ entityId: id }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+  const childEntityList = childEntityIds.map((id) =>
+    allEntities?.byId[id].resourcetype === 'List' ? (
+      <WhiteBox key={id} style={styles.linkWrapper}>
+        <ListLink
+          text={allEntities?.byId[id].name || ''}
+          toScreen="EntityScreen"
+          toScreenParams={{ entityId: id }}
+          style={styles.listLink}
+          navMethod="push"
+        />
+      </WhiteBox>
     ) : null
-  ));
-
+  );
 
   return (
     <WhiteFullPageScrollView>
