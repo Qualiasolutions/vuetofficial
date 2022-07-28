@@ -10,7 +10,7 @@ import {
 } from 'reduxStore/slices/auth/selectors';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
-import { RootTabParamList } from 'types/base';
+import { EntityTabParamList, RootTabParamList, SettingsTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import {
@@ -25,9 +25,10 @@ import GenericError from 'components/molecules/GenericError';
 import { WhiteText } from 'components/molecules/TextComponents';
 import Layout from '../../../../../constants/Layout';
 import { Feather } from '@expo/vector-icons';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -39,7 +40,11 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const jwtAccessToken = useSelector(selectAccessToken);
   const username = useSelector(selectUsername);
 
-  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const navigation = useNavigation<
+    | BottomTabNavigationProp<RootTabParamList>
+    | StackNavigationProp<EntityTabParamList>
+    | StackNavigationProp<SettingsTabParamList>
+  >();
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
 
   const { data: userDetails } = useGetUserDetailsQuery(username);
@@ -64,6 +69,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
   const primaryColor = useThemeColor({}, 'primary');
+  const greyColor = useThemeColor({}, 'grey')
 
   if (isLoading || !allEntities) {
     return null;
@@ -108,13 +114,13 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     entity && selected ? (
       <Pressable
         onPress={() =>
-          navigation.navigate('EntityScreen', { entityId: entity.id })
+          (navigation.navigate as any)('EntityNavigator', { screen: 'EntityScreen', params: { entityId: entity.id } })
         }
-        style={styles.expandedHeader(primaryColor)}
+        style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
         <WhiteText text={entity?.name} style={styles.expandedTitle} />
         <Image
-          source={require('../../../../../assets/images/edit.png')}
+          source={require('assets/images/edit.png')}
           style={styles.editImage}
         />
       </Pressable>
@@ -128,7 +134,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           onPress={() => {
             addDays(1);
           }}
-          buttonStyle={styles.buttonStyle(primaryColor)}
+          buttonStyle={{ backgroundColor: primaryColor }}
           buttonTextStyle={styles.buttonTextStyle}
           buttonSize={35}
         />
@@ -137,14 +143,14 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           onPress={() => {
             addDays(7);
           }}
-          buttonStyle={styles.buttonStyle(primaryColor)}
+          buttonStyle={{ backgroundColor: primaryColor }}
           buttonTextStyle={styles.buttonTextStyle}
           buttonSize={35}
         />
         <SquareButton
           customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
-          onPress={() => navigation.navigate('EditTask', { taskId: task.id })}
-          buttonStyle={{ ...styles.buttonStyle(primaryColor), padding: 8 }}
+          onPress={() => (navigation.navigate as any)('EditTask', { taskId: task.id })}
+          buttonStyle={{ backgroundColor: primaryColor }}
         />
       </View>
     </View>
@@ -171,7 +177,10 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     ) : null;
 
   return (
-    <View style={[styles.container, entity && selected && styles.selectedTask]}>
+    <WhiteView style={[styles.container, entity && selected && {
+      ...styles.selectedTask,
+      borderColor: greyColor
+    }]}>
       {expandedHeader}
       <View
         style={[
@@ -194,7 +203,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           disabled={task.is_complete}
           style={styles.checkbox}
           checked={task.is_complete}
-          onValueChange={(newValue) => {
+          onValueChange={() => {
             if (taskTypesRequiringForm.includes(task.resourcetype)) {
               return setShowTaskCompletionForm(true);
             }
@@ -210,7 +219,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
       {expandedOptions}
       {memberColour}
       {!selected && <View style={styles.separator}></View>}
-    </View>
+    </WhiteView>
   );
 }
 
@@ -252,17 +261,14 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#eee'
   },
-  expandedHeader: (color) => ({
+  expandedHeader:{
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 13,
-    backgroundColor: color,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    height: 53
-  }),
+    height: 53,
+  },
   expandedTitle: {
     fontWeight: 'bold',
     fontSize: 18
@@ -281,18 +287,17 @@ const styles = StyleSheet.create({
     width: 31
   },
   selectedTask: {
-    backgroundColor: '#fff',
     borderRadius: 10,
+    overflow: 'hidden',
     marginVertical: 15,
     shadowColor: '#000000',
     shadowOffset: { height: 0, width: 2 },
     shadowRadius: 5,
     shadowOpacity: 0.16,
-    height: 245
+    height: 245,
+    elevation: 5,
+    borderWidth: 1
   },
-  buttonStyle: (color) => ({
-    backgroundColor:color
-  }),
   buttonTextStyle: {
     color: '#fff',
     textAlign: 'center',

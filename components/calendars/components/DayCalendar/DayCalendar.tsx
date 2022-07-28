@@ -38,6 +38,7 @@ export default function DayCalendar({
       }}
     ></Task>
   ));
+
   return (
     <View>
       <View style={styles.container}>
