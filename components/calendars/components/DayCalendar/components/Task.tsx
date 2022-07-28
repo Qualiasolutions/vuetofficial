@@ -1,9 +1,6 @@
 import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, useThemeColor, View } from 'components/Themed';
-import {
-  isFixedTaskParsedType,
-  ScheduledTaskParsedType
-} from 'types/tasks';
+import { isFixedTaskParsedType, ScheduledTaskParsedType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
@@ -11,12 +8,10 @@ import {
   selectAccessToken,
   selectUsername
 } from 'reduxStore/slices/auth/selectors';
-import Constants from 'expo-constants';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { makeApiUrl } from 'utils/urls';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import {
   useGetUserDetailsQuery,
@@ -27,15 +22,12 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import Colors from '../../../../../constants/Colors';
 import { WhiteText } from 'components/molecules/TextComponents';
 import Layout from '../../../../../constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { ColorPicker } from 'components/forms/components/ColorPickers';
 import Checkbox from 'components/molecules/Checkbox';
-
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+import ColourBar from 'components/molecules/ColourBar';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -59,7 +51,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+    skip: !userDetails?.user_id
+  });
 
   const {
     data: userFullDetails,
@@ -68,6 +62,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
 
   const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
+
+  const primaryColor = useThemeColor({}, 'primary');
 
   if (isLoading || !allEntities) {
     return null;
@@ -114,7 +110,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
         onPress={() =>
           navigation.navigate('EntityScreen', { entityId: entity.id })
         }
-        style={styles.expandedHeader}
+        style={styles.expandedHeader(primaryColor)}
       >
         <WhiteText text={entity?.name} style={styles.expandedTitle} />
         <Image
@@ -132,7 +128,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           onPress={() => {
             addDays(1);
           }}
-          buttonStyle={styles.buttonStyle}
+          buttonStyle={styles.buttonStyle(primaryColor)}
           buttonTextStyle={styles.buttonTextStyle}
           buttonSize={35}
         />
@@ -141,14 +137,14 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           onPress={() => {
             addDays(7);
           }}
-          buttonStyle={styles.buttonStyle}
+          buttonStyle={styles.buttonStyle(primaryColor)}
           buttonTextStyle={styles.buttonTextStyle}
           buttonSize={35}
         />
         <SquareButton
           customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
           onPress={() => navigation.navigate('EditTask', { taskId: task.id })}
-          buttonStyle={{ ...styles.buttonStyle, padding: 8 }}
+          buttonStyle={{ ...styles.buttonStyle(primaryColor), padding: 8 }}
         />
       </View>
     </View>
@@ -156,16 +152,11 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
-      {membersList?.map(({ member_colour }) => {
-        return (
-          <ColorPicker
-            value={member_colour}
-            onValueChange={() => {}}
-            height={9}
-            width={83}
-          />
-        );
-      })}
+      <ColourBar
+        colourHexcodes={
+          membersList?.map(({ member_colour }) => member_colour) || []
+        }
+      />
     </TransparentView>
   );
 
@@ -199,7 +190,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
             <Text style={styles.title}>{task.title}</Text>
           </View>
         </TouchableOpacity>
-        <Checkbox 
+        <Checkbox
+          disabled={task.is_complete}
           style={styles.checkbox}
           checked={task.is_complete}
           onValueChange={(newValue) => {
@@ -212,7 +204,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
               task: task.id
             });
           }}
-         />
+        />
       </View>
       {taskCompletionForm}
       {expandedOptions}
@@ -252,9 +244,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   checkbox: {
-    margin: 10,
-    // height: 25,
-    // width: 25
+    margin: 10
   },
   separator: {
     marginTop: 20,
@@ -262,13 +252,13 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#eee'
   },
-  expandedHeader: () => ({
+  expandedHeader: (color) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 13,
-    backgroundColor: useThemeColor({}, 'primary'),
+    backgroundColor: color,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     height: 53
@@ -300,9 +290,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.16,
     height: 245
   },
-  buttonStyle: {
-    backgroundColor: Colors.light.primary
-  },
+  buttonStyle: (color) => ({
+    backgroundColor:color
+  }),
   buttonTextStyle: {
     color: '#fff',
     textAlign: 'center',
