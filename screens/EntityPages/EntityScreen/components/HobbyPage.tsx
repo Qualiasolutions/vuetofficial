@@ -36,7 +36,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
 
   const listLink = (
     <ListLink
-      text="Create a list"
+      text="Lists"
       toScreen="ChildEntitiesScreen"
       toScreenParams={{
         entityTypes: ['List'],
@@ -44,7 +44,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       }}
       style={styles.listLink}
       navMethod="push"
-      showDot
       dotStyle={styles.dotStyle()}
     />
   );
@@ -59,7 +58,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       }}
       style={styles.listLink}
       navMethod="push"
-      showDot
       dotStyle={styles.dotStyle()}
     />
   );
@@ -71,34 +69,24 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       toScreenParams={{}}
       style={styles.listLink}
       navMethod="push"
-      showDot
       dotStyle={styles.dotStyle()}
     />
   );
 
   const travelLink = (
     <ListLink
-      text={
-        <Text>
-          Travel - <OrangeText text="Link to travel" />
-        </Text>
-      }
+      text={"Travel - Link to travel"}
       toScreen=""
       toScreenParams={{}}
       style={styles.listLink}
       navMethod="push"
-      showDot
       dotStyle={styles.dotStyle()}
     />
   );
 
   const customLink = (
     <ListLink
-      text={
-        <Text>
-          Custom - <PrimaryText text="Define later" />{' '}
-        </Text>
-      }
+      text={"Custom - Define later"}
       toScreen=""
       toScreenParams={{
         entityTypes: ['Event'],
@@ -106,7 +94,6 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
       }}
       style={styles.listLink}
       navMethod="push"
-      showDot
       dotStyle={styles.dotStyle()}
     />
   );

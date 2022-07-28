@@ -14,21 +14,18 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { Feather } from '@expo/vector-icons';
-import { useThemeColor } from 'components/Themed';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
 type ListLinkProps = {
-  text: string | Text | JSX.Element;
+  text: string;
   toScreen:
     | keyof RootTabParamList
     | keyof EntityTabParamList
-    | keyof SettingsTabParamList
-    | string;
+    | keyof SettingsTabParamList,
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
-  showDot?: boolean;
   dotStyle?: ViewStyle;
 };
 
@@ -38,7 +35,6 @@ export default function ListLink({
   navMethod = 'navigate',
   toScreenParams = {},
   style = {},
-  showDot = false,
   dotStyle = {}
 }: ListLinkProps) {
   const navigation = useNavigation<
@@ -61,7 +57,6 @@ export default function ListLink({
         <BlackText text={text} style={styles.listEntryText} />
 
         <TransparentView style={styles.row}>
-          {showDot && <TransparentView style={[styles.dot(), dotStyle]} />}
           <Feather name="chevron-right" size={25} />
         </TransparentView>
       </WhiteView>
@@ -90,13 +85,6 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15
   },
-  dot: () => ({
-    backgroundColor: useThemeColor({}, 'primary'),
-    height: 15,
-    width: 15,
-    borderRadius: 15,
-    marginRight: 23
-  }),
   row: {
     flexDirection: 'row',
     alignItems: 'center'

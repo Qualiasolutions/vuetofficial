@@ -41,7 +41,6 @@ export default function EntityListScreen({
       toScreenParams={{ entityId: entity.id }}
       key={entity.id}
       navMethod="push"
-      showDot={true}
     />
   ));
 
