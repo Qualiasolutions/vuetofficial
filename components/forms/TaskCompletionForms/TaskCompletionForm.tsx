@@ -1,6 +1,6 @@
 import { Text, View } from 'components/Themed';
 import { completionFormFieldTypes } from './taskCompletionFormFieldTypes';
-import { formStyles } from '../../../screens/Forms/formStyles';
+import { formStyles } from '../formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';

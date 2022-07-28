@@ -90,6 +90,28 @@ export function BlackText(props: TextProps & { text: string }) {
   );
 }
 
+export function OrangeText(props: TextProps & { text: string | Text}) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'orange');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
+export function WhiteText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'white');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
 const styles = StyleSheet.create({
   common: {
     fontFamily: 'Poppins'

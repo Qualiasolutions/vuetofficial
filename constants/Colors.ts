@@ -15,13 +15,15 @@ const lightColors = {
   offWhite: '#F2F2F2',
   mediumLightGrey: '#9B9B9B',
   disabledGrey: '#D5D5D5',
-  green: '#4CB219'
+  green: '#4CB219',
+  blue: '#0086DF',
+  orange: '#FFA640'
 };
 
 // TODO - dark theme
 const darkColors = lightColors;
 
-export default {
+const colors = {
   light: {
     transparent: lightColors.transparent,
     text: lightColors.black,
@@ -47,7 +49,9 @@ export default {
     offWhite: lightColors.offWhite,
     mediumLightGrey: lightColors.mediumLightGrey,
     disabledGrey: lightColors.disabledGrey,
-    green: lightColors.green
+    green: lightColors.green,
+    blue: lightColors.blue,
+    orange: lightColors.orange
   },
   // TODO - implement different dark mode colors
   dark: {
@@ -75,6 +79,12 @@ export default {
     offWhite: darkColors.offWhite,
     mediumLightGrey: darkColors.mediumLightGrey,
     disabledGrey: darkColors.disabledGrey,
-    green: darkColors.green
+    green: darkColors.green,
+    blue: darkColors.blue,
+    orange: darkColors.orange
   }
 };
+
+export type ColorName = keyof typeof colors.light & keyof typeof colors.dark
+
+export default colors

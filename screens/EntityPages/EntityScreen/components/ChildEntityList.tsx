@@ -6,13 +6,30 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import AddEntityForm from 'components/forms/AddEntityForm';
+import { EntityResponseType, EntityTypeName } from 'types/entities';
+import linkMapping from 'components/forms/entityCards';
+import { TransparentView } from 'components/molecules/ViewComponents';
 
-export default function ChildEntityListScreen({
+function DefaultLink({ entity }: { entity: EntityResponseType }) {
+  return (
+    <ListLink
+      text={entity.name || ''}
+      toScreen="EntityScreen"
+      toScreenParams={{ entityId: entity.id }}
+      navMethod="push"
+    />
+  );
+}
+
+export default function ChildEntityList({
   entityId,
-  entityTypes = null
+  entityTypes = null,
+  showCreateForm = false
 }: {
   entityId: number;
-  entityTypes: string[] | null;
+  entityTypes: EntityTypeName[] | null;
+  showCreateForm: boolean;
 }) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
@@ -38,15 +55,21 @@ export default function ChildEntityListScreen({
     );
   }
 
-  const childEntityList = childEntities.map((entity) => (
-    <ListLink
-      text={entity.name || ''}
-      toScreen="EntityScreen"
-      toScreenParams={{ entityId: entity.id }}
-      key={entity.id}
-      navMethod="push"
-    />
-  ));
+  const childEntityList = childEntities.map((entity) => {
+    const resourceType = entity.resourcetype;
+    const Link = linkMapping[resourceType] || DefaultLink;
+    return <Link key={entity.id} entity={entity} />;
+  });
 
-  return <ScrollView>{childEntityList}</ScrollView>;
+  return (
+    <TransparentView>
+      {childEntityList}
+      {showCreateForm && entityTypes?.length === 1 && (
+        <AddEntityForm
+          entityType={entityTypes && entityTypes[0]}
+          parentId={entityId}
+        />
+      )}
+    </TransparentView>
+  );
 }

@@ -1,14 +1,13 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import {
   useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery,
-  useGetUserInvitesQuery
+  useGetUserDetailsQuery
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
-export const carForm = (): FormFieldTypes => {
+export const tripForm = (): FormFieldTypes => {
   const username = useSelector(selectUsername);
   const {
     data: userDetails,
@@ -28,10 +27,6 @@ export const carForm = (): FormFieldTypes => {
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails.user_id);
 
-  const { data: userInvites } = useGetUserInvitesQuery(
-    userDetails?.user_id || -1
-  );
-
   if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
     return {};
   }
@@ -42,42 +37,15 @@ export const carForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.entity.name')
     },
-    make: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.car.make')
-    },
-    model: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.car.model')
-    },
-    registration: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.car.registration')
-    },
-    MOT_due_date: {
+    start_date: {
       type: 'Date',
-      required: false,
-      displayName: t('entities.car.MOT_due_date')
-    },
-    insurance_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.insurance_due_date')
-    },
-    service_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.service_due_date')
-    },
-    owner: {
-      type: 'radio',
       required: true,
-      permittedValues: userFullDetails?.family?.users,
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.car.owner')
+      displayName: t('entities.trip.start_date')
+    },
+    end_date: {
+      type: 'Date',
+      required: true,
+      displayName: t('entities.trip.end_date')
     },
     members: {
       type: 'addMembers',

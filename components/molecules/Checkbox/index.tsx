@@ -1,26 +1,36 @@
 import { useThemeColor, View } from 'components/Themed';
-import Colors from '../../../constants/Colors';
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 const CHECKBOX_HEIGHT = 23;
 const CHECKBOX_WIDTH = 23;
 const CHECKBOX_RADIUS = 2;
 
-export default function Checkbox({ checked = false }) {
+export default function Checkbox({
+  checked = false,
+  style = {},
+  onValueChange = (value: any) => {},
+  disabled = false
+}) {
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
   const backgroundColor = checked ? primaryColor : greyColor;
   const activeStyle = checked ? styles.active : styles.inactive;
 
   return (
-    <View style={[activeStyle, { backgroundColor }]}>
+    <Pressable
+      onPress={() => {
+        onValueChange(checked);
+      }}
+      disabled={disabled}
+      style={[activeStyle, { backgroundColor }, style]}
+    >
       {checked && (
         <Image
           source={require('assets/images/icons/check.png')}
           style={styles.check}
         />
       )}
-    </View>
+    </Pressable>
   );
 }
 

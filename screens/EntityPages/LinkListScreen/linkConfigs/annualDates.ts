@@ -1,4 +1,4 @@
-import { List } from "./types";
+import { List } from './types';
 
 export default [
   {
@@ -15,5 +15,5 @@ export default [
     toScreen: '',
     navMethod: 'push',
     toScreenParams: {}
-  },
-] as List[]
+  }
+] as List[];

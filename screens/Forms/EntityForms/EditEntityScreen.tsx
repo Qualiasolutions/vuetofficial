@@ -2,9 +2,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
-import { carForm } from './entityFormFieldTypes/car';
+import { carForm } from 'components/forms/entityFormFieldTypes/car';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
-import { formStyles } from '../formStyles';
+import { formStyles } from 'components/forms/formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CarResponseType } from 'types/entities';
