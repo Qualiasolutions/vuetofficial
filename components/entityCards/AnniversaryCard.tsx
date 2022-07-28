@@ -46,7 +46,6 @@ export const AnniversaryCard = ({
   const { age, days, monthName, date } = getDaysToAge(startDate);
   const whiteColor = useThemeColor({}, 'white');
   const almostBlackColor = useThemeColor({}, 'almostBlack');
-  const greenColor = useThemeColor({}, 'green');
 
   const navigation = useNavigation();
 
@@ -68,8 +67,6 @@ export const AnniversaryCard = ({
           text={`Turns ${age} on ${monthName} ${date}`}
         />
       </TransparentView>
-
-      <View style={styles.greenDot(greenColor)} />
 
       <View style={{ flexDirection: 'row' }}>
         <View style={styles.divider(almostBlackColor)} />
@@ -103,11 +100,5 @@ const styles = StyleSheet.create({
     width: 0.5,
     marginRight: 24,
     marginLeft: 17.5
-  }),
-  greenDot: (color) => ({
-    backgroundColor: color,
-    height: 15,
-    width: 15,
-    borderRadius: 15 / 2
   })
 });
