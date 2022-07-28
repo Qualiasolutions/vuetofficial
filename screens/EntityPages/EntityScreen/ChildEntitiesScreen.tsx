@@ -5,6 +5,14 @@ import { EntityTabParamList } from 'types/base';
 import React, { useEffect } from 'react';
 import ChildEntityList from './components/ChildEntityList';
 import useGetUserDetails from 'hooks/useGetUserDetails';
+import {
+  TransparentFullPageScrollView,
+  WhiteFullPageScrollView
+} from 'components/molecules/ScrollViewComponents';
+import {
+  TransparentContainerView,
+  TransparentPaddedView
+} from 'components/molecules/ViewComponents';
 
 export default function ChildEntitiesScreen({
   navigation,
@@ -40,10 +48,14 @@ export default function ChildEntitiesScreen({
   }
 
   return (
-    <ChildEntityList
-      entityId={entityId}
-      entityTypes={route.params.entityTypes}
-      showCreateForm={route.params.showCreateForm}
-    />
+    <TransparentFullPageScrollView>
+      <TransparentPaddedView>
+        <ChildEntityList
+          entityId={entityId}
+          entityTypes={route.params.entityTypes}
+          showCreateForm={route.params.showCreateForm}
+        />
+      </TransparentPaddedView>
+    </TransparentFullPageScrollView>
   );
 }

@@ -3,13 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
-import {
-  TransparentContainerView,
-  WhiteBox
-} from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function HobbyScreen({ entityId }: { entityId: number }) {
   const {
@@ -37,56 +34,80 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
     typeof entityId === 'number' ? entityId : parseInt(entityId);
 
   const listLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Lists"
-        toScreen="ChildEntitiesScreen"
-        toScreenParams={{
-          entityTypes: ['List'],
-          entityId: entityIdParsed
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Lists"
+      toScreen="ChildEntitiesScreen"
+      toScreenParams={{
+        entityTypes: ['List'],
+        entityId: entityIdParsed
+      }}
+      style={styles.listLink}
+      navMethod="push"
+    />
   );
 
   const eventLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Event"
-        toScreen="EntityList"
-        toScreenParams={{
-          entityTypes: ['Event'],
-          entityTypeName: 'events'
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Plan an Event"
+      toScreen="EntityList"
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      style={styles.listLink}
+      navMethod="push"
+    />
+  );
+
+  const scheduleLink = (
+    <ListLink
+      text="Create a schedule"
+      toScreen=""
+      toScreenParams={{}}
+      style={styles.listLink}
+      navMethod="push"
+    />
+  );
+
+  const travelLink = (
+    <ListLink
+      text={'Travel - Link to travel'}
+      toScreen=""
+      toScreenParams={{}}
+      style={styles.listLink}
+      navMethod="push"
+    />
+  );
+
+  const customLink = (
+    <ListLink
+      text={'Custom - Define later'}
+      toScreen=""
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      style={styles.listLink}
+      navMethod="push"
+    />
   );
 
   return (
     <WhiteFullPageScrollView>
-      <TransparentContainerView>
+      <TransparentPaddedView>
+        {scheduleLink}
         {listLink}
         {eventLink}
-      </TransparentContainerView>
+        {travelLink}
+        {customLink}
+      </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  detailsContainer: {
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  linkWrapper: {
-    width: '100%',
-    margin: 8,
-    paddingVertical: 0
-  },
   listLink: {
-    shadowColor: 'transparent'
+    borderRadius: 16,
+    marginBottom: 15
   }
 });

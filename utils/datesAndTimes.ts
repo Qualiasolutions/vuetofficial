@@ -1,4 +1,18 @@
 import dayjs from 'dayjs';
+const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 const getDateStringFromDateObject = (date: Date): string => {
   return dayjs(date).format('YYYY-MM-DD');
@@ -36,11 +50,47 @@ const getDateStringsBetween = (
   return datesArray.map((date) => getDateStringFromDateObject(date));
 };
 
+function getNextDate(startDate: Date): Date {
+  const startDateCopy = new Date(startDate.getTime());
+  const dateNow = new Date();
+  while (startDateCopy < dateNow) {
+    // Pretty inefficient
+    startDateCopy.setFullYear(startDateCopy.getFullYear() + 1);
+  }
+  return startDateCopy;
+}
+
+function getDaysToAge(startDate: Date): {
+  days: number;
+  age: number;
+  month: number;
+  monthName: string;
+  date: number;
+} {
+  const nextOccurrence = getNextDate(startDate);
+  const todayDate = new Date();
+  const millisecondsDifference = nextOccurrence.getTime() - todayDate.getTime();
+  const daysDifference = Math.ceil(
+    millisecondsDifference / (1000 * 60 * 60 * 24)
+  );
+  const age = nextOccurrence.getFullYear() - startDate.getFullYear();
+
+  return {
+    days: daysDifference,
+    age,
+    month: nextOccurrence.getMonth() + 1,
+    monthName: monthNames[nextOccurrence.getMonth()],
+    date: nextOccurrence.getDate()
+  };
+}
+
 export {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
   getDateWithoutTimezone,
   getLongDateFromDateObject,
   getDatesBetween,
-  getDateStringsBetween
+  getDateStringsBetween,
+  getDaysToAge,
+  getNextDate
 };

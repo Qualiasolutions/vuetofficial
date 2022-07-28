@@ -10,7 +10,11 @@ import {
 } from 'reduxStore/slices/auth/selectors';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
-import { EntityTabParamList, RootTabParamList, SettingsTabParamList } from 'types/base';
+import {
+  EntityTabParamList,
+  RootTabParamList,
+  SettingsTabParamList
+} from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import {
@@ -25,7 +29,10 @@ import GenericError from 'components/molecules/GenericError';
 import { WhiteText } from 'components/molecules/TextComponents';
 import Layout from '../../../../../constants/Layout';
 import { Feather } from '@expo/vector-icons';
-import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
+import {
+  TransparentView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -69,7 +76,7 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
   const primaryColor = useThemeColor({}, 'primary');
-  const greyColor = useThemeColor({}, 'grey')
+  const greyColor = useThemeColor({}, 'grey');
 
   if (isLoading || !allEntities) {
     return null;
@@ -114,7 +121,11 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     entity && selected ? (
       <Pressable
         onPress={() =>
-          (navigation.navigate as any)('EntityNavigator', { screen: 'EntityScreen', params: { entityId: entity.id } })
+          (navigation.navigate as any)('EntityNavigator', {
+            screen: 'EntityScreen',
+            initial: false,
+            params: { entityId: entity.id }
+          })
         }
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
@@ -149,7 +160,9 @@ export default function Task({ task, selected, onPress }: PropTypes) {
         />
         <SquareButton
           customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
-          onPress={() => (navigation.navigate as any)('EditTask', { taskId: task.id })}
+          onPress={() =>
+            (navigation.navigate as any)('EditTask', { taskId: task.id })
+          }
           buttonStyle={{ backgroundColor: primaryColor }}
         />
       </View>
@@ -177,10 +190,16 @@ export default function Task({ task, selected, onPress }: PropTypes) {
     ) : null;
 
   return (
-    <WhiteView style={[styles.container, entity && selected && {
-      ...styles.selectedTask,
-      borderColor: greyColor
-    }]}>
+    <WhiteView
+      style={[
+        styles.container,
+        entity &&
+          selected && {
+            ...styles.selectedTask,
+            borderColor: greyColor
+          }
+      ]}
+    >
       {expandedHeader}
       <View
         style={[
@@ -261,13 +280,13 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#eee'
   },
-  expandedHeader:{
+  expandedHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 13,
-    height: 53,
+    height: 53
   },
   expandedTitle: {
     fontWeight: 'bold',

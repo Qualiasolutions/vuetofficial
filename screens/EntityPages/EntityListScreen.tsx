@@ -8,8 +8,9 @@ import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import linkMapping from 'components/forms/entityCards';
+import linkMapping from 'components/entityCards';
 import { EntityResponseType } from 'types/entities';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -57,10 +58,12 @@ export default function EntityListScreen({
 
   return (
     <WhiteFullPageScrollView>
-      {listLinks}
-      {showCreateForm && entityTypes?.length === 1 && (
-        <AddEntityForm entityType={entityTypes && entityTypes[0]} />
-      )}
+      <TransparentPaddedView>
+        {listLinks}
+        {showCreateForm && entityTypes?.length === 1 && (
+          <AddEntityForm entityType={entityTypes && entityTypes[0]} />
+        )}
+      </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
 }

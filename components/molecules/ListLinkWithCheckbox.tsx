@@ -7,12 +7,15 @@ import {
 } from 'types/base';
 import {
   TransparentView,
+  WhiteBox,
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { BlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import Layout from '../../constants/Layout';
+import Checkbox from './Checkbox';
 import { Feather } from '@expo/vector-icons';
 
 // We will need to add more types here as we use
@@ -26,20 +29,23 @@ type ListLinkProps = {
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
+  selected?: boolean;
 };
 
-export default function ListLink({
+export default function ListLinkWithCheckbox({
   text,
   toScreen,
   navMethod = 'navigate',
   toScreenParams = {},
-  style = {}
+  style = {},
+  selected = false
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
+
   return (
     <Pressable
       onPress={() => {
@@ -50,40 +56,31 @@ export default function ListLink({
         }
       }}
     >
-      <WhiteView style={[styles.listEntry, style]}>
-        <BlackText text={text} style={styles.listEntryText} />
-
+      <WhiteBox style={[styles.listEntry, style]}>
         <TransparentView style={styles.row}>
-          <Feather name="chevron-right" size={25} />
+          <Checkbox checked={selected} />
+          <BlackText text={text} style={styles.listEntryText} />
         </TransparentView>
-      </WhiteView>
+
+        <Feather name="chevron-right" size={30} />
+      </WhiteBox>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   listEntry: {
-    padding: 20,
+    width: Layout.window.width - 48,
+    paddingHorizontal: 20,
+    height: 65,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 0 },
-    shadowOpacity: 0.16,
-    shadowRadius: 3,
-    elevation: 5,
-    marginTop: 10,
-    borderRadius: 10
+    marginTop: 15
   },
   listEntryText: {
-    fontSize: 18
+    fontSize: 18,
+    marginLeft: 23
   },
-  arrow: {
-    width: 15,
-    height: 15
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
+  row: { flexDirection: 'row', alignItems: 'center' }
 });

@@ -4,12 +4,9 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import ListLink from 'components/molecules/ListLink';
 import {
   TransparentContainerView,
-  TransparentView,
-  WhiteBox,
-  WhiteContainerView
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
@@ -17,7 +14,12 @@ import {
   getDateWithoutTimezone,
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import {
+  AlmostBlackText,
+  BlackText
+} from 'components/molecules/TextComponents';
+import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
+import { Feather } from '@expo/vector-icons';
 
 const getNextDate = (startDate: Date): Date => {
   const startDateCopy = new Date(startDate.getTime());
@@ -62,45 +64,63 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
   const birthdayDetails = (
     <TransparentView style={styles.detailsContainer}>
-      <AlmostBlackText text={getLongDateFromDateObject(startDate)} />
-      <AlmostBlackText text={`Turns ${age} in ${days} days`} />
+      <AlmostBlackText
+        style={styles.birthDetail}
+        text={getLongDateFromDateObject(startDate)}
+      />
+      <AlmostBlackText
+        style={styles.birthDetail}
+        text={`Turns ${age} in ${days} days`}
+      />
     </TransparentView>
   );
 
   const childEntityIds = entityData?.child_entities || [];
   const childEntityList = childEntityIds.map((id) => (
-    <WhiteBox key={id} style={styles.linkWrapper}>
-      <ListLink
-        text={allEntities?.byId[id].name || ''}
-        toScreen="EntityScreen"
-        toScreenParams={{ entityId: id }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLinkWithCheckBox
+      key={id}
+      text={allEntities?.byId[id].name || ''}
+      toScreen="EntityScreen"
+      toScreenParams={{ entityId: id }}
+      navMethod="push"
+      selected={true}
+    />
   ));
 
   const eventLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Event"
-        toScreen="EntityList"
-        toScreenParams={{
-          entityTypes: ['Event'],
-          entityTypeName: 'events'
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLinkWithCheckBox
+      text="Event"
+      toScreen="EntityList"
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      navMethod="push"
+    />
+  );
+
+  const phoneLink = (
+    <ListLinkWithCheckBox text="Phone or text" toScreen="" navMethod="push" />
+  );
+
+  const customLink = (
+    <ListLinkWithCheckBox
+      text="Custom - Define later"
+      toScreen=""
+      navMethod="push"
+    />
   );
 
   return (
     <WhiteFullPageScrollView>
       <TransparentContainerView>
+        <Feather name="user" size={100} />
+        <BlackText text={entityData?.name || ''} style={styles.name} />
         {birthdayDetails}
         {childEntityList}
         {eventLink}
+        {phoneLink}
+        {customLink}
       </TransparentContainerView>
     </WhiteFullPageScrollView>
   );
@@ -111,12 +131,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20
   },
-  linkWrapper: {
-    width: '100%',
-    margin: 8,
-    paddingVertical: 0
+  name: {
+    fontSize: 26
   },
-  listLink: {
-    shadowColor: 'transparent'
+  birthDetail: {
+    fontSize: 18
   }
 });
