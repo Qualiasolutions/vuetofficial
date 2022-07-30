@@ -31,6 +31,7 @@ import { SettingsNavigator } from './SettingsNavigator';
 import setupPushNotifications from 'hooks/setupPushNotifications';
 import { EntityNavigator } from './EntityNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
+import Calendar from 'screens/Calendar/Calendar';
 
 const styles = StyleSheet.create({
   icon: {
@@ -137,7 +138,7 @@ export function BottomTabNavigator() {
       <BottomTab.Screen name="CreateTask" component={CreateTask} />
       <BottomTab.Screen
         name="Calendar" // This is just a placeholder really, not sure where it's supposed to go
-        component={CalendarScreen}
+        component={Calendar}
         options={{
           tabBarIcon: ({ focused }) => (
             <BarIcon
