@@ -1,13 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { WhiteView } from 'components/molecules/ViewComponents';
-import { CalendarList } from 'react-native-calendars';
-import { Text, useThemeColor, View } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
+import CalendarView from 'components/molecules/CalendarView';
+import Tabs from 'components/molecules/Tabs';
+import Periods from 'components/molecules/Periods';
 
 function Calendar() {
-  const primaryColor = useThemeColor({}, 'primary');
-  const styles = style();
-
   const dates = {
     '2022-08-15': { backgroundColor: '#50cebb', text: 'Annual Leaves' },
     '2022-08-16': { backgroundColor: '#50cebb', text: 'Annual Leaves' },
@@ -29,87 +27,51 @@ function Calendar() {
     }
   };
 
-  const calanderTheme = {
-    'stylesheet.day.basic': {
-      container: {
-        margin: 10
-      },
-      base: {
-        width: 58,
-        height: 76,
-        borderWidth: 0.2,
-        borderColor: useThemeColor({}, 'almostBlack'),
-        margin: 5,
-        padding: 5
-      },
-      selected: {
-        borderRadius: 0,
-        backgroundColor: useThemeColor({}, 'almostWhite')
-      },
-      today: {
-        borderRadius: 0
-      }
+  const periods = [
+    {
+      title: 'Your upcoming days off',
+      data: [
+        {
+          title: '9 days - Annual leave',
+          message: '1 - 9 July 2022'
+        },
+        {
+          title: '9 days - Annual leave',
+          message: '1 - 9 July 2022'
+        },
+        {
+          title: '9 days - Annual leave',
+          message: '1 - 9 July 2022'
+        }
+      ]
+    },
+    {
+      title: 'March 2022',
+      data: [
+        {
+          title: '9 days - Annual leave',
+          message: '1 - 9 July 2022'
+        }
+      ]
     }
-  };
+  ];
+
+  const tabs = [
+    {
+      title: 'Calander',
+      component: () => <CalendarView dates={dates} />
+    },
+    {
+      title: 'Periods',
+      component: () => <Periods periods={periods} />
+    }
+  ];
 
   return (
-    <WhiteView style={styles.container}>
-      <CalendarList
-        minDate={'2012-05-10'}
-        theme={{
-          monthTextColor: primaryColor,
-          textMonthFontSize: 16,
-          textMonthFontWeight: 'bold',
-          selectedDayTextColor: primaryColor,
-          ...calanderTheme
-        }}
-        dayComponent={({ date, state }) => {
-          return (
-            <View
-              style={[
-                styles.dayComponent,
-                !!dates[date.dateString] && {
-                  backgroundColor: dates[date.dateString]?.backgroundColor
-                }
-              ]}
-            >
-              <Text
-                style={[
-                  styles.date,
-                  { color: !!dates[date.dateString] ? primaryColor : 'black' }
-                ]}
-              >
-                {date.day}
-              </Text>
-              {!!dates[date.dateString] && (
-                <Text style={{ fontSize: 10 }}>
-                  {dates[date.dateString]?.text}
-                </Text>
-              )}
-            </View>
-          );
-        }}
-      />
+    <WhiteView>
+      <Tabs tabs={tabs} />
     </WhiteView>
   );
-}
-
-function style() {
-  return StyleSheet.create({
-    container: {
-      height: '100%',
-      width: '100%'
-    },
-    dayComponent: {
-      width: 58,
-      height: 76,
-      borderWidth: 0.2,
-      borderColor: useThemeColor({}, 'almostBlack'),
-      margin: 5,
-      padding: 5
-    },
-    date: { fontSize: 12, textAlign: 'left' }
-  });
 }
 
 export default Calendar;
