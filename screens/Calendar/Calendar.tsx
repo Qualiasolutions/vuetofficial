@@ -30,27 +30,33 @@ function Calendar() {
   const periods = [
     {
       title: 'Your upcoming days off',
+      key: 'upcoming-days-off',
       data: [
         {
           title: '9 days - Annual leave',
-          message: '1 - 9 July 2022'
+          message: '1 - 9 July 2022',
+          key: 1
         },
         {
           title: '9 days - Annual leave',
-          message: '1 - 9 July 2022'
+          message: '1 - 9 July 2022',
+          key: 2
         },
         {
           title: '9 days - Annual leave',
-          message: '1 - 9 July 2022'
+          message: '1 - 9 July 2022',
+          key: 3
         }
       ]
     },
     {
       title: 'March 2022',
+      key: 'march-2022',
       data: [
         {
           title: '9 days - Annual leave',
-          message: '1 - 9 July 2022'
+          message: '1 - 9 July 2022',
+          key: 4
         }
       ]
     }
@@ -58,7 +64,7 @@ function Calendar() {
 
   const tabs = [
     {
-      title: 'Calander',
+      title: 'Calendar',
       component: () => <CalendarView dates={dates} />
     },
     {

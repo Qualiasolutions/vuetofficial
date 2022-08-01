@@ -59,8 +59,8 @@ const ValidatePhoneScreen = ({
     }
   }, [result]);
 
-  const greyColor = useThemeColor({},'grey')
-  const whiteColor = useThemeColor({},'white')
+  const greyColor = useThemeColor({}, 'grey');
+  const whiteColor = useThemeColor({}, 'white');
 
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
@@ -75,14 +75,20 @@ const ValidatePhoneScreen = ({
         ref={ref}
         {...props}
         value={validationCode}
-        onChangeText={(code) => { onChangeValidationCode(code) }}
+        onChangeText={(code) => {
+          onChangeValidationCode(code);
+        }}
         cellCount={6}
         keyboardType="number-pad"
         textContentType="oneTimeCode"
         renderCell={({ index, symbol, isFocused }) => (
           <Text
             key={index}
-            style={[styles.cell, { borderColor: greyColor, backgroundColor: whiteColor}, isFocused && {borderColor: greyColor}]}
+            style={[
+              styles.cell,
+              { borderColor: greyColor, backgroundColor: whiteColor },
+              isFocused && { borderColor: greyColor }
+            ]}
             onLayout={getCellOnLayoutHandler(index)}
           >
             {symbol || (isFocused ? <Cursor /> : null)}

@@ -1,25 +1,27 @@
-import React from "react";
+import React from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { TransparentView, WhiteView } from './ViewComponents';
 
 type tab = {
-    title: string,
-    component: JSX.Element
-}
+  title: string;
+  component: () => JSX.Element;
+};
 
 type TabsProps = {
-    tabs: Array<tab>
-}
+  tabs: Array<tab>;
+};
 
-export default function Tabs({ tabs }:TabsProps) {
+export default function Tabs({ tabs }: TabsProps) {
   const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
 
   const Component = tabs[selectedTabIndex].component;
   const styles = style();
   return (
     <WhiteView>
-      <TransparentView style={{backgroundColor: useThemeColor({}, 'lightBlue')}}>
+      <TransparentView
+        style={{ backgroundColor: useThemeColor({}, 'lightBlue') }}
+      >
         <TransparentView style={styles.tabs}>
           <FlatList
             data={tabs}

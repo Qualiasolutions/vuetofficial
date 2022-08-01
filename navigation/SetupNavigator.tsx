@@ -8,7 +8,10 @@ import WelcomeToVuetScreen from 'screens/SetUpScreens/WelcomeToVuetScreen';
 import AddFamilyMemberScreen from 'screens/SetUpScreens/AddFamilyMemberScreen';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
 
 const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
@@ -22,7 +25,7 @@ export function SetupNavigator() {
     }
   );
 
-  let initialRouteName = "CreateAccount" as keyof SetupTabParamList
+  let initialRouteName = 'CreateAccount' as keyof SetupTabParamList;
 
   if (
     userFullDetails?.member_colour &&
@@ -30,9 +33,8 @@ export function SetupNavigator() {
     userFullDetails?.last_name &&
     userFullDetails?.dob
   ) {
-    initialRouteName="AddFamily"
+    initialRouteName = 'AddFamily';
   }
-
 
   return (
     <SetupStack.Navigator initialRouteName={initialRouteName}>

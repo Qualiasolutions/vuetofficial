@@ -113,6 +113,7 @@ export type RootTabParamList = {
     startDate: Date;
     endDate: Date;
   };
+  Calendar: {};
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

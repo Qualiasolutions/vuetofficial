@@ -12,7 +12,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const styles = style();
 
-  const calanderTheme = {
+  const calendarTheme = {
     'stylesheet.day.basic': {
       container: {
         margin: 10
@@ -42,33 +42,36 @@ export default function CalendarView({ dates }: CalendarViewProps) {
         textMonthFontSize: 16,
         textMonthFontWeight: 'bold',
         selectedDayTextColor: primaryColor,
-        ...calanderTheme
+        ...calendarTheme
       }}
       dayComponent={({ date, state }) => {
-        return (
-          <View
-            style={[
-              styles.dayComponent,
-              !!dates[date.dateString] && {
-                backgroundColor: dates[date.dateString]?.backgroundColor
-              }
-            ]}
-          >
-            <Text
+        if (date) {
+          return (
+            <View
               style={[
-                styles.date,
-                { color: !!dates[date.dateString] ? primaryColor : 'black' }
+                styles.dayComponent,
+                !!dates[date.dateString] && {
+                  backgroundColor: dates[date.dateString]?.backgroundColor
+                }
               ]}
             >
-              {date.day}
-            </Text>
-            {!!dates[date.dateString] && (
-              <Text style={{ fontSize: 10 }}>
-                {dates[date.dateString]?.text}
+              <Text
+                style={[
+                  styles.date,
+                  { color: !!dates[date.dateString] ? primaryColor : 'black' }
+                ]}
+              >
+                {date.day}
               </Text>
-            )}
-          </View>
-        );
+              {!!dates[date.dateString] && (
+                <Text style={{ fontSize: 10 }}>
+                  {dates[date.dateString]?.text}
+                </Text>
+              )}
+            </View>
+          );
+        }
+        return null;
       }}
     />
   );
