@@ -63,6 +63,22 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     </TransparentView>
   );
 
+  const phoneLink = (
+    <ListLinkWithCheckBox text="Phone or text" toScreen="" navMethod="push" />
+  );
+
+  const eventLink = (
+    <ListLinkWithCheckBox
+      text="Event"
+      toScreen="EntityList"
+      toScreenParams={{
+        entityTypes: ['Event'],
+        entityTypeName: 'events'
+      }}
+      navMethod="push"
+    />
+  );
+
   const childEntityIds = entityData?.child_entities || [];
   const childEntityList = childEntityIds.map((id) => (
     <ListLinkWithCheckBox
@@ -105,6 +121,8 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
       <TransparentContainerView style={styles.container}>
         <BlackText text={entityData?.name || ''} style={styles.name} />
         {birthdayDetails}
+        {phoneLink}
+        {eventLink}
         {childEntityList}
         {customLink}
       </TransparentContainerView>
