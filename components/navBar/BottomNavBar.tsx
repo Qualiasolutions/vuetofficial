@@ -88,7 +88,7 @@ export default function BottomNavBar({
                       .entityTypes[0],
                     parentId: (currentScreenParams as RouteParams).entityId
                   });
-                } else if (currentScreen === 'EntityList' || currentScreen === 'BirthdayList' ) {
+                } else if (currentScreen === 'EntityList' ) {
                   // TODO - this should instead bring up a list of
                   // all entity types on this page if entityTypes
                   // has length > 1

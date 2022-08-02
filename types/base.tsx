@@ -84,11 +84,6 @@ export type EntityTabParamList = {
     entityTypes: EntityTypeName[];
     showCreateForm: boolean;
   };
-  BirthdayList: {
-    entityTypes: EntityTypeName[];
-    entityTypeName: string;
-    showCreateForm: boolean;
-  }
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =

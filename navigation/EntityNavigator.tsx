@@ -9,7 +9,6 @@ import EntityTypeListScreen from 'screens/EntityPages/LinkListScreen/EntityTypeL
 import EntityScreen from 'screens/EntityPages/EntityScreen/EntityScreen';
 import ChildEntitiesScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesScreen';
 import LinkListScreen from 'screens/EntityPages/LinkListScreen/LinkListScreen';
-import BirthdayListScreen from 'screens/EntityPages/BirthdayListScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 
@@ -30,14 +29,6 @@ export function EntityNavigator() {
         }}
       />
 
-      <EntityStack.Screen
-        name="BirthdayList"
-        component={BirthdayListScreen}
-        options={{
-          headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
-        }}
-      />
       <EntityStack.Screen
         name="EntityTypeList"
         component={EntityTypeListScreen}
