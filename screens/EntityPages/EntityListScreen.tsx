@@ -57,7 +57,7 @@ export default function EntityListScreen({
   }, [route.params.entityTypeName]);
 
   const sections = {} as { [key: string]: EntityResponseType[] };
-  const toSectionName = sectionNameMapping[entityData[0].resourcetype] || null;
+  const toSectionName = sectionNameMapping[entityData[0]?.resourcetype] || null;
   if (toSectionName) {
     for (const entity of entityData) {
       if (sections[toSectionName(entity)]) {
@@ -96,7 +96,7 @@ export default function EntityListScreen({
     <WhiteFullPageScrollView>
       <TransparentPaddedView>
         {listLinks}
-        {showCreateForm && entityTypes?.length === 1 && (
+        {(showCreateForm && entityTypes?.length === 1 ) || listLinks.length == 0 && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
       </TransparentPaddedView>

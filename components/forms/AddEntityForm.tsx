@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
+import { PrimaryText } from 'components/molecules/TextComponents';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -95,10 +96,10 @@ export default function AddEntityForm({
 
     return (
       <SafeAreaView style={formStyles.container}>
-        <View style={formStyles.container}>
           {createSuccessful ? (
             <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
           ) : null}
+          {entityType && <PrimaryText text={`Add an ${entityType}`} />}
           <RTKForm
             fields={entityForms[entityType]}
             methodHooks={{
@@ -113,7 +114,6 @@ export default function AddEntityForm({
             clearOnSubmit={true}
             inlineFields={true}
           />
-        </View>
       </SafeAreaView>
     );
   }

@@ -35,9 +35,21 @@ export default function AnniversaryCard({
     });
   })();
 
-  const startDate = getDateWithoutTimezone(entity?.start_date);
-  const { age, monthName, date } = getDaysToAge(startDate);
+  const startDate = getDateWithoutTimezone(entity?.start_date ?? entity?.date);
+  
+  const { age, monthName, date , year} = getDaysToAge(startDate);
   const navigation = useNavigation();
+
+  const returnSubHeading = () => {
+    switch(entity.resourcetype){
+      case 'Birthday':
+        return `${age} on ${monthName} ${date}`
+      case 'Event':
+        return `${monthName} ${date}, ${year} `
+      default:
+      return `${monthName} ${date}, year `
+    }
+  }
 
   return (
     <Pressable
@@ -49,7 +61,7 @@ export default function AnniversaryCard({
         <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 18 }}
-          text={`${age} on ${monthName} ${date}`}
+          text={returnSubHeading()}
         />
       </WhiteBox>
     </Pressable>

@@ -66,6 +66,7 @@ function getDaysToAge(startDate: Date): {
   month: number;
   monthName: string;
   date: number;
+  year: number
 } {
   const nextOccurrence = getNextDate(startDate);
   const todayDate = new Date();
@@ -80,7 +81,8 @@ function getDaysToAge(startDate: Date): {
     age,
     month: nextOccurrence.getMonth() + 1,
     monthName: monthNames[nextOccurrence.getMonth()],
-    date: nextOccurrence.getDate()
+    date: nextOccurrence.getDate(),
+    year: nextOccurrence.getFullYear()
   };
 }
 
