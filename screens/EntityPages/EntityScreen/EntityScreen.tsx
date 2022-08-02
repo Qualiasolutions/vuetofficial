@@ -61,8 +61,6 @@ export default function EntityScreen({
   const Screen: React.ElementType | undefined =
     resourceTypeToComponent[entity.resourcetype];
   const DefaultScreen: React.ElementType = resourceTypeToComponent.default;
-
-  console.log(entity.resourcetype);
   
   return Screen ? (
     <Screen entityId={entityId} />
