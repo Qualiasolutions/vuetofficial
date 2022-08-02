@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import {
+  useCreateEntityMutation,
+  useGetAllEntitiesQuery,
+  useUpdateEntityMutation
+} from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
@@ -9,44 +13,30 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import {
   getDateWithoutTimezone,
+  getDaysToAge,
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
 import {
   AlmostBlackText,
-  BlackText
+  BlackText,
+  PrimaryText,
+  WhiteText
 } from 'components/molecules/TextComponents';
 import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
-import { Feather } from '@expo/vector-icons';
-
-const getNextDate = (startDate: Date): Date => {
-  const startDateCopy = new Date(startDate.getTime());
-  const dateNow = new Date();
-  while (startDateCopy < dateNow) {
-    // Pretty inefficient
-    startDateCopy.setFullYear(startDateCopy.getFullYear() + 1);
-  }
-  return startDateCopy;
-};
-
-const getDaysToAge = (startDate: Date): { days: number; age: number } => {
-  const nextOccurrence = getNextDate(startDate);
-  const todayDate = new Date();
-  const millisecondsDifference = nextOccurrence.getTime() - todayDate.getTime();
-  const daysDifference = Math.ceil(
-    millisecondsDifference / (1000 * 60 * 60 * 24)
-  );
-  const age = nextOccurrence.getFullYear() - startDate.getFullYear();
-
-  return {
-    days: daysDifference,
-    age
-  };
-};
+import { Modal } from 'components/molecules/Modals';
+import { TextInput, useThemeColor } from 'components/Themed';
+import Layout from '../../../../constants/Layout';
 
 export default function BirthdayScreen({ entityId }: { entityId: number }) {
+  const [addNewModal, setAddNewModal] = useState(false);
+  const [trigger, result] = useCreateEntityMutation();
+  const [updateTrigger] = useUpdateEntityMutation();
+
+  const [itemName, setItemName] = useState('');
+
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
@@ -60,17 +50,15 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
 
   const startDate = getDateWithoutTimezone(entityData?.start_date);
-  const { days, age } = getDaysToAge(startDate);
+  const { age, monthName, date } = getDaysToAge(startDate);
+
+  const styles = style();
 
   const birthdayDetails = (
     <TransparentView style={styles.detailsContainer}>
       <AlmostBlackText
         style={styles.birthDetail}
-        text={getLongDateFromDateObject(startDate)}
-      />
-      <AlmostBlackText
-        style={styles.birthDetail}
-        text={`Turns ${age} in ${days} days`}
+        text={`${age} on ${monthName} ${date}, 2023`}
       />
     </TransparentView>
   );
@@ -83,58 +71,92 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
       toScreen="EntityScreen"
       toScreenParams={{ entityId: id }}
       navMethod="push"
-      selected={true}
+      selected={allEntities?.byId[id].selected}
+      onSelect={() => {
+        updateTrigger({
+          resourcetype: 'List',
+          id,
+          selected: !allEntities?.byId[id].selected
+        })
+      }}
     />
   ));
 
-  const eventLink = (
-    <ListLinkWithCheckBox
-      text="Event"
-      toScreen="EntityList"
-      toScreenParams={{
-        entityTypes: ['Event'],
-        entityTypeName: 'events'
-      }}
-      navMethod="push"
-    />
-  );
-
-  const phoneLink = (
-    <ListLinkWithCheckBox text="Phone or text" toScreen="" navMethod="push" />
-  );
-
   const customLink = (
     <ListLinkWithCheckBox
-      text="Custom - Define later"
-      toScreen=""
-      navMethod="push"
+      text="+ Add New"
+      customOnPress={() => {
+        setAddNewModal(true);
+        // alert('Hello')
+      }}
     />
   );
+
+  const onAddNew = useCallback(() => {
+    setAddNewModal(false);
+    trigger({
+      resourcetype: 'List',
+      name: itemName,
+      parent: entityId
+    });
+  }, [useCreateEntityMutation, setAddNewModal, itemName]);
 
   return (
     <WhiteFullPageScrollView>
-      <TransparentContainerView>
-        <Feather name="user" size={100} />
+      <TransparentContainerView style={styles.container}>
         <BlackText text={entityData?.name || ''} style={styles.name} />
         {birthdayDetails}
         {childEntityList}
-        {eventLink}
-        {phoneLink}
         {customLink}
       </TransparentContainerView>
+
+      <Modal visible={addNewModal}>
+        <TransparentView style={styles.addNewContainer}>
+          <PrimaryText text="Add a new" style={styles.addNewHeader} />
+          <TextInput onChangeText={setItemName} placeholder="Add title" />
+          <Pressable
+            disabled={itemName == ''}
+            onPress={onAddNew}
+            style={styles.addNewButton}
+          >
+            <WhiteText text="Save" />
+          </Pressable>
+        </TransparentView>
+      </Modal>
     </WhiteFullPageScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  detailsContainer: {
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  name: {
-    fontSize: 26
-  },
-  birthDetail: {
-    fontSize: 18
-  }
-});
+const style = function () {
+  return StyleSheet.create({
+    container: {},
+    detailsContainer: {
+      alignItems: 'center',
+      marginBottom: 20
+    },
+    name: {
+      fontSize: 26
+    },
+    birthDetail: {
+      fontSize: 24
+    },
+    addNewContainer: {
+      height: 198,
+      width: Layout.window.width - 120,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    addNewHeader: {
+      fontSize: 18
+    },
+    addNewButton: {
+      backgroundColor: useThemeColor({}, 'buttonDefault'),
+      height: 37,
+      width: 152,
+      borderRadius: 10,
+      marginTop: 26,
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+  });
+};

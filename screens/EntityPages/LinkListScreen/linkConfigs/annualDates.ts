@@ -3,7 +3,7 @@ import { List } from './types';
 export default [
   {
     name: 'annualDates.anniversaries',
-    toScreen: 'EntityList',
+    toScreen: 'BirthdayList',
     navMethod: 'push',
     toScreenParams: {
       entityTypes: ['Birthday', 'Anniversary'],

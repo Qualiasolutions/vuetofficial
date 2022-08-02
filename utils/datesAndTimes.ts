@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-const monthNames = [
+export const monthNames = [
   'January',
   'February',
   'March',

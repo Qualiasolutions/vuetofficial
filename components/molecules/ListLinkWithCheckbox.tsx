@@ -22,7 +22,7 @@ import { Feather } from '@expo/vector-icons';
 // this for more sub-navigators
 type ListLinkProps = {
   text: string;
-  toScreen:
+  toScreen?:
     | keyof RootTabParamList
     | keyof EntityTabParamList
     | keyof SettingsTabParamList;
@@ -30,6 +30,8 @@ type ListLinkProps = {
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
   selected?: boolean;
+  customOnPress?: () => void;
+  onSelect?: (v: boolean) => void;
 };
 
 export default function ListLinkWithCheckbox({
@@ -38,7 +40,9 @@ export default function ListLinkWithCheckbox({
   navMethod = 'navigate',
   toScreenParams = {},
   style = {},
-  selected = false
+  selected = false,
+  customOnPress,
+  onSelect
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -49,6 +53,9 @@ export default function ListLinkWithCheckbox({
   return (
     <Pressable
       onPress={() => {
+        if (customOnPress) {
+          return customOnPress();
+        }
         if (navMethod === 'push') {
           (navigation as any).push(toScreen, toScreenParams);
         } else {
@@ -56,27 +63,27 @@ export default function ListLinkWithCheckbox({
         }
       }}
     >
-      <WhiteBox style={[styles.listEntry, style]}>
+      <TransparentView style={[styles.listEntry, style]}>
         <TransparentView style={styles.row}>
-          <Checkbox checked={selected} />
+          <Checkbox onValueChange={onSelect} checked={selected} />
           <BlackText text={text} style={styles.listEntryText} />
         </TransparentView>
 
         <Feather name="chevron-right" size={30} />
-      </WhiteBox>
+      </TransparentView>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   listEntry: {
-    width: Layout.window.width - 48,
-    paddingHorizontal: 20,
-    height: 65,
+    width: Layout.window.width,
+    paddingHorizontal: 24,
+    paddingVertical: 21,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 15
+    borderBottomWidth: 1
   },
   listEntryText: {
     fontSize: 18,
