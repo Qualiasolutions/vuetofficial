@@ -29,6 +29,7 @@ import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
 import { Modal } from 'components/molecules/Modals';
 import { TextInput, useThemeColor } from 'components/Themed';
 import Layout from 'constants/Layout';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
 export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
@@ -89,14 +90,14 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
       navMethod="push"
       selected={allEntities?.byId[id].selected}
       onSelect={async () => {
-        const res = await updateTrigger({
+        const res = (await updateTrigger({
           resourcetype: 'List',
           id,
           selected: !allEntities?.byId[id].selected
-        }) as any
+        })) as any;
 
-        if (res && res?.error && (res?.error.status >= 400)) {
-          throw Error('Network request error')
+        if (res && res?.error && res?.error.status >= 400) {
+          throw Error('Network request error');
         }
       }}
     />
@@ -120,6 +121,10 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     });
   }, [useCreateEntityMutation, setAddNewModal, itemName]);
 
+  const closeAddNewModal = useCallback(()=> {
+    setAddNewModal(false);
+  },[setAddNewModal])
+
   return (
     <WhiteFullPageScrollView>
       <TransparentContainerView style={styles.container}>
@@ -133,8 +138,18 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
       <Modal visible={addNewModal}>
         <TransparentView style={styles.addNewContainer}>
+          <Ionicons
+            name="close-circle"
+            size={30}
+            style={{ alignSelf: 'flex-end' }}
+            onPress={closeAddNewModal}
+          />
           <PrimaryText text="Add a new" style={styles.addNewHeader} />
-          <TextInput onChangeText={setItemName} placeholder="Add title" />
+          <TextInput
+            style={styles.input}
+            onChangeText={setItemName}
+            placeholder="Add title"
+          />
           <Pressable
             disabled={itemName == ''}
             onPress={onAddNew}
@@ -178,6 +193,7 @@ const style = function () {
       marginTop: 26,
       justifyContent: 'center',
       alignItems: 'center'
-    }
+    },
+    input: { width: '100%', flex: 0 }
   });
 };

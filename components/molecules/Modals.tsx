@@ -29,9 +29,9 @@ export function Modal(props: ModalProps) {
   return (
     <DefaultModal animationType="fade" transparent={true} {...otherProps}>
       <View style={styles.opaqueBackground}></View>
-      <TransparentContainerView>
-        <WhiteBox style={boxStyle}>{children}</WhiteBox>
-      </TransparentContainerView>
+        <TransparentContainerView>
+          <WhiteBox style={boxStyle}>{children}</WhiteBox>
+        </TransparentContainerView>
     </DefaultModal>
   );
 }
