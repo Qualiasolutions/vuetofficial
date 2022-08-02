@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { EntityTabScreenProps } from 'types/base';
 import annualDates from './linkConfigs/annualDates';
 import LinkList from './components/LinkList';
@@ -16,9 +16,11 @@ export default function LinkListScreen({
 }: EntityTypeListScreenProps) {
   const { t } = useTranslation();
 
-  navigation.setOptions({
-    headerTitle: t(`linkListTitles.${route.params.listName}`)
-  });
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: t(`linkListTitles.${route.params.listName}`)
+    });
+  }, [ route ])
 
   return <LinkList links={listNameToLinks[route.params.listName]} />;
 }
