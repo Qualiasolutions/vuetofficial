@@ -87,7 +87,6 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
       text="+ Add New"
       customOnPress={() => {
         setAddNewModal(true);
-        // alert('Hello')
       }}
     />
   );
