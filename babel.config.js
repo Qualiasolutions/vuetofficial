@@ -5,6 +5,7 @@ module.exports = function (api) {
     root: ['./'],
     alias: {
       components: './components',
+      constants: './constants',
       utils: './utils',
       reduxStore: './reduxStore',
       screens: './screens',

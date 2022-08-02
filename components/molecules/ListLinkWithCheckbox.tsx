@@ -14,7 +14,7 @@ import { BlackText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import Layout from '../../constants/Layout';
+import Layout from 'constants/Layout';
 import Checkbox from './Checkbox';
 import { Feather } from '@expo/vector-icons';
 

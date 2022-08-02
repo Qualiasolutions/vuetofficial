@@ -27,7 +27,7 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import { WhiteText } from 'components/molecules/TextComponents';
-import Layout from '../../../../../constants/Layout';
+import Layout from 'constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import {
   TransparentView,

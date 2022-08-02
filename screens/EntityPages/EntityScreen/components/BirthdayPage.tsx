@@ -28,7 +28,7 @@ import {
 import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
 import { Modal } from 'components/molecules/Modals';
 import { TextInput, useThemeColor } from 'components/Themed';
-import Layout from '../../../../constants/Layout';
+import Layout from 'constants/Layout';
 
 export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);

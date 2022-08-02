@@ -75,7 +75,7 @@ export default function EntityListScreen({
       const entities = entry[1];
       return (
         <TransparentView key={i}>
-          <AlmostBlackText style={styles.dateHeading} text={sectionTitle} />
+          <AlmostBlackText style={styles.sectionTitle} text={sectionTitle} />
           {entities.map((entity) => {
             const resourceType = entity.resourcetype;
             const Link = linkMapping[resourceType] || DefaultLink;
@@ -105,7 +105,7 @@ export default function EntityListScreen({
 }
 
 const styles = StyleSheet.create({
-  dateHeading: {
+  sectionTitle: {
     fontSize: 20,
     textAlign: 'center',
     marginTop: 27,
