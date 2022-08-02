@@ -26,12 +26,12 @@ export const birthdayForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.birthday.start_date')
     },
-    owner: {
-      type: 'radio',
+    members: {
+      type: 'addMembers',
       required: true,
       permittedValues: userFullDetails.family.users,
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.owner')
+      displayName: t('entities.entity.members')
     }
   };
 };
