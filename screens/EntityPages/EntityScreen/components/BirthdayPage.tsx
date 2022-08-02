@@ -88,12 +88,16 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
       toScreenParams={{ entityId: id }}
       navMethod="push"
       selected={allEntities?.byId[id].selected}
-      onSelect={() => {
-        updateTrigger({
+      onSelect={async () => {
+        const res = await updateTrigger({
           resourcetype: 'List',
           id,
           selected: !allEntities?.byId[id].selected
-        });
+        }) as any
+
+        if (res && res?.error && (res?.error.status >= 400)) {
+          throw Error('Network request error')
+        }
       }}
     />
   ));

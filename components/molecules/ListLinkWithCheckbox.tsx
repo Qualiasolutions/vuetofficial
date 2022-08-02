@@ -31,7 +31,7 @@ type ListLinkProps = {
   style?: ViewStyle;
   selected?: boolean;
   customOnPress?: () => void;
-  onSelect?: (v: boolean) => void;
+  onSelect?: (v: boolean) => Promise<void>;
 };
 
 export default function ListLinkWithCheckbox({
