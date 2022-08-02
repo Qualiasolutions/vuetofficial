@@ -222,11 +222,11 @@ export default function Task({ task, selected, onPress }: PropTypes) {
           disabled={task.is_complete}
           style={styles.checkbox}
           checked={task.is_complete}
-          onValueChange={() => {
+          onValueChange={async () => {
             if (taskTypesRequiringForm.includes(task.resourcetype)) {
               return setShowTaskCompletionForm(true);
             }
-            triggerCreateCompletionForm({
+            await triggerCreateCompletionForm({
               resourcetype: `${task.resourcetype}CompletionForm`,
               recurrence_index: task.recurrence_index,
               task: task.id

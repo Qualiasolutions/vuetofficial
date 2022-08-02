@@ -24,7 +24,10 @@ function ModalListing({
           ]}
         />
       </TransparentView>
-      <Checkbox checked={item.selected} />
+      <Checkbox
+        checked={item.selected}
+        disabled={true}
+      />
     </TransparentView>
   );
 }

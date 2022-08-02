@@ -1,13 +1,14 @@
-import { Text, useThemeColor, View } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, ViewProps } from 'react-native';
+import { ViewStyle } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 const CHECKBOX_HEIGHT = 23;
 const CHECKBOX_WIDTH = 23;
 const CHECKBOX_RADIUS = 2;
 
 type CheckboxProps = {
   checked?: boolean;
-  style?: ViewProps;
+  style?: ViewStyle;
   disabled?: boolean;
   smoothChecking?: boolean;
   onValueChange?: (value: any) => Promise<void>;
