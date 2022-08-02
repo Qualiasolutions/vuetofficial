@@ -15,13 +15,8 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { monthNames } from 'utils/datesAndTimes';
 import { StyleSheet } from 'react-native';
-const _ = require('lodash');
-
-const sectionNameMapping = {
-  Birthday: (entity: EntityResponseType) => { return monthNames[Number(entity.start_date?.split('-')[1]) - 1] }
-} as { [key: string]: ((entity: EntityResponseType) => string) | undefined }
+import { sectionNameMapping } from './utils/sectionNameMapping';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -61,35 +56,34 @@ export default function EntityListScreen({
     });
   }, [route.params.entityTypeName]);
 
-  const sections = {} as { [key: string]: EntityResponseType[] }
-  const toSectionName = sectionNameMapping[entityData[0].resourcetype] || null
+  const sections = {} as { [key: string]: EntityResponseType[] };
+  const toSectionName = sectionNameMapping[entityData[0].resourcetype] || null;
   if (toSectionName) {
     for (const entity of entityData) {
       if (sections[toSectionName(entity)]) {
-        sections[toSectionName(entity)].push(entity)
+        sections[toSectionName(entity)].push(entity);
       } else {
-        sections[toSectionName(entity)] = [entity]
+        sections[toSectionName(entity)] = [entity];
       }
     }
   }
 
-  let listLinks
+  let listLinks;
   if (toSectionName) {
-    listLinks =
-      Object.entries(sections).map((entry, i) => {
-        const sectionTitle = entry[0]
-        const entities = entry[1]
-        return (
-          <TransparentView key={i}>
-            <AlmostBlackText style={styles.dateHeading} text={sectionTitle} />
-            {entities.map((entity) => {
-              const resourceType = entity.resourcetype;
-              const Link = linkMapping[resourceType] || DefaultLink;
-              return <Link key={entity.id} entity={entity} />;
-            })}
-          </TransparentView>
-        );
-      });
+    listLinks = Object.entries(sections).map((entry, i) => {
+      const sectionTitle = entry[0];
+      const entities = entry[1];
+      return (
+        <TransparentView key={i}>
+          <AlmostBlackText style={styles.dateHeading} text={sectionTitle} />
+          {entities.map((entity) => {
+            const resourceType = entity.resourcetype;
+            const Link = linkMapping[resourceType] || DefaultLink;
+            return <Link key={entity.id} entity={entity} />;
+          })}
+        </TransparentView>
+      );
+    });
   } else {
     listLinks = entityData.map((entity) => {
       const resourceType = entity.resourcetype;
@@ -97,7 +91,6 @@ export default function EntityListScreen({
       return <Link key={entity.id} entity={entity} />;
     });
   }
-
 
   return (
     <WhiteFullPageScrollView>
@@ -118,4 +111,4 @@ const styles = StyleSheet.create({
     marginTop: 27,
     fontWeight: '700'
   }
-})
+});

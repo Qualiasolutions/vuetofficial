@@ -2,7 +2,7 @@ import {
   AlmostBlackText,
   LightBlackText
 } from 'components/molecules/TextComponents';
-import {  WhiteBox } from 'components/molecules/ViewComponents';
+import { WhiteBox } from 'components/molecules/ViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
 import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
@@ -14,18 +14,17 @@ export default function AnniversaryCard({
 }: {
   entity: EntityResponseType;
 }) {
-
-  const styles = function () {
+  const styles = (function () {
     return StyleSheet.create({
       card: {
         height: 72,
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: useThemeColor({}, 'almostBlack'),
+        borderColor: useThemeColor({}, 'almostBlack')
       },
       listEntryText: {
-        fontSize: 20,
+        fontSize: 20
       },
       divider: {
         height: 45,
@@ -34,7 +33,7 @@ export default function AnniversaryCard({
         marginLeft: 17.5
       }
     });
-  }();
+  })();
 
   const startDate = getDateWithoutTimezone(entity?.start_date);
   const { age, monthName, date } = getDaysToAge(startDate);
@@ -47,10 +46,7 @@ export default function AnniversaryCard({
       }}
     >
       <WhiteBox style={styles.card}>
-        <LightBlackText
-          text={entity.name || ''}
-          style={styles.listEntryText}
-        />
+        <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 18 }}
           text={`${age} on ${monthName} ${date}`}
@@ -59,4 +55,3 @@ export default function AnniversaryCard({
     </Pressable>
   );
 }
-

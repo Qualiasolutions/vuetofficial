@@ -77,7 +77,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
           resourcetype: 'List',
           id,
           selected: !allEntities?.byId[id].selected
-        })
+        });
       }}
     />
   ));
