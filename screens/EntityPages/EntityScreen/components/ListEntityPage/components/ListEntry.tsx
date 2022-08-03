@@ -1,5 +1,6 @@
 import {
   CustomFile,
+  PickedFile,
   SmallImagePicker
 } from 'components/forms/components/ImagePicker';
 import React, { useEffect, useRef, useState } from 'react';
@@ -13,8 +14,8 @@ import {
   Animated
 } from 'react-native';
 import { ListEntryResponse } from 'types/lists';
-import Checkbox from './Checkbox';
-import { AlmostBlackText } from './TextComponents';
+import Checkbox from 'components/molecules/Checkbox';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
 import {
   useDeleteListEntryMutation,
   useUpdateListEntryMutation,
@@ -26,12 +27,8 @@ import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useThemeColor } from 'components/Themed';
 
 export default function ListEntry({
-  children,
-  key,
   listEntry
 }: {
-  children: React.ReactNode;
-  key: string;
   listEntry: ListEntryResponse;
 }) {
   const [deleteListEntry, deleteListEntryResult] = useDeleteListEntryMutation();
@@ -149,7 +146,7 @@ export default function ListEntry({
       );
   };
 
-  const onImageSelect = (image: CustomFile) => {
+  const onImageSelect = (image: PickedFile) => {
     const data = new FormData();
     data.append('image', image as any);
     formUpdateListEntry({
@@ -199,7 +196,7 @@ export default function ListEntry({
             updateShowIcons(!showIcons);
           }}
         >
-          <View key={key} style={styles.content}>
+          <View style={styles.content}>
             <View style={styles.titleWrapper}>
               <Pressable onPress={() => updateSelected(!listEntry.selected)}>
                 <Checkbox checked={listEntry.selected} />

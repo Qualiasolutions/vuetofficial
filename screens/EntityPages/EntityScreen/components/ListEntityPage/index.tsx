@@ -19,15 +19,13 @@ import {
 import { TextInput } from 'components/Themed';
 import {
   useCreateListEntryMutation,
-  useDeleteListEntryMutation,
-  useUpdateListEntryMutation
+  useDeleteListEntryMutation
 } from 'reduxStore/services/api/lists';
 import { isListEntity } from 'types/entities';
 import { userService } from 'utils/userService';
 import { UserResponse } from 'types/users';
 import MemberList from 'components/molecules/MemberList';
-import ListEntry from 'components/molecules/ListEntry';
-import { PickedFile } from 'components/forms/components/ImagePicker';
+import ListEntry from './components/ListEntry';
 
 export default function ListScreen({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -51,22 +49,9 @@ export default function ListScreen({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
   const [newEntryTitle, setNewEntryTitle] = useState<string>('');
   const [createListEntry, createListEntryResult] = useCreateListEntryMutation();
-  const [updateListEntry, updateListEntryResult] = useUpdateListEntryMutation();
   const [deleteListEntry, deleteListEntryResult] = useDeleteListEntryMutation();
 
   const [updateEntity, updateEntityResult] = useUpdateEntityMutation();
-
-  const uploadProfileImage = (listId: number, image: PickedFile) => {
-    if (userFullDetails) {
-      const data = new FormData();
-
-      data.append('image', image as any);
-      updateListEntry({
-        id: listId,
-        image: data
-      });
-    }
-  };
 
   if (!isListEntity(entityData) || isLoading) {
     return null;
@@ -95,14 +80,13 @@ export default function ListScreen({ entityId }: { entityId: number }) {
 
   const onMemberListUpdate = (members: UserResponse[]) => {
     const memberIds = members.map((x) => x.id);
-    console.log(memberIds);
     updateEntity({
       id: entityId,
       resourcetype: entityData.resourcetype,
       members: memberIds
     })
       .unwrap()
-      .then((res) => console.log('res')); //this won't work if there are no members assigned to the entity!!!!
+      .then((res: any) => console.log(res)); //this won't work if there are no members assigned to the entity!!!!
   };
 
   const sortedListEntries = entityData.list_entries

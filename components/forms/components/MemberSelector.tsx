@@ -23,13 +23,12 @@ export function ModalListing ({
             { backgroundColor: `#${item.member_colour}` }
           ]}
         />
-      </TransparentView>
-      <Checkbox
-        checked={item.selected}
-        disabled={true}
-      />
     </TransparentView>
-  );
+    <Checkbox
+      checked={item.selected}
+      disabled={true}
+    />
+  </TransparentView>
 }
 
 export default function MemberSelector({ data, onValueChange }: any) {

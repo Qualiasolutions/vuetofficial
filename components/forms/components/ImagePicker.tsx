@@ -22,7 +22,7 @@ export type CustomFile = {
   type: string;
 };
 
-export type PickedFile = CustomFile;
+export type PickedFile = File | CustomFile;
 
 type ImagePickerProps = {
   onImageSelect: (image: PickedFile) => any;
