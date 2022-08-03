@@ -4,19 +4,19 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import UserWithColor from 'components/molecules/UserWithColor';
 import { useCallback, useState } from 'react';
 import { Image, Pressable, StyleSheet } from 'react-native';
-import { UserFullResponse } from 'types/users';
+import { UserFullResponse, UserResponse } from 'types/users';
 import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
 
-function ModalListing({
-  item
-}: {
-  item: UserFullResponse & { selected: boolean };
+
+export function ModalListing ({ 
+  item 
+}: { 
+  item: ((UserFullResponse | UserResponse) & { selected: boolean }) 
 }) {
-  return (
-    <TransparentView style={styles.membersItem}>
-      <TransparentView>
-        <Text> {`${item.first_name} ${item.last_name}`} </Text>
+  return <TransparentView style={styles.membersItem}>
+    <TransparentView>
+      <Text> {`${item.first_name} ${item.last_name}`} </Text>
         <View
           style={[
             styles.memberColour,

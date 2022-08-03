@@ -29,3 +29,8 @@ export type ListEntryUpdateRequest = {
   notes?: string;
   phone_number?: string;
 };
+
+export type FormUpdateListEntryRequest = {
+  id: number;
+  formData?: FormData;
+};
