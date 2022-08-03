@@ -31,7 +31,7 @@ export default function MemberList({
       alignItems: 'center',
       justifyContent: 'flex-end',
       flexDirection: 'row',
-      backgroundColor: 'white',
+      backgroundColor: useThemeColor({}, 'white'),
       borderWidth: 0,
       borderBottomWidth: 2,
       borderColor: useThemeColor({}, 'grey'),

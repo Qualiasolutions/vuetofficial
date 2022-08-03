@@ -1,6 +1,6 @@
 import {
   CustomFile,
-  SmallImagePicker,
+  SmallImagePicker
 } from 'components/forms/components/ImagePicker';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -10,7 +10,7 @@ import {
   Pressable,
   Image,
   TextInput,
-  Animated,
+  Animated
 } from 'react-native';
 import { ListEntryResponse } from 'types/lists';
 import Checkbox from './Checkbox';

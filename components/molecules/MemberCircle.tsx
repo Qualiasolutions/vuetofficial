@@ -12,7 +12,7 @@ export default function MemberCircle({ member }: { member: UserResponse }) {
       width: 40,
       height: 40,
       borderRadius: 30,
-      color: 'white',
+      color: useThemeColor({}, 'white'),
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
