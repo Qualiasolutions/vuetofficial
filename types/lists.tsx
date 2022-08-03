@@ -9,6 +9,7 @@ export type ListEntryResponse = {
   notes: string;
   phone_number: string;
   image_200_200: string;
+  presigned_image_url: string;
 };
 
 export type ListEntryCreateRequest = {

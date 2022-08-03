@@ -160,7 +160,7 @@ export default function ListEntry({
   };
 
   // Some hacky string replacement for local dev (ensure can access localstack S3)
-  const imageSource = listEntry?.image?.replace('localstack', vuetApiUrl.split(':')[0])
+  const imageSource = listEntry?.presigned_image_url?.replace('localstack', vuetApiUrl.split(':')[0])
 
   return (
     <Animated.View
