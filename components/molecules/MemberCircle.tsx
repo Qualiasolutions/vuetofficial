@@ -1,9 +1,7 @@
-import { ThemeProvider } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { UserResponse } from 'types/users';
-import { WhiteBox } from './ViewComponents';
 
 export default function MemberCircle({ member }: { member: UserResponse }) {
   const styles = StyleSheet.create({

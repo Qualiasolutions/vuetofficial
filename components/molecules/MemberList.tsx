@@ -19,9 +19,9 @@ export default function MemberList({
   members: UserResponse[];
   onChange: (members: UserResponse[]) => void;
 }) {
-  //we pass through the user response of the owner which contains the family information
-  //we also pass through the list of members associated with the entity
-  //we store the members in state
+  // we pass through the user response of the owner which contains the family information
+  // we also pass through the list of members associated with the entity
+  // we store the members in state
 
   const styles = StyleSheet.create({
     container: {
@@ -84,7 +84,7 @@ export default function MemberList({
         />
       </Pressable>
       {members.map((member) => {
-        return <MemberCircle member={member} />;
+        return <MemberCircle key={member.id} member={member} />;
       })}
       <ListingModal
         visible={showmodal}

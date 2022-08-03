@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 import {
   TransparentContainerView,
-  WhiteBox
+  WhiteBox,
+  WhiteContainerView,
+  WhiteView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +28,7 @@ import { userService } from 'utils/userService';
 import { UserResponse } from 'types/users';
 import MemberList from 'components/molecules/MemberList';
 import ListEntry from './components/ListEntry';
+import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 export default function ListScreen({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -65,9 +68,7 @@ export default function ListScreen({ entityId }: { entityId: number }) {
       </Pressable>
     </WhiteBox>
   ));
-  const memberIds = entityData.members.includes(entityData.owner)
-    ? entityData.members
-    : entityData.members + [entityData.owner];
+  const memberIds = Array(...(new Set([...entityData.members, entityData.owner])))
   const members: UserResponse[] = [];
 
   if (userFullDetails) {
@@ -98,13 +99,13 @@ export default function ListScreen({ entityId }: { entityId: number }) {
   ));
 
   return (
-    <ScrollView>
-      <TransparentContainerView>
-        <MemberList
+    <WhiteFullPageScrollView>
+      <WhiteView>
+        {/* <MemberList
           userFullDetails={userFullDetails!}
           members={members}
           onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
-        />
+        /> */}
         {listEntryComponents}
         <TextInput
           value={newEntryTitle}
@@ -120,8 +121,8 @@ export default function ListScreen({ entityId }: { entityId: number }) {
           }
           placeholder={t('screens.listEntity.typeOrUpload')}
         />
-      </TransparentContainerView>
-    </ScrollView>
+      </WhiteView>
+    </WhiteFullPageScrollView>
   );
 }
 

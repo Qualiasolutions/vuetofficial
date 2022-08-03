@@ -25,6 +25,10 @@ import { Autosave } from 'hooks/autoSave';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useThemeColor } from 'components/Themed';
+import Constants from 'expo-constants';
+
+const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+
 
 export default function ListEntry({
   listEntry
@@ -109,7 +113,7 @@ export default function ListEntry({
       minHeight: 100
     },
     input: {
-      color: useThemeColor({}, 'grey'),
+      color: useThemeColor({}, 'almostBlack'),
       fontSize: 14,
       marginTop: 10
     },
@@ -154,6 +158,9 @@ export default function ListEntry({
       formData: data
     });
   };
+
+  // Some hacky string replacement for local dev (ensure can access localstack S3)
+  const imageSource = listEntry?.image?.replace('localstack', vuetApiUrl.split(':')[0])
 
   return (
     <Animated.View
@@ -203,8 +210,8 @@ export default function ListEntry({
               </Pressable>
               <AlmostBlackText text={listEntry.title} style={styles.title} />
             </View>
-            {listEntry.image ? (
-              <Image source={{ uri: listEntry.image }} style={styles.image} />
+            {imageSource ? (
+              <Image source={{ uri: imageSource }} style={styles.image} />
             ) : (
               <></>
             )}
