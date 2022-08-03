@@ -33,4 +33,3 @@ const styles = StyleSheet.create({
     height: 10
   }
 });
-// return <View style={styles.container}>{bars}</View>

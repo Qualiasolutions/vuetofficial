@@ -18,7 +18,7 @@ export default function MemberCircle({ member }: { member: UserResponse }) {
       alignItems: 'center'
     },
     text: {
-      color: '#333',
+      color: useThemeColor({}, 'almostBlack'),
       fontSize: 20
     }
   });

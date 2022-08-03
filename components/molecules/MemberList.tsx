@@ -19,7 +19,7 @@ export default function MemberList({
   members: UserResponse[];
   onChange: (members: UserResponse[]) => void;
 }) {
-  //ewe pass through the user respons eof the owner which contains the family information
+  //we pass through the user response of the owner which contains the family information
   //we also pass through the list of members associated with the entity
   //we store the members in state
 
@@ -34,7 +34,7 @@ export default function MemberList({
       backgroundColor: 'white',
       borderWidth: 0,
       borderBottomWidth: 2,
-      borderColor: '#D9D9D9',
+      borderColor: useThemeColor({}, 'grey'),
       paddingRight: 30,
       paddingLeft: 30
     },
