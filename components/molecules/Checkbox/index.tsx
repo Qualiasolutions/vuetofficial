@@ -12,7 +12,7 @@ type CheckboxProps = {
   disabled?: boolean;
   smoothChecking?: boolean;
   onValueChange?: (value: any) => Promise<void>;
-}
+};
 
 export default function Checkbox({
   checked = false,
@@ -23,9 +23,11 @@ export default function Checkbox({
 }: CheckboxProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
-  const [ submitting, setSubmitting ] = useState<boolean>(false)
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const isChecked = smoothChecking ? (submitting && !checked) || (!submitting && checked) : checked
+  const isChecked = smoothChecking
+    ? (submitting && !checked) || (!submitting && checked)
+    : checked;
   const backgroundColor = isChecked ? primaryColor : greyColor;
   const activeStyle = isChecked ? styles.active : styles.inactive;
 
@@ -38,20 +40,20 @@ export default function Checkbox({
   setSubmitting(false) so that it isn't forced to be checked.
   */
   useEffect(() => {
-    setSubmitting(false)
-  }, [ checked ])
+    setSubmitting(false);
+  }, [checked]);
 
   return (
     <Pressable
       onPress={async () => {
         if (onValueChange) {
           if (smoothChecking) {
-            setSubmitting(true)
+            setSubmitting(true);
           }
           try {
             await onValueChange(checked);
           } catch (err) {
-            setSubmitting(false)
+            setSubmitting(false);
           }
         }
       }}

@@ -17,19 +17,19 @@ const extendedApi = vuetApi.injectEndpoints({
       invalidatesTags: ['Entity']
     }),
     formUpdateListEntry: builder.mutation<
-    ListEntryResponse,
-    FormUpdateListEntryRequest
-  >({
-    query: (payload) => ({
-      url: `core/list-entry/${payload.id}/`,
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'multipart/form-data;'
-      },
-      body: payload.formData
+      ListEntryResponse,
+      FormUpdateListEntryRequest
+    >({
+      query: (payload) => ({
+        url: `core/list-entry/${payload.id}/`,
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'multipart/form-data;'
+        },
+        body: payload.formData
+      }),
+      invalidatesTags: ['Entity']
     }),
-    invalidatesTags: ['Entity']
-  }),
     createListEntry: builder.mutation<
       ListEntryResponse,
       Partial<Omit<ListEntryResponse, 'id'>>
@@ -62,6 +62,5 @@ export const {
   useUpdateListEntryMutation,
   useCreateListEntryMutation,
   useDeleteListEntryMutation,
-  useFormUpdateListEntryMutation,
-  
+  useFormUpdateListEntryMutation
 } = extendedApi;

@@ -78,7 +78,7 @@ export function ImagePicker({
     (defaultImageUrl && {
       uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])
     }) ||
-    require('../../../assets/images/icons/camera.png');
+    require('assets/images/icons/camera.png');
 
   return (
     <Pressable onPress={chooseImage}>
@@ -157,18 +157,14 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   smallCameraIcon: {
-    marginBottom: 10,
+    marginBottom: 10
   }
 });
-
-
-
-
 
 export function SmallImagePicker({
   onImageSelect,
   style = {}
-}: Omit<ImagePickerProps, 'backgroundColor'> ) {
+}: Omit<ImagePickerProps, 'backgroundColor'>) {
   const [selectedImage, setSelectedImage] =
     useState<DocumentPicker.DocumentResult | null>(null);
 
@@ -204,16 +200,15 @@ export function SmallImagePicker({
     }
   };
 
-  const imageSource =
-    require('../../../assets/images/icons/small-camera.png');
+  const imageSource = require('assets/images/icons/small-camera.png');
 
   return (
     <Pressable onPress={chooseImage}>
-        <Image
-          style={styles.smallCameraIcon}
-          // Some hacky string replacement for local dev (ensure can access localstack S3)
-          source={imageSource}
-        />
+      <Image
+        style={styles.smallCameraIcon}
+        // Some hacky string replacement for local dev (ensure can access localstack S3)
+        source={imageSource}
+      />
     </Pressable>
   );
 }

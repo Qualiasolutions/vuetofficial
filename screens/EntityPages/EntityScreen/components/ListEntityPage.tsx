@@ -6,10 +6,16 @@ import {
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
-import { useGetAllEntitiesQuery, useUpdateEntityMutation } from 'reduxStore/services/api/entities';
+import {
+  useGetAllEntitiesQuery,
+  useUpdateEntityMutation
+} from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery, useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
 import { TextInput } from 'components/Themed';
 import {
   useCreateListEntryMutation,
@@ -17,13 +23,11 @@ import {
   useUpdateListEntryMutation
 } from 'reduxStore/services/api/lists';
 import { isListEntity } from 'types/entities';
-import { colourService } from 'utils/colourService';
 import { userService } from 'utils/userService';
-import { UserFullResponse, UserResponse } from 'types/users';
+import { UserResponse } from 'types/users';
 import MemberList from 'components/molecules/MemberList';
 import ListEntry from 'components/molecules/ListEntry';
 import { PickedFile } from 'components/forms/components/ImagePicker';
-import MemberSelector from 'components/forms/components/MemberSelector';
 
 export default function ListScreen({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -52,11 +56,10 @@ export default function ListScreen({ entityId }: { entityId: number }) {
 
   const [updateEntity, updateEntityResult] = useUpdateEntityMutation();
 
-
   const uploadProfileImage = (listId: number, image: PickedFile) => {
     if (userFullDetails) {
       const data = new FormData();
-      
+
       data.append('image', image as any);
       updateListEntry({
         id: listId,
@@ -73,44 +76,51 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     <WhiteBox style={styles.listEntry} key={listEntry.id}>
       <AlmostBlackText text={listEntry.title} />
       <Pressable onPress={() => deleteListEntry(listEntry.id)}>
-        <Image
-          source={require('../../../../assets/images/icons/remove-circle.png')}
-        />
+        <Image source={require('assets/images/icons/remove-circle.png')} />
       </Pressable>
     </WhiteBox>
   ));
-  const memberIds = entityData.members.includes(entityData.owner) ? entityData.members : entityData.members + [ entityData.owner];
-  const members : UserResponse[] = [];
+  const memberIds = entityData.members.includes(entityData.owner)
+    ? entityData.members
+    : entityData.members + [entityData.owner];
+  const members: UserResponse[] = [];
 
-  if(userFullDetails) {
+  if (userFullDetails) {
     memberIds.forEach((id: number) => {
-      members.push(userService.getUserByIdFromUserFullDetails(id, userFullDetails)!);
-    })
+      members.push(
+        userService.getUserByIdFromUserFullDetails(id, userFullDetails)!
+      );
+    });
   }
 
   const onMemberListUpdate = (members: UserResponse[]) => {
-    const memberIds = members.map(x=> x.id);
+    const memberIds = members.map((x) => x.id);
     console.log(memberIds);
     updateEntity({
       id: entityId,
       resourcetype: entityData.resourcetype,
       members: memberIds
-    }).unwrap().then((res) => console.log('res')); //this won't work if there are no members assigned to the entity!!!!
-  }
+    })
+      .unwrap()
+      .then((res) => console.log('res')); //this won't work if there are no members assigned to the entity!!!!
+  };
 
-  const sortedListEntries = entityData.list_entries.slice().sort((a,b) => a.id - b.id);
-
+  const sortedListEntries = entityData.list_entries
+    .slice()
+    .sort((a, b) => a.id - b.id);
 
   const listEntryComponents = sortedListEntries.map((listEntry) => (
-    <ListEntry listEntry={listEntry} key={listEntry.id}>
-    </ListEntry>
-
+    <ListEntry listEntry={listEntry} key={listEntry.id}></ListEntry>
   ));
-  
+
   return (
     <ScrollView>
       <TransparentContainerView>
-      <MemberList userFullDetails={userFullDetails!} members={members} onChange={(members: UserResponse[]) => onMemberListUpdate(members)} />
+        <MemberList
+          userFullDetails={userFullDetails!}
+          members={members}
+          onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
+        />
         {listEntryComponents}
         <TextInput
           value={newEntryTitle}
@@ -126,7 +136,6 @@ export default function ListScreen({ entityId }: { entityId: number }) {
           }
           placeholder={t('screens.listEntity.typeOrUpload')}
         />
-       
       </TransparentContainerView>
     </ScrollView>
   );
