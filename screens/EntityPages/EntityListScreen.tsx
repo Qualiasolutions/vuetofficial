@@ -57,7 +57,7 @@ export default function EntityListScreen({
   }, [route.params.entityTypeName]);
 
   const sections = {} as { [key: string]: EntityResponseType[] };
-  const toSectionName = sectionNameMapping[entityData[0].resourcetype] || null;
+  const toSectionName = sectionNameMapping[entityData[0]?.resourcetype] || null;
   if (toSectionName) {
     for (const entity of entityData) {
       if (sections[toSectionName(entity)]) {
