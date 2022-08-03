@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, View } from 'components/Themed';
+import { Text } from 'components/Themed';
 import { formStyles } from './formStyles';
 import RTKForm from 'components/forms/RTKForm';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import GenericError from 'components/molecules/GenericError';
@@ -16,6 +15,8 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
+import { PrimaryText } from 'components/molecules/TextComponents';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -32,10 +33,12 @@ const extraFieldsMapping = {
 
 export default function AddEntityForm({
   entityType,
-  parentId
+  parentId,
+  hasShadow = false
 }: {
   entityType: EntityTypeName;
   parentId?: number;
+  hasShadow?: boolean;
 }) {
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
   const entityForms = {
@@ -94,26 +97,35 @@ export default function AddEntityForm({
     }
 
     return (
-      <SafeAreaView style={formStyles.container}>
-        <View style={formStyles.container}>
-          {createSuccessful ? (
-            <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
-          ) : null}
-          <RTKForm
-            fields={entityForms[entityType]}
-            methodHooks={{
-              POST: useCreateEntityMutation
-            }}
-            formType="CREATE"
-            extraFields={extraFields}
-            onSubmitSuccess={() => {
-              setCreateSuccessful(true);
-            }}
-            onValueChange={() => setCreateSuccessful(false)}
-            clearOnSubmit={true}
-            inlineFields={true}
+      <SafeAreaView
+        style={[
+          formStyles.container,
+          hasShadow && { backgroundColor: 'white' }
+        ]}
+      >
+        {createSuccessful ? (
+          <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
+        ) : null}
+        {entityType && (
+          <PrimaryText
+            style={{ fontSize: 20, marginBottom: 15 }}
+            text={`Add ${entityType}`}
           />
-        </View>
+        )}
+        <RTKForm
+          fields={entityForms[entityType]}
+          methodHooks={{
+            POST: useCreateEntityMutation
+          }}
+          formType="CREATE"
+          extraFields={extraFields}
+          onSubmitSuccess={() => {
+            setCreateSuccessful(true);
+          }}
+          onValueChange={() => setCreateSuccessful(false)}
+          clearOnSubmit={true}
+          inlineFields={true}
+        />
       </SafeAreaView>
     );
   }

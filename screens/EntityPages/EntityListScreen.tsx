@@ -96,9 +96,13 @@ export default function EntityListScreen({
     <WhiteFullPageScrollView>
       <TransparentPaddedView>
         {listLinks}
-        {showCreateForm && entityTypes?.length === 1 && (
-          <AddEntityForm entityType={entityTypes && entityTypes[0]} />
-        )}
+        {(showCreateForm && entityTypes?.length === 1) ||
+          (listLinks.length == 0 && (
+            <AddEntityForm
+              hasShadow
+              entityType={entityTypes && entityTypes[0]}
+            />
+          ))}
       </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
