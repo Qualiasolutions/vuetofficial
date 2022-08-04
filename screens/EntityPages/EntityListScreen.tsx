@@ -12,9 +12,13 @@ import linkMapping from 'components/entityCards';
 import { EntityResponseType } from 'types/entities';
 import {
   TransparentPaddedView,
-  TransparentView
+  TransparentView,
+  WhiteBox
 } from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import {
+  AlmostBlackText,
+  PrimaryText
+} from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 
@@ -96,8 +100,15 @@ export default function EntityListScreen({
     <WhiteFullPageScrollView>
       <TransparentPaddedView>
         {listLinks}
-        {(showCreateForm && entityTypes?.length === 1 ) || listLinks.length == 0 && (
-          <AddEntityForm entityType={entityTypes && entityTypes[0]} />
+        {((showCreateForm && entityTypes?.length === 1) ||
+          listLinks.length == 0) && (
+          <WhiteBox>
+            <PrimaryText
+              style={{ fontSize: 20, textAlign: 'center' }}
+              text={`Add ${entityTypes[0]}`}
+            />
+            <AddEntityForm entityType={entityTypes && entityTypes[0]} />
+          </WhiteBox>
         )}
       </TransparentPaddedView>
     </WhiteFullPageScrollView>

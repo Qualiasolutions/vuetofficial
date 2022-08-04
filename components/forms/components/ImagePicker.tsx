@@ -22,7 +22,7 @@ export type CustomFile = {
   type: string;
 };
 
-export type PickedFile = CustomFile | File;
+export type PickedFile = File | CustomFile;
 
 type ImagePickerProps = {
   onImageSelect: (image: PickedFile) => any;
@@ -78,7 +78,7 @@ export function ImagePicker({
     (defaultImageUrl && {
       uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])
     }) ||
-    require('../../../assets/images/icons/camera.png');
+    require('assets/images/icons/camera.png');
 
   return (
     <Pressable onPress={chooseImage}>
@@ -155,5 +155,60 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     height: 160,
     width: '100%'
+  },
+  smallCameraIcon: {
+    marginBottom: 10
   }
 });
+
+export function SmallImagePicker({
+  onImageSelect,
+  style = {}
+}: Omit<ImagePickerProps, 'backgroundColor'>) {
+  const [selectedImage, setSelectedImage] =
+    useState<DocumentPicker.DocumentResult | null>(null);
+
+  useEffect(() => {
+    if (selectedImage && selectedImage.type === 'success') {
+      if (selectedImage.file) {
+        onImageSelect(selectedImage.file);
+      } else if (selectedImage.uri && selectedImage.size) {
+        const { name, size, uri } = selectedImage;
+        const nameParts = name.split('.');
+        const fileType = nameParts[nameParts.length - 1];
+
+        FileSystem.readAsStringAsync(selectedImage.uri).then((res) => {
+          onImageSelect({
+            name,
+            size,
+            uri,
+            type: 'application/' + fileType
+          });
+        });
+      }
+    }
+  }, [selectedImage]);
+
+  const chooseImage = async () => {
+    const res = await DocumentPicker.getDocumentAsync({
+      type: 'image/*'
+    });
+    if (res.type === 'success') {
+      setSelectedImage(res);
+    } else {
+      setSelectedImage(null);
+    }
+  };
+
+  const imageSource = require('assets/images/icons/small-camera.png');
+
+  return (
+    <Pressable onPress={chooseImage}>
+      <Image
+        style={styles.smallCameraIcon}
+        // Some hacky string replacement for local dev (ensure can access localstack S3)
+        source={imageSource}
+      />
+    </Pressable>
+  );
+}
