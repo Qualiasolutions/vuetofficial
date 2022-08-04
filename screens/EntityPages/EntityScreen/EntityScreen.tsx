@@ -11,14 +11,14 @@ import ChildEntityList from './components/ChildEntityList';
 import BirthdayPage from './components/BirthdayPage';
 import HobbyPage from './components/HobbyPage';
 import TripPage from './components/TripPage';
-import EventScreen from './components/EventPage';
+import EventPage from './components/EventPage';
 
 const resourceTypeToComponent = {
   List: ListEntityPage,
   Birthday: BirthdayPage,
   Hobby: HobbyPage,
   Trip: TripPage,
-  Event: EventScreen,
+  Event: EventPage,
   default: ChildEntityList
 } as {
   default: React.ElementType;

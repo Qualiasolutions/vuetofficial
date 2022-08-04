@@ -1,20 +1,34 @@
 import { useTranslation } from 'react-i18next';
 import {
+  useCreateEntityMutation,
   useGetAllEntitiesQuery,
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { TransparentContainerView } from 'components/molecules/ViewComponents';
+import {
+  TransparentContainerView,
+  TransparentView
+} from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { StyleSheet } from 'react-native';
-import { BlackText } from 'components/molecules/TextComponents';
-import { useThemeColor } from 'components/Themed';
+import { Pressable, StyleSheet } from 'react-native';
+import {
+  BlackText,
+  PrimaryText,
+  WhiteText
+} from 'components/molecules/TextComponents';
+import { TextInput, useThemeColor } from 'components/Themed';
 import Layout from 'constants/Layout';
 import EventListLink from 'components/molecules/EventListLink';
+import { Modal } from 'components/molecules/Modals';
+import { useCallback, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EventScreen({ entityId }: { entityId: number }) {
+  const [addNewModal, setAddNewModal] = useState(false);
+  const [itemName, setItemName] = useState('');
+  const [trigger, result] = useCreateEntityMutation();
   const [updateTrigger] = useUpdateEntityMutation();
 
   const username = useSelector(selectUsername);
@@ -41,16 +55,75 @@ export default function EventScreen({ entityId }: { entityId: number }) {
       navMethod="push"
       selected={allEntities?.byId[id].selected}
       subType={allEntities?.byId[id].subtype}
-      onSelect={async () => {}}
+      onSelect={async () => {
+        const res = (await updateTrigger({
+          resourcetype: allEntities?.byId[id].resourcetype,
+          id,
+          selected: !allEntities?.byId[id].selected
+        })) as any;
+
+        if (res && res?.error && res?.error.status >= 400) {
+          throw Error('Network request error');
+        }
+      }}
     />
   ));
+
+  const customLink = (
+    <EventListLink
+      text="Add New"
+      customOnPress={() => {
+        setAddNewModal(true);
+      }}
+      subType="add"
+      style={{ marginTop: 20 }}
+    />
+  );
+
+  const onAddNew = useCallback(() => {
+    setAddNewModal(false);
+    trigger({
+      resourcetype: 'Event',
+      name: itemName,
+      parent: entityId
+    });
+  }, [useCreateEntityMutation, setAddNewModal, itemName]);
+
+  const closeAddNewModal = useCallback(() => {
+    setAddNewModal(false);
+  }, [setAddNewModal]);
 
   return (
     <WhiteFullPageScrollView>
       <BlackText text={entityData?.name || ''} style={styles.name} />
       <TransparentContainerView style={styles.container}>
         {childEntityList}
+        {customLink}
       </TransparentContainerView>
+
+      <Modal visible={addNewModal}>
+        <TransparentView style={styles.addNewContainer}>
+          <Ionicons
+            name="close-circle"
+            size={30}
+            style={{ alignSelf: 'flex-end' }}
+            onPress={closeAddNewModal}
+          />
+          <PrimaryText text="Add a new" style={styles.addNewHeader} />
+          <TextInput
+            style={styles.input}
+            onChangeText={setItemName}
+            placeholder="Add title"
+          />
+          <Pressable
+            disabled={itemName == ''}
+            onPress={onAddNew}
+            style={styles.addNewButton}
+          >
+            <WhiteText text="Save" />
+          </Pressable>
+        </TransparentView>
+      </Modal>
     </WhiteFullPageScrollView>
   );
 }
@@ -64,7 +137,7 @@ const style = function () {
     },
     name: {
       fontSize: 26,
-      textAlign:'center'
+      textAlign: 'center'
     },
     birthDetail: {
       fontSize: 24
@@ -86,6 +159,7 @@ const style = function () {
       marginTop: 26,
       justifyContent: 'center',
       alignItems: 'center'
-    }
+    },
+    input: { width: '100%', flex: 0 }
   });
 };
