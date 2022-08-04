@@ -14,6 +14,7 @@ import {
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
 import {
+  AlmostBlackText,
   BlackText,
   PrimaryText,
   WhiteText
@@ -23,7 +24,7 @@ import Layout from 'constants/Layout';
 import EventListLink from 'components/molecules/EventListLink';
 import { Modal } from 'components/molecules/Modals';
 import { useCallback, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 export default function EventScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
@@ -96,6 +97,24 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   return (
     <WhiteFullPageScrollView>
       <BlackText text={entityData?.name || ''} style={styles.name} />
+
+      <TransparentView style={styles.infoContainer}>
+        <FontAwesome
+          name="thumb-tack"
+          size={20}
+          style={{
+            transform: [{ rotateZ: '45deg' }]
+          }}
+          color={useThemeColor({}, 'primary')}
+        />
+        <TransparentView>
+          <BlackText
+            text={'Things to do before the party'}
+            style={styles.info}
+          />
+          <AlmostBlackText text={'Please select'} style={styles.info} />
+        </TransparentView>
+      </TransparentView>
       <TransparentContainerView style={styles.container}>
         {childEntityList}
         {customLink}
@@ -130,7 +149,9 @@ export default function EventScreen({ entityId }: { entityId: number }) {
 
 const style = function () {
   return StyleSheet.create({
-    container: {},
+    container: {
+      paddingTop: 10
+    },
     detailsContainer: {
       alignItems: 'center',
       marginBottom: 20
@@ -160,6 +181,12 @@ const style = function () {
       justifyContent: 'center',
       alignItems: 'center'
     },
-    input: { width: '100%', flex: 0 }
+    input: { width: '100%', flex: 0 },
+    info: {
+      fontSize: 16
+    },
+    infoContainer: {
+      flexDirection: 'row'
+    }
   });
 };

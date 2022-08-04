@@ -51,7 +51,7 @@ export default function EventListLink({
   const styleFunc = function () {
     return StyleSheet.create({
       listEntry: {
-        width: Layout.window.width - 20,
+        width: Layout.window.width - 35,
         paddingHorizontal: 24,
         paddingVertical: 12,
         flexDirection: 'row',
