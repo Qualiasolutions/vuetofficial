@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export const formStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    width: '100%',
     height: '100%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white'
+    borderRadius: 10,
+    padding: 10
   },
   title: {
     fontSize: 20,

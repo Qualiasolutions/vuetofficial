@@ -276,6 +276,7 @@ export default function Form({
                   });
                   onValueChange();
                 }}
+                style={{ flex: 1 }}
               />
             </TransparentView>
           </TransparentView>

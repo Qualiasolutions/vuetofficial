@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, View } from 'components/Themed';
+import { Text } from 'components/Themed';
 import { formStyles } from './formStyles';
 import RTKForm from 'components/forms/RTKForm';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import GenericError from 'components/molecules/GenericError';
@@ -16,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -94,11 +94,15 @@ export default function AddEntityForm({
     }
 
     return (
-      <SafeAreaView style={formStyles.container}>
-        <View style={formStyles.container}>
-          {createSuccessful ? (
-            <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
-          ) : null}
+      <SafeAreaView
+        style={[
+          formStyles.container
+        ]}
+      >
+        {createSuccessful ? (
+          <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
+        ) : null}
+
           <RTKForm
             fields={entityForms[entityType]}
             methodHooks={{
@@ -113,7 +117,6 @@ export default function AddEntityForm({
             clearOnSubmit={true}
             inlineFields={true}
           />
-        </View>
       </SafeAreaView>
     );
   }
