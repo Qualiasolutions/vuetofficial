@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderWidth: 1,
-    flex: 1,
+    width: '100%',
     borderColor: '#D8D8D8',
     fontFamily: 'Poppins'
   },
