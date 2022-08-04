@@ -66,6 +66,7 @@ function getDaysToAge(startDate: Date): {
   month: number;
   monthName: string;
   date: number;
+  year: number;
 } {
   const nextOccurrence = getNextDate(startDate);
   const todayDate = new Date();
@@ -73,14 +74,17 @@ function getDaysToAge(startDate: Date): {
   const daysDifference = Math.ceil(
     millisecondsDifference / (1000 * 60 * 60 * 24)
   );
-  const age = nextOccurrence.getFullYear() - startDate.getFullYear();
+
+  const nextYear = nextOccurrence.getUTCFullYear()
+  const age = nextYear - startDate.getUTCFullYear();
 
   return {
     days: daysDifference,
     age,
-    month: nextOccurrence.getMonth() + 1,
-    monthName: monthNames[nextOccurrence.getMonth()],
-    date: nextOccurrence.getDate()
+    date: nextOccurrence.getUTCDate(),
+    month: nextOccurrence.getUTCMonth() + 1,
+    monthName: monthNames[nextOccurrence.getUTCMonth()],
+    year: nextYear
   };
 }
 

@@ -50,7 +50,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
 
   const startDate = getDateWithoutTimezone(entityData?.start_date);
-  const { age, monthName, date } = getDaysToAge(startDate);
+  const { age, monthName, date, year } = getDaysToAge(startDate);
 
   const styles = style();
 
@@ -58,7 +58,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     <TransparentView style={styles.detailsContainer}>
       <AlmostBlackText
         style={styles.birthDetail}
-        text={`${age} on ${monthName} ${date}, 2023`}
+        text={`${age} on ${monthName} ${date}, ${year}`}
       />
     </TransparentView>
   );
