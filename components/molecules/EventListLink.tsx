@@ -1,18 +1,26 @@
-import React from 'react';
-import { Image, Pressable, StyleSheet, ViewStyle } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  Image,
+  Pressable,
+  StyleSheet,
+  TouchableHighlight,
+  ViewStyle
+} from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
-import { BlackText } from 'components/molecules/TextComponents';
+import { BlackText, WhiteText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import Layout from 'constants/Layout';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { useThemeColor } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -48,6 +56,9 @@ export default function EventListLink({
     | StackNavigationProp<SettingsTabParamList>
   >();
 
+  const greyColor = useThemeColor({}, 'grey');
+  const primaryColor = useThemeColor({}, 'primary');
+
   const styleFunc = function () {
     return StyleSheet.create({
       listEntry: {
@@ -71,13 +82,20 @@ export default function EventListLink({
       check: {
         height: 20,
         width: 13,
-        tintColor: useThemeColor({}, 'primary')
+        tintColor: primaryColor
+      },
+      rightButton: {
+        backgroundColor: primaryColor,
+        width: 100,
+        marginTop: 10,
+        paddingVertical: 12,
+        marginLeft: -10,
+        justifyContent: 'center',
+        alignItems: 'center'
       }
     });
   };
 
-  const greyColor = useThemeColor({}, 'grey');
-  const primaryColor = useThemeColor({}, 'primary');
   const styles = styleFunc();
 
   function returnEventImage() {
@@ -114,35 +132,52 @@ export default function EventListLink({
     }
   }
 
-  return (
-    <Pressable
-      onPress={() => {
-        if (customOnPress) {
-          return customOnPress();
-        }
-        onSelect && onSelect(selected);
-      }}
-    >
-      <WhiteBox
-        style={[
-          styles.listEntry,
-          style,
-          selected && { backgroundColor: greyColor },
-          !selected && subType != 'add' && { opacity: 0.3 }
-        ]}
-      >
-        <TransparentView style={styles.row}>
-          {returnEventImage()}
-          <BlackText text={text} style={styles.listEntryText} />
-        </TransparentView>
+  const renderRightActions = useCallback(() => {
+    return (
+      <Pressable  onPress={()=>  onSelect && onSelect(selected)} style={styles.rightButton}>
+        <WhiteText text="Hide" />
+      </Pressable>
+    );
+  }, [selected, onSelect]);
 
-        {subType != 'add' && (
-          <Feather
-            name={!selected ? 'eye-off' : 'chevron-right'}
-            size={!selected ? 25 : 30}
-          />
-        )}
-      </WhiteBox>
-    </Pressable>
+  const Wraper = selected ?Swipeable  : TransparentView
+
+  return (
+    <Wraper
+      useNativeAnimations={true}
+      overshootRight={false}
+      renderRightActions={renderRightActions}
+      containerStyle={{ overflow: 'visible' }}
+    >
+      <Pressable
+        onPress={() => {
+          if (customOnPress) {
+            return customOnPress();
+          }
+          !selected && onSelect && onSelect(selected);
+        }}
+      >
+        <WhiteBox
+          style={[
+            styles.listEntry,
+            style,
+            selected && { backgroundColor: greyColor },
+            !selected && subType != 'add' && { opacity: 0.3 }
+          ]}
+        >
+          <TransparentView style={styles.row}>
+            {returnEventImage()}
+            <BlackText text={text} style={styles.listEntryText} />
+          </TransparentView>
+
+          {subType != 'add' && (
+            <Feather
+              name={!selected ? 'eye-off' : 'chevron-right'}
+              size={!selected ? 25 : 30}
+            />
+          )}
+        </WhiteBox>
+      </Pressable>
+    </Wraper>
   );
 }

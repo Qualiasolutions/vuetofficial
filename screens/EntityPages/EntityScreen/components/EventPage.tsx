@@ -47,28 +47,30 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   const styles = style();
 
   const childEntityIds = entityData?.child_entities || [];
-  const childEntityList = childEntityIds.map((id) => (
-    <EventListLink
-      key={id}
-      text={allEntities?.byId[id].name || ''}
-      toScreen="EntityScreen"
-      toScreenParams={{ entityId: id }}
-      navMethod="push"
-      selected={allEntities?.byId[id].selected}
-      subType={allEntities?.byId[id].subtype}
-      onSelect={async () => {
-        const res = (await updateTrigger({
-          resourcetype: allEntities?.byId[id].resourcetype,
-          id,
-          selected: !allEntities?.byId[id].selected
-        })) as any;
+  const childEntityList = childEntityIds.map((id) => {
+    return (
+      <EventListLink
+        key={id}
+        text={allEntities?.byId[id].name || ''}
+        toScreen="EntityScreen"
+        toScreenParams={{ entityId: id }}
+        navMethod="push"
+        selected={allEntities?.byId[id].selected}
+        subType={allEntities?.byId[id].subtype}
+        onSelect={async () => {
+          const res = (await updateTrigger({
+            resourcetype: allEntities?.byId[id].resourcetype,
+            id,
+            selected: !allEntities?.byId[id].selected
+          })) as any;
 
-        if (res && res?.error && res?.error.status >= 400) {
-          throw Error('Network request error');
-        }
-      }}
-    />
-  ));
+          if (res && res?.error && res?.error.status >= 400) {
+            throw Error('Network request error');
+          }
+        }}
+      />
+    );
+  });
 
   const customLink = (
     <EventListLink
@@ -107,7 +109,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
           }}
           color={useThemeColor({}, 'primary')}
         />
-        <TransparentView>
+        <TransparentView style={styles.rightContainer}>
           <BlackText
             text={'Things to do before the party'}
             style={styles.info}
@@ -186,7 +188,11 @@ const style = function () {
       fontSize: 16
     },
     infoContainer: {
-      flexDirection: 'row'
+      flexDirection: 'row',
+      paddingHorizontal: 10
+    },
+    rightContainer: {
+      marginLeft: 20
     }
   });
 };
