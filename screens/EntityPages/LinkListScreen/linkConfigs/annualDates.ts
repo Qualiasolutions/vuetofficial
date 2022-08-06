@@ -12,7 +12,7 @@ export default [
   },
   {
     name: 'annualDates.nationalHolidays',
-    toScreen: '',
+    toScreen: 'HolidayList',
     navMethod: 'push',
     toScreenParams: {}
   }

@@ -24,4 +24,9 @@ type AllCategories = {
   };
 };
 
-export { AllTasks, AllEntities, AllCategories };
+type AllCountries = {
+  code: string;
+  name: string;
+};
+
+export { AllTasks, AllEntities, AllCategories, AllCountries };

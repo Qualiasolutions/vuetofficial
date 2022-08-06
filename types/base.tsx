@@ -84,6 +84,7 @@ export type EntityTabParamList = {
     entityTypes: EntityTypeName[];
     showCreateForm: boolean;
   };
+  HolidayList: {};
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
