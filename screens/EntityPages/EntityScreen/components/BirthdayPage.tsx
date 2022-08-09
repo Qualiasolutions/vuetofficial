@@ -14,10 +14,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
-import {
-  getDateWithoutTimezone,
-  getDaysToAge,
-} from 'utils/datesAndTimes';
+import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
 import {
   AlmostBlackText,
   BlackText,
