@@ -17,7 +17,6 @@ import { Pressable, StyleSheet } from 'react-native';
 import {
   getDateWithoutTimezone,
   getDaysToAge,
-  getLongDateFromDateObject
 } from 'utils/datesAndTimes';
 import {
   AlmostBlackText,
@@ -29,7 +28,7 @@ import ListLinkWithCheckBox from 'components/molecules/ListLinkWithCheckbox';
 import { Modal } from 'components/molecules/Modals';
 import { TextInput, useThemeColor } from 'components/Themed';
 import Layout from 'constants/Layout';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
@@ -105,7 +104,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
   const customLink = (
     <ListLinkWithCheckBox
-      text="+ Add New"
+      text={`+ ${t('common.addNew')}`}
       customOnPress={() => {
         setAddNewModal(true);
       }}
@@ -144,18 +143,18 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
             style={{ alignSelf: 'flex-end' }}
             onPress={closeAddNewModal}
           />
-          <PrimaryText text="Add a new" style={styles.addNewHeader} />
+          <PrimaryText text={t('common.addNew')} style={styles.addNewHeader} />
           <TextInput
             style={styles.input}
             onChangeText={setItemName}
-            placeholder="Add title"
+            placeholder={t('common.addTitle')}
           />
           <Pressable
             disabled={itemName == ''}
             onPress={onAddNew}
             style={styles.addNewButton}
           >
-            <WhiteText text="Save" />
+            <WhiteText text={t('common.save')} />
           </Pressable>
         </TransparentView>
       </Modal>
