@@ -1,12 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Image,
-  Pressable,
-  StyleSheet,
-  TouchableHighlight,
-  ViewStyle
-} from 'react-native';
+import React, { useCallback } from 'react';
+import { Image, Pressable, StyleSheet, ViewStyle } from 'react-native';
 import {
   EntityTabParamList,
   RootTabParamList,
@@ -19,8 +12,9 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import Layout from 'constants/Layout';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { useThemeColor, View } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { useTranslation } from 'react-i18next';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -59,44 +53,39 @@ export default function EventListLink({
   const greyColor = useThemeColor({}, 'grey');
   const primaryColor = useThemeColor({}, 'primary');
 
-  const styleFunc = function () {
-    return StyleSheet.create({
-      listEntry: {
-        width: Layout.window.width - 35,
-        paddingHorizontal: 24,
-        paddingVertical: 12,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        backgroundColor: 'white',
-        marginTop: 10,
-        borderRadius: 10,
-        borderWidth: 1
-      },
-      listEntryText: {
-        fontSize: 18,
-        marginLeft: 23
-      },
-      row: { flexDirection: 'row', alignItems: 'center' },
-      check: {
-        height: 20,
-        width: 13,
-        tintColor: primaryColor
-      },
-      rightButton: {
-        backgroundColor: primaryColor,
-        width: 100,
-        marginTop: 10,
-        paddingVertical: 12,
-        marginLeft: -10,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }
-    });
-  };
+  const { t } = useTranslation();
 
-  const styles = styleFunc();
+  const styles = StyleSheet.create({
+    listEntry: {
+      width: Layout.window.width - 35,
+      paddingHorizontal: 24,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 10,
+      borderRadius: 10,
+      borderWidth: 1
+    },
+    listEntryText: {
+      fontSize: 18,
+      marginLeft: 23
+    },
+    row: { flexDirection: 'row', alignItems: 'center' },
+    check: {
+      height: 20,
+      width: 13,
+      tintColor: primaryColor
+    },
+    hideTab: {
+      backgroundColor: primaryColor,
+      width: 100,
+      marginTop: 10,
+      paddingVertical: 12,
+      marginLeft: -10,
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+  });
 
   function returnEventImage() {
     switch (subType) {
@@ -134,16 +123,19 @@ export default function EventListLink({
 
   const renderRightActions = useCallback(() => {
     return (
-      <Pressable  onPress={()=>  onSelect && onSelect(selected)} style={styles.rightButton}>
-        <WhiteText text="Hide" />
+      <Pressable
+        onPress={() => onSelect && onSelect(selected)}
+        style={styles.hideTab}
+      >
+        <WhiteText text={t('common.hide')} />
       </Pressable>
     );
   }, [selected, onSelect]);
 
-  const Wraper = selected ?Swipeable  : TransparentView
+  const Wrapper = selected ? Swipeable : TransparentView;
 
   return (
-    <Wraper
+    <Wrapper
       useNativeAnimations={true}
       overshootRight={false}
       renderRightActions={renderRightActions}
@@ -178,6 +170,6 @@ export default function EventListLink({
           )}
         </WhiteBox>
       </Pressable>
-    </Wraper>
+    </Wrapper>
   );
 }

@@ -121,9 +121,9 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     });
   }, [useCreateEntityMutation, setAddNewModal, itemName]);
 
-  const closeAddNewModal = useCallback(()=> {
+  const closeAddNewModal = useCallback(() => {
     setAddNewModal(false);
-  },[setAddNewModal])
+  }, [setAddNewModal]);
 
   return (
     <WhiteFullPageScrollView>

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   useCreateEntityMutation,
   useGetAllEntitiesQuery,
@@ -25,12 +24,15 @@ import EventListLink from 'components/molecules/EventListLink';
 import { Modal } from 'components/molecules/Modals';
 import { useCallback, useState } from 'react';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function EventScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
   const [itemName, setItemName] = useState('');
-  const [trigger, result] = useCreateEntityMutation();
+  const [createTrigger, result] = useCreateEntityMutation();
   const [updateTrigger] = useUpdateEntityMutation();
+
+  const { t } = useTranslation();
 
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
@@ -42,7 +44,6 @@ export default function EventScreen({ entityId }: { entityId: number }) {
     skip: !userDetails?.user_id
   });
   const entityData = allEntities?.byId[entityId];
-  const { t } = useTranslation();
 
   const styles = style();
 
@@ -85,8 +86,8 @@ export default function EventScreen({ entityId }: { entityId: number }) {
 
   const onAddNew = useCallback(() => {
     setAddNewModal(false);
-    trigger({
-      resourcetype: 'Event',
+    createTrigger({
+      resourcetype: 'List',
       name: itemName,
       parent: entityId
     });
@@ -111,10 +112,13 @@ export default function EventScreen({ entityId }: { entityId: number }) {
         />
         <TransparentView style={styles.rightContainer}>
           <BlackText
-            text={'Things to do before the party'}
+            text={t('screens.eventPage.thingsToDo')}
             style={styles.info}
           />
-          <AlmostBlackText text={'Please select'} style={styles.info} />
+          <AlmostBlackText
+            text={t('common.pleaseSelect')}
+            style={styles.info}
+          />
         </TransparentView>
       </TransparentView>
       <TransparentContainerView style={styles.container}>
@@ -130,18 +134,18 @@ export default function EventScreen({ entityId }: { entityId: number }) {
             style={{ alignSelf: 'flex-end' }}
             onPress={closeAddNewModal}
           />
-          <PrimaryText text="Add a new" style={styles.addNewHeader} />
+          <PrimaryText text={t('common.addNew')} style={styles.addNewHeader} />
           <TextInput
             style={styles.input}
             onChangeText={setItemName}
-            placeholder="Add title"
+            placeholder={t('common.addTitle')}
           />
           <Pressable
             disabled={itemName == ''}
             onPress={onAddNew}
             style={styles.addNewButton}
           >
-            <WhiteText text="Save" />
+            <WhiteText text={t('common.save')} />
           </Pressable>
         </TransparentView>
       </Modal>

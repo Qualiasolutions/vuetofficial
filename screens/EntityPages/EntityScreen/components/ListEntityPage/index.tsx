@@ -68,7 +68,9 @@ export default function ListScreen({ entityId }: { entityId: number }) {
       </Pressable>
     </WhiteBox>
   ));
-  const memberIds = Array(...(new Set([...entityData.members, entityData.owner])))
+  const memberIds = Array(
+    ...new Set([...entityData.members, entityData.owner])
+  );
   const members: UserResponse[] = [];
 
   if (userFullDetails) {

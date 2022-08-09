@@ -27,7 +27,7 @@ export default function AnniversaryCard({
 
   const startDate = getDateWithoutTimezone(entity?.start_date ?? entity?.date);
 
-  const { age, monthName, date } = getDaysToAge(startDate);
+  const { monthName, date, year } = getDaysToAge(startDate);
   const navigation = useNavigation();
 
   return (
@@ -40,7 +40,7 @@ export default function AnniversaryCard({
         <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 18 }}
-          text={`${age} on ${monthName} ${date}`}
+          text={`${monthName} ${date}, ${year} `}
         />
       </WhiteBox>
     </Pressable>

@@ -8,27 +8,25 @@ import { UserFullResponse, UserResponse } from 'types/users';
 import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
 
-
-export function ModalListing ({ 
-  item 
-}: { 
-  item: ((UserFullResponse | UserResponse) & { selected: boolean }) 
+export function ModalListing({
+  item
+}: {
+  item: (UserFullResponse | UserResponse) & { selected: boolean };
 }) {
-  return <TransparentView style={styles.membersItem}>
-    <TransparentView>
-      <Text> {`${item.first_name} ${item.last_name}`} </Text>
+  return (
+    <TransparentView style={styles.membersItem}>
+      <TransparentView>
+        <Text> {`${item.first_name} ${item.last_name}`} </Text>
         <View
           style={[
             styles.memberColour,
             { backgroundColor: `#${item.member_colour}` }
           ]}
         />
+      </TransparentView>
+      <Checkbox checked={item.selected} disabled={true} />
     </TransparentView>
-    <Checkbox
-      checked={item.selected}
-      disabled={true}
-    />
-  </TransparentView>
+  );
 }
 
 export default function MemberSelector({ data, onValueChange }: any) {

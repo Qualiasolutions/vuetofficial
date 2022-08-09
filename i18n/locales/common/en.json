@@ -97,8 +97,12 @@
     "verify": "Verify",
     "genericError": "Oops, something went wrong. Please try again later.",
     "next": "Next",
+    "hide": "Hide",
     "continue": "Continue",
     "skip": "Skip",
+    "save": "Save",
+    "addTitle": "Add title",
+    "addNew": "Add a new",
     "accept": "Accept",
     "reject": "Reject",
     "yes": "Yes",
@@ -205,6 +209,9 @@
     },
     "listEntity": {
       "typeOrUpload": "Type an item or upload a photo"
+    },
+    "eventPage": {
+      "thingsToDo": "Things to do before the party"
     }
   },
   "components": {
