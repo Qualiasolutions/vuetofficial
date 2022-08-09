@@ -29,7 +29,7 @@ export const vuetApi = createApi({
     'UserInvite',
     'Family',
     'PushToken',
-    'country'
+    'Country'
   ],
   baseQuery: customFetchBase,
   refetchOnMountOrArgChange: true,

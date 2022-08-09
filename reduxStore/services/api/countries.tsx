@@ -6,7 +6,8 @@ const extendedApi = vuetApi.injectEndpoints({
     getAllCountries: builder.query<AllCountries[], number>({
       query: () => ({
         url: 'core/holidays/countries'
-      })
+      }),
+      providesTags: ['Country']
     })
   }),
   overrideExisting: true
