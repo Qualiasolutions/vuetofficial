@@ -29,10 +29,14 @@ type AllCountries = {
   name: string;
 };
 
-type holiday = {
-  name: string,
-  date: string,
-  id: string
-}
+type AllHolidays = {
+  [code: string]: holiday[]
+};
 
-export { AllTasks, AllEntities, AllCategories, AllCountries, holiday };
+type holiday = {
+  name: string;
+  date: string;
+  id: string;
+};
+
+export { AllTasks, AllEntities, AllCategories, AllCountries, holiday, AllHolidays };

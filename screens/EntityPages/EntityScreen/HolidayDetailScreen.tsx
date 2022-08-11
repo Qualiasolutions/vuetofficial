@@ -1,13 +1,8 @@
 import ListLinkWithCheckbox from 'components/molecules/ListLinkWithCheckbox';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useGetHolidaysQuery } from 'reduxStore/services/api/countries';
-import { AllCountries, holiday } from 'reduxStore/services/api/types';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import GenericButton from 'components/molecules/GenericButton';
-import { useThemeColor } from 'components/Themed';
+import { holiday } from 'reduxStore/services/api/types';
 import { StyleSheet } from 'react-native';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -23,10 +18,8 @@ export default function HolidayDetailScreen({
         params = `${params}country_codes=${code}&`
     }
     
-//   const username = useSelector(selectUsername);
   const styles = stylesFun();
-//   const { data: userDetails } = useGetUserDetailsQuery(username);
-  const [selectedCountries, setSelectedCountries] = useState<AllCountries[]>(
+  const [selectedCountries, setSelectedCountries] = useState<holiday[]>(
     []
   );
   
@@ -36,35 +29,31 @@ export default function HolidayDetailScreen({
     error
   } = useGetHolidaysQuery(`${params}years=${new Date().getFullYear()}`);
 
-  const whiteColor = useThemeColor({}, 'white');
-
   const onPress = useCallback(
     (country, selected) => {
       if (selected) {
-        setSelectedCountries(selectedCountries.filter(country.code));
+        setSelectedCountries(selectedCountries.filter(cou => cou.id != country.id));
       } else {
         setSelectedCountries([...selectedCountries, country]);
       }
     },
     [setSelectedCountries, selectedCountries]
   );
-  console.log(holidays);
 
   if(!holidays) return null;
 
-  console.log(Object.values(holidays));
-  
-
   return <WhiteView style={{ flex: 1 }}>
      <WhiteFullPageScrollView>
-        {Object.values(holidays)[0]?.map((holiday: holiday) => (
+        {Object.values(holidays).flat().map((holiday: holiday) => (
           <ListLinkWithCheckbox
             key={holiday.id}
             text={holiday.name}
+            subText={holiday.date}
             showArrow={false}
             onSelect={async (selected) => onPress(holiday, selected)}
             navMethod={undefined}
             customOnPress={() => {}}
+            selected={selectedCountries.some(cou => cou.id == holiday.id)}
           />
         ))}
       </WhiteFullPageScrollView>

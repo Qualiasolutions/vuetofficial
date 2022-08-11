@@ -31,8 +31,8 @@ export default function HolidayListScreen({ navigation }: NativeStackScreenProps
 
   const onPress = useCallback(
     (country, selected) => {
-      if (selected) {
-        setSelectedCountries(selectedCountries.filter(country.code));
+      if (selectedCountries.some(cou => cou.code == country.code)) {
+        setSelectedCountries(selectedCountries.filter(cou => cou.code != country.code));
       } else {
         setSelectedCountries([...selectedCountries, country]);
       }
@@ -51,6 +51,7 @@ export default function HolidayListScreen({ navigation }: NativeStackScreenProps
             onSelect={async (selected) => onPress(country, selected)}
             navMethod={undefined}
             customOnPress={() => {}}
+            selected={selectedCountries.some(cou => cou.code == country.code)}
           />
         ))}
       </WhiteFullPageScrollView>
