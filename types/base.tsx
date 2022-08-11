@@ -85,6 +85,9 @@ export type EntityTabParamList = {
     showCreateForm: boolean;
   };
   HolidayList: {};
+  HolidayDetail: {
+    countrycodes: Array<any>
+  }
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =

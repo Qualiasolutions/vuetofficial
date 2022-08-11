@@ -29,4 +29,10 @@ type AllCountries = {
   name: string;
 };
 
-export { AllTasks, AllEntities, AllCategories, AllCountries };
+type holiday = {
+  name: string,
+  date: string,
+  id: string
+}
+
+export { AllTasks, AllEntities, AllCategories, AllCountries, holiday };

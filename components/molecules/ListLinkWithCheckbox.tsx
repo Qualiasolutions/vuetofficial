@@ -27,11 +27,12 @@ type ListLinkProps = {
     | keyof EntityTabParamList
     | keyof SettingsTabParamList;
   toScreenParams?: object;
-  navMethod?: 'push' | 'navigate';
+  navMethod?: 'push' | 'navigate' | undefined;
   style?: ViewStyle;
   selected?: boolean;
   customOnPress?: () => void;
   onSelect?: (v: boolean) => Promise<void>;
+  showArrow?: boolean
 };
 
 export default function ListLinkWithCheckbox({
@@ -42,7 +43,8 @@ export default function ListLinkWithCheckbox({
   style = {},
   selected = false,
   customOnPress,
-  onSelect
+  onSelect,
+  showArrow = true
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -69,7 +71,7 @@ export default function ListLinkWithCheckbox({
           <BlackText text={text} style={styles.listEntryText} />
         </TransparentView>
 
-        <Feather name="chevron-right" size={30} />
+        {showArrow && <Feather name="chevron-right" size={30} />}
       </TransparentView>
     </Pressable>
   );

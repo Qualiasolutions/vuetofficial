@@ -1,5 +1,5 @@
 import { vuetApi } from './api';
-import { AllCountries } from './types';
+import { AllCountries, holiday } from './types';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,9 +8,14 @@ const extendedApi = vuetApi.injectEndpoints({
         url: 'core/holidays/countries'
       }),
       providesTags: ['Country']
+    }),
+    getHolidays: builder.query<holiday[], string>({
+      query: (body) => ({
+        url: `core/holidays/country_holidays?${body}`
+      })
     })
   }),
   overrideExisting: true
 });
 
-export const { useGetAllCountriesQuery } = extendedApi;
+export const { useGetAllCountriesQuery, useGetHolidaysQuery } = extendedApi;
