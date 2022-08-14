@@ -11,6 +11,7 @@ import ChildEntitiesScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesS
 import LinkListScreen from 'screens/EntityPages/LinkListScreen/LinkListScreen';
 import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
 import HolidayDetailScreen from 'screens/EntityPages/EntityScreen/HolidayDetailScreen';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 

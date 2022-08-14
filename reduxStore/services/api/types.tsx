@@ -30,7 +30,7 @@ type AllCountries = {
 };
 
 type AllHolidays = {
-  [code: string]: holiday[]
+  [code: string]: holiday[];
 };
 
 type holiday = {
@@ -39,4 +39,19 @@ type holiday = {
   id: string;
 };
 
-export { AllTasks, AllEntities, AllCategories, AllCountries, holiday, AllHolidays };
+type holidayList = {
+  id: number;
+  owner: number;
+  country_codes: string[];
+  holiday_ids: string[];
+};
+
+export {
+  AllTasks,
+  AllEntities,
+  AllCategories,
+  AllCountries,
+  holiday,
+  AllHolidays,
+  holidayList
+};

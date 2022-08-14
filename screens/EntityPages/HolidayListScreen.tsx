@@ -43,7 +43,7 @@ export default function HolidayListScreen({ navigation }: NativeStackScreenProps
   return (
     <WhiteView style={{ flex: 1 }}>
       <WhiteFullPageScrollView>
-        {allCountries?.map((country: AllCountries) => (
+        {allCountries?.filter(country => ['AU','GB', 'US'].includes(country.code)).map((country: AllCountries) => (
           <ListLinkWithCheckbox
             key={country.code}
             text={country.name}

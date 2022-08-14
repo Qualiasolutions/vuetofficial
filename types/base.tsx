@@ -87,6 +87,7 @@ export type EntityTabParamList = {
   HolidayList: {};
   HolidayDetail: {
     countrycodes: Array<any>
+    save: () => void
   }
 };
 
