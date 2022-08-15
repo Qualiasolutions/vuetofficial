@@ -39,6 +39,8 @@ export default function HolidayDetailScreen({
     }
   );
 
+
+  // TODO - do we want to allow settings holidays for other years too?
   const [selectedHolidays, setSelectedHolidays] = useState<Holiday[]>([]);
   const [saveHoliday] = useSaveHolidayMutation();
   const [updateHoliday] = useUpdateHolidayMutation();
