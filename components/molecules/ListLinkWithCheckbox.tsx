@@ -75,7 +75,12 @@ export default function ListLinkWithCheckbox({
           <Checkbox onValueChange={onSelect} checked={selected} />
           <TransparentView>
             <BlackText text={text} style={styles.listEntryText} />
-            <AlmostBlackText text={subText} style={[styles.listEntryText, {fontSize: 15}]} />
+            {subText ? (
+              <AlmostBlackText
+                text={subText}
+                style={[styles.listEntryText, { fontSize: 15 }]}
+              />
+            ) : null}
           </TransparentView>
         </TransparentView>
 

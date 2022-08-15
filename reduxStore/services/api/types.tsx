@@ -24,22 +24,29 @@ type AllCategories = {
   };
 };
 
-type AllCountries = {
+type Country = {
   code: string;
   name: string;
 };
 
-type AllHolidays = {
-  [code: string]: holiday[];
-};
-
-type holiday = {
+type Holiday = {
   name: string;
   date: string;
   id: string;
 };
 
-type holidayList = {
+type AllHolidays = {
+  [code: string]: Holiday[];
+};
+
+type SelectedHolidays = {
+  id: number;
+  owner: number;
+  country_codes: string;
+  holiday_ids: string;
+};
+
+type HolidayList = {
   id: number;
   owner: number;
   country_codes: string[];
@@ -50,8 +57,9 @@ export {
   AllTasks,
   AllEntities,
   AllCategories,
-  AllCountries,
-  holiday,
+  Country,
+  Holiday,
   AllHolidays,
-  holidayList
+  SelectedHolidays,
+  HolidayList
 };

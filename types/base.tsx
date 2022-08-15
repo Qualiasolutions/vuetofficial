@@ -85,10 +85,7 @@ export type EntityTabParamList = {
     showCreateForm: boolean;
   };
   HolidayList: {};
-  HolidayDetail: {
-    countrycodes: Array<any>
-    save: () => void
-  }
+  HolidayDetail: { countrycodes: string[] };
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
@@ -128,6 +125,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   >;
 
 export type TabParamList = RootTabParamList &
+  EntityTabParamList &
   UnauthorisedTabParamList &
   SetupTabParamList &
   FamilyRequestTabParamList &

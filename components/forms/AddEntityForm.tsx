@@ -94,29 +94,25 @@ export default function AddEntityForm({
     }
 
     return (
-      <SafeAreaView
-        style={[
-          formStyles.container
-        ]}
-      >
+      <SafeAreaView style={[formStyles.container]}>
         {createSuccessful ? (
           <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
         ) : null}
 
-          <RTKForm
-            fields={entityForms[entityType]}
-            methodHooks={{
-              POST: useCreateEntityMutation
-            }}
-            formType="CREATE"
-            extraFields={extraFields}
-            onSubmitSuccess={() => {
-              setCreateSuccessful(true);
-            }}
-            onValueChange={() => setCreateSuccessful(false)}
-            clearOnSubmit={true}
-            inlineFields={true}
-          />
+        <RTKForm
+          fields={entityForms[entityType]}
+          methodHooks={{
+            POST: useCreateEntityMutation
+          }}
+          formType="CREATE"
+          extraFields={extraFields}
+          onSubmitSuccess={() => {
+            setCreateSuccessful(true);
+          }}
+          onValueChange={() => setCreateSuccessful(false)}
+          clearOnSubmit={true}
+          inlineFields={true}
+        />
       </SafeAreaView>
     );
   }

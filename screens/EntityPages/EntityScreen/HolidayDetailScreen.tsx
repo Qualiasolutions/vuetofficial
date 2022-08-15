@@ -4,14 +4,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   useGetHolidaysQuery,
   useGetSelectedHolidayQuery,
-  useSaveHolidayMutation
-} from 'reduxStore/services/api/countries';
-import { holiday } from 'reduxStore/services/api/types';
-import { StyleSheet } from 'react-native';
+  useSaveHolidayMutation,
+  useUpdateHolidayMutation
+} from 'reduxStore/services/api/holidays';
+import { Holiday } from 'reduxStore/services/api/types';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
+import useGetUserDetails from 'hooks/useGetUserDetails';
 
 export default function HolidayDetailScreen({
   navigation,
@@ -20,25 +21,48 @@ export default function HolidayDetailScreen({
   const { countrycodes } = route?.params;
   let params = '';
 
-  for (const code of countrycodes) {
-    params = `${params}country_codes=${code}&`;
+  if (typeof countrycodes === 'string') {
+    for (const code of (countrycodes as string).split(',')) {
+      params = `${params}country_codes=${code}&`;
+    }
+  } else {
+    for (const code of countrycodes) {
+      params = `${params}country_codes=${code}&`;
+    }
   }
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => <AlmostBlackText text="save" onPress={save} />
-    });
-  }, []);
+  const { data: userDetails } = useGetUserDetails();
+  const { data: previouslySelectedHolidays } = useGetSelectedHolidayQuery(
+    userDetails?.id || -1,
+    {
+      skip: !userDetails?.id
+    }
+  );
 
-  const styles = stylesFun();
-  const [selectedHolidays, setSelectedHolidays] = useState<holiday[]>([]);
+  const [selectedHolidays, setSelectedHolidays] = useState<Holiday[]>([]);
   const [saveHoliday] = useSaveHolidayMutation();
-
+  const [updateHoliday] = useUpdateHolidayMutation();
   const {
     data: holidays,
     isError,
     error
   } = useGetHolidaysQuery(`${params}years=${new Date().getFullYear()}`);
+
+  useEffect(() => {
+    if (
+      previouslySelectedHolidays &&
+      previouslySelectedHolidays.length > 0 &&
+      holidays
+    ) {
+      setSelectedHolidays(
+        Object.values(holidays)
+          .flat()
+          .filter((hol: Holiday) =>
+            previouslySelectedHolidays[0].holiday_ids.includes(hol.id)
+          )
+      );
+    }
+  }, [previouslySelectedHolidays, holidays]);
 
   const onPress = useCallback(
     (country, selected) => {
@@ -53,13 +77,30 @@ export default function HolidayDetailScreen({
     [setSelectedHolidays, selectedHolidays]
   );
 
-  async function save() {
-    let body = {
-      country_codes: countrycodes,
-      holiday_ids: selectedHolidays.map((holiday) => holiday.id)
+  useEffect(() => {
+    const save = async () => {
+      const body = {
+        country_codes:
+          typeof countrycodes === 'string' ? [countrycodes] : countrycodes,
+        holiday_ids: selectedHolidays.map((holiday) => holiday.id)
+      };
+
+      if (previouslySelectedHolidays) {
+        if (previouslySelectedHolidays.length > 0) {
+          await updateHoliday({
+            ...body,
+            id: previouslySelectedHolidays[0].id
+          });
+        } else {
+          await saveHoliday(body);
+        }
+      }
     };
-    const res = await saveHoliday(body);
-  }
+
+    navigation.setOptions({
+      headerRight: () => <AlmostBlackText text="save" onPress={save} />
+    });
+  }, [selectedHolidays, previouslySelectedHolidays]);
 
   if (!holidays) return null;
 
@@ -68,7 +109,7 @@ export default function HolidayDetailScreen({
       <WhiteFullPageScrollView>
         {Object.values(holidays)
           .flat()
-          .map((holiday: holiday) => {
+          .map((holiday: Holiday) => {
             return (
               <ListLinkWithCheckbox
                 key={holiday.id}
@@ -90,7 +131,3 @@ export default function HolidayDetailScreen({
     </WhiteView>
   );
 }
-
-const stylesFun = function () {
-  return StyleSheet.create({});
-};
