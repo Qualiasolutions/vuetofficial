@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
 import { EntityTabScreenProps } from 'types/base';
 import annualDates from './linkConfigs/annualDates';
+import career from './linkConfigs/career';
 import LinkList from './components/LinkList';
 import { useTranslation } from 'react-i18next';
 
 type EntityTypeListScreenProps = EntityTabScreenProps<'LinkList'>;
 
 const listNameToLinks = {
-  annualDates
+  annualDates,
+  career
 };
 
 export default function LinkListScreen({

@@ -92,9 +92,9 @@ export default {
     },
     {
       name: 'educationCareer.career',
-      toScreen: '',
+      toScreen: 'LinkList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: { listName: 'career' }
     }
   ],
   TRAVEL: [

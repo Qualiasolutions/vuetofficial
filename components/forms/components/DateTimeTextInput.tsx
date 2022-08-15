@@ -7,11 +7,13 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 export default function DateTimeTextInput({
   value,
   textInputStyle,
-  onValueChange
+  onValueChange,
+  Date = false
 }: {
   value: Date | null;
   textInputStyle?: ViewStyle;
   onValueChange: Function;
+  Date?: boolean
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
     React.useState<boolean>(false);
@@ -21,14 +23,14 @@ export default function DateTimeTextInput({
       <Pressable onPress={() => setIsDatePickerVisible(true)}>
         <View pointerEvents="none">
           <TextInput
-            value={value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : ''}
+            value={value ? Date ? dayjs(value).format('DD/MM/YYYY') :  dayjs(value).format('YYYY-MM-DD HH:mm:ss') : 'DD/MM/YYYY'}
             style={textInputStyle || {}}
           />
         </View>
       </Pressable>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode="datetime"
+        mode={Date ? "date" :"datetime"}
         onConfirm={(newValue) => {
           onValueChange(newValue);
           setIsDatePickerVisible(false);

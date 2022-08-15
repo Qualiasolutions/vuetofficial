@@ -15,6 +15,8 @@ import { WhiteDateInput } from './components/DateInputs';
 import { ColorPicker } from './components/ColorPickers';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import PhoneNumberInput from './components/PhoneNumberInput';
+import { EntityTypeName } from 'types/entities';
+import { Feather } from '@expo/vector-icons';
 
 /* This type specifies the actual values of the fields.
 
@@ -123,7 +125,8 @@ export default function Form({
   onValueChange = () => {},
   clearOnSubmit = true,
   submitText = '',
-  inlineFields = false
+  inlineFields = false,
+  entityType
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -137,6 +140,7 @@ export default function Form({
   clearOnSubmit?: boolean;
   submitText?: string;
   inlineFields?: boolean;
+  entityType?: EntityTypeName;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -312,10 +316,9 @@ export default function Form({
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
-              <WhiteDateInput
+              <DateTimeTextInput
                 value={formValues[field]}
-                defaultValue={formValues[field]}
-                onSubmit={(newValue: Date) => {
+                onValueChange={(newValue: Date) => {
                   setFormValues({
                     ...formValues,
                     [field]: newValue
@@ -323,17 +326,9 @@ export default function Form({
                   setFormErrors({ ...formErrors, [field]: '' });
                   onValueChange();
                 }}
-                styleInput={inlineFields ? styles.inlineDateInput : {}}
-                styleInputYear={inlineFields ? styles.inlineDateInput : {}}
-                containerStyle={inlineFields ? styles.inlineDateContainer : {}}
-                handleErrors={() => {
-                  setFormErrors({
-                    ...formErrors,
-                    [field]:
-                      'Invalid date detected - please enter a date in the future'
-                  });
-                }}
+                Date
               />
+              <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
           </TransparentView>
         );
@@ -466,7 +461,7 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   inlineInputPair: {
-    flexDirection: 'row'
+    // flexDirection: 'row'
   },
   inputLabel: {
     fontSize: 12,
@@ -490,7 +485,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   button: {
-    width: 'auto'
+    width: '100%'
   },
   deleteButton: {
     marginLeft: 10
@@ -503,5 +498,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
-  }
+  },
+  calendarIcon: { position: 'absolute', right: 10, top: 30 }
 });

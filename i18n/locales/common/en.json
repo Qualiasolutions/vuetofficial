@@ -79,10 +79,15 @@
     "annualDates": {
       "anniversaries": "Birthdays & Anniversaries",
       "nationalHolidays": "Holidays I Celebrate"
+    },
+    "career": {
+      "daysoff": "Days Off",
+      "careerGoal": "Career Goal & Development"
     }
   },
   "linkListTitles": {
-    "annualDates": "Annual Dates to Remember"
+    "annualDates": "Annual Dates to Remember",
+    "career": "Career"
   },
   "entityTypes": {
     "cars": "Cars & Motorcycles",
@@ -90,7 +95,8 @@
     "anniversaries": "Birthdays & Anniversaries",
     "hobbies": "Interests & Hobbies",
     "trips": "Trips",
-    "pets": "Pets"
+    "pets": "Pets",
+    "daysoff": "Days Off"
   },
   "common": {
     "confirm": "Confirm",

@@ -102,13 +102,13 @@ export default function EntityListScreen({
         {listLinks}
         {((showCreateForm && entityTypes?.length === 1) ||
           listLinks.length == 0) && (
-          <WhiteBox>
+          <>
             <PrimaryText
               style={{ fontSize: 20, textAlign: 'center' }}
               text={`Add ${entityTypes[0]}`}
             />
             <AddEntityForm entityType={entityTypes && entityTypes[0]} />
-          </WhiteBox>
+          </>
         )}
       </TransparentPaddedView>
     </WhiteFullPageScrollView>

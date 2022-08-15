@@ -48,7 +48,8 @@ export default function AddEntityForm({
     TripTransport: forms.tripTransport(),
     TripAccommodation: forms.tripAccommodation(),
     TripActivity: forms.tripActivity(),
-    Pet: forms.pet()
+    Pet: forms.pet(),
+    DaysOff: forms.daysoff()
   };
 
   useFocusEffect(
@@ -112,6 +113,7 @@ export default function AddEntityForm({
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
           inlineFields={true}
+          entityType={entityType}
         />
       </SafeAreaView>
     );
