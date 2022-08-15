@@ -10,7 +10,10 @@ import {
   WhiteBox,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import { BlackText } from 'components/molecules/TextComponents';
+import {
+  AlmostBlackText,
+  BlackText
+} from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -27,11 +30,13 @@ type ListLinkProps = {
     | keyof EntityTabParamList
     | keyof SettingsTabParamList;
   toScreenParams?: object;
-  navMethod?: 'push' | 'navigate';
+  navMethod?: 'push' | 'navigate' | undefined;
   style?: ViewStyle;
   selected?: boolean;
   customOnPress?: () => void;
   onSelect?: (v: boolean) => Promise<void>;
+  showArrow?: boolean;
+  subText?: string;
 };
 
 export default function ListLinkWithCheckbox({
@@ -42,7 +47,9 @@ export default function ListLinkWithCheckbox({
   style = {},
   selected = false,
   customOnPress,
-  onSelect
+  onSelect,
+  showArrow = true,
+  subText = ''
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -66,10 +73,18 @@ export default function ListLinkWithCheckbox({
       <TransparentView style={[styles.listEntry, style]}>
         <TransparentView style={styles.row}>
           <Checkbox onValueChange={onSelect} checked={selected} />
-          <BlackText text={text} style={styles.listEntryText} />
+          <TransparentView>
+            <BlackText text={text} style={styles.listEntryText} />
+            {subText ? (
+              <AlmostBlackText
+                text={subText}
+                style={[styles.listEntryText, { fontSize: 15 }]}
+              />
+            ) : null}
+          </TransparentView>
         </TransparentView>
 
-        <Feather name="chevron-right" size={30} />
+        {showArrow && <Feather name="chevron-right" size={30} />}
       </TransparentView>
     </Pressable>
   );

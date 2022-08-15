@@ -84,6 +84,8 @@ export type EntityTabParamList = {
     entityTypes: EntityTypeName[];
     showCreateForm: boolean;
   };
+  HolidayList: {};
+  HolidayDetail: { countrycodes: string[] };
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
@@ -123,6 +125,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   >;
 
 export type TabParamList = RootTabParamList &
+  EntityTabParamList &
   UnauthorisedTabParamList &
   SetupTabParamList &
   FamilyRequestTabParamList &
