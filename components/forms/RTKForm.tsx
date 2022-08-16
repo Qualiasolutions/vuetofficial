@@ -11,11 +11,9 @@ import {
 } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { WhiteDateInput } from './components/DateInputs';
 import { ColorPicker } from './components/ColorPickers';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import PhoneNumberInput from './components/PhoneNumberInput';
-import { EntityTypeName } from 'types/entities';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
@@ -129,8 +127,7 @@ export default function Form({
   onValueChange = () => {},
   clearOnSubmit = true,
   submitText = '',
-  inlineFields = false,
-  entityType
+  inlineFields = false
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -144,7 +141,6 @@ export default function Form({
   clearOnSubmit?: boolean;
   submitText?: string;
   inlineFields?: boolean;
-  entityType?: EntityTypeName;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -243,11 +239,6 @@ export default function Form({
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
 
     // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
-    console.log({
-      ...parsedFormValues,
-      ...extraFields
-    });
-
     methodHookTriggers[submitMethod]
       .trigger({
         ...parsedFormValues,
