@@ -97,6 +97,8 @@ export default function BottomNavBar({
                     entityType: (currentScreenParams as RouteParams)
                       .entityTypes[0]
                   });
+                } else if (currentScreen === 'FamilySettings') {
+                  navigation.navigate('AddFamilyMember');
                 } else {
                   navigation.navigate('CreateTask');
                 }

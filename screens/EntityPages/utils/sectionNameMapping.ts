@@ -6,6 +6,9 @@ export const sectionNameMapping = {
     return monthNames[Number(entity.start_date?.split('-')[1]) - 1];
   },
   Event: (entity: EntityResponseType) => {
-    return monthNames[Number(entity.date?.split('-')[1]) - 1];
+    // TODO - support other languages by using dayJS
+    return `${monthNames[Number(entity.date?.split('-')[1]) - 1]} ${
+      entity.date?.split('-')[0]
+    }`;
   }
 } as { [key: string]: ((entity: EntityResponseType) => string) | undefined };

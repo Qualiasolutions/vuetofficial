@@ -4,7 +4,11 @@ import {
 } from 'components/molecules/TextComponents';
 import { WhiteBox } from 'components/molecules/ViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
-import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
+import {
+  getDateWithoutTimezone,
+  getDaysToAge,
+  getLongDateFromDateObject
+} from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
@@ -25,9 +29,9 @@ export default function AnniversaryCard({
     }
   });
 
-  const startDate = getDateWithoutTimezone(entity?.start_date ?? entity?.date);
-
-  const { monthName, date, year } = getDaysToAge(startDate);
+  const dateString = getLongDateFromDateObject(
+    getDateWithoutTimezone(entity?.date)
+  );
   const navigation = useNavigation();
 
   return (
@@ -38,10 +42,7 @@ export default function AnniversaryCard({
     >
       <WhiteBox style={styles.card}>
         <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
-        <AlmostBlackText
-          style={{ fontSize: 18 }}
-          text={`${monthName} ${date}, ${year} `}
-        />
+        <AlmostBlackText style={{ fontSize: 18 }} text={dateString} />
       </WhiteBox>
     </Pressable>
   );

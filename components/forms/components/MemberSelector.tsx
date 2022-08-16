@@ -58,6 +58,7 @@ export default function MemberSelector({ data, onValueChange }: any) {
         <UserWithColor
           name={`${member.first_name} ${member.last_name}`}
           memberColour={member.member_colour}
+          userImage={member.presigned_profile_image_url}
         />
       </TransparentView>
     ));

@@ -29,6 +29,7 @@ import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { View } from 'components/Themed';
 import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
+import UserWithColor from 'components/molecules/UserWithColor';
 
 const FamilySettingsScreen = ({
   navigation
@@ -78,25 +79,21 @@ const FamilySettingsScreen = ({
       !familyPhoneNumbers.includes(invite.phone_number)
   );
 
+  const isUserResponse = (x: any): x is UserResponse =>
+    !!x.presigned_profile_image_url;
+
   const userToListElement = (
     user: UserResponse | UserInviteResponse,
     isPending: boolean = false
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
-      <TransparentView style={styles.listLeft}>
-        <AlmostBlackText
-          style={styles.listElementText}
-          text={`${user.first_name} ${user.last_name}${
-            isPending ? ' (pending)' : ''
-          }`}
-        />
-        <View
-          style={[
-            styles.colourBar,
-            { backgroundColor: `#${user.member_colour}` }
-          ]}
-        />
-      </TransparentView>
+      <UserWithColor
+        name={`${user.first_name} ${user.last_name}${
+          isPending ? ' (pending)' : ''
+        }`}
+        memberColour={user.member_colour}
+        userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
+      />
       <TransparentView style={styles.listRight}>
         <Pressable
           onPress={() => {
@@ -174,26 +171,10 @@ const FamilySettingsScreen = ({
       <AlmostWhiteView style={styles.familyHeader}>
         <AlmostBlackText
           style={styles.familyHeaderText}
-          text={t('screens.familySettings.family')}
+          text={t('screens.familySettings.familyMembers')}
         />
       </AlmostWhiteView>
       <WhiteView style={styles.listContainer}>
-        <TransparentView style={[styles.listElement, styles.listHeader]}>
-          <AlmostBlackText
-            style={styles.headerText}
-            text={t('screens.familySettings.familyMembers')}
-          />
-          <Pressable
-            onPress={() => {
-              navigation.navigate('AddFamilyMember');
-            }}
-          >
-            <Image
-              style={styles.plusIcon}
-              source={require('../../assets/images/icons/plus-square.png')}
-            />
-          </Pressable>
-        </TransparentView>
         {familyMemberList}
         {familyInvitesList}
       </WhiteView>
