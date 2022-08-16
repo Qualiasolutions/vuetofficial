@@ -86,6 +86,7 @@ export type EntityTabParamList = {
   };
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
+  EditEntity: { entityId: number | string };
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =

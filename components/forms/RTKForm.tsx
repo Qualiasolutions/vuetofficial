@@ -71,6 +71,7 @@ const createInitialObject = (
       case 'colour':
       case 'phoneNumber':
       case 'radio':
+      case 'TextArea':
         initialObj[key] = fields[key].initialValue || '';
         continue;
 
@@ -238,6 +239,11 @@ export default function Form({
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
 
     // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
+    console.log({
+      ...parsedFormValues,
+      ...extraFields
+    });
+    
     methodHookTriggers[submitMethod]
       .trigger({
         ...parsedFormValues,
@@ -446,7 +452,7 @@ export default function Form({
                   });
                   onValueChange();
                 }}
-                style={{  height: 100 }}
+                style={{ height: 100 }}
                 multiline={true}
                 maxLength={150}
               />
@@ -513,7 +519,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   button: {
-    width: '100%'
+    width: '50%'
   },
   deleteButton: {
     marginLeft: 10

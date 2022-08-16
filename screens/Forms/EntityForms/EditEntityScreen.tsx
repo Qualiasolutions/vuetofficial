@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
 import { Text, View } from 'components/Themed';
-import { carForm } from 'components/forms/entityFormFieldTypes/car';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { formStyles } from 'components/forms/formStyles';
 import RTKForm from 'components/forms/RTKForm';
@@ -23,8 +22,11 @@ import {
 import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import * as forms from 'components/forms/entityFormFieldTypes';
+import { Header } from 'components/molecules/Header';
 
 export default function EditEntityScreen({
+  navigation,
   route
 }: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
   const username = useSelector(selectUsername);
@@ -36,7 +38,21 @@ export default function EditEntityScreen({
     isLoading,
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-  const formFields = deepCopy<FormFieldTypes>(carForm());
+
+  const entityForms = {
+    Car: forms.car(),
+    Birthday: forms.birthday(),
+    Event: forms.event(),
+    Hobby: forms.hobby(),
+    List: forms.list(),
+    Trip: forms.trip(),
+    TripTransport: forms.tripTransport(),
+    TripAccommodation: forms.tripAccommodation(),
+    TripActivity: forms.tripActivity(),
+    Pet: forms.pet(),
+    DaysOff: forms.daysoff()
+  };
+
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
   const [deletedEntityName, setDeletedEntityName] = useState<string>('');
   const [updatedSuccessfully, setUpdatedSuccessfully] =
@@ -63,10 +79,15 @@ export default function EditEntityScreen({
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entityToEdit = allEntities.byId[entityId];
 
+  const formFields = deepCopy<FormFieldTypes>(
+    entityForms[entityToEdit?.resourcetype]
+  );
+
   const onDeleteSuccess = (res: CarResponseType) => {
     const entityName = allEntities.byId[entityId].name;
     setDeletedEntityName(entityName);
     setDeleteSuccessful(true);
+    navigation.goBack();
   };
 
   if (deleteSuccessful) {
@@ -83,9 +104,10 @@ export default function EditEntityScreen({
     return (
       <SafeAreaView style={formStyles.container}>
         <View style={formStyles.container}>
-          <Text style={formStyles.title}>
-            {t('screens.editEntity.title', { entityName: entityToEdit.name })}
-          </Text>
+          <Header
+            title={entityToEdit.name}
+            backPress={() => navigation.goBack()}
+          />
           {updatedSuccessfully ? (
             <Text>
               {t('screens.editEntity.updateSuccess', {

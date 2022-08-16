@@ -8,7 +8,8 @@ export const formStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-    padding: 10
+    padding: 10,
+    backgroundColor:'transparent'
   },
   title: {
     fontSize: 20,
