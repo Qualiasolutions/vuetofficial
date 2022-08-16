@@ -452,7 +452,10 @@ export default function Form({
                   });
                   onValueChange();
                 }}
-                style={{ height: 100 }}
+                style={{
+                  height: 100,
+                  textAlignVertical: 'top'
+                }}
                 multiline={true}
                 maxLength={150}
               />

@@ -87,6 +87,10 @@ export type EntityTabParamList = {
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };
+  AddEntity: {
+    entityType: EntityTypeName;
+    parentId: number | string;
+  };
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
@@ -105,11 +109,6 @@ export type RootTabParamList = {
   CreateTask: undefined;
   EditTask: { taskId: number };
   Transport: undefined;
-  AddEntity: {
-    entityType: EntityTypeName;
-    parentId: number | string;
-  };
-  EditEntity: { entityId: number | string };
   DeleteSuccess: { entityName: string };
   NotFound: undefined;
   CalendarScreen: {

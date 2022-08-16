@@ -16,6 +16,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { TransparentView } from 'components/molecules/ViewComponents';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -95,7 +96,7 @@ export default function AddEntityForm({
     }
 
     return (
-      <SafeAreaView style={[formStyles.container]}>
+      <TransparentView>
         {createSuccessful ? (
           <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
         ) : null}
@@ -115,7 +116,7 @@ export default function AddEntityForm({
           inlineFields={true}
           entityType={entityType}
         />
-      </SafeAreaView>
+      </TransparentView>
     );
   }
   return null;

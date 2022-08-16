@@ -32,6 +32,7 @@ const linking: LinkingOptions<TabParamList> = {
           EntityTypeList: 'entity-type-list',
           EntityList: 'entity-list',
           EntityScreen: 'entity-screen',
+          EditEntity: 'edit-entity',
           ChildEntitiesScreen: 'child-entities-screen',
           HolidayList: 'holiday-list',
           HolidayDetail: 'holiday-detail'
@@ -40,7 +41,6 @@ const linking: LinkingOptions<TabParamList> = {
       AddTask: 'add-task',
       EditTask: 'edit-task',
       AddEntity: 'add-entity',
-      EditEntity: 'edit-entity',
       Login: 'login',
       Signup: 'signup',
       ValidatePhone: 'validate-phone',

@@ -172,24 +172,6 @@ export function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="AddEntity"
-        component={AddEntityScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: t('pageTitles.addEntity'),
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
-        name="EditEntity"
-        component={EditEntityScreen}
-        options={{
-          tabBarButton: (props) => null,
-          title: t('pageTitles.editEntity'),
-          headerShown: false
-        }}
-      />
-      <BottomTab.Screen
         name="EditTask"
         component={EditTaskScreen}
         options={{

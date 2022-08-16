@@ -1,14 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootTabParamList } from 'types/base';
+import { EntityTabParamList, RootTabParamList } from 'types/base';
 
-import { Text, View } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
-import { formStyles } from 'components/forms/formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import DeleteSuccess from '../components/DeleteSuccess';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
@@ -24,11 +23,13 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from 'components/forms/entityFormFieldTypes';
 import { Header } from 'components/molecules/Header';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function EditEntityScreen({
   navigation,
   route
-}: NativeStackScreenProps<RootTabParamList, 'EditEntity'>) {
+}: NativeStackScreenProps<EntityTabParamList, 'EditEntity'>) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
@@ -38,6 +39,26 @@ export default function EditEntityScreen({
     isLoading,
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+
+  const headerTintColor = useThemeColor({}, 'primary');
+  const headerBackgroundColor = useThemeColor({}, 'almostWhite');
+
+  useEffect(() => {
+    if (allEntities) {
+      const entityIdRaw = route.params.entityId;
+      const entityId = typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
+      const entityToEdit = allEntities.byId[entityId];
+      if (entityToEdit) {
+        navigation.setOptions({
+          headerTitle: entityToEdit.name,
+          headerTintColor,
+          headerStyle: {
+            backgroundColor: headerBackgroundColor
+          }
+        });
+      }
+    }
+  }, [route.params.entityId, allEntities]);
 
   const entityForms = {
     Car: forms.car(),
@@ -102,36 +123,35 @@ export default function EditEntityScreen({
     }
 
     return (
-      <SafeAreaView style={formStyles.container}>
-        <View style={formStyles.container}>
-          <Header
-            title={entityToEdit.name}
-            backPress={() => navigation.goBack()}
-          />
-          {updatedSuccessfully ? (
-            <Text>
-              {t('screens.editEntity.updateSuccess', {
-                entityName: entityToEdit.name
-              })}
-            </Text>
-          ) : null}
-          <RTKForm
-            fields={formFields}
-            methodHooks={{
-              PATCH: useUpdateEntityMutation,
-              DELETE: useDeleteEntityMutation
-            }}
-            formType="UPDATE"
-            extraFields={{
-              resourcetype: entityToEdit.resourcetype,
-              id: entityToEdit.id
-            }}
-            onSubmitSuccess={() => {
-              setUpdatedSuccessfully(true);
-            }}
-            onDeleteSuccess={onDeleteSuccess}
-          />
-        </View>
+      <SafeAreaView>
+        <TransparentFullPageScrollView>
+          <TransparentPaddedView>
+            {updatedSuccessfully ? (
+              <Text>
+                {t('screens.editEntity.updateSuccess', {
+                  entityName: entityToEdit.name
+                })}
+              </Text>
+            ) : null}
+            <RTKForm
+              fields={formFields}
+              methodHooks={{
+                PATCH: useUpdateEntityMutation,
+                DELETE: useDeleteEntityMutation
+              }}
+              formType="UPDATE"
+              extraFields={{
+                resourcetype: entityToEdit.resourcetype,
+                id: entityToEdit.id
+              }}
+              onSubmitSuccess={() => {
+                setUpdatedSuccessfully(true);
+              }}
+              onDeleteSuccess={onDeleteSuccess}
+              clearOnSubmit={false}
+            />
+          </TransparentPaddedView>
+        </TransparentFullPageScrollView>
       </SafeAreaView>
     );
   }
