@@ -88,6 +88,21 @@ export default function HolidayListScreen({
               )}
             />
           ))}
+        {allCountries
+          ?.filter((country) => !['AU', 'GB', 'US'].includes(country.code))
+          .map((country: Country) => (
+            <ListLinkWithCheckbox
+              key={country.code}
+              text={country.name}
+              showArrow={false}
+              onSelect={async (selected) => onPress(country, selected)}
+              navMethod={undefined}
+              customOnPress={() => {}}
+              selected={selectedCountries.some(
+                (cou) => cou.code == country.code
+              )}
+            />
+          ))}
       </WhiteFullPageScrollView>
       <GenericButton
         disabled={false}

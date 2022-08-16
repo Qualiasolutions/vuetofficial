@@ -1,7 +1,7 @@
 {
   "pageTitles": {
     "home": "Today",
-    "categories": "Things",
+    "categories": "Categories",
     "messages": "Messages",
     "settings": "Settings",
     "addTask": "Add Task",
@@ -195,7 +195,7 @@
     },
     "familySettings": {
       "family": "Family",
-      "familyMembers": "Family members"
+      "familyMembers": "Family Members"
     },
     "addTask": {
       "title": "Add Task",

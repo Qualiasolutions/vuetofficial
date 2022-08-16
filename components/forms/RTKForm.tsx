@@ -17,6 +17,7 @@ import MemberSelector from 'components/forms/components/MemberSelector';
 import PhoneNumberInput from './components/PhoneNumberInput';
 import { EntityTypeName } from 'types/entities';
 import { Feather } from '@expo/vector-icons';
+import FamilySelector from './components/FamilySelector';
 
 /* This type specifies the actual values of the fields.
 
@@ -98,6 +99,7 @@ const createInitialObject = (
         continue;
 
       case 'addMembers':
+      case 'addFamilyMembers':
         initialObj[key] = fields[key].initialValue || [];
 
       default:
@@ -463,6 +465,29 @@ export default function Form({
             </TransparentView>
           </TransparentView>
         );
+      case 'addFamilyMembers': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <TransparentView key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <FamilySelector
+                data={f.permittedValues}
+                onValueChange={(selectedMembers: any) => {
+                  const memberIds = selectedMembers.map(
+                    (member: any) => member.id
+                  );
+                  setFormValues({
+                    ...formValues,
+                    [field]: [...memberIds]
+                  });
+                }}
+              />
+            </TransparentView>
+          );
+        }
+      }
     }
   });
 

@@ -21,6 +21,7 @@ import {
 } from 'components/molecules/TextComponents';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
+import { entityOrderings } from './utils/entityOrderings';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -64,11 +65,16 @@ export default function EntityListScreen({
         });
   }, [route.params.entityTypeName, showCreateForm]);
 
+  const ordering = entityOrderings[entityData[0]?.resourcetype] || null;
+  const orderedEntityData = ordering
+    ? entityData.sort(ordering)
+    : [...entityData];
+
   const sections = {} as { [key: string]: EntityResponseType[] };
 
   const toSectionName = sectionNameMapping[entityData[0]?.resourcetype] || null;
   if (toSectionName) {
-    for (const entity of entityData) {
+    for (const entity of orderedEntityData) {
       if (sections[toSectionName(entity)]) {
         sections[toSectionName(entity)].push(entity);
       } else {
