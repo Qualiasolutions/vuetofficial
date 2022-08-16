@@ -8,20 +8,17 @@ const extendedApi = vuetApi.injectEndpoints({
         url: 'core/period/'
       })
     }),
-    createPeriod: builder.mutation ({
-    query: (body) => {
-      return {
-        url: 'core/period/',
-        method: 'POST',
-        body
-      };
-    }
-  })
+    createPeriod: builder.mutation({
+      query: (body) => {
+        return {
+          url: 'core/period/',
+          method: 'POST',
+          body
+        };
+      }
+    })
   }),
   overrideExisting: true
 });
 
-export const {
-    useGetAllPeriodsQuery,
-    useCreatePeriodMutation
-} = extendedApi;
+export const { useGetAllPeriodsQuery, useCreatePeriodMutation } = extendedApi;

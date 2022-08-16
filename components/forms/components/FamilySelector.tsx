@@ -25,14 +25,11 @@ export default function FamilySelector({ data, onValueChange }: any) {
 
   const membersList = () => {
     return data.map((member: any) => (
-      <TransparentView
-        key={member.id}
-        style={styles.memberContainer}
-      >
+      <TransparentView key={member.id} style={styles.memberContainer}>
         <Checkbox
           checked={selectedMembers.includes(member)}
           onValueChange={async () => {
-            onSelectMember(member)
+            onSelectMember(member);
           }}
           style={styles.checkbox}
         />
@@ -43,13 +40,9 @@ export default function FamilySelector({ data, onValueChange }: any) {
         />
       </TransparentView>
     ));
-  }
+  };
 
-  return (
-    <TransparentView>
-      {membersList()}
-    </TransparentView>
-  );
+  return <TransparentView>{membersList()}</TransparentView>;
 }
 
 const styles = StyleSheet.create({

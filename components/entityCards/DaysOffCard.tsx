@@ -4,7 +4,11 @@ import {
 } from 'components/molecules/TextComponents';
 import { WhiteBox } from 'components/molecules/ViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
-import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
+import {
+  getDateWithoutTimezone,
+  getDaysToAge,
+  getLongDateFromDateObject
+} from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
@@ -25,11 +29,13 @@ export default function DaysOffCard({
     }
   });
 
-  const startDate = getDateWithoutTimezone(entity?.start_date);
-  const endDate = getDateWithoutTimezone(entity?.end_date);
+  const startDateString = getLongDateFromDateObject(
+    getDateWithoutTimezone(entity?.start_date)
+  );
+  const endDateString = getLongDateFromDateObject(
+    getDateWithoutTimezone(entity?.end_date)
+  );
 
-  const { date: startdate, monthName, year } = getDaysToAge(startDate);
-  const { date: enddate } = getDaysToAge(endDate);
   const navigation = useNavigation();
 
   return (
@@ -42,7 +48,7 @@ export default function DaysOffCard({
         <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 18 }}
-          text={`${monthName} ${startdate} - ${enddate}, ${year}`}
+          text={`${startDateString} - ${endDateString}`}
         />
       </WhiteBox>
     </Pressable>

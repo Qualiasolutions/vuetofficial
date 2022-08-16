@@ -18,6 +18,7 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { EntityTypeName } from 'types/entities';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
+import { YesNoModal } from 'components/molecules/Modals';
 
 /* This type specifies the actual values of the fields.
 
@@ -153,6 +154,7 @@ export default function Form({
   );
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   const resetState = () => {
     setFormValues(createInitialObject(fields));
@@ -245,7 +247,7 @@ export default function Form({
       ...parsedFormValues,
       ...extraFields
     });
-    
+
     methodHookTriggers[submitMethod]
       .trigger({
         ...parsedFormValues,
@@ -335,7 +337,7 @@ export default function Form({
                   onValueChange();
                 }}
                 Date
-                textInputStyle={{height: 50}}
+                textInputStyle={{ height: 50 }}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -461,7 +463,10 @@ export default function Form({
                 multiline={true}
                 maxLength={150}
               />
-              <AlmostBlackText text={`${formValues[field]?.length || 0}/150`}  style={{textAlign:'right'}} />
+              <AlmostBlackText
+                text={`${formValues[field]?.length || 0}/150`}
+                style={{ textAlign: 'right' }}
+              />
             </TransparentView>
           </TransparentView>
         );
@@ -493,6 +498,15 @@ export default function Form({
 
   return (
     <TransparentView style={styles.container}>
+      <YesNoModal
+        title="Before you proceed"
+        question={'Are you sure you want to delete?'}
+        visible={!!showDeleteModal}
+        onYes={makeDeleteRequest}
+        onNo={() => {
+          setShowDeleteModal(false);
+        }}
+      />
       <TransparentView>
         {submitError ? <Text>{submitError}</Text> : null}
         {formFields}
@@ -507,7 +521,9 @@ export default function Form({
         {formType === 'UPDATE' && methodHookTriggers['DELETE'] ? (
           <Button
             title="DELETE"
-            onPress={makeDeleteRequest}
+            onPress={() => {
+              setShowDeleteModal(true);
+            }}
             disabled={submittingForm}
             style={[styles.button, styles.deleteButton]}
           />

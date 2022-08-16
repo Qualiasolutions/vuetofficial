@@ -12,6 +12,8 @@ export const sectionNameMapping = {
     }`;
   },
   DaysOff: (entity: EntityResponseType) => {
-    return monthNames[Number(entity.start_date?.split('-')[1]) - 1];
+    return `${monthNames[Number(entity.start_date?.split('-')[1]) - 1]} ${
+      entity.start_date?.split('-')[0]
+    }`;
   }
 } as { [key: string]: ((entity: EntityResponseType) => string) | undefined };

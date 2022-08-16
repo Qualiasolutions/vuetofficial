@@ -57,5 +57,7 @@ export type FormFieldTypes = {
 export const isRadioField = (x: any): x is RadioField =>
   x.permittedValues && x.valueToDisplay;
 
-export const hasPermittedValues = (x: any): x is AddMembersField | AddFamilyMembersField | RadioField =>
+export const hasPermittedValues = (
+  x: any
+): x is AddMembersField | AddFamilyMembersField | RadioField =>
   !!x.permittedValues;

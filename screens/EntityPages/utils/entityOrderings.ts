@@ -18,6 +18,12 @@ export const entityOrderings = {
     return 1;
   },
   Event: (entity: EntityResponseType, otherEntity: EntityResponseType) => {
+    if (dayjs(entity.date) < dayjs(otherEntity.date)) {
+      return -1;
+    }
+    return 1;
+  },
+  DaysOff: (entity: EntityResponseType, otherEntity: EntityResponseType) => {
     if (dayjs(entity.start_date) < dayjs(otherEntity.start_date)) {
       return -1;
     }

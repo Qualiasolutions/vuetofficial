@@ -22,7 +22,6 @@ import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from 'components/forms/entityFormFieldTypes';
-import { Header } from 'components/molecules/Header';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
@@ -46,7 +45,8 @@ export default function EditEntityScreen({
   useEffect(() => {
     if (allEntities) {
       const entityIdRaw = route.params.entityId;
-      const entityId = typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
+      const entityId =
+        typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
       const entityToEdit = allEntities.byId[entityId];
       if (entityToEdit) {
         navigation.setOptions({
@@ -74,15 +74,11 @@ export default function EditEntityScreen({
     DaysOff: forms.daysoff()
   };
 
-  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean>(false);
-  const [deletedEntityName, setDeletedEntityName] = useState<string>('');
   const [updatedSuccessfully, setUpdatedSuccessfully] =
     useState<boolean>(false);
 
   useFocusEffect(
     useCallback(() => {
-      setDeletedEntityName('');
-      setDeleteSuccessful(false);
       setUpdatedSuccessfully(false);
     }, [])
   );
@@ -105,15 +101,8 @@ export default function EditEntityScreen({
   );
 
   const onDeleteSuccess = (res: CarResponseType) => {
-    const entityName = allEntities.byId[entityId].name;
-    setDeletedEntityName(entityName);
-    setDeleteSuccessful(true);
     navigation.goBack();
   };
-
-  if (deleteSuccessful) {
-    return <DeleteSuccess name={deletedEntityName}></DeleteSuccess>;
-  }
 
   if (route.params?.entityId && allEntities.byId[entityId]) {
     for (const fieldName in formFields) {

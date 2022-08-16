@@ -1,6 +1,12 @@
 import { ListEntryResponse } from './lists';
 
-export type EntityTypeName = 'Car' | 'Birthday' | 'Event' | 'Hobby' | 'List' | 'DaysOff';
+export type EntityTypeName =
+  | 'Car'
+  | 'Birthday'
+  | 'Event'
+  | 'Hobby'
+  | 'List'
+  | 'DaysOff';
 
 export interface BaseEntityType {
   id: number;

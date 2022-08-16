@@ -9,7 +9,7 @@ export const formStyles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     padding: 10,
-    backgroundColor:'transparent'
+    backgroundColor: 'transparent'
   },
   title: {
     fontSize: 20,

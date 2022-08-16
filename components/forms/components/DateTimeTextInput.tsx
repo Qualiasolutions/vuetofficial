@@ -14,7 +14,7 @@ export default function DateTimeTextInput({
   value: Date | null;
   textInputStyle?: ViewStyle;
   onValueChange: Function;
-  Date?: boolean
+  Date?: boolean;
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
     React.useState<boolean>(false);
@@ -24,14 +24,20 @@ export default function DateTimeTextInput({
       <Pressable onPress={() => setIsDatePickerVisible(true)}>
         <TransparentView pointerEvents="none">
           <TextInput
-            value={value ? Date ? dayjs(value).format('DD/MM/YYYY') :  dayjs(value).format('YYYY-MM-DD HH:mm:ss') : 'DD/MM/YYYY'}
+            value={
+              value
+                ? Date
+                  ? dayjs(value).format('DD/MM/YYYY')
+                  : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+                : 'DD/MM/YYYY'
+            }
             style={textInputStyle || {}}
           />
         </TransparentView>
       </Pressable>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode={Date ? "date" :"datetime"}
+        mode={Date ? 'date' : 'datetime'}
         onConfirm={(newValue) => {
           onValueChange(newValue);
           setIsDatePickerVisible(false);

@@ -83,14 +83,8 @@ export function EntityNavigator() {
           headerStyle: { backgroundColor: 'transparent' }
         }}
       />
-      <EntityStack.Screen
-        name="EditEntity"
-        component={EditEntityScreen}
-      />
-      <EntityStack.Screen
-        name="AddEntity"
-        component={AddEntityScreen}
-      />
+      <EntityStack.Screen name="EditEntity" component={EditEntityScreen} />
+      <EntityStack.Screen name="AddEntity" component={AddEntityScreen} />
     </EntityStack.Navigator>
   );
 }

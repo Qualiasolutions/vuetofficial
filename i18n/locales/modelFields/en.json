@@ -17,7 +17,7 @@
       "name": "Name",
       "owner": "Owner",
       "members": "Members",
-      "description":"Description"
+      "description": "Description"
     },
     "car": {
       "make": "Make",
