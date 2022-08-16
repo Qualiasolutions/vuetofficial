@@ -27,7 +27,7 @@ export const birthdayForm = (): FormFieldTypes => {
       displayName: t('entities.birthday.start_date')
     },
     members: {
-      type: 'addMembers',
+      type: 'addFamilyMembers',
       required: true,
       permittedValues: userFullDetails.family.users,
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,

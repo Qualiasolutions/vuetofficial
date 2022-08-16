@@ -15,6 +15,7 @@ import { WhiteDateInput } from './components/DateInputs';
 import { ColorPicker } from './components/ColorPickers';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import PhoneNumberInput from './components/PhoneNumberInput';
+import FamilySelector from './components/FamilySelector';
 
 /* This type specifies the actual values of the fields.
 
@@ -95,6 +96,7 @@ const createInitialObject = (
         continue;
 
       case 'addMembers':
+      case 'addFamilyMembers':
         initialObj[key] = fields[key].initialValue || [];
 
       default:
@@ -416,6 +418,29 @@ export default function Form({
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <MemberSelector
+                data={f.permittedValues}
+                onValueChange={(selectedMembers: any) => {
+                  const memberIds = selectedMembers.map(
+                    (member: any) => member.id
+                  );
+                  setFormValues({
+                    ...formValues,
+                    [field]: [...memberIds]
+                  });
+                }}
+              />
+            </TransparentView>
+          );
+        }
+      }
+      case 'addFamilyMembers': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <TransparentView key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <FamilySelector
                 data={f.permittedValues}
                 onValueChange={(selectedMembers: any) => {
                   const memberIds = selectedMembers.map(
