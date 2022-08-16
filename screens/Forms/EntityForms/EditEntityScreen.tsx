@@ -71,7 +71,7 @@ export default function EditEntityScreen({
     TripAccommodation: forms.tripAccommodation(),
     TripActivity: forms.tripActivity(),
     Pet: forms.pet(),
-    DaysOff: forms.daysoff()
+    DaysOff: forms.daysOff()
   };
 
   const [updatedSuccessfully, setUpdatedSuccessfully] =

@@ -2,7 +2,7 @@ import { List } from './types';
 
 export default [
   {
-    name: 'career.daysoff',
+    name: 'career.daysOff',
     toScreen: 'EntityList',
     navMethod: 'push',
     toScreenParams: {

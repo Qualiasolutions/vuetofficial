@@ -50,7 +50,7 @@ export default function AddEntityForm({
     TripAccommodation: forms.tripAccommodation(),
     TripActivity: forms.tripActivity(),
     Pet: forms.pet(),
-    DaysOff: forms.daysoff()
+    DaysOff: forms.daysOff()
   };
 
   useFocusEffect(
