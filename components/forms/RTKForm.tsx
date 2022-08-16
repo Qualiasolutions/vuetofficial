@@ -281,7 +281,10 @@ export default function Form({
                   });
                   onValueChange();
                 }}
-                style={{ height: 40 }}
+                style={{
+                  height: 40,
+                  flex: 1
+                }}
               />
             </TransparentView>
           </TransparentView>
@@ -328,6 +331,7 @@ export default function Form({
                   onValueChange();
                 }}
                 Date
+                containerStyle={styles.inlineDateInput}
                 textInputStyle={{ height: 50 }}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
@@ -488,7 +492,7 @@ export default function Form({
   });
 
   return (
-    <TransparentView style={styles.container}>
+    <TransparentView>
       <YesNoModal
         title="Before you proceed"
         question={'Are you sure you want to delete?'}
@@ -525,12 +529,10 @@ export default function Form({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%'
-  },
   inlineInputPair: {
-    // flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%'
   },
   inputLabel: {
     fontSize: 12,
@@ -541,12 +543,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     minWidth: 100
   },
-  inlineDateContainer: {
-    width: 'auto'
-  },
   inlineDateInput: {
-    flex: 0,
-    width: 75
+    flex: 1,
+    width: '100%'
   },
   bottomButtons: {
     flexDirection: 'row',
@@ -568,5 +567,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  calendarIcon: { position: 'absolute', right: 20, top: 35, color: 'grey' }
+  calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' }
 });

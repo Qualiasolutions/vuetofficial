@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text } from 'components/Themed';
-import { formStyles } from './formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
@@ -17,6 +16,7 @@ import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TransparentView } from 'components/molecules/ViewComponents';
+import { inlineFieldsMapping } from './utils/inlineFieldsMapping'
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -113,8 +113,7 @@ export default function AddEntityForm({
           }}
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
-          inlineFields={true}
-          entityType={entityType}
+          inlineFields={(inlineFieldsMapping[entityType] || inlineFieldsMapping.default) as boolean}
         />
       </TransparentView>
     );

@@ -43,8 +43,7 @@ export default function AddEntityScreen({
   useEffect(() => {
     navigation.setOptions({
       headerTitle:
-        titleMapping[route.params.entityType] ||
-        `Add ${route.params.entityType}`,
+        titleMapping[route.params.entityType] || t('screens.addEntity.title', { entityType: route.params.entityType }),
       headerTintColor,
       headerStyle: {
         backgroundColor: headerBackgroundColor
