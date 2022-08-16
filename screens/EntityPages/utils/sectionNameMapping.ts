@@ -7,5 +7,8 @@ export const sectionNameMapping = {
   },
   Event: (entity: EntityResponseType) => {
     return monthNames[Number(entity.date?.split('-')[1]) - 1];
+  },
+  DaysOff: (entity: EntityResponseType) => {
+    return monthNames[Number(entity.start_date?.split('-')[1]) - 1];
   }
 } as { [key: string]: ((entity: EntityResponseType) => string) | undefined };

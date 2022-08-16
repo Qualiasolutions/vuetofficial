@@ -7,7 +7,8 @@ export type PermittedTypes =
   | 'radio'
   | 'colour'
   | 'phoneNumber'
-  | 'addMembers';
+  | 'addMembers'
+  | 'TextArea';
 
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
@@ -17,6 +18,7 @@ export type BaseField<TypeName, ValueType> = {
 };
 
 export type StringField = BaseField<'string', string>;
+export type TextArea = BaseField<'TextArea', string>;
 export type DateField = BaseField<'Date', Date>;
 export type DateTimeField = BaseField<'DateTime', Date>;
 export type RadioField = BaseField<'radio', any> & {
@@ -39,7 +41,8 @@ export type Field =
   | RadioField
   | ColourField
   | PhoneNumberField
-  | AddMembersField;
+  | AddMembersField
+  | TextArea;
 
 export type FormFieldTypes = {
   [key: string]: Field;

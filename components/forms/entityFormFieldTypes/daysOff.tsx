@@ -21,15 +21,20 @@ export const daysOffForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.entity.name')
     },
-    start_datetime: {
-      type: 'Date',
+    description: {
+      type: 'TextArea',
       required: true,
-      displayName: t('entities.trip-activity.start_datetime')
+      displayName: t('entities.entity.description')
     },
-    end_datetime: {
+    start_date: {
       type: 'Date',
       required: true,
-      displayName: t('entities.trip-activity.end_datetime')
+      displayName: t('entities.trip.start_date')
+    },
+    end_date: {
+      type: 'Date',
+      required: true,
+      displayName: t('entities.trip.end_date')
     }
   };
 };

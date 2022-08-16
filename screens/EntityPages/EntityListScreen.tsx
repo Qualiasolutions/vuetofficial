@@ -19,7 +19,7 @@ import {
   AlmostBlackText,
   PrimaryText
 } from 'components/molecules/TextComponents';
-import { StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
@@ -55,12 +55,17 @@ export default function EntityListScreen({
   const { t } = useTranslation();
 
   useEffect(() => {
-    navigation.setOptions({
-      title: t(`entityTypes.${route.params.entityTypeName}`)
-    });
-  }, [route.params.entityTypeName]);
+    route.params.entityTypeName == 'DaysOff' && showCreateForm
+      ? navigation.setOptions({
+          header: () => null
+        })
+      : navigation.setOptions({
+          title: t(`entityTypes.${route.params.entityTypeName}`)
+        });
+  }, [route.params.entityTypeName, showCreateForm]);
 
   const sections = {} as { [key: string]: EntityResponseType[] };
+
   const toSectionName = sectionNameMapping[entityData[0]?.resourcetype] || null;
   if (toSectionName) {
     for (const entity of entityData) {
@@ -97,18 +102,20 @@ export default function EntityListScreen({
   }
 
   return (
-    <WhiteFullPageScrollView>
+    <WhiteFullPageScrollView
+      style={showCreateForm && { backgroundColor: '#EFEFEF' }}
+    >
       <TransparentPaddedView>
         {listLinks}
         {((showCreateForm && entityTypes?.length === 1) ||
           listLinks.length == 0) && (
-          <>
+          <SafeAreaView>
             <PrimaryText
               style={{ fontSize: 20, textAlign: 'center' }}
               text={`Add ${entityTypes[0]}`}
             />
             <AddEntityForm entityType={entityTypes && entityTypes[0]} />
-          </>
+          </SafeAreaView>
         )}
       </TransparentPaddedView>
     </WhiteFullPageScrollView>

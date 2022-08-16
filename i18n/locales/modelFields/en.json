@@ -16,7 +16,8 @@
     "entity": {
       "name": "Name",
       "owner": "Owner",
-      "members": "Members"
+      "members": "Members",
+      "description":"Description"
     },
     "car": {
       "make": "Make",

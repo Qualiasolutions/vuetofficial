@@ -1,4 +1,5 @@
-import { Text, View, TextInput } from 'components/Themed';
+import { TransparentView } from 'components/molecules/ViewComponents';
+import { TextInput } from 'components/Themed';
 import dayjs from 'dayjs';
 import React from 'react';
 import { Pressable, ViewStyle } from 'react-native';
@@ -21,12 +22,12 @@ export default function DateTimeTextInput({
   return (
     <>
       <Pressable onPress={() => setIsDatePickerVisible(true)}>
-        <View pointerEvents="none">
+        <TransparentView pointerEvents="none">
           <TextInput
             value={value ? Date ? dayjs(value).format('DD/MM/YYYY') :  dayjs(value).format('YYYY-MM-DD HH:mm:ss') : 'DD/MM/YYYY'}
             style={textInputStyle || {}}
           />
-        </View>
+        </TransparentView>
       </Pressable>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}

@@ -280,7 +280,7 @@ export default function Form({
                   });
                   onValueChange();
                 }}
-                style={{ flex: 1 }}
+                style={{ height: 40 }}
               />
             </TransparentView>
           </TransparentView>
@@ -327,6 +327,7 @@ export default function Form({
                   onValueChange();
                 }}
                 Date
+                textInputStyle={{height: 50}}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -426,6 +427,33 @@ export default function Form({
           );
         }
       }
+      case 'TextArea':
+        return (
+          <TransparentView key={field}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
+              <TextInput
+                value={formValues[field]}
+                onChangeText={(newValue) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  onValueChange();
+                }}
+                style={{  height: 100 }}
+                multiline={true}
+                maxLength={150}
+              />
+              <AlmostBlackText text={`${formValues[field]?.length || 0}/150`}  style={{textAlign:'right'}} />
+            </TransparentView>
+          </TransparentView>
+        );
     }
   });
 
@@ -499,5 +527,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  calendarIcon: { position: 'absolute', right: 10, top: 30 }
+  calendarIcon: { position: 'absolute', right: 20, top: 35, color: 'grey' }
 });
