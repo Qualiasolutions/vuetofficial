@@ -1,25 +1,14 @@
 import React, { useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { EntityTabParamList, RootTabParamList } from 'types/base';
+import { EntityTabParamList } from 'types/base';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import {
   TransparentPaddedView,
-  WhiteContainerView
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
-import { PageTitle } from 'components/molecules/TextComponents';
-import {
-  TransparentFullPageScrollView,
-  WhiteFullPageScrollView
-} from 'components/molecules/ScrollViewComponents';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColor } from 'components/Themed';
-
-const backgroundComponents = {
-  default: TransparentFullPageScrollView
-} as {
-  [key: string]: React.ElementType | undefined;
-};
+import { backgroundComponents } from './utils/backgroundComponents';
 
 const titleMapping = {
   DaysOff: 'Add Days Off'

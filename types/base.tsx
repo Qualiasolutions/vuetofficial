@@ -89,7 +89,7 @@ export type EntityTabParamList = {
   EditEntity: { entityId: number | string };
   AddEntity: {
     entityType: EntityTypeName;
-    parentId: number | string;
+    parentId?: number | string;
   };
 };
 

@@ -7,7 +7,7 @@ export default [
     navMethod: 'push',
     toScreenParams: {
       entityTypes: ['DaysOff'],
-      entityTypeName: 'DaysOff'
+      entityTypeName: 'days-off'
     }
   },
   {

@@ -22,6 +22,9 @@ import {
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
+import { FullPageSpinner } from 'components/molecules/Spinners';
+import { useThemeColor } from 'components/Themed';
+import { backgroundComponents } from 'screens/Forms/EntityForms/utils/backgroundComponents';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -55,15 +58,24 @@ export default function EntityListScreen({
   );
   const { t } = useTranslation();
 
+  const addEntityHeaderTintColor = useThemeColor({}, 'primary');
+
   useEffect(() => {
-    route.params.entityTypeName == 'DaysOff' && showCreateForm
-      ? navigation.setOptions({
-          header: () => null
-        })
-      : navigation.setOptions({
-          title: t(`entityTypes.${route.params.entityTypeName}`)
-        });
-  }, [route.params.entityTypeName, showCreateForm]);
+    if (entityData && entityData.length === 0) {
+      navigation.setOptions({
+        title: t('screens.addEntity.title', { entityType: t(`entityTypes.${route.params.entityTypeName}`) }),
+        headerTintColor: addEntityHeaderTintColor
+      });
+    } else {
+      navigation.setOptions({
+        title: t(`entityTypes.${route.params.entityTypeName}`)
+      });
+    }
+  }, [route.params.entityTypeName, entityData]);
+
+  if (isLoading || !entityData) {
+    return <FullPageSpinner/>
+  }
 
   const ordering = entityOrderings[entityData[0]?.resourcetype] || null;
   const orderedEntityData = ordering
@@ -107,24 +119,21 @@ export default function EntityListScreen({
     });
   }
 
+  const BackgroundComponent = (
+    ((listLinks.length === 0) && entityTypes)
+      ? (backgroundComponents[entityTypes[0]] || backgroundComponents.default)
+      : WhiteFullPageScrollView
+  ) as React.ElementType;
+
   return (
-    <WhiteFullPageScrollView
-      style={showCreateForm && { backgroundColor: '#EFEFEF' }}
-    >
+    <BackgroundComponent>
       <TransparentPaddedView>
         {listLinks}
-        {((showCreateForm && entityTypes?.length === 1) ||
-          listLinks.length == 0) && (
-          <SafeAreaView>
-            <PrimaryText
-              style={{ fontSize: 20, textAlign: 'center' }}
-              text={`Add ${entityTypes[0]}`}
-            />
-            <AddEntityForm entityType={entityTypes && entityTypes[0]} />
-          </SafeAreaView>
+        {((showCreateForm && entityTypes?.length === 1) || (listLinks.length === 0)) && (
+          <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
       </TransparentPaddedView>
-    </WhiteFullPageScrollView>
+    </BackgroundComponent>
   );
 }
 
