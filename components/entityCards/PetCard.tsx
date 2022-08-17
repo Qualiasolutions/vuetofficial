@@ -7,8 +7,9 @@ import { Feather } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
 
 export default function PetCard({ entity }: { entity: EntityResponseType }) {
+  const blackColor = useThemeColor({}, 'black');
   return (
-    <WhiteView style={[styles.listEntry, {borderColor: useThemeColor({},'black')}]}>
+    <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
       <Feather name="image" size={25} color="grey" />
       <BlackText text={`${entity.name}`} style={styles.listEntryText} />
     </WhiteView>
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5,
     borderRadius: 15,
-    borderWidth: 1,
+    borderWidth: 1
   },
   listEntryText: {
     fontSize: 20,
