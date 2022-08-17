@@ -1,7 +1,7 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet } from 'react-native';
 
-import { Text, View } from 'components/Themed';
+import { Text, useThemeColor, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,12 +9,29 @@ import { EntityTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 import { useTranslation } from 'react-i18next';
+import Layout from 'constants/Layout';
+
+const categoriesImages = {
+  FAMILY: require('assets/images/categories/family.png'),
+  PETS: require('assets/images/categories/pets.png'),
+  SOCIAL_INTERESTS: require('assets/images/categories/social.png'),
+  EDUCATION_CAREER: require('assets/images/categories/education.png'),
+  TRAVEL: require('assets/images/categories/travel.png'),
+  HEALTH_BEAUTY: require('assets/images/categories/health.png'),
+  HOME_GARDEN: require('assets/images/categories/home.png'),
+  FINANCE: require('assets/images/categories/finance.png'),
+  TRANSPORT: require('assets/images/categories/transport.png')
+};
 
 type CategoriesTypes = EntityTabScreenProps<'Categories'>;
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
   const { t } = useTranslation();
+
+  const whiteColor = useThemeColor({}, 'white');
+  const overlayColor = useThemeColor({}, 'overlay');
+  const blackColor = useThemeColor({}, 'black');
 
   if (isLoading || !allCategories) {
     return null;
@@ -26,7 +43,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
 
   const categoriesContent = Object.values(allCategories.byId).map(
     (category: CategoryType) => {
-      const textColor = category.is_enabled ? '#000000' : '#00000044';
+      const textColor = category.is_enabled ? whiteColor : blackColor;
       const isEnabled = category.is_enabled;
 
       const isPremiumTag = category.is_premium ? (
@@ -40,14 +57,23 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
           onPress={() => {
             navigation.navigate('EntityTypeList', { categoryId: category.id });
           }}
-          style={styles.gridSquare}
           disabled={!isEnabled}
           key={category.id}
         >
-          <Text style={[styles.gridText, { color: textColor }]}>
-            {t(`categories.${category.name}`)}
-          </Text>
-          {isPremiumTag}
+          <ImageBackground
+            source={categoriesImages[category.name]}
+            style={styles.gridSquare}
+            resizeMode="cover"
+          >
+            <View
+              style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
+            >
+              <Text style={[styles.gridText, { color: textColor }]}>
+                {t(`categories.${category.name}`)}
+              </Text>
+              {isPremiumTag}
+            </View>
+          </ImageBackground>
         </Pressable>
       );
     }
@@ -66,7 +92,6 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     width: '100%',
     height: '100%',
     backgroundColor: 'white'
@@ -87,14 +112,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   gridSquare: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '32%',
-    height: '32%',
-    padding: 10,
-    margin: 1,
-    borderWidth: 1,
-    borderColor: '#000000'
+    width: Layout.window.width / 3 - 17,
+    height: Layout.window.height * 0.2,
+    margin: 2.5,
+    overflow: 'hidden',
+    borderRadius: 10
   },
   gridText: {
     fontWeight: 'bold',
@@ -112,5 +134,11 @@ const styles = StyleSheet.create({
   premiumTagText: {
     fontSize: 10,
     color: 'white'
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    borderRadius: 10,
+    padding: 10
   }
 });
