@@ -17,6 +17,7 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 /* This type specifies the actual values of the fields.
 
@@ -151,6 +152,8 @@ export default function Form({
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [showOther, setShowOther] = React.useState<boolean>(false);
 
   const resetState = () => {
     setFormValues(createInitialObject(fields));
@@ -282,7 +285,7 @@ export default function Form({
                   onValueChange();
                 }}
                 style={{
-                  height: 40,
+                  height: 50,
                   flex: 1
                 }}
               />
@@ -332,7 +335,7 @@ export default function Form({
                 }}
                 Date
                 containerStyle={styles.inlineDateInput}
-                textInputStyle={{ height: 50 }}
+                textInputStyle={{ height: 50, marginTop: 10 }}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -488,6 +491,47 @@ export default function Form({
           );
         }
       }
+      case 'dropDown': {
+        const f = fields[field];
+        return (
+          <TransparentView key={field} style={{ zIndex: 9999 }}>
+            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+            {produceLabelFromFieldName(field)}
+            <DropDownPicker
+              open={open}
+              value={formValues[field]}
+              items={f.initialValue}
+              setOpen={setOpen}
+              setValue={(item) => {
+                if(item(null) == 'Other') return setShowOther(true)
+                setFormValues({
+                  ...formValues,
+                  [field]: item(null)
+                });
+              }}
+              placeholder='Select Breed'
+              style={{ borderWidth: 0, marginTop: 10 }}
+            />
+            {showOther && (
+              <TextInput
+                value={formValues[field]}
+                placeholder='Type here'
+                onChangeText={(newValue) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  onValueChange();
+                }}
+                style={{
+                  height: 50,
+                  flex: 1
+                }}
+              />
+            )}
+          </TransparentView>
+        );
+      }
     }
   });
 
@@ -535,8 +579,9 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
+    fontSize: 14,
+    textAlign: 'left',
+    marginTop: 10
   },
   inputLabelWrapper: {
     alignItems: 'flex-start',
@@ -550,7 +595,8 @@ const styles = StyleSheet.create({
   bottomButtons: {
     flexDirection: 'row',
     width: '100%',
-    marginTop: 10
+    marginTop: 30,
+    zIndex: -1
   },
   button: {
     width: '50%'

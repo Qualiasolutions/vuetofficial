@@ -129,7 +129,7 @@ export default function EntityListScreen({
     <BackgroundComponent>
       <TransparentPaddedView>
         {listLinks}
-        {((showCreateForm && entityTypes?.length === 1) || (listLinks.length === 0)) && (
+        {((showCreateForm && entityTypes?.length === 0) || (listLinks.length === 0)) && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
       </TransparentPaddedView>

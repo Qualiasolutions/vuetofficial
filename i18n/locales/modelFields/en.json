@@ -61,9 +61,10 @@
       "contact_email": "Contact Email"
     },
     "pet": {
-      "type": "Type",
+      "name": "Pet Name",
+      "type": "Type of Pet",
       "breed": "Breed",
-      "dob": "Date of birth",
+      "dob": "Date of Birth",
       "microchip_number": "Microchip number"
     }
   },

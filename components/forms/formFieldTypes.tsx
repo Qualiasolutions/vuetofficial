@@ -9,7 +9,8 @@ export type PermittedTypes =
   | 'phoneNumber'
   | 'addMembers'
   | 'TextArea'
-  | 'addFamilyMembers';
+  | 'addFamilyMembers'
+  | 'dropDown';
 
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
@@ -35,6 +36,15 @@ export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {
   valueToDisplay: Function;
 };
 
+export type DropDownField = BaseField<'dropDown', any> & {
+  permittedValues: any[];
+  displayName?: string
+  initialValue?: {
+    label: string,
+    value: string
+  }[];
+}
+
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
@@ -48,7 +58,8 @@ export type Field =
   | PhoneNumberField
   | AddMembersField
   | TextArea
-  | AddFamilyMembersField;
+  | AddFamilyMembersField
+  | DropDownField;
 
 export type FormFieldTypes = {
   [key: string]: Field;
