@@ -27,7 +27,7 @@ export default function FamilySelector({ data, onValueChange }: {
     }
   };
 
-  const selectAllButton = <TransparentView style={styles.memberContainer}>
+  const selectAllButton = <TransparentView style={styles.rowContainer}>
     <Checkbox
       checked={data.length === selectedMembers.length}
       onValueChange={async () => {
@@ -44,7 +44,7 @@ export default function FamilySelector({ data, onValueChange }: {
 
   const membersList = () => {
     return data.map((member: any) => (
-      <TransparentView key={member.id} style={styles.memberContainer}>
+      <TransparentView key={member.id} style={[styles.rowContainer, styles.memberContainer]}>
         <Checkbox
           checked={selectedMembers.includes(member)}
           onValueChange={async () => {
@@ -68,9 +68,12 @@ export default function FamilySelector({ data, onValueChange }: {
 }
 
 const styles = StyleSheet.create({
-  memberContainer: {
+  rowContainer: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  memberContainer: {
+    marginTop: 10
   },
   checkbox: {
     marginRight: 10
