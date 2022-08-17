@@ -12,7 +12,6 @@ import LinkListScreen from 'screens/EntityPages/LinkListScreen/LinkListScreen';
 import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
 import HolidayDetailScreen from 'screens/EntityPages/EntityScreen/HolidayDetailScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
@@ -30,7 +29,6 @@ export function EntityNavigator() {
         component={EntityListScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
 
@@ -39,7 +37,6 @@ export function EntityNavigator() {
         component={HolidayListScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
 
@@ -48,7 +45,6 @@ export function EntityNavigator() {
         component={EntityTypeListScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <EntityStack.Screen
@@ -56,7 +52,6 @@ export function EntityNavigator() {
         component={EntityScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <EntityStack.Screen
@@ -64,7 +59,6 @@ export function EntityNavigator() {
         component={ChildEntitiesScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <EntityStack.Screen
@@ -72,7 +66,6 @@ export function EntityNavigator() {
         component={LinkListScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <EntityStack.Screen
@@ -80,11 +73,13 @@ export function EntityNavigator() {
         component={HolidayDetailScreen}
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: 'transparent' }
         }}
       />
       <EntityStack.Screen name="EditEntity" component={EditEntityScreen} />
-      <EntityStack.Screen name="AddEntity" component={AddEntityScreen} />
+      <EntityStack.Screen
+        name="AddEntity"
+        component={AddEntityScreen}
+      />
     </EntityStack.Navigator>
   );
 }

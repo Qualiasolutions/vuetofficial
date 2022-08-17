@@ -13,8 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
-import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
-import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import {
   useGetUserDetailsQuery,
