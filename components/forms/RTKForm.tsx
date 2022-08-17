@@ -17,7 +17,7 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
-import DropDown from 'components/molecules/DropDown';
+import DropDown from 'components/forms/DropDown';
 
 /* This type specifies the actual values of the fields.
 
@@ -333,7 +333,7 @@ export default function Form({
                 }}
                 Date
                 containerStyle={styles.inlineDateInput}
-                textInputStyle={{ height: 50, marginTop: 10 }}
+                textInputStyle={styles.dateTextInput}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -589,5 +589,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' }
+  calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' },
+  dateTextInput: { height: 50, marginTop: 10 }
 });

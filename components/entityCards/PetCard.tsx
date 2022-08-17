@@ -8,9 +8,10 @@ import { useThemeColor } from 'components/Themed';
 
 export default function PetCard({ entity }: { entity: EntityResponseType }) {
   const blackColor = useThemeColor({}, 'black');
+  const greyColor = useThemeColor({}, 'grey');
   return (
     <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
-      <Feather name="image" size={25} color="grey" />
+      <Feather name="image" size={25} color={greyColor} />
       <BlackText text={`${entity.name}`} style={styles.listEntryText} />
     </WhiteView>
   );
