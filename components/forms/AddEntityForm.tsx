@@ -114,6 +114,7 @@ export default function AddEntityForm({
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
           inlineFields={(inlineFieldsMapping[entityType] || inlineFieldsMapping.default) as boolean}
+          createTextOverride={t('common.addAnother')}
         />
       </TransparentView>
     );

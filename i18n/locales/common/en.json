@@ -117,7 +117,8 @@
     "category": "Category",
     "thing": "Thing",
     "pleaseSelect": "Please select",
-    "selectAll": "Select all"
+    "selectAll": "Select all",
+    "addAnother": "Add Another"
   },
   "screens": {
     "logIn": {

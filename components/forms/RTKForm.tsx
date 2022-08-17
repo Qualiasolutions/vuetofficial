@@ -127,7 +127,8 @@ export default function Form({
   onValueChange = () => {},
   clearOnSubmit = true,
   submitText = '',
-  inlineFields = false
+  inlineFields = false,
+  createTextOverride = ''
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -141,6 +142,7 @@ export default function Form({
   clearOnSubmit?: boolean;
   submitText?: string;
   inlineFields?: boolean;
+  createTextOverride?: string;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -512,7 +514,7 @@ export default function Form({
       </TransparentView>
       <TransparentView style={styles.bottomButtons}>
         <Button
-          title={submitText || (formType === 'CREATE' ? 'CREATE' : 'UPDATE')}
+          title={submitText || (formType === 'CREATE' ? (createTextOverride || 'CREATE') : 'UPDATE')}
           onPress={submitForm}
           disabled={submittingForm || !hasAllRequired}
           style={styles.button}
@@ -554,7 +556,8 @@ const styles = StyleSheet.create({
   bottomButtons: {
     flexDirection: 'row',
     width: '100%',
-    marginTop: 10
+    marginTop: 30,
+    justifyContent: 'center'
   },
   button: {
     width: '50%'
