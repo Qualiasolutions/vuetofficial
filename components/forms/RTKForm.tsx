@@ -415,19 +415,23 @@ export default function Form({
           return (
             <TransparentView key={field}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <MemberSelector
-                data={f.permittedValues}
-                onValueChange={(selectedMembers: any) => {
-                  const memberIds = selectedMembers.map(
-                    (member: any) => member.id
-                  );
-                  setFormValues({
-                    ...formValues,
-                    [field]: [...memberIds]
-                  });
-                }}
-              />
+              <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+                <TransparentView style={styles.inputLabelWrapper}>
+                  {produceLabelFromFieldName(field)}
+                </TransparentView>
+                <MemberSelector
+                  data={f.permittedValues}
+                  onValueChange={(selectedMembers: any) => {
+                    const memberIds = selectedMembers.map(
+                      (member: any) => member.id
+                    );
+                    setFormValues({
+                      ...formValues,
+                      [field]: [...memberIds]
+                    });
+                  }}
+                />
+              </TransparentView>
             </TransparentView>
           );
         }

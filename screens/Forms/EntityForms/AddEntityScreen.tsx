@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColor } from 'components/Themed';
 import { backgroundComponents } from './utils/backgroundComponents';
+import { StyleSheet } from 'react-native';
 
 const titleMapping = {
   DaysOff: 'Add Days Off'
@@ -44,7 +45,7 @@ export default function AddEntityScreen({
     backgroundComponents.default) as React.ElementType;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <BackgroundComponent>
         <TransparentPaddedView>
           <AddEntityForm
@@ -56,3 +57,7 @@ export default function AddEntityScreen({
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { height: '100%' }
+})

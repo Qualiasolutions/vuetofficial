@@ -202,7 +202,7 @@
       "createSuccess": "Successfully created new task"
     },
     "addEntity": {
-      "title": "New {{entityType}}",
+      "title": "Add {{entityType}}",
       "createSuccess": "Successfully created new {{entityType}}"
     },
     "editEntity": {

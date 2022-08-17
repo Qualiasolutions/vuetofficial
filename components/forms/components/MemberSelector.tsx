@@ -53,7 +53,7 @@ export default function MemberSelector({ data, onValueChange }: any) {
     return selectedMembers.map((member: any) => (
       <TransparentView
         key={member.id}
-        style={{ marginLeft: 70, marginTop: 11 }}
+        style={{ marginTop: 11 }}
       >
         <UserWithColor
           name={`${member.first_name} ${member.last_name}`}
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 22,
-    marginLeft: 70
   },
   addIcon: {
     height: 27,
