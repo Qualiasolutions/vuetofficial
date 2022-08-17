@@ -17,7 +17,7 @@ export default {
       toScreenParams: {
         entityTypes: ['Pet'],
         entityTypeName: 'pets',
-        showCreateForm: true
+        showCreateForm: false
       }
     },
     {
