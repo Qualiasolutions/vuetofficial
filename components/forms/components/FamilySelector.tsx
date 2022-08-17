@@ -1,17 +1,21 @@
-import { ListingModal } from 'components/molecules/Modals';
-import { PrimaryText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import UserWithColor from 'components/molecules/UserWithColor';
-import { useCallback, useState } from 'react';
-import { Image, Pressable, StyleSheet } from 'react-native';
-import { UserFullResponse, UserResponse } from 'types/users';
-import { Text, View } from 'components/Themed';
+import { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { UserFullResponse } from 'types/users';
 import Checkbox from 'components/molecules/Checkbox';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { useTranslation } from 'react-i18next';
 
-export default function FamilySelector({ data, onValueChange }: any) {
+export default function FamilySelector({ data, onValueChange }: {
+  data: UserFullResponse[],
+  onValueChange: (val: UserFullResponse[]) => void
+}) {
   const [selectedMembers, setSelectedMembers] = useState<UserFullResponse[]>(
     []
   );
+
+  const { t } = useTranslation()
 
   const onSelectMember = (member: UserFullResponse) => {
     if (selectedMembers.some((i) => i.id == member.id)) {
@@ -22,6 +26,21 @@ export default function FamilySelector({ data, onValueChange }: any) {
       onValueChange([...selectedMembers, member]);
     }
   };
+
+  const selectAllButton = <TransparentView style={styles.memberContainer}>
+    <Checkbox
+      checked={data.length === selectedMembers.length}
+      onValueChange={async () => {
+        if (selectedMembers.length === data.length) {
+          setSelectedMembers([])
+        } else {
+          setSelectedMembers(data)
+        }
+      }}
+      style={styles.checkbox}
+    />
+    <AlmostBlackText text={t('common.selectAll')} style={styles.selectAllText} />
+  </TransparentView>
 
   const membersList = () => {
     return data.map((member: any) => (
@@ -42,7 +61,10 @@ export default function FamilySelector({ data, onValueChange }: any) {
     ));
   };
 
-  return <TransparentView>{membersList()}</TransparentView>;
+  return <TransparentView>
+    {selectAllButton}
+    {membersList()}
+  </TransparentView>;
 }
 
 const styles = StyleSheet.create({
@@ -52,5 +74,8 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     marginRight: 10
+  },
+  selectAllText: {
+    fontSize: 18
   }
 });
