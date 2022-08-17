@@ -38,15 +38,18 @@ export default function AddEntityScreen({
         backgroundColor: headerBackgroundColor,
       },
       headerShadowVisible: false,
+      headerTitleAlign: 'center',
       headerTitle: (props) => {
         return (
           <TransparentView style={{
-            height: 100,
+            height: 80,
             alignItems: 'center',
             justifyContent: 'flex-end',
-            width: '80%'
           }}>
-            <PageTitle text={titleMapping[route.params.entityType] || t('screens.addEntity.title', { entityType: route.params.entityType })}/>
+            <PageTitle
+              text={titleMapping[route.params.entityType] || t('screens.addEntity.title', { entityType: route.params.entityType })}
+              style={{marginBottom: 0}}
+            />
           </TransparentView>
         )
       }
