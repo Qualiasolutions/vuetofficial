@@ -17,7 +17,7 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDown from 'components/molecules/DropDown';
 
 /* This type specifies the actual values of the fields.
 
@@ -152,8 +152,6 @@ export default function Form({
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [showOther, setShowOther] = React.useState<boolean>(false);
 
   const resetState = () => {
     setFormValues(createInitialObject(fields));
@@ -497,38 +495,16 @@ export default function Form({
           <TransparentView key={field} style={{ zIndex: 9999 }}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
             {produceLabelFromFieldName(field)}
-            <DropDownPicker
-              open={open}
+            <DropDown
               value={formValues[field]}
               items={f.initialValue}
-              setOpen={setOpen}
-              setValue={(item) => {
-                if(item(null) == 'Other') return setShowOther(true)
+              setFormValues={(item) => {
                 setFormValues({
                   ...formValues,
-                  [field]: item(null)
+                  [field]: item
                 });
               }}
-              placeholder='Select Breed'
-              style={{ borderWidth: 0, marginTop: 10 }}
             />
-            {showOther && (
-              <TextInput
-                value={formValues[field]}
-                placeholder='Type here'
-                onChangeText={(newValue) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  onValueChange();
-                }}
-                style={{
-                  height: 50,
-                  flex: 1
-                }}
-              />
-            )}
           </TransparentView>
         );
       }
