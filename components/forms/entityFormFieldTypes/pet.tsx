@@ -11,20 +11,19 @@ export const petForm = (): FormFieldTypes => {
       displayName: t('entities.pet.name')
     },
     type: {
-      type: 'string',
+      type: 'dropDownWithOther',
       required: true,
-      displayName: t('entities.pet.type')
-    },
-    breed: {
-      type: 'dropDown',
-      required: true,
-      displayName: t('entities.pet.breed'),
-      initialValue: [
+      displayName: t('entities.pet.type'),
+      permittedValues: [
         {label: 'Dog', value: 'Dog'},
         {label: 'Cat', value: 'Cat'},
-        {label: 'Bird', value: 'Bird'},
-        {label: 'Other', value: 'Other'},
+        {label: 'Bird', value: 'Bird'}
       ]
+    },
+    breed: {
+      type: 'string',
+      required: true,
+      displayName: t('entities.pet.breed')
     },
     dob: {
       type: 'Date',

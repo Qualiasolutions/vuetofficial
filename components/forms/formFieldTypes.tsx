@@ -10,7 +10,8 @@ export type PermittedTypes =
   | 'addMembers'
   | 'TextArea'
   | 'addFamilyMembers'
-  | 'dropDown';
+  | 'dropDown'
+  | 'dropDownWithOther';
 
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
@@ -43,6 +44,16 @@ export type DropDownField = BaseField<'dropDown', any> & {
     label: string,
     value: string
   }[];
+  placeholder?: string;
+}
+export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
+  permittedValues: any[];
+  displayName?: string
+  initialValue?: {
+    label: string,
+    value: string
+  }[];
+  placeholder?: string;
 }
 
 // TODO - make these more specific (match regex?)
@@ -59,7 +70,8 @@ export type Field =
   | AddMembersField
   | TextArea
   | AddFamilyMembersField
-  | DropDownField;
+  | DropDownField
+  | DropDownWithOtherField;
 
 export type FormFieldTypes = {
   [key: string]: Field;

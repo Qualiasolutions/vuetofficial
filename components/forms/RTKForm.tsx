@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
@@ -502,22 +502,46 @@ export default function Form({
       }
       case 'dropDown': {
         const f = fields[field];
-        return (
-          <TransparentView key={field} style={{ zIndex: 9999 }}>
-            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            {produceLabelFromFieldName(field)}
-            <DropDown
-              value={formValues[field]}
-              items={f.initialValue}
-              setFormValues={(item) => {
-                setFormValues({
-                  ...formValues,
-                  [field]: item
-                });
-              }}
-            />
-          </TransparentView>
-        );
+        if (hasPermittedValues(f)) {
+          return (
+            <View key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <DropDown
+                value={formValues[field]}
+                items={f.permittedValues}
+                setFormValues={(item) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: item
+                  });
+                }}
+              />
+            </View>
+          );
+        }
+      }
+      case 'dropDownWithOther': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <View key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <DropDown
+                value={formValues[field]}
+                items={f.permittedValues}
+                setFormValues={(item) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: item
+                  });
+                }}
+                allowOther={true}
+              />
+            </View>
+          );
+        }
       }
     }
   });
@@ -533,10 +557,10 @@ export default function Form({
           setShowDeleteModal(false);
         }}
       />
-      <TransparentView>
+      <View>
         {submitError ? <Text>{submitError}</Text> : null}
         {formFields}
-      </TransparentView>
+      </View>
       <TransparentView style={styles.bottomButtons}>
         <Button
           title={submitText || (formType === 'CREATE' ? (createTextOverride || 'CREATE') : 'UPDATE')}
