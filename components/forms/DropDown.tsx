@@ -17,11 +17,17 @@ export default function DropDown({
         items={items}
         setOpen={setOpen}
         setValue={(item) => {
-          if (item(null) == 'Other') return setShowOther(true);
+          if (item(null) == 'Other') {
+            setFormValues('');
+            setShowOther(true);
+            return;
+          }
           setFormValues(item(null));
+          setShowOther(false);
         }}
         placeholder="Select Breed"
         style={{ borderWidth: 0, marginTop: 10 }}
+        listMode="MODAL"
       />
       {showOther && (
         <TextInput
