@@ -56,7 +56,7 @@ type CalendarViewProps = {
   [key: string]: { backgroundColor: string; text: string, member_colour: string };
 }
 
-type allPeriods = {
+type AllPeriods = {
     end_date: string,
     entity: number,
     id: number,
@@ -77,5 +77,5 @@ export {
   SelectedHolidays,
   HolidayList,
   CalendarViewProps,
-  allPeriods
+  AllPeriods
 };
