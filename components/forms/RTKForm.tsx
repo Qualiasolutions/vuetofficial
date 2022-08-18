@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     textAlign: 'left',
-    marginTop: 10
+    marginTop: 14
   },
   inputLabelWrapper: {
     alignItems: 'flex-start',
@@ -626,6 +626,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' },
-  dateTextInput: { height: 50, marginTop: 10 },
+  dateTextInput: { height: 50 },
   addFamilyMembers: { marginTop: 20 }
 });
