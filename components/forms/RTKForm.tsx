@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
@@ -504,7 +504,7 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field} style={{zIndex: 9999}}>
+            <View key={field} style={(Platform.OS === 'ios') && {zIndex: 9999}}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <DropDown
@@ -525,7 +525,7 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field} style={{zIndex: 9999}}>
+            <View key={field} style={(Platform.OS === 'ios') ? {zIndex: 9999} : {}}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <DropDown
@@ -587,7 +587,8 @@ const styles = StyleSheet.create({
   inlineInputPair: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    marginTop: 10
   },
   inputLabel: {
     fontSize: 14,

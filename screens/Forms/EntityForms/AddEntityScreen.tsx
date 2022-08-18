@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
 import { backgroundComponents } from './utils/backgroundComponents';
 import { backgroundColours } from './utils/backgroundColours';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { PageTitle } from 'components/molecules/TextComponents';
 import { EntityTypeName } from 'types/entities';
 import DropDown from 'components/forms/components/DropDown';
@@ -67,7 +67,7 @@ export default function AddEntityScreen({
     backgroundComponents.default) as React.ElementType;
 
   const entityTypeSelector = (entityTypes && (entityTypes.length > 1))
-    ? <View style={styles.entityTypeSelectorWrapper}>
+    ? <View style={[styles.entityTypeSelectorWrapper, (Platform.OS === 'ios') && {zIndex: 9999}]}>
       <DropDown
         value={selectedEntityType}
         items={entityTypes.map(entityType => ({
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 200,
     alignSelf: 'center',
-    zIndex: 9999
   },
   container: { height: '100%' }
 })
