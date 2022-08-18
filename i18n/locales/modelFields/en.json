@@ -29,7 +29,12 @@
       "service_due_date": "Service Due"
     },
     "birthday": {
-      "start_date": "Date of birth"
+      "start_date": "Date of birth",
+      "members": "Select Family Members to remind:"
+    },
+    "anniversary": {
+      "start_date": "Start date",
+      "members": "Select Family Members to remind:"
     },
     "event": {
       "date": "Date"

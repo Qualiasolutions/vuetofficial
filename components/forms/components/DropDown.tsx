@@ -1,0 +1,56 @@
+import { TextInput, useThemeColor, View } from 'components/Themed';
+import { useState } from 'react';
+import { ViewStyle } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+
+export default function DropDown({
+  value = '',
+  items = [],
+  setFormValues = (item: string) => {},
+  dropdownPlaceholder = 'Select',
+  style = {}
+}: {
+  value: string,
+  items: any[],
+  setFormValues: (item: any) => void,
+  dropdownPlaceholder?: string,
+  style?: ViewStyle
+}) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [showOther, setShowOther] = useState<boolean>(false);
+  const borderColor = useThemeColor({}, 'grey')
+
+  return (
+    <>
+      <DropDownPicker
+        listMode="SCROLLVIEW"
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={(item) => {
+          if (item(null) == 'Other') return setShowOther(true);
+          setFormValues(item(null));
+        }}
+        placeholder={dropdownPlaceholder}
+        style={[{
+          borderWidth: 1,
+          borderColor
+        }, style]}
+      />
+      {showOther && (
+        <TextInput
+          value={value}
+          placeholder="Type here"
+          onChangeText={(newValue) => {
+            setFormValues(newValue);
+          }}
+          style={{
+            height: 50,
+            flex: 1
+          }}
+        />
+      )}
+    </>
+  );
+}

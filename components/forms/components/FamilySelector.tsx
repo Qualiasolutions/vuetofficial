@@ -7,34 +7,33 @@ import Checkbox from 'components/molecules/Checkbox';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
 
-export default function FamilySelector({ data, onValueChange }: {
+export default function FamilySelector({
+  data,
+  values,
+  onValueChange,
+}: {
   data: UserFullResponse[],
-  onValueChange: (val: UserFullResponse[]) => void
+  values: any[],
+  onValueChange: (val: number[]) => void
 }) {
-  const [selectedMembers, setSelectedMembers] = useState<UserFullResponse[]>(
-    []
-  );
-
   const { t } = useTranslation()
 
   const onSelectMember = (member: UserFullResponse) => {
-    if (selectedMembers.some((i) => i.id == member.id)) {
-      setSelectedMembers([...selectedMembers.filter((i) => i.id != member.id)]);
-      onValueChange([...selectedMembers.filter((i) => i.id != member.id)]);
+    if (values.includes(member.id)) {
+      onValueChange([...values.filter((i) => member.id != i)]);
     } else {
-      setSelectedMembers([...selectedMembers, member]);
-      onValueChange([...selectedMembers, member]);
+      onValueChange([...values, member.id]);
     }
   };
 
   const selectAllButton = <TransparentView style={styles.rowContainer}>
     <Checkbox
-      checked={data.length === selectedMembers.length}
+      checked={values && (data.length === values.length)}
       onValueChange={async () => {
-        if (selectedMembers.length === data.length) {
-          setSelectedMembers([])
+        if (values.length === data.length) {
+          onValueChange([]);
         } else {
-          setSelectedMembers(data)
+          onValueChange(data.map(member => member.id));
         }
       }}
       style={styles.checkbox}
@@ -46,7 +45,7 @@ export default function FamilySelector({ data, onValueChange }: {
     return data.map((member: any) => (
       <TransparentView key={member.id} style={[styles.rowContainer, styles.memberContainer]}>
         <Checkbox
-          checked={selectedMembers.includes(member)}
+          checked={values && values.includes(member.id)}
           onValueChange={async () => {
             onSelectMember(member);
           }}

@@ -17,6 +17,7 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
+import { UserFullResponse } from 'types/users';
 
 /* This type specifies the actual values of the fields.
 
@@ -100,6 +101,7 @@ const createInitialObject = (
       case 'addMembers':
       case 'addFamilyMembers':
         initialObj[key] = fields[key].initialValue || [];
+        continue
 
       default:
         initialObj[key] = null;
@@ -128,7 +130,8 @@ export default function Form({
   clearOnSubmit = true,
   submitText = '',
   inlineFields = false,
-  createTextOverride = ''
+  createTextOverride = '',
+  fieldColor = '#ffffff'
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -143,6 +146,7 @@ export default function Form({
   submitText?: string;
   inlineFields?: boolean;
   createTextOverride?: string;
+  fieldColor?: string;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -285,7 +289,8 @@ export default function Form({
                 }}
                 style={{
                   height: 40,
-                  flex: 1
+                  flex: 1,
+                  backgroundColor: fieldColor
                 }}
               />
             </TransparentView>
@@ -334,7 +339,10 @@ export default function Form({
                 }}
                 Date
                 containerStyle={styles.inlineDateInput}
-                textInputStyle={{ height: 50 }}
+                textInputStyle={{
+                  height: 50,
+                  backgroundColor: fieldColor
+                }}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -475,18 +483,16 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <TransparentView key={field}>
+            <TransparentView key={field} style={styles.addFamilyMembers}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <FamilySelector
                 data={f.permittedValues}
+                values={formValues[field]}
                 onValueChange={(selectedMembers: any) => {
-                  const memberIds = selectedMembers.map(
-                    (member: any) => member.id
-                  );
                   setFormValues({
                     ...formValues,
-                    [field]: [...memberIds]
+                    [field]: [...selectedMembers]
                   });
                 }}
               />
@@ -574,5 +580,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' }
+  calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' },
+  addFamilyMembers: { marginTop: 20 }
 });
