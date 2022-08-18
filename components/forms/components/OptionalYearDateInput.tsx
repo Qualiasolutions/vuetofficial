@@ -25,7 +25,12 @@ export function OptionalYearDateInput({
 
   const validatedDate = () => {
     try {
-      return dayjs(`${dateValue}-${monthValue}-${yearValue}`).toDate()
+      const dayJsDate = dayjs(`${dateValue}-${monthValue}-${yearValue}`)
+      if (dayJsDate.isValid()) {
+        return dayJsDate.toDate()
+      } else {
+        return false
+      }
     } catch {
       return false
     }
