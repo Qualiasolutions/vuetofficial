@@ -4,28 +4,13 @@ import { useThemeColor, View } from 'components/Themed';
 import CalendarView from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import Periods from 'components/molecules/Periods';
+import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
+import { getDateStringsBetween } from 'utils/datesAndTimes';
+import { CalendarViewProps } from 'reduxStore/services/api/types';
+import useGetUserDetails from 'hooks/useGetUserDetails';
 
 function Calendar() {
-  const dates = {
-    '2022-08-15': { backgroundColor: '#50cebb', text: 'Annual Leaves' },
-    '2022-08-16': { backgroundColor: '#50cebb', text: 'Annual Leaves' },
-    '2022-08-21': {
-      backgroundColor: useThemeColor({}, 'almostWhite'),
-      text: 'Sick Leaves'
-    },
-    '2022-08-22': {
-      backgroundColor: useThemeColor({}, 'almostWhite'),
-      text: 'Sick Leaves'
-    },
-    '2022-08-23': {
-      backgroundColor: useThemeColor({}, 'almostWhite'),
-      text: 'Sick Leaves'
-    },
-    '2022-08-24': {
-      backgroundColor: useThemeColor({}, 'almostWhite'),
-      text: 'Sick Leaves'
-    }
-  };
+  const almostWhiteColor = useThemeColor({}, 'almostWhite');
 
   const periods = [
     {
@@ -62,10 +47,38 @@ function Calendar() {
     }
   ];
 
+  const { data: allPeriods } = useGetScheduledPeriodsQuery(0);
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserDetails();
+
+  if (!allPeriods) return null;
+
+  let periodsDates: CalendarViewProps;
+  for (const p of allPeriods) {
+    let datesArray = getDateStringsBetween(p.start_date, p.end_date);
+    periodsDates = datesArray.reduce(
+      (a, v, i) => ({
+        ...a,
+        [v]: {
+          backgroundColor: almostWhiteColor,
+          text: i == 0 ? p.title : '',
+          member_colour: userFullDetails?.family.users.find((i) =>
+            p.members.includes(i.id)
+          )?.member_colour
+        }
+      }),
+      {}
+    );
+  }
+  
+
   const tabs = [
     {
       title: 'Calendar',
-      component: () => <CalendarView dates={dates} />
+      component: () => <CalendarView dates={periodsDates} />
     },
     {
       title: 'Periods',
