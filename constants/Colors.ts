@@ -18,7 +18,8 @@ const lightColors = {
   green: '#4CB219',
   blue: '#0086DF',
   orange: '#FFA640',
-  lightBlue: '#84A0B9'
+  lightBlue: '#84A0B9',
+  overlay: '#2C2C2C'
 };
 
 // TODO - dark theme
@@ -53,7 +54,8 @@ const colors = {
     green: lightColors.green,
     blue: lightColors.blue,
     orange: lightColors.orange,
-    lightBlue: lightColors.lightBlue
+    lightBlue: lightColors.lightBlue,
+    overlay: lightColors.overlay
   },
   // TODO - implement different dark mode colors
   dark: {
@@ -84,7 +86,8 @@ const colors = {
     green: darkColors.green,
     blue: darkColors.blue,
     orange: darkColors.orange,
-    lightBlue: darkColors.lightBlue
+    lightBlue: darkColors.lightBlue,
+    overlay: darkColors.overlay
   }
 };
 

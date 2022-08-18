@@ -52,6 +52,20 @@ type HolidayList = {
   country_codes: string[];
   holiday_ids: string[];
 };
+type CalendarViewProps = {
+  [key: string]: { backgroundColor: string; text: string, member_colour: string };
+}
+
+type AllPeriods = {
+    end_date: string,
+    entity: number,
+    id: number,
+    members: number[],
+    polymorphic_ctype: number,
+    resourcetype: string,
+    start_date: string,
+    title: string,
+}
 
 export {
   AllTasks,
@@ -61,5 +75,7 @@ export {
   Holiday,
   AllHolidays,
   SelectedHolidays,
-  HolidayList
+  HolidayList,
+  CalendarViewProps,
+  AllPeriods
 };
