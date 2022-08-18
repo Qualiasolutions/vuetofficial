@@ -37,6 +37,11 @@ export default function DropDown({
           borderWidth: 1,
           borderColor
         }, style]}
+        textStyle={{
+          fontFamily: 'Poppins',
+          fontSize: 15
+        }}
+        
       />
       {showOther && (
         <TextInput
