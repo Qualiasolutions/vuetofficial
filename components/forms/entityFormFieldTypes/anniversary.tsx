@@ -24,7 +24,8 @@ export const anniversaryForm = (): FormFieldTypes => {
     start_date: {
       type: 'OptionalYearDate',
       required: true,
-      displayName: t('entities.anniversary.start_date')
+      displayName: t('entities.anniversary.start_date'),
+      knownYearField: 'known_year'
     },
     members: {
       type: 'addFamilyMembers',

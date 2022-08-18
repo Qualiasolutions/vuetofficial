@@ -3,7 +3,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
-import { FormFieldTypes, hasPermittedValues } from './formFieldTypes';
+import { FormFieldTypes, hasPermittedValues, OptionalYearDate } from './formFieldTypes';
 import RadioInput from './components/RadioInput';
 import {
   MutationTrigger,
@@ -215,6 +215,7 @@ export default function Form({
         return false;
       }
     }
+
     return true;
   }, [formValues]);
 
@@ -233,7 +234,7 @@ export default function Form({
     setSubmittingForm(true);
     const parsedFormValues = { ...formValues };
     for (const field in parsedFormValues) {
-      if (fields[field].type === 'Date') {
+      if (['Date', 'OptionalYearDate'].includes(fields[field]?.type)) {
         if (parsedFormValues[field]) {
           parsedFormValues[field] = dayjs(parsedFormValues[field]).format(
             'YYYY-MM-DD'
@@ -321,7 +322,8 @@ export default function Form({
             </TransparentView>
           </TransparentView>
         );
-      case 'OptionalYearDate':
+      case 'OptionalYearDate': {
+        const f = fields[field];
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
@@ -331,18 +333,24 @@ export default function Form({
               </TransparentView>
               <OptionalYearDateInput
                 value={formValues[field]}
-                onValueChange={(newValue: Date) => {
+                onValueChange={(newValue: Date, knownYear: boolean) => {
+                  const knownYearFields = (f as OptionalYearDate).knownYearField
+                    ? { [(f as OptionalYearDate).knownYearField as string]: knownYear }
+                    : {}
                   setFormValues({
                     ...formValues,
-                    [field]: newValue
+                    ...knownYearFields,
+                    [field]: newValue,
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
                   onValueChange();
                 }}
+                textInputStyle={{ backgroundColor: fieldColor }}
               />
             </TransparentView>
           </TransparentView>
         )
+      }
       case 'Date':
         return (
           <TransparentView key={field}>
@@ -588,7 +596,9 @@ export default function Form({
       <TransparentView style={styles.bottomButtons}>
         <Button
           title={submitText || (formType === 'CREATE' ? (createTextOverride || 'CREATE') : 'UPDATE')}
-          onPress={submitForm}
+          onPress={() => {
+            submitForm()
+          }}
           disabled={submittingForm || !hasAllRequired}
           style={styles.button}
         />
@@ -610,7 +620,6 @@ export default function Form({
 const styles = StyleSheet.create({
   inlineInputPair: {
     flexDirection: 'row',
-    alignItems: 'center',
     width: '100%',
     marginTop: 10
   },

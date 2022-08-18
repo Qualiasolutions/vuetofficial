@@ -40,7 +40,7 @@ export default function AnniversaryCard({
         <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={{ fontSize: 18 }}
-          text={`${age} on ${monthName} ${date}`}
+          text={`${entity.known_year ? age : 'XX'} on ${monthName} ${date}`}
         />
       </WhiteBox>
     </Pressable>

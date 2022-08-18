@@ -24,7 +24,9 @@ export type BaseField<TypeName, ValueType> = {
 export type StringField = BaseField<'string', string>;
 export type TextArea = BaseField<'TextArea', string>;
 export type DateField = BaseField<'Date', Date>;
-export type OptionalYearDate = BaseField<'OptionalYearDate', Date>;
+export type OptionalYearDate = BaseField<'OptionalYearDate', Date> & {
+  knownYearField?: string | undefined
+};
 export type DateTimeField = BaseField<'DateTime', Date>;
 export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];

@@ -6,7 +6,6 @@ import { WhiteBox } from 'components/molecules/ViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
 import {
   getDateWithoutTimezone,
-  getDaysToAge,
   getLongDateFromDateObject
 } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';

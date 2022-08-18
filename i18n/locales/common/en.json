@@ -120,6 +120,9 @@
     "selectAll": "Select all",
     "addAnother": "Add Another"
   },
+  "misc": {
+    "turnsAgeIn": "Turns {{age}} in {{year}}"
+  },
   "screens": {
     "logIn": {
       "password": "Password",

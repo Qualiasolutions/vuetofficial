@@ -112,6 +112,51 @@ export function WhiteText(props: TextProps & { text: string }) {
   );
 }
 
+
+export function AlmostWhiteText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'almostWhite');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
+export function GreyText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'grey');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
+export function MediumGreyText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'mediumGrey');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
+export function MediumLightGreyText(props: TextProps & { text: string }) {
+  const { style, text, ...otherProps } = props;
+  const color = useThemeColor({}, 'mediumLightGrey');
+
+  return (
+    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
+      {text}
+    </DefaultText>
+  );
+}
+
 const styles = StyleSheet.create({
   common: {
     fontFamily: 'Poppins'
