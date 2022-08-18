@@ -504,7 +504,7 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field}>
+            <View key={field} style={{zIndex: 9999}}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <DropDown
