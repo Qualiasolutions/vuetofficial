@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
@@ -17,8 +17,8 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
-import { UserFullResponse } from 'types/users';
 import { OptionalYearDateInput } from './components/OptionalYearDateInput';
+import DropDown from 'components/forms/components/DropDown';
 
 /* This type specifies the actual values of the fields.
 
@@ -290,7 +290,7 @@ export default function Form({
                   onValueChange();
                 }}
                 style={{
-                  height: 40,
+                  height: 50,
                   flex: 1,
                   backgroundColor: fieldColor
                 }}
@@ -363,10 +363,10 @@ export default function Form({
                 }}
                 Date
                 containerStyle={styles.inlineDateInput}
-                textInputStyle={{
-                  height: 50,
-                  backgroundColor: fieldColor
-                }}
+                textInputStyle={StyleSheet.flatten([
+                  styles.dateTextInput,
+                  { backgroundColor: fieldColor }
+                ])}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -524,6 +524,49 @@ export default function Form({
           );
         }
       }
+      case 'dropDown': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <View key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <DropDown
+                value={formValues[field]}
+                items={f.permittedValues}
+                setFormValues={(item) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: item
+                  });
+                }}
+              />
+            </View>
+          );
+        }
+      }
+      case 'dropDownWithOther': {
+        const f = fields[field];
+        if (hasPermittedValues(f)) {
+          return (
+            <View key={field}>
+              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+              {produceLabelFromFieldName(field)}
+              <DropDown
+                value={formValues[field]}
+                items={f.permittedValues}
+                setFormValues={(item) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: item
+                  });
+                }}
+                allowOther={true}
+              />
+            </View>
+          );
+        }
+      }
     }
   });
 
@@ -538,10 +581,10 @@ export default function Form({
           setShowDeleteModal(false);
         }}
       />
-      <TransparentView>
+      <View>
         {submitError ? <Text>{submitError}</Text> : null}
         {formFields}
-      </TransparentView>
+      </View>
       <TransparentView style={styles.bottomButtons}>
         <Button
           title={submitText || (formType === 'CREATE' ? (createTextOverride || 'CREATE') : 'UPDATE')}
@@ -571,8 +614,9 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
+    fontSize: 14,
+    textAlign: 'left',
+    marginTop: 14
   },
   inputLabelWrapper: {
     alignItems: 'flex-start',
@@ -587,6 +631,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginTop: 30,
+    zIndex: -1,
     justifyContent: 'center'
   },
   button: {
@@ -605,5 +650,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' },
+  dateTextInput: { height: 50 },
   addFamilyMembers: { marginTop: 20 }
 });

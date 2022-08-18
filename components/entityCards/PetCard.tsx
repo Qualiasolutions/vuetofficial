@@ -1,16 +1,18 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { WhiteView } from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import { EntityResponseType } from 'types/entities';
+import { Feather } from '@expo/vector-icons';
+import { useThemeColor } from 'components/Themed';
 
 export default function PetCard({ entity }: { entity: EntityResponseType }) {
+  const blackColor = useThemeColor({}, 'black');
+  const greyColor = useThemeColor({}, 'grey');
   return (
-    <WhiteView style={styles.listEntry}>
-      <AlmostBlackText
-        text={`${entity.type} ${entity.name}`}
-        style={styles.listEntryText}
-      />
+    <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
+      <Feather name="image" size={25} color={greyColor} />
+      <BlackText text={`${entity.name}`} style={styles.listEntryText} />
     </WhiteView>
   );
 }
@@ -19,15 +21,13 @@ const styles = StyleSheet.create({
   listEntry: {
     padding: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 5
+    marginVertical: 5,
+    borderRadius: 15,
+    borderWidth: 1
   },
   listEntryText: {
-    fontSize: 20
+    fontSize: 20,
+    marginLeft: 15
   }
 });

@@ -8,12 +8,17 @@ export const petForm = (): FormFieldTypes => {
     name: {
       type: 'string',
       required: true,
-      displayName: t('entities.entity.name')
+      displayName: t('entities.pet.name')
     },
     type: {
-      type: 'string',
+      type: 'dropDownWithOther',
       required: true,
-      displayName: t('entities.pet.type')
+      displayName: t('entities.pet.type'),
+      permittedValues: [
+        {label: 'Dog', value: 'Dog'},
+        {label: 'Cat', value: 'Cat'},
+        {label: 'Bird', value: 'Bird'}
+      ]
     },
     breed: {
       type: 'string',
@@ -24,11 +29,6 @@ export const petForm = (): FormFieldTypes => {
       type: 'Date',
       required: true,
       displayName: t('entities.pet.dob')
-    },
-    microchip_number: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.pet.microchip_number')
     }
     // TODO - add foreign key picker so that we can pick
     // a vet, walker, grommer, sitter, insurance policy
