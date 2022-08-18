@@ -17,7 +17,7 @@ import PhoneNumberInput from './components/PhoneNumberInput';
 import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
-import DropDown from 'components/forms/DropDown';
+import DropDown from 'components/forms/components/DropDown';
 
 /* This type specifies the actual values of the fields.
 
@@ -101,6 +101,7 @@ const createInitialObject = (
       case 'addMembers':
       case 'addFamilyMembers':
         initialObj[key] = fields[key].initialValue || [];
+        continue
 
       default:
         initialObj[key] = null;
@@ -128,7 +129,9 @@ export default function Form({
   onValueChange = () => {},
   clearOnSubmit = true,
   submitText = '',
-  inlineFields = false
+  inlineFields = false,
+  createTextOverride = '',
+  fieldColor = '#ffffff'
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -142,6 +145,8 @@ export default function Form({
   clearOnSubmit?: boolean;
   submitText?: string;
   inlineFields?: boolean;
+  createTextOverride?: string;
+  fieldColor?: string;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -284,7 +289,8 @@ export default function Form({
                 }}
                 style={{
                   height: 50,
-                  flex: 1
+                  flex: 1,
+                  backgroundColor: fieldColor
                 }}
               />
             </TransparentView>
@@ -333,7 +339,10 @@ export default function Form({
                 }}
                 Date
                 containerStyle={styles.inlineDateInput}
-                textInputStyle={styles.dateTextInput}
+                textInputStyle={StyleSheet.flatten([
+                  styles.dateTextInput,
+                  { backgroundColor: fieldColor }
+                ])}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
@@ -416,19 +425,23 @@ export default function Form({
           return (
             <TransparentView key={field}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <MemberSelector
-                data={f.permittedValues}
-                onValueChange={(selectedMembers: any) => {
-                  const memberIds = selectedMembers.map(
-                    (member: any) => member.id
-                  );
-                  setFormValues({
-                    ...formValues,
-                    [field]: [...memberIds]
-                  });
-                }}
-              />
+              <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+                <TransparentView style={styles.inputLabelWrapper}>
+                  {produceLabelFromFieldName(field)}
+                </TransparentView>
+                <MemberSelector
+                  data={f.permittedValues}
+                  onValueChange={(selectedMembers: any) => {
+                    const memberIds = selectedMembers.map(
+                      (member: any) => member.id
+                    );
+                    setFormValues({
+                      ...formValues,
+                      [field]: [...memberIds]
+                    });
+                  }}
+                />
+              </TransparentView>
             </TransparentView>
           );
         }
@@ -470,18 +483,16 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <TransparentView key={field}>
+            <TransparentView key={field} style={styles.addFamilyMembers}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <FamilySelector
                 data={f.permittedValues}
+                values={formValues[field]}
                 onValueChange={(selectedMembers: any) => {
-                  const memberIds = selectedMembers.map(
-                    (member: any) => member.id
-                  );
                   setFormValues({
                     ...formValues,
-                    [field]: [...memberIds]
+                    [field]: [...selectedMembers]
                   });
                 }}
               />
@@ -528,7 +539,7 @@ export default function Form({
       </TransparentView>
       <TransparentView style={styles.bottomButtons}>
         <Button
-          title={submitText || (formType === 'CREATE' ? 'CREATE' : 'UPDATE')}
+          title={submitText || (formType === 'CREATE' ? (createTextOverride || 'CREATE') : 'UPDATE')}
           onPress={submitForm}
           disabled={submittingForm || !hasAllRequired}
           style={styles.button}
@@ -572,7 +583,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginTop: 30,
-    zIndex: -1
+    zIndex: -1,
+    justifyContent: 'center'
   },
   button: {
     width: '50%'
@@ -590,5 +602,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' },
-  dateTextInput: { height: 50, marginTop: 10 }
+  dateTextInput: { height: 50, marginTop: 10 },
+  addFamilyMembers: { marginTop: 20 }
 });

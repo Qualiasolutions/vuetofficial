@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text } from 'components/Themed';
+import React, { useEffect } from 'react';
+import { Text, useThemeColor } from 'components/Themed';
 import RTKForm from 'components/forms/RTKForm';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
@@ -14,9 +14,9 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping'
+import { fieldColorMapping } from './utils/fieldColorMapping';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -42,6 +42,7 @@ export default function AddEntityForm({
   const entityForms = {
     Car: forms.car(),
     Birthday: forms.birthday(),
+    Anniversary: forms.anniversary(),
     Event: forms.event(),
     Hobby: forms.hobby(),
     List: forms.list(),
@@ -59,6 +60,10 @@ export default function AddEntityForm({
     }, [])
   );
 
+  useEffect(() => {
+    setCreateSuccessful(false);
+  }, [entityType])
+
   const { t } = useTranslation();
 
   const username = useSelector(selectUsername);
@@ -69,6 +74,8 @@ export default function AddEntityForm({
     isLoading,
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+
+  const fieldColor = (entityType && useThemeColor({}, fieldColorMapping[entityType]))
 
   if (isLoading || !allEntities) {
     return null;
@@ -114,6 +121,8 @@ export default function AddEntityForm({
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
           inlineFields={(inlineFieldsMapping[entityType] || inlineFieldsMapping.default) as boolean}
+          createTextOverride={t('common.addAnother')}
+          fieldColor={fieldColor}
         />
       </TransparentView>
     );

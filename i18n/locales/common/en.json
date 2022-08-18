@@ -116,7 +116,9 @@
     "search": "Type any keyword to search",
     "category": "Category",
     "thing": "Thing",
-    "pleaseSelect": "Please select"
+    "pleaseSelect": "Please select",
+    "selectAll": "Select all",
+    "addAnother": "Add Another"
   },
   "screens": {
     "logIn": {
@@ -202,7 +204,7 @@
       "createSuccess": "Successfully created new task"
     },
     "addEntity": {
-      "title": "New {{entityType}}",
+      "title": "Add {{entityType}}",
       "createSuccess": "Successfully created new {{entityType}}"
     },
     "editEntity": {

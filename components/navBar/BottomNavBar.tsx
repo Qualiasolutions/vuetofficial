@@ -94,8 +94,8 @@ export default function BottomNavBar({
                   // has length > 1
                   type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
                   navigation.navigate('AddEntity', {
-                    entityType: (currentScreenParams as RouteParams)
-                      .entityTypes[0]
+                    entityTypes: (currentScreenParams as RouteParams)
+                      .entityTypes
                   });
                 } else if (currentScreen === 'FamilySettings') {
                   navigation.navigate('AddFamilyMember');

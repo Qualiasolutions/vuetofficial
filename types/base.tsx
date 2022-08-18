@@ -88,7 +88,7 @@ export type EntityTabParamList = {
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };
   AddEntity: {
-    entityType: EntityTypeName;
+    entityTypes: EntityTypeName[];
     parentId?: number | string;
   };
 };

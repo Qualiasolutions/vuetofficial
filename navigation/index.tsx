@@ -1,8 +1,4 @@
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme
-} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 
@@ -25,6 +21,7 @@ import { UnauthorisedNavigator } from './UnauthorisedNavigator';
 import { BottomTabNavigator } from './RootNavigator';
 import { SetupNavigator } from './SetupNavigator';
 import { FamilyRequestNavigator } from './FamilyRequestNavigator';
+import { DarkTheme, DefaultTheme } from 'constants/Colors';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;

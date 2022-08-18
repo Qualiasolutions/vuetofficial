@@ -1,14 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import {
-  TransparentPaddedView,
+  TransparentPaddedView, TransparentView,
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColor } from 'components/Themed';
 import { backgroundComponents } from './utils/backgroundComponents';
+import { backgroundColours } from './utils/backgroundColours';
+import { StyleSheet, View } from 'react-native';
+import { PageTitle } from 'components/molecules/TextComponents';
+import { EntityTypeName } from 'types/entities';
+import DropDown from 'components/forms/components/DropDown';
+import { fieldColorMapping } from 'components/forms/utils/fieldColorMapping';
 
 const titleMapping = {
   DaysOff: 'Add Days Off'
@@ -20,6 +25,7 @@ export default function AddEntityScreen({
 }: NativeStackScreenProps<EntityTabParamList, 'AddEntity'>) {
   const { t } = useTranslation();
   const parentId = route.params.parentId;
+  const entityTypes = route.params.entityTypes
   const parsedId = parentId
     ? typeof parentId === 'number'
       ? parentId
@@ -27,32 +33,71 @@ export default function AddEntityScreen({
     : undefined;
 
   const headerTintColor = useThemeColor({}, 'primary');
-  const headerBackgroundColor = useThemeColor({}, 'almostWhite');
+  const [selectedEntityType, selectEntityType] = useState<EntityTypeName>(entityTypes[0])
+  const headerBackgroundColor = useThemeColor({}, backgroundColours[selectedEntityType] || 'almostWhite');
 
-  useEffect(() => {
+  const fieldColor = (selectedEntityType && useThemeColor({}, fieldColorMapping[selectedEntityType]))
+
+  useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle:
-        titleMapping[route.params.entityType] || t('screens.addEntity.title', { entityType: route.params.entityType }),
       headerTintColor,
       headerStyle: {
-        backgroundColor: headerBackgroundColor
+        backgroundColor: headerBackgroundColor,
+      },
+      headerShadowVisible: false,
+      headerTitleAlign: 'center',
+      headerTitle: (props) => {
+        return (
+          <TransparentView style={{
+            height: 80,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}>
+            <PageTitle
+              text={titleMapping[selectedEntityType] || t('screens.addEntity.title', { entityType: selectedEntityType })}
+              style={{marginBottom: 0}}
+            />
+          </TransparentView>
+        )
       }
     });
-  }, []);
+  }, [selectedEntityType]);
 
-  const BackgroundComponent = (backgroundComponents[route.params.entityType] ||
+  const BackgroundComponent = (backgroundComponents[selectedEntityType] ||
     backgroundComponents.default) as React.ElementType;
 
+  const entityTypeSelector = (entityTypes && (entityTypes.length > 1))
+    ? <View style={styles.entityTypeSelectorWrapper}>
+      <DropDown
+        value={selectedEntityType}
+        items={entityTypes.map(entityType => ({
+          label: entityType,
+          value: entityType
+        }))}
+        setFormValues={(entityType: EntityTypeName) => { selectEntityType(entityType) }}
+        style={{backgroundColor: fieldColor}}
+      ></DropDown>
+    </View>
+    : null
+
   return (
-    <SafeAreaView>
-      <BackgroundComponent>
-        <TransparentPaddedView>
-          <AddEntityForm
-            entityType={route.params.entityType}
-            parentId={parsedId}
-          />
-        </TransparentPaddedView>
-      </BackgroundComponent>
-    </SafeAreaView>
+    <BackgroundComponent>
+      {entityTypeSelector}
+      <TransparentPaddedView>
+        <AddEntityForm
+          entityType={selectedEntityType}
+          parentId={parsedId}
+        />
+      </TransparentPaddedView>
+    </BackgroundComponent>
   );
 }
+
+const styles = StyleSheet.create({
+  entityTypeSelectorWrapper: {
+    marginTop: 20,
+    width: 200,
+    alignSelf: 'center',
+  },
+  container: { height: '100%' }
+})

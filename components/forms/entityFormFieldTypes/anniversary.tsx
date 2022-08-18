@@ -2,7 +2,7 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export const birthdayForm = (): FormFieldTypes => {
+export const anniversaryForm = (): FormFieldTypes => {
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
@@ -24,14 +24,14 @@ export const birthdayForm = (): FormFieldTypes => {
     start_date: {
       type: 'Date',
       required: true,
-      displayName: t('entities.birthday.start_date')
+      displayName: t('entities.anniversary.start_date')
     },
     members: {
       type: 'addFamilyMembers',
       required: true,
       permittedValues: userFullDetails.family.users,
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.birthday.members')
+      displayName: t('entities.anniversary.members')
     }
   };
 };
