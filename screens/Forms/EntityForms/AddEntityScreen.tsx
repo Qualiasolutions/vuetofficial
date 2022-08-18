@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 200,
     alignSelf: 'center',
+    zIndex: 9999
   },
   container: { height: '100%' }
 })
