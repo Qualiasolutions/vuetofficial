@@ -22,7 +22,7 @@ export const birthdayForm = (): FormFieldTypes => {
       displayName: t('entities.entity.name')
     },
     start_date: {
-      type: 'Date',
+      type: 'OptionalYearDate',
       required: true,
       displayName: t('entities.birthday.start_date')
     },

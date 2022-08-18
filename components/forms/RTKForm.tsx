@@ -18,6 +18,7 @@ import { Feather } from '@expo/vector-icons';
 import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
 import { UserFullResponse } from 'types/users';
+import { OptionalYearDateInput } from './components/OptionalYearDateInput';
 
 /* This type specifies the actual values of the fields.
 
@@ -77,6 +78,7 @@ const createInitialObject = (
         continue;
 
       case 'Date':
+      case 'OptionalYearDate':
         if (fields[key].initialValue) {
           const parsedDate = new Date(fields[key].initialValue || '');
           // Date fields should be the same in all timezones
@@ -319,6 +321,28 @@ export default function Form({
             </TransparentView>
           </TransparentView>
         );
+      case 'OptionalYearDate':
+        return (
+          <TransparentView key={field}>
+            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
+              <OptionalYearDateInput
+                value={formValues[field]}
+                onValueChange={(newValue: Date) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                  setFormErrors({ ...formErrors, [field]: '' });
+                  onValueChange();
+                }}
+              />
+            </TransparentView>
+          </TransparentView>
+        )
       case 'Date':
         return (
           <TransparentView key={field}>

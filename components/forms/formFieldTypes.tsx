@@ -3,6 +3,7 @@ import { UseTranslationResponse } from 'react-i18next';
 export type PermittedTypes =
   | 'string'
   | 'Date'
+  | 'OptionalYearDate'
   | 'DateTime'
   | 'radio'
   | 'colour'
@@ -21,6 +22,7 @@ export type BaseField<TypeName, ValueType> = {
 export type StringField = BaseField<'string', string>;
 export type TextArea = BaseField<'TextArea', string>;
 export type DateField = BaseField<'Date', Date>;
+export type OptionalYearDate = BaseField<'OptionalYearDate', Date>;
 export type DateTimeField = BaseField<'DateTime', Date>;
 export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
@@ -42,6 +44,7 @@ export type PhoneNumberField = BaseField<'phoneNumber', string>;
 export type Field =
   | StringField
   | DateField
+  | OptionalYearDate
   | DateTimeField
   | RadioField
   | ColourField
