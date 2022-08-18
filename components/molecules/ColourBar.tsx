@@ -1,16 +1,18 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { TransparentView } from './ViewComponents';
 
 export default function ColourBar({
-  colourHexcodes
+  colourHexcodes,
+  style
 }: {
   colourHexcodes: string[];
+  style: ViewStyle
 }) {
   const bars = colourHexcodes.map((colour: string, i: number) => {
     return (
       <TransparentView
         key={i}
-        style={[styles.colourBar, { backgroundColor: `#${colour}` }]}
+        style={[styles.colourBar, { backgroundColor: `#${colour}` },style]}
       ></TransparentView>
     );
   });
