@@ -182,9 +182,8 @@ export function BottomTabNavigator() {
         name="AddTask"
         component={AddTaskScreen}
         options={{
-          headerShown: false,
           tabBarButton: (props) => null,
-          title: 'Add'
+          title: 'Add Task'
         }}
       />
     </BottomTab.Navigator>

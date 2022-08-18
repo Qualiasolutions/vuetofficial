@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function AddTaskScreen({
   route
@@ -57,28 +58,25 @@ export default function AddTaskScreen({
 
   return (
     <WhiteFullPageScrollView>
-      <SafeAreaView style={formStyles.container}>
-        <View style={formStyles.container}>
-          <Text style={formStyles.title}>{t('screens.addTask.title')}</Text>
-          {createSuccessful ? (
-            <Text>{t('screens.addTask.createSuccess')}</Text>
-          ) : null}
-          <RTKForm
-            fields={fixedTaskFormFields}
-            methodHooks={{
-              POST: useCreateTaskMutation
-            }}
-            formType="CREATE"
-            extraFields={{
-              entity: route.params?.entityId,
-              resourcetype: 'FixedTask'
-            }}
-            onSubmitSuccess={updateTasks}
-            onValueChange={() => setCreateSuccessful(false)}
-            clearOnSubmit={true}
-          />
-        </View>
-      </SafeAreaView>
+      <TransparentPaddedView>
+        {createSuccessful ? (
+          <Text>{t('screens.addTask.createSuccess')}</Text>
+        ) : null}
+        <RTKForm
+          fields={fixedTaskFormFields}
+          methodHooks={{
+            POST: useCreateTaskMutation
+          }}
+          formType="CREATE"
+          extraFields={{
+            entity: route.params?.entityId,
+            resourcetype: 'FixedTask'
+          }}
+          onSubmitSuccess={updateTasks}
+          onValueChange={() => setCreateSuccessful(false)}
+          clearOnSubmit={true}
+        />
+      </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
 }
