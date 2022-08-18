@@ -1,10 +1,15 @@
 import { Text, useThemeColor, View } from 'components/Themed';
 import { StyleSheet } from 'react-native';
 import { CalendarList } from 'react-native-calendars';
+import ColourBar from './ColourBar';
 
 export type CalendarViewProps = {
   dates: {
-    [key: string]: { backgroundColor: string; text: string };
+    [key: string]: {
+      backgroundColor: string;
+      text: string;
+      member_colour: string;
+    };
   };
 };
 
@@ -67,6 +72,12 @@ export default function CalendarView({ dates }: CalendarViewProps) {
                 <Text style={{ fontSize: 10 }}>
                   {dates[date.dateString]?.text}
                 </Text>
+              )}
+              {dates[date.dateString]?.member_colour && (
+                <ColourBar
+                  colourHexcodes={[`${dates[date.dateString]?.member_colour}`]}
+                  style={{ height: 5, width: 58 }}
+                />
               )}
             </View>
           );
