@@ -55,7 +55,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     <TransparentView style={styles.detailsContainer}>
       <AlmostBlackText
         style={styles.birthDetail}
-        text={`${age} on ${monthName} ${date}, ${year}`}
+        text={`${entityData?.known_year ? age : 'XX'} on ${monthName} ${date}, ${year}`}
       />
     </TransparentView>
   );
