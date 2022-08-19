@@ -1,4 +1,4 @@
-import { ColorName } from "constants/Colors";
+import { ColorName } from 'constants/Colors';
 
 export const backgroundColours = {
   Anniversary: 'white',

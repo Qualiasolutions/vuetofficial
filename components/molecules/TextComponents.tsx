@@ -112,7 +112,6 @@ export function WhiteText(props: TextProps & { text: string }) {
   );
 }
 
-
 export function AlmostWhiteText(props: TextProps & { text: string }) {
   const { style, text, ...otherProps } = props;
   const color = useThemeColor({}, 'almostWhite');

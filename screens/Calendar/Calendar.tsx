@@ -73,7 +73,6 @@ function Calendar() {
       {}
     );
   }
-  
 
   const tabs = [
     {

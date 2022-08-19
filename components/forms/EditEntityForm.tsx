@@ -1,4 +1,3 @@
-
 import { Text } from 'components/Themed';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
@@ -19,17 +18,13 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from 'components/forms/entityFormFieldTypes';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { inlineFieldsMapping } from './utils/inlineFieldsMapping'
+import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 
-export default function EditEntityForm({
-  entityId,
-}: {
-  entityId: number;
-}) {
+export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const {
     data: allEntities,
@@ -110,7 +105,10 @@ export default function EditEntityForm({
           }}
           onDeleteSuccess={onDeleteSuccess}
           clearOnSubmit={false}
-          inlineFields={(inlineFieldsMapping[entityToEdit?.resourcetype] || inlineFieldsMapping.default) as boolean}
+          inlineFields={
+            (inlineFieldsMapping[entityToEdit?.resourcetype] ||
+              inlineFieldsMapping.default) as boolean
+          }
         />
       </TransparentView>
     );

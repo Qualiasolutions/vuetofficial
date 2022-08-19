@@ -51,10 +51,7 @@ export default function MemberSelector({ data, onValueChange }: any) {
 
   const selectedMembersList = useCallback(() => {
     return selectedMembers.map((member: any) => (
-      <TransparentView
-        key={member.id}
-        style={{ marginTop: 11 }}
-      >
+      <TransparentView key={member.id} style={{ marginTop: 11 }}>
         <UserWithColor
           name={`${member.first_name} ${member.last_name}`}
           memberColour={member.member_colour}
@@ -99,7 +96,7 @@ const styles = StyleSheet.create({
   addMemberButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 22
   },
   addIcon: {
     height: 27,

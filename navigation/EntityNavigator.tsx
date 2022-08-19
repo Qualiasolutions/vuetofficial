@@ -28,7 +28,7 @@ export function EntityNavigator() {
         name="EntityList"
         component={EntityListScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
 
@@ -36,7 +36,7 @@ export function EntityNavigator() {
         name="HolidayList"
         component={HolidayListScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
 
@@ -44,42 +44,39 @@ export function EntityNavigator() {
         name="EntityTypeList"
         component={EntityTypeListScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
       <EntityStack.Screen
         name="EntityScreen"
         component={EntityScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
       <EntityStack.Screen
         name="ChildEntitiesScreen"
         component={ChildEntitiesScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
       <EntityStack.Screen
         name="LinkList"
         component={LinkListScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
       <EntityStack.Screen
         name="HolidayDetail"
         component={HolidayDetailScreen}
         options={{
-          headerShown: true,
+          headerShown: true
         }}
       />
       <EntityStack.Screen name="EditEntity" component={EditEntityScreen} />
-      <EntityStack.Screen
-        name="AddEntity"
-        component={AddEntityScreen}
-      />
+      <EntityStack.Screen name="AddEntity" component={AddEntityScreen} />
     </EntityStack.Navigator>
   );
 }

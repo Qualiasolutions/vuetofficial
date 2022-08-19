@@ -7,9 +7,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 
-import {
-  useGetAllEntitiesQuery,
-} from 'reduxStore/services/api/entities';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -59,7 +57,7 @@ export default function EditEntityScreen({
       <SafeAreaView>
         <TransparentFullPageScrollView>
           <TransparentPaddedView>
-            <EditEntityForm entityId={entityId}/>
+            <EditEntityForm entityId={entityId} />
           </TransparentPaddedView>
         </TransparentFullPageScrollView>
       </SafeAreaView>

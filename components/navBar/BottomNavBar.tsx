@@ -106,13 +106,12 @@ export default function BottomNavBar({
             />
           );
         } else if (options.tabBarIcon) {
-          const forcedScreen = route.name === 'EntityNavigator'
-            ? 'Categories'
-            : (
-              route.name === 'SettingsNavigator'
-                ? 'Settings'
-                : ''
-            )
+          const forcedScreen =
+            route.name === 'EntityNavigator'
+              ? 'Categories'
+              : route.name === 'SettingsNavigator'
+              ? 'Settings'
+              : '';
           return (
             <Pressable
               key={index}

@@ -1,4 +1,7 @@
-import { TransparentFullPageScrollView, WhiteFullPageScrollView } from "components/molecules/ScrollViewComponents";
+import {
+  TransparentFullPageScrollView,
+  WhiteFullPageScrollView
+} from 'components/molecules/ScrollViewComponents';
 
 export const backgroundComponents = {
   Anniversary: WhiteFullPageScrollView,

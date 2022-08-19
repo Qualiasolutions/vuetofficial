@@ -15,7 +15,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { inlineFieldsMapping } from './utils/inlineFieldsMapping'
+import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { fieldColorMapping } from './utils/fieldColorMapping';
 
 type FieldsMapping = {
@@ -62,7 +62,7 @@ export default function AddEntityForm({
 
   useEffect(() => {
     setCreateSuccessful(false);
-  }, [entityType])
+  }, [entityType]);
 
   const { t } = useTranslation();
 
@@ -75,7 +75,8 @@ export default function AddEntityForm({
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
-  const fieldColor = (entityType && useThemeColor({}, fieldColorMapping[entityType]))
+  const fieldColor =
+    entityType && useThemeColor({}, fieldColorMapping[entityType]);
 
   if (isLoading || !allEntities) {
     return null;
@@ -120,7 +121,10 @@ export default function AddEntityForm({
           }}
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
-          inlineFields={(inlineFieldsMapping[entityType] || inlineFieldsMapping.default) as boolean}
+          inlineFields={
+            (inlineFieldsMapping[entityType] ||
+              inlineFieldsMapping.default) as boolean
+          }
           createTextOverride={t('common.addAnother')}
           fieldColor={fieldColor}
         />

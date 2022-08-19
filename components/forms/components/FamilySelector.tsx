@@ -10,13 +10,13 @@ import { useTranslation } from 'react-i18next';
 export default function FamilySelector({
   data,
   values,
-  onValueChange,
+  onValueChange
 }: {
-  data: UserFullResponse[],
-  values: any[],
-  onValueChange: (val: number[]) => void
+  data: UserFullResponse[];
+  values: any[];
+  onValueChange: (val: number[]) => void;
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const onSelectMember = (member: UserFullResponse) => {
     if (values.includes(member.id)) {
@@ -26,24 +26,32 @@ export default function FamilySelector({
     }
   };
 
-  const selectAllButton = <TransparentView style={styles.rowContainer}>
-    <Checkbox
-      checked={values && (data.length === values.length)}
-      onValueChange={async () => {
-        if (values.length === data.length) {
-          onValueChange([]);
-        } else {
-          onValueChange(data.map(member => member.id));
-        }
-      }}
-      style={styles.checkbox}
-    />
-    <AlmostBlackText text={t('common.selectAll')} style={styles.selectAllText} />
-  </TransparentView>
+  const selectAllButton = (
+    <TransparentView style={styles.rowContainer}>
+      <Checkbox
+        checked={values && data.length === values.length}
+        onValueChange={async () => {
+          if (values.length === data.length) {
+            onValueChange([]);
+          } else {
+            onValueChange(data.map((member) => member.id));
+          }
+        }}
+        style={styles.checkbox}
+      />
+      <AlmostBlackText
+        text={t('common.selectAll')}
+        style={styles.selectAllText}
+      />
+    </TransparentView>
+  );
 
   const membersList = () => {
     return data.map((member: any) => (
-      <TransparentView key={member.id} style={[styles.rowContainer, styles.memberContainer]}>
+      <TransparentView
+        key={member.id}
+        style={[styles.rowContainer, styles.memberContainer]}
+      >
         <Checkbox
           checked={values && values.includes(member.id)}
           onValueChange={async () => {
@@ -60,10 +68,12 @@ export default function FamilySelector({
     ));
   };
 
-  return <TransparentView>
-    {selectAllButton}
-    {membersList()}
-  </TransparentView>;
+  return (
+    <TransparentView>
+      {selectAllButton}
+      {membersList()}
+    </TransparentView>
+  );
 }
 
 const styles = StyleSheet.create({

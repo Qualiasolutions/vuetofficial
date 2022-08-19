@@ -99,9 +99,9 @@ export const DefaultTheme = {
     card: lightColors.white,
     text: lightColors.black,
     border: lightColors.almostBlack,
-    notification: lightColors.almostBlack,
-  },
-}
+    notification: lightColors.almostBlack
+  }
+};
 
 export const DarkTheme = {
   dark: true,
@@ -111,9 +111,9 @@ export const DarkTheme = {
     card: lightColors.white,
     text: lightColors.black,
     border: lightColors.almostBlack,
-    notification: lightColors.almostBlack,
-  },
-}
+    notification: lightColors.almostBlack
+  }
+};
 
 export type ColorName = keyof typeof colors.light & keyof typeof colors.dark;
 

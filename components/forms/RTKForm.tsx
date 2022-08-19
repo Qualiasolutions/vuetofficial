@@ -3,7 +3,11 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
-import { FormFieldTypes, hasPermittedValues, OptionalYearDate } from './formFieldTypes';
+import {
+  FormFieldTypes,
+  hasPermittedValues,
+  OptionalYearDate
+} from './formFieldTypes';
 import RadioInput from './components/RadioInput';
 import {
   MutationTrigger,
@@ -103,7 +107,7 @@ const createInitialObject = (
       case 'addMembers':
       case 'addFamilyMembers':
         initialObj[key] = fields[key].initialValue || [];
-        continue
+        continue;
 
       default:
         initialObj[key] = null;
@@ -335,12 +339,15 @@ export default function Form({
                 value={formValues[field]}
                 onValueChange={(newValue: Date, knownYear: boolean) => {
                   const knownYearFields = (f as OptionalYearDate).knownYearField
-                    ? { [(f as OptionalYearDate).knownYearField as string]: knownYear }
-                    : {}
+                    ? {
+                        [(f as OptionalYearDate).knownYearField as string]:
+                          knownYear
+                      }
+                    : {};
                   setFormValues({
                     ...formValues,
                     ...knownYearFields,
-                    [field]: newValue,
+                    [field]: newValue
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
                   onValueChange();
@@ -349,7 +356,7 @@ export default function Form({
               />
             </TransparentView>
           </TransparentView>
-        )
+        );
       }
       case 'Date':
         return (
@@ -457,7 +464,9 @@ export default function Form({
           return (
             <TransparentView key={field}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+              <TransparentView
+                style={inlineFields ? styles.inlineInputPair : {}}
+              >
                 <TransparentView style={styles.inputLabelWrapper}>
                   {produceLabelFromFieldName(field)}
                 </TransparentView>
@@ -536,7 +545,7 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field} style={(Platform.OS === 'ios') && {zIndex: 9999}}>
+            <View key={field} style={Platform.OS === 'ios' && { zIndex: 9999 }}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <DropDown
@@ -557,7 +566,10 @@ export default function Form({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field} style={(Platform.OS === 'ios') ? {zIndex: 9999} : {}}>
+            <View
+              key={field}
+              style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}
+            >
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <DropDown
@@ -595,9 +607,12 @@ export default function Form({
       </View>
       <TransparentView style={styles.bottomButtons}>
         <Button
-          title={submitText || (formType === 'CREATE' ? (createTextOverride || 'CREATE') : 'UPDATE')}
+          title={
+            submitText ||
+            (formType === 'CREATE' ? createTextOverride || 'CREATE' : 'UPDATE')
+          }
           onPress={() => {
-            submitForm()
+            submitForm();
           }}
           disabled={submittingForm || !hasAllRequired}
           style={styles.button}

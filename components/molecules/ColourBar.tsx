@@ -6,13 +6,13 @@ export default function ColourBar({
   style
 }: {
   colourHexcodes: string[];
-  style: ViewStyle
+  style: ViewStyle;
 }) {
   const bars = colourHexcodes.map((colour: string, i: number) => {
     return (
       <TransparentView
         key={i}
-        style={[styles.colourBar, { backgroundColor: `#${colour}` },style]}
+        style={[styles.colourBar, { backgroundColor: `#${colour}` }, style]}
       ></TransparentView>
     );
   });

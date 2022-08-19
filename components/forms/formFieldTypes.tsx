@@ -25,7 +25,7 @@ export type StringField = BaseField<'string', string>;
 export type TextArea = BaseField<'TextArea', string>;
 export type DateField = BaseField<'Date', Date>;
 export type OptionalYearDate = BaseField<'OptionalYearDate', Date> & {
-  knownYearField?: string | undefined
+  knownYearField?: string | undefined;
 };
 export type DateTimeField = BaseField<'DateTime', Date>;
 export type RadioField = BaseField<'radio', any> & {
@@ -43,22 +43,22 @@ export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {
 
 export type DropDownField = BaseField<'dropDown', any> & {
   permittedValues: any[];
-  displayName?: string
+  displayName?: string;
   initialValue?: {
-    label: string,
-    value: string
+    label: string;
+    value: string;
   }[];
   placeholder?: string;
-}
+};
 export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
   permittedValues: any[];
-  displayName?: string
+  displayName?: string;
   initialValue?: {
-    label: string,
-    value: string
+    label: string;
+    value: string;
   }[];
   placeholder?: string;
-}
+};
 
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;

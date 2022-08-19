@@ -63,7 +63,9 @@ export default function EntityListScreen({
   useEffect(() => {
     if (entityData && entityData.length === 0) {
       navigation.setOptions({
-        title: t('screens.addEntity.title', { entityType: t(`entityTypes.${route.params.entityTypeName}`) }),
+        title: t('screens.addEntity.title', {
+          entityType: t(`entityTypes.${route.params.entityTypeName}`)
+        }),
         headerTintColor: addEntityHeaderTintColor
       });
     } else {
@@ -74,7 +76,7 @@ export default function EntityListScreen({
   }, [route.params.entityTypeName, entityData]);
 
   if (isLoading || !entityData) {
-    return <FullPageSpinner/>
+    return <FullPageSpinner />;
   }
 
   const ordering = entityOrderings[entityData[0]?.resourcetype] || null;
@@ -120,8 +122,8 @@ export default function EntityListScreen({
   }
 
   const BackgroundComponent = (
-    ((listLinks.length === 0) && entityTypes)
-      ? (backgroundComponents[entityTypes[0]] || backgroundComponents.default)
+    listLinks.length === 0 && entityTypes
+      ? backgroundComponents[entityTypes[0]] || backgroundComponents.default
       : WhiteFullPageScrollView
   ) as React.ElementType;
 
@@ -129,7 +131,8 @@ export default function EntityListScreen({
     <BackgroundComponent>
       <TransparentPaddedView>
         {listLinks}
-        {((showCreateForm && entityTypes?.length === 1) || (listLinks.length === 0)) && (
+        {((showCreateForm && entityTypes?.length === 1) ||
+          listLinks.length === 0) && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
       </TransparentPaddedView>

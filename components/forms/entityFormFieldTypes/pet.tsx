@@ -15,9 +15,9 @@ export const petForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.pet.type'),
       permittedValues: [
-        {label: 'Dog', value: 'Dog'},
-        {label: 'Cat', value: 'Cat'},
-        {label: 'Bird', value: 'Bird'}
+        { label: 'Dog', value: 'Dog' },
+        { label: 'Cat', value: 'Cat' },
+        { label: 'Bird', value: 'Bird' }
       ]
     },
     breed: {

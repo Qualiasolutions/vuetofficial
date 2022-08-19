@@ -3,7 +3,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import {
-  TransparentPaddedView, TransparentView,
+  TransparentPaddedView,
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
@@ -25,7 +26,7 @@ export default function AddEntityScreen({
 }: NativeStackScreenProps<EntityTabParamList, 'AddEntity'>) {
   const { t } = useTranslation();
   const parentId = route.params.parentId;
-  const entityTypes = route.params.entityTypes
+  const entityTypes = route.params.entityTypes;
   const parsedId = parentId
     ? typeof parentId === 'number'
       ? parentId
@@ -33,32 +34,44 @@ export default function AddEntityScreen({
     : undefined;
 
   const headerTintColor = useThemeColor({}, 'primary');
-  const [selectedEntityType, selectEntityType] = useState<EntityTypeName>(entityTypes[0])
-  const headerBackgroundColor = useThemeColor({}, backgroundColours[selectedEntityType] || 'almostWhite');
+  const [selectedEntityType, selectEntityType] = useState<EntityTypeName>(
+    entityTypes[0]
+  );
+  const headerBackgroundColor = useThemeColor(
+    {},
+    backgroundColours[selectedEntityType] || 'almostWhite'
+  );
 
-  const fieldColor = (selectedEntityType && useThemeColor({}, fieldColorMapping[selectedEntityType]))
+  const fieldColor =
+    selectedEntityType &&
+    useThemeColor({}, fieldColorMapping[selectedEntityType]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTintColor,
       headerStyle: {
-        backgroundColor: headerBackgroundColor,
+        backgroundColor: headerBackgroundColor
       },
       headerShadowVisible: false,
       headerTitleAlign: 'center',
       headerTitle: (props) => {
         return (
-          <TransparentView style={{
-            height: 80,
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-          }}>
+          <TransparentView
+            style={{
+              height: 80,
+              alignItems: 'center',
+              justifyContent: 'flex-end'
+            }}
+          >
             <PageTitle
-              text={titleMapping[selectedEntityType] || t('screens.addEntity.title', { entityType: selectedEntityType })}
-              style={{marginBottom: 0}}
+              text={
+                titleMapping[selectedEntityType] ||
+                t('screens.addEntity.title', { entityType: selectedEntityType })
+              }
+              style={{ marginBottom: 0 }}
             />
           </TransparentView>
-        )
+        );
       }
     });
   }, [selectedEntityType]);
@@ -66,28 +79,33 @@ export default function AddEntityScreen({
   const BackgroundComponent = (backgroundComponents[selectedEntityType] ||
     backgroundComponents.default) as React.ElementType;
 
-  const entityTypeSelector = (entityTypes && (entityTypes.length > 1))
-    ? <View style={[styles.entityTypeSelectorWrapper, (Platform.OS === 'ios') && {zIndex: 9999}]}>
-      <DropDown
-        value={selectedEntityType}
-        items={entityTypes.map(entityType => ({
-          label: entityType,
-          value: entityType
-        }))}
-        setFormValues={(entityType: EntityTypeName) => { selectEntityType(entityType) }}
-        style={{backgroundColor: fieldColor}}
-      ></DropDown>
-    </View>
-    : null
+  const entityTypeSelector =
+    entityTypes && entityTypes.length > 1 ? (
+      <View
+        style={[
+          styles.entityTypeSelectorWrapper,
+          Platform.OS === 'ios' && { zIndex: 9999 }
+        ]}
+      >
+        <DropDown
+          value={selectedEntityType}
+          items={entityTypes.map((entityType) => ({
+            label: entityType,
+            value: entityType
+          }))}
+          setFormValues={(entityType: EntityTypeName) => {
+            selectEntityType(entityType);
+          }}
+          style={{ backgroundColor: fieldColor }}
+        ></DropDown>
+      </View>
+    ) : null;
 
   return (
     <BackgroundComponent>
       {entityTypeSelector}
       <TransparentPaddedView>
-        <AddEntityForm
-          entityType={selectedEntityType}
-          parentId={parsedId}
-        />
+        <AddEntityForm entityType={selectedEntityType} parentId={parsedId} />
       </TransparentPaddedView>
     </BackgroundComponent>
   );
@@ -97,7 +115,7 @@ const styles = StyleSheet.create({
   entityTypeSelectorWrapper: {
     marginTop: 20,
     width: 200,
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   container: { height: '100%' }
-})
+});

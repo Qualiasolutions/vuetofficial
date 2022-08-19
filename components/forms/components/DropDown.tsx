@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ViewStyle } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-const otherKey = "%%%%%%OTHER%%%%%%"
+const otherKey = '%%%%%%OTHER%%%%%%';
 
 export default function DropDown({
   value = '',
@@ -13,16 +13,16 @@ export default function DropDown({
   style = {},
   allowOther = false
 }: {
-  value: string,
-  items: any[],
-  setFormValues: (item: any) => void,
-  dropdownPlaceholder?: string,
-  style?: ViewStyle,
-  allowOther?: boolean
+  value: string;
+  items: any[];
+  setFormValues: (item: any) => void;
+  dropdownPlaceholder?: string;
+  style?: ViewStyle;
+  allowOther?: boolean;
 }) {
   const [open, setOpen] = useState<boolean>(false);
   const [showOther, setShowOther] = useState<boolean>(false);
-  const borderColor = useThemeColor({}, 'grey')
+  const borderColor = useThemeColor({}, 'grey');
 
   return (
     <>
@@ -30,26 +30,30 @@ export default function DropDown({
         listMode="SCROLLVIEW"
         open={open}
         value={value}
-        items={allowOther ? [...items, { 'label': 'Other', 'value': otherKey } ] : items}
+        items={
+          allowOther ? [...items, { label: 'Other', value: otherKey }] : items
+        }
         setOpen={setOpen}
         setValue={(item) => {
           if (item(null) == otherKey) {
-            setFormValues('')
-            return setShowOther(true)
-          };
-          setShowOther(false)
+            setFormValues('');
+            return setShowOther(true);
+          }
+          setShowOther(false);
           setFormValues(item(null));
         }}
         placeholder={dropdownPlaceholder}
-        style={[{
-          borderWidth: 1,
-          borderColor
-        }, style]}
+        style={[
+          {
+            borderWidth: 1,
+            borderColor
+          },
+          style
+        ]}
         textStyle={{
           fontFamily: 'Poppins',
           fontSize: 15
         }}
-        
       />
       {showOther && (
         <TextInput

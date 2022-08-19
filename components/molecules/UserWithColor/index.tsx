@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   memberColour: {
     height: 9,
-    width: 78,
+    width: 78
   },
   profileImageWrapper: {
     width: 40,
