@@ -12,7 +12,8 @@ export type PermittedTypes =
   | 'TextArea'
   | 'addFamilyMembers'
   | 'dropDown'
-  | 'dropDownWithOther';
+  | 'dropDownWithOther'
+  | 'Image';
 
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
@@ -64,6 +65,8 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
 
+export type ImageField = BaseField<'Image', object>;
+
 export type Field =
   | StringField
   | DateField
@@ -76,7 +79,8 @@ export type Field =
   | TextArea
   | AddFamilyMembersField
   | DropDownField
-  | DropDownWithOtherField;
+  | DropDownWithOtherField
+  | ImageField;
 
 export type FormFieldTypes = {
   [key: string]: Field;

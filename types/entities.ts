@@ -49,6 +49,15 @@ export interface TripAccommodationResponseType extends BaseEntityType {
   end_datetime: string | null;
 }
 
+export type FormCreateEntityRequest = {
+  formData?: FormData;
+};
+
+export type FormUpdateEntityRequest = {
+  id: number;
+  formData?: FormData;
+}
+
 export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
 
 // This should be a big OR statement of all entities

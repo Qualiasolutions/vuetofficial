@@ -29,6 +29,11 @@ export const petForm = (): FormFieldTypes => {
       type: 'Date',
       required: true,
       displayName: t('entities.pet.dob')
+    },
+    image: {
+      type: 'Image',
+      required: false,
+      displayName: t('entities.entity.image')
     }
     // TODO - add foreign key picker so that we can pick
     // a vet, walker, grommer, sitter, insurance policy

@@ -84,7 +84,7 @@ export default function BottomNavBar({
                   // has length > 1
                   type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
                   navigation.navigate('AddEntity', {
-                    entityType: (currentScreenParams as RouteParams)
+                    entityTypes: (currentScreenParams as RouteParams)
                       .entityTypes[0],
                     parentId: (currentScreenParams as RouteParams).entityId
                   });

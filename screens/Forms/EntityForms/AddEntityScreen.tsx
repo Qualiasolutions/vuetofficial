@@ -26,12 +26,14 @@ export default function AddEntityScreen({
 }: NativeStackScreenProps<EntityTabParamList, 'AddEntity'>) {
   const { t } = useTranslation();
   const parentId = route.params.parentId;
-  const entityTypes = route.params.entityTypes;
+  const rawEntityTypes = route.params.entityTypes;
   const parsedId = parentId
     ? typeof parentId === 'number'
       ? parentId
       : parseInt(parentId)
     : undefined;
+
+  const entityTypes: EntityTypeName[] = typeof rawEntityTypes === 'string' ? [ rawEntityTypes ] : rawEntityTypes
 
   const headerTintColor = useThemeColor({}, 'primary');
   const [selectedEntityType, selectEntityType] = useState<EntityTypeName>(

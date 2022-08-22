@@ -1,6 +1,6 @@
 import { Text } from 'components/Themed';
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
-import RTKForm from 'components/forms/RTKForm';
+import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
@@ -11,7 +11,8 @@ import { useTranslation } from 'react-i18next';
 import {
   useDeleteEntityMutation,
   useGetAllEntitiesQuery,
-  useUpdateEntityMutation
+  useUpdateEntityMutation,
+  useFormUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
@@ -19,6 +20,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import * as forms from 'components/forms/entityFormFieldTypes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
+import { dataTypeMapping } from './utils/dataTypeMapping';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -69,6 +71,10 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     entityForms[entityToEdit?.resourcetype]
   );
 
+  const dataType = 
+    entityToEdit?.resourcetype && (dataTypeMapping[entityToEdit?.resourcetype] ||
+      dataTypeMapping.default) as FormDataType
+
   const onDeleteSuccess = (res: CarResponseType) => {
     navigation.goBack();
   };
@@ -92,7 +98,9 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
         <RTKForm
           fields={formFields}
           methodHooks={{
-            PATCH: useUpdateEntityMutation,
+            PATCH: (dataType === 'form')
+              ? useFormUpdateEntityMutation
+              : useUpdateEntityMutation,
             DELETE: useDeleteEntityMutation
           }}
           formType="UPDATE"
@@ -109,6 +117,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
             (inlineFieldsMapping[entityToEdit?.resourcetype] ||
               inlineFieldsMapping.default) as boolean
           }
+          formDataType={dataType}
         />
       </TransparentView>
     );

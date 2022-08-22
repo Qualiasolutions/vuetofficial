@@ -1,5 +1,9 @@
 import { AllEntities } from './types';
-import { EntityResponseType } from 'types/entities';
+import {
+  EntityResponseType,
+  FormCreateEntityRequest,
+  FormUpdateEntityRequest
+} from 'types/entities';
 import { vuetApi, normalizeData } from './api';
 
 const extendedApi = vuetApi.injectEndpoints({
@@ -45,6 +49,36 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Entity', 'Task']
     }),
+    formCreateEntity: builder.mutation<
+      EntityResponseType,
+      FormCreateEntityRequest
+    >({
+      query: (payload) => ({
+        url: 'core/entity/',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data;'
+        },
+        body: payload.formData
+      }),
+      invalidatesTags: ['Entity', 'Task']
+    }),
+    formUpdateEntity: builder.mutation<
+      EntityResponseType,
+      FormUpdateEntityRequest
+    >({
+      query: (payload) => {
+        return {
+          url: `core/entity/${payload.id}/`,
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'multipart/form-data;'
+          },
+          body: payload.formData
+        }
+      },
+      invalidatesTags: ['Entity', 'Task']
+    }),
     deleteEntity: builder.mutation<
       EntityResponseType,
       Pick<EntityResponseType, 'id'>
@@ -67,5 +101,7 @@ export const {
   useGetAllEntitiesQuery,
   useUpdateEntityMutation,
   useDeleteEntityMutation,
-  useCreateEntityMutation
+  useCreateEntityMutation,
+  useFormCreateEntityMutation,
+  useFormUpdateEntityMutation
 } = extendedApi;

@@ -23,6 +23,7 @@ import FamilySelector from './components/FamilySelector';
 import { YesNoModal } from 'components/molecules/Modals';
 import { OptionalYearDateInput } from './components/OptionalYearDateInput';
 import DropDown from 'components/forms/components/DropDown';
+import { WhiteImagePicker } from './components/ImagePicker';
 
 /* This type specifies the actual values of the fields.
 
@@ -40,6 +41,7 @@ type FieldErrorTypes = {
 };
 
 type FormType = 'UPDATE' | 'CREATE';
+export type FormDataType = 'json' | 'form';
 
 declare type UseMutationResult<T> = {
   // Base query state
@@ -78,6 +80,8 @@ const createInitialObject = (
       case 'phoneNumber':
       case 'radio':
       case 'TextArea':
+      case 'Image':
+      case 'dropDownWithOther':
         initialObj[key] = fields[key].initialValue || '';
         continue;
 
@@ -137,7 +141,8 @@ export default function Form({
   submitText = '',
   inlineFields = false,
   createTextOverride = '',
-  fieldColor = '#ffffff'
+  fieldColor = '#ffffff',
+  formDataType = 'json'
 }: {
   fields: FormFieldTypes;
   formType?: FormType;
@@ -153,6 +158,7 @@ export default function Form({
   inlineFields?: boolean;
   createTextOverride?: string;
   fieldColor?: string;
+  formDataType?: FormDataType;
 }) {
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
@@ -236,6 +242,8 @@ export default function Form({
 
   const submitForm = () => {
     setSubmittingForm(true);
+
+    const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
     const parsedFormValues = { ...formValues };
     for (const field in parsedFormValues) {
       if (['Date', 'OptionalYearDate'].includes(fields[field]?.type)) {
@@ -247,22 +255,48 @@ export default function Form({
           delete parsedFormValues[field];
         }
       }
+      if (['Image'].includes(fields[field]?.type)) {
+        // Delete if the image is provided as a string
+        if (parsedFormValues[field] && (typeof parsedFormValues[field] === 'string')) {
+          delete parsedFormValues[field];
+        }
+      }
     }
 
-    const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
+    if (formDataType === 'json') {
+      // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
+      methodHookTriggers[submitMethod]
+        .trigger({
+          ...parsedFormValues,
+          ...extraFields
+        })
+        .then(() => {
+          setSubmittingForm(false);
+        })
+        .catch(() => {
+          setSubmittingForm(false);
+        });
+    } else if (formDataType === 'form') {
+      const data = new FormData();
+      for (const [fieldName, fieldValue] of Object.entries(parsedFormValues)) {
+        data.append(fieldName, fieldValue as any);
+      }
+      for (const [fieldName, fieldValue] of Object.entries(extraFields)) {
+        data.append(fieldName, fieldValue as any);
+      }
 
-    // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
-    methodHookTriggers[submitMethod]
-      .trigger({
-        ...parsedFormValues,
-        ...extraFields
-      })
-      .then(() => {
-        setSubmittingForm(false);
-      })
-      .catch(() => {
-        setSubmittingForm(false);
-      });
+      methodHookTriggers[submitMethod]
+        .trigger({
+          formData: data,
+          ...extraFields
+        })
+        .then(() => {
+          setSubmittingForm(false);
+        })
+        .catch(() => {
+          setSubmittingForm(false);
+        });
+    }
   };
 
   const makeDeleteRequest = () => {
@@ -586,6 +620,30 @@ export default function Form({
             </View>
           );
         }
+      }
+      case 'Image': {
+        return (
+          <TransparentView key={field}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
+              <WhiteImagePicker
+                // style={styles.imagePicker}
+                onImageSelect={(image) => {
+                  setFormValues({
+                    ...formValues,
+                    [field]: image
+                  });
+                }}
+                defaultImageUrl={formValues[field]}
+              />
+            </TransparentView>
+          </TransparentView>
+        )
       }
     }
   });

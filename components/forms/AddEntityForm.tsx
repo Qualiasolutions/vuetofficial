@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Text, useThemeColor } from 'components/Themed';
-import RTKForm from 'components/forms/RTKForm';
+import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import GenericError from 'components/molecules/GenericError';
 import {
   useCreateEntityMutation,
+  useFormCreateEntityMutation,
   useGetAllEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
@@ -17,6 +18,7 @@ import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { fieldColorMapping } from './utils/fieldColorMapping';
+import { dataTypeMapping } from './utils/dataTypeMapping';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -78,6 +80,10 @@ export default function AddEntityForm({
   const fieldColor =
     entityType && useThemeColor({}, fieldColorMapping[entityType]);
 
+  const dataType = 
+    entityType && (dataTypeMapping[entityType] ||
+      dataTypeMapping.default) as FormDataType
+
   if (isLoading || !allEntities) {
     return null;
   }
@@ -112,7 +118,9 @@ export default function AddEntityForm({
         <RTKForm
           fields={entityForms[entityType]}
           methodHooks={{
-            POST: useCreateEntityMutation
+            POST: (dataType === 'form')
+              ? useFormCreateEntityMutation
+              : useCreateEntityMutation
           }}
           formType="CREATE"
           extraFields={extraFields}
@@ -127,6 +135,7 @@ export default function AddEntityForm({
           }
           createTextOverride={t('common.addAnother')}
           fieldColor={fieldColor}
+          formDataType={dataType}
         />
       </TransparentView>
     );
