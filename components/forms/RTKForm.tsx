@@ -6,6 +6,7 @@ import DateTimeTextInput from './components/DateTimeTextInput';
 import {
   FormFieldTypes,
   hasPermittedValues,
+  ImageField,
   OptionalYearDate
 } from './formFieldTypes';
 import RadioInput from './components/RadioInput';
@@ -639,7 +640,8 @@ export default function Form({
                     [field]: image
                   });
                 }}
-                defaultImageUrl={formValues[field]}
+                defaultImageUrl={ formValues[field].uri || formValues[field] || '' }
+                displayInternalImage={false}
               />
             </TransparentView>
           </TransparentView>

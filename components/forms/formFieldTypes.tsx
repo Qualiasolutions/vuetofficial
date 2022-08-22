@@ -65,7 +65,9 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
 
-export type ImageField = BaseField<'Image', object>;
+export type ImageField = BaseField<'Image', object> & {
+  sourceField: string;
+};
 
 export type Field =
   | StringField

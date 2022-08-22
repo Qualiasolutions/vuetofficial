@@ -29,14 +29,24 @@ type ImagePickerProps = {
   backgroundColor: string;
   defaultImageUrl?: string;
   style?: ViewStyle;
+  displayInternalImage?: boolean;
 };
 
 export function ImagePicker({
   onImageSelect,
   backgroundColor = '#ffffff',
   defaultImageUrl = '',
-  style = {}
+  style = {},
+  displayInternalImage = true
 }: ImagePickerProps) {
+  /*
+
+  displayInternalImage: this is true if we want to show the component's
+    internally selected image when it exists rather than the default
+    image URL. This should be avoided where possible and parent components
+    should instead pass `defaultImageUrl` to prevent the data from getting
+    out of sync with the parent. It defaults to `true` to support old code.
+  */
   const [selectedImage, setSelectedImage] =
     useState<DocumentPicker.DocumentResult | null>(null);
 
@@ -73,7 +83,7 @@ export function ImagePicker({
   };
 
   const imageSource =
-    (selectedImage?.type === 'success' &&
+    (displayInternalImage && (selectedImage?.type === 'success') &&
       selectedImage?.uri && { uri: selectedImage.uri }) ||
     (defaultImageUrl && {
       uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])
@@ -101,14 +111,16 @@ export function ImagePicker({
 export function WhiteImagePicker({
   onImageSelect,
   defaultImageUrl = '',
-  style = {}
+  style = {},
+  displayInternalImage = true
 }: Omit<ImagePickerProps, 'backgroundColor'>) {
   const backgroundColor = useThemeColor({}, 'white');
   return ImagePicker({
     onImageSelect,
     backgroundColor,
     defaultImageUrl,
-    style
+    style,
+    displayInternalImage
   });
 }
 

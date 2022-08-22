@@ -33,7 +33,8 @@ export const petForm = (): FormFieldTypes => {
     image: {
       type: 'Image',
       required: false,
-      displayName: t('entities.entity.image')
+      displayName: t('entities.entity.image'),
+      sourceField: 'presigned_image_url'
     }
     // TODO - add foreign key picker so that we can pick
     // a vet, walker, grommer, sitter, insurance policy

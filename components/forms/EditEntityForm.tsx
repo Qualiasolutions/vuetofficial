@@ -1,5 +1,5 @@
 import { Text } from 'components/Themed';
-import { FormFieldTypes } from 'components/forms/formFieldTypes';
+import { FormFieldTypes, ImageField } from 'components/forms/formFieldTypes';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { CarResponseType } from 'types/entities';
 import { deepCopy } from 'utils/copy';
@@ -81,7 +81,9 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
 
   if (entityId && allEntities.byId[entityId]) {
     for (const fieldName in formFields) {
-      if (fieldName in entityToEdit) {
+      if (Object.keys(formFields[fieldName]).includes('sourceField')) {
+        formFields[fieldName].initialValue = entityToEdit[(formFields[fieldName] as ImageField).sourceField] || null;
+      } else if (fieldName in entityToEdit) {
         formFields[fieldName].initialValue = entityToEdit[fieldName] || null;
       }
     }
