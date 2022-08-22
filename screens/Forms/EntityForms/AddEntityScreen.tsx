@@ -106,7 +106,7 @@ export default function AddEntityScreen({
   return (
     <BackgroundComponent>
       {entityTypeSelector}
-      <TransparentPaddedView>
+      <TransparentPaddedView style={styles.formContainer}>
         <AddEntityForm entityType={selectedEntityType} parentId={parsedId} />
       </TransparentPaddedView>
     </BackgroundComponent>
@@ -119,5 +119,7 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: 'center'
   },
-  container: { height: '100%' }
+  formContainer: {
+    marginBottom: 100
+  }
 });

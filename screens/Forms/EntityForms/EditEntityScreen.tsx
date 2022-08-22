@@ -3,9 +3,10 @@ import { EntityTabParamList } from 'types/base';
 
 import { useThemeColor } from 'components/Themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
+import { backgroundComponents } from './utils/backgroundComponents';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
@@ -13,6 +14,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import EditEntityForm from 'components/forms/EditEntityForm';
+import { StyleSheet } from 'react-native';
 
 export default function EditEntityScreen({
   navigation,
@@ -29,6 +31,7 @@ export default function EditEntityScreen({
 
   const headerTintColor = useThemeColor({}, 'primary');
   const headerBackgroundColor = useThemeColor({}, 'almostWhite');
+  const [entityType, setEntityType] = useState<string>('')
 
   useEffect(() => {
     if (allEntities) {
@@ -44,6 +47,7 @@ export default function EditEntityScreen({
             backgroundColor: headerBackgroundColor
           }
         });
+        setEntityType(entityToEdit.resourcetype)
       }
     }
   }, [route.params.entityId, allEntities]);
@@ -52,16 +56,26 @@ export default function EditEntityScreen({
   const entityId =
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
 
+  const BackgroundComponent = (backgroundComponents[entityType] ||
+    backgroundComponents.default) as React.ElementType;
+
   if (route.params?.entityId) {
     return (
-      <SafeAreaView>
+      <BackgroundComponent>
         <TransparentFullPageScrollView>
-          <TransparentPaddedView>
+          <TransparentPaddedView style={styles.formContainer}>
             <EditEntityForm entityId={entityId} />
           </TransparentPaddedView>
         </TransparentFullPageScrollView>
-      </SafeAreaView>
+      </BackgroundComponent>
     );
   }
   return null;
 }
+
+
+const styles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 100
+  }
+});
