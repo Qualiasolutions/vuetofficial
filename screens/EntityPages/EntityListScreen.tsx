@@ -59,13 +59,13 @@ export default function EntityListScreen({
   const { t } = useTranslation();
 
   useLayoutEffect(() => {
-    const HeaderRightComponent = entityData && headerRightMapping[entityData[0]?.resourcetype]
+    const HeaderRightComponent = headerRightMapping[route.params.entityTypeName]
     const headerRight = () => (HeaderRightComponent ? <HeaderRightComponent navigation={navigation} route={route}/> : null)
 
-    const HeaderBackgroundComponent = entityData && headerBackgroundMapping[entityData[0]?.resourcetype]
+    const HeaderBackgroundComponent = entityData && headerBackgroundMapping[route.params.entityTypeName]
     const headerBackground = () => (HeaderBackgroundComponent ? <HeaderBackgroundComponent/> : null)
 
-    const headerTintColor = (entityData && headerTintColorMapping[entityData[0]?.resourcetype]) || null
+    const headerTintColor = (entityData && headerTintColorMapping[route.params.entityTypeName]) || null
 
     navigation.setOptions({
       title: t(`entityTypes.${route.params.entityTypeName}`),

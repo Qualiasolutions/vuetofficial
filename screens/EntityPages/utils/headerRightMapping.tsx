@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable } from 'react-native';
 
 export const headerRightMapping = {
-  Holiday: ({ route, navigation }) => {
+  holidays: ({ route, navigation }) => {
     const { t } = useTranslation()
     return <Pressable onPress={() => navigation.navigate('HolidayList')}>
       <WhiteText text={t('misc.editCountryList')}/>

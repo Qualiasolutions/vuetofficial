@@ -3,7 +3,7 @@ import { useThemeColor, View } from 'components/Themed';
 import { ImageBackground, StyleSheet } from 'react-native';
 
 export const headerBackgroundMapping = {
-  Holiday: (props) => {
+  holidays: (props) => {
     const overlayColor = useThemeColor({}, 'overlay');
     return (
       <TransparentView>
