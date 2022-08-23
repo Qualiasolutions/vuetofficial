@@ -1,24 +1,22 @@
 import ListLinkWithCheckbox from 'components/molecules/ListLinkWithCheckbox';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   useGetAllCountriesQuery,
-  useGetSelectedHolidayQuery
 } from 'reduxStore/services/api/holidays';
 import { Country } from 'reduxStore/services/api/types';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import GenericButton from 'components/molecules/GenericButton';
 import { useThemeColor } from 'components/Themed';
 import { StyleSheet } from 'react-native';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import useGetUserDetails from 'hooks/useGetUserDetails';
+import { HolidayResponseType } from 'types/entities';
 
 export default function HolidayListScreen({
   navigation
 }: NativeStackScreenProps<any>) {
-  const username = useSelector(selectUsername);
   const styles = StyleSheet.create({
     nextButton: {
       backgroundColor: useThemeColor({}, 'buttonDefault'),
@@ -28,37 +26,39 @@ export default function HolidayListScreen({
       marginBottom: 60
     }
   });
-  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userDetails } = useGetUserDetails();
   const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
   const {
     data: allCountries,
     isError,
     error
-  } = useGetAllCountriesQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
+  } = useGetAllCountriesQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
   });
 
-  const { data: selectedHolidays } = useGetSelectedHolidayQuery(
-    userDetails?.user_id || -1,
+  const { data: allEntities } = useGetAllEntitiesQuery(
+    userDetails?.id || -1,
     {
-      skip: !userDetails?.user_id
+      skip: !userDetails?.id
     }
-  );
+  );  
+  const selectedHolidays = (allEntities && Object.values(allEntities.byId).filter(ent => ent.resourcetype === 'Holiday')) as (HolidayResponseType[] | undefined)
 
   useEffect(() => {
     if (allCountries && selectedHolidays && selectedHolidays.length > 0) {
       setSelectedCountries(
         allCountries.filter((country) =>
-          selectedHolidays[0].country_codes.includes(country.code)
+          selectedHolidays.map(holiday => holiday.country_code).includes(country.code)
         )
       );
     }
-  }, [selectedHolidays, allCountries]);
+  }, [allEntities, allCountries]);
 
   const whiteColor = useThemeColor({}, 'white');
 
   const onPress = useCallback(
     (country, selected) => {
+      console.log("ONPRESS")
       if (selectedCountries.some((cou) => cou.code == country.code)) {
         setSelectedCountries(
           selectedCountries.filter((cou) => cou.code != country.code)
@@ -67,7 +67,7 @@ export default function HolidayListScreen({
         setSelectedCountries([...selectedCountries, country]);
       }
     },
-    [setSelectedCountries, selectedCountries]
+    [ selectedCountries ]
   );
 
   return (

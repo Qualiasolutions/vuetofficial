@@ -90,7 +90,23 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['Entity', 'Task']
-    })
+    }),
+    bulkCreateEntities: builder.mutation<EntityResponseType[], Omit<EntityResponseType, 'id'>>({
+      query: (body) => ({
+        url: 'core/entity/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['Entity', 'Task']
+    }),
+    bulkDeleteEntities: builder.mutation<EntityResponseType[], Pick<EntityResponseType, 'id'>[]>({
+      query: (body) => ({
+        url: 'core/entity/',
+        method: 'DELETE',
+        body: { pk_ids: body.map(holiday => holiday.id) }
+      }),
+      invalidatesTags: ['Entity', 'Task']
+    }),
   }),
   overrideExisting: true
 });
@@ -103,5 +119,7 @@ export const {
   useDeleteEntityMutation,
   useCreateEntityMutation,
   useFormCreateEntityMutation,
-  useFormUpdateEntityMutation
+  useFormUpdateEntityMutation,
+  useBulkCreateEntitiesMutation,
+  useBulkDeleteEntitiesMutation
 } = extendedApi;

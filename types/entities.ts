@@ -6,6 +6,7 @@ export type EntityTypeName =
   | 'Event'
   | 'Hobby'
   | 'List'
+  | 'Holiday'
   | 'DaysOff';
 
 export interface BaseEntityType {
@@ -49,6 +50,13 @@ export interface TripAccommodationResponseType extends BaseEntityType {
   end_datetime: string | null;
 }
 
+export interface HolidayResponseType extends BaseEntityType {
+  start_date: string;
+  end_date: string;
+  string_id: string;
+  country_code: string;
+}
+
 export type FormCreateEntityRequest = {
   formData?: FormData;
 };
@@ -61,5 +69,5 @@ export type FormUpdateEntityRequest = {
 export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
 
 // This should be a big OR statement of all entities
-export type EntityResponseType = CarResponseType | ListResponseType;
-export type EntityParsedType = CarParsedType | ListResponseType;
+export type EntityResponseType = CarResponseType | ListResponseType | HolidayResponseType;
+export type EntityParsedType = CarParsedType | ListResponseType | HolidayResponseType;

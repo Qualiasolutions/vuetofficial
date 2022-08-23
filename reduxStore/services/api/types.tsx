@@ -34,17 +34,20 @@ type Holiday = {
   start_date: string;
   end_date: string;
   id: string;
+  country_code: string;
 };
 
 type AllHolidays = {
   [code: string]: Holiday[];
 };
 
-type SelectedHolidays = {
+type SelectedHoliday = {
   id: number;
+  country_code: string;
+  start_date: string;
+  end_date: string;
   owner: number;
-  country_codes: string;
-  holiday_ids: string;
+  name: number;
 };
 
 type HolidayList = {
@@ -79,7 +82,7 @@ export {
   Country,
   Holiday,
   AllHolidays,
-  SelectedHolidays,
+  SelectedHoliday,
   HolidayList,
   CalendarViewProps,
   AllPeriods

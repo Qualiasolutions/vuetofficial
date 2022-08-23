@@ -1,18 +1,20 @@
 import ListLinkWithCheckbox from 'components/molecules/ListLinkWithCheckbox';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  useGetHolidaysQuery,
-  useGetSelectedHolidayQuery,
-  useSaveHolidayMutation,
-  useUpdateHolidayMutation
-} from 'reduxStore/services/api/holidays';
+import { useGetHolidaysQuery } from 'reduxStore/services/api/holidays';
 import { Holiday } from 'reduxStore/services/api/types';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import useGetUserDetails from 'hooks/useGetUserDetails';
+import {
+  useGetAllEntitiesQuery,
+  useBulkCreateEntitiesMutation,
+  useBulkDeleteEntitiesMutation
+} from 'reduxStore/services/api/entities';
+import { HolidayResponseType } from 'types/entities';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 export default function HolidayDetailScreen({
   navigation,
@@ -32,17 +34,20 @@ export default function HolidayDetailScreen({
   }
 
   const { data: userDetails } = useGetUserDetails();
-  const { data: previouslySelectedHolidays } = useGetSelectedHolidayQuery(
+  const { data: allEntities } = useGetAllEntitiesQuery(
     userDetails?.id || -1,
     {
       skip: !userDetails?.id
     }
   );
 
+  const previouslySelectedHolidays = (allEntities && Object.values(allEntities.byId).filter(ent => ent.resourcetype === 'Holiday')) as (HolidayResponseType[] | undefined)
+
   // TODO - do we want to allow settings holidays for other years too?
-  const [selectedHolidays, setSelectedHolidays] = useState<Holiday[]>([]);
-  const [saveHoliday] = useSaveHolidayMutation();
-  const [updateHoliday] = useUpdateHolidayMutation();
+  const [selectedHolidays, setSelectedHolidays] = useState<Omit<HolidayResponseType, 'id'>[]>([]);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [createEntities, createEntitiesResult] = useBulkCreateEntitiesMutation();
+  const [deleteEntities, deleteEntitiesResult] = useBulkDeleteEntitiesMutation();
   const {
     data: holidays,
     isError,
@@ -58,21 +63,31 @@ export default function HolidayDetailScreen({
       setSelectedHolidays(
         Object.values(holidays)
           .flat()
-          .filter((hol: Holiday) =>
-            previouslySelectedHolidays[0].holiday_ids.includes(hol.id)
+          .filter((hol) =>
+            previouslySelectedHolidays.map(holiday => holiday.string_id).includes(hol.id)
           )
+          .map(hol => ({
+            ...hol,
+            string_id: hol.id
+          }))
       );
     }
-  }, [previouslySelectedHolidays, holidays]);
+  }, [allEntities, holidays]);
 
   const onPress = useCallback(
-    (country, selected) => {
+    (holiday: Holiday, selected: boolean) => {
       if (selected) {
         setSelectedHolidays(
-          selectedHolidays.filter((cou) => cou.id != country.id)
+          selectedHolidays.filter((hol) => hol.string_id != holiday.id)
         );
       } else {
-        setSelectedHolidays([...selectedHolidays, country]);
+        setSelectedHolidays([
+          ...selectedHolidays,
+          {
+            ...holiday,
+            string_id: holiday.id,
+          }
+        ]);
       }
     },
     [setSelectedHolidays, selectedHolidays]
@@ -80,21 +95,34 @@ export default function HolidayDetailScreen({
 
   useEffect(() => {
     const save = async () => {
-      const body = {
-        country_codes:
-          typeof countrycodes === 'string' ? [countrycodes] : countrycodes,
-        holiday_ids: selectedHolidays.map((holiday) => holiday.id)
-      };
-
       if (previouslySelectedHolidays) {
-        if (previouslySelectedHolidays.length > 0) {
-          await updateHoliday({
-            ...body,
-            id: previouslySelectedHolidays[0].id
-          });
-        } else {
-          await saveHoliday(body);
+        setIsSaving(true)
+        const holidaysToDelete = previouslySelectedHolidays
+          ?.filter(entity => !selectedHolidays.map(ent => ent.string_id).includes(entity.string_id))
+        const holidaysToCreate = selectedHolidays
+          ?.filter(entity => !previouslySelectedHolidays.map(ent => ent.string_id).includes(entity.string_id))
+          ?.map(entity => ({ ...entity, resourcetype: 'Holiday' }))
+  
+        if (holidaysToDelete.length > 0) {
+          await deleteEntities(holidaysToDelete);
         }
+
+        // Nasty hack to ensure that the second cache update completes
+        // before navigating to the next page
+        setTimeout(async () => {
+          if (holidaysToCreate.length > 0) {
+            await createEntities(holidaysToCreate);
+          }
+  
+          setTimeout(() => {
+            setIsSaving(false)
+            navigation.navigate('EntityList', {
+              entityTypes: [ 'Holiday' ],
+              entityTypeName: 'holidays',
+              showCreateForm: false
+            })
+          }, 1000)
+        }, 1000)
       }
     };
 
@@ -103,7 +131,7 @@ export default function HolidayDetailScreen({
     });
   }, [selectedHolidays, previouslySelectedHolidays]);
 
-  if (!holidays) return null;
+  if (isSaving || !holidays) return <FullPageSpinner/>;
 
   return (
     <WhiteView style={{ flex: 1 }}>
