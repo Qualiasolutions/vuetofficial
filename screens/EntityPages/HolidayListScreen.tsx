@@ -1,9 +1,7 @@
 import ListLinkWithCheckbox from 'components/molecules/ListLinkWithCheckbox';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  useGetAllCountriesQuery,
-} from 'reduxStore/services/api/holidays';
+import { useGetAllCountriesQuery } from 'reduxStore/services/api/holidays';
 import { Country } from 'reduxStore/services/api/types';
 import GenericButton from 'components/molecules/GenericButton';
 import { useThemeColor } from 'components/Themed';
@@ -36,19 +34,21 @@ export default function HolidayListScreen({
     skip: !userDetails?.id
   });
 
-  const { data: allEntities } = useGetAllEntitiesQuery(
-    userDetails?.id || -1,
-    {
-      skip: !userDetails?.id
-    }
-  );  
-  const selectedHolidays = (allEntities && Object.values(allEntities.byId).filter(ent => ent.resourcetype === 'Holiday')) as (HolidayResponseType[] | undefined)
+  const { data: allEntities } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
+  });
+  const selectedHolidays = (allEntities &&
+    Object.values(allEntities.byId).filter(
+      (ent) => ent.resourcetype === 'Holiday'
+    )) as HolidayResponseType[] | undefined;
 
   useEffect(() => {
     if (allCountries && selectedHolidays && selectedHolidays.length > 0) {
       setSelectedCountries(
         allCountries.filter((country) =>
-          selectedHolidays.map(holiday => holiday.country_code).includes(country.code)
+          selectedHolidays
+            .map((holiday) => holiday.country_code)
+            .includes(country.code)
         )
       );
     }
@@ -58,7 +58,7 @@ export default function HolidayListScreen({
 
   const onPress = useCallback(
     (country, selected) => {
-      console.log("ONPRESS")
+      console.log('ONPRESS');
       if (selectedCountries.some((cou) => cou.code == country.code)) {
         setSelectedCountries(
           selectedCountries.filter((cou) => cou.code != country.code)
@@ -67,7 +67,7 @@ export default function HolidayListScreen({
         setSelectedCountries([...selectedCountries, country]);
       }
     },
-    [ selectedCountries ]
+    [selectedCountries]
   );
 
   return (

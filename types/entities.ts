@@ -64,10 +64,16 @@ export type FormCreateEntityRequest = {
 export type FormUpdateEntityRequest = {
   id: number;
   formData?: FormData;
-}
+};
 
 export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
 
 // This should be a big OR statement of all entities
-export type EntityResponseType = CarResponseType | ListResponseType | HolidayResponseType;
-export type EntityParsedType = CarParsedType | ListResponseType | HolidayResponseType;
+export type EntityResponseType =
+  | CarResponseType
+  | ListResponseType
+  | HolidayResponseType;
+export type EntityParsedType =
+  | CarParsedType
+  | ListResponseType
+  | HolidayResponseType;

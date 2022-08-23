@@ -18,7 +18,4 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
-export const {
-  useGetAllCountriesQuery,
-  useGetHolidaysQuery
-} = extendedApi;
+export const { useGetAllCountriesQuery, useGetHolidaysQuery } = extendedApi;

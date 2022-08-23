@@ -258,7 +258,10 @@ export default function Form({
       }
       if (['Image'].includes(fields[field]?.type)) {
         // Delete if the image is provided as a string
-        if (parsedFormValues[field] && (typeof parsedFormValues[field] === 'string')) {
+        if (
+          parsedFormValues[field] &&
+          typeof parsedFormValues[field] === 'string'
+        ) {
           delete parsedFormValues[field];
         }
       }
@@ -640,12 +643,14 @@ export default function Form({
                     [field]: image
                   });
                 }}
-                defaultImageUrl={ formValues[field].uri || formValues[field] || '' }
+                defaultImageUrl={
+                  formValues[field].uri || formValues[field] || ''
+                }
                 displayInternalImage={false}
               />
             </TransparentView>
           </TransparentView>
-        )
+        );
       }
     }
   });

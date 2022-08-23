@@ -14,7 +14,11 @@ import {
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Pressable, StyleSheet } from 'react-native';
-import { getDateWithoutTimezone, getDaysToAge, getLongDateFromDateObject } from 'utils/datesAndTimes';
+import {
+  getDateWithoutTimezone,
+  getDaysToAge,
+  getLongDateFromDateObject
+} from 'utils/datesAndTimes';
 import {
   AlmostBlackText,
   BlackText,
@@ -62,7 +66,11 @@ export default function HolidayScreen({ entityId }: { entityId: number }) {
     <TransparentView style={styles.detailsContainer}>
       <AlmostBlackText
         style={styles.birthDetail}
-        text={`${startDateString}${entityData?.end_date !== entityData?.start_date ? ` to ${endDateString}` : ''}`}
+        text={`${startDateString}${
+          entityData?.end_date !== entityData?.start_date
+            ? ` to ${endDateString}`
+            : ''
+        }`}
       />
     </TransparentView>
   );

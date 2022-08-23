@@ -83,7 +83,8 @@ export function ImagePicker({
   };
 
   const imageSource =
-    (displayInternalImage && (selectedImage?.type === 'success') &&
+    (displayInternalImage &&
+      selectedImage?.type === 'success' &&
       selectedImage?.uri && { uri: selectedImage.uri }) ||
     (defaultImageUrl && {
       uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])

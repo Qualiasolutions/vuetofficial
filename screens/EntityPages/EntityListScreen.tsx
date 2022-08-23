@@ -12,11 +12,9 @@ import linkMapping from 'components/entityCards';
 import { EntityResponseType } from 'types/entities';
 import {
   TransparentPaddedView,
-  TransparentView,
+  TransparentView
 } from 'components/molecules/ViewComponents';
-import {
-  AlmostBlackText
-} from 'components/molecules/TextComponents';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
@@ -59,20 +57,28 @@ export default function EntityListScreen({
   const { t } = useTranslation();
 
   useLayoutEffect(() => {
-    const HeaderRightComponent = headerRightMapping[route.params.entityTypeName]
-    const headerRight = () => (HeaderRightComponent ? <HeaderRightComponent navigation={navigation} route={route}/> : null)
+    const HeaderRightComponent =
+      headerRightMapping[route.params.entityTypeName];
+    const headerRight = () =>
+      HeaderRightComponent ? (
+        <HeaderRightComponent navigation={navigation} route={route} />
+      ) : null;
 
-    const HeaderBackgroundComponent = entityData && headerBackgroundMapping[route.params.entityTypeName]
-    const headerBackground = () => (HeaderBackgroundComponent ? <HeaderBackgroundComponent/> : null)
+    const HeaderBackgroundComponent =
+      entityData && headerBackgroundMapping[route.params.entityTypeName];
+    const headerBackground = () =>
+      HeaderBackgroundComponent ? <HeaderBackgroundComponent /> : null;
 
-    const headerTintColor = (entityData && headerTintColorMapping[route.params.entityTypeName]) || null
+    const headerTintColor =
+      (entityData && headerTintColorMapping[route.params.entityTypeName]) ||
+      null;
 
     navigation.setOptions({
       title: t(`entityTypes.${route.params.entityTypeName}`),
       headerRight,
       headerBackground,
       headerTintColor
-    })
+    });
   }, [route.params.entityTypeName]);
 
   if (isLoading || !entityData) {
@@ -132,19 +138,21 @@ export default function EntityListScreen({
       <BackgroundComponent>
         <TransparentPaddedView style={styles.container}>
           <AlmostBlackText
-            text={`You don't currently have any ${t(`entityTypes.${route.params.entityTypeName}`)}. Click the + button below to add some`}
+            text={`You don't currently have any ${t(
+              `entityTypes.${route.params.entityTypeName}`
+            )}. Click the + button below to add some`}
             style={styles.noEntitiesText}
           />
         </TransparentPaddedView>
-    </BackgroundComponent>
-    )
+      </BackgroundComponent>
+    );
   }
 
   return (
     <BackgroundComponent>
       <TransparentPaddedView style={styles.container}>
         {listLinks}
-        {(showCreateForm && entityTypes?.length === 1) && (
+        {showCreateForm && entityTypes?.length === 1 && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
       </TransparentPaddedView>

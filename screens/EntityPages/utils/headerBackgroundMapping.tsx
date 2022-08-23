@@ -8,26 +8,23 @@ export const headerBackgroundMapping = {
     return (
       <TransparentView>
         <ImageBackground
-          style={{width: '100%', height: '100%'}}
+          style={{ width: '100%', height: '100%' }}
           source={require('assets/images/header-backgrounds/holidays.png')}
         >
           <View
             style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
-          >
-          </View>
+          ></View>
         </ImageBackground>
       </TransparentView>
-    )
-  },
-} as { [key: string]: (React.ElementType | undefined) };
-
-
+    );
+  }
+} as { [key: string]: React.ElementType | undefined };
 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'center',
     width: '100%',
-    height: '100%',
+    height: '100%'
   }
 });

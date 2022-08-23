@@ -21,5 +21,5 @@ export default {
   Birthday: AnniversaryCard,
   Event: EventCard,
   DaysOff: DaysOffCard,
-  Holiday: HolidayCard,
+  Holiday: HolidayCard
 } as LinkMapping;

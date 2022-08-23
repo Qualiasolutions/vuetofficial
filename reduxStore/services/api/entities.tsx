@@ -75,7 +75,7 @@ const extendedApi = vuetApi.injectEndpoints({
             'Content-Type': 'multipart/form-data;'
           },
           body: payload.formData
-        }
+        };
       },
       invalidatesTags: ['Entity', 'Task']
     }),
@@ -91,7 +91,10 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Entity', 'Task']
     }),
-    bulkCreateEntities: builder.mutation<EntityResponseType[], Omit<EntityResponseType, 'id'>>({
+    bulkCreateEntities: builder.mutation<
+      EntityResponseType[],
+      Omit<EntityResponseType, 'id'>
+    >({
       query: (body) => ({
         url: 'core/entity/',
         method: 'POST',
@@ -99,14 +102,17 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['Entity', 'Task']
     }),
-    bulkDeleteEntities: builder.mutation<EntityResponseType[], Pick<EntityResponseType, 'id'>[]>({
+    bulkDeleteEntities: builder.mutation<
+      EntityResponseType[],
+      Pick<EntityResponseType, 'id'>[]
+    >({
       query: (body) => ({
         url: 'core/entity/',
         method: 'DELETE',
-        body: { pk_ids: body.map(holiday => holiday.id) }
+        body: { pk_ids: body.map((holiday) => holiday.id) }
       }),
       invalidatesTags: ['Entity', 'Task']
-    }),
+    })
   }),
   overrideExisting: true
 });

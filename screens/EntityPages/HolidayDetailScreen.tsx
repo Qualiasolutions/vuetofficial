@@ -34,20 +34,24 @@ export default function HolidayDetailScreen({
   }
 
   const { data: userDetails } = useGetUserDetails();
-  const { data: allEntities } = useGetAllEntitiesQuery(
-    userDetails?.id || -1,
-    {
-      skip: !userDetails?.id
-    }
-  );
+  const { data: allEntities } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
+  });
 
-  const previouslySelectedHolidays = (allEntities && Object.values(allEntities.byId).filter(ent => ent.resourcetype === 'Holiday')) as (HolidayResponseType[] | undefined)
+  const previouslySelectedHolidays = (allEntities &&
+    Object.values(allEntities.byId).filter(
+      (ent) => ent.resourcetype === 'Holiday'
+    )) as HolidayResponseType[] | undefined;
 
   // TODO - do we want to allow settings holidays for other years too?
-  const [selectedHolidays, setSelectedHolidays] = useState<Omit<HolidayResponseType, 'id'>[]>([]);
+  const [selectedHolidays, setSelectedHolidays] = useState<
+    Omit<HolidayResponseType, 'id'>[]
+  >([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [createEntities, createEntitiesResult] = useBulkCreateEntitiesMutation();
-  const [deleteEntities, deleteEntitiesResult] = useBulkDeleteEntitiesMutation();
+  const [createEntities, createEntitiesResult] =
+    useBulkCreateEntitiesMutation();
+  const [deleteEntities, deleteEntitiesResult] =
+    useBulkDeleteEntitiesMutation();
   const {
     data: holidays,
     isError,
@@ -64,9 +68,11 @@ export default function HolidayDetailScreen({
         Object.values(holidays)
           .flat()
           .filter((hol) =>
-            previouslySelectedHolidays.map(holiday => holiday.string_id).includes(hol.id)
+            previouslySelectedHolidays
+              .map((holiday) => holiday.string_id)
+              .includes(hol.id)
           )
-          .map(hol => ({
+          .map((hol) => ({
             ...hol,
             string_id: hol.id
           }))
@@ -85,7 +91,7 @@ export default function HolidayDetailScreen({
           ...selectedHolidays,
           {
             ...holiday,
-            string_id: holiday.id,
+            string_id: holiday.id
           }
         ]);
       }
@@ -96,13 +102,22 @@ export default function HolidayDetailScreen({
   useEffect(() => {
     const save = async () => {
       if (previouslySelectedHolidays) {
-        setIsSaving(true)
-        const holidaysToDelete = previouslySelectedHolidays
-          ?.filter(entity => !selectedHolidays.map(ent => ent.string_id).includes(entity.string_id))
+        setIsSaving(true);
+        const holidaysToDelete = previouslySelectedHolidays?.filter(
+          (entity) =>
+            !selectedHolidays
+              .map((ent) => ent.string_id)
+              .includes(entity.string_id)
+        );
         const holidaysToCreate = selectedHolidays
-          ?.filter(entity => !previouslySelectedHolidays.map(ent => ent.string_id).includes(entity.string_id))
-          ?.map(entity => ({ ...entity, resourcetype: 'Holiday' }))
-  
+          ?.filter(
+            (entity) =>
+              !previouslySelectedHolidays
+                .map((ent) => ent.string_id)
+                .includes(entity.string_id)
+          )
+          ?.map((entity) => ({ ...entity, resourcetype: 'Holiday' }));
+
         if (holidaysToDelete.length > 0) {
           await deleteEntities(holidaysToDelete);
         }
@@ -113,16 +128,16 @@ export default function HolidayDetailScreen({
           if (holidaysToCreate.length > 0) {
             await createEntities(holidaysToCreate);
           }
-  
+
           setTimeout(() => {
-            setIsSaving(false)
+            setIsSaving(false);
             navigation.navigate('EntityList', {
-              entityTypes: [ 'Holiday' ],
+              entityTypes: ['Holiday'],
               entityTypeName: 'holidays',
               showCreateForm: false
-            })
-          }, 1000)
-        }, 1000)
+            });
+          }, 1000);
+        }, 1000);
       }
     };
 
@@ -131,7 +146,7 @@ export default function HolidayDetailScreen({
     });
   }, [selectedHolidays, previouslySelectedHolidays]);
 
-  if (isSaving || !holidays) return <FullPageSpinner/>;
+  if (isSaving || !holidays) return <FullPageSpinner />;
 
   return (
     <WhiteView style={{ flex: 1 }}>
@@ -143,7 +158,11 @@ export default function HolidayDetailScreen({
               <ListLinkWithCheckbox
                 key={holiday.id}
                 text={holiday.name}
-                subText={`${holiday.start_date}${holiday.end_date !== holiday.start_date ? ` to ${holiday.end_date}` : ''}`}
+                subText={`${holiday.start_date}${
+                  holiday.end_date !== holiday.start_date
+                    ? ` to ${holiday.end_date}`
+                    : ''
+                }`}
                 showArrow={false}
                 onSelect={async (selected) => onPress(holiday, selected)}
                 navMethod={undefined}

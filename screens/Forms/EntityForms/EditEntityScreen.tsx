@@ -31,7 +31,7 @@ export default function EditEntityScreen({
 
   const headerTintColor = useThemeColor({}, 'primary');
   const headerBackgroundColor = useThemeColor({}, 'almostWhite');
-  const [entityType, setEntityType] = useState<string>('')
+  const [entityType, setEntityType] = useState<string>('');
 
   useEffect(() => {
     if (allEntities) {
@@ -47,7 +47,7 @@ export default function EditEntityScreen({
             backgroundColor: headerBackgroundColor
           }
         });
-        setEntityType(entityToEdit.resourcetype)
+        setEntityType(entityToEdit.resourcetype);
       }
     }
   }, [route.params.entityId, allEntities]);
@@ -72,7 +72,6 @@ export default function EditEntityScreen({
   }
   return null;
 }
-
 
 const styles = StyleSheet.create({
   formContainer: {

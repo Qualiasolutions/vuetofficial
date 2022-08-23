@@ -4,9 +4,11 @@ import { Pressable } from 'react-native';
 
 export const headerRightMapping = {
   holidays: ({ route, navigation }) => {
-    const { t } = useTranslation()
-    return <Pressable onPress={() => navigation.navigate('HolidayList')}>
-      <WhiteText text={t('misc.editCountryList')}/>
-    </Pressable>
-  },
-} as { [key: string]: (React.ElementType | undefined) };
+    const { t } = useTranslation();
+    return (
+      <Pressable onPress={() => navigation.navigate('HolidayList')}>
+        <WhiteText text={t('misc.editCountryList')} />
+      </Pressable>
+    );
+  }
+} as { [key: string]: React.ElementType | undefined };

@@ -71,9 +71,10 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     entityForms[entityToEdit?.resourcetype]
   );
 
-  const dataType = 
-    entityToEdit?.resourcetype && (dataTypeMapping[entityToEdit?.resourcetype] ||
-      dataTypeMapping.default) as FormDataType
+  const dataType =
+    entityToEdit?.resourcetype &&
+    ((dataTypeMapping[entityToEdit?.resourcetype] ||
+      dataTypeMapping.default) as FormDataType);
 
   const onDeleteSuccess = (res: CarResponseType) => {
     navigation.goBack();
@@ -82,7 +83,9 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
   if (entityId && allEntities.byId[entityId]) {
     for (const fieldName in formFields) {
       if (Object.keys(formFields[fieldName]).includes('sourceField')) {
-        formFields[fieldName].initialValue = entityToEdit[(formFields[fieldName] as ImageField).sourceField] || null;
+        formFields[fieldName].initialValue =
+          entityToEdit[(formFields[fieldName] as ImageField).sourceField] ||
+          null;
       } else if (fieldName in entityToEdit) {
         formFields[fieldName].initialValue = entityToEdit[fieldName] || null;
       }
@@ -100,9 +103,10 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
         <RTKForm
           fields={formFields}
           methodHooks={{
-            PATCH: (dataType === 'form')
-              ? useFormUpdateEntityMutation
-              : useUpdateEntityMutation,
+            PATCH:
+              dataType === 'form'
+                ? useFormUpdateEntityMutation
+                : useUpdateEntityMutation,
             DELETE: useDeleteEntityMutation
           }}
           formType="UPDATE"

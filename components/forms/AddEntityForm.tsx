@@ -80,9 +80,9 @@ export default function AddEntityForm({
   const fieldColor =
     entityType && useThemeColor({}, fieldColorMapping[entityType]);
 
-  const dataType = 
-    entityType && (dataTypeMapping[entityType] ||
-      dataTypeMapping.default) as FormDataType
+  const dataType =
+    entityType &&
+    ((dataTypeMapping[entityType] || dataTypeMapping.default) as FormDataType);
 
   if (isLoading || !allEntities) {
     return null;
@@ -118,9 +118,10 @@ export default function AddEntityForm({
         <RTKForm
           fields={entityForms[entityType]}
           methodHooks={{
-            POST: (dataType === 'form')
-              ? useFormCreateEntityMutation
-              : useCreateEntityMutation
+            POST:
+              dataType === 'form'
+                ? useFormCreateEntityMutation
+                : useCreateEntityMutation
           }}
           formType="CREATE"
           extraFields={extraFields}
