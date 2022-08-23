@@ -11,6 +11,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { HolidayResponseType } from 'types/entities';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 export default function HolidayListScreen({
   navigation
@@ -58,7 +59,6 @@ export default function HolidayListScreen({
 
   const onPress = useCallback(
     (country, selected) => {
-      console.log('ONPRESS');
       if (selectedCountries.some((cou) => cou.code == country.code)) {
         setSelectedCountries(
           selectedCountries.filter((cou) => cou.code != country.code)
@@ -69,6 +69,10 @@ export default function HolidayListScreen({
     },
     [selectedCountries]
   );
+
+  if (!allCountries || !selectedHolidays) {
+    return <FullPageSpinner/>
+  }
 
   return (
     <WhiteView style={{ flex: 1 }}>
