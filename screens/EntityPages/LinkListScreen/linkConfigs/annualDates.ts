@@ -12,8 +12,11 @@ export default [
   },
   {
     name: 'annualDates.nationalHolidays',
-    toScreen: 'HolidayList',
+    toScreen: 'EntityList',
     navMethod: 'push',
-    toScreenParams: {}
+    toScreenParams: {
+      entityTypes: ['Holiday'],
+      entityTypeName: 'holidays'
+    }
   }
 ] as List[];

@@ -129,7 +129,7 @@ export default function EntityListScreen({
 
   return (
     <BackgroundComponent>
-      <TransparentPaddedView>
+      <TransparentPaddedView style={styles.container}>
         {listLinks}
         {((showCreateForm && entityTypes?.length === 1) ||
           listLinks.length === 0) && (
@@ -141,6 +141,9 @@ export default function EntityListScreen({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 100
+  },
   sectionTitle: {
     fontSize: 20,
     textAlign: 'center',
