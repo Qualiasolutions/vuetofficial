@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { EntityTabScreenProps } from 'types/base';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -13,18 +13,18 @@ import { EntityResponseType } from 'types/entities';
 import {
   TransparentPaddedView,
   TransparentView,
-  WhiteBox
 } from 'components/molecules/ViewComponents';
 import {
-  AlmostBlackText,
-  PrimaryText
+  AlmostBlackText
 } from 'components/molecules/TextComponents';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import { useThemeColor } from 'components/Themed';
 import { backgroundComponents } from 'screens/Forms/EntityForms/utils/backgroundComponents';
+import { headerRightMapping } from './utils/headerRightMapping';
+import { headerBackgroundMapping } from './utils/headerBackgroundMapping';
+import { headerTintColorMapping } from './utils/headerTintColorMapping';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -58,22 +58,22 @@ export default function EntityListScreen({
   );
   const { t } = useTranslation();
 
-  const addEntityHeaderTintColor = useThemeColor({}, 'primary');
+  useLayoutEffect(() => {
+    const HeaderRightComponent = entityData && headerRightMapping[entityData[0]?.resourcetype]
+    const headerRight = () => (HeaderRightComponent ? <HeaderRightComponent navigation={navigation} route={route}/> : null)
 
-  useEffect(() => {
-    if (entityData && entityData.length === 0) {
-      navigation.setOptions({
-        title: t('screens.addEntity.title', {
-          entityType: t(`entityTypes.${route.params.entityTypeName}`)
-        }),
-        headerTintColor: addEntityHeaderTintColor
-      });
-    } else {
-      navigation.setOptions({
-        title: t(`entityTypes.${route.params.entityTypeName}`)
-      });
-    }
-  }, [route.params.entityTypeName, entityData]);
+    const HeaderBackgroundComponent = entityData && headerBackgroundMapping[entityData[0]?.resourcetype]
+    const headerBackground = () => (HeaderBackgroundComponent ? <HeaderBackgroundComponent/> : null)
+
+    const headerTintColor = (entityData && headerTintColorMapping[entityData[0]?.resourcetype]) || null
+
+    navigation.setOptions({
+      title: t(`entityTypes.${route.params.entityTypeName}`),
+      headerRight,
+      headerBackground,
+      headerTintColor
+    })
+  }, [route.params.entityTypeName]);
 
   if (isLoading || !entityData) {
     return <FullPageSpinner />;
@@ -127,12 +127,24 @@ export default function EntityListScreen({
       : WhiteFullPageScrollView
   ) as React.ElementType;
 
+  if (listLinks.length === 0) {
+    return (
+      <BackgroundComponent>
+        <TransparentPaddedView style={styles.container}>
+          <AlmostBlackText
+            text={`You don't currently have any ${t(`entityTypes.${route.params.entityTypeName}`)}. Click the + button below to add some`}
+            style={styles.noEntitiesText}
+          />
+        </TransparentPaddedView>
+    </BackgroundComponent>
+    )
+  }
+
   return (
     <BackgroundComponent>
       <TransparentPaddedView style={styles.container}>
         {listLinks}
-        {((showCreateForm && entityTypes?.length === 1) ||
-          listLinks.length === 0) && (
+        {(showCreateForm && entityTypes?.length === 1) && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
       </TransparentPaddedView>
@@ -143,6 +155,10 @@ export default function EntityListScreen({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 100
+  },
+  noEntitiesText: {
+    fontSize: 20,
+    padding: 20
   },
   sectionTitle: {
     fontSize: 20,

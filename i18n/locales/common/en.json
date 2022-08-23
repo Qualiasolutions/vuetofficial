@@ -122,7 +122,8 @@
     "addAnother": "Add Another"
   },
   "misc": {
-    "turnsAgeIn": "Turns {{age}} in {{year}}"
+    "turnsAgeIn": "Turns {{age}} in {{year}}",
+    "editCountryList": "Edit Country List"
   },
   "screens": {
     "logIn": {
