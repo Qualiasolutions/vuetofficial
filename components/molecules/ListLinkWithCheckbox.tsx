@@ -37,6 +37,7 @@ type ListLinkProps = {
   onSelect?: (v: boolean) => Promise<void>;
   showArrow?: boolean;
   subText?: string;
+  disabled?: boolean;
 };
 
 export default function ListLinkWithCheckbox({
@@ -49,7 +50,8 @@ export default function ListLinkWithCheckbox({
   customOnPress,
   onSelect,
   showArrow = true,
-  subText = ''
+  subText = '',
+  disabled = false
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -60,13 +62,15 @@ export default function ListLinkWithCheckbox({
   return (
     <Pressable
       onPress={() => {
-        if (customOnPress) {
-          return customOnPress();
-        }
-        if (navMethod === 'push') {
-          (navigation as any).push(toScreen, toScreenParams);
-        } else {
-          (navigation.navigate as any)(toScreen, toScreenParams);
+        if (!disabled) {
+          if (customOnPress) {
+            return customOnPress();
+          }
+          if (navMethod === 'push') {
+            (navigation as any).push(toScreen, toScreenParams);
+          } else {
+            (navigation.navigate as any)(toScreen, toScreenParams);
+          }
         }
       }}
     >

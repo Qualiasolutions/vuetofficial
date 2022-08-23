@@ -31,7 +31,8 @@ type Country = {
 
 type Holiday = {
   name: string;
-  date: string;
+  start_date: string;
+  end_date: string;
   id: string;
 };
 

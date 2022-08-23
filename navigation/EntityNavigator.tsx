@@ -10,7 +10,7 @@ import EntityScreen from 'screens/EntityPages/EntityScreen/EntityScreen';
 import ChildEntitiesScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesScreen';
 import LinkListScreen from 'screens/EntityPages/LinkListScreen/LinkListScreen';
 import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
-import HolidayDetailScreen from 'screens/EntityPages/EntityScreen/HolidayDetailScreen';
+import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 

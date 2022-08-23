@@ -115,16 +115,12 @@ export default function HolidayDetailScreen({
               <ListLinkWithCheckbox
                 key={holiday.id}
                 text={holiday.name}
-                subText={holiday.date}
+                subText={`${holiday.start_date}${holiday.end_date !== holiday.start_date ? ` to ${holiday.end_date}` : ''}`}
                 showArrow={false}
                 onSelect={async (selected) => onPress(holiday, selected)}
                 navMethod={undefined}
-                customOnPress={() =>
-                  (navigation as any).push('EntityScreen', {
-                    entityId: holiday.id
-                  })
-                }
                 selected={selectedHolidays.some((cou) => cou.id == holiday.id)}
+                disabled={true}
               />
             );
           })}
