@@ -108,7 +108,7 @@ export function ImagePicker({
           }
           // Some hacky string replacement for local dev (ensure can access localstack S3)
           source={imageSource}
-          resizeMode="contain"
+          resizeMode="cover"
         />
       </View>
     </Pressable>
@@ -122,7 +122,7 @@ export function WhiteImagePicker(
   const { style, ...otherProps } = props;
 
   return ImagePicker({
-    style: [styles.fullWidth, style] as ViewStyle,
+    style: [style] as ViewStyle,
     backgroundColor,
     ...otherProps
   });
@@ -159,7 +159,7 @@ export function SmallImagePicker(
   );
 
   return ImagePicker({
-    style: [styles.fullWidth, style] as ViewStyle,
+    style: [style] as ViewStyle,
     backgroundColor,
     PressableComponent,
     ...otherProps
@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
   },
   selectedImage: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    flex: 1
   },
   fullWidth: {
     borderRadius: 0,

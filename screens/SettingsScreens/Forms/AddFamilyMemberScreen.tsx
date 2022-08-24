@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import RTKForm from 'components/forms/RTKForm';
 import {
@@ -21,7 +21,8 @@ import {
 import { deepCopy } from 'utils/copy';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { ScrollView } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const AddFamilyMemberScreen = ({
   navigation
@@ -47,29 +48,35 @@ const AddFamilyMemberScreen = ({
   ) : null;
 
   return (
-    <ScrollView>
-      <AlmostWhiteContainerView>
-        {errorContent}
-        <RTKForm
-          fields={formFields}
-          methodHooks={{
-            POST: useCreateUserInviteMutation
-          }}
-          formType="CREATE"
-          onSubmitSuccess={() => {
-            navigation.navigate('FamilySettings');
-          }}
-          onSubmitFailure={() => {
-            setErrorMessage(t('common.genericError'));
-          }}
-          extraFields={{
-            family: userFullDetails?.family.id,
-            invitee: userFullDetails?.id
-          }}
-        />
-      </AlmostWhiteContainerView>
-    </ScrollView>
+    <TransparentFullPageScrollView>
+      <TransparentPaddedView style={styles.formContainer}>
+      {errorContent}
+      <RTKForm
+        fields={formFields}
+        methodHooks={{
+          POST: useCreateUserInviteMutation
+        }}
+        formType="CREATE"
+        onSubmitSuccess={() => {
+          navigation.navigate('FamilySettings');
+        }}
+        onSubmitFailure={() => {
+          setErrorMessage(t('common.genericError'));
+        }}
+        extraFields={{
+          family: userFullDetails?.family.id,
+          invitee: userFullDetails?.id
+        }}
+      />
+      </TransparentPaddedView>
+    </TransparentFullPageScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 100
+  }
+});
 
 export default AddFamilyMemberScreen;

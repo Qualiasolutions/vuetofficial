@@ -98,7 +98,10 @@ export function TransparentPaddedView(props: ViewProps) {
   return <TransparentView style={[styles.padded, style]} {...otherProps} />;
 }
 
-export function WhiteBox(props: ViewProps) {
+
+type BoxProps = ViewProps & { elevated?: boolean }
+
+export function WhiteBox({ elevated = true, ...props }: BoxProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -109,9 +112,11 @@ export function WhiteBox(props: ViewProps) {
     'grey'
   );
 
+  const elevationStyle = elevated ? styles.elevated : {}
+
   return (
     <DefaultView
-      style={[{ backgroundColor, borderColor }, styles.box, style]}
+      style={[{ backgroundColor, borderColor }, styles.box, elevationStyle, style]}
       {...otherProps}
     />
   );
@@ -130,12 +135,14 @@ const styles = StyleSheet.create({
   },
   box: {
     borderRadius: 16,
+    padding: 10,
+    borderWidth: 1
+  },
+  elevated: {
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 5,
     shadowOffset: { height: 2, width: 2 },
     elevation: 3,
-    padding: 10,
-    borderWidth: 1
   }
 });

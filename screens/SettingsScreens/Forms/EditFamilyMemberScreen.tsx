@@ -1,14 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SettingsTabParamList } from 'types/base';
 
-import { Text, View } from 'components/Themed';
 import {
   familyMemberForm,
   FamilyMemberFormFieldTypes
 } from './familyMemberFormFieldTypes';
-import { formStyles } from 'screens/Forms/formStyles';
 import RTKForm from 'components/forms/RTKForm';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { deepCopy } from 'utils/copy';
 import {
   useGetUserDetailsQuery,
@@ -20,10 +17,11 @@ import { useTranslation } from 'react-i18next';
 import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
-import { useEffect } from 'react';
-import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
-import { ScrollView } from 'react-native';
+import { useLayoutEffect } from 'react';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import { StyleSheet } from 'react-native';
+import { FullPageSpinner } from 'components/molecules/Spinners';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 export default function EditEntityScreen({
   route,
@@ -54,7 +52,7 @@ export default function EditEntityScreen({
     familyMemberToEdit &&
     `${familyMemberToEdit.first_name} ${familyMemberToEdit.last_name}`;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       title: t('pageTitles.editFamilyMember', { fullName })
     });
@@ -77,10 +75,11 @@ export default function EditEntityScreen({
         formFields[fieldName].initialValue = familyMemberToEdit[fieldName];
       }
     }
+    
 
     return (
-      <ScrollView>
-        <AlmostWhiteContainerView>
+      <TransparentFullPageScrollView>
+        <TransparentPaddedView style={styles.formContainer}>
           <RTKForm
             fields={formFields}
             methodHooks={{
@@ -92,9 +91,16 @@ export default function EditEntityScreen({
               navigation.navigate('FamilySettings');
             }}
           />
-        </AlmostWhiteContainerView>
-      </ScrollView>
+        </TransparentPaddedView>
+      </TransparentFullPageScrollView>
     );
   }
-  return null;
+
+  return <FullPageSpinner/>;
 }
+
+const styles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 100
+  }
+});

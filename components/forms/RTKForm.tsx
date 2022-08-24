@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { Text, TextInput, Button } from 'components/Themed';
 import dayjs from 'dayjs';
 import DateTimeTextInput from './components/DateTimeTextInput';
@@ -230,13 +230,13 @@ export default function Form({
     return true;
   }, [formValues]);
 
-  const produceLabelFromFieldName = (fieldName: string) => {
+  const produceLabelFromFieldName = (fieldName: string, style?: ViewStyle) => {
     return (
       <AlmostBlackText
         text={`${fields[fieldName].displayName || parseFieldName(fieldName)}${
           fields[fieldName].required ? '*' : ''
         }`}
-        style={styles.inputLabel}
+        style={[styles.inputLabel, style]}
       />
     );
   };
@@ -480,9 +480,11 @@ export default function Form({
         }
       case 'colour':
         return (
-          <WhiteBox key={field} style={styles.colourBox}>
+          <WhiteBox key={field} style={styles.colourBox} elevated={false}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            {produceLabelFromFieldName(field)}
+            <TransparentView style={styles.inputLabelWrapper}>
+              {produceLabelFromFieldName(field, { marginTop: 0 })}
+            </TransparentView>
             <ColorPicker
               value={formValues[field]}
               onValueChange={(value: string) => {
