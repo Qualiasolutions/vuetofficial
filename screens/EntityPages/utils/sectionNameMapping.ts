@@ -1,16 +1,14 @@
 import { EntityResponseType } from 'types/entities';
-import { monthNames } from 'utils/datesAndTimes';
+import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 
 const getMonthFromDateField = (entity: EntityResponseType, fieldName: string) => {
-  // TODO - support other languages by using dayJS
-  return monthNames[Number(entity[fieldName]?.split('-')[1]) - 1];
+  const { monthName } = getUTCValuesFromDateString(entity[fieldName])
+  return monthName
 }
 
 const getMonthAndYearFromDateField = (entity: EntityResponseType, fieldName: string) => {
-  // TODO - support other languages by using dayJS
-  return `${monthNames[Number(entity[fieldName]?.split('-')[1]) - 1]} ${
-    entity[fieldName]?.split('-')[0]
-  }`;
+  const { monthName, year } = getUTCValuesFromDateString(entity[fieldName])
+  return `${monthName} ${year}`
 }
 
 export const sectionNameMapping = {

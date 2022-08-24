@@ -1,18 +1,7 @@
 import dayjs from 'dayjs';
-export const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc)
 
 const getDateStringFromDateObject = (date: Date): string => {
   return dayjs(date).format('YYYY-MM-DD');
@@ -27,9 +16,20 @@ const getDateWithoutTimezone = (date: string): Date => {
 };
 
 const getLongDateFromDateObject = (date: Date): string => {
-  return `${date.getUTCMonth()} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
-  return dayjs(date).format('MMM DD, YYYY');
+  return dayjs.utc(date).format('MMM DD, YYYY');
 };
+
+const getUTCValuesFromDateString = (date: string) => {
+  const utcDate = getDateWithoutTimezone(date)
+  const dayJsDate = dayjs.utc(utcDate)
+  return {
+    day: dayJsDate.day(),
+    month: dayJsDate.month(),
+    monthShortName: dayJsDate.format('MMM'),
+    monthName: dayJsDate.format('MMMM'),
+    year: dayJsDate.year()
+  }
+}
 
 const getDatesBetween = (start: string | Date, end: string | Date): Date[] => {
   const datesArray = [];
@@ -79,12 +79,14 @@ function getDaysToAge(startDate: Date): {
   const nextYear = nextOccurrence.getUTCFullYear();
   const age = nextYear - startDate.getUTCFullYear();
 
+  const monthName = dayjs.utc(nextOccurrence).format('MMMM');
+
   return {
     days: daysDifference,
     age,
     date: nextOccurrence.getUTCDate(),
     month: nextOccurrence.getUTCMonth() + 1,
-    monthName: monthNames[nextOccurrence.getUTCMonth()],
+    monthName,
     year: nextYear
   };
 }
@@ -94,6 +96,7 @@ export {
   getTimeStringFromDateObject,
   getDateWithoutTimezone,
   getLongDateFromDateObject,
+  getUTCValuesFromDateString,
   getDatesBetween,
   getDateStringsBetween,
   getDaysToAge,
