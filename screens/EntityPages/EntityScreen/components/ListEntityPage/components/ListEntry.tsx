@@ -152,6 +152,9 @@ export default function ListEntry({
   const onImageSelect = (image: PickedFile) => {
     const data = new FormData();
     data.append('image', image as any);
+
+    console.log("data")
+    console.log(data)
     formUpdateListEntry({
       id: listEntry.id,
       formData: data

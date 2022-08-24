@@ -3,23 +3,22 @@ import {
   StyleSheet,
   View,
   Image,
-  Text,
   ViewStyle,
-  Pressable
+  Pressable,
+  GestureResponderEvent
 } from 'react-native';
 import Constants from 'expo-constants';
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
-
+import * as ExpoImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
 export type CustomFile = {
-  name: string;
-  size: number;
+  height: number;
+  width: number;
   uri: string;
   type: string;
+  cancelled: boolean;
 };
 
 export type PickedFile = File | CustomFile;
@@ -30,6 +29,8 @@ type ImagePickerProps = {
   defaultImageUrl?: string;
   style?: ViewStyle;
   displayInternalImage?: boolean;
+  aspect?: [number, number];
+  PressableComponent?: React.ElementType;
 };
 
 export function ImagePicker({
@@ -37,7 +38,9 @@ export function ImagePicker({
   backgroundColor = '#ffffff',
   defaultImageUrl = '',
   style = {},
-  displayInternalImage = true
+  displayInternalImage = true,
+  aspect = undefined,
+  PressableComponent = undefined
 }: ImagePickerProps) {
   /*
 
@@ -48,48 +51,51 @@ export function ImagePicker({
     out of sync with the parent. It defaults to `true` to support old code.
   */
   const [selectedImage, setSelectedImage] =
-    useState<DocumentPicker.DocumentResult | null>(null);
+    useState<ExpoImagePicker.ImageInfo | null>(null);
 
   useEffect(() => {
-    if (selectedImage && selectedImage.type === 'success') {
-      if (selectedImage.file) {
-        onImageSelect(selectedImage.file);
-      } else if (selectedImage.uri && selectedImage.size) {
-        const { name, size, uri } = selectedImage;
-        const nameParts = name.split('.');
+    if (selectedImage && selectedImage.type === 'image') {
+      if (selectedImage.uri && selectedImage.width && selectedImage.height) {
+        const { uri } = selectedImage;
+        const nameParts = uri.split('.');
         const fileType = nameParts[nameParts.length - 1];
 
-        FileSystem.readAsStringAsync(selectedImage.uri).then((res) => {
-          onImageSelect({
-            name,
-            size,
-            uri,
-            type: 'application/' + fileType
-          });
+        onImageSelect({
+          ...selectedImage,
+          name: uri,
+          type: 'application/' + fileType
         });
       }
     }
   }, [selectedImage]);
 
   const chooseImage = async () => {
-    const res = await DocumentPicker.getDocumentAsync({
-      type: 'image/*'
+    const res = await ExpoImagePicker.launchImageLibraryAsync({
+      mediaTypes: ExpoImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: aspect,
+      quality: 1,
     });
-    if (res.type === 'success') {
-      setSelectedImage(res);
-    } else {
+
+    if (res.cancelled) {
       setSelectedImage(null);
+    } else {
+      setSelectedImage(res as ExpoImagePicker.ImageInfo);
     }
   };
 
   const imageSource =
     (displayInternalImage &&
-      selectedImage?.type === 'success' &&
+      selectedImage?.type === 'image' &&
       selectedImage?.uri && { uri: selectedImage.uri }) ||
     (defaultImageUrl && {
       uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])
     }) ||
     require('assets/images/icons/camera.png');
+
+  if (PressableComponent) {
+    return <PressableComponent onPress={chooseImage}/>
+  }
 
   return (
     <Pressable onPress={chooseImage}>
@@ -109,36 +115,49 @@ export function ImagePicker({
   );
 }
 
-export function WhiteImagePicker({
-  onImageSelect,
-  defaultImageUrl = '',
-  style = {},
-  displayInternalImage = true
-}: Omit<ImagePickerProps, 'backgroundColor'>) {
+export function WhiteImagePicker(props: Omit<ImagePickerProps, 'backgroundColor'>) {
   const backgroundColor = useThemeColor({}, 'white');
+  const { style, ...otherProps } = props
+
   return ImagePicker({
-    onImageSelect,
+    style: [styles.fullWidth, style] as ViewStyle,
     backgroundColor,
-    defaultImageUrl,
-    style,
-    displayInternalImage
+    ...otherProps
   });
 }
 
-export function FullWidthImagePicker({
-  onImageSelect,
-  defaultImageUrl = '',
-  style = {}
-}: Omit<ImagePickerProps, 'backgroundColor'>) {
+export function FullWidthImagePicker(props: Omit<ImagePickerProps, 'backgroundColor'>) {
   const backgroundColor = useThemeColor({}, 'grey');
+  const { style, ...otherProps } = props
 
   return ImagePicker({
-    onImageSelect,
+    style: [styles.fullWidth, style] as ViewStyle,
     backgroundColor,
-    defaultImageUrl,
-    style: [styles.fullWidth, style] as ViewStyle
+    ...otherProps
   });
 }
+
+export function SmallImagePicker(props: Omit<ImagePickerProps, 'PressableComponent' | 'backgroundColor'>) {
+  const { style, ...otherProps } = props
+  const backgroundColor = useThemeColor({}, 'transparent')
+
+  const PressableComponent = (props: { onPress: ((event: GestureResponderEvent) => void)}) => (
+    <Pressable onPress={props.onPress}>
+      <Image
+        style={styles.smallCameraIcon}
+        source={require('assets/images/icons/small-camera.png')}
+      />
+    </Pressable>
+  )
+
+  return ImagePicker({
+    style: [styles.fullWidth, style] as ViewStyle,
+    backgroundColor,
+    PressableComponent,
+    ...otherProps
+  });
+}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -173,55 +192,3 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
-
-export function SmallImagePicker({
-  onImageSelect,
-  style = {}
-}: Omit<ImagePickerProps, 'backgroundColor'>) {
-  const [selectedImage, setSelectedImage] =
-    useState<DocumentPicker.DocumentResult | null>(null);
-
-  useEffect(() => {
-    if (selectedImage && selectedImage.type === 'success') {
-      if (selectedImage.file) {
-        onImageSelect(selectedImage.file);
-      } else if (selectedImage.uri && selectedImage.size) {
-        const { name, size, uri } = selectedImage;
-        const nameParts = name.split('.');
-        const fileType = nameParts[nameParts.length - 1];
-
-        FileSystem.readAsStringAsync(selectedImage.uri).then((res) => {
-          onImageSelect({
-            name,
-            size,
-            uri,
-            type: 'application/' + fileType
-          });
-        });
-      }
-    }
-  }, [selectedImage]);
-
-  const chooseImage = async () => {
-    const res = await DocumentPicker.getDocumentAsync({
-      type: 'image/*'
-    });
-    if (res.type === 'success') {
-      setSelectedImage(res);
-    } else {
-      setSelectedImage(null);
-    }
-  };
-
-  const imageSource = require('assets/images/icons/small-camera.png');
-
-  return (
-    <Pressable onPress={chooseImage}>
-      <Image
-        style={styles.smallCameraIcon}
-        // Some hacky string replacement for local dev (ensure can access localstack S3)
-        source={imageSource}
-      />
-    </Pressable>
-  );
-}

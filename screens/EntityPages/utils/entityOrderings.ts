@@ -1,8 +1,17 @@
 import { EntityResponseType } from 'types/entities';
 import dayjs from 'dayjs';
 
-export const entityOrderings = {
-  Birthday: (entity: EntityResponseType, otherEntity: EntityResponseType) => {
+const orderByDateField = (fieldName: string) => {
+  return (entity: EntityResponseType, otherEntity: EntityResponseType) => {
+    if (dayjs(entity[fieldName]) < dayjs(otherEntity[fieldName])) {
+      return -1;
+    }
+    return 1;
+  }
+}
+
+const orderByDateFieldNoYear = (fieldName: string) => {
+  return (entity: EntityResponseType, otherEntity: EntityResponseType) => {
     if (
       dayjs(entity.start_date).month() < dayjs(otherEntity.start_date).month()
     ) {
@@ -16,19 +25,14 @@ export const entityOrderings = {
       return -1;
     }
     return 1;
-  },
-  Event: (entity: EntityResponseType, otherEntity: EntityResponseType) => {
-    if (dayjs(entity.date) < dayjs(otherEntity.date)) {
-      return -1;
-    }
-    return 1;
-  },
-  DaysOff: (entity: EntityResponseType, otherEntity: EntityResponseType) => {
-    if (dayjs(entity.start_date) < dayjs(otherEntity.start_date)) {
-      return -1;
-    }
-    return 1;
   }
+}
+
+export const entityOrderings = {
+  Birthday: orderByDateFieldNoYear('start_date'),
+  Event: orderByDateField('date'),
+  Holiday: orderByDateField('start_date'),
+  DaysOff: orderByDateField('start_date'),
 } as {
   [key: string]:
     | ((entity: EntityResponseType, otherEntity: EntityResponseType) => number)

@@ -27,6 +27,7 @@ const getDateWithoutTimezone = (date: string): Date => {
 };
 
 const getLongDateFromDateObject = (date: Date): string => {
+  return `${date.getUTCMonth()} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
   return dayjs(date).format('MMM DD, YYYY');
 };
 

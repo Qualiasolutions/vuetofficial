@@ -1,19 +1,21 @@
 import { EntityResponseType } from 'types/entities';
 import { monthNames } from 'utils/datesAndTimes';
 
+const getMonthFromDateField = (entity: EntityResponseType, fieldName: string) => {
+  // TODO - support other languages by using dayJS
+  return monthNames[Number(entity[fieldName]?.split('-')[1]) - 1];
+}
+
+const getMonthAndYearFromDateField = (entity: EntityResponseType, fieldName: string) => {
+  // TODO - support other languages by using dayJS
+  return `${monthNames[Number(entity[fieldName]?.split('-')[1]) - 1]} ${
+    entity[fieldName]?.split('-')[0]
+  }`;
+}
+
 export const sectionNameMapping = {
-  Birthday: (entity: EntityResponseType) => {
-    return monthNames[Number(entity.start_date?.split('-')[1]) - 1];
-  },
-  Event: (entity: EntityResponseType) => {
-    // TODO - support other languages by using dayJS
-    return `${monthNames[Number(entity.date?.split('-')[1]) - 1]} ${
-      entity.date?.split('-')[0]
-    }`;
-  },
-  DaysOff: (entity: EntityResponseType) => {
-    return `${monthNames[Number(entity.start_date?.split('-')[1]) - 1]} ${
-      entity.start_date?.split('-')[0]
-    }`;
-  }
+  Birthday: (entity: EntityResponseType) => getMonthFromDateField(entity, 'start_date'),
+  Holiday: (entity: EntityResponseType) => getMonthAndYearFromDateField(entity, 'start_date'),
+  Event: (entity: EntityResponseType) => getMonthAndYearFromDateField(entity, 'date'),
+  DaysOff: (entity: EntityResponseType) => getMonthAndYearFromDateField(entity, 'start_date'),
 } as { [key: string]: ((entity: EntityResponseType) => string) | undefined };
