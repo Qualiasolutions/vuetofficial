@@ -34,14 +34,9 @@ export default function HolidayCard({
   const startDateString = getLongDateFromDateObject(
     getDateWithoutTimezone(entity?.start_date)
   );
-  console.log("DATES")
-  console.log(entity?.start_date)
-  console.log(getDateWithoutTimezone(entity?.start_date))
-  console.log(startDateString)
   const endDateString = getLongDateFromDateObject(
     getDateWithoutTimezone(entity?.end_date)
   );
-  console.log(endDateString)
 
   return (
     <Pressable

@@ -58,13 +58,13 @@ const FamilySettingsScreen = ({
 
   const { t } = useTranslation();
 
-  const uploadProfileImage = async (image: PickedFile) => {
+  const uploadProfileImage = (image: PickedFile) => {
     if (userFullDetails) {
       const data = new FormData();
       // typescript complaining about `image` not being a Blob but it works :shrug:
       data.append('image', image as any);
 
-      const res = await updateFamilyDetails({
+      updateFamilyDetails({
         familyId: userFullDetails.family.id,
         formData: data
       });
