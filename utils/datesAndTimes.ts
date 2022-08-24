@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 const getDateStringFromDateObject = (date: Date): string => {
   return dayjs(date).format('YYYY-MM-DD');
@@ -20,16 +20,16 @@ const getLongDateFromDateObject = (date: Date): string => {
 };
 
 const getUTCValuesFromDateString = (date: string) => {
-  const utcDate = getDateWithoutTimezone(date)
-  const dayJsDate = dayjs.utc(utcDate)
+  const utcDate = getDateWithoutTimezone(date);
+  const dayJsDate = dayjs.utc(utcDate);
   return {
     day: dayJsDate.day(),
     month: dayJsDate.month(),
     monthShortName: dayJsDate.format('MMM'),
     monthName: dayJsDate.format('MMMM'),
     year: dayJsDate.year()
-  }
-}
+  };
+};
 
 const getDatesBetween = (start: string | Date, end: string | Date): Date[] => {
   const datesArray = [];

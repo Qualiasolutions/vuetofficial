@@ -74,7 +74,7 @@ export function ImagePicker({
       mediaTypes: ExpoImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: aspect,
-      quality: 1,
+      quality: 1
     });
 
     if (res.cancelled) {
@@ -94,7 +94,7 @@ export function ImagePicker({
     require('assets/images/icons/camera.png');
 
   if (PressableComponent) {
-    return <PressableComponent onPress={chooseImage}/>
+    return <PressableComponent onPress={chooseImage} />;
   }
 
   return (
@@ -115,9 +115,11 @@ export function ImagePicker({
   );
 }
 
-export function WhiteImagePicker(props: Omit<ImagePickerProps, 'backgroundColor'>) {
+export function WhiteImagePicker(
+  props: Omit<ImagePickerProps, 'backgroundColor'>
+) {
   const backgroundColor = useThemeColor({}, 'white');
-  const { style, ...otherProps } = props
+  const { style, ...otherProps } = props;
 
   return ImagePicker({
     style: [styles.fullWidth, style] as ViewStyle,
@@ -126,9 +128,11 @@ export function WhiteImagePicker(props: Omit<ImagePickerProps, 'backgroundColor'
   });
 }
 
-export function FullWidthImagePicker(props: Omit<ImagePickerProps, 'backgroundColor'>) {
+export function FullWidthImagePicker(
+  props: Omit<ImagePickerProps, 'backgroundColor'>
+) {
   const backgroundColor = useThemeColor({}, 'grey');
-  const { style, ...otherProps } = props
+  const { style, ...otherProps } = props;
 
   return ImagePicker({
     style: [styles.fullWidth, style] as ViewStyle,
@@ -137,18 +141,22 @@ export function FullWidthImagePicker(props: Omit<ImagePickerProps, 'backgroundCo
   });
 }
 
-export function SmallImagePicker(props: Omit<ImagePickerProps, 'PressableComponent' | 'backgroundColor'>) {
-  const { style, ...otherProps } = props
-  const backgroundColor = useThemeColor({}, 'transparent')
+export function SmallImagePicker(
+  props: Omit<ImagePickerProps, 'PressableComponent' | 'backgroundColor'>
+) {
+  const { style, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'transparent');
 
-  const PressableComponent = (props: { onPress: ((event: GestureResponderEvent) => void)}) => (
+  const PressableComponent = (props: {
+    onPress: (event: GestureResponderEvent) => void;
+  }) => (
     <Pressable onPress={props.onPress}>
       <Image
         style={styles.smallCameraIcon}
         source={require('assets/images/icons/small-camera.png')}
       />
     </Pressable>
-  )
+  );
 
   return ImagePicker({
     style: [styles.fullWidth, style] as ViewStyle,
@@ -157,7 +165,6 @@ export function SmallImagePicker(props: Omit<ImagePickerProps, 'PressableCompone
     ...otherProps
   });
 }
-
 
 const styles = StyleSheet.create({
   container: {

@@ -7,8 +7,8 @@ const orderByDateField = (fieldName: string) => {
       return -1;
     }
     return 1;
-  }
-}
+  };
+};
 
 const orderByDateFieldNoYear = (fieldName: string) => {
   return (entity: EntityResponseType, otherEntity: EntityResponseType) => {
@@ -25,14 +25,14 @@ const orderByDateFieldNoYear = (fieldName: string) => {
       return -1;
     }
     return 1;
-  }
-}
+  };
+};
 
 export const entityOrderings = {
   Birthday: orderByDateFieldNoYear('start_date'),
   Event: orderByDateField('date'),
   Holiday: orderByDateField('start_date'),
-  DaysOff: orderByDateField('start_date'),
+  DaysOff: orderByDateField('start_date')
 } as {
   [key: string]:
     | ((entity: EntityResponseType, otherEntity: EntityResponseType) => number)

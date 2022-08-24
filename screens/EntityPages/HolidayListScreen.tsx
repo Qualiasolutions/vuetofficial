@@ -71,7 +71,7 @@ export default function HolidayListScreen({
   );
 
   if (!allCountries || !selectedHolidays) {
-    return <FullPageSpinner/>
+    return <FullPageSpinner />;
   }
 
   return (
