@@ -38,12 +38,14 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
         { label: '30 Minutes', value: 30 },
         { label: '1 Hour', value: 60 },
       ],
-      displayName: t('tasks.task.duration_minutes')
+      displayName: t('tasks.task.duration_minutes'),
+      listMode: 'MODAL'
     },
     recurrence: {
       type: 'dropDown',
       required: false,
       permittedValues: [
+        { label: 'None', value: null },
         { label: 'Daily', value: 'DAILY' },
         { label: 'Weekly', value: 'WEEKLY' },
         { label: 'Fortnightly', value: 'FORTNIGHTLY' },
@@ -52,7 +54,8 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
         { label: 'Yearly', value: 'YEARLY' }
       ],
       displayName: t('tasks.task.recurrence'),
-      placeholder: 'None'
+      placeholder: 'None',
+      listMode: 'MODAL'
     },
   };
 }
@@ -87,23 +90,28 @@ export const taskBottomFieldTypes = (): FormFieldTypes => {
   return {
     location: {
       type: 'string',
-      required: false
+      required: false,
+      displayName: t('tasks.task.location')
     },
     contact_name: {
       type: 'string',
-      required: false
+      required: false,
+      displayName: t('tasks.task.contact_name')
     },
     contact_email: {
       type: 'string',
-      required: false
+      required: false,
+      displayName: t('tasks.task.contact_email')
     },
     contact_number: {
       type: 'phoneNumber',
-      required: false
+      required: false,
+      displayName: t('tasks.task.contact_number')
     },
     notes: {
-      type: 'string',
-      required: false
+      type: 'TextArea',
+      required: false,
+      displayName: t('tasks.task.notes')
     },
   };
 }

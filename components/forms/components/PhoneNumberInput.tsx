@@ -6,7 +6,13 @@ import PhoneInput from 'react-native-phone-number-input';
 type PhoneNumberInputProps = PhoneInput['props'];
 
 export default function PhoneNumberInput(props: PhoneNumberInputProps) {
-  const { containerStyle, ...otherProps } = props;
+  const {
+    containerStyle,
+    textInputStyle,
+    textContainerStyle,
+    codeTextStyle,
+    ...otherProps
+  } = props;
   const phoneInput = useRef<PhoneInput>(null);
   const borderColor = useThemeColor({}, 'grey');
 
@@ -22,6 +28,15 @@ export default function PhoneNumberInput(props: PhoneNumberInputProps) {
         { borderColor },
         containerStyle
       ]}
+      textInputStyle={[
+        textInputStyle
+      ]}
+      textContainerStyle={[
+        textContainerStyle
+      ]}
+      codeTextStyle={[
+        codeTextStyle
+      ]}
     />
   );
 }
@@ -30,7 +45,6 @@ const styles = StyleSheet.create({
   textInputContainer: {
     borderRadius: 8,
     overflow: 'hidden',
-    marginVertical: 10,
-    borderWidth: 1
+    borderWidth: 1,
   }
 });

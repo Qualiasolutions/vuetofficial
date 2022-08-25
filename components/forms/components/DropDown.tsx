@@ -1,7 +1,7 @@
-import { TextInput, useThemeColor } from 'components/Themed';
+import { TextInput, useThemeColor, View } from 'components/Themed';
 import { useState } from 'react';
 import { ViewStyle } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker, { ListModeType } from 'react-native-dropdown-picker';
 
 const otherKey = '%%%%%%OTHER%%%%%%';
 
@@ -10,14 +10,18 @@ export default function DropDown({
   items = [],
   setFormValues = (item: string) => {},
   dropdownPlaceholder = 'Select',
+  listMode = 'SCROLLVIEW',
   style = {},
+  containerStyle = {},
   allowOther = false
 }: {
   value: string;
   items: any[];
   setFormValues: (item: any) => void;
   dropdownPlaceholder?: string;
+  listMode?: ListModeType;
   style?: ViewStyle;
+  containerStyle?: ViewStyle;
   allowOther?: boolean;
 }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -25,9 +29,9 @@ export default function DropDown({
   const borderColor = useThemeColor({}, 'grey');
 
   return (
-    <>
+    <View style={containerStyle}>
       <DropDownPicker
-        listMode="SCROLLVIEW"
+        listMode={listMode}
         open={open}
         value={value}
         items={
@@ -68,6 +72,6 @@ export default function DropDown({
           }}
         />
       )}
-    </>
+    </View>
   );
 }

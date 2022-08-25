@@ -123,7 +123,9 @@
   },
   "misc": {
     "turnsAgeIn": "Turns {{age}} in {{year}}",
-    "editCountryList": "Edit Country List"
+    "editCountryList": "Edit Country List",
+    "phoneNumber": "Phone number",
+    "phoneNo": "Phone no."
   },
   "screens": {
     "logIn": {
@@ -206,7 +208,8 @@
     },
     "addTask": {
       "title": "Add Task",
-      "createSuccess": "Successfully created new task"
+      "createSuccess": "Successfully created new task",
+      "createTask": "Create Task"
     },
     "addEntity": {
       "title": "Add {{entityType}}",

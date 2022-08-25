@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { Text, useThemeColor } from 'components/Themed';
+import { Button, Text, useThemeColor } from 'components/Themed';
 import {
   fixedTaskForm,
   flexibleTaskForm,
@@ -11,26 +11,27 @@ import {
   taskTopFieldTypes
 } from './taskFormFieldTypes';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { TransparentPaddedView, TransparentView } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { PaddedSpinner } from 'components/molecules/Spinners';
+import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
+import parseFormValues from 'components/forms/utils/parseFormValues';
 
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
+
+  const [createTask, createTaskResult] = useCreateTaskMutation()
+  const isSubmitting = createTaskResult.isLoading
 
   useFocusEffect(
     useCallback(() => {
@@ -60,23 +61,85 @@ export default function AddTaskScreen({
     createInitialObject(taskBottomFields)
   );
 
+  const hasAllRequired = useMemo(() => {
+    for (const fieldName in taskTopFields) {
+      if (taskTopFields[fieldName].required && !taskTopFieldValues[fieldName]) {
+        return false;
+      }
+    }
+    const middleFields = (taskTopFieldValues.recurrence ? taskRecurrentMiddleFields : taskOneOffMiddleFields)
+    const middleFieldValues = (taskTopFieldValues.recurrence ? taskRecurrentMiddleFieldValues : taskOneOffMiddleFieldValues)
+    for (const fieldName in middleFields) {
+      if (middleFields[fieldName].required && !middleFieldValues[fieldName]) {
+        return false;
+      }
+    }
+    for (const fieldName in taskBottomFields) {
+      if (taskBottomFields[fieldName].required && !taskBottomFieldValues[fieldName]) {
+        return false;
+      }
+    }
+    return true;
+  }, [
+    taskTopFieldValues,
+    taskOneOffMiddleFields,
+    taskRecurrentMiddleFieldValues,
+    taskBottomFieldValues
+  ]);
+
+  const backgroundColor = useThemeColor({}, 'white')
+  const individualFormStyle = {
+    ...styles.individualForm,
+    backgroundColor
+  }
+
+  const submitForm = () => {
+    const middleFieldValues = taskTopFieldValues.recurrence
+      ? taskRecurrentMiddleFieldValues
+      : taskOneOffMiddleFieldValues
+    const middleFields = taskTopFieldValues.recurrence
+      ? taskRecurrentMiddleFields
+      : taskOneOffMiddleFields
+
+    const parsedTopFieldValues = parseFormValues(taskTopFieldValues, taskTopFields)
+    const parsedMiddleFieldValues = parseFormValues(middleFieldValues, middleFields)
+    const parsedBottomFieldValues = parseFormValues(taskBottomFieldValues, taskBottomFields)
+
+    const endDatetime = new Date(
+      middleFieldValues.start_datetime.getTime()
+      + taskTopFieldValues.duration_minutes * 60000
+    )
+
+    const body = {
+      ...parsedTopFieldValues,
+      ...parsedMiddleFieldValues,
+      ...parsedBottomFieldValues,
+      resourcetype: 'FixedTask', // TODO
+      entity: route.params.entityId,
+      end_datetime: endDatetime
+    }
+    console.log(body)
+    createTask(body)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err))
+  };
+
   return (
-    <WhiteFullPageScrollView>
-      <TransparentPaddedView style={styles.container}>
+    <TransparentFullPageScrollView>
+      <TransparentView style={styles.container}>
         {createSuccessful ? (
           <Text>{t('screens.addTask.createSuccess')}</Text>
         ) : null}
-        <View>
-          <TypedForm
-            fields={taskTopFields}
-            formValues={taskTopFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskTopFieldValues(values)
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </View>
+        <TypedForm
+          fields={taskTopFields}
+          formValues={taskTopFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setTaskTopFieldValues(values)
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+          style={individualFormStyle}
+        />
         {
           taskTopFieldValues.recurrence
           ? (
@@ -88,6 +151,7 @@ export default function AddTaskScreen({
               }}
               inlineFields={true}
               fieldColor={fieldColor}
+              style={individualFormStyle}
             />
           ) : (
             <TypedForm
@@ -98,6 +162,7 @@ export default function AddTaskScreen({
               }}
               inlineFields={true}
               fieldColor={fieldColor}
+              style={individualFormStyle}
             />
           )
         }
@@ -109,14 +174,47 @@ export default function AddTaskScreen({
           }}
           inlineFields={true}
           fieldColor={fieldColor}
+          style={individualFormStyle}
         />
-      </TransparentPaddedView>
-    </WhiteFullPageScrollView>
+
+        {isSubmitting
+          ? <PaddedSpinner spinnerColor='buttonDefault' style={{ marginTop: 20 }}/>
+          : (
+            <TransparentPaddedView style={styles.bottomButtons}>
+              <Button
+                title={t('screens.addTask.createTask')}
+                onPress={() => {
+                  submitForm();
+                }}
+                disabled={!hasAllRequired}
+              />
+            </TransparentPaddedView>
+          )
+        }
+      </TransparentView>
+
+        
+    </TransparentFullPageScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 100
-  }
+  },
+  individualForm: {
+    marginBottom: 30,
+    padding: 30,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { height: 2, width: 2 },
+    elevation: 3,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    width: '100%',
+    zIndex: -1,
+    justifyContent: 'center'
+  },
 })

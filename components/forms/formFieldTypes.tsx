@@ -1,4 +1,5 @@
 import { UseTranslationResponse } from 'react-i18next';
+import { ListModeType } from 'react-native-dropdown-picker';
 
 export type PermittedTypes =
   | 'string'
@@ -50,6 +51,7 @@ export type DropDownField = BaseField<'dropDown', any> & {
     value: string;
   }[];
   placeholder?: string;
+  listMode?: ListModeType;
 };
 export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
   permittedValues: any[];
@@ -59,6 +61,7 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
     value: string;
   }[];
   placeholder?: string;
+  listMode?: ListModeType;
 };
 
 // TODO - make these more specific (match regex?)
@@ -88,10 +91,20 @@ export type FormFieldTypes = {
   [key: string]: Field;
 };
 
-export const isRadioField = (x: any): x is RadioField =>
-  x.permittedValues && x.valueToDisplay;
+export const hasValueToDisplay = (x: any): x is AddMembersField | AddFamilyMembersField | RadioField =>
+  x.valueToDisplay;
 
 export const hasPermittedValues = (
   x: any
-): x is AddMembersField | AddFamilyMembersField | RadioField =>
+): x is AddMembersField | AddFamilyMembersField | RadioField | DropDownField | DropDownWithOtherField =>
   !!x.permittedValues;
+
+export const hasPlaceholder = (
+  x: any
+): x is DropDownField | DropDownWithOtherField =>
+  !!x.placeholder;
+
+export const hasListMode = (
+  x: any
+): x is DropDownField | DropDownWithOtherField =>
+  !!x.listMode;

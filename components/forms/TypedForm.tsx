@@ -4,7 +4,10 @@ import { Text, TextInput } from 'components/Themed';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import {
   FormFieldTypes,
+  hasListMode,
   hasPermittedValues,
+  hasPlaceholder,
+  hasValueToDisplay,
   OptionalYearDate
 } from './formFieldTypes';
 import RadioInput from 'components/forms/components/RadioInput';
@@ -20,6 +23,7 @@ import DropDown from 'components/forms/components/DropDown';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import createNullStringObject from './utils/createNullStringObject';
 import { FieldErrorTypes, FieldValueTypes } from './types';
+import { useTranslation } from 'react-i18next';
 
 const parseFieldName = (name: string) => {
   return name
@@ -43,6 +47,8 @@ export default function TypedForm({
   onFormValuesChange?: Function;
   style?: ViewStyle;
 }) {
+  const { t } = useTranslation();
+
   const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>(
     createNullStringObject(fields)
   );
@@ -105,6 +111,14 @@ export default function TypedForm({
                     [field]: newValue
                   });
                 }}
+                containerStyle={{ flex: 1, height: 50 }}
+                textInputStyle={{
+                  height: 50
+                }}
+                textContainerStyle={{
+                  backgroundColor: fieldColor
+                }}
+                placeholder={inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')}
               />
             </TransparentView>
           </TransparentView>
@@ -189,7 +203,7 @@ export default function TypedForm({
         );
       case 'radio':
         const f = fields[field];
-        if (hasPermittedValues(f)) {
+        if (hasPermittedValues(f) && hasValueToDisplay(f)) {
           const permittedValueObjects = f.permittedValues.map(
             (value: any, i: number) => ({
               label: f.valueToDisplay(value),
@@ -275,25 +289,28 @@ export default function TypedForm({
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
-              <TextInput
-                value={formValues[field]}
-                onChangeText={(newValue) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                }}
-                style={{
-                  height: 100,
-                  textAlignVertical: 'top'
-                }}
-                multiline={true}
-                maxLength={150}
-              />
-              <AlmostBlackText
-                text={`${formValues[field]?.length || 0}/150`}
-                style={{ textAlign: 'right' }}
-              />
+              <TransparentView style={{flex: 1}}>
+                <TextInput
+                  value={formValues[field]}
+                  onChangeText={(newValue) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: newValue
+                    });
+                  }}
+                  style={{
+                    height: 100,
+                    textAlignVertical: 'top',
+                    backgroundColor: fieldColor,
+                  }}
+                  multiline={true}
+                  maxLength={150}
+                />
+                <AlmostBlackText
+                  text={`${formValues[field]?.length || 0}/150`}
+                  style={{ textAlign: 'right' }}
+                />
+              </TransparentView>
             </TransparentView>
           </TransparentView>
         );
@@ -324,20 +341,32 @@ export default function TypedForm({
           return (
             <View key={field} style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <DropDown
-                value={formValues[field]}
-                items={f.permittedValues}
-                setFormValues={(item) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: item
-                  });
-                }}
-              />
+              <TransparentView
+                key={field}
+                style={inlineFields ? styles.inlineInputPair : {}}
+              >
+                <TransparentView style={styles.inputLabelWrapper}>
+                  {produceLabelFromFieldName(field)}
+                </TransparentView>
+                <DropDown
+                  value={formValues[field]}
+                  items={f.permittedValues}
+                  setFormValues={(item) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: item
+                    });
+                  }}
+                  dropdownPlaceholder={(hasPlaceholder(f) && f.placeholder) || undefined}
+                  listMode={(hasListMode(f) && f.listMode) || undefined}
+                  style={textInputStyle}
+                  containerStyle={{flex: 1}}
+                />
+              </TransparentView>
             </View>
           );
         }
+        return null
       }
       case 'dropDownWithOther': {
         const f = fields[field];
@@ -348,21 +377,33 @@ export default function TypedForm({
               style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}
             >
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <DropDown
-                value={formValues[field]}
-                items={f.permittedValues}
-                setFormValues={(item) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: item
-                  });
-                }}
-                allowOther={true}
-              />
+              <TransparentView
+                key={field}
+                style={inlineFields ? styles.inlineInputPair : {}}
+              >
+                <TransparentView style={styles.inputLabelWrapper}>
+                  {produceLabelFromFieldName(field)}
+                </TransparentView>
+                <DropDown
+                  value={formValues[field]}
+                  items={f.permittedValues}
+                  setFormValues={(item) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: item
+                    });
+                  }}
+                  allowOther={true}
+                  dropdownPlaceholder={(hasPlaceholder(f) && f.placeholder) || undefined}
+                  listMode={(hasListMode(f) && f.listMode) || undefined}
+                  style={textInputStyle}
+                  containerStyle={{flex: 1}}
+                />
+              </TransparentView>
             </View>
           );
         }
+        return null
       }
       case 'Image': {
         return (

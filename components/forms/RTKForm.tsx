@@ -15,6 +15,7 @@ import TypedForm from './TypedForm';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import createInitialObject from './utils/createInitialObject';
 import { FieldValueTypes } from './types';
+import parseFormValues from './utils/parseFormValues';
 
 type FormType = 'UPDATE' | 'CREATE';
 export type FormDataType = 'json' | 'form';
@@ -143,27 +144,7 @@ export default function Form({
     setSubmittingForm(true);
 
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
-    const parsedFormValues = { ...formValues };
-    for (const field in parsedFormValues) {
-      if (['Date', 'OptionalYearDate'].includes(fields[field]?.type)) {
-        if (parsedFormValues[field]) {
-          parsedFormValues[field] = dayjs(parsedFormValues[field]).format(
-            'YYYY-MM-DD'
-          );
-        } else {
-          delete parsedFormValues[field];
-        }
-      }
-      if (['Image'].includes(fields[field]?.type)) {
-        // Delete if the image is provided as a string
-        if (
-          parsedFormValues[field] &&
-          typeof parsedFormValues[field] === 'string'
-        ) {
-          delete parsedFormValues[field];
-        }
-      }
-    }
+    const parsedFormValues = parseFormValues(formValues, fields)
 
     if (formDataType === 'json') {
       // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
