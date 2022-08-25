@@ -1,30 +1,18 @@
 import React, { useEffect, useMemo } from 'react';
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
-import { Text, TextInput, Button } from 'components/Themed';
+import { StyleSheet, View } from 'react-native';
+import { Text, Button } from 'components/Themed';
 import dayjs from 'dayjs';
-import DateTimeTextInput from './components/DateTimeTextInput';
 import {
   FormFieldTypes,
-  hasPermittedValues,
-  ImageField,
-  OptionalYearDate
 } from './formFieldTypes';
-import RadioInput from './components/RadioInput';
 import {
   MutationTrigger,
   UseMutation
 } from '@reduxjs/toolkit/dist/query/react/buildHooks';
-import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { ColorPicker } from './components/ColorPickers';
-import MemberSelector from 'components/forms/components/MemberSelector';
-import PhoneNumberInput from './components/PhoneNumberInput';
-import { Feather } from '@expo/vector-icons';
-import FamilySelector from './components/FamilySelector';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { YesNoModal } from 'components/molecules/Modals';
-import { OptionalYearDateInput } from './components/OptionalYearDateInput';
-import DropDown from 'components/forms/components/DropDown';
-import { WhiteImagePicker } from './components/ImagePicker';
+import TypedForm from './TypedForm';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 /* This type specifies the actual values of the fields.
 
@@ -190,6 +178,10 @@ export default function Form({
     };
   }
 
+  const isSubmitting = Object.values(methodHookTriggers)
+    .map(methodTrigger => methodTrigger.result)
+    .some(result => result.isLoading)
+
   for (const method in methodHookTriggers) {
     if (['POST', 'PATCH'].includes(method)) {
       useEffect(() => {
@@ -229,17 +221,6 @@ export default function Form({
 
     return true;
   }, [formValues]);
-
-  const produceLabelFromFieldName = (fieldName: string, style?: ViewStyle) => {
-    return (
-      <AlmostBlackText
-        text={`${fields[fieldName].displayName || parseFieldName(fieldName)}${
-          fields[fieldName].required ? '*' : ''
-        }`}
-        style={[styles.inputLabel, style]}
-      />
-    );
-  };
 
   const submitForm = () => {
     setSubmittingForm(true);
@@ -309,354 +290,6 @@ export default function Form({
     setSubmittingForm(false);
   };
 
-  const formFields = Object.keys(fields).map((field: string) => {
-    const fieldType = fields[field];
-
-    switch (fieldType.type) {
-      case 'string':
-        return (
-          <TransparentView key={field}>
-            <TransparentView
-              key={field}
-              style={inlineFields ? styles.inlineInputPair : {}}
-            >
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <TextInput
-                value={formValues[field]}
-                onChangeText={(newValue) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  onValueChange();
-                }}
-                style={{
-                  height: 50,
-                  flex: 1,
-                  backgroundColor: fieldColor
-                }}
-              />
-            </TransparentView>
-          </TransparentView>
-        );
-      case 'phoneNumber':
-        return (
-          <TransparentView key={field}>
-            <TransparentView
-              key={field}
-              style={inlineFields ? styles.inlineInputPair : {}}
-            >
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <PhoneNumberInput
-                defaultValue={formValues[field]}
-                onChangeFormattedText={(newValue) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  onValueChange();
-                }}
-              />
-            </TransparentView>
-          </TransparentView>
-        );
-      case 'OptionalYearDate': {
-        const f = fields[field];
-        return (
-          <TransparentView key={field}>
-            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <OptionalYearDateInput
-                value={formValues[field]}
-                onValueChange={(newValue: Date, knownYear: boolean) => {
-                  const knownYearFields = (f as OptionalYearDate).knownYearField
-                    ? {
-                        [(f as OptionalYearDate).knownYearField as string]:
-                          knownYear
-                      }
-                    : {};
-                  setFormValues({
-                    ...formValues,
-                    ...knownYearFields,
-                    [field]: newValue
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                  onValueChange();
-                }}
-                textInputStyle={{ backgroundColor: fieldColor }}
-              />
-            </TransparentView>
-          </TransparentView>
-        );
-      }
-      case 'Date':
-        return (
-          <TransparentView key={field}>
-            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <DateTimeTextInput
-                value={formValues[field]}
-                onValueChange={(newValue: Date) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                  onValueChange();
-                }}
-                Date
-                containerStyle={styles.inlineDateInput}
-                textInputStyle={StyleSheet.flatten([
-                  styles.dateTextInput,
-                  { backgroundColor: fieldColor }
-                ])}
-              />
-              <Feather name="calendar" size={20} style={styles.calendarIcon} />
-            </TransparentView>
-          </TransparentView>
-        );
-      case 'DateTime':
-        return (
-          <TransparentView key={field}>
-            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <DateTimeTextInput
-                value={formValues[field]}
-                onValueChange={(newValue: Date) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                  onValueChange();
-                }}
-              />
-            </TransparentView>
-          </TransparentView>
-        );
-      case 'radio':
-        const f = fields[field];
-        if (hasPermittedValues(f)) {
-          const permittedValueObjects = f.permittedValues.map(
-            (value: any, i: number) => ({
-              label: f.valueToDisplay(value),
-              value
-            })
-          );
-
-          return (
-            <TransparentView key={field}>
-              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <TransparentView>
-                {produceLabelFromFieldName(field)}
-                <RadioInput
-                  value={formValues[field]}
-                  permittedValues={permittedValueObjects}
-                  onValueChange={(value: any) => {
-                    setFormValues({
-                      ...formValues,
-                      [field]: value.id
-                    });
-                    setFormErrors({ ...formErrors, [field]: '' });
-                    onValueChange();
-                  }}
-                />
-              </TransparentView>
-            </TransparentView>
-          );
-        }
-      case 'colour':
-        return (
-          <WhiteBox key={field} style={styles.colourBox} elevated={false}>
-            {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView style={styles.inputLabelWrapper}>
-              {produceLabelFromFieldName(field, { marginTop: 0 })}
-            </TransparentView>
-            <ColorPicker
-              value={formValues[field]}
-              onValueChange={(value: string) => {
-                setFormValues({
-                  ...formValues,
-                  [field]: value
-                });
-                setFormErrors({ ...formErrors, [field]: '' });
-                onValueChange();
-              }}
-            />
-          </WhiteBox>
-        );
-      case 'addMembers': {
-        const f = fields[field];
-        if (hasPermittedValues(f)) {
-          return (
-            <TransparentView key={field}>
-              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <TransparentView
-                style={inlineFields ? styles.inlineInputPair : {}}
-              >
-                <TransparentView style={styles.inputLabelWrapper}>
-                  {produceLabelFromFieldName(field)}
-                </TransparentView>
-                <MemberSelector
-                  data={f.permittedValues}
-                  onValueChange={(selectedMembers: any) => {
-                    const memberIds = selectedMembers.map(
-                      (member: any) => member.id
-                    );
-                    setFormValues({
-                      ...formValues,
-                      [field]: [...memberIds]
-                    });
-                  }}
-                />
-              </TransparentView>
-            </TransparentView>
-          );
-        }
-      }
-      case 'TextArea':
-        return (
-          <TransparentView key={field}>
-            <TransparentView
-              key={field}
-              style={inlineFields ? styles.inlineInputPair : {}}
-            >
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <TextInput
-                value={formValues[field]}
-                onChangeText={(newValue) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  onValueChange();
-                }}
-                style={{
-                  height: 100,
-                  textAlignVertical: 'top'
-                }}
-                multiline={true}
-                maxLength={150}
-              />
-              <AlmostBlackText
-                text={`${formValues[field]?.length || 0}/150`}
-                style={{ textAlign: 'right' }}
-              />
-            </TransparentView>
-          </TransparentView>
-        );
-      case 'addFamilyMembers': {
-        const f = fields[field];
-        if (hasPermittedValues(f)) {
-          return (
-            <TransparentView key={field} style={styles.addFamilyMembers}>
-              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <FamilySelector
-                data={f.permittedValues}
-                values={formValues[field]}
-                onValueChange={(selectedMembers: any) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: [...selectedMembers]
-                  });
-                }}
-              />
-            </TransparentView>
-          );
-        }
-      }
-      case 'dropDown': {
-        const f = fields[field];
-        if (hasPermittedValues(f)) {
-          return (
-            <View key={field} style={Platform.OS === 'ios' && { zIndex: 9999 }}>
-              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <DropDown
-                value={formValues[field]}
-                items={f.permittedValues}
-                setFormValues={(item) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: item
-                  });
-                }}
-              />
-            </View>
-          );
-        }
-      }
-      case 'dropDownWithOther': {
-        const f = fields[field];
-        if (hasPermittedValues(f)) {
-          return (
-            <View
-              key={field}
-              style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}
-            >
-              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              {produceLabelFromFieldName(field)}
-              <DropDown
-                value={formValues[field]}
-                items={f.permittedValues}
-                setFormValues={(item) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: item
-                  });
-                }}
-                allowOther={true}
-              />
-            </View>
-          );
-        }
-      }
-      case 'Image': {
-        return (
-          <TransparentView key={field}>
-            <TransparentView
-              key={field}
-              style={inlineFields ? styles.inlineInputPair : {}}
-            >
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <WhiteImagePicker
-                // style={styles.imagePicker}
-                onImageSelect={(image) => {
-                  setFormValues({
-                    ...formValues,
-                    [field]: image
-                  });
-                }}
-                defaultImageUrl={
-                  formValues[field].uri || formValues[field] || ''
-                }
-                displayInternalImage={false}
-              />
-            </TransparentView>
-          </TransparentView>
-        );
-      }
-    }
-  });
-
   return (
     <TransparentView>
       <YesNoModal
@@ -670,9 +303,18 @@ export default function Form({
       />
       <View>
         {submitError ? <Text>{submitError}</Text> : null}
-        {formFields}
+        <TypedForm
+          fields={fields}
+          formValues={formValues}
+          inlineFields={inlineFields}
+          fieldColor ={fieldColor}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setFormValues(values)
+            onValueChange()
+          }}
+        />
       </View>
-      <TransparentView style={styles.bottomButtons}>
+      {isSubmitting ? <PaddedSpinner spinnerColor='buttonDefault' style={{ marginTop: 20 }}/> : <TransparentView style={styles.bottomButtons}>
         <Button
           title={
             submitText ||
@@ -694,31 +336,12 @@ export default function Form({
             style={[styles.button, styles.deleteButton]}
           />
         ) : null}
-      </TransparentView>
+      </TransparentView>}
     </TransparentView>
   );
 }
 
 const styles = StyleSheet.create({
-  inlineInputPair: {
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: 10
-  },
-  inputLabel: {
-    fontSize: 14,
-    textAlign: 'left',
-    marginTop: 14
-  },
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    minWidth: 100
-  },
-  inlineDateInput: {
-    flex: 1,
-    width: '100%'
-  },
   bottomButtons: {
     flexDirection: 'row',
     width: '100%',
@@ -731,17 +354,5 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     marginLeft: 10
-  },
-  colourBox: {
-    width: '100%',
-    marginTop: 15,
-    marginBottom: 15,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  calendarIcon: { position: 'absolute', right: 20, bottom: 20, color: 'grey' },
-  dateTextInput: { height: 50 },
-  addFamilyMembers: { marginTop: 20 }
+  }
 });

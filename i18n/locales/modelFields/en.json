@@ -1,8 +1,16 @@
 {
   "tasks": {
     "task": {
-      "title": "Title",
-      "location": "Location"
+      "title": "Name of Task",
+      "location": "Location",
+      "members": "Assigned to",
+      "duration_minutes": "Duration of task",
+      "recurrence": "Recurrence",
+      "start_datetime": "Starts",
+      "contact_name": "Name",
+      "contact_email": "Email",
+      "contact_number": "Contact no.",
+      "notes": "Notes"
     },
     "fixedTask": {
       "start_datetime": "Start Datetime",

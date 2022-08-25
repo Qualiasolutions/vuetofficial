@@ -19,7 +19,23 @@ const taskFieldTypes = (): FormFieldTypes => {
     location: {
       type: 'string',
       required: false
-    }
+    },
+    contact_name: {
+      type: 'string',
+      required: false
+    },
+    contact_email: {
+      type: 'string',
+      required: false
+    },
+    contact_number: {
+      type: 'phoneNumber',
+      required: false
+    },
+    notes: {
+      type: 'string',
+      required: false
+    },
   };
 };
 
@@ -37,8 +53,18 @@ export const fixedTaskForm = (): FormFieldTypes => {
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
 
+  const baseTaskFieldsTypes = taskFieldTypes()
+
   return {
-    ...taskFieldTypes(),
+    title: baseTaskFieldsTypes.title,
+    location: baseTaskFieldsTypes.location,
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: userFullDetails?.family?.users || [],
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('tasks.task.members')
+    },
     start_datetime: {
       type: 'DateTime',
       required: true,
@@ -49,13 +75,6 @@ export const fixedTaskForm = (): FormFieldTypes => {
       required: true,
       displayName: t('tasks.fixedTask.end_datetime')
     },
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: userFullDetails?.family?.users || [],
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
-    }
   };
 };
 

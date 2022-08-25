@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { Text, View } from 'components/Themed';
+import { Text, useThemeColor, View } from 'components/Themed';
 import { fixedTaskForm, flexibleTaskForm } from './taskFormFieldTypes';
 import { formStyles } from '../../../components/forms/formStyles';
 import RTKForm from 'components/forms/RTKForm';
@@ -41,6 +41,8 @@ export default function AddTaskScreen({
     }, [])
   );
 
+  const fieldColor = useThemeColor({}, 'almostWhite')
+
   const fixedTaskFormFields = fixedTaskForm();
 
   if (isLoading || !allTasks) {
@@ -75,6 +77,8 @@ export default function AddTaskScreen({
           onSubmitSuccess={updateTasks}
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
+          inlineFields={true}
+          fieldColor={fieldColor}
         />
       </TransparentPaddedView>
     </WhiteFullPageScrollView>

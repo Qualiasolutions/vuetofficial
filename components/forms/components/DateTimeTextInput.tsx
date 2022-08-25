@@ -31,9 +31,12 @@ export default function DateTimeTextInput({
                 ? Date
                   ? dayjs(value).format('DD/MM/YYYY')
                   : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-                : 'DD/MM/YYYY'
+                : ''
             }
             style={textInputStyle || {}}
+            placeholder={
+              Date ? 'DD/MM/YYYY' : ''
+            }
           />
         </TransparentView>
       </Pressable>
