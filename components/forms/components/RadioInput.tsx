@@ -4,14 +4,22 @@ import RadioForm, {
   RadioButtonLabel
 } from 'react-native-simple-radio-button';
 
+export type RadioObjectValueType = {
+  id: number | string
+}
+export type RadioPermittedValues = {
+  value: RadioObjectValueType,
+  label: string
+}[]
+
 export default function RadioInput({
   value,
   permittedValues,
   onValueChange
 }: {
   value: any;
-  permittedValues: any[];
-  onValueChange: Function;
+  permittedValues: RadioPermittedValues;
+  onValueChange: (value: RadioObjectValueType) => void;
 }) {
   const radioButtons = permittedValues.map((obj: any, i: number) => {
     return (

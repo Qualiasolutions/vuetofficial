@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { TransparentPaddedView, TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentPaddedView, TransparentView, WhitePaddedView } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
@@ -23,12 +23,36 @@ import { StyleSheet } from 'react-native';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
+import RadioInput from 'components/forms/components/RadioInput';
+
+const formTypes = [
+  {
+    value: {
+      id: 'TASK'
+    },
+    label: 'Task'
+  },
+  {
+    value: {
+      id: 'APPOINTMENT'
+    },
+    label: 'Appointment'
+  },
+  {
+    value: {
+      id: 'DUE_DATE'
+    },
+    label: 'Due Date'
+  }
+]
+type AddTaskFormType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
 
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
   const { t } = useTranslation();
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
+  const [formType, setFormType] = useState<AddTaskFormType>('TASK');
 
   const [createTask, createTaskResult] = useCreateTaskMutation()
   const isSubmitting = createTaskResult.isLoading
@@ -87,12 +111,6 @@ export default function AddTaskScreen({
     taskBottomFieldValues
   ]);
 
-  const backgroundColor = useThemeColor({}, 'white')
-  const individualFormStyle = {
-    ...styles.individualForm,
-    backgroundColor
-  }
-
   const submitForm = () => {
     const middleFieldValues = taskTopFieldValues.recurrence
       ? taskRecurrentMiddleFieldValues
@@ -120,7 +138,10 @@ export default function AddTaskScreen({
     }
     console.log(body)
     createTask(body)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res)
+        setCreateSuccessful(true)
+      })
       .catch((err) => console.log(err))
   };
 
@@ -130,52 +151,59 @@ export default function AddTaskScreen({
         {createSuccessful ? (
           <Text>{t('screens.addTask.createSuccess')}</Text>
         ) : null}
-        <TypedForm
-          fields={taskTopFields}
-          formValues={taskTopFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setTaskTopFieldValues(values)
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-          style={individualFormStyle}
-        />
-        {
-          taskTopFieldValues.recurrence
-          ? (
-            <TypedForm
-              fields={taskRecurrentMiddleFields}
-              formValues={taskRecurrentMiddleFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskRecurrentMiddleFieldValues(values)
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-              style={individualFormStyle}
-            />
-          ) : (
-            <TypedForm
-              fields={taskOneOffMiddleFields}
-              formValues={taskOneOffMiddleFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskOneOffMiddleFieldValues(values)
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-              style={individualFormStyle}
-            />
-          )
-        }
-        <TypedForm
-          fields={taskBottomFields}
-          formValues={taskBottomFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setTaskBottomFieldValues(values)
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-          style={individualFormStyle}
-        />
+        <WhitePaddedView style={styles.individualForm}>
+          <RadioInput
+            value={formType}
+            permittedValues={formTypes}
+            onValueChange={(value) => { setFormType(value.id as AddTaskFormType) }}
+          />
+          <TypedForm
+            fields={taskTopFields}
+            formValues={taskTopFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskTopFieldValues(values)
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
+        </WhitePaddedView>
+        <WhitePaddedView style={styles.individualForm}>
+          {
+            taskTopFieldValues.recurrence
+            ? (
+              <TypedForm
+                fields={taskRecurrentMiddleFields}
+                formValues={taskRecurrentMiddleFieldValues}
+                onFormValuesChange={(values: FieldValueTypes) => {
+                  setTaskRecurrentMiddleFieldValues(values)
+                }}
+                inlineFields={true}
+                fieldColor={fieldColor}
+              />
+            ) : (
+              <TypedForm
+                fields={taskOneOffMiddleFields}
+                formValues={taskOneOffMiddleFieldValues}
+                onFormValuesChange={(values: FieldValueTypes) => {
+                  setTaskOneOffMiddleFieldValues(values)
+                }}
+                inlineFields={true}
+                fieldColor={fieldColor}
+              />
+            )
+          }
+        </WhitePaddedView>
+        <WhitePaddedView style={styles.individualForm}>
+          <TypedForm
+            fields={taskBottomFields}
+            formValues={taskBottomFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskBottomFieldValues(values)
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
+        </WhitePaddedView>
 
         {isSubmitting
           ? <PaddedSpinner spinnerColor='buttonDefault' style={{ marginTop: 20 }}/>
@@ -204,7 +232,7 @@ const styles = StyleSheet.create({
   },
   individualForm: {
     marginBottom: 30,
-    padding: 30,
+    paddingVertical: 30,
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 5,
