@@ -18,29 +18,8 @@ import FamilySelector from 'components/forms/components/FamilySelector';
 import { OptionalYearDateInput } from 'components/forms/components/OptionalYearDateInput';
 import DropDown from 'components/forms/components/DropDown';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
-
-/* This type specifies the actual values of the fields.
-
-  e.g. {
-    name: 'Tim',
-    age: 28
-  }
-*/
-type FieldValueTypes = {
-  [key: string]: any;
-};
-
-type FieldErrorTypes = {
-  [key: string]: string;
-};
-
-const createNullStringObject = (obj: object): { [key: string]: '' } => {
-  const nullObj: { [key: string]: '' } = {};
-  for (const key of Object.keys(obj)) {
-    nullObj[key] = '';
-  }
-  return nullObj;
-};
+import createNullStringObject from './utils/createNullStringObject';
+import { FieldErrorTypes, FieldValueTypes } from './types';
 
 const parseFieldName = (name: string) => {
   return name
@@ -54,13 +33,15 @@ export default function TypedForm({
   formValues,
   inlineFields = false,
   fieldColor = '#ffffff',
-  onFormValuesChange = (formValues: FieldValueTypes) => {}
+  onFormValuesChange = (formValues: FieldValueTypes) => {},
+  style = {}
 }: {
   fields: FormFieldTypes;
   formValues: FieldValueTypes;
   inlineFields?: boolean;
   fieldColor?: string;
   onFormValuesChange?: Function;
+  style?: ViewStyle;
 }) {
   const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>(
     createNullStringObject(fields)
@@ -341,7 +322,7 @@ export default function TypedForm({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field} style={Platform.OS === 'ios' && { zIndex: 9999 }}>
+            <View key={field} style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               {produceLabelFromFieldName(field)}
               <DropDown
@@ -414,7 +395,7 @@ export default function TypedForm({
   });
 
   return (
-    <TransparentView>
+    <TransparentView style={style}>
       <View>
         {formFields}
       </View>

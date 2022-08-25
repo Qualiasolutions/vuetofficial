@@ -7,6 +7,7 @@
       "duration_minutes": "Duration of task",
       "recurrence": "Recurrence",
       "start_datetime": "Starts",
+      "first_start_datetime": "First occurrence",
       "contact_name": "Name",
       "contact_email": "Email",
       "contact_number": "Contact no.",

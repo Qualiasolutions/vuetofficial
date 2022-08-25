@@ -13,21 +13,8 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { YesNoModal } from 'components/molecules/Modals';
 import TypedForm from './TypedForm';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-
-/* This type specifies the actual values of the fields.
-
-  e.g. {
-    name: 'Tim',
-    age: 28
-  }
-*/
-type FieldValueTypes = {
-  [key: string]: any;
-};
-
-type FieldErrorTypes = {
-  [key: string]: string;
-};
+import createInitialObject from './utils/createInitialObject';
+import { FieldValueTypes } from './types';
 
 type FormType = 'UPDATE' | 'CREATE';
 export type FormDataType = 'json' | 'form';
@@ -48,72 +35,6 @@ declare type UseMutationResult<T> = {
   startedTimeStamp?: number; // Timestamp for when the latest mutation was initiated
 
   reset: () => void; // A method to manually unsubscribe from the mutation call and reset the result to the uninitialized state
-};
-
-const createNullStringObject = (obj: object): { [key: string]: '' } => {
-  const nullObj: { [key: string]: '' } = {};
-  for (const key of Object.keys(obj)) {
-    nullObj[key] = '';
-  }
-  return nullObj;
-};
-
-const createInitialObject = (
-  fields: FormFieldTypes
-): { [key: string]: any } => {
-  const initialObj: { [key: string]: any } = {};
-  for (const key of Object.keys(fields)) {
-    switch (fields[key].type) {
-      case 'string':
-      case 'colour':
-      case 'phoneNumber':
-      case 'radio':
-      case 'TextArea':
-      case 'Image':
-      case 'dropDownWithOther':
-        initialObj[key] = fields[key].initialValue || '';
-        continue;
-
-      case 'Date':
-      case 'OptionalYearDate':
-        if (fields[key].initialValue) {
-          const parsedDate = new Date(fields[key].initialValue || '');
-          // Date fields should be the same in all timezones
-          const timezoneIgnorantDate = new Date(
-            parsedDate.getUTCFullYear(),
-            parsedDate.getUTCMonth(),
-            parsedDate.getUTCDate()
-          );
-
-          initialObj[key] = timezoneIgnorantDate;
-        } else {
-          initialObj[key] = null;
-        }
-        continue;
-
-      case 'DateTime':
-        initialObj[key] = fields[key].initialValue
-          ? new Date(fields[key].initialValue || '')
-          : null;
-        continue;
-
-      case 'addMembers':
-      case 'addFamilyMembers':
-        initialObj[key] = fields[key].initialValue || [];
-        continue;
-
-      default:
-        initialObj[key] = null;
-    }
-  }
-  return initialObj;
-};
-
-const parseFieldName = (name: string) => {
-  return name
-    .split('_')
-    .map((part) => part[0].toLocaleUpperCase() + part.slice(1))
-    .join(' ');
 };
 
 export default function Form({
@@ -152,16 +73,12 @@ export default function Form({
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
     createInitialObject(fields)
   );
-  const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>(
-    createNullStringObject(fields)
-  );
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   const resetState = () => {
     setFormValues(createInitialObject(fields));
-    setFormErrors(createNullStringObject(fields));
   };
 
   const methodHookTriggers: {

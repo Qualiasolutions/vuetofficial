@@ -1,4 +1,4 @@
-import { TextInput, useThemeColor, View } from 'components/Themed';
+import { TextInput, useThemeColor } from 'components/Themed';
 import { useState } from 'react';
 import { ViewStyle } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';

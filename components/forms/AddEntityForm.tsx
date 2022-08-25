@@ -19,6 +19,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { fieldColorMapping } from './utils/fieldColorMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
+import { FormFieldTypes } from './formFieldTypes';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType) => any;
@@ -54,7 +55,7 @@ export default function AddEntityForm({
     TripActivity: forms.tripActivity(),
     Pet: forms.pet(),
     DaysOff: forms.daysOff()
-  };
+  } as { [key: string]: FormFieldTypes | undefined };
 
   useFocusEffect(
     useCallback(() => {
@@ -109,6 +110,10 @@ export default function AddEntityForm({
       extraFields.parent = parentId;
     }
 
+    if (!entityForms[entityType]) {
+      return <Text>AddEntityForm not implemented for {entityType}</Text>
+    }
+
     return (
       <TransparentView>
         {createSuccessful ? (
@@ -116,7 +121,7 @@ export default function AddEntityForm({
         ) : null}
 
         <RTKForm
-          fields={entityForms[entityType]}
+          fields={entityForms[entityType] || {}}
           methodHooks={{
             POST:
               dataType === 'form'

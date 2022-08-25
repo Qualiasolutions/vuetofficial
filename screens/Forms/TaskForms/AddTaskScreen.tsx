@@ -1,25 +1,28 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { Text, useThemeColor, View } from 'components/Themed';
-import { fixedTaskForm, flexibleTaskForm } from './taskFormFieldTypes';
-import { formStyles } from '../../../components/forms/formStyles';
-import RTKForm from 'components/forms/RTKForm';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, useThemeColor } from 'components/Themed';
+import {
+  fixedTaskForm,
+  flexibleTaskForm,
+  taskBottomFieldTypes,
+  taskOneOffMiddleFieldTypes,
+  taskRecurrentMiddleFieldTypes,
+  taskTopFieldTypes
+} from './taskFormFieldTypes';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { TaskResponseType } from 'types/tasks';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import {
-  useCreateTaskMutation,
-  useGetAllTasksQuery
-} from 'reduxStore/services/api/tasks';
 
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import TypedForm from 'components/forms/TypedForm';
+import createInitialObject from 'components/forms/utils/createInitialObject';
+import { FieldValueTypes } from 'components/forms/types';
+import { View } from 'react-native';
 
 export default function AddTaskScreen({
   route
@@ -27,12 +30,6 @@ export default function AddTaskScreen({
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
-  const {
-    isLoading,
-    data: allTasks,
-    error,
-    refetch: refetchTasks
-  } = useGetAllTasksQuery(userDetails?.user_id || -1);
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
   useFocusEffect(
@@ -43,20 +40,25 @@ export default function AddTaskScreen({
 
   const fieldColor = useThemeColor({}, 'almostWhite')
 
-  const fixedTaskFormFields = fixedTaskForm();
+  const taskTopFields = taskTopFieldTypes();
+  const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
+    createInitialObject(taskTopFields)
+  );
 
-  if (isLoading || !allTasks) {
-    return null;
-  }
+  const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes();
+  const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] = useState<FieldValueTypes>(
+    createInitialObject(taskRecurrentMiddleFields)
+  );
 
-  if (error) {
-    return <Text>An unexpected error ocurred</Text>;
-  }
+  const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
+  const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] = useState<FieldValueTypes>(
+    createInitialObject(taskOneOffMiddleFields)
+  );
 
-  const updateTasks = (res: TaskResponseType) => {
-    refetchTasks();
-    setCreateSuccessful(true);
-  };
+  const taskBottomFields = taskBottomFieldTypes();
+  const [taskBottomFieldValues, setTaskBottomFieldValues] = useState<FieldValueTypes>(
+    createInitialObject(taskBottomFields)
+  );
 
   return (
     <WhiteFullPageScrollView>
@@ -64,19 +66,47 @@ export default function AddTaskScreen({
         {createSuccessful ? (
           <Text>{t('screens.addTask.createSuccess')}</Text>
         ) : null}
-        <RTKForm
-          fields={fixedTaskFormFields}
-          methodHooks={{
-            POST: useCreateTaskMutation
+        <View>
+          <TypedForm
+            fields={taskTopFields}
+            formValues={taskTopFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskTopFieldValues(values)
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
+        </View>
+        {
+          taskTopFieldValues.recurrence
+          ? (
+            <TypedForm
+              fields={taskRecurrentMiddleFields}
+              formValues={taskRecurrentMiddleFieldValues}
+              onFormValuesChange={(values: FieldValueTypes) => {
+                setTaskRecurrentMiddleFieldValues(values)
+              }}
+              inlineFields={true}
+              fieldColor={fieldColor}
+            />
+          ) : (
+            <TypedForm
+              fields={taskOneOffMiddleFields}
+              formValues={taskOneOffMiddleFieldValues}
+              onFormValuesChange={(values: FieldValueTypes) => {
+                setTaskOneOffMiddleFieldValues(values)
+              }}
+              inlineFields={true}
+              fieldColor={fieldColor}
+            />
+          )
+        }
+        <TypedForm
+          fields={taskBottomFields}
+          formValues={taskBottomFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setTaskBottomFieldValues(values)
           }}
-          formType="CREATE"
-          extraFields={{
-            entity: route.params?.entityId,
-            resourcetype: 'FixedTask'
-          }}
-          onSubmitSuccess={updateTasks}
-          onValueChange={() => setCreateSuccessful(false)}
-          clearOnSubmit={true}
           inlineFields={true}
           fieldColor={fieldColor}
         />

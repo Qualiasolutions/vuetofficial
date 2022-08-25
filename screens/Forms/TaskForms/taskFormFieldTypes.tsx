@@ -6,6 +6,107 @@ import {
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import useGetUserDetails from 'hooks/useGetUserDetails';
+
+export const taskTopFieldTypes = (): FormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserDetails()
+
+  return {
+    title: {
+      type: 'string',
+      required: true,
+      displayName: t('tasks.task.title')
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: userFullDetails?.family?.users || [],
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('tasks.task.members')
+    },
+    duration_minutes: {
+      type: 'dropDown',
+      required: true,
+      permittedValues: [
+        { label: '5 Minutes', value: 5 },
+        { label: '15 Minutes', value: 15 },
+        { label: '30 Minutes', value: 30 },
+        { label: '1 Hour', value: 60 },
+      ],
+      displayName: t('tasks.task.duration_minutes')
+    },
+    recurrence: {
+      type: 'dropDown',
+      required: false,
+      permittedValues: [
+        { label: 'Daily', value: 'DAILY' },
+        { label: 'Weekly', value: 'WEEKLY' },
+        { label: 'Fortnightly', value: 'FORTNIGHTLY' },
+        { label: 'Every 4 Weeks', value: 'EVERY_4_WEEKS' },
+        { label: 'Monthly', value: 'MONTHLY' },
+        { label: 'Yearly', value: 'YEARLY' }
+      ],
+      displayName: t('tasks.task.recurrence'),
+      placeholder: 'None'
+    },
+  };
+}
+
+export const taskRecurrentMiddleFieldTypes = (): FormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+
+  return {
+    start_datetime: {
+      type: 'DateTime',
+      required: true,
+      displayName: t('tasks.task.first_start_datetime')
+    }
+  };
+}
+
+export const taskOneOffMiddleFieldTypes = (): FormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+
+  return {
+    start_datetime: {
+      type: 'DateTime',
+      required: true,
+      displayName: t('tasks.task.start_datetime')
+    }
+  };
+}
+
+export const taskBottomFieldTypes = (): FormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+
+  return {
+    location: {
+      type: 'string',
+      required: false
+    },
+    contact_name: {
+      type: 'string',
+      required: false
+    },
+    contact_email: {
+      type: 'string',
+      required: false
+    },
+    contact_number: {
+      type: 'phoneNumber',
+      required: false
+    },
+    notes: {
+      type: 'string',
+      required: false
+    },
+  };
+}
 
 const taskFieldTypes = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
