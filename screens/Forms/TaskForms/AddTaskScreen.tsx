@@ -22,7 +22,7 @@ import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function AddTaskScreen({
   route
@@ -62,7 +62,7 @@ export default function AddTaskScreen({
 
   return (
     <WhiteFullPageScrollView>
-      <TransparentPaddedView>
+      <TransparentPaddedView style={styles.container}>
         {createSuccessful ? (
           <Text>{t('screens.addTask.createSuccess')}</Text>
         ) : null}
@@ -114,3 +114,9 @@ export default function AddTaskScreen({
     </WhiteFullPageScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 100
+  }
+})
