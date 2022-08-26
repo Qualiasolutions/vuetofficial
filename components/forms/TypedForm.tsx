@@ -24,6 +24,7 @@ import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import createNullStringObject from './utils/createNullStringObject';
 import { FieldErrorTypes, FieldValueTypes } from './types';
 import { useTranslation } from 'react-i18next';
+import { UserFullResponse } from 'types/users';
 
 const parseFieldName = (name: string) => {
   return name
@@ -264,9 +265,10 @@ export default function TypedForm({
                 </TransparentView>
                 <MemberSelector
                   data={f.permittedValues}
+                  values={formValues[field]}
                   onValueChange={(selectedMembers: any) => {
-                    const memberIds = selectedMembers.map(
-                      (member: any) => member.id
+                    const memberIds: number[] = selectedMembers.map(
+                      (member: UserFullResponse) => member.id
                     );
                     onFormValuesChange({
                       ...formValues,

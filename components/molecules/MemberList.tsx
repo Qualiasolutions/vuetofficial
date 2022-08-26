@@ -1,11 +1,7 @@
-import MemberSelector, {
-  ModalListing
-} from 'components/forms/components/MemberSelector';
+import { ModalListing } from 'components/forms/components/MemberSelector';
 import { useThemeColor } from 'components/Themed';
 import React, { useCallback, useState } from 'react';
-import { Text, View, StyleSheet, Pressable, Image } from 'react-native';
-import { block } from 'react-native-reanimated';
-import { useUpdateEntityMutation } from 'reduxStore/services/api/entities';
+import { View, StyleSheet, Pressable, Image } from 'react-native';
 import { UserFullResponse, UserResponse } from 'types/users';
 import MemberCircle from './MemberCircle';
 import { ListingModal } from './Modals';

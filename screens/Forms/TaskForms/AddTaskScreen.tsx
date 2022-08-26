@@ -11,7 +11,7 @@ import {
   taskTopFieldTypes
 } from './taskFormFieldTypes';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -52,6 +52,7 @@ export default function AddTaskScreen({
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
   const { t } = useTranslation();
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
+  const [createError, setCreateError] = useState<string>('');
   const [formType, setFormType] = useState<AddTaskFormType>('TASK');
 
   const [createTask, createTaskResult] = useCreateTaskMutation()
@@ -85,6 +86,13 @@ export default function AddTaskScreen({
     createInitialObject(taskBottomFields)
   );
 
+  const resetState = () => {
+    setTaskTopFieldValues(createInitialObject(taskTopFields))
+    setTaskRecurrentMiddleFieldValues(createInitialObject(taskRecurrentMiddleFields))
+    setTaskOneOffMiddleFieldValues(createInitialObject(taskOneOffMiddleFields))
+    setTaskBottomFieldValues(createInitialObject(taskBottomFields))
+  }
+
   const hasAllRequired = useMemo(() => {
     for (const fieldName in taskTopFields) {
       if (taskTopFields[fieldName].required && !taskTopFieldValues[fieldName]) {
@@ -111,6 +119,17 @@ export default function AddTaskScreen({
     taskBottomFieldValues
   ]);
 
+  useEffect(() => {
+    if (createTaskResult.isSuccess) {
+      setCreateError('');
+      setCreateSuccessful(true)
+      resetState();
+    } else if (createTaskResult.isError) {
+      setCreateError('An unexpected error occurred');
+      console.log(createTaskResult.error);
+    }
+  }, [createTaskResult]);
+
   const submitForm = () => {
     const middleFieldValues = taskTopFieldValues.recurrence
       ? taskRecurrentMiddleFieldValues
@@ -134,24 +153,24 @@ export default function AddTaskScreen({
       ...parsedBottomFieldValues,
       resourcetype: 'FixedTask', // TODO
       entity: route.params.entityId,
-      end_datetime: endDatetime
+      end_datetime: endDatetime,
+      recurrence: {
+        earliest_occurrence: middleFieldValues.start_datetime,
+        latest_occurrence: null,
+        recurrence: parsedTopFieldValues.recurrence
+      }
     }
-    console.log(body)
     createTask(body)
-      .then((res) => {
-        console.log(res)
-        setCreateSuccessful(true)
-      })
-      .catch((err) => console.log(err))
   };
 
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
-        {createSuccessful ? (
-          <Text>{t('screens.addTask.createSuccess')}</Text>
-        ) : null}
         <WhitePaddedView style={styles.individualForm}>
+          {createSuccessful ? (
+            <Text>{t('screens.addTask.createSuccess')}</Text>
+          ) : null}
+          {createError ? <Text>{createError}</Text> : null}
           <RadioInput
             value={formType}
             permittedValues={formTypes}

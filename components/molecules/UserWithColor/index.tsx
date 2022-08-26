@@ -5,6 +5,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { Image, StyleSheet, View } from 'react-native';
+import { parsePresignedUrl } from 'utils/urls';
 
 export default function UserWithColor({
   name = '',
@@ -17,7 +18,7 @@ export default function UserWithColor({
       {showUserImage ? (
         <AlmostWhiteView style={styles.profileImageWrapper}>
           {userImage ? (
-            <Image source={{ uri: userImage }} style={styles.profileImage} />
+            <Image source={{ uri: parsePresignedUrl(userImage) }} style={styles.profileImage} />
           ) : (
             <Image
               source={require('assets/images/icons/user-head.png')}

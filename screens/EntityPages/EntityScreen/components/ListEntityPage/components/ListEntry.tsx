@@ -26,6 +26,7 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useThemeColor } from 'components/Themed';
 import Constants from 'expo-constants';
+import { parsePresignedUrl } from 'utils/urls';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -159,11 +160,7 @@ export default function ListEntry({
     });
   };
 
-  // Some hacky string replacement for local dev (ensure can access localstack S3)
-  const imageSource = listEntry?.presigned_image_url?.replace(
-    'localstack',
-    vuetApiUrl.split(':')[0]
-  );
+  const imageSource = parsePresignedUrl(listEntry?.presigned_image_url)
 
   return (
     <Animated.View

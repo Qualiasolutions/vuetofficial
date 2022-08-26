@@ -10,6 +10,7 @@ import {
 import Constants from 'expo-constants';
 import * as ExpoImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
+import { parsePresignedUrl } from 'utils/urls';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -89,7 +90,7 @@ export function ImagePicker({
       selectedImage?.type === 'image' &&
       selectedImage?.uri && { uri: selectedImage.uri }) ||
     (defaultImageUrl && {
-      uri: defaultImageUrl.replace('localstack', vuetApiUrl.split(':')[0])
+      uri: parsePresignedUrl(defaultImageUrl)
     }) ||
     require('assets/images/icons/camera.png');
 
@@ -106,7 +107,6 @@ export function ImagePicker({
               ? styles.selectedImage
               : styles.placeholderImage
           }
-          // Some hacky string replacement for local dev (ensure can access localstack S3)
           source={imageSource}
           resizeMode="cover"
         />

@@ -29,19 +29,22 @@ export function ModalListing({
   );
 }
 
-export default function MemberSelector({ data, onValueChange }: any) {
+export default function MemberSelector({
+  data,
+  values,
+  onValueChange
+}: {
+  data: any[],
+  values: number[];
+  onValueChange: (val: number[]) => void;
+}) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
-  const [selectedMembers, setSelectedMembers] = useState<UserFullResponse[]>(
-    []
-  );
 
   const onSelectMember = (member: UserFullResponse) => {
-    if (selectedMembers.some((i) => i.id == member.id)) {
-      setSelectedMembers([...selectedMembers.filter((i) => i.id != member.id)]);
-      onValueChange([...selectedMembers.filter((i) => i.id != member.id)]);
+    if (values.includes(member.id)) {
+      onValueChange([...values.filter((i) => member.id != i)]);
     } else {
-      setSelectedMembers([...selectedMembers, member]);
-      onValueChange([...selectedMembers, member]);
+      onValueChange([...values, member.id]);
     }
   };
 
@@ -50,7 +53,9 @@ export default function MemberSelector({ data, onValueChange }: any) {
   }, [setShowMembersList]);
 
   const selectedMembersList = useCallback(() => {
-    return selectedMembers.map((member: any) => (
+    console.log(data[0].presigned_profile_image_url)
+    console.log(data[1].presigned_profile_image_url)
+    return data.filter(member => values.includes(member.id)).map((member: any) => (
       <TransparentView key={member.id} style={{ marginTop: 11 }}>
         <UserWithColor
           name={`${member.first_name} ${member.last_name}`}
@@ -59,14 +64,14 @@ export default function MemberSelector({ data, onValueChange }: any) {
         />
       </TransparentView>
     ));
-  }, [selectedMembers]);
+  }, [values]);
 
   const preparedData = useCallback(() => {
     return data.map((member: UserFullResponse) => ({
       ...member,
-      selected: selectedMembers.map((m) => m.id).includes(member.id)
+      selected: values.includes(member.id)
     }));
-  }, [selectedMembers]);
+  }, [values]);
 
   return (
     <TransparentView>

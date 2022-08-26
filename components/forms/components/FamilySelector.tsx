@@ -1,6 +1,5 @@
 import { TransparentView } from 'components/molecules/ViewComponents';
 import UserWithColor from 'components/molecules/UserWithColor';
-import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { UserFullResponse } from 'types/users';
 import Checkbox from 'components/molecules/Checkbox';
@@ -13,7 +12,7 @@ export default function FamilySelector({
   onValueChange
 }: {
   data: UserFullResponse[];
-  values: any[];
+  values: number[];
   onValueChange: (val: number[]) => void;
 }) {
   const { t } = useTranslation();
