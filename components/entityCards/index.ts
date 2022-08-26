@@ -7,6 +7,7 @@ import AnniversaryCard from './AnniversaryCard';
 import EventCard from './EventCard';
 import DaysOffCard from './DaysOffCard';
 import HolidayCard from './HolidayCard';
+import CarCard from './CarCard';
 
 type LinkMapping = {
   [key in EntityTypeName]?: React.ElementType;
@@ -21,5 +22,6 @@ export default {
   Birthday: AnniversaryCard,
   Event: EventCard,
   DaysOff: DaysOffCard,
-  Holiday: HolidayCard
+  Holiday: HolidayCard,
+  Car: CarCard,
 } as LinkMapping;
