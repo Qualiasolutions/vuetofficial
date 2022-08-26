@@ -14,7 +14,7 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
-  } = useGetUserDetails()
+  } = useGetUserDetails();
 
   return {
     title: {
@@ -36,7 +36,7 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
         { label: '5 Minutes', value: 5 },
         { label: '15 Minutes', value: 15 },
         { label: '30 Minutes', value: 30 },
-        { label: '1 Hour', value: 60 },
+        { label: '1 Hour', value: 60 }
       ],
       displayName: t('tasks.task.duration_minutes'),
       listMode: 'MODAL'
@@ -56,9 +56,9 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
       displayName: t('tasks.task.recurrence'),
       placeholder: 'None',
       listMode: 'MODAL'
-    },
+    }
   };
-}
+};
 
 export const taskRecurrentMiddleFieldTypes = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -70,7 +70,7 @@ export const taskRecurrentMiddleFieldTypes = (): FormFieldTypes => {
       displayName: t('tasks.task.first_start_datetime')
     }
   };
-}
+};
 
 export const taskOneOffMiddleFieldTypes = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -82,7 +82,7 @@ export const taskOneOffMiddleFieldTypes = (): FormFieldTypes => {
       displayName: t('tasks.task.start_datetime')
     }
   };
-}
+};
 
 export const taskBottomFieldTypes = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -112,9 +112,9 @@ export const taskBottomFieldTypes = (): FormFieldTypes => {
       type: 'TextArea',
       required: false,
       displayName: t('tasks.task.notes')
-    },
+    }
   };
-}
+};
 
 const taskFieldTypes = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -144,7 +144,7 @@ const taskFieldTypes = (): FormFieldTypes => {
     notes: {
       type: 'string',
       required: false
-    },
+    }
   };
 };
 
@@ -162,7 +162,7 @@ export const fixedTaskForm = (): FormFieldTypes => {
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
 
-  const baseTaskFieldsTypes = taskFieldTypes()
+  const baseTaskFieldsTypes = taskFieldTypes();
 
   return {
     title: baseTaskFieldsTypes.title,
@@ -183,6 +183,6 @@ export const fixedTaskForm = (): FormFieldTypes => {
       type: 'DateTime',
       required: true,
       displayName: t('tasks.fixedTask.end_datetime')
-    },
+    }
   };
 };

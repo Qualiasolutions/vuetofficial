@@ -18,7 +18,10 @@ export default function UserWithColor({
       {showUserImage ? (
         <AlmostWhiteView style={styles.profileImageWrapper}>
           {userImage ? (
-            <Image source={{ uri: parsePresignedUrl(userImage) }} style={styles.profileImage} />
+            <Image
+              source={{ uri: parsePresignedUrl(userImage) }}
+              style={styles.profileImage}
+            />
           ) : (
             <Image
               source={require('assets/images/icons/user-head.png')}

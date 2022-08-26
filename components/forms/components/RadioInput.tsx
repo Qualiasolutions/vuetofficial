@@ -5,12 +5,12 @@ import RadioForm, {
 } from 'react-native-simple-radio-button';
 
 export type RadioObjectValueType = {
-  id: number | string
-}
+  id: number | string;
+};
 export type RadioPermittedValues = {
-  value: RadioObjectValueType,
-  label: string
-}[]
+  value: RadioObjectValueType;
+  label: string;
+}[];
 
 export default function RadioInput({
   value,

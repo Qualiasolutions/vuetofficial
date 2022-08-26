@@ -1,10 +1,10 @@
-import getUserFullDetails from "hooks/useGetUserDetails";
-import { FormFieldTypes } from "../formFieldTypes";
+import getUserFullDetails from 'hooks/useGetUserDetails';
+import { FormFieldTypes } from '../formFieldTypes';
 
 const createInitialObject = (
   fields: FormFieldTypes
 ): { [key: string]: any } => {
-  const { data: userDetails } = getUserFullDetails()
+  const { data: userDetails } = getUserFullDetails();
 
   const initialObj: { [key: string]: any } = {};
   for (const key of Object.keys(fields)) {
@@ -44,7 +44,8 @@ const createInitialObject = (
 
       case 'addMembers':
       case 'addFamilyMembers':
-        initialObj[key] = fields[key].initialValue || (userDetails ? [userDetails?.id] : []);
+        initialObj[key] =
+          fields[key].initialValue || (userDetails ? [userDetails?.id] : []);
         continue;
 
       default:
@@ -54,4 +55,4 @@ const createInitialObject = (
   return initialObj;
 };
 
-export default createInitialObject
+export default createInitialObject;

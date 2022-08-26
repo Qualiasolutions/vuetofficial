@@ -2,9 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button } from 'components/Themed';
 import dayjs from 'dayjs';
-import {
-  FormFieldTypes,
-} from './formFieldTypes';
+import { FormFieldTypes } from './formFieldTypes';
 import {
   MutationTrigger,
   UseMutation
@@ -71,10 +69,9 @@ export default function Form({
   fieldColor?: string;
   formDataType?: FormDataType;
 }) {
-  const initialFormValues = createInitialObject(fields)
-  const [formValues, setFormValues] = React.useState<FieldValueTypes>(
-    initialFormValues
-  );
+  const initialFormValues = createInitialObject(fields);
+  const [formValues, setFormValues] =
+    React.useState<FieldValueTypes>(initialFormValues);
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -98,8 +95,8 @@ export default function Form({
   }
 
   const isSubmitting = Object.values(methodHookTriggers)
-    .map(methodTrigger => methodTrigger.result)
-    .some(result => result.isLoading)
+    .map((methodTrigger) => methodTrigger.result)
+    .some((result) => result.isLoading);
 
   for (const method in methodHookTriggers) {
     if (['POST', 'PATCH'].includes(method)) {
@@ -145,7 +142,7 @@ export default function Form({
     setSubmittingForm(true);
 
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
-    const parsedFormValues = parseFormValues(formValues, fields)
+    const parsedFormValues = parseFormValues(formValues, fields);
 
     if (formDataType === 'json') {
       // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
@@ -206,36 +203,42 @@ export default function Form({
           fields={fields}
           formValues={formValues}
           inlineFields={inlineFields}
-          fieldColor ={fieldColor}
+          fieldColor={fieldColor}
           onFormValuesChange={(values: FieldValueTypes) => {
-            setFormValues(values)
-            onValueChange()
+            setFormValues(values);
+            onValueChange();
           }}
         />
       </View>
-      {isSubmitting ? <PaddedSpinner spinnerColor='buttonDefault' style={{ marginTop: 20 }}/> : <TransparentView style={styles.bottomButtons}>
-        <Button
-          title={
-            submitText ||
-            (formType === 'CREATE' ? createTextOverride || 'CREATE' : 'UPDATE')
-          }
-          onPress={() => {
-            submitForm();
-          }}
-          disabled={submittingForm || !hasAllRequired}
-          style={styles.button}
-        />
-        {formType === 'UPDATE' && methodHookTriggers['DELETE'] ? (
+      {isSubmitting ? (
+        <PaddedSpinner spinnerColor="buttonDefault" style={{ marginTop: 20 }} />
+      ) : (
+        <TransparentView style={styles.bottomButtons}>
           <Button
-            title="DELETE"
+            title={
+              submitText ||
+              (formType === 'CREATE'
+                ? createTextOverride || 'CREATE'
+                : 'UPDATE')
+            }
             onPress={() => {
-              setShowDeleteModal(true);
+              submitForm();
             }}
-            disabled={submittingForm}
-            style={[styles.button, styles.deleteButton]}
+            disabled={submittingForm || !hasAllRequired}
+            style={styles.button}
           />
-        ) : null}
-      </TransparentView>}
+          {formType === 'UPDATE' && methodHookTriggers['DELETE'] ? (
+            <Button
+              title="DELETE"
+              onPress={() => {
+                setShowDeleteModal(true);
+              }}
+              disabled={submittingForm}
+              style={[styles.button, styles.deleteButton]}
+            />
+          ) : null}
+        </TransparentView>
+      )}
     </TransparentView>
   );
 }

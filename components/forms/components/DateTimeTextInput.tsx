@@ -34,9 +34,7 @@ export default function DateTimeTextInput({
                 : ''
             }
             style={textInputStyle || {}}
-            placeholder={
-              Date ? 'DD/MM/YYYY' : ''
-            }
+            placeholder={Date ? 'DD/MM/YYYY' : ''}
           />
         </TransparentView>
       </Pressable>

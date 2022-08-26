@@ -75,7 +75,6 @@ export default function EditEntityScreen({
         formFields[fieldName].initialValue = familyMemberToEdit[fieldName];
       }
     }
-    
 
     return (
       <TransparentFullPageScrollView>
@@ -96,7 +95,7 @@ export default function EditEntityScreen({
     );
   }
 
-  return <FullPageSpinner/>;
+  return <FullPageSpinner />;
 }
 
 const styles = StyleSheet.create({

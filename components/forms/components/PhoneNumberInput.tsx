@@ -28,15 +28,9 @@ export default function PhoneNumberInput(props: PhoneNumberInputProps) {
         { borderColor },
         containerStyle
       ]}
-      textInputStyle={[
-        textInputStyle
-      ]}
-      textContainerStyle={[
-        textContainerStyle
-      ]}
-      codeTextStyle={[
-        codeTextStyle
-      ]}
+      textInputStyle={[textInputStyle]}
+      textContainerStyle={[textContainerStyle]}
+      codeTextStyle={[codeTextStyle]}
     />
   );
 }
@@ -45,6 +39,6 @@ const styles = StyleSheet.create({
   textInputContainer: {
     borderRadius: 8,
     overflow: 'hidden',
-    borderWidth: 1,
+    borderWidth: 1
   }
 });

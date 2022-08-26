@@ -6,4 +6,4 @@ const createNullStringObject = (obj: object): { [key: string]: '' } => {
   return nullObj;
 };
 
-export default createNullStringObject
+export default createNullStringObject;

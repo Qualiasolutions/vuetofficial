@@ -1,8 +1,11 @@
-import dayjs from "dayjs";
-import { FormFieldTypes } from "../formFieldTypes";
-import { FieldValueTypes } from "../types";
+import dayjs from 'dayjs';
+import { FormFieldTypes } from '../formFieldTypes';
+import { FieldValueTypes } from '../types';
 
-const parseFormValues = (formValues: FieldValueTypes, fields: FormFieldTypes) => {
+const parseFormValues = (
+  formValues: FieldValueTypes,
+  fields: FormFieldTypes
+) => {
   const parsedFormValues = { ...formValues };
   for (const field in parsedFormValues) {
     if (['Date', 'OptionalYearDate'].includes(fields[field]?.type)) {
@@ -25,7 +28,7 @@ const parseFormValues = (formValues: FieldValueTypes, fields: FormFieldTypes) =>
     }
   }
 
-  return parsedFormValues
-}
+  return parsedFormValues;
+};
 
-export default parseFormValues
+export default parseFormValues;

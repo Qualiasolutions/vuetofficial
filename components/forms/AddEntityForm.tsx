@@ -111,7 +111,7 @@ export default function AddEntityForm({
     }
 
     if (!entityForms[entityType]) {
-      return <Text>AddEntityForm not implemented for {entityType}</Text>
+      return <Text>AddEntityForm not implemented for {entityType}</Text>;
     }
 
     return (

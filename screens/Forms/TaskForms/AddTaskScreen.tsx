@@ -13,7 +13,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { TransparentPaddedView, TransparentView, WhitePaddedView } from 'components/molecules/ViewComponents';
+import {
+  TransparentPaddedView,
+  TransparentView,
+  WhitePaddedView
+} from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
@@ -42,7 +46,7 @@ const formTypes = [
     },
     label: 'Due Date'
   }
-]
+];
 type AddTaskFormType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
 
 export default function AddTaskScreen({
@@ -53,8 +57,8 @@ export default function AddTaskScreen({
   const [createError, setCreateError] = useState<string>('');
   const [formType, setFormType] = useState<AddTaskFormType>('TASK');
 
-  const [createTask, createTaskResult] = useCreateTaskMutation()
-  const isSubmitting = createTaskResult.isLoading
+  const [createTask, createTaskResult] = useCreateTaskMutation();
+  const isSubmitting = createTaskResult.isLoading;
 
   useFocusEffect(
     useCallback(() => {
@@ -62,38 +66,36 @@ export default function AddTaskScreen({
     }, [])
   );
 
-  const fieldColor = useThemeColor({}, 'almostWhite')
+  const fieldColor = useThemeColor({}, 'almostWhite');
 
   const taskTopFields = taskTopFieldTypes();
-  const initialTopFields = createInitialObject(taskTopFields)
-  const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
-    initialTopFields
-  );
+  const initialTopFields = createInitialObject(taskTopFields);
+  const [taskTopFieldValues, setTaskTopFieldValues] =
+    useState<FieldValueTypes>(initialTopFields);
 
   const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes();
-  const initialRecurrentMiddleFields = createInitialObject(taskRecurrentMiddleFields)
-  const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] = useState<FieldValueTypes>(
-    initialRecurrentMiddleFields
+  const initialRecurrentMiddleFields = createInitialObject(
+    taskRecurrentMiddleFields
   );
+  const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] =
+    useState<FieldValueTypes>(initialRecurrentMiddleFields);
 
   const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
-  const initialOneOffMiddleFields = createInitialObject(taskOneOffMiddleFields)
-  const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] = useState<FieldValueTypes>(
-    initialOneOffMiddleFields
-  );
+  const initialOneOffMiddleFields = createInitialObject(taskOneOffMiddleFields);
+  const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] =
+    useState<FieldValueTypes>(initialOneOffMiddleFields);
 
   const taskBottomFields = taskBottomFieldTypes();
-  const initialBottomFields = createInitialObject(taskBottomFields)
-  const [taskBottomFieldValues, setTaskBottomFieldValues] = useState<FieldValueTypes>(
-    initialBottomFields
-  );
+  const initialBottomFields = createInitialObject(taskBottomFields);
+  const [taskBottomFieldValues, setTaskBottomFieldValues] =
+    useState<FieldValueTypes>(initialBottomFields);
 
   const resetState = () => {
-    setTaskTopFieldValues(initialTopFields)
-    setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields)
-    setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields)
-    setTaskBottomFieldValues(initialBottomFields)
-  }
+    setTaskTopFieldValues(initialTopFields);
+    setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
+    setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+    setTaskBottomFieldValues(initialBottomFields);
+  };
 
   const hasAllRequired = useMemo(() => {
     for (const fieldName in taskTopFields) {
@@ -101,15 +103,22 @@ export default function AddTaskScreen({
         return false;
       }
     }
-    const middleFields = (taskTopFieldValues.recurrence ? taskRecurrentMiddleFields : taskOneOffMiddleFields)
-    const middleFieldValues = (taskTopFieldValues.recurrence ? taskRecurrentMiddleFieldValues : taskOneOffMiddleFieldValues)
+    const middleFields = taskTopFieldValues.recurrence
+      ? taskRecurrentMiddleFields
+      : taskOneOffMiddleFields;
+    const middleFieldValues = taskTopFieldValues.recurrence
+      ? taskRecurrentMiddleFieldValues
+      : taskOneOffMiddleFieldValues;
     for (const fieldName in middleFields) {
       if (middleFields[fieldName].required && !middleFieldValues[fieldName]) {
         return false;
       }
     }
     for (const fieldName in taskBottomFields) {
-      if (taskBottomFields[fieldName].required && !taskBottomFieldValues[fieldName]) {
+      if (
+        taskBottomFields[fieldName].required &&
+        !taskBottomFieldValues[fieldName]
+      ) {
         return false;
       }
     }
@@ -124,7 +133,7 @@ export default function AddTaskScreen({
   useEffect(() => {
     if (createTaskResult.isSuccess) {
       setCreateError('');
-      setCreateSuccessful(true)
+      setCreateSuccessful(true);
       resetState();
     } else if (createTaskResult.isError) {
       setCreateError('An unexpected error occurred');
@@ -135,19 +144,28 @@ export default function AddTaskScreen({
   const submitForm = () => {
     const middleFieldValues = taskTopFieldValues.recurrence
       ? taskRecurrentMiddleFieldValues
-      : taskOneOffMiddleFieldValues
+      : taskOneOffMiddleFieldValues;
     const middleFields = taskTopFieldValues.recurrence
       ? taskRecurrentMiddleFields
-      : taskOneOffMiddleFields
+      : taskOneOffMiddleFields;
 
-    const parsedTopFieldValues = parseFormValues(taskTopFieldValues, taskTopFields)
-    const parsedMiddleFieldValues = parseFormValues(middleFieldValues, middleFields)
-    const parsedBottomFieldValues = parseFormValues(taskBottomFieldValues, taskBottomFields)
+    const parsedTopFieldValues = parseFormValues(
+      taskTopFieldValues,
+      taskTopFields
+    );
+    const parsedMiddleFieldValues = parseFormValues(
+      middleFieldValues,
+      middleFields
+    );
+    const parsedBottomFieldValues = parseFormValues(
+      taskBottomFieldValues,
+      taskBottomFields
+    );
 
     const endDatetime = new Date(
-      middleFieldValues.start_datetime.getTime()
-      + taskTopFieldValues.duration_minutes * 60000
-    )
+      middleFieldValues.start_datetime.getTime() +
+        taskTopFieldValues.duration_minutes * 60000
+    );
 
     const body = {
       ...parsedTopFieldValues,
@@ -161,8 +179,8 @@ export default function AddTaskScreen({
         latest_occurrence: null,
         recurrence: parsedTopFieldValues.recurrence
       }
-    }
-    createTask(body)
+    };
+    createTask(body);
   };
 
   return (
@@ -176,73 +194,72 @@ export default function AddTaskScreen({
           <RadioInput
             value={formType}
             permittedValues={formTypes}
-            onValueChange={(value) => { setFormType(value.id as AddTaskFormType) }}
+            onValueChange={(value) => {
+              setFormType(value.id as AddTaskFormType);
+            }}
           />
           <TypedForm
             fields={taskTopFields}
             formValues={taskTopFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskTopFieldValues(values)
+              setTaskTopFieldValues(values);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
           />
         </WhitePaddedView>
         <WhitePaddedView style={styles.individualForm}>
-          {
-            taskTopFieldValues.recurrence
-            ? (
-              <TypedForm
-                fields={taskRecurrentMiddleFields}
-                formValues={taskRecurrentMiddleFieldValues}
-                onFormValuesChange={(values: FieldValueTypes) => {
-                  setTaskRecurrentMiddleFieldValues(values)
-                }}
-                inlineFields={true}
-                fieldColor={fieldColor}
-              />
-            ) : (
-              <TypedForm
-                fields={taskOneOffMiddleFields}
-                formValues={taskOneOffMiddleFieldValues}
-                onFormValuesChange={(values: FieldValueTypes) => {
-                  setTaskOneOffMiddleFieldValues(values)
-                }}
-                inlineFields={true}
-                fieldColor={fieldColor}
-              />
-            )
-          }
+          {taskTopFieldValues.recurrence ? (
+            <TypedForm
+              fields={taskRecurrentMiddleFields}
+              formValues={taskRecurrentMiddleFieldValues}
+              onFormValuesChange={(values: FieldValueTypes) => {
+                setTaskRecurrentMiddleFieldValues(values);
+              }}
+              inlineFields={true}
+              fieldColor={fieldColor}
+            />
+          ) : (
+            <TypedForm
+              fields={taskOneOffMiddleFields}
+              formValues={taskOneOffMiddleFieldValues}
+              onFormValuesChange={(values: FieldValueTypes) => {
+                setTaskOneOffMiddleFieldValues(values);
+              }}
+              inlineFields={true}
+              fieldColor={fieldColor}
+            />
+          )}
         </WhitePaddedView>
         <WhitePaddedView style={styles.individualForm}>
           <TypedForm
             fields={taskBottomFields}
             formValues={taskBottomFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskBottomFieldValues(values)
+              setTaskBottomFieldValues(values);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
           />
         </WhitePaddedView>
 
-        {isSubmitting
-          ? <PaddedSpinner spinnerColor='buttonDefault' style={{ marginTop: 20 }}/>
-          : (
-            <TransparentPaddedView style={styles.bottomButtons}>
-              <Button
-                title={t('screens.addTask.createTask')}
-                onPress={() => {
-                  submitForm();
-                }}
-                disabled={!hasAllRequired}
-              />
-            </TransparentPaddedView>
-          )
-        }
+        {isSubmitting ? (
+          <PaddedSpinner
+            spinnerColor="buttonDefault"
+            style={{ marginTop: 20 }}
+          />
+        ) : (
+          <TransparentPaddedView style={styles.bottomButtons}>
+            <Button
+              title={t('screens.addTask.createTask')}
+              onPress={() => {
+                submitForm();
+              }}
+              disabled={!hasAllRequired}
+            />
+          </TransparentPaddedView>
+        )}
       </TransparentView>
-
-        
     </TransparentFullPageScrollView>
   );
 }
@@ -258,12 +275,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     shadowOffset: { height: 2, width: 2 },
-    elevation: 3,
+    elevation: 3
   },
   bottomButtons: {
     flexDirection: 'row',
     width: '100%',
     zIndex: -1,
     justifyContent: 'center'
-  },
-})
+  }
+});

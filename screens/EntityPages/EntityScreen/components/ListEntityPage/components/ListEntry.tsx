@@ -160,7 +160,7 @@ export default function ListEntry({
     });
   };
 
-  const imageSource = parsePresignedUrl(listEntry?.presigned_image_url)
+  const imageSource = parsePresignedUrl(listEntry?.presigned_image_url);
 
   return (
     <Animated.View

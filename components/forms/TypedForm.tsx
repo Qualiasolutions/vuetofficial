@@ -54,7 +54,10 @@ export default function TypedForm({
     createNullStringObject(fields)
   );
 
-  const textInputStyle = StyleSheet.flatten([styles.textInput, { backgroundColor: fieldColor }])
+  const textInputStyle = StyleSheet.flatten([
+    styles.textInput,
+    { backgroundColor: fieldColor }
+  ]);
 
   const produceLabelFromFieldName = (fieldName: string, style?: ViewStyle) => {
     return (
@@ -119,7 +122,9 @@ export default function TypedForm({
                 textContainerStyle={{
                   backgroundColor: fieldColor
                 }}
-                placeholder={inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')}
+                placeholder={
+                  inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')
+                }
               />
             </TransparentView>
           </TransparentView>
@@ -291,7 +296,7 @@ export default function TypedForm({
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
-              <TransparentView style={{flex: 1}}>
+              <TransparentView style={{ flex: 1 }}>
                 <TextInput
                   value={formValues[field]}
                   onChangeText={(newValue) => {
@@ -303,7 +308,7 @@ export default function TypedForm({
                   style={{
                     height: 100,
                     textAlignVertical: 'top',
-                    backgroundColor: fieldColor,
+                    backgroundColor: fieldColor
                   }}
                   multiline={true}
                   maxLength={150}
@@ -341,7 +346,10 @@ export default function TypedForm({
         const f = fields[field];
         if (hasPermittedValues(f)) {
           return (
-            <View key={field} style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}>
+            <View
+              key={field}
+              style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}
+            >
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
               <TransparentView
                 key={field}
@@ -359,16 +367,18 @@ export default function TypedForm({
                       [field]: item
                     });
                   }}
-                  dropdownPlaceholder={(hasPlaceholder(f) && f.placeholder) || undefined}
+                  dropdownPlaceholder={
+                    (hasPlaceholder(f) && f.placeholder) || undefined
+                  }
                   listMode={(hasListMode(f) && f.listMode) || undefined}
                   style={textInputStyle}
-                  containerStyle={{flex: 1}}
+                  containerStyle={{ flex: 1 }}
                 />
               </TransparentView>
             </View>
           );
         }
-        return null
+        return null;
       }
       case 'dropDownWithOther': {
         const f = fields[field];
@@ -396,16 +406,18 @@ export default function TypedForm({
                     });
                   }}
                   allowOther={true}
-                  dropdownPlaceholder={(hasPlaceholder(f) && f.placeholder) || undefined}
+                  dropdownPlaceholder={
+                    (hasPlaceholder(f) && f.placeholder) || undefined
+                  }
                   listMode={(hasListMode(f) && f.listMode) || undefined}
                   style={textInputStyle}
-                  containerStyle={{flex: 1}}
+                  containerStyle={{ flex: 1 }}
                 />
               </TransparentView>
             </View>
           );
         }
-        return null
+        return null;
       }
       case 'Image': {
         return (
@@ -439,9 +451,7 @@ export default function TypedForm({
 
   return (
     <TransparentView style={style}>
-      <View>
-        {formFields}
-      </View>
+      <View>{formFields}</View>
     </TransparentView>
   );
 }

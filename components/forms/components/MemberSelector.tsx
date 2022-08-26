@@ -34,7 +34,7 @@ export default function MemberSelector({
   values,
   onValueChange
 }: {
-  data: any[],
+  data: any[];
   values: number[];
   onValueChange: (val: number[]) => void;
 }) {
@@ -53,17 +53,19 @@ export default function MemberSelector({
   }, [setShowMembersList]);
 
   const selectedMembersList = useCallback(() => {
-    console.log(data[0].presigned_profile_image_url)
-    console.log(data[1].presigned_profile_image_url)
-    return data.filter(member => values.includes(member.id)).map((member: any) => (
-      <TransparentView key={member.id} style={{ marginTop: 11 }}>
-        <UserWithColor
-          name={`${member.first_name} ${member.last_name}`}
-          memberColour={member.member_colour}
-          userImage={member.presigned_profile_image_url}
-        />
-      </TransparentView>
-    ));
+    console.log(data[0].presigned_profile_image_url);
+    console.log(data[1].presigned_profile_image_url);
+    return data
+      .filter((member) => values.includes(member.id))
+      .map((member: any) => (
+        <TransparentView key={member.id} style={{ marginTop: 11 }}>
+          <UserWithColor
+            name={`${member.first_name} ${member.last_name}`}
+            memberColour={member.member_colour}
+            userImage={member.presigned_profile_image_url}
+          />
+        </TransparentView>
+      ));
   }, [values]);
 
   const preparedData = useCallback(() => {

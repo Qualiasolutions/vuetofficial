@@ -50,24 +50,24 @@ const AddFamilyMemberScreen = ({
   return (
     <TransparentFullPageScrollView>
       <TransparentPaddedView style={styles.formContainer}>
-      {errorContent}
-      <RTKForm
-        fields={formFields}
-        methodHooks={{
-          POST: useCreateUserInviteMutation
-        }}
-        formType="CREATE"
-        onSubmitSuccess={() => {
-          navigation.navigate('FamilySettings');
-        }}
-        onSubmitFailure={() => {
-          setErrorMessage(t('common.genericError'));
-        }}
-        extraFields={{
-          family: userFullDetails?.family.id,
-          invitee: userFullDetails?.id
-        }}
-      />
+        {errorContent}
+        <RTKForm
+          fields={formFields}
+          methodHooks={{
+            POST: useCreateUserInviteMutation
+          }}
+          formType="CREATE"
+          onSubmitSuccess={() => {
+            navigation.navigate('FamilySettings');
+          }}
+          onSubmitFailure={() => {
+            setErrorMessage(t('common.genericError'));
+          }}
+          extraFields={{
+            family: userFullDetails?.family.id,
+            invitee: userFullDetails?.id
+          }}
+        />
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
   );

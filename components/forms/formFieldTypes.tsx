@@ -91,20 +91,24 @@ export type FormFieldTypes = {
   [key: string]: Field;
 };
 
-export const hasValueToDisplay = (x: any): x is AddMembersField | AddFamilyMembersField | RadioField =>
+export const hasValueToDisplay = (
+  x: any
+): x is AddMembersField | AddFamilyMembersField | RadioField =>
   x.valueToDisplay;
 
 export const hasPermittedValues = (
   x: any
-): x is AddMembersField | AddFamilyMembersField | RadioField | DropDownField | DropDownWithOtherField =>
-  !!x.permittedValues;
+): x is
+  | AddMembersField
+  | AddFamilyMembersField
+  | RadioField
+  | DropDownField
+  | DropDownWithOtherField => !!x.permittedValues;
 
 export const hasPlaceholder = (
   x: any
-): x is DropDownField | DropDownWithOtherField =>
-  !!x.placeholder;
+): x is DropDownField | DropDownWithOtherField => !!x.placeholder;
 
 export const hasListMode = (
   x: any
-): x is DropDownField | DropDownWithOtherField =>
-  !!x.listMode;
+): x is DropDownField | DropDownWithOtherField => !!x.listMode;

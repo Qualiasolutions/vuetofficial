@@ -9,8 +9,5 @@ export const makeApiUrl = (path: string): string => {
 
 // Hacky string replacement for local dev (ensure can access localstack S3)
 export const parsePresignedUrl = (url: string) => {
-  return url?.replace(
-    'localstack',
-    vuetApiUrl.split(':')[0]
-  );
-}
+  return url?.replace('localstack', vuetApiUrl.split(':')[0]);
+};
