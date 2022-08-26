@@ -1,5 +1,6 @@
 import { ColorName } from 'constants/Colors';
 
 export const headerTintColorMapping = {
-  holidays: 'white'
+  holidays: 'white',
+  cars: 'white',
 } as { [key: string]: ColorName };

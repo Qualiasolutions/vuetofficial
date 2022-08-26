@@ -23,6 +23,8 @@ import { backgroundComponents } from 'screens/Forms/EntityForms/utils/background
 import { headerRightMapping } from './utils/headerRightMapping';
 import { headerBackgroundMapping } from './utils/headerBackgroundMapping';
 import { headerTintColorMapping } from './utils/headerTintColorMapping';
+import { headerMapping, HeaderProps } from './utils/headerMappings';
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -65,20 +67,29 @@ export default function EntityListScreen({
       ) : null;
 
     const HeaderBackgroundComponent =
-      entityData && headerBackgroundMapping[route.params.entityTypeName];
+      headerBackgroundMapping[route.params.entityTypeName];
     const headerBackground = () =>
       HeaderBackgroundComponent ? <HeaderBackgroundComponent /> : null;
 
     const headerTintColor =
-      (entityData && headerTintColorMapping[route.params.entityTypeName]) ||
+      (headerTintColorMapping[route.params.entityTypeName]) ||
       null;
 
-    navigation.setOptions({
+    const HeaderComponent = headerMapping[route.params.entityTypeName] || null
+    const header = HeaderComponent ? (props: HeaderProps) => <HeaderComponent {...props}/> : null
+
+    const options: Partial<NativeStackNavigationOptions> = {
       title: t(`entityTypes.${route.params.entityTypeName}`),
       headerRight,
       headerBackground,
       headerTintColor
-    });
+    }
+
+    if (header) {
+      options.header = header
+    }
+
+    navigation.setOptions(options);
   }, [route.params.entityTypeName]);
 
   if (isLoading || !entityData) {
