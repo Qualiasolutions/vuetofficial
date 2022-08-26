@@ -1,19 +1,13 @@
 import { RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationOptions, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackHeaderProps, NativeStackNavigationOptions, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor, View } from 'components/Themed';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { EntityTabParamList } from 'types/base';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
-export type HeaderProps = {
-  options: Partial<NativeStackNavigationOptions>,
-  route: RouteProp<EntityTabParamList>,
-  navigation: NativeStackNavigationProp<EntityTabParamList>
-}
-
 export const headerMapping = {
-  cars: (props: HeaderProps) => {
+  cars: (props: NativeStackHeaderProps) => {
     console.log(props)
     const overlayColor = useThemeColor({}, 'overlay');
     return (
