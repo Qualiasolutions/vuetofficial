@@ -72,21 +72,22 @@ export default function EntityListScreen({
       HeaderBackgroundComponent ? <HeaderBackgroundComponent /> : null;
 
     const headerTintColor =
-      (headerTintColorMapping[route.params.entityTypeName]) ||
-      null;
+      headerTintColorMapping[route.params.entityTypeName] || null;
 
-    const HeaderComponent = headerMapping[route.params.entityTypeName] || null
-    const header = HeaderComponent ? (props: HeaderProps) => <HeaderComponent {...props}/> : null
+    const HeaderComponent = headerMapping[route.params.entityTypeName] || null;
+    const header = HeaderComponent
+      ? (props: HeaderProps) => <HeaderComponent {...props} />
+      : null;
 
     const options: Partial<NativeStackNavigationOptions> = {
       title: t(`entityTypes.${route.params.entityTypeName}`),
       headerRight,
       headerBackground,
       headerTintColor
-    }
+    };
 
     if (header) {
-      options.header = header
+      options.header = header;
     }
 
     navigation.setOptions(options);

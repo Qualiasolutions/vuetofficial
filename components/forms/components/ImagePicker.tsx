@@ -54,7 +54,7 @@ export function ImagePicker({
   const [selectedImage, setSelectedImage] =
     useState<ExpoImagePicker.ImageInfo | null>(null);
 
-  const borderColor = useThemeColor({}, 'grey')
+  const borderColor = useThemeColor({}, 'grey');
 
   useEffect(() => {
     if (selectedImage && selectedImage.type === 'image') {

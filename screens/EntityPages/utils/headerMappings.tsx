@@ -4,7 +4,10 @@ import { useThemeColor, View } from 'components/Themed';
 import { ImageBackground, ImageSourcePropType, StyleSheet } from 'react-native';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
-const headerWithBackground = (backgroundImage: ImageSourcePropType, height: number = 150) => {
+const headerWithBackground = (
+  backgroundImage: ImageSourcePropType,
+  height: number = 150
+) => {
   return (props: NativeStackHeaderProps) => {
     const overlayColor = useThemeColor({}, 'overlay');
     return (
@@ -16,7 +19,10 @@ const headerWithBackground = (backgroundImage: ImageSourcePropType, height: numb
           <View
             style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
           >
-            <HeaderBackButton tintColor={props.options.headerTintColor} onPress={props.navigation.goBack}/>
+            <HeaderBackButton
+              tintColor={props.options.headerTintColor}
+              onPress={props.navigation.goBack}
+            />
             <HeaderTitle tintColor={props.options.headerTintColor}>
               {props.options.title}
             </HeaderTitle>
@@ -25,13 +31,22 @@ const headerWithBackground = (backgroundImage: ImageSourcePropType, height: numb
         </ImageBackground>
       </TransparentView>
     );
-  }
-}
+  };
+};
 
 export const headerMapping = {
-  cars: headerWithBackground(require('assets/images/header-backgrounds/cars.png'), 150),
-  boats: headerWithBackground(require('assets/images/header-backgrounds/cars.png'), 150), // TODO - set boat image
-  "public-transport": headerWithBackground(require('assets/images/header-backgrounds/cars.png'), 150), // TODO - set boat image
+  cars: headerWithBackground(
+    require('assets/images/header-backgrounds/cars.png'),
+    150
+  ),
+  boats: headerWithBackground(
+    require('assets/images/header-backgrounds/cars.png'),
+    150
+  ), // TODO - set boat image
+  'public-transport': headerWithBackground(
+    require('assets/images/header-backgrounds/cars.png'),
+    150
+  ) // TODO - set boat image
 } as { [key: string]: React.ElementType | undefined };
 
 const styles = StyleSheet.create({

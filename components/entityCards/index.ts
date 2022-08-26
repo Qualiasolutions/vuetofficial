@@ -23,5 +23,5 @@ export default {
   Event: EventCard,
   DaysOff: DaysOffCard,
   Holiday: HolidayCard,
-  Car: CarCard,
+  Car: CarCard
 } as LinkMapping;

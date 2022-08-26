@@ -68,10 +68,13 @@ export default function DropDown({
           onChangeText={(newValue) => {
             setFormValues(newValue);
           }}
-          style={[{
-            height: 50,
-            flex: 1
-          }, textInputStyle]}
+          style={[
+            {
+              height: 50,
+              flex: 1
+            },
+            textInputStyle
+          ]}
         />
       )}
     </View>
