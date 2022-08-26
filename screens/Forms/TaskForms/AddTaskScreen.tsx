@@ -3,8 +3,6 @@ import { RootTabParamList } from 'types/base';
 
 import { Button, Text, useThemeColor } from 'components/Themed';
 import {
-  fixedTaskForm,
-  flexibleTaskForm,
   taskBottomFieldTypes,
   taskOneOffMiddleFieldTypes,
   taskRecurrentMiddleFieldTypes,

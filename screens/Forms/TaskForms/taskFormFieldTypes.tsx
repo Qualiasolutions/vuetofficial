@@ -186,16 +186,3 @@ export const fixedTaskForm = (): FormFieldTypes => {
     },
   };
 };
-
-export const flexibleTaskForm = (): FormFieldTypes => {
-  const { t } = useTranslation('modelFields');
-
-  return {
-    ...taskFieldTypes(),
-    due_date: {
-      type: 'Date',
-      required: true,
-      displayName: t('tasks.flexibleTask.due_date')
-    }
-  };
-};
