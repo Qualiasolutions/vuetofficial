@@ -71,15 +71,16 @@ export default function Form({
   fieldColor?: string;
   formDataType?: FormDataType;
 }) {
+  const initialFormValues = createInitialObject(fields)
   const [formValues, setFormValues] = React.useState<FieldValueTypes>(
-    createInitialObject(fields)
+    initialFormValues
   );
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   const resetState = () => {
-    setFormValues(createInitialObject(fields));
+    setFormValues(initialFormValues);
   };
 
   const methodHookTriggers: {

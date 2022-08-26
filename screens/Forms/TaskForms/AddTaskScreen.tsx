@@ -67,30 +67,34 @@ export default function AddTaskScreen({
   const fieldColor = useThemeColor({}, 'almostWhite')
 
   const taskTopFields = taskTopFieldTypes();
+  const initialTopFields = createInitialObject(taskTopFields)
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
-    createInitialObject(taskTopFields)
+    initialTopFields
   );
 
   const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes();
+  const initialRecurrentMiddleFields = createInitialObject(taskRecurrentMiddleFields)
   const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] = useState<FieldValueTypes>(
-    createInitialObject(taskRecurrentMiddleFields)
+    initialRecurrentMiddleFields
   );
 
   const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
+  const initialOneOffMiddleFields = createInitialObject(taskOneOffMiddleFields)
   const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] = useState<FieldValueTypes>(
-    createInitialObject(taskOneOffMiddleFields)
+    initialOneOffMiddleFields
   );
 
   const taskBottomFields = taskBottomFieldTypes();
+  const initialBottomFields = createInitialObject(taskBottomFields)
   const [taskBottomFieldValues, setTaskBottomFieldValues] = useState<FieldValueTypes>(
-    createInitialObject(taskBottomFields)
+    initialBottomFields
   );
 
   const resetState = () => {
-    setTaskTopFieldValues(createInitialObject(taskTopFields))
-    setTaskRecurrentMiddleFieldValues(createInitialObject(taskRecurrentMiddleFields))
-    setTaskOneOffMiddleFieldValues(createInitialObject(taskOneOffMiddleFields))
-    setTaskBottomFieldValues(createInitialObject(taskBottomFields))
+    setTaskTopFieldValues(initialTopFields)
+    setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields)
+    setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields)
+    setTaskBottomFieldValues(initialBottomFields)
   }
 
   const hasAllRequired = useMemo(() => {

@@ -139,7 +139,7 @@ export default function AddEntityForm({
             (inlineFieldsMapping[entityType] ||
               inlineFieldsMapping.default) as boolean
           }
-          createTextOverride={t('common.addAnother')}
+          createTextOverride={t('common.save')}
           fieldColor={fieldColor}
           formDataType={dataType}
         />
