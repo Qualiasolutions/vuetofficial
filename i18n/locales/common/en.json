@@ -74,7 +74,8 @@
     "transport": {
       "cars": "Cars & Motorcycles",
       "boats": "Boats",
-      "publicTransport": "Public Transport"
+      "publicTransport": "Public Transport",
+      "calendar": "Calendar"
     },
     "annualDates": {
       "anniversaries": "Birthdays & Anniversaries",
@@ -91,6 +92,8 @@
   },
   "entityTypes": {
     "cars": "Cars & Motorcycles",
+    "boats": "Boats & Other",
+    "public-transport": "Public Transport",
     "events": "Celebration / Event Planning",
     "anniversaries": "Birthdays & Anniversaries",
     "hobbies": "Interests & Hobbies",

@@ -44,6 +44,8 @@ export default function AddEntityForm({
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
   const entityForms = {
     Car: forms.car(),
+    Boat: forms.boat(),
+    PublicTransport: forms.publicTransport(),
     Birthday: forms.birthday(),
     Anniversary: forms.anniversary(),
     Event: forms.event(),

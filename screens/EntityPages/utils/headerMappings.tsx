@@ -1,20 +1,17 @@
-import { RouteProp } from '@react-navigation/native';
-import { NativeStackHeaderProps, NativeStackNavigationOptions, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor, View } from 'components/Themed';
-import { ImageBackground, StyleSheet } from 'react-native';
-import { EntityTabParamList } from 'types/base';
+import { ImageBackground, ImageSourcePropType, StyleSheet } from 'react-native';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
-export const headerMapping = {
-  cars: (props: NativeStackHeaderProps) => {
-    console.log(props)
+const headerWithBackground = (backgroundImage: ImageSourcePropType, height: number = 150) => {
+  return (props: NativeStackHeaderProps) => {
     const overlayColor = useThemeColor({}, 'overlay');
     return (
-      <TransparentView style={styles.container}>
+      <TransparentView style={{ height: height }}>
         <ImageBackground
           style={{ width: '100%', height: '100%' }}
-          source={require('assets/images/header-backgrounds/cars.png')}
+          source={backgroundImage}
         >
           <View
             style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
@@ -29,12 +26,15 @@ export const headerMapping = {
       </TransparentView>
     );
   }
+}
+
+export const headerMapping = {
+  cars: headerWithBackground(require('assets/images/header-backgrounds/cars.png'), 150),
+  boats: headerWithBackground(require('assets/images/header-backgrounds/cars.png'), 150), // TODO - set boat image
+  "public-transport": headerWithBackground(require('assets/images/header-backgrounds/cars.png'), 150), // TODO - set boat image
 } as { [key: string]: React.ElementType | undefined };
 
 const styles = StyleSheet.create({
-  container: {
-    height: 150
-  },
   overlay: {
     flex: 1,
     justifyContent: 'space-between',

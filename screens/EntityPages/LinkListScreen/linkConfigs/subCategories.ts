@@ -198,13 +198,24 @@ export default {
     },
     {
       name: 'transport.boats',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['Boat'],
+        entityTypeName: 'boats'
+      }
     },
-
     {
       name: 'transport.publicTransport',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['PublicTransport'],
+        entityTypeName: 'public-transport'
+      }
+    },
+    {
+      name: 'transport.calendar',
       toScreen: '',
       navMethod: 'push',
       toScreenParams: {}

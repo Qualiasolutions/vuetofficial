@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
-export const carForm = (): FormFieldTypes => {
+export const boatForm = (): FormFieldTypes => {
   const username = useSelector(selectUsername);
   const {
     data: userDetails,
@@ -63,16 +63,6 @@ export const carForm = (): FormFieldTypes => {
       required: false,
       displayName: t('entities.car.date_registered')
     },
-    MOT_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.MOT_due_date')
-    },
-    tax_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.tax_due_date')
-    },
     service_due_date: {
       type: 'Date',
       required: false,
@@ -83,21 +73,16 @@ export const carForm = (): FormFieldTypes => {
       required: false,
       displayName: t('entities.car.insurance_due_date')
     },
-    warranty_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.warranty_due_date')
-    },
     vehicle_type: {
       type: 'dropDown',
       permittedValues: [
         {
-          label: 'Car',
-          value: 'CAR'
+          label: 'Boat',
+          value: 'BOAT'
         },
         {
-          label: 'Motorbike',
-          value: 'MOTORBIKE'
+          label: 'Other',
+          value: 'OTHER'
         }
       ],
       required: false,

@@ -441,6 +441,9 @@ export default function TypedForm({
                   formValues[field].uri || formValues[field] || ''
                 }
                 displayInternalImage={false}
+                style={{
+                  backgroundColor: fieldColor
+                }}
               />
             </TransparentView>
           </TransparentView>
@@ -471,7 +474,7 @@ const styles = StyleSheet.create({
   inputLabelWrapper: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    minWidth: 100
+    minWidth: 110
   },
   inlineDateInput: {
     flex: 1,

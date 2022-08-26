@@ -54,6 +54,8 @@ export function ImagePicker({
   const [selectedImage, setSelectedImage] =
     useState<ExpoImagePicker.ImageInfo | null>(null);
 
+  const borderColor = useThemeColor({}, 'grey')
+
   useEffect(() => {
     if (selectedImage && selectedImage.type === 'image') {
       if (selectedImage.uri && selectedImage.width && selectedImage.height) {
@@ -100,7 +102,7 @@ export function ImagePicker({
 
   return (
     <Pressable onPress={chooseImage}>
-      <View style={[{ backgroundColor }, styles.container, style]}>
+      <View style={[{ backgroundColor, borderColor }, styles.container, style]}>
         <Image
           style={
             selectedImage || defaultImageUrl
@@ -171,6 +173,7 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     borderRadius: 60,
+    borderWidth: 1,
     shadowColor: '#333333',
     shadowOffset: {
       width: 0,

@@ -12,6 +12,7 @@ export default function DropDown({
   dropdownPlaceholder = 'Select',
   listMode = 'SCROLLVIEW',
   style = {},
+  textInputStyle = {},
   containerStyle = {},
   allowOther = false
 }: {
@@ -21,6 +22,7 @@ export default function DropDown({
   dropdownPlaceholder?: string;
   listMode?: ListModeType;
   style?: ViewStyle;
+  textInputStyle?: ViewStyle;
   containerStyle?: ViewStyle;
   allowOther?: boolean;
 }) {
@@ -66,10 +68,10 @@ export default function DropDown({
           onChangeText={(newValue) => {
             setFormValues(newValue);
           }}
-          style={{
+          style={[{
             height: 50,
             flex: 1
-          }}
+          }, textInputStyle]}
         />
       )}
     </View>
