@@ -11,11 +11,10 @@ import {
   WhiteView
 } from 'components/molecules/ViewComponents';
 import {
-  AlmostBlackText,
   BlackText,
-  PrimaryText
 } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 function CalendarScreen() {
   const username = useSelector(selectUsername);
@@ -28,7 +27,8 @@ function CalendarScreen() {
   const {
     data: allTasks,
     error,
-    isLoading
+    isLoading,
+    isFetching
   } = useGetAllScheduledTasksQuery({
     start_datetime: `${shownMonth.getFullYear()}${(
       '0' +
@@ -41,15 +41,37 @@ function CalendarScreen() {
     user_id: userDetails?.user_id || -1
   });
 
+  // Preload previous month
+  useGetAllScheduledTasksQuery({
+    start_datetime: `${shownMonth.getFullYear()}${(
+      '0' +
+      (shownMonth.getMonth())
+    ).slice(-2)}01T00:00:00Z`,
+    end_datetime: `${shownMonth.getFullYear()}${(
+      '0' +
+      (shownMonth.getMonth() + 1)
+    ).slice(-2)}01T00:00:00Z`,
+    user_id: userDetails?.user_id || -1
+  });
+
+  // Preload next month
+  useGetAllScheduledTasksQuery({
+    start_datetime: `${shownMonth.getFullYear()}${(
+      '0' +
+      (shownMonth.getMonth() + 2)
+    ).slice(-2)}01T00:00:00Z`,
+    end_datetime: `${shownMonth.getFullYear()}${(
+      '0' +
+      (shownMonth.getMonth() + 3)
+    ).slice(-2)}01T00:00:00Z`,
+    user_id: userDetails?.user_id || -1
+  });
+
   if (error) {
     return <GenericError />;
   }
 
-  const onChangeMonth = (month: Date) => {
-    setShownMonth(month);
-  };
-
-  return isLoading || !allTasks ? null : (
+  return isLoading || !allTasks ? <FullPageSpinner/> : (
     <WhiteView style={styles.container}>
       <TransparentView style={styles.monthPicker}>
         <Pressable
@@ -77,13 +99,15 @@ function CalendarScreen() {
           <BlackText text=">" style={styles.monthPickerArrow} />
         </Pressable>
       </TransparentView>
-      <Calendar
-        tasks={allTasks}
-        alwaysIncludeCurrentDate={
-          currentMonth ===
-          `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
-        }
-      />
+      {
+        isFetching ? <FullPageSpinner/> : <Calendar
+          tasks={allTasks}
+          alwaysIncludeCurrentDate={
+            currentMonth ===
+            `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
+          }
+        />
+      }
     </WhiteView>
   );
 }

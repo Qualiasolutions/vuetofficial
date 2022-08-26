@@ -33,7 +33,6 @@ export const vuetApi = createApi({
     'Holiday'
   ],
   baseQuery: customFetchBase,
-  refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
     getAllCategories: builder.query<AllCategories, void>({
       query: () => ({
