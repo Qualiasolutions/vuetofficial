@@ -13,7 +13,6 @@ import {
   ScheduledTaskResponseType,
   ScheduledTaskParsedType
 } from 'types/tasks';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 type SingleDateTasks = {
   tasks: ScheduledTaskParsedType[];
