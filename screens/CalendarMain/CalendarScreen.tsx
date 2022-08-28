@@ -13,6 +13,29 @@ import {
 import { BlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+
+const getOffsetMonthStartDateString = (
+  date: Date,
+  offset: number
+): {
+  date: Date;
+  dateString: string;
+} => {
+  const dateCopy = new Date(date.getTime());
+  dateCopy.setHours(0);
+  dateCopy.setMinutes(0);
+  dateCopy.setSeconds(0);
+  dateCopy.setMilliseconds(0);
+  dateCopy.setDate(1);
+  dateCopy.setMonth(dateCopy.getMonth() + offset);
+  return {
+    date: dateCopy,
+    dateString: dayjs.utc(dateCopy).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+  };
+};
 
 function CalendarScreen() {
   const username = useSelector(selectUsername);
@@ -20,7 +43,11 @@ function CalendarScreen() {
   const currentMonth = `${new Date().getFullYear()}-${
     new Date().getMonth() + 1
   }`;
-  const [shownMonth, setShownMonth] = React.useState<Date>(new Date());
+
+  const currentDate = new Date();
+  const [shownMonth, setShownMonth] = React.useState<Date>(
+    getOffsetMonthStartDateString(currentDate, 0).date
+  );
 
   const {
     data: allTasks,
@@ -28,39 +55,22 @@ function CalendarScreen() {
     isLoading,
     isFetching
   } = useGetAllScheduledTasksQuery({
-    start_datetime: `${shownMonth.getFullYear()}${(
-      '0' +
-      (shownMonth.getMonth() + 1)
-    ).slice(-2)}01T00:00:00Z`,
-    end_datetime: `${shownMonth.getFullYear()}${(
-      '0' +
-      (shownMonth.getMonth() + 2)
-    ).slice(-2)}01T00:00:00Z`,
+    start_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
+    end_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
     user_id: userDetails?.user_id || -1
   });
 
   // Preload previous month
   useGetAllScheduledTasksQuery({
-    start_datetime: `${shownMonth.getFullYear()}${(
-      '0' + shownMonth.getMonth()
-    ).slice(-2)}01T00:00:00Z`,
-    end_datetime: `${shownMonth.getFullYear()}${(
-      '0' +
-      (shownMonth.getMonth() + 1)
-    ).slice(-2)}01T00:00:00Z`,
+    start_datetime: getOffsetMonthStartDateString(shownMonth, -1).dateString,
+    end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
     user_id: userDetails?.user_id || -1
   });
 
   // Preload next month
   useGetAllScheduledTasksQuery({
-    start_datetime: `${shownMonth.getFullYear()}${(
-      '0' +
-      (shownMonth.getMonth() + 2)
-    ).slice(-2)}01T00:00:00Z`,
-    end_datetime: `${shownMonth.getFullYear()}${(
-      '0' +
-      (shownMonth.getMonth() + 3)
-    ).slice(-2)}01T00:00:00Z`,
+    start_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
+    end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
     user_id: userDetails?.user_id || -1
   });
 

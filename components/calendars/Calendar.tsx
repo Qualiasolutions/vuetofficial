@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import DayCalendar from './components/DayCalendar/DayCalendar';
 import React from 'react';
+import dayjs from 'dayjs';
 
 import {
   getDateStringFromDateObject,
