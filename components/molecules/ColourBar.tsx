@@ -3,10 +3,10 @@ import { TransparentView } from './ViewComponents';
 
 export default function ColourBar({
   colourHexcodes,
-  style
+  style={}
 }: {
   colourHexcodes: string[];
-  style: ViewStyle;
+  style?: ViewStyle;
 }) {
   const bars = colourHexcodes.map((colour: string, i: number) => {
     return (

@@ -40,10 +40,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 type PropTypes = {
   task: ScheduledTaskParsedType;
   selected: boolean;
-  onPress: Function;
+  onPress: (event: ScheduledTaskParsedType) => void;
+  onHeaderPress: (event: ScheduledTaskParsedType) => void;
 };
 
-export default function Task({ task, selected, onPress }: PropTypes) {
+export default function Task({ task, selected, onPress, onHeaderPress }: PropTypes) {
   const jwtAccessToken = useSelector(selectAccessToken);
   const username = useSelector(selectUsername);
 
@@ -120,20 +121,25 @@ export default function Task({ task, selected, onPress }: PropTypes) {
   const expandedHeader =
     entity && selected ? (
       <Pressable
-        onPress={() =>
-          (navigation.navigate as any)('EntityNavigator', {
-            screen: 'EntityScreen',
-            initial: false,
-            params: { entityId: entity.id }
-          })
-        }
+        onPress={() => onHeaderPress(task)}
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
         <WhiteText text={entity?.name} style={styles.expandedTitle} />
-        <Image
-          source={require('assets/images/edit.png')}
-          style={styles.editImage}
-        />
+        <Pressable
+          onPress={() =>
+            (navigation.navigate as any)('EntityNavigator', {
+              screen: 'EntityScreen',
+              initial: false,
+              params: { entityId: entity.id }
+            })
+          }
+          style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
+        >
+          <Image
+            source={require('assets/images/edit.png')}
+            style={styles.editImage}
+          />
+        </Pressable>
       </Pressable>
     ) : null;
 
@@ -244,7 +250,8 @@ export default function Task({ task, selected, onPress }: PropTypes) {
 
 const styles = StyleSheet.create({
   container: {
-    width: Layout.window.width - 100
+    width: Layout.window.width - 100,
+    marginTop: 10
   },
   titleContainer: {
     width: '40%'
