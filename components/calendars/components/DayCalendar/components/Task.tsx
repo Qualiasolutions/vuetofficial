@@ -44,7 +44,12 @@ type PropTypes = {
   onHeaderPress: (event: ScheduledTaskParsedType) => void;
 };
 
-export default function Task({ task, selected, onPress, onHeaderPress }: PropTypes) {
+export default function Task({
+  task,
+  selected,
+  onPress,
+  onHeaderPress
+}: PropTypes) {
   const jwtAccessToken = useSelector(selectAccessToken);
   const username = useSelector(selectUsername);
 

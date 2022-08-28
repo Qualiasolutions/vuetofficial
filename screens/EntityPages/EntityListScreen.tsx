@@ -24,7 +24,10 @@ import { headerRightMapping } from './utils/headerRightMapping';
 import { headerBackgroundMapping } from './utils/headerBackgroundMapping';
 import { headerTintColorMapping } from './utils/headerTintColorMapping';
 import { headerMapping } from './utils/headerMappings';
-import { NativeStackHeaderProps, NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationOptions
+} from '@react-navigation/native-stack';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (

@@ -10,9 +10,7 @@ import {
   TransparentView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import {
-  BlackText,
-} from 'components/molecules/TextComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 
@@ -44,8 +42,7 @@ function CalendarScreen() {
   // Preload previous month
   useGetAllScheduledTasksQuery({
     start_datetime: `${shownMonth.getFullYear()}${(
-      '0' +
-      (shownMonth.getMonth())
+      '0' + shownMonth.getMonth()
     ).slice(-2)}01T00:00:00Z`,
     end_datetime: `${shownMonth.getFullYear()}${(
       '0' +
@@ -71,7 +68,9 @@ function CalendarScreen() {
     return <GenericError />;
   }
 
-  return isLoading || !allTasks ? <FullPageSpinner/> : (
+  return isLoading || !allTasks ? (
+    <FullPageSpinner />
+  ) : (
     <WhiteView style={styles.container}>
       <TransparentView style={styles.monthPicker}>
         <Pressable
@@ -99,15 +98,17 @@ function CalendarScreen() {
           <BlackText text=">" style={styles.monthPickerArrow} />
         </Pressable>
       </TransparentView>
-      {
-        isFetching ? <FullPageSpinner/> : <Calendar
+      {isFetching ? (
+        <FullPageSpinner />
+      ) : (
+        <Calendar
           tasks={allTasks}
           alwaysIncludeCurrentDate={
             currentMonth ===
             `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
           }
         />
-      }
+      )}
     </WhiteView>
   );
 }

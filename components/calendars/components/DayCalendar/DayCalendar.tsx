@@ -37,8 +37,8 @@ export default function DayCalendar({
         setSelectedRecurrenceIndex(task.recurrence_index);
       }}
       onHeaderPress={() => {
-        setSelectedTaskId(null)
-        setSelectedRecurrenceIndex(null)
+        setSelectedTaskId(null);
+        setSelectedRecurrenceIndex(null);
       }}
     ></Task>
   ));

@@ -174,11 +174,13 @@ export default function AddTaskScreen({
       resourcetype: 'FixedTask', // TODO
       entity: route.params.entityId,
       end_datetime: endDatetime,
-      recurrence: parsedTopFieldValues.recurrence ? {
-        earliest_occurrence: middleFieldValues.start_datetime,
-        latest_occurrence: null,
-        recurrence: parsedTopFieldValues.recurrence
-      } : null
+      recurrence: parsedTopFieldValues.recurrence
+        ? {
+            earliest_occurrence: middleFieldValues.start_datetime,
+            latest_occurrence: null,
+            recurrence: parsedTopFieldValues.recurrence
+          }
+        : null
     };
 
     createTask(body);

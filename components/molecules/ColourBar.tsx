@@ -3,7 +3,7 @@ import { TransparentView } from './ViewComponents';
 
 export default function ColourBar({
   colourHexcodes,
-  style={}
+  style = {}
 }: {
   colourHexcodes: string[];
   style?: ViewStyle;

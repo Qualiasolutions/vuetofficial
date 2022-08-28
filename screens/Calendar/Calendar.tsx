@@ -13,7 +13,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 
 function Calendar() {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
-  const { data: userDetails } = getUserFullDetails()
+  const { data: userDetails } = getUserFullDetails();
 
   const periods = [
     {
@@ -50,16 +50,19 @@ function Calendar() {
     }
   ];
 
-  const { data: allPeriods } = useGetScheduledPeriodsQuery(userDetails?.id || - 1, {
-    skip: !userDetails?.id
-  });
+  const { data: allPeriods } = useGetScheduledPeriodsQuery(
+    userDetails?.id || -1,
+    {
+      skip: !userDetails?.id
+    }
+  );
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserDetails();
 
-  if (!allPeriods) return <FullPageSpinner/>;
+  if (!allPeriods) return <FullPageSpinner />;
 
   let periodsDates: CalendarViewProps = {};
   for (const p of allPeriods) {
@@ -68,11 +71,12 @@ function Calendar() {
       periodsDates[date] = {
         backgroundColor: almostWhiteColor,
         text: i == 0 ? p.title : '',
-        member_colour: userFullDetails?.family.users.find((user) =>
-          p.members.includes(user.id)
-        )?.member_colour || ''
-      }
-    })
+        member_colour:
+          userFullDetails?.family.users.find((user) =>
+            p.members.includes(user.id)
+          )?.member_colour || ''
+      };
+    });
   }
 
   const tabs = [
