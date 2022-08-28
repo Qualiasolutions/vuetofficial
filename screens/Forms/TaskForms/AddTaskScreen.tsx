@@ -174,12 +174,13 @@ export default function AddTaskScreen({
       resourcetype: 'FixedTask', // TODO
       entity: route.params.entityId,
       end_datetime: endDatetime,
-      recurrence: {
+      recurrence: parsedTopFieldValues.recurrence ? {
         earliest_occurrence: middleFieldValues.start_datetime,
         latest_occurrence: null,
         recurrence: parsedTopFieldValues.recurrence
-      }
+      } : null
     };
+
     createTask(body);
   };
 
@@ -203,6 +204,8 @@ export default function AddTaskScreen({
             formValues={taskTopFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
               setTaskTopFieldValues(values);
+              setCreateError('');
+              setCreateSuccessful(false);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
@@ -215,6 +218,8 @@ export default function AddTaskScreen({
               formValues={taskRecurrentMiddleFieldValues}
               onFormValuesChange={(values: FieldValueTypes) => {
                 setTaskRecurrentMiddleFieldValues(values);
+                setCreateError('');
+                setCreateSuccessful(false);
               }}
               inlineFields={true}
               fieldColor={fieldColor}
@@ -225,6 +230,8 @@ export default function AddTaskScreen({
               formValues={taskOneOffMiddleFieldValues}
               onFormValuesChange={(values: FieldValueTypes) => {
                 setTaskOneOffMiddleFieldValues(values);
+                setCreateError('');
+                setCreateSuccessful(false);
               }}
               inlineFields={true}
               fieldColor={fieldColor}
@@ -237,6 +244,8 @@ export default function AddTaskScreen({
             formValues={taskBottomFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
               setTaskBottomFieldValues(values);
+              setCreateError('');
+              setCreateSuccessful(false);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
