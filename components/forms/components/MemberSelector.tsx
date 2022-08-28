@@ -53,8 +53,6 @@ export default function MemberSelector({
   }, [setShowMembersList]);
 
   const selectedMembersList = useCallback(() => {
-    console.log(data[0].presigned_profile_image_url);
-    console.log(data[1].presigned_profile_image_url);
     return data
       .filter((member) => values.includes(member.id))
       .map((member: any) => (
