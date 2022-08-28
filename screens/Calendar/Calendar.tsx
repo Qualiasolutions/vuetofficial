@@ -8,9 +8,12 @@ import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
 import { CalendarViewProps } from 'reduxStore/services/api/types';
 import useGetUserDetails from 'hooks/useGetUserDetails';
+import getUserFullDetails from 'hooks/useGetUserDetails';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 function Calendar() {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
+  const { data: userDetails } = getUserFullDetails()
 
   const periods = [
     {
@@ -47,31 +50,29 @@ function Calendar() {
     }
   ];
 
-  const { data: allPeriods } = useGetScheduledPeriodsQuery(0);
+  const { data: allPeriods } = useGetScheduledPeriodsQuery(userDetails?.id || - 1, {
+    skip: !userDetails?.id
+  });
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserDetails();
 
-  if (!allPeriods) return null;
+  if (!allPeriods) return <FullPageSpinner/>;
 
-  let periodsDates: CalendarViewProps;
+  let periodsDates: CalendarViewProps = {};
   for (const p of allPeriods) {
     let datesArray = getDateStringsBetween(p.start_date, p.end_date);
-    periodsDates = datesArray.reduce(
-      (a, v, i) => ({
-        ...a,
-        [v]: {
-          backgroundColor: almostWhiteColor,
-          text: i == 0 ? p.title : '',
-          member_colour: userFullDetails?.family.users.find((i) =>
-            p.members.includes(i.id)
-          )?.member_colour
-        }
-      }),
-      {}
-    );
+    datesArray.forEach((date, i) => {
+      periodsDates[date] = {
+        backgroundColor: almostWhiteColor,
+        text: i == 0 ? p.title : '',
+        member_colour: userFullDetails?.family.users.find((user) =>
+          p.members.includes(user.id)
+        )?.member_colour || ''
+      }
+    })
   }
 
   const tabs = [

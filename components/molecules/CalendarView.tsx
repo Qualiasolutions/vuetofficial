@@ -49,13 +49,15 @@ export default function CalendarView({ dates }: CalendarViewProps) {
         selectedDayTextColor: primaryColor,
         ...calendarTheme
       }}
+      pagingEnabled={true}
+      horizontal={true}
       dayComponent={({ date, state }) => {
         if (date) {
           return (
             <View
               style={[
                 styles.dayComponent,
-                !!dates[date.dateString] && {
+                dates[date.dateString] && {
                   backgroundColor: dates[date.dateString]?.backgroundColor
                 }
               ]}
@@ -68,7 +70,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
               >
                 {date.day}
               </Text>
-              {!!dates[date.dateString] && (
+              {dates[date.dateString] && (
                 <Text style={{ fontSize: 10 }}>
                   {dates[date.dateString]?.text}
                 </Text>

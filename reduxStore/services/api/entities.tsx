@@ -34,7 +34,7 @@ const extendedApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     }),
     createEntity: builder.mutation<
       EntityResponseType,
@@ -47,7 +47,7 @@ const extendedApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     }),
     formCreateEntity: builder.mutation<
       EntityResponseType,
@@ -61,7 +61,7 @@ const extendedApi = vuetApi.injectEndpoints({
         },
         body: payload.formData
       }),
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     }),
     formUpdateEntity: builder.mutation<
       EntityResponseType,
@@ -77,7 +77,7 @@ const extendedApi = vuetApi.injectEndpoints({
           body: payload.formData
         };
       },
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     }),
     deleteEntity: builder.mutation<
       EntityResponseType,
@@ -89,7 +89,7 @@ const extendedApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     }),
     bulkCreateEntities: builder.mutation<
       EntityResponseType[],
@@ -100,7 +100,7 @@ const extendedApi = vuetApi.injectEndpoints({
         method: 'POST',
         body
       }),
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     }),
     bulkDeleteEntities: builder.mutation<
       EntityResponseType[],
@@ -111,7 +111,7 @@ const extendedApi = vuetApi.injectEndpoints({
         method: 'DELETE',
         body: { pk_ids: body.map((holiday) => holiday.id) }
       }),
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task', 'Period']
     })
   }),
   overrideExisting: true
