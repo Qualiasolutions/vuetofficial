@@ -8,6 +8,7 @@ This repo contains the code associated to the Vuet frontend.
 2. [Git Flow](#git-flow)
 3. [Deployment](#deployment)
 4. [Running on WSL2](#running-on-wsl2)
+5. [Swagger Documentation](#swagger-documentation)
 
 ## Local setup
 
@@ -62,6 +63,10 @@ export REACT_NATIVE_PACKAGER_HOSTNAME=$(netsh.exe interface ip show address "WiF
 ```
 
 And then `expo start` should run the Metro server that can be accessed by connected devices.
+
+## Swagger documentation
+
+We use a package called [drf-yasg](https://drf-yasg.readthedocs.io/en/stable/) to automatically generate Swagger API documentation on the backend. This can be seen at `http://localhost:8000/docs/swagger/` when the API is running locally. This documentation describes all of the endpoints and their basic functionality, in case new integration is required.
 
 ## Reading API Data
 
