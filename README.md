@@ -23,6 +23,8 @@ To install the required node packages locally, open a terminal in the location w
 
 Then running `ENV=LOCAL expo start` should start running the app in expo and you can press `w` to see it running in the web simulator.
 
+NOTE - the API has to also be running in order for the frontend to work. Otherwise logging in and any other API requests will always fail.
+
 ### Running on a device
 
 If you want to run the app on a device then you must find your computer's local network IP address as described [here](https://www.avast.com/c-how-to-find-ip-address#:~:text=Open%20the%20Start%20menu%20and%20type%20cmd%20to%20open%20the,that%20includes%20your%20IP%20address.). It probably looks like `192.X.Y.Z` and then start expo by running:
@@ -60,3 +62,7 @@ export REACT_NATIVE_PACKAGER_HOSTNAME=$(netsh.exe interface ip show address "WiF
 ```
 
 And then `expo start` should run the Metro server that can be accessed by connected devices.
+
+## Reading API Data
+
+The data is pulled from the API using [RTK Query](https://redux-toolkit.js.org/rtk-query/overview), a tool that handles fetching, caching and invalidating data. The RTK Query code is stored in `reduxStore/services/api` and the exported hooks should be used for retrieving the required data from the API.
