@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -24,9 +24,11 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { StyleSheet } from 'react-native';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
-const AddFamilyMemberScreen = ({
-  navigation
-}: NativeStackScreenProps<SettingsTabParamList, 'AddFamilyMember'>) => {
+const CreateUserInviteScreen = ({
+  navigation,
+  route
+}: NativeStackScreenProps<SettingsTabParamList, 'CreateUserInvite'>) => {
+  const isFamilyRequest = route.params?.familyRequest;
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
@@ -43,9 +45,29 @@ const AddFamilyMemberScreen = ({
 
   const { t } = useTranslation();
 
+  useLayoutEffect(() => {
+    if (isFamilyRequest) {
+      navigation.setOptions({
+        headerTitle: t('pageTitles.addFamilyMember')
+      });
+    } else {
+      navigation.setOptions({
+        headerTitle: t('pageTitles.addFriend')
+      });
+    }
+  }, []);
+
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage}></ErrorBox>
   ) : null;
+
+  const extraFields = {
+    invitee: userFullDetails?.id
+  } as { [key: string]: any };
+
+  if (isFamilyRequest) {
+    extraFields.family = userFullDetails?.family.id;
+  }
 
   return (
     <TransparentFullPageScrollView>
@@ -58,15 +80,16 @@ const AddFamilyMemberScreen = ({
           }}
           formType="CREATE"
           onSubmitSuccess={() => {
-            navigation.navigate('FamilySettings');
+            if (isFamilyRequest) {
+              navigation.navigate('FamilySettings');
+            } else {
+              navigation.navigate('FriendSettings');
+            }
           }}
           onSubmitFailure={() => {
             setErrorMessage(t('common.genericError'));
           }}
-          extraFields={{
-            family: userFullDetails?.family.id,
-            invitee: userFullDetails?.id
-          }}
+          extraFields={extraFields}
         />
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
@@ -79,4 +102,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AddFamilyMemberScreen;
+export default CreateUserInviteScreen;

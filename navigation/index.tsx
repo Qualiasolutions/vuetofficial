@@ -22,6 +22,7 @@ import { BottomTabNavigator } from './RootNavigator';
 import { SetupNavigator } from './SetupNavigator';
 import { FamilyRequestNavigator } from './FamilyRequestNavigator';
 import { DarkTheme, DefaultTheme } from 'constants/Colors';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -58,14 +59,17 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
     (invite) =>
       invite.phone_number === userFullDetails?.phone_number &&
       !invite.rejected &&
-      userFullDetails?.family?.id !== invite.family
+      userFullDetails?.family?.id !== invite.family &&
+      !userFullDetails?.friends
+        ?.map((user) => user.id)
+        .includes(invite.invitee.id)
   );
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
   /////////////
 
-  let navigatorComponent = null;
+  let navigatorComponent = <FullPageSpinner />;
 
   if (!isLoading) {
     if (!(jwtAccessToken && jwtRefreshToken)) {

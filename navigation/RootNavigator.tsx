@@ -16,7 +16,8 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import {
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
+  useGetUserFullDetailsQuery,
+  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -30,6 +31,7 @@ import setupPushNotifications from 'hooks/setupPushNotifications';
 import { EntityNavigator } from './EntityNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import Calendar from 'screens/Calendar/Calendar';
+import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
 
 const styles = StyleSheet.create({
   icon: {
@@ -90,6 +92,14 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
   useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+    refetchOnMountOrArgChange: true,
+    skip: !userDetails?.user_id
+  });
+  useGetAllFriendshipsQuery(userDetails?.user_id || -1, {
+    refetchOnMountOrArgChange: true,
+    skip: !userDetails?.user_id
+  });
+  useGetUserInvitesQuery(userDetails?.user_id || -1, {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });

@@ -45,6 +45,22 @@ export type UserInviteResponse = {
   rejected: boolean;
 };
 
+export type FriendshipRequest = {
+  creator: number;
+  friend: number;
+};
+
+export type FriendshipResponse = {
+  creator: number;
+  friend: number;
+  created_at: string;
+  id: number;
+};
+
+export type FriendshipDeleteRequest = {
+  id: number;
+};
+
 export type UpdateUserRequest = {
   user_id: number;
   family?: number;
@@ -84,6 +100,7 @@ export type UserResponse = {
 export type UserFullResponse = {
   id: number;
   family: FamilyResponse;
+  friends: UserResponse[];
   last_login: string;
   is_superuser: boolean;
   username: string;

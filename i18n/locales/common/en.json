@@ -13,7 +13,9 @@
     "calendar": "Calendar",
     "oops": "Oops!",
     "familySettings": "Family settings",
+    "friendSettings": "Friend settings",
     "addFamilyMember": "Add family member",
+    "addFriend": "Add to Vuet circle",
     "editFamilyMember": "Edit {{fullName}}",
     "createTask": "Add"
   },
@@ -198,8 +200,10 @@
       "willSend": "We'll send all the members a welcome notification."
     },
     "familyRequest": {
-      "title": "Family request",
-      "subtitle": "{{name}} wants to add you to their family."
+      "familyTitle": "Family request",
+      "familySubtitle": "{{name}} wants to add you to their family.",
+      "friendTitle": "Friend request",
+      "friendSubtitle": "{{name}} wants to add you to their Vuet circle."
     },
     "settings": {
       "logOutText": "Log Out",
@@ -208,6 +212,9 @@
     "familySettings": {
       "family": "Family",
       "familyMembers": "Family Members"
+    },
+    "friendSettings": {
+      "friends": "Friends"
     },
     "addTask": {
       "title": "Add Task",

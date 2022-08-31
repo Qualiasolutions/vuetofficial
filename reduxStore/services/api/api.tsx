@@ -31,7 +31,8 @@ export const vuetApi = createApi({
     'Family',
     'PushToken',
     'Country',
-    'Holiday'
+    'Holiday',
+    'Friendships'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({

@@ -51,6 +51,15 @@ const AddFamilyScreen = ({
     userFullDetails?.family?.id || -1
   );
 
+  const familyPhoneNumbers =
+    userFullDetails?.family.users.map((user) => user.phone_number) || [];
+
+  const familyInvites = userInvites?.filter(
+    (invite) =>
+      invite.family === userFullDetails?.family.id &&
+      !familyPhoneNumbers.includes(invite.phone_number)
+  );
+
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
 
   const uploadProfileImage = (image: PickedFile) => {
@@ -71,8 +80,8 @@ const AddFamilyScreen = ({
   ) : null;
 
   const addedMembersContent =
-    userInvites && userInvites.length > 0 ? (
-      userInvites.map((invite) => (
+    familyInvites && familyInvites.length > 0 ? (
+      familyInvites.map((invite) => (
         <TransparentView key={invite.id}>
           <AlmostBlackText text={`${invite.first_name} ${invite.last_name}`} />
         </TransparentView>

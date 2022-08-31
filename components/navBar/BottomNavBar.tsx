@@ -98,7 +98,13 @@ export default function BottomNavBar({
                       .entityTypes
                   });
                 } else if (currentScreen === 'FamilySettings') {
-                  navigation.navigate('AddFamilyMember');
+                  navigation.navigate('CreateUserInvite', {
+                    familyRequest: true
+                  });
+                } else if (currentScreen === 'FriendSettings') {
+                  navigation.navigate('CreateUserInvite', {
+                    familyRequest: false
+                  });
                 } else {
                   navigation.navigate('CreateTask');
                 }

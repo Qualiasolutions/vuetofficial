@@ -74,6 +74,12 @@ const SettingsScreen = ({
             navigation.navigate('FamilySettings');
           }}
         />
+        <Button
+          title="FRIEND SETTINGS"
+          onPress={() => {
+            navigation.navigate('FriendSettings');
+          }}
+        />
       </View>
     </View>
   );

@@ -84,6 +84,10 @@ const customFetchBase: BaseQueryFn<
     }
   }
 
+  if (result.error) {
+    console.log(result.error);
+  }
+
   return result;
 };
 

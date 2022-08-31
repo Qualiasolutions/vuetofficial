@@ -18,6 +18,7 @@ import {
   useUpdateUserInviteMutation
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useCreateFriendshipMutation } from 'reduxStore/services/api/friendships';
 
 const FamilyRequestScreen = () => {
   const username = useSelector(selectUsername);
@@ -36,6 +37,8 @@ const FamilyRequestScreen = () => {
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
   const [updateUserInvite, userInviteResult] = useUpdateUserInviteMutation();
+  const [createFriendship, createFriendshipResult] =
+    useCreateFriendshipMutation();
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
@@ -45,7 +48,10 @@ const FamilyRequestScreen = () => {
     (invite) =>
       invite.phone_number === userFullDetails?.phone_number &&
       !invite.rejected &&
-      userFullDetails?.family?.id !== invite.family
+      userFullDetails?.family?.id !== invite.family &&
+      !userFullDetails?.friends
+        ?.map((user) => user.id)
+        .includes(invite.invitee.id)
   );
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
@@ -61,27 +67,44 @@ const FamilyRequestScreen = () => {
   return (
     <AlmostWhiteContainerView>
       <PageTitle
-        text={t('screens.familyRequest.title', {
-          name: userFullDetails?.first_name
-        })}
+        text={
+          firstInviteForUser?.family
+            ? t('screens.familyRequest.familyTitle')
+            : t('screens.familyRequest.friendTitle')
+        }
       />
       <PageSubtitle
-        text={t('screens.familyRequest.subtitle', {
-          name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
-        })}
+        text={
+          firstInviteForUser?.family
+            ? t('screens.familyRequest.familySubtitle', {
+                name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+              })
+            : t('screens.familyRequest.friendSubtitle', {
+                name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+              })
+        }
       />
       {errorContent}
       <Button
         title={t('common.accept')}
         onPress={() => {
           if (userFullDetails) {
-            updateUserDetails({
-              // If the user has already done setup then don't overwrite their details
-              ...(userFullDetails.has_done_setup ? {} : firstInviteForUser),
-              user_id: userFullDetails.id,
-              family: firstInviteForUser?.family,
-              has_done_setup: true
-            });
+            if (firstInviteForUser) {
+              if (firstInviteForUser.family) {
+                updateUserDetails({
+                  // If the user has already done setup then don't overwrite their details
+                  ...(userFullDetails.has_done_setup ? {} : firstInviteForUser),
+                  user_id: userFullDetails.id,
+                  family: firstInviteForUser?.family,
+                  has_done_setup: true
+                });
+              } else {
+                createFriendship({
+                  friend: userFullDetails.id,
+                  creator: firstInviteForUser.invitee.id
+                });
+              }
+            }
           }
         }}
         style={styles.confirmButton}

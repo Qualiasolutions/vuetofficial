@@ -58,7 +58,8 @@ export type FamilyRequestTabScreenProps<
 export type SettingsTabParamList = {
   Settings: undefined;
   FamilySettings: undefined;
-  AddFamilyMember: undefined;
+  FriendSettings: undefined;
+  CreateUserInvite: { familyRequest: boolean };
   EditFamilyMember: { id: number | string };
   EditFamilyInvite: { id: number | string };
 };

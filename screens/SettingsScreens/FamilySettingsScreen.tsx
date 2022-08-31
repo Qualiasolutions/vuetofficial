@@ -26,7 +26,6 @@ import {
 } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { View } from 'components/Themed';
 import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
 import UserWithColor from 'components/molecules/UserWithColor';

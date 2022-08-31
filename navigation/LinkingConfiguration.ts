@@ -22,7 +22,7 @@ const linking: LinkingOptions<TabParamList> = {
           FamilySettings: 'family',
           EditFamilyMember: 'edit-family-member',
           EditFamilyInvite: 'edit-family-invite',
-          AddFamilyMember: 'add-family-member'
+          CreateUserInvite: 'create-user-invite'
         }
       },
       EntityNavigator: {
