@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, useThemeColor, View } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
@@ -21,6 +21,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import Colors from '../../constants/Colors';
 import Search from './Search';
 import { UserResponse } from 'types/users';
+import { Feather } from '@expo/vector-icons';
 
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
@@ -101,12 +102,22 @@ export function ListingModal(props: ListingModalProps) {
   const bottomSheetRef = useRef<RBSheet>(null);
   const {
     visible,
+    sectionSettings,
     data = {},
     itemToName = (item) => item.name,
     onClose,
     onSelect,
     ListItemComponent = DefaultListItemComponent
   } = props;
+
+  const initialMinimisedSettings = useMemo<{ [key: string]: boolean }>(() => {
+    const settings: { [key: string]: boolean } = {}
+    for (const sectionName in sectionSettings) {
+      settings[sectionName] = sectionSettings[sectionName].minimisable && !sectionSettings[sectionName].initOpen
+    }
+    return settings
+  }, [sectionSettings])
+  const [minimisedSettings, setMinimisedSettings] = useState<{ [key: string]: boolean }>(initialMinimisedSettings)
 
   useEffect(() => {
     if (visible) bottomSheetRef?.current?.open();
@@ -115,7 +126,30 @@ export function ListingModal(props: ListingModalProps) {
 
   const sections = Object.keys(data).map(sectionName => {
     if (data[sectionName].length === 0) return null
-    const sectionHeader = <AlmostBlackText text={sectionName} style={listingModalStyles.sectionHeading}/>
+    const sectionHeader = (
+      <Pressable onPress={() => {
+        if (sectionSettings[sectionName].minimisable) {
+          setMinimisedSettings({
+            ...minimisedSettings,
+            [sectionName]: !minimisedSettings[sectionName]})
+            }
+          }
+        }
+      >
+        <TransparentView style={listingModalStyles.sectionHeader}>
+          <AlmostBlackText text={sectionName} style={listingModalStyles.sectionHeaderText}/>
+          {
+            sectionSettings[sectionName].minimisable
+              ? (
+                minimisedSettings[sectionName]
+                  ? <Feather name="chevron-down" size={25} style={listingModalStyles.sectionHeaderFeather}/>
+                  : <Feather name="chevron-up" size={25} style={listingModalStyles.sectionHeaderFeather}/>
+              )
+              : null
+          }
+        </TransparentView>
+      </Pressable>
+    )
     const memberRows = data[sectionName].map((item, index) => {
       return (
         <Pressable
@@ -129,7 +163,7 @@ export function ListingModal(props: ListingModalProps) {
     })
     return <TransparentView key={sectionName} style={listingModalStyles.section}>
       {sectionHeader}
-      {memberRows}
+      {minimisedSettings[sectionName] ? null : memberRows}
     </TransparentView>
   })
 
@@ -234,8 +268,15 @@ const listingModalStyles = StyleSheet.create({
     borderBottomColor: Colors['light'].disabledGrey,
     borderBottomWidth: 1
   },
-  sectionHeading: {
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  sectionHeaderText: {
     fontSize: 20
+  },
+  sectionHeaderFeather: {
+    marginRight: 20
   },
   section: {
     marginTop: 10,
