@@ -14,11 +14,17 @@ Write-Output $windows_ip
 Invoke-Expression "netsh int portproxy reset all"
 
 # Remove Firewall Exception Rules
+Invoke-Expression "Remove-NetFireWallRule -DisplayName 'Localstack Ports' ";
 Invoke-Expression "Remove-NetFireWallRule -DisplayName 'Expo WSL2 Ports' ";
 
 # Allow Expo ports through Windows Firewall
 New-NetFireWallRule -DisplayName 'Expo WSL2 Ports' -Direction Inbound -LocalPort 19000-19006 -Action Allow -Protocol TCP;
 New-NetFireWallRule -DisplayName 'Expo WSL2 Ports' -Direction Outbound -LocalPort 19000-19006 -Action Allow -Protocol TCP;
+
+
+# Allow localstack access
+New-NetFireWallRule -DisplayName 'Localstack Ports' -Direction Inbound -LocalPort 4566 -Action Allow -Protocol TCP;
+New-NetFireWallRule -DisplayName 'Localstack Ports' -Direction Outbound -LocalPort 4566 -Action Allow -Protocol TCP;
 
 # Proxy Expo ports to WSL2
 netsh interface portproxy add v4tov4 listenport=19000 listenaddress=$windows_ip connectport=19000 connectaddress=$wsl_ip;

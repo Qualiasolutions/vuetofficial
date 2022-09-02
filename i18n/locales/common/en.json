@@ -246,6 +246,10 @@
     },
     "genericError": {
       "message": "An unexpected error occurred"
+    },
+    "memberSelector": {
+      "family": "Family",
+      "friends": "My Vuet Circle"
     }
   }
 }

@@ -25,9 +25,12 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
     members: {
       type: 'addMembers',
       required: true,
-      permittedValues: userFullDetails?.family?.users || [],
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || [],
+      },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('tasks.task.members')
+      displayName: t('entities.entity.members')
     },
     duration_minutes: {
       type: 'dropDown',
@@ -170,9 +173,12 @@ export const fixedTaskForm = (): FormFieldTypes => {
     members: {
       type: 'addMembers',
       required: true,
-      permittedValues: userFullDetails?.family?.users || [],
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || [],
+      },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('tasks.task.members')
+      displayName: t('entities.entity.members')
     },
     start_datetime: {
       type: 'DateTime',

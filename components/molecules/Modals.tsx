@@ -20,6 +20,7 @@ import {
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Colors from '../../constants/Colors';
 import Search from './Search';
+import { UserResponse } from 'types/users';
 
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
@@ -100,7 +101,7 @@ export function ListingModal(props: ListingModalProps) {
   const bottomSheetRef = useRef<RBSheet>(null);
   const {
     visible,
-    data = [],
+    data = {},
     itemToName = (item) => item.name,
     onClose,
     onSelect,
@@ -111,6 +112,26 @@ export function ListingModal(props: ListingModalProps) {
     if (visible) bottomSheetRef?.current?.open();
     else bottomSheetRef?.current?.close();
   }, [visible]);
+
+  const sections = Object.keys(data).map(sectionName => {
+    if (data[sectionName].length === 0) return null
+    const sectionHeader = <AlmostBlackText text={sectionName} style={listingModalStyles.sectionHeading}/>
+    const memberRows = data[sectionName].map((item, index) => {
+      return (
+        <Pressable
+          style={listingModalStyles.listItem}
+          key={item.id}
+          onPress={() => onSelect(item)}
+        >
+          <ListItemComponent item={item} itemToName={itemToName} />
+        </Pressable>
+      );
+    })
+    return <TransparentView key={sectionName} style={listingModalStyles.section}>
+      {sectionHeader}
+      {memberRows}
+    </TransparentView>
+  })
 
   return (
     <RBSheet
@@ -127,21 +148,10 @@ export function ListingModal(props: ListingModalProps) {
       closeOnDragDown={true}
     >
       <ScrollView>
-        <WhiteView style={styles.bottomContainer}>
+        <WhiteView style={listingModalStyles.bottomContainer}>
           <Search />
           <SafeAreaView>
-            {data?.length > 0 &&
-              data.map((item: any, index: Number) => {
-                return (
-                  <Pressable
-                    style={styles.listItem}
-                    key={item.id}
-                    onPress={() => onSelect(item)}
-                  >
-                    <ListItemComponent item={item} itemToName={itemToName} />
-                  </Pressable>
-                );
-              })}
+            {sections}
           </SafeAreaView>
         </WhiteView>
       </ScrollView>
@@ -149,9 +159,17 @@ export function ListingModal(props: ListingModalProps) {
   );
 }
 
+type ListingModalSectionSettings = {
+  minimisable: boolean,
+  initOpen?: boolean
+}
+
 type ListingModalProps = {
   visible: boolean;
-  data: any;
+  data: {
+    [key: string]: (UserResponse & { [key: string]: any })[]
+  };
+  sectionSettings: { [key: string]: ListingModalSectionSettings }
   itemToName?: (item: any) => string;
   onClose: () => void;
   onSelect: (item: any) => void;
@@ -202,14 +220,25 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 1,
     padding: 0
-  },
+  }
+});
+
+const listingModalStyles = StyleSheet.create({
   bottomContainer: {
     width: '100%',
     padding: 23
   },
   listItem: {
-    paddingVertical: 17,
+    paddingBottom: 10,
+    marginBottom: 10,
     borderBottomColor: Colors['light'].disabledGrey,
     borderBottomWidth: 1
+  },
+  sectionHeading: {
+    fontSize: 20
+  },
+  section: {
+    marginTop: 10,
+    marginBottom: 10,
   }
-});
+})

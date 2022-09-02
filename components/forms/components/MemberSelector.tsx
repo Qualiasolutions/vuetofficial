@@ -7,6 +7,7 @@ import { Image, Pressable, StyleSheet } from 'react-native';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
+import { useTranslation } from 'react-i18next';
 
 export function ModalListing({
   item
@@ -34,13 +35,17 @@ export default function MemberSelector({
   values,
   onValueChange
 }: {
-  data: any[];
+  data: {
+    family: UserResponse[],
+    friends: UserResponse[],
+  };
   values: number[];
   onValueChange: (val: number[]) => void;
 }) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
+  const { t } = useTranslation()
 
-  const onSelectMember = (member: UserFullResponse) => {
+  const onSelectMember = (member: UserResponse) => {
     if (values.includes(member.id)) {
       onValueChange([...values.filter((i) => member.id != i)]);
     } else {
@@ -53,25 +58,43 @@ export default function MemberSelector({
   }, [setShowMembersList]);
 
   const selectedMembersList = useCallback(() => {
-    return data
+    return [...data.family, ...data.friends]
       .filter((member) => values.includes(member.id))
-      .map((member: any) => (
-        <TransparentView key={member.id} style={{ marginTop: 11 }}>
-          <UserWithColor
-            name={`${member.first_name} ${member.last_name}`}
-            memberColour={member.member_colour}
-            userImage={member.presigned_profile_image_url}
-          />
-        </TransparentView>
-      ));
+      .map((member: any) => {
+        return (
+          <TransparentView key={member.id} style={{ marginTop: 11 }}>
+            <UserWithColor
+              name={`${member.first_name} ${member.last_name}`}
+              memberColour={member.member_colour}
+              userImage={member.presigned_profile_image_url}
+            />
+          </TransparentView>
+        )
+      });
   }, [values]);
 
   const preparedData = useCallback(() => {
-    return data.map((member: UserFullResponse) => ({
-      ...member,
-      selected: values.includes(member.id)
-    }));
+    return {
+      [t('components.memberSelector.family')]: data.family.map((member: UserResponse) => ({
+        ...member,
+        selected: values.includes(member.id)
+      })),
+      [t('components.memberSelector.friends')]: data.friends.map((member: UserResponse) => ({
+        ...member,
+        selected: values.includes(member.id)
+      }))
+    }
   }, [values]);
+
+  const sectionSettings = {
+    [t('components.memberSelector.family')]: {
+      minimisable: false
+    },
+    [t('components.memberSelector.friends')]: {
+      minimisable: true,
+      initOpen: false 
+    },
+  }
 
   return (
     <TransparentView>
@@ -90,6 +113,7 @@ export default function MemberSelector({
         visible={showMembersList}
         onClose={onCloseMembersList}
         data={preparedData()}
+        sectionSettings={sectionSettings}
         onSelect={onSelectMember}
         ListItemComponent={ModalListing}
       />

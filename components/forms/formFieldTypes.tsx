@@ -1,5 +1,6 @@
 import { UseTranslationResponse } from 'react-i18next';
 import { ListModeType } from 'react-native-dropdown-picker';
+import { UserFullResponse, UserResponse } from 'types/users';
 
 export type PermittedTypes =
   | 'string'
@@ -35,7 +36,10 @@ export type RadioField = BaseField<'radio', any> & {
   valueToDisplay: Function;
 };
 export type AddMembersField = BaseField<'addMembers', any> & {
-  permittedValues: any[];
+  permittedValues: {
+    friends: UserResponse[],
+    family: UserResponse[]
+  };
   valueToDisplay: Function;
 };
 export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {

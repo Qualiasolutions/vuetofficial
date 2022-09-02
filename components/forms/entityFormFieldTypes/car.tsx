@@ -107,7 +107,10 @@ export const carForm = (): FormFieldTypes => {
     members: {
       type: 'addMembers',
       required: true,
-      permittedValues: userFullDetails?.family?.users || [],
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || [],
+      },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.entity.members')
     }
