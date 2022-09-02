@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { StyleSheet } from 'react-native';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { friendForm, FriendFormFieldTypes } from './friendFormFieldTypes';
 
 const CreateUserInviteScreen = ({
   navigation,
@@ -41,7 +42,8 @@ const CreateUserInviteScreen = ({
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const formFields = deepCopy<FamilyMemberFormFieldTypes>(familyMemberForm());
+  const familyFormFields = deepCopy<FamilyMemberFormFieldTypes>(familyMemberForm());
+  const friendFormFields = deepCopy<FriendFormFieldTypes>(friendForm());
 
   const { t } = useTranslation();
 
@@ -74,7 +76,7 @@ const CreateUserInviteScreen = ({
       <TransparentPaddedView style={styles.formContainer}>
         {errorContent}
         <RTKForm
-          fields={formFields}
+          fields={isFamilyRequest ? familyFormFields : friendFormFields}
           methodHooks={{
             POST: useCreateUserInviteMutation
           }}
