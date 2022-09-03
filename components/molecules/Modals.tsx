@@ -91,7 +91,7 @@ function DefaultListItemComponent({
 }) {
   return (
     <TransparentView>
-      <TransparentView>
+      <TransparentView style={{paddingVertical: 6}}>
         <Text> {itemToName(item)} </Text>
       </TransparentView>
     </TransparentView>
@@ -126,9 +126,9 @@ export function ListingModal(props: ListingModalProps) {
 
   const sections = Object.keys(data).map(sectionName => {
     if (data[sectionName].length === 0) return null
-    const sectionHeader = (
+    const sectionHeader = sectionSettings && sectionSettings[sectionName] ? (
       <Pressable onPress={() => {
-        if (sectionSettings[sectionName].minimisable) {
+        if (sectionSettings && sectionSettings[sectionName].minimisable) {
           setMinimisedSettings({
             ...minimisedSettings,
             [sectionName]: !minimisedSettings[sectionName]})
@@ -139,7 +139,7 @@ export function ListingModal(props: ListingModalProps) {
         <TransparentView style={listingModalStyles.sectionHeader}>
           <AlmostBlackText text={sectionName} style={listingModalStyles.sectionHeaderText}/>
           {
-            sectionSettings[sectionName].minimisable
+            sectionSettings && sectionSettings[sectionName].minimisable
               ? (
                 minimisedSettings[sectionName]
                   ? <Feather name="chevron-down" size={25} style={listingModalStyles.sectionHeaderFeather}/>
@@ -149,7 +149,7 @@ export function ListingModal(props: ListingModalProps) {
           }
         </TransparentView>
       </Pressable>
-    )
+    ) : null
     const memberRows = data[sectionName].map((item, index) => {
       return (
         <Pressable
@@ -201,9 +201,9 @@ type ListingModalSectionSettings = {
 type ListingModalProps = {
   visible: boolean;
   data: {
-    [key: string]: (UserResponse & { [key: string]: any })[]
+    [key: string]: any[]
   };
-  sectionSettings: { [key: string]: ListingModalSectionSettings }
+  sectionSettings?: { [key: string]: ListingModalSectionSettings }
   itemToName?: (item: any) => string;
   onClose: () => void;
   onSelect: (item: any) => void;

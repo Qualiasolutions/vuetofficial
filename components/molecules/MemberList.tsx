@@ -1,6 +1,7 @@
 import { ModalListing } from 'components/forms/components/MemberSelector';
 import { useThemeColor } from 'components/Themed';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Pressable, Image } from 'react-native';
 import { UserFullResponse, UserResponse } from 'types/users';
 import MemberCircle from './MemberCircle';
@@ -45,6 +46,8 @@ export default function MemberList({
   const [showmodal, setshowmodal] = useState<boolean>(false);
   const [selectedMembers, setSelectedMembers] = useState<UserResponse[]>([]);
 
+  const { t } = useTranslation()
+
   const onSelectMember = (member: UserResponse) => {
     if (selectedMembers.some((i) => i.id == member.id)) {
       setSelectedMembers([...selectedMembers.filter((i) => i.id != member.id)]);
@@ -60,10 +63,12 @@ export default function MemberList({
   };
 
   const preparedData = useCallback(() => {
-    return userFullDetails.family.users.map((member: UserResponse) => ({
-      ...member,
-      selected: selectedMembers.map((m) => m.id).includes(member.id)
-    }));
+    return {
+      [t('components.memberSelector.family')]: userFullDetails.family.users.map((member: UserResponse) => ({
+        ...member,
+        selected: selectedMembers.map((m) => m.id).includes(member.id)
+      }))
+    };
   }, [selectedMembers]);
 
   return (
