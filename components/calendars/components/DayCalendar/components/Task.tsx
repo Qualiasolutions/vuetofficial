@@ -92,9 +92,14 @@ export default function Task({
     return <GenericError />;
   }
 
-  const membersList = userFullDetails?.family?.users?.filter((item: any) =>
+  const familyMembersList = userFullDetails?.family?.users?.filter((item: any) =>
     task.members.includes(item.id)
   );
+  const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
+    task.members.includes(item.id)
+  );
+
+  const membersList = [...(familyMembersList || []), ...(friendMembersList || [])]
 
   const entity = allEntities.byId[task.entity];
 
