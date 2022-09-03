@@ -28,7 +28,7 @@ export default function CreateTask({
     {
       options: Category[] | EntityResponseType[]
     }
-  >({});
+  >({ options: [] });
   const [selectedCategory, setSelectedCategory] = useState<Category | null>();
   const [selectedEntity, setSelectedEntity] =
     useState<EntityParsedType | null>();
