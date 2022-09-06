@@ -29,6 +29,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const LoginScreen = ({
   navigation
@@ -36,6 +37,7 @@ const LoginScreen = ({
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -46,24 +48,24 @@ const LoginScreen = ({
     passwordToUse: string
   ) => {
     setErrorMessage('');
-    await getTokenAsync(usernameToUse, passwordToUse)
-      .then(({ access, refresh }) => {
-        if (access) {
-          dispatch(setAccessToken(access));
-          dispatch(setRefreshToken(refresh));
-          dispatch(setUsername(usernameToUse));
-        } else {
-          setErrorMessage(
-            'Failed to log in. Please check that you have entered your credentials correctly'
-          );
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrorMessage(
-          'Failed to log in. Please check that you have entered your credentials correctly'
-        );
-      });
+    try {
+      const { access, refresh } = await getTokenAsync(
+        usernameToUse,
+        passwordToUse
+      );
+      if (access) {
+        dispatch(setAccessToken(access));
+        dispatch(setRefreshToken(refresh));
+        dispatch(setUsername(usernameToUse));
+      } else {
+        setErrorMessage(t('screens.logIn.failedLogin'));
+        setSubmitting(false);
+      }
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(t('screens.logIn.failedLogin'));
+      setSubmitting(false);
+    }
   };
 
   const errorContent = errorMessage ? (
@@ -103,11 +105,18 @@ const LoginScreen = ({
           text={t('screens.logIn.forgotPassword')}
         />
       </TransparentView>
-      <Button
-        title={t('common.confirm')}
-        onPress={() => setTokenAsync(username, password)}
-        style={styles.confirmButton}
-      />
+      {submitting ? (
+        <PaddedSpinner spinnerColor="buttonDefault" />
+      ) : (
+        <Button
+          title={t('common.confirm')}
+          onPress={() => {
+            setSubmitting(true);
+            setTokenAsync(username, password);
+          }}
+          style={styles.confirmButton}
+        />
+      )}
       <Text>{t('screens.logIn.dontHaveAccount')}</Text>
       <Pressable
         onPress={() => {
