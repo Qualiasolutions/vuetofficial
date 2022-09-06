@@ -22,10 +22,11 @@ import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet } from 'react-native';
-import { PaddedSpinner } from 'components/molecules/Spinners';
+import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import RadioInput from 'components/forms/components/RadioInput';
+import useGetUserDetails from 'hooks/useGetUserDetails';
 
 const formTypes = [
   {
@@ -53,6 +54,7 @@ export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
   const { t } = useTranslation();
+  const { data: userDetails } = useGetUserDetails();
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
   const [createError, setCreateError] = useState<string>('');
   const [formType, setFormType] = useState<AddTaskFormType>('TASK');
@@ -68,34 +70,56 @@ export default function AddTaskScreen({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const taskTopFields = taskTopFieldTypes();
-  const initialTopFields = createInitialObject(taskTopFields);
-  const [taskTopFieldValues, setTaskTopFieldValues] =
-    useState<FieldValueTypes>(initialTopFields);
-
-  const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes();
-  const initialRecurrentMiddleFields = createInitialObject(
-    taskRecurrentMiddleFields
+  const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
+    {}
   );
   const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] =
-    useState<FieldValueTypes>(initialRecurrentMiddleFields);
-
-  const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
-  const initialOneOffMiddleFields = createInitialObject(taskOneOffMiddleFields);
+    useState<FieldValueTypes>({});
   const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] =
-    useState<FieldValueTypes>(initialOneOffMiddleFields);
-
-  const taskBottomFields = taskBottomFieldTypes();
-  const initialBottomFields = createInitialObject(taskBottomFields);
+    useState<FieldValueTypes>({});
   const [taskBottomFieldValues, setTaskBottomFieldValues] =
-    useState<FieldValueTypes>(initialBottomFields);
+    useState<FieldValueTypes>({});
+  const [loadedFields, setLoadedFields] = useState<boolean>(false);
+  const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const resetState = () => {
-    setTaskTopFieldValues(initialTopFields);
-    setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
-    setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
-    setTaskBottomFieldValues(initialBottomFields);
-  };
+  const taskTopFields = taskTopFieldTypes();
+  const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes();
+  const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
+  const taskBottomFields = taskBottomFieldTypes();
+
+  useEffect(() => {
+    if (userDetails) {
+      const initialTopFields = createInitialObject(taskTopFields, userDetails);
+      setTaskTopFieldValues(initialTopFields);
+
+      const initialRecurrentMiddleFields = createInitialObject(
+        taskRecurrentMiddleFields,
+        userDetails
+      );
+      setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
+
+      const initialOneOffMiddleFields = createInitialObject(
+        taskOneOffMiddleFields,
+        userDetails
+      );
+      setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+
+      const initialBottomFields = createInitialObject(
+        taskBottomFields,
+        userDetails
+      );
+      setTaskBottomFieldValues(initialBottomFields);
+
+      setResetState(() => () => {
+        setTaskTopFieldValues(initialTopFields);
+        setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
+        setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+        setTaskBottomFieldValues(initialBottomFields);
+      });
+
+      setLoadedFields(true);
+    }
+  }, [userDetails]);
 
   const hasAllRequired = useMemo(() => {
     for (const fieldName in taskTopFields) {
@@ -185,6 +209,10 @@ export default function AddTaskScreen({
 
     createTask(body);
   };
+
+  if (!(userDetails && loadedFields)) {
+    return <FullPageSpinner />;
+  }
 
   return (
     <TransparentFullPageScrollView>

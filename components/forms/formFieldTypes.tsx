@@ -22,6 +22,7 @@ export type BaseField<TypeName, ValueType> = {
   required: boolean;
   displayName?: string | UseTranslationResponse<string> | undefined;
   initialValue?: ValueType;
+  disabled?: boolean;
 };
 
 export type StringField = BaseField<'string', string>;
@@ -37,8 +38,8 @@ export type RadioField = BaseField<'radio', any> & {
 };
 export type AddMembersField = BaseField<'addMembers', any> & {
   permittedValues: {
-    friends: UserResponse[],
-    family: UserResponse[]
+    friends: UserResponse[];
+    family: UserResponse[];
   };
   valueToDisplay: Function;
 };

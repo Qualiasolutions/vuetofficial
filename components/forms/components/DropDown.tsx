@@ -14,7 +14,8 @@ export default function DropDown({
   style = {},
   textInputStyle = {},
   containerStyle = {},
-  allowOther = false
+  allowOther = false,
+  disabled = false
 }: {
   value: string;
   items: any[];
@@ -25,10 +26,12 @@ export default function DropDown({
   textInputStyle?: ViewStyle;
   containerStyle?: ViewStyle;
   allowOther?: boolean;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = useState<boolean>(false);
   const [showOther, setShowOther] = useState<boolean>(false);
   const borderColor = useThemeColor({}, 'grey');
+  const disabledTextColor = useThemeColor({}, 'disabledGrey');
 
   return (
     <View style={containerStyle}>
@@ -58,8 +61,10 @@ export default function DropDown({
         ]}
         textStyle={{
           fontFamily: 'Poppins',
-          fontSize: 15
+          fontSize: 15,
+          color: disabled ? disabledTextColor : 'auto'
         }}
+        disabled={disabled}
       />
       {showOther && (
         <TextInput

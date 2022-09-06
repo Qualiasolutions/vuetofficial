@@ -1,7 +1,4 @@
-import {
-  PhoneNumberField,
-  StringField
-} from 'components/forms/formFieldTypes';
+import { PhoneNumberField, StringField } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 
 export type FriendFormFieldTypes = {

@@ -94,7 +94,7 @@ export const boatForm = (): FormFieldTypes => {
       required: true,
       permittedValues: {
         family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || [],
+        friends: userFullDetails?.friends || []
       },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.entity.members')

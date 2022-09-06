@@ -91,7 +91,7 @@ function DefaultListItemComponent({
 }) {
   return (
     <TransparentView>
-      <TransparentView style={{paddingVertical: 6}}>
+      <TransparentView style={{ paddingVertical: 6 }}>
         <Text> {itemToName(item)} </Text>
       </TransparentView>
     </TransparentView>
@@ -111,45 +111,60 @@ export function ListingModal(props: ListingModalProps) {
   } = props;
 
   const initialMinimisedSettings = useMemo<{ [key: string]: boolean }>(() => {
-    const settings: { [key: string]: boolean } = {}
+    const settings: { [key: string]: boolean } = {};
     for (const sectionName in sectionSettings) {
-      settings[sectionName] = sectionSettings[sectionName].minimisable && !sectionSettings[sectionName].initOpen
+      settings[sectionName] =
+        sectionSettings[sectionName].minimisable &&
+        !sectionSettings[sectionName].initOpen;
     }
-    return settings
-  }, [sectionSettings])
-  const [minimisedSettings, setMinimisedSettings] = useState<{ [key: string]: boolean }>(initialMinimisedSettings)
+    return settings;
+  }, [sectionSettings]);
+  const [minimisedSettings, setMinimisedSettings] = useState<{
+    [key: string]: boolean;
+  }>(initialMinimisedSettings);
 
   useEffect(() => {
     if (visible) bottomSheetRef?.current?.open();
     else bottomSheetRef?.current?.close();
   }, [visible]);
 
-  const sections = Object.keys(data).map(sectionName => {
-    if (data[sectionName].length === 0) return null
-    const sectionHeader = sectionSettings && sectionSettings[sectionName] ? (
-      <Pressable onPress={() => {
-        if (sectionSettings && sectionSettings[sectionName].minimisable) {
-          setMinimisedSettings({
-            ...minimisedSettings,
-            [sectionName]: !minimisedSettings[sectionName]})
+  const sections = Object.keys(data).map((sectionName) => {
+    if (data[sectionName].length === 0) return null;
+    const sectionHeader =
+      sectionSettings && sectionSettings[sectionName] ? (
+        <Pressable
+          onPress={() => {
+            if (sectionSettings && sectionSettings[sectionName].minimisable) {
+              setMinimisedSettings({
+                ...minimisedSettings,
+                [sectionName]: !minimisedSettings[sectionName]
+              });
             }
-          }
-        }
-      >
-        <TransparentView style={listingModalStyles.sectionHeader}>
-          <AlmostBlackText text={sectionName} style={listingModalStyles.sectionHeaderText}/>
-          {
-            sectionSettings && sectionSettings[sectionName].minimisable
-              ? (
-                minimisedSettings[sectionName]
-                  ? <Feather name="chevron-down" size={25} style={listingModalStyles.sectionHeaderFeather}/>
-                  : <Feather name="chevron-up" size={25} style={listingModalStyles.sectionHeaderFeather}/>
+          }}
+        >
+          <TransparentView style={listingModalStyles.sectionHeader}>
+            <AlmostBlackText
+              text={sectionName}
+              style={listingModalStyles.sectionHeaderText}
+            />
+            {sectionSettings && sectionSettings[sectionName].minimisable ? (
+              minimisedSettings[sectionName] ? (
+                <Feather
+                  name="chevron-down"
+                  size={25}
+                  style={listingModalStyles.sectionHeaderFeather}
+                />
+              ) : (
+                <Feather
+                  name="chevron-up"
+                  size={25}
+                  style={listingModalStyles.sectionHeaderFeather}
+                />
               )
-              : null
-          }
-        </TransparentView>
-      </Pressable>
-    ) : null
+            ) : null}
+          </TransparentView>
+        </Pressable>
+      ) : null;
     const memberRows = data[sectionName].map((item, index) => {
       return (
         <Pressable
@@ -160,12 +175,14 @@ export function ListingModal(props: ListingModalProps) {
           <ListItemComponent item={item} itemToName={itemToName} />
         </Pressable>
       );
-    })
-    return <TransparentView key={sectionName} style={listingModalStyles.section}>
-      {sectionHeader}
-      {minimisedSettings[sectionName] ? null : memberRows}
-    </TransparentView>
-  })
+    });
+    return (
+      <TransparentView key={sectionName} style={listingModalStyles.section}>
+        {sectionHeader}
+        {minimisedSettings[sectionName] ? null : memberRows}
+      </TransparentView>
+    );
+  });
 
   return (
     <RBSheet
@@ -184,9 +201,7 @@ export function ListingModal(props: ListingModalProps) {
       <ScrollView>
         <WhiteView style={listingModalStyles.bottomContainer}>
           <Search />
-          <SafeAreaView>
-            {sections}
-          </SafeAreaView>
+          <SafeAreaView>{sections}</SafeAreaView>
         </WhiteView>
       </ScrollView>
     </RBSheet>
@@ -194,16 +209,16 @@ export function ListingModal(props: ListingModalProps) {
 }
 
 type ListingModalSectionSettings = {
-  minimisable: boolean,
-  initOpen?: boolean
-}
+  minimisable: boolean;
+  initOpen?: boolean;
+};
 
 type ListingModalProps = {
   visible: boolean;
   data: {
-    [key: string]: any[]
+    [key: string]: any[];
   };
-  sectionSettings?: { [key: string]: ListingModalSectionSettings }
+  sectionSettings?: { [key: string]: ListingModalSectionSettings };
   itemToName?: (item: any) => string;
   onClose: () => void;
   onSelect: (item: any) => void;
@@ -280,6 +295,6 @@ const listingModalStyles = StyleSheet.create({
   },
   section: {
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   }
-})
+});

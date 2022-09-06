@@ -1,5 +1,5 @@
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { TextInput } from 'components/Themed';
+import { TextInput, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import React from 'react';
 import { Pressable, ViewStyle } from 'react-native';
@@ -10,20 +10,28 @@ export default function DateTimeTextInput({
   textInputStyle,
   containerStyle,
   onValueChange,
-  Date = false
+  Date = false,
+  disabled = false
 }: {
   value: Date | null;
   textInputStyle?: ViewStyle;
   containerStyle?: ViewStyle;
   onValueChange: Function;
   Date?: boolean;
+  disabled?: boolean;
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
     React.useState<boolean>(false);
 
+  const disabledTextColor = useThemeColor({}, 'disabledGrey');
+
   return (
     <TransparentView style={containerStyle}>
-      <Pressable onPress={() => setIsDatePickerVisible(true)}>
+      <Pressable
+        onPress={() => {
+          if (!disabled) setIsDatePickerVisible(true);
+        }}
+      >
         <TransparentView pointerEvents="none">
           <TextInput
             value={
@@ -33,7 +41,10 @@ export default function DateTimeTextInput({
                   : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
                 : ''
             }
-            style={textInputStyle || {}}
+            style={[
+              textInputStyle || {},
+              disabled ? { color: disabledTextColor } : {}
+            ]}
             placeholder={Date ? 'DD/MM/YYYY' : ''}
           />
         </TransparentView>
@@ -49,6 +60,7 @@ export default function DateTimeTextInput({
           setIsDatePickerVisible(false);
           onValueChange(null);
         }}
+        disabled={disabled}
       ></DateTimePickerModal>
     </TransparentView>
   );

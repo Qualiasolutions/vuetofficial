@@ -108,17 +108,13 @@ function CalendarScreen() {
           <BlackText text=">" style={styles.monthPickerArrow} />
         </Pressable>
       </TransparentView>
-      {isFetching ? (
-        <FullPageSpinner />
-      ) : (
-        <Calendar
-          tasks={allTasks}
-          alwaysIncludeCurrentDate={
-            currentMonth ===
-            `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
-          }
-        />
-      )}
+      <Calendar
+        tasks={allTasks}
+        alwaysIncludeCurrentDate={
+          currentMonth ===
+          `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
+        }
+      />
     </WhiteView>
   );
 }

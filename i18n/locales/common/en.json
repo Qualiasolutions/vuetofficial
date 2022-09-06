@@ -221,6 +221,12 @@
       "createSuccess": "Successfully created new task",
       "createTask": "Create Task"
     },
+    "editTask": {
+      "title": "Update Task",
+      "updateSuccess": "Successfully updated task",
+      "updateTask": "Update Task",
+      "deleteTask": "Delete Task"
+    },
     "addEntity": {
       "title": "Add {{entityType}}",
       "createSuccess": "Successfully created new {{entityType}}"
@@ -250,6 +256,11 @@
     "memberSelector": {
       "family": "Family",
       "friends": "My Vuet Circle"
+    },
+    "calendar": {
+      "task": {
+        "viewOrEdit": "View/Edit task"
+      }
     }
   }
 }

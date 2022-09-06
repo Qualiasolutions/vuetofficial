@@ -26,7 +26,7 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import { WhiteText } from 'components/molecules/TextComponents';
+import { WhiteText, PrimaryText } from 'components/molecules/TextComponents';
 import Layout from 'constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import {
@@ -36,6 +36,7 @@ import {
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useTranslation } from 'react-i18next';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -84,6 +85,8 @@ export default function Task({
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
 
+  const { t } = useTranslation();
+
   if (isLoading || !allEntities) {
     return null;
   }
@@ -92,14 +95,17 @@ export default function Task({
     return <GenericError />;
   }
 
-  const familyMembersList = userFullDetails?.family?.users?.filter((item: any) =>
-    task.members.includes(item.id)
+  const familyMembersList = userFullDetails?.family?.users?.filter(
+    (item: any) => task.members.includes(item.id)
   );
   const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
     task.members.includes(item.id)
   );
 
-  const membersList = [...(familyMembersList || []), ...(friendMembersList || [])]
+  const membersList = [
+    ...(familyMembersList || []),
+    ...(friendMembersList || [])
+  ];
 
   const entity = allEntities.byId[task.entity];
 
@@ -250,6 +256,16 @@ export default function Task({
           }}
         />
       </View>
+      {selected ? (
+        <Pressable
+          onPress={() =>
+            (navigation.navigate as any)('EditTask', { taskId: task.id })
+          }
+          style={styles.viewEditContainer}
+        >
+          <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
+        </Pressable>
+      ) : null}
       {taskCompletionForm}
       {expandedOptions}
       {memberColour}
@@ -287,6 +303,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%'
+  },
+  viewEditContainer: {
+    marginTop: 0,
+    paddingTop: 0,
+    marginLeft: 30
   },
   checkbox: {
     margin: 10

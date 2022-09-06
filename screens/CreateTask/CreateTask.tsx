@@ -24,11 +24,9 @@ export default function CreateTask({
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'CreateTask'>) {
   const [showListing, setShowListing] = useState(false);
-  const [modalData, setModalData] = useState<
-    {
-      options: Category[] | EntityResponseType[]
-    }
-  >({ options: [] });
+  const [modalData, setModalData] = useState<{
+    options: Category[] | EntityResponseType[];
+  }>({ options: [] });
   const [selectedCategory, setSelectedCategory] = useState<Category | null>();
   const [selectedEntity, setSelectedEntity] =
     useState<EntityParsedType | null>();
@@ -102,13 +100,11 @@ export default function CreateTask({
             disabled={selectedCategory == null}
             value={selectedEntity?.name}
             onPress={() => {
-              setModalData(
-                {
-                  options: allEntities.filter(
-                    (entity) => entity.category == selectedCategory?.id
-                  )
-                }
-              );
+              setModalData({
+                options: allEntities.filter(
+                  (entity) => entity.category == selectedCategory?.id
+                )
+              });
               setShowEntityListing(!showEntityListing);
             }}
           />

@@ -1,7 +1,7 @@
 import { Text } from 'components/Themed';
 import { FormFieldTypes, ImageField } from 'components/forms/formFieldTypes';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
-import { CarResponseType } from 'types/entities';
+import { CarResponseType, EntityTypeName } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useCallback, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -21,6 +21,7 @@ import * as forms from 'components/forms/entityFormFieldTypes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -34,7 +35,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
-  const entityForms = {
+  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = {
     Car: forms.car(),
     Birthday: forms.birthday(),
     Event: forms.event(),
@@ -57,18 +58,18 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     }, [])
   );
 
-  if (isLoading || !allEntities || !entityId) {
-    return null;
+  const entityToEdit = allEntities?.byId ? allEntities.byId[entityId] : null;
+
+  if (isLoading || !entityToEdit || !allEntities || !entityId) {
+    return <FullPageSpinner />;
   }
 
   if (error) {
     return <GenericError />;
   }
 
-  const entityToEdit = allEntities.byId[entityId];
-
   const formFields = deepCopy<FormFieldTypes>(
-    entityForms[entityToEdit?.resourcetype]
+    entityForms[entityToEdit.resourcetype] as FormFieldTypes
   );
 
   const dataType =

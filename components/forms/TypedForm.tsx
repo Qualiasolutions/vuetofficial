@@ -208,6 +208,7 @@ export default function TypedForm({
                   setFormErrors({ ...formErrors, [field]: '' });
                 }}
                 textInputStyle={textInputStyle}
+                disabled={fields[field].disabled}
               />
             </TransparentView>
           </TransparentView>
@@ -264,9 +265,7 @@ export default function TypedForm({
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-            <TransparentView
-              style={inlineFields ? styles.inlineInputPair : {}}
-            >
+            <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
@@ -368,6 +367,7 @@ export default function TypedForm({
                 listMode={(hasListMode(f) && f.listMode) || undefined}
                 style={textInputStyle}
                 containerStyle={{ flex: 1 }}
+                disabled={f.disabled}
               />
             </TransparentView>
           </View>
@@ -404,6 +404,7 @@ export default function TypedForm({
                 listMode={(hasListMode(f) && f.listMode) || undefined}
                 style={textInputStyle}
                 containerStyle={{ flex: 1 }}
+                disabled={f.disabled}
               />
             </TransparentView>
           </View>

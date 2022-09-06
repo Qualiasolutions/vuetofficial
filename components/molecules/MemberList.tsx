@@ -46,7 +46,7 @@ export default function MemberList({
   const [showmodal, setshowmodal] = useState<boolean>(false);
   const [selectedMembers, setSelectedMembers] = useState<UserResponse[]>([]);
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const onSelectMember = (member: UserResponse) => {
     if (selectedMembers.some((i) => i.id == member.id)) {
@@ -64,10 +64,12 @@ export default function MemberList({
 
   const preparedData = useCallback(() => {
     return {
-      [t('components.memberSelector.family')]: userFullDetails.family.users.map((member: UserResponse) => ({
-        ...member,
-        selected: selectedMembers.map((m) => m.id).includes(member.id)
-      }))
+      [t('components.memberSelector.family')]: userFullDetails.family.users.map(
+        (member: UserResponse) => ({
+          ...member,
+          selected: selectedMembers.map((m) => m.id).includes(member.id)
+        })
+      )
     };
   }, [selectedMembers]);
 

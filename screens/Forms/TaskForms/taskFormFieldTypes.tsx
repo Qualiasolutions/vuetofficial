@@ -8,7 +8,9 @@ import {
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export const taskTopFieldTypes = (): FormFieldTypes => {
+export const taskTopFieldTypes = (
+  disabledRecurrenceFields: boolean = false
+): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -27,7 +29,7 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
       required: true,
       permittedValues: {
         family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || [],
+        friends: userFullDetails?.friends || []
       },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.entity.members')
@@ -42,7 +44,8 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
         { label: '1 Hour', value: 60 }
       ],
       displayName: t('tasks.task.duration_minutes'),
-      listMode: 'MODAL'
+      listMode: 'MODAL',
+      disabled: disabledRecurrenceFields
     },
     recurrence: {
       type: 'dropDown',
@@ -58,19 +61,23 @@ export const taskTopFieldTypes = (): FormFieldTypes => {
       ],
       displayName: t('tasks.task.recurrence'),
       placeholder: 'None',
-      listMode: 'MODAL'
+      listMode: 'MODAL',
+      disabled: disabledRecurrenceFields
     }
   };
 };
 
-export const taskRecurrentMiddleFieldTypes = (): FormFieldTypes => {
+export const taskRecurrentMiddleFieldTypes = (
+  disabledRecurrenceFields: boolean = false
+): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {
     start_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('tasks.task.first_start_datetime')
+      displayName: t('tasks.task.first_start_datetime'),
+      disabled: disabledRecurrenceFields
     }
   };
 };
@@ -175,7 +182,7 @@ export const fixedTaskForm = (): FormFieldTypes => {
       required: true,
       permittedValues: {
         family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || [],
+        friends: userFullDetails?.friends || []
       },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.entity.members')

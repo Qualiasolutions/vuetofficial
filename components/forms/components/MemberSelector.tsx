@@ -36,14 +36,14 @@ export default function MemberSelector({
   onValueChange
 }: {
   data: {
-    family: UserResponse[],
-    friends: UserResponse[],
+    family: UserResponse[];
+    friends: UserResponse[];
   };
   values: number[];
   onValueChange: (val: number[]) => void;
 }) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const onSelectMember = (member: UserResponse) => {
     if (values.includes(member.id)) {
@@ -69,21 +69,25 @@ export default function MemberSelector({
               userImage={member.presigned_profile_image_url}
             />
           </TransparentView>
-        )
+        );
       });
   }, [values]);
 
   const preparedData = useCallback(() => {
     return {
-      [t('components.memberSelector.family')]: data.family.map((member: UserResponse) => ({
-        ...member,
-        selected: values.includes(member.id)
-      })),
-      [t('components.memberSelector.friends')]: data.friends.map((member: UserResponse) => ({
-        ...member,
-        selected: values.includes(member.id)
-      }))
-    }
+      [t('components.memberSelector.family')]: data.family.map(
+        (member: UserResponse) => ({
+          ...member,
+          selected: values.includes(member.id)
+        })
+      ),
+      [t('components.memberSelector.friends')]: data.friends.map(
+        (member: UserResponse) => ({
+          ...member,
+          selected: values.includes(member.id)
+        })
+      )
+    };
   }, [values]);
 
   const sectionSettings = {
@@ -92,9 +96,9 @@ export default function MemberSelector({
     },
     [t('components.memberSelector.friends')]: {
       minimisable: true,
-      initOpen: false 
-    },
-  }
+      initOpen: false
+    }
+  };
 
   return (
     <TransparentView>

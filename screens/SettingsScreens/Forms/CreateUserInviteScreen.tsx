@@ -42,7 +42,9 @@ const CreateUserInviteScreen = ({
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const familyFormFields = deepCopy<FamilyMemberFormFieldTypes>(familyMemberForm());
+  const familyFormFields = deepCopy<FamilyMemberFormFieldTypes>(
+    familyMemberForm()
+  );
   const friendFormFields = deepCopy<FriendFormFieldTypes>(friendForm());
 
   const { t } = useTranslation();

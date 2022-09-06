@@ -14,7 +14,7 @@ const lightColors = {
   lightBlack: '#212121',
   offWhite: '#F2F2F2',
   mediumLightGrey: '#9B9B9B',
-  disabledGrey: '#D5D5D5',
+  disabledGrey: '#CCCCCC',
   green: '#4CB219',
   blue: '#0086DF',
   orange: '#FFA640',

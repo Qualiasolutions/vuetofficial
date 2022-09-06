@@ -5,7 +5,6 @@ import {
   getDateStringsBetween
 } from 'utils/datesAndTimes';
 
-import tape from 'tape';
 import timezonedDate from 'timezoned-date';
 
 it('datesAndTimes ::: getDateStringFromDateObject', () => {

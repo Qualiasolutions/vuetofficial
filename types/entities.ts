@@ -7,6 +7,11 @@ export type EntityTypeName =
   | 'Hobby'
   | 'List'
   | 'Holiday'
+  | 'Trip'
+  | 'TripTransport'
+  | 'TripAccommodation'
+  | 'TripActivity'
+  | 'Pet'
   | 'DaysOff';
 
 export interface BaseEntityType {
