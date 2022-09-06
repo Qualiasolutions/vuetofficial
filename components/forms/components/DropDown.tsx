@@ -59,11 +59,17 @@ export default function DropDown({
           },
           style
         ]}
-        textStyle={{
-          fontFamily: 'Poppins',
-          fontSize: 15,
-          color: disabled ? disabledTextColor : 'auto'
-        }}
+        textStyle={[
+          {
+            fontFamily: 'Poppins',
+            fontSize: 15
+          },
+          disabled
+            ? {
+                color: disabledTextColor
+              }
+            : {}
+        ]}
         disabled={disabled}
       />
       {showOther && (

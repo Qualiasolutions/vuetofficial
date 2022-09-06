@@ -10,6 +10,8 @@ export const backgroundComponents = {
   Car: WhiteFullPageScrollView,
   Boat: WhiteFullPageScrollView,
   PublicTransport: WhiteFullPageScrollView,
+  AcademicPlan: WhiteFullPageScrollView,
+  ExtracurricularPlan: WhiteFullPageScrollView,
   default: TransparentFullPageScrollView
 } as {
   [key: string]: React.ElementType | undefined;

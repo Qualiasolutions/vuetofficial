@@ -86,9 +86,9 @@ export default {
   EDUCATION_CAREER: [
     {
       name: 'educationCareer.education',
-      toScreen: '',
+      toScreen: 'LinkList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: { listName: 'education' }
     },
     {
       name: 'educationCareer.career',

@@ -6,6 +6,8 @@ export const fieldColorMapping = {
   Car: 'almostWhite',
   Boat: 'almostWhite',
   PublicTransport: 'almostWhite',
+  AcademicPlan: 'almostWhite',
+  ExtracurricularPlan: 'almostWhite',
   Trip: 'white',
   default: 'white'
 } as { [key: string]: ColorName };

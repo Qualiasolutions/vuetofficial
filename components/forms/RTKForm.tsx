@@ -14,6 +14,7 @@ import { PaddedSpinner } from 'components/molecules/Spinners';
 import createInitialObject from './utils/createInitialObject';
 import { FieldValueTypes } from './types';
 import parseFormValues from './utils/parseFormValues';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 type FormType = 'UPDATE' | 'CREATE';
 export type FormDataType = 'json' | 'form';
@@ -69,7 +70,10 @@ export default function Form({
   fieldColor?: string;
   formDataType?: FormDataType;
 }) {
-  const initialFormValues = createInitialObject(fields);
+  const { data: userDetails } = getUserFullDetails();
+  const initialFormValues = userDetails
+    ? createInitialObject(fields, userDetails)
+    : {};
   const [formValues, setFormValues] =
     React.useState<FieldValueTypes>(initialFormValues);
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);

@@ -1,14 +1,37 @@
-export { anniversaryForm as anniversary } from './anniversary';
-export { birthdayForm as birthday } from './birthday';
-export { carForm as car } from './car';
-export { boatForm as boat } from './boat';
-export { publicTransportForm as publicTransport } from './public-transport';
-export { eventForm as event } from './event';
-export { hobbyForm as hobby } from './hobby';
-export { listForm as list } from './list';
-export { tripForm as trip } from './trip';
-export { tripTransportForm as tripTransport } from './trip-transport';
-export { tripAccommodationForm as tripAccommodation } from './trip-accommodation';
-export { tripActivityForm as tripActivity } from './trip-activity';
-export { petForm as pet } from './pet';
-export { daysOffForm as daysOff } from './daysOff';
+import { anniversaryForm } from './anniversary';
+import { birthdayForm } from './birthday';
+import { carForm } from './car';
+import { boatForm } from './boat';
+import { publicTransportForm } from './public-transport';
+import { eventForm } from './event';
+import { hobbyForm } from './hobby';
+import { listForm } from './list';
+import { tripForm } from './trip';
+import { tripTransportForm } from './trip-transport';
+import { tripAccommodationForm } from './trip-accommodation';
+import { tripActivityForm } from './trip-activity';
+import { petForm } from './pet';
+import { daysOffForm } from './days-off';
+import { academicPlanForm } from './academic-plan';
+import { extracurricularPlanForm } from './extracurricular-plan';
+
+export default () => {
+  return {
+    Car: carForm(),
+    Boat: boatForm(),
+    PublicTransport: publicTransportForm(),
+    Birthday: birthdayForm(),
+    Anniversary: anniversaryForm(),
+    Event: eventForm(),
+    Hobby: hobbyForm(),
+    List: listForm(),
+    Trip: tripForm(),
+    TripTransport: tripTransportForm(),
+    TripAccommodation: tripAccommodationForm(),
+    TripActivity: tripActivityForm(),
+    Pet: petForm(),
+    DaysOff: daysOffForm(),
+    AcademicPlan: academicPlanForm(),
+    ExtracurricularPlan: extracurricularPlanForm()
+  };
+};

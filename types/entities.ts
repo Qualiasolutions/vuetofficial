@@ -12,7 +12,9 @@ export type EntityTypeName =
   | 'TripAccommodation'
   | 'TripActivity'
   | 'Pet'
-  | 'DaysOff';
+  | 'DaysOff'
+  | 'AcademicPlan'
+  | 'ExtracurricularPlan';
 
 export interface BaseEntityType {
   id: number;

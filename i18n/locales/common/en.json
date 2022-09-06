@@ -86,11 +86,19 @@
     "career": {
       "daysOff": "Days Off",
       "careerGoal": "Career Goal & Development"
+    },
+    "education": {
+      "schoolTerms": "School Term Dates",
+      "academicPlans": "Academic Plans",
+      "extracurricularPlans": "Extracurricular Plans",
+      "schedules": "Schedules",
+      "lists": "Lists"
     }
   },
   "linkListTitles": {
     "annualDates": "Annual Dates to Remember",
-    "career": "Career"
+    "career": "Career",
+    "education": "Education"
   },
   "entityTypes": {
     "cars": "Cars & Motorcycles",
@@ -102,7 +110,10 @@
     "trips": "Trips",
     "pets": "Pets",
     "days-off": "Days Off",
-    "holidays": "Holidays"
+    "holidays": "Holidays",
+    "school-terms": "School Terms",
+    "academic-plans": "Academic Plans",
+    "extracurricular-plans": "Extracurricular Plans"
   },
   "common": {
     "confirm": "Confirm",

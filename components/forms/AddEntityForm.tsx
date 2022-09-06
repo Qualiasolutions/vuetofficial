@@ -13,7 +13,7 @@ import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import * as forms from './entityFormFieldTypes';
+import forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
@@ -42,22 +42,7 @@ export default function AddEntityForm({
   parentId?: number;
 }) {
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
-  const entityForms = {
-    Car: forms.car(),
-    Boat: forms.boat(),
-    PublicTransport: forms.publicTransport(),
-    Birthday: forms.birthday(),
-    Anniversary: forms.anniversary(),
-    Event: forms.event(),
-    Hobby: forms.hobby(),
-    List: forms.list(),
-    Trip: forms.trip(),
-    TripTransport: forms.tripTransport(),
-    TripAccommodation: forms.tripAccommodation(),
-    TripActivity: forms.tripActivity(),
-    Pet: forms.pet(),
-    DaysOff: forms.daysOff()
-  } as { [key: string]: FormFieldTypes | undefined };
+  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms();
 
   useFocusEffect(
     useCallback(() => {

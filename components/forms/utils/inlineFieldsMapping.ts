@@ -4,5 +4,7 @@ export const inlineFieldsMapping = {
   Car: true,
   Boat: true,
   Trip: true,
+  AcademicPlan: true,
+  ExtracurricularPlan: true,
   default: false
 } as { [key: string]: boolean | undefined };

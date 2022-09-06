@@ -17,7 +17,7 @@ import {
 import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import * as forms from 'components/forms/entityFormFieldTypes';
+import forms from './entityFormFieldTypes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
@@ -35,19 +35,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
-  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = {
-    Car: forms.car(),
-    Birthday: forms.birthday(),
-    Event: forms.event(),
-    Hobby: forms.hobby(),
-    List: forms.list(),
-    Trip: forms.trip(),
-    TripTransport: forms.tripTransport(),
-    TripAccommodation: forms.tripAccommodation(),
-    TripActivity: forms.tripActivity(),
-    Pet: forms.pet(),
-    DaysOff: forms.daysOff()
-  };
+  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms();
 
   const [updatedSuccessfully, setUpdatedSuccessfully] =
     useState<boolean>(false);
