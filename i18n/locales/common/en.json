@@ -140,7 +140,8 @@
       "phoneNumber": "Phone number",
       "forgotPassword": "Forgot password",
       "dontHaveAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "signUp": "Sign up",
+      "failedLogin": "Failed to log in. Please check that you have entered your credentials correctly"
     },
     "signUp": {
       "welcome": "Welcome",
