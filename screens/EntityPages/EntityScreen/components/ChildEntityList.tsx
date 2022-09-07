@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
@@ -10,6 +10,8 @@ import AddEntityForm from 'components/forms/AddEntityForm';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import linkMapping from 'components/entityCards';
 import { TransparentView } from 'components/molecules/ViewComponents';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { useTranslation } from 'react-i18next';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -31,6 +33,7 @@ export default function ChildEntityList({
   entityTypes: EntityTypeName[] | null;
   showCreateForm: boolean;
 }) {
+  const { t } = useTranslation();
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
@@ -55,11 +58,25 @@ export default function ChildEntityList({
     );
   }
 
-  const childEntityList = childEntities.map((entity) => {
-    const resourceType = entity.resourcetype;
-    const Link = linkMapping[resourceType] || DefaultLink;
-    return <Link key={entity.id} entity={entity} />;
-  });
+  const childEntityList =
+    childEntities.length > 0 ? (
+      childEntities.map((entity) => {
+        const resourceType = entity.resourcetype;
+        const Link = linkMapping[resourceType] || DefaultLink;
+        return <Link key={entity.id} entity={entity} />;
+      })
+    ) : (
+      <AlmostBlackText
+        text={t('misc.currentlyNoEntities', {
+          entityType: entityTypes
+            ? entityTypes
+                .map((entityType) => t(`entityTypes.${entityTypes}`))
+                .join(' or ')
+            : ''
+        })}
+        style={styles.noEntitiesText}
+      />
+    );
 
   return (
     <TransparentView>
@@ -73,3 +90,10 @@ export default function ChildEntityList({
     </TransparentView>
   );
 }
+
+const styles = StyleSheet.create({
+  noEntitiesText: {
+    fontSize: 20,
+    padding: 20
+  }
+});

@@ -153,9 +153,9 @@ export default function EntityListScreen({
       <BackgroundComponent>
         <TransparentPaddedView style={styles.container}>
           <AlmostBlackText
-            text={`You don't currently have any ${t(
-              `entityTypes.${route.params.entityTypeName}`
-            )}. Click the + button below to add some`}
+            text={t('misc.currentlyNoEntities', {
+              entityType: t(`entityTypes.${route.params.entityTypeName}`)
+            })}
             style={styles.noEntitiesText}
           />
         </TransparentPaddedView>

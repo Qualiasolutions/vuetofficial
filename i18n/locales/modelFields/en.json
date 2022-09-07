@@ -105,6 +105,16 @@
     "holiday": {
       "start_date": "Start Date",
       "end_date": "End Date"
+    },
+    "school": {
+      "address": "Address",
+      "phone_number": "Phone Number",
+      "email": "Email"
+    },
+    "school-break": {
+      "name": "Break name",
+      "start_date": "First day of break",
+      "end_date": "Last day of break"
     }
   },
   "familyMember": {

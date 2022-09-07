@@ -38,7 +38,7 @@ export const homeForm = (): FormFieldTypes => {
       displayName: t('entities.home.house_type'),
       permittedValues: [
         { label: 'House', value: 'HOUSE' },
-        { label: 'Apartment', value: 'APARTMENT' },
+        { label: 'Apartment', value: 'APARTMENT' }
       ],
       listMode: 'MODAL'
     },

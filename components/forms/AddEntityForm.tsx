@@ -91,10 +91,9 @@ export default function AddEntityForm({
 
   if (entityType && Object.keys(entityForms).includes(entityType)) {
     const extraFieldsFunction = extraFieldsMapping[entityType];
-    const computedExtraFields =
-      extraFieldsFunction
-        ? extraFieldsFunction(parentEntity)
-        : {};
+    const computedExtraFields = extraFieldsFunction
+      ? extraFieldsFunction(parentEntity)
+      : {};
     const extraFields = {
       ...computedExtraFields,
       resourcetype: entityType

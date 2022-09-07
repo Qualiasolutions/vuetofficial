@@ -2,12 +2,12 @@ import { List } from './types';
 
 export default [
   {
-    name: 'education.schoolTerms',
+    name: 'education.schools',
     toScreen: 'EntityList',
     navMethod: 'push',
     toScreenParams: {
-      entityTypes: ['SchoolTerm'],
-      entityTypeName: 'school-terms'
+      entityTypes: ['School'],
+      entityTypeName: 'schools'
     }
   },
   {

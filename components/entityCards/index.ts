@@ -8,6 +8,7 @@ import EventCard from './EventCard';
 import DaysOffCard from './DaysOffCard';
 import HolidayCard from './HolidayCard';
 import CarCard from './CarCard';
+import SchoolBreakCard from './SchoolBreakCard';
 
 type LinkMapping = {
   [key in EntityTypeName]?: React.ElementType;
@@ -23,5 +24,6 @@ export default {
   Event: EventCard,
   DaysOff: DaysOffCard,
   Holiday: HolidayCard,
-  Car: CarCard
+  Car: CarCard,
+  SchoolBreak: SchoolBreakCard
 } as LinkMapping;

@@ -10,6 +10,7 @@ import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 import { useTranslation } from 'react-i18next';
 import Layout from 'constants/Layout';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 const categoriesImages = {
   FAMILY: require('assets/images/categories/family.png'),
@@ -34,7 +35,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const blackColor = useThemeColor({}, 'black');
 
   if (isLoading || !allCategories) {
-    return null;
+    return <FullPageSpinner />;
   }
 
   if (error) {

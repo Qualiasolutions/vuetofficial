@@ -19,6 +19,8 @@ import { homeForm } from './home';
 import { socialMediaForm } from './social-media';
 import { socialPlanForm } from './social-plan';
 import { holidayForm } from './holiday';
+import { schoolForm } from './school';
+import { schoolBreakForm } from './school-break';
 
 export default () => {
   return {
@@ -42,6 +44,8 @@ export default () => {
     Home: homeForm(),
     SocialMedia: socialMediaForm(),
     SocialPlan: socialPlanForm(),
-    Holiday: holidayForm()
+    Holiday: holidayForm(),
+    School: schoolForm(),
+    SchoolBreak: schoolBreakForm()
   };
 };

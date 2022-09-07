@@ -88,11 +88,14 @@
       "careerGoal": "Career Planning & Goals"
     },
     "education": {
-      "schoolTerms": "School Term Dates",
+      "schools": "Schools",
       "academicPlans": "Academic Plans",
       "extracurricularPlans": "Extracurricular Plans",
       "schedules": "Schedules",
-      "lists": "Lists"
+      "lists": "Lists",
+      "school": {
+        "schoolBreaks": "School Breaks"
+      }
     }
   },
   "linkListTitles": {
@@ -111,13 +114,15 @@
     "pets": "Pets",
     "days-off": "Days Off",
     "holidays": "Holidays",
-    "school-terms": "School Terms",
+    "schools": "Schools",
     "academic-plans": "Academic Plans",
     "extracurricular-plans": "Extracurricular Plans",
     "career-goals": "Career Planning & Goals",
     "homes": "My Home(s)",
     "social-plans": "Social Plans",
-    "social-media": "Social Media"
+    "social-media": "Social Media",
+    "school-breaks": "School Breaks",
+    "SchoolBreak": "School Breaks"
   },
   "common": {
     "confirm": "Confirm",
@@ -145,7 +150,8 @@
     "turnsAgeIn": "Turns {{age}} in {{year}}",
     "editCountryList": "Edit Country List",
     "phoneNumber": "Phone number",
-    "phoneNo": "Phone no."
+    "phoneNo": "Phone no.",
+    "currentlyNoEntities": "You don't currently have any {{entityType}}. Click the + button below to add some"
   },
   "screens": {
     "logIn": {

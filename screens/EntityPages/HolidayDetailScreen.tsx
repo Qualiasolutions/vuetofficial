@@ -105,10 +105,10 @@ export default function HolidayDetailScreen({
         setIsSaving(true);
         const holidaysToDelete = previouslySelectedHolidays?.filter(
           (entity) =>
-            (!entity.custom) &&
-            (!selectedHolidays
+            !entity.custom &&
+            !selectedHolidays
               .map((ent) => ent.string_id)
-              .includes(entity.string_id))
+              .includes(entity.string_id)
         );
         const holidaysToCreate = selectedHolidays
           ?.filter(

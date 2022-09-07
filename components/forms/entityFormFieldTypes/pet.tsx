@@ -18,7 +18,8 @@ export const petForm = (): FormFieldTypes => {
         { label: 'Dog', value: 'Dog' },
         { label: 'Cat', value: 'Cat' },
         { label: 'Bird', value: 'Bird' }
-      ]
+      ],
+      listMode: 'MODAL'
     },
     breed: {
       type: 'string',

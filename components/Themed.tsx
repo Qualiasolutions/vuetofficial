@@ -88,15 +88,13 @@ export function Button(
     disabled?: boolean;
   }
 ) {
-  const { style, title, lightColor, darkColor, disabled, ...otherProps } = props;
+  const { style, title, lightColor, darkColor, disabled, ...otherProps } =
+    props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'buttonDefault'
   );
-  const disabledBackgroundColor = useThemeColor(
-    {},
-    'disabledGrey'
-  );
+  const disabledBackgroundColor = useThemeColor({}, 'disabledGrey');
   const textColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'buttonTextDefault'
