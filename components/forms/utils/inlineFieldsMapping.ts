@@ -1,10 +1,4 @@
 export const inlineFieldsMapping = {
-  Anniversary: true,
-  Birthday: true,
-  Car: true,
-  Boat: true,
-  Trip: true,
-  AcademicPlan: true,
-  ExtracurricularPlan: true,
-  default: false
+  DaysOff: false,
+  default: true
 } as { [key: string]: boolean | undefined };

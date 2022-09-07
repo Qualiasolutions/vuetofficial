@@ -12,8 +12,11 @@ export default [
   },
   {
     name: 'career.careerGoal',
-    toScreen: '',
+    toScreen: 'EntityList',
     navMethod: 'push',
-    toScreenParams: {}
+    toScreenParams: {
+      entityTypes: ['CareerGoal'],
+      entityTypeName: 'career-goal'
+    }
   }
 ] as List[];

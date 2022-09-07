@@ -91,6 +91,9 @@
     },
     "extracurricular-plan": {
       "members": "Student(s)"
+    },
+    "career-goal": {
+      "members": "Member(s)"
     }
   },
   "familyMember": {

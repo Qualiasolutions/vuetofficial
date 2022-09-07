@@ -1,13 +1,6 @@
 import { ColorName } from 'constants/Colors';
 
 export const fieldColorMapping = {
-  Anniversary: 'almostWhite',
-  Birthday: 'almostWhite',
-  Car: 'almostWhite',
-  Boat: 'almostWhite',
-  PublicTransport: 'almostWhite',
-  AcademicPlan: 'almostWhite',
-  ExtracurricularPlan: 'almostWhite',
-  Trip: 'white',
-  default: 'white'
+  DaysOff: 'white',
+  default: 'almostWhite'
 } as { [key: string]: ColorName };

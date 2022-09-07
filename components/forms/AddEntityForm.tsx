@@ -66,7 +66,11 @@ export default function AddEntityForm({
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
   const fieldColor =
-    entityType && useThemeColor({}, fieldColorMapping[entityType]);
+    entityType &&
+    useThemeColor(
+      {},
+      fieldColorMapping[entityType] || fieldColorMapping.default
+    );
 
   const dataType =
     entityType &&
@@ -123,8 +127,9 @@ export default function AddEntityForm({
           onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
           inlineFields={
-            (inlineFieldsMapping[entityType] ||
-              inlineFieldsMapping.default) as boolean
+            (entityType in inlineFieldsMapping
+              ? inlineFieldsMapping[entityType]
+              : inlineFieldsMapping.default) as boolean
           }
           createTextOverride={t('common.save')}
           fieldColor={fieldColor}

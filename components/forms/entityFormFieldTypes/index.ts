@@ -14,6 +14,7 @@ import { petForm } from './pet';
 import { daysOffForm } from './days-off';
 import { academicPlanForm } from './academic-plan';
 import { extracurricularPlanForm } from './extracurricular-plan';
+import { careerGoalForm } from './career-goals';
 
 export default () => {
   return {
@@ -32,6 +33,7 @@ export default () => {
     Pet: petForm(),
     DaysOff: daysOffForm(),
     AcademicPlan: academicPlanForm(),
-    ExtracurricularPlan: extracurricularPlanForm()
+    ExtracurricularPlan: extracurricularPlanForm(),
+    CareerGoal: careerGoalForm()
   };
 };

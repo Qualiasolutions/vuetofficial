@@ -42,7 +42,7 @@ export default function AddEntityScreen({
   );
   const headerBackgroundColor = useThemeColor(
     {},
-    backgroundColours[selectedEntityType] || 'almostWhite'
+    backgroundColours[selectedEntityType] || backgroundColours.default
   );
 
   const fieldColor =

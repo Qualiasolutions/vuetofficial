@@ -1,12 +1,7 @@
 import { ColorName } from 'constants/Colors';
 
 export const backgroundColours = {
-  Anniversary: 'white',
-  Birthday: 'white',
-  Trip: 'white',
-  AcademicPlan: 'white',
-  ExtracurricularPlan: 'white',
-  default: 'almostWhite'
+  default: 'white'
 } as {
   [key: string]: ColorName;
 };

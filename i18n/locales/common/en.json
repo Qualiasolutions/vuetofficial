@@ -85,7 +85,7 @@
     },
     "career": {
       "daysOff": "Days Off",
-      "careerGoal": "Career Goal & Development"
+      "careerGoal": "Career Planning & Goals"
     },
     "education": {
       "schoolTerms": "School Term Dates",
@@ -113,7 +113,8 @@
     "holidays": "Holidays",
     "school-terms": "School Terms",
     "academic-plans": "Academic Plans",
-    "extracurricular-plans": "Extracurricular Plans"
+    "extracurricular-plans": "Extracurricular Plans",
+    "career-goal": "Career Planning & Goals"
   },
   "common": {
     "confirm": "Confirm",
