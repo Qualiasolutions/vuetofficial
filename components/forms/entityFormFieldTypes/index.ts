@@ -16,6 +16,9 @@ import { academicPlanForm } from './academic-plan';
 import { extracurricularPlanForm } from './extracurricular-plan';
 import { careerGoalForm } from './career-goals';
 import { homeForm } from './home';
+import { socialMediaForm } from './social-media';
+import { socialPlanForm } from './social-plan';
+import { holidayForm } from './holiday';
 
 export default () => {
   return {
@@ -36,6 +39,9 @@ export default () => {
     AcademicPlan: academicPlanForm(),
     ExtracurricularPlan: extracurricularPlanForm(),
     CareerGoal: careerGoalForm(),
-    Home: homeForm()
+    Home: homeForm(),
+    SocialMedia: socialMediaForm(),
+    SocialPlan: socialPlanForm(),
+    Holiday: holidayForm()
   };
 };

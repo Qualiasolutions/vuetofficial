@@ -53,16 +53,22 @@ export default {
       toScreenParams: { listName: 'annualDates' }
     },
     {
-      name: 'social.recurringSocial',
-      toScreen: '',
+      name: 'social.socialPlans',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['SocialPlan'],
+        entityTypeName: 'social-plans'
+      }
     },
     {
       name: 'social.socialMedia',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['SocialMedia'],
+        entityTypeName: 'social-media'
+      }
     },
     {
       name: 'social.events',

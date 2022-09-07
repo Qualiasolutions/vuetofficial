@@ -2,7 +2,7 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export const hobbyForm = (): FormFieldTypes => {
+export const holidayForm = (): FormFieldTypes => {
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
@@ -21,10 +21,15 @@ export const hobbyForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.entity.name')
     },
-    notes: {
-      type: 'string',
+    start_date: {
+      type: 'Date',
       required: true,
-      displayName: t('entities.entity.notes')
+      displayName: t('entities.holiday.start_date')
+    },
+    end_date: {
+      type: 'Date',
+      required: true,
+      displayName: t('entities.holiday.end_date')
     },
     members: {
       type: 'addMembers',

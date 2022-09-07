@@ -44,7 +44,7 @@
     "social": {
       "annualDates": "Annual Dates to Remember",
       "events": "Celebration / Event Planning",
-      "recurringSocial": "Recurring Social (Non-birthday)",
+      "socialPlans": "My Social Plans",
       "socialMedia": "Social Media",
       "hobbies": "Interests & Hobbies"
     },
@@ -115,7 +115,9 @@
     "academic-plans": "Academic Plans",
     "extracurricular-plans": "Extracurricular Plans",
     "career-goals": "Career Planning & Goals",
-    "homes": "My Home(s)"
+    "homes": "My Home(s)",
+    "social-plans": "Social Plans",
+    "social-media": "Social Media"
   },
   "common": {
     "confirm": "Confirm",

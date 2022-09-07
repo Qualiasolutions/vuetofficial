@@ -1,31 +1,16 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
-import {
-  useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery
-} from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import useGetUserDetails from 'hooks/useGetUserDetails';
 
 export const carForm = (): FormFieldTypes => {
-  const username = useSelector(selectUsername);
-  const {
-    data: userDetails,
-    isLoading: isLoadingUserDetails,
-    error: userDetailsError
-  } = useGetUserDetailsQuery(username);
-
-  const { t } = useTranslation('modelFields');
-
-  if (isLoadingUserDetails || userDetailsError || !userDetails) {
-    return {};
-  }
-
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
-  } = useGetUserFullDetailsQuery(userDetails.user_id);
+  } = useGetUserDetails();
+  const { t } = useTranslation('modelFields');
 
   if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
     return {};

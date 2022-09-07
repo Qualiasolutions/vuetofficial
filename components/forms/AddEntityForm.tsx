@@ -22,7 +22,7 @@ import { dataTypeMapping } from './utils/dataTypeMapping';
 import { FormFieldTypes } from './formFieldTypes';
 
 type FieldsMapping = {
-  [key in EntityTypeName]?: (parent: EntityResponseType) => any;
+  [key in EntityTypeName]?: (parent: EntityResponseType | null) => any;
 };
 
 const extraFieldsMapping = {
@@ -31,6 +31,9 @@ const extraFieldsMapping = {
   }),
   TripAccommodation: (parent: EntityResponseType) => ({
     name: `${parent.name} accommodation`
+  }),
+  Holiday: () => ({
+    custom: true
   })
 } as FieldsMapping;
 
@@ -89,7 +92,7 @@ export default function AddEntityForm({
   if (entityType && Object.keys(entityForms).includes(entityType)) {
     const extraFieldsFunction = extraFieldsMapping[entityType];
     const computedExtraFields =
-      parentEntity && extraFieldsFunction
+      extraFieldsFunction
         ? extraFieldsFunction(parentEntity)
         : {};
     const extraFields = {

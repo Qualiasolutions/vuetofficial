@@ -27,7 +27,8 @@
       "owner": "Owner",
       "members": "Members",
       "description": "Description",
-      "image": "Image"
+      "image": "Image",
+      "notes": "Notes"
     },
     "car": {
       "make": "Make",
@@ -100,6 +101,10 @@
       "residence_type": "Property Type",
       "house_type": "House Type",
       "has_outside_area": "Outside Area?"
+    },
+    "holiday": {
+      "start_date": "Start Date",
+      "end_date": "End Date"
     }
   },
   "familyMember": {

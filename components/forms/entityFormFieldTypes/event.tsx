@@ -26,12 +26,15 @@ export const eventForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.event.date')
     },
-    owner: {
-      type: 'radio',
+    members: {
+      type: 'addMembers',
       required: true,
-      permittedValues: userFullDetails.family.users,
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || []
+      },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.owner')
+      displayName: t('entities.entity.members')
     }
   };
 };

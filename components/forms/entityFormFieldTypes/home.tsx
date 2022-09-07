@@ -1,7 +1,13 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
+import useGetUserDetails from 'hooks/useGetUserDetails';
 
 export const homeForm = (): FormFieldTypes => {
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserDetails();
   const { t } = useTranslation('modelFields');
 
   return {
@@ -45,8 +51,16 @@ export const homeForm = (): FormFieldTypes => {
         { label: 'No', value: false }
       ],
       listMode: 'MODAL'
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || []
+      },
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('entities.entity.members')
     }
-    // TODO - add foreign key picker so that we can pick
-    // a vet, walker, grommer, sitter, insurance policy
   };
 };
