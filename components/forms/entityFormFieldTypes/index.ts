@@ -15,6 +15,7 @@ import { daysOffForm } from './days-off';
 import { academicPlanForm } from './academic-plan';
 import { extracurricularPlanForm } from './extracurricular-plan';
 import { careerGoalForm } from './career-goals';
+import { homeForm } from './home';
 
 export default () => {
   return {
@@ -34,6 +35,7 @@ export default () => {
     DaysOff: daysOffForm(),
     AcademicPlan: academicPlanForm(),
     ExtracurricularPlan: extracurricularPlanForm(),
-    CareerGoal: careerGoalForm()
+    CareerGoal: careerGoalForm(),
+    Home: homeForm()
   };
 };

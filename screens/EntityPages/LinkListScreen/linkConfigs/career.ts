@@ -16,7 +16,7 @@ export default [
     navMethod: 'push',
     toScreenParams: {
       entityTypes: ['CareerGoal'],
-      entityTypeName: 'career-goal'
+      entityTypeName: 'career-goals'
     }
   }
 ] as List[];

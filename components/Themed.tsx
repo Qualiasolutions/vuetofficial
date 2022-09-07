@@ -88,10 +88,14 @@ export function Button(
     disabled?: boolean;
   }
 ) {
-  const { style, title, lightColor, darkColor, ...otherProps } = props;
+  const { style, title, lightColor, darkColor, disabled, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'buttonDefault'
+  );
+  const disabledBackgroundColor = useThemeColor(
+    {},
+    'disabledGrey'
   );
   const textColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -103,12 +107,13 @@ export function Button(
     <Pressable
       style={[
         {
-          backgroundColor,
+          backgroundColor: disabled ? disabledBackgroundColor : backgroundColor,
           color
         },
         styles.button,
         style
       ]}
+      disabled={disabled}
       {...otherProps}
     >
       <Text style={[{ color: textColor }, styles.buttonText]}>{title}</Text>

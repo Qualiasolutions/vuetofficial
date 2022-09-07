@@ -94,6 +94,12 @@
     },
     "career-goal": {
       "members": "Member(s)"
+    },
+    "home": {
+      "address": "Address",
+      "residence_type": "Property Type",
+      "house_type": "House Type",
+      "has_outside_area": "Outside Area?"
     }
   },
   "familyMember": {

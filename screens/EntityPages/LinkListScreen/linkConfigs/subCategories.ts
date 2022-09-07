@@ -143,9 +143,12 @@ export default {
   HOME_GARDEN: [
     {
       name: 'homeGarden.myHome',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['Home'],
+        entityTypeName: 'homes'
+      }
     },
     {
       name: 'homeGarden.food',
