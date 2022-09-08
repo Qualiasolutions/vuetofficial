@@ -47,12 +47,6 @@ export default {
   ],
   SOCIAL_INTERESTS: [
     {
-      name: 'social.annualDates',
-      toScreen: 'LinkList',
-      navMethod: 'push',
-      toScreenParams: { listName: 'annualDates' }
-    },
-    {
       name: 'social.socialPlans',
       toScreen: 'EntityList',
       navMethod: 'push',
@@ -62,12 +56,21 @@ export default {
       }
     },
     {
-      name: 'social.socialMedia',
+      name: 'social.anniversaries',
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
-        entityTypes: ['SocialMedia'],
-        entityTypeName: 'social-media'
+        entityTypes: ['Birthday', 'Anniversary'],
+        entityTypeName: 'anniversaries'
+      }
+    },
+    {
+      name: 'social.nationalHolidays',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Holiday'],
+        entityTypeName: 'holidays'
       }
     },
     {
@@ -86,6 +89,15 @@ export default {
       toScreenParams: {
         entityTypes: ['Hobby'],
         entityTypeName: 'hobbies'
+      }
+    },
+    {
+      name: 'social.socialMedia',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['SocialMedia'],
+        entityTypeName: 'social-media'
       }
     }
   ],

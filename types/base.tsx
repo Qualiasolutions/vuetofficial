@@ -85,6 +85,10 @@ export type EntityTabParamList = {
     entityTypes: EntityTypeName[];
     showCreateForm: boolean;
   };
+  ChildEntitiesCalendarScreen: {
+    entityId: number | string;
+    entityTypes: EntityTypeName[];
+  };
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };

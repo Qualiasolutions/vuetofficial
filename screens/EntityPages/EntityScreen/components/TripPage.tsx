@@ -28,7 +28,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
   const transportationLink = (
     <ListLink
       text="Transportation"
-      toScreen="ChildEntitiesScreen"
+      toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: [
           'Flight',
@@ -46,7 +46,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
   const accommodationLink = (
     <ListLink
       text="Accommodation"
-      toScreen="ChildEntitiesScreen"
+      toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: ['HotelOrRental', 'StayWithFriend'],
         entityId: entityIdParsed
@@ -58,7 +58,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
   const activitiesLink = (
     <ListLink
       text="Activities"
-      toScreen="ChildEntitiesScreen"
+      toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: ['TripActivity'],
         entityId: entityIdParsed

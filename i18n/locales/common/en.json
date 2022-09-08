@@ -42,7 +42,8 @@
       "vetsMedsMeasurements": "Vets, Meds and Measurements"
     },
     "social": {
-      "annualDates": "Annual Dates to Remember",
+      "anniversaries": "Birthdays & Anniversaries",
+      "nationalHolidays": "Holidays I Celebrate",
       "events": "Celebration / Event Planning",
       "socialPlans": "My Social Plans",
       "socialMedia": "Social Media",
@@ -130,7 +131,9 @@
     "TaxiOrTransfer": "Taxis or Transfers",
     "DriveTime": "Drive times",
     "HotelOrRental": "Hotels",
-    "StayWithFriend": "Stays with friends"
+    "StayWithFriend": "Stays with friends",
+    "Birthday": "Birthday",
+    "Anniversary": "Anniversary"
   },
   "common": {
     "confirm": "Confirm",

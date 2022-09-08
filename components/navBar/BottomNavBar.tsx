@@ -109,7 +109,12 @@ export default function BottomNavBar({
                   navigation.navigate('AddTask', {
                     entityId: (currentScreenParams as RouteParams).entityId
                   });
-                } else if (currentScreen === 'ChildEntitiesScreen') {
+                } else if (
+                  [
+                    'ChildEntitiesScreen',
+                    'ChildEntitiesCalendarScreen'
+                  ].includes(currentScreen)
+                ) {
                   type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
                   const entityTypes = (currentScreenParams as RouteParams)
                     .entityTypes;
@@ -124,10 +129,18 @@ export default function BottomNavBar({
                   }
                 } else if (currentScreen === 'EntityList') {
                   type RouteParams = EntityTabParamList['EntityList'];
-                  setEntityTypeOptions(
-                    (currentScreenParams as RouteParams).entityTypes
-                  );
-                  setShowingEntityTypeSelector(true);
+                  const entityTypes = (currentScreenParams as RouteParams)
+                    .entityTypes;
+                  if (entityTypes.length > 1) {
+                    setEntityTypeOptions(
+                      (currentScreenParams as RouteParams).entityTypes
+                    );
+                    setShowingEntityTypeSelector(true);
+                  } else {
+                    navigation.navigate('AddEntity', {
+                      entityTypes: entityTypes[0]
+                    });
+                  }
                 } else if (currentScreen === 'FamilySettings') {
                   navigation.navigate('CreateUserInvite', {
                     familyRequest: true

@@ -13,6 +13,7 @@ import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
 import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
+import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesCalendarScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 
@@ -57,6 +58,13 @@ export function EntityNavigator() {
       <EntityStack.Screen
         name="ChildEntitiesScreen"
         component={ChildEntitiesScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <EntityStack.Screen
+        name="ChildEntitiesCalendarScreen"
+        component={ChildEntitiesCalendarScreen}
         options={{
           headerShown: true
         }}
