@@ -20,7 +20,7 @@ import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { fieldColorMapping } from './utils/fieldColorMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
 import { FormFieldTypes } from './formFieldTypes';
-import { FieldValueTypes } from './types';
+import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType | null) => any;
@@ -31,34 +31,6 @@ const extraFieldsMapping = {
     custom: true
   })
 } as FieldsMapping;
-
-type DerivedFieldsMapping = {
-  [key in EntityTypeName]?: (formValues: FieldValueTypes) => FieldValueTypes;
-};
-
-const derivedFieldsMapping = {
-  Flight: (formValues: FieldValueTypes) => ({
-    name: `${formValues.carrier} ${formValues.booking_number}`
-  }),
-  TrainBusFerry: (formValues: FieldValueTypes) => ({
-    name: `${formValues.carrier} ${formValues.booking_number}`
-  }),
-  RentalCar: (formValues: FieldValueTypes) => ({
-    name: `${formValues.carrier} ${formValues.booking_number}`
-  }),
-  TaxiOrTransfer: (formValues: FieldValueTypes) => ({
-    name: `${formValues.carrier} ${formValues.booking_number}`
-  }),
-  DriveTime: (formValues: FieldValueTypes) => ({
-    name: `Drive ${formValues.start_location} to ${formValues.end_location}`
-  }),
-  HotelOrRental: (formValues: FieldValueTypes) => ({
-    name: `Stay at ${formValues.hotel_name}`
-  }),
-  StayWithFriend: (formValues: FieldValueTypes) => ({
-    name: `Stay with ${formValues.friend_name}`
-  })
-} as DerivedFieldsMapping;
 
 export default function AddEntityForm({
   entityType,

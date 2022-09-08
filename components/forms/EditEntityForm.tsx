@@ -23,6 +23,7 @@ import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { fieldColorMapping } from './utils/fieldColorMapping';
+import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -112,6 +113,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
             resourcetype: entityToEdit.resourcetype,
             id: entityToEdit.id
           }}
+          derivedFieldsFunction={derivedFieldsMapping[entityToEdit.resourcetype]}
           onSubmitSuccess={() => {
             setUpdatedSuccessfully(true);
           }}
