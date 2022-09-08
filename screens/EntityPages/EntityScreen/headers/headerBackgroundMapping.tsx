@@ -2,7 +2,9 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor, View } from 'components/Themed';
 import { ImageBackground, StyleSheet } from 'react-native';
 
-export const headerBackgroundMapping = {} as { [key: string]: React.ElementType | undefined };
+export const headerBackgroundMapping = {} as {
+  [key: string]: React.ElementType | undefined;
+};
 
 const styles = StyleSheet.create({
   overlay: {

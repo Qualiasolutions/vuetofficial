@@ -27,7 +27,9 @@ const headerWithBackground = (
               {props.options.title}
             </HeaderTitle>
             <View style={styles.sideSections}>
-              {props.options.headerRight ? props.options.headerRight({...props, canGoBack: false}) : null}
+              {props.options.headerRight
+                ? props.options.headerRight({ ...props, canGoBack: false })
+                : null}
             </View>
           </View>
         </ImageBackground>

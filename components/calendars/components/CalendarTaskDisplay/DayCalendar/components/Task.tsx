@@ -256,7 +256,7 @@ export default function Task({
           }}
         />
       </View>
-      {selected ? (
+      {selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
         <Pressable
           onPress={() =>
             (navigation.navigate as any)('EditTask', { taskId: task.id })
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   viewEditContainer: {
-    marginTop: 0,
+    marginTop: 10,
     paddingTop: 0,
     marginLeft: 30
   },
@@ -351,7 +351,6 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 0, width: 2 },
     shadowRadius: 5,
     shadowOpacity: 0.16,
-    height: 245,
     elevation: 5,
     borderWidth: 1
   },

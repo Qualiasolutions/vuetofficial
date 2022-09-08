@@ -1,4 +1,8 @@
-import { NativeStackHeaderProps, NativeStackNavigationOptions, NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationOptions,
+  NativeStackScreenProps
+} from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -45,13 +49,13 @@ export default function EntityScreen({
     isLoading: isLoadingEntities,
     error: entitiesError
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-  
+
   const entityIdRaw = route.params.entityId;
   const entityId =
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entity = allEntities?.byId[entityId];
-  
-  useEntityHeader(entityId)
+
+  useEntityHeader(entityId);
 
   const isLoading = isLoadingEntities;
 

@@ -26,7 +26,7 @@ export default function ChildEntitiesScreen({
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entity = allEntities?.byId[entityId];
 
-  useEntityHeader(entityId)
+  useEntityHeader(entityId);
 
   const isLoading = isLoadingEntities;
 
