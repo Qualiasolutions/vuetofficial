@@ -138,26 +138,6 @@ export default {
       toScreenParams: {}
     }
   ],
-  HEALTH_BEAUTY: [
-    {
-      name: 'healthBeauty.foodExercise',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    },
-    {
-      name: 'healthBeauty.appointments',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    },
-    {
-      name: 'healthBeauty.measurements',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    }
-  ],
   HOME_GARDEN: [
     {
       name: 'homeGarden.myHome',
@@ -176,32 +156,6 @@ export default {
     },
     {
       name: 'homeGarden.clothing',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    }
-  ],
-  FINANCE: [
-    {
-      name: 'finance.billsAdmin',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    },
-    {
-      name: 'finance.filing',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    },
-    {
-      name: 'finance.taxPlanning',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
-    },
-    {
-      name: 'finance.netWorth',
       toScreen: '',
       navMethod: 'push',
       toScreenParams: {}

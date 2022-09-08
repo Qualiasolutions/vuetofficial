@@ -26,6 +26,8 @@ import { rentalCarForm } from './rental-car';
 import { taxiTransferForm } from './taxi-transfer';
 import { hotelForm } from './hotel';
 import { stayWithFriendForm } from './stay-with-friend';
+import { healthBeautyForm } from './health-beauty';
+import { financeForm } from './finance';
 
 export default () => {
   return {
@@ -56,6 +58,8 @@ export default () => {
     TaxiOrTransfer: taxiTransferForm(),
     DriveTime: driveTimeForm(),
     HotelOrRental: hotelForm(),
-    StayWithFriend: stayWithFriendForm()
+    StayWithFriend: stayWithFriendForm(),
+    HealthBeauty: healthBeautyForm(),
+    Finance: financeForm()
   };
 };

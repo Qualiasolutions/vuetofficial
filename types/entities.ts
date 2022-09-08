@@ -19,7 +19,9 @@ export type EntityTypeName =
   | 'Pet'
   | 'DaysOff'
   | 'AcademicPlan'
-  | 'ExtracurricularPlan';
+  | 'ExtracurricularPlan'
+  | 'HealthBeauty'
+  | 'Finance';
 
 export interface BaseEntityType {
   id: number;
