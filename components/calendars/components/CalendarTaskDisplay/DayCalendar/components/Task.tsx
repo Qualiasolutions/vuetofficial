@@ -159,37 +159,42 @@ export default function Task({
       </Pressable>
     ) : null;
 
-  const expandedOptions = selected ? (
-    <View style={styles.expandedOptions}>
-      <View style={styles.expandedButtons}>
-        <SquareButton
-          buttonText={`+1\nDay`}
-          onPress={() => {
-            addDays(1);
-          }}
-          buttonStyle={{ backgroundColor: primaryColor }}
-          buttonTextStyle={styles.buttonTextStyle}
-          buttonSize={35}
-        />
-        <SquareButton
-          buttonText={'+1\nWeek'}
-          onPress={() => {
-            addDays(7);
-          }}
-          buttonStyle={{ backgroundColor: primaryColor }}
-          buttonTextStyle={styles.buttonTextStyle}
-          buttonSize={35}
-        />
-        <SquareButton
-          customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
-          onPress={() =>
-            (navigation.navigate as any)('EditTask', { taskId: task.id })
-          }
-          buttonStyle={{ backgroundColor: primaryColor }}
-        />
+  const expandedOptions =
+    selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
+      <View style={styles.expandedOptions}>
+        <View style={styles.expandedButtons}>
+          {task.resourcetype === 'FixedTask' && !task.recurrence ? (
+            <>
+              <SquareButton
+                buttonText={`+1\nDay`}
+                onPress={() => {
+                  addDays(1);
+                }}
+                buttonStyle={{ backgroundColor: primaryColor }}
+                buttonTextStyle={styles.buttonTextStyle}
+                buttonSize={35}
+              />
+              <SquareButton
+                buttonText={'+1\nWeek'}
+                onPress={() => {
+                  addDays(7);
+                }}
+                buttonStyle={{ backgroundColor: primaryColor }}
+                buttonTextStyle={styles.buttonTextStyle}
+                buttonSize={35}
+              />
+            </>
+          ) : null}
+          <SquareButton
+            customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
+            onPress={() =>
+              (navigation.navigate as any)('EditTask', { taskId: task.id })
+            }
+            buttonStyle={{ backgroundColor: primaryColor }}
+          />
+        </View>
       </View>
-    </View>
-  ) : null;
+    ) : null;
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
