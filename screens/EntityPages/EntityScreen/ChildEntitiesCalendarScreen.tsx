@@ -2,13 +2,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { EntityTabParamList } from 'types/base';
-import React, { useEffect } from 'react';
-import ChildEntityList from './components/ChildEntityList';
+import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import Calendar from 'components/calendars/Calendar';
+import useEntityHeader from './headers/useEntityHeader';
 
 export default function ChildEntitiesCalendarScreen({
   navigation,
@@ -27,11 +25,7 @@ export default function ChildEntitiesCalendarScreen({
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entity = allEntities?.byId[entityId];
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: entity?.name
-    });
-  }, [entity]);
+  useEntityHeader(entityId)
 
   const isLoading = isLoadingEntities;
 

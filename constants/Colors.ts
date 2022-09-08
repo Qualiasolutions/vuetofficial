@@ -1,5 +1,6 @@
 const lightColors = {
   primary: '#AC3201',
+  lightPrimary: '#C9663E',
   secondary: '#3E3647',
   error: '#ff0000',
   tintColor: '#2f95dc',
@@ -32,6 +33,7 @@ const colors = {
     errorText: lightColors.error,
     errorBackground: lightColors.error + '22',
     primary: lightColors.primary,
+    lightPrimary: lightColors.lightPrimary,
     black: lightColors.black,
     white: lightColors.white,
     almostBlack: lightColors.almostBlack,
@@ -64,6 +66,7 @@ const colors = {
     errorText: darkColors.error,
     errorBackground: darkColors.error + '22',
     primary: darkColors.primary,
+    lightPrimary: lightColors.lightPrimary,
     black: darkColors.black,
     white: darkColors.white,
     almostBlack: darkColors.almostBlack,

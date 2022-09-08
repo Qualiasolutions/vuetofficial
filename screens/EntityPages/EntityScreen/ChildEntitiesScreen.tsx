@@ -7,6 +7,7 @@ import ChildEntityList from './components/ChildEntityList';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import useEntityHeader from './headers/useEntityHeader';
 
 export default function ChildEntitiesScreen({
   navigation,
@@ -25,11 +26,7 @@ export default function ChildEntitiesScreen({
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entity = allEntities?.byId[entityId];
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: entity?.name
-    });
-  }, [entity]);
+  useEntityHeader(entityId)
 
   const isLoading = isLoadingEntities;
 
