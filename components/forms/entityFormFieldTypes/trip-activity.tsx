@@ -11,25 +11,35 @@ export const tripActivityForm = (): FormFieldTypes => {
   } = getUserFullDetails();
 
   return {
+    type: {
+      type: 'dropDownWithOther',
+      required: true,
+      displayName: t('entities.trip-activity.type'),
+      permittedValues: [
+        { label: 'Activity', value: 'Activity' },
+        { label: 'Dining', value: 'Dining' }
+      ],
+      listMode: 'MODAL'
+    },
     name: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.name')
+      displayName: t('entities.entity.name')
     },
     address: {
-      type: 'string',
-      required: true,
+      type: 'TextArea',
+      required: false,
       displayName: t('entities.trip-activity.address')
     },
-    company: {
+    contact_info: {
       type: 'string',
-      required: true,
-      displayName: t('entities.trip-activity.company')
+      required: false,
+      displayName: t('entities.trip-activity.contact_info')
     },
-    confirmation_number: {
+    notes: {
       type: 'string',
-      required: true,
-      displayName: t('entities.trip-activity.confirmation_number')
+      required: false,
+      displayName: t('entities.entity.notes')
     },
     start_datetime: {
       type: 'DateTime',
@@ -50,16 +60,6 @@ export const tripActivityForm = (): FormFieldTypes => {
       type: 'timezone',
       required: true,
       displayName: t('entities.trip-activity.end_timezone')
-    },
-    contact_phone: {
-      type: 'phoneNumber',
-      required: true,
-      displayName: t('entities.trip-activity.contact_phone')
-    },
-    contact_email: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.trip-activity.contact_email')
     },
     members: {
       type: 'addMembers',

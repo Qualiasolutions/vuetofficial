@@ -66,16 +66,15 @@
       "checkout_datetime": "End Time"
     },
     "trip-activity": {
-      "name": "Activity",
+      "type": "Activity type",
       "address": "Address",
       "company": "Company",
       "confirmation_number": "Booking No.",
+      "contact_info": "Phone / Email",
       "start_datetime": "Start Time",
       "start_timezone": "Start Timezone",
       "end_datetime": "End Time",
-      "end_timezone": "End Timezone",
-      "contact_phone": "Contact Phone",
-      "contact_email": "Contact Email"
+      "end_timezone": "End Timezone"
     },
     "pet": {
       "name": "Pet Name",

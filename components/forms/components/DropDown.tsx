@@ -82,7 +82,8 @@ export default function DropDown({
           style={[
             {
               height: 50,
-              flex: 1
+              flex: 1,
+              marginTop: 10
             },
             textInputStyle
           ]}
