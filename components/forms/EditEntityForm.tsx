@@ -113,7 +113,9 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
             resourcetype: entityToEdit.resourcetype,
             id: entityToEdit.id
           }}
-          derivedFieldsFunction={derivedFieldsMapping[entityToEdit.resourcetype]}
+          derivedFieldsFunction={
+            derivedFieldsMapping[entityToEdit.resourcetype]
+          }
           onSubmitSuccess={() => {
             setUpdatedSuccessfully(true);
           }}

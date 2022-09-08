@@ -1,5 +1,5 @@
-import { EntityTypeName } from "types/entities";
-import { FieldValueTypes } from "../types";
+import { EntityTypeName } from 'types/entities';
+import { FieldValueTypes } from '../types';
 
 type DerivedFieldsMapping = {
   [key in EntityTypeName]?: (formValues: FieldValueTypes) => FieldValueTypes;

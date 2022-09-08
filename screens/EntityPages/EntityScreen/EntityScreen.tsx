@@ -14,6 +14,7 @@ import SchoolPage from './components/SchoolPage';
 import TripPage from './components/TripPage';
 import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
+import EntityCalendarPage from './components/EntityCalendarPage';
 
 const resourceTypeToComponent = {
   List: ListEntityPage,
@@ -23,7 +24,7 @@ const resourceTypeToComponent = {
   Event: EventPage,
   Holiday: HolidayPage,
   School: SchoolPage,
-  default: ChildEntityList
+  default: EntityCalendarPage
 } as {
   default: React.ElementType;
   [key: string]: React.ElementType | undefined;

@@ -42,7 +42,10 @@ interface ScheduledTaskParsedType extends BaseTaskType {
   end_datetime: Date;
 }
 
-type TaskResponseType = FixedTaskResponseType | FlexibleTaskResponseType;
+type TaskResponseType =
+  | FixedTaskResponseType
+  | FlexibleTaskResponseType
+  | ScheduledTaskResponseType;
 type TaskParsedType = FixedTaskParsedType | FlexibleTaskParsedType;
 
 const isFixedTaskResponseType = (task: any): task is FixedTaskResponseType =>

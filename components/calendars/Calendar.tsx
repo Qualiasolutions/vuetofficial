@@ -1,124 +1,156 @@
-import { ScrollView, StyleSheet } from 'react-native';
-import DayCalendar from './components/DayCalendar/DayCalendar';
+import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
+import GenericError from 'components/molecules/GenericError';
 import React from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
+import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import {
+  TransparentView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
+import { FullPageSpinner } from 'components/molecules/Spinners';
+import utc from 'dayjs/plugin/utc';
+import { TaskResponseType } from 'types/tasks';
 
-import {
-  getDateStringFromDateObject,
-  getDateStringsBetween
-} from 'utils/datesAndTimes';
+dayjs.extend(utc);
 
-import {
-  FlexibleTaskResponseType,
-  FlexibleTaskParsedType,
-  ScheduledTaskResponseType,
-  ScheduledTaskParsedType
-} from 'types/tasks';
-
-type SingleDateTasks = {
-  tasks: ScheduledTaskParsedType[];
-};
-
-type AllDateTasks = { [key: string]: SingleDateTasks };
-
-const parseFixedTaskResponse = (
-  res: ScheduledTaskResponseType
-): ScheduledTaskParsedType => {
+const getOffsetMonthStartDateString = (
+  date: Date,
+  offset: number
+): {
+  date: Date;
+  dateString: string;
+} => {
+  const dateCopy = new Date(date.getTime());
+  dateCopy.setHours(0);
+  dateCopy.setMinutes(0);
+  dateCopy.setSeconds(0);
+  dateCopy.setMilliseconds(0);
+  dateCopy.setDate(1);
+  dateCopy.setMonth(dateCopy.getMonth() + offset);
   return {
-    ...res,
-    end_datetime: new Date(res.end_datetime),
-    start_datetime: new Date(res.start_datetime)
+    date: dateCopy,
+    dateString: dayjs.utc(dateCopy).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
   };
 };
 
-const parseFlexibleTaskResponse = (
-  res: FlexibleTaskResponseType
-): FlexibleTaskParsedType => {
-  return {
-    ...res,
-    due_date: new Date(res.due_date)
-  };
+type CalendarProps = {
+  filters: ((task: TaskResponseType) => boolean)[];
 };
+function Calendar({ filters }: CalendarProps) {
+  const username = useSelector(selectUsername);
+  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const currentMonth = `${new Date().getFullYear()}-${
+    new Date().getMonth() + 1
+  }`;
 
-function Calendar({
-  tasks,
-  alwaysIncludeCurrentDate = false
-}: {
-  tasks: ScheduledTaskResponseType[];
-  alwaysIncludeCurrentDate?: boolean;
-}) {
-  const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
-  const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(
-    null
+  const currentDate = new Date();
+  const [shownMonth, setShownMonth] = React.useState<Date>(
+    getOffsetMonthStartDateString(currentDate, 0).date
   );
-  const [selectedRecurrenceIndex, setSelectedRecurrenceIndex] = React.useState<
-    number | null
-  >(null);
 
-  const formatAndSetTasksPerDate = (): void => {
-    const newTasksPerDate: AllDateTasks = {};
-    for (const task of Object.values(tasks)) {
-      const parsedTask: ScheduledTaskParsedType = parseFixedTaskResponse(task);
-      const taskDates = getDateStringsBetween(
-        parsedTask.start_datetime,
-        parsedTask.end_datetime
-      );
+  const {
+    data: allTasks,
+    error,
+    isLoading,
+    isFetching
+  } = useGetAllScheduledTasksQuery({
+    start_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
+    end_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
+    user_id: userDetails?.user_id || -1
+  });
 
-      for (const taskDate of taskDates) {
-        if (newTasksPerDate[taskDate]) {
-          newTasksPerDate[taskDate].tasks.push(parsedTask);
-        } else {
-          newTasksPerDate[taskDate] = {
-            tasks: [parsedTask]
-          };
+  // Preload previous month
+  useGetAllScheduledTasksQuery({
+    start_datetime: getOffsetMonthStartDateString(shownMonth, -1).dateString,
+    end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
+    user_id: userDetails?.user_id || -1
+  });
+
+  // Preload next month
+  useGetAllScheduledTasksQuery({
+    start_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
+    end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
+    user_id: userDetails?.user_id || -1
+  });
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  if (isLoading || !allTasks) {
+    return <FullPageSpinner />;
+  }
+
+  let filteredTasks = allTasks;
+  for (const taskFilter of filters) {
+    filteredTasks = filteredTasks.filter(taskFilter);
+  }
+
+  return (
+    <WhiteView style={styles.container}>
+      <TransparentView style={styles.monthPicker}>
+        <Pressable
+          style={styles.monthPickerArrowWrapper}
+          onPress={() => {
+            const prevMonth = new Date(shownMonth.getTime());
+            prevMonth.setMonth(prevMonth.getMonth() - 1);
+            setShownMonth(prevMonth);
+          }}
+        >
+          <BlackText text="<" style={styles.monthPickerArrow} />
+        </Pressable>
+        <BlackText
+          text={dayjs(shownMonth).format('MMM')}
+          style={styles.monthPickerText}
+        />
+        <Pressable
+          style={styles.monthPickerArrowWrapper}
+          onPress={() => {
+            const nextMonth = new Date(shownMonth.getTime());
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            setShownMonth(nextMonth);
+          }}
+        >
+          <BlackText text=">" style={styles.monthPickerArrow} />
+        </Pressable>
+      </TransparentView>
+      <CalendarTaskDisplay
+        tasks={filteredTasks}
+        alwaysIncludeCurrentDate={
+          currentMonth ===
+          `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
         }
-      }
-    }
-
-    if (alwaysIncludeCurrentDate) {
-      const currentDate = new Date();
-      const currentDateString = getDateStringFromDateObject(currentDate);
-      if (!(currentDateString in newTasksPerDate)) {
-        newTasksPerDate[currentDateString] = {
-          tasks: []
-        };
-      }
-    }
-    setTasksPerDate(newTasksPerDate);
-  };
-
-  React.useEffect(formatAndSetTasksPerDate, [tasks]);
-
-  const dayCalendars = Object.keys(tasksPerDate)
-    .sort()
-    .map((date) => (
-      <DayCalendar
-        date={date}
-        key={date}
-        tasks={tasksPerDate[date].tasks}
-        selectedTaskId={selectedTaskId}
-        selectedRecurrenceIndex={selectedRecurrenceIndex}
-        setSelectedTaskId={setSelectedTaskId}
-        setSelectedRecurrenceIndex={setSelectedRecurrenceIndex}
-        highlight={date === getDateStringFromDateObject(new Date())}
       />
-    ));
-
-  return <ScrollView style={styles.container}>{dayCalendars}</ScrollView>;
+    </WhiteView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    width: '100%',
-    height: '100%'
-  },
-  spinnerWrapper: {
-    flex: 1,
-    width: '100%',
     height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: '100%'
+  },
+  monthPicker: {
+    flexDirection: 'row',
+    paddingHorizontal: 40,
+    alignItems: 'center'
+  },
+  monthPickerText: {
+    fontSize: 22
+  },
+  monthPickerArrowWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  monthPickerArrow: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginHorizontal: 10
   }
 });
 

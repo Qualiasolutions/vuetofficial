@@ -224,7 +224,7 @@ export default function EditTaskScreen({
         end_datetime: endDatetime
       };
 
-      if ((body as any).recurrence) {
+      if (Object.keys(body as any).includes('recurrence')) {
         delete (body as any).recurrence;
       }
 
