@@ -7,8 +7,6 @@ import { eventForm } from './event';
 import { hobbyForm } from './hobby';
 import { listForm } from './list';
 import { tripForm } from './trip';
-import { tripTransportForm } from './trip-transport';
-import { tripAccommodationForm } from './trip-accommodation';
 import { tripActivityForm } from './trip-activity';
 import { petForm } from './pet';
 import { daysOffForm } from './days-off';
@@ -21,6 +19,13 @@ import { socialPlanForm } from './social-plan';
 import { holidayForm } from './holiday';
 import { schoolForm } from './school';
 import { schoolBreakForm } from './school-break';
+import { flightForm } from './flight';
+import { trainBusFerryForm } from './train-bus-ferry';
+import { driveTimeForm } from './drive-time';
+import { rentalCarForm } from './rental-car';
+import { taxiTransferForm } from './taxi-transfer';
+import { hotelForm } from './hotel';
+import { stayWithFriendForm } from './stay-with-friend';
 
 export default () => {
   return {
@@ -33,8 +38,6 @@ export default () => {
     Hobby: hobbyForm(),
     List: listForm(),
     Trip: tripForm(),
-    TripTransport: tripTransportForm(),
-    TripAccommodation: tripAccommodationForm(),
     TripActivity: tripActivityForm(),
     Pet: petForm(),
     DaysOff: daysOffForm(),
@@ -46,6 +49,13 @@ export default () => {
     SocialPlan: socialPlanForm(),
     Holiday: holidayForm(),
     School: schoolForm(),
-    SchoolBreak: schoolBreakForm()
+    SchoolBreak: schoolBreakForm(),
+    Flight: flightForm(),
+    TrainBusFerry: trainBusFerryForm(),
+    RentalCar: rentalCarForm(),
+    TaxiOrTransfer: taxiTransferForm(),
+    DriveTime: driveTimeForm(),
+    HotelOrRental: hotelForm(),
+    StayWithFriend: stayWithFriendForm()
   };
 };

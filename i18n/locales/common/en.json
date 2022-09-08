@@ -122,7 +122,15 @@
     "social-plans": "Social Plans",
     "social-media": "Social Media",
     "school-breaks": "School Breaks",
-    "SchoolBreak": "School Breaks"
+    "SchoolBreak": "School Breaks",
+    "TripActivity": "Activities",
+    "Flight": "Flights",
+    "TrainBusFerry": "Trains",
+    "RentalCar": "Rental Cars",
+    "TaxiOrTransfer": "Taxis or Transfers",
+    "DriveTime": "Drive times",
+    "HotelOrRental": "Hotels",
+    "StayWithFriend": "Stays with friends"
   },
   "common": {
     "confirm": "Confirm",

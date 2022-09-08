@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { getLongDateFromDateObject } from 'utils/datesAndTimes';
 
-export default function TripActivityCard({
+export default function ModeOfAccommodationCard({
   entity
 }: {
   entity: EntityResponseType;
@@ -22,6 +22,10 @@ export default function TripActivityCard({
     new Date(entity?.start_datetime),
     false
   );
+  const endDateString = getLongDateFromDateObject(
+    new Date(entity?.end_datetime),
+    false
+  );
 
   return (
     <Pressable
@@ -31,7 +35,7 @@ export default function TripActivityCard({
     >
       <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
         <BlackText text={`${entity.name}`} style={styles.listEntryText} />
-        <AlmostBlackText text={`${startDateString}`} />
+        <AlmostBlackText text={`${startDateString} -> ${endDateString}`} />
       </WhiteView>
     </Pressable>
   );

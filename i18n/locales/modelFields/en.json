@@ -58,12 +58,6 @@
       "start_date": "Start Date",
       "end_date": "End Date"
     },
-    "trip-transport": {
-      "transport_type": "Type",
-      "flight_number": "Booking No.",
-      "start_datetime": "Start Time",
-      "end_datetime": "End Time"
-    },
     "trip-accommodation": {
       "accommodation_type": "Type",
       "carrier": "Carrier",
@@ -73,10 +67,13 @@
     },
     "trip-activity": {
       "name": "Activity",
+      "address": "Address",
       "company": "Company",
       "confirmation_number": "Booking No.",
       "start_datetime": "Start Time",
+      "start_timezone": "Start Timezone",
       "end_datetime": "End Time",
+      "end_timezone": "End Timezone",
       "contact_phone": "Contact Phone",
       "contact_email": "Contact Email"
     },
@@ -115,6 +112,51 @@
       "name": "Break name",
       "start_date": "First day of break",
       "end_date": "Last day of break"
+    },
+    "mode-of-transport": {
+      "carrier": "Carrier",
+      "contact_details": "Contact details",
+      "booking_number": "Booking Number",
+      "start_location": "Departure location",
+      "end_location": "Arrival location",
+      "start_datetime": "Departure",
+      "start_timezone": "Departure timezone",
+      "end_datetime": "Arrival",
+      "end_timezone": "Arrival timezone"
+    },
+    "flight": {
+      "booking_number": "Flight number",
+      "start_location": "Departure airport",
+      "end_location": "Arrival airport",
+      "start_datetime": "Departure"
+    },
+    "rental-car": {
+      "booking_number": "Confirmation number",
+      "start_location": "Pick-up location",
+      "end_location": "Drof-off location"
+    },
+    "taxi-transfer": {
+      "booking_number": "Confirmation number",
+      "start_location": "Pick-up location",
+      "end_location": "Drof-off location"
+    },
+    "mode-of-accommodation": {
+      "address": "Address",
+      "contact_details": "Phone / Email"
+    },
+    "hotel": {
+      "hotel_name": "Hotel name",
+      "start_datetime": "Check-in",
+      "start_timezone": "Check-in timezone",
+      "end_datetime": "Check-out",
+      "end_timezone": "Check-out timezone"
+    },
+    "stay-with-friend": {
+      "friend_name": "Friend name",
+      "start_datetime": "Arrival",
+      "start_timezone": "Arrival timezone",
+      "end_datetime": "Departure",
+      "end_timezone": "Departure timezone"
     }
   },
   "familyMember": {

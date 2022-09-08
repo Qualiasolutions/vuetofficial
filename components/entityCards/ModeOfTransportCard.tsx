@@ -8,20 +8,14 @@ import {
 import { EntityResponseType } from 'types/entities';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
-import { getLongDateFromDateObject } from 'utils/datesAndTimes';
 
-export default function TripActivityCard({
+export default function ModeOfTransportCard({
   entity
 }: {
   entity: EntityResponseType;
 }) {
   const navigation = useNavigation();
   const blackColor = useThemeColor({}, 'black');
-
-  const startDateString = getLongDateFromDateObject(
-    new Date(entity?.start_datetime),
-    false
-  );
 
   return (
     <Pressable
@@ -31,7 +25,9 @@ export default function TripActivityCard({
     >
       <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
         <BlackText text={`${entity.name}`} style={styles.listEntryText} />
-        <AlmostBlackText text={`${startDateString}`} />
+        <AlmostBlackText
+          text={`${entity.start_location} -> ${entity.end_location}`}
+        />
       </WhiteView>
     </Pressable>
   );

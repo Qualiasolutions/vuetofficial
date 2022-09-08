@@ -3,15 +3,15 @@ import {
   TransparentView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import { Button, useThemeColor, View } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import { Image, Pressable, StyleSheet } from 'react-native';
-import {
-  TouchableHighlight,
-  TouchableOpacity
-} from 'react-native-gesture-handler';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useEffect, useState } from 'react';
-import { EntityTabParamList, RootTabParamList } from 'types/base';
+import { EntityTabParamList } from 'types/base';
+import { ListingModal } from 'components/molecules/Modals';
+import { EntityTypeName } from 'types/entities';
+import { useTranslation } from 'react-i18next';
 
 const AddButton = ({ children, onPress }: { [key: string]: any }) => (
   <TransparentView style={styles.addButtonWrapper}>
@@ -37,7 +37,10 @@ export default function BottomNavBar({
   navigation
 }: BottomTabBarProps) {
   const [currentScreen, setCurrentScreen] = useState<string>('');
-  const [currentScreenParams, setCurrentScreenParams] = useState<object>({});
+  const [currentScreenParams, setCurrentScreenParams] = useState<{
+    [key: string]: any;
+  }>({});
+  const { t } = useTranslation();
 
   const getCurrentScreenAndParams = () => {
     let nestedState: any = { ...state };
@@ -57,10 +60,38 @@ export default function BottomNavBar({
     setCurrentScreenParams(params);
   }, [state]);
 
+  const [showingEntityTypeSelector, setShowingEntityTypeSelector] =
+    useState(false);
+  const [entityTypeOptions, setEntityTypeOptions] = useState<EntityTypeName[]>(
+    []
+  );
+
+  const modalData = entityTypeOptions.map((entityTypeName) => ({
+    name: t(`entityTypes.${entityTypeName}`),
+    id: entityTypeName
+  }));
+
+  const entityTypeSelector = (
+    <ListingModal
+      visible={showingEntityTypeSelector}
+      data={{ options: modalData }}
+      onSelect={(value) => {
+        type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
+        navigation.navigate('AddEntity', {
+          entityTypes: value.id,
+          parentId: (currentScreenParams as RouteParams).entityId
+        });
+        setShowingEntityTypeSelector(false);
+      }}
+      onClose={() => setShowingEntityTypeSelector(false)}
+    />
+  );
+
   return (
     <WhiteView
       style={[{ borderTopColor: useThemeColor({}, 'lightGrey') }, styles.bar]}
     >
+      {entityTypeSelector}
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state?.index === index;
@@ -79,24 +110,24 @@ export default function BottomNavBar({
                     entityId: (currentScreenParams as RouteParams).entityId
                   });
                 } else if (currentScreen === 'ChildEntitiesScreen') {
-                  // TODO - this should instead bring up a list of
-                  // all entity types on this page if entityTypes
-                  // has length > 1
                   type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
-                  navigation.navigate('AddEntity', {
-                    entityTypes: (currentScreenParams as RouteParams)
-                      .entityTypes[0],
-                    parentId: (currentScreenParams as RouteParams).entityId
-                  });
+                  const entityTypes = (currentScreenParams as RouteParams)
+                    .entityTypes;
+                  if (entityTypes.length > 1) {
+                    setEntityTypeOptions(entityTypes);
+                    setShowingEntityTypeSelector(true);
+                  } else {
+                    navigation.navigate('AddEntity', {
+                      entityTypes: entityTypes[0],
+                      parentId: (currentScreenParams as RouteParams).entityId
+                    });
+                  }
                 } else if (currentScreen === 'EntityList') {
-                  // TODO - this should instead bring up a list of
-                  // all entity types on this page if entityTypes
-                  // has length > 1
-                  type RouteParams = EntityTabParamList['ChildEntitiesScreen'];
-                  navigation.navigate('AddEntity', {
-                    entityTypes: (currentScreenParams as RouteParams)
-                      .entityTypes
-                  });
+                  type RouteParams = EntityTabParamList['EntityList'];
+                  setEntityTypeOptions(
+                    (currentScreenParams as RouteParams).entityTypes
+                  );
+                  setShowingEntityTypeSelector(true);
                 } else if (currentScreen === 'FamilySettings') {
                   navigation.navigate('CreateUserInvite', {
                     familyRequest: true

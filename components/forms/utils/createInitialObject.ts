@@ -27,6 +27,7 @@ const createInitialObject = (
   for (const key of Object.keys(formFields)) {
     switch (formFields[key].type) {
       case 'string':
+      case 'timezone':
       case 'colour':
       case 'phoneNumber':
       case 'radio':

@@ -15,8 +15,11 @@ const getDateWithoutTimezone = (date: string): Date => {
   return new Date(`${date}T00:00:00`);
 };
 
-const getLongDateFromDateObject = (date: Date): string => {
-  return dayjs.utc(date).format('MMM DD, YYYY');
+const getLongDateFromDateObject = (date: Date, utc: boolean = true): string => {
+  if (utc) {
+    return dayjs.utc(date).format('MMM DD, YYYY');
+  }
+  return dayjs(date).format('MMM DD, YYYY');
 };
 
 const getUTCValuesFromDateString = (date: string) => {

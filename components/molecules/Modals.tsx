@@ -105,7 +105,7 @@ export function ListingModal(props: ListingModalProps) {
     sectionSettings,
     data = {},
     itemToName = (item) => item.name,
-    onClose,
+    onClose = () => {},
     onSelect,
     ListItemComponent = DefaultListItemComponent
   } = props;
@@ -220,7 +220,7 @@ type ListingModalProps = {
   };
   sectionSettings?: { [key: string]: ListingModalSectionSettings };
   itemToName?: (item: any) => string;
-  onClose: () => void;
+  onClose?: () => void;
   onSelect: (item: any) => void;
   ListItemComponent?: React.ElementType;
 };

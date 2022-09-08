@@ -42,6 +42,7 @@ export default function Form({
   formType = 'CREATE',
   methodHooks = {},
   extraFields = {},
+  derivedFieldsFunction,
   onSubmitSuccess = () => {},
   onSubmitFailure = () => {},
   onDeleteSuccess = () => {},
@@ -58,6 +59,7 @@ export default function Form({
   formType?: FormType;
   methodHooks: { [key: string]: UseMutation<any> };
   extraFields?: object;
+  derivedFieldsFunction?: (formValues: FieldValueTypes) => FieldValueTypes;
   onSubmitSuccess?: Function;
   onSubmitFailure?: Function;
   onDeleteSuccess?: Function;
@@ -150,10 +152,21 @@ export default function Form({
 
     if (formDataType === 'json') {
       // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
+      const derivedFields = derivedFieldsFunction
+        ? derivedFieldsFunction({
+            ...parsedFormValues,
+            ...extraFields
+          })
+        : {};
+
+      console.log('derivedFields');
+      console.log(derivedFieldsFunction);
+      console.log(derivedFields);
       methodHookTriggers[submitMethod]
         .trigger({
           ...parsedFormValues,
-          ...extraFields
+          ...extraFields,
+          ...derivedFields
         })
         .then(() => {
           setSubmittingForm(false);

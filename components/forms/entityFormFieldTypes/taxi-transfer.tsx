@@ -2,7 +2,7 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 
-export const tripActivityForm = (): FormFieldTypes => {
+export const taxiTransferForm = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -11,55 +11,50 @@ export const tripActivityForm = (): FormFieldTypes => {
   } = getUserFullDetails();
 
   return {
-    name: {
+    carrier: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.name')
+      displayName: t('entities.mode-of-transport.carrier')
     },
-    address: {
+    contact_details: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.address')
+      displayName: t('entities.mode-of-transport.contact_details')
     },
-    company: {
+    booking_number: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.company')
+      displayName: t('entities.taxi-transfer.booking_number')
     },
-    confirmation_number: {
+    start_location: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.confirmation_number')
+      displayName: t('entities.taxi-transfer.start_location')
+    },
+    end_location: {
+      type: 'string',
+      required: true,
+      displayName: t('entities.taxi-transfer.end_location')
     },
     start_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('entities.trip-activity.start_datetime')
+      displayName: t('entities.mode-of-transport.start_datetime')
     },
     start_timezone: {
-      type: 'timezone',
+      type: 'string', // TODO
       required: true,
-      displayName: t('entities.trip-activity.start_timezone')
+      displayName: t('entities.mode-of-transport.start_timezone')
     },
     end_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('entities.trip-activity.end_datetime')
+      displayName: t('entities.mode-of-transport.end_datetime')
     },
     end_timezone: {
-      type: 'timezone',
+      type: 'string', // TODO
       required: true,
-      displayName: t('entities.trip-activity.end_timezone')
-    },
-    contact_phone: {
-      type: 'phoneNumber',
-      required: true,
-      displayName: t('entities.trip-activity.contact_phone')
-    },
-    contact_email: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.trip-activity.contact_email')
+      displayName: t('entities.mode-of-transport.end_timezone')
     },
     members: {
       type: 'addMembers',

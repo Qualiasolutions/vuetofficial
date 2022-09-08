@@ -1,14 +1,14 @@
 import { EntityTypeName } from 'types/entities';
 import PetCard from './PetCard';
-import TripAccomodationCard from './TripAccommodationCard';
 import TripActivityCard from './TripActivityCard';
-import TripTransportCard from './TripTransportCard';
 import AnniversaryCard from './AnniversaryCard';
 import EventCard from './EventCard';
 import DaysOffCard from './DaysOffCard';
 import HolidayCard from './HolidayCard';
 import CarCard from './CarCard';
 import SchoolBreakCard from './SchoolBreakCard';
+import ModeOfTransportCard from './ModeOfTransportCard';
+import ModeOfAccommodationCard from './ModeOfAccommodationCard';
 
 type LinkMapping = {
   [key in EntityTypeName]?: React.ElementType;
@@ -16,14 +16,19 @@ type LinkMapping = {
 
 export default {
   Pet: PetCard,
-  TripAccomodation: TripAccomodationCard,
   TripActivity: TripActivityCard,
-  TripTransport: TripTransportCard,
   Anniversary: AnniversaryCard,
   Birthday: AnniversaryCard,
   Event: EventCard,
   DaysOff: DaysOffCard,
   Holiday: HolidayCard,
   Car: CarCard,
-  SchoolBreak: SchoolBreakCard
+  SchoolBreak: SchoolBreakCard,
+  Flight: ModeOfTransportCard,
+  TrainBusFerry: ModeOfTransportCard,
+  RentalCar: ModeOfTransportCard,
+  TaxiOrTransfer: ModeOfTransportCard,
+  DriveTime: ModeOfTransportCard,
+  HotelOrRental: ModeOfAccommodationCard,
+  StayWithFriend: ModeOfAccommodationCard
 } as LinkMapping;

@@ -5,12 +5,9 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
-import {
-  TransparentContainerView,
-  WhiteBox
-} from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function TripPage({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -29,87 +26,68 @@ export default function TripPage({ entityId }: { entityId: number }) {
     typeof entityId === 'number' ? entityId : parseInt(entityId);
 
   const transportationLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Transportation"
-        toScreen="ChildEntitiesScreen"
-        toScreenParams={{
-          entityTypes: ['TripTransport'],
-          entityId: entityIdParsed,
-          showCreateForm: true
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Transportation"
+      toScreen="ChildEntitiesScreen"
+      toScreenParams={{
+        entityTypes: [
+          'Flight',
+          'TrainBusFerry',
+          'RentalCar',
+          'TaxiOrTransfer',
+          'DriveTime'
+        ],
+        entityId: entityIdParsed
+      }}
+      navMethod="push"
+    />
   );
 
   const accommodationLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Accommodation"
-        toScreen="ChildEntitiesScreen"
-        toScreenParams={{
-          entityTypes: ['TripAccommodation'],
-          entityId: entityIdParsed,
-          showCreateForm: true
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Accommodation"
+      toScreen="ChildEntitiesScreen"
+      toScreenParams={{
+        entityTypes: ['HotelOrRental', 'StayWithFriend'],
+        entityId: entityIdParsed
+      }}
+      navMethod="push"
+    />
   );
 
   const activitiesLink = (
-    <WhiteBox style={styles.linkWrapper}>
-      <ListLink
-        text="Activities"
-        toScreen="ChildEntitiesScreen"
-        toScreenParams={{
-          entityTypes: ['TripActivity'],
-          entityId: entityIdParsed,
-          showCreateForm: true
-        }}
-        style={styles.listLink}
-        navMethod="push"
-      />
-    </WhiteBox>
+    <ListLink
+      text="Activities"
+      toScreen="ChildEntitiesScreen"
+      toScreenParams={{
+        entityTypes: ['TripActivity'],
+        entityId: entityIdParsed
+      }}
+      navMethod="push"
+    />
   );
 
   const childEntityIds = entityData?.child_entities || [];
   const childEntityList = childEntityIds.map((id) =>
     allEntities?.byId[id].resourcetype === 'List' ? (
-      <WhiteBox key={id} style={styles.linkWrapper}>
-        <ListLink
-          text={allEntities?.byId[id].name || ''}
-          toScreen="EntityScreen"
-          toScreenParams={{ entityId: id }}
-          style={styles.listLink}
-          navMethod="push"
-        />
-      </WhiteBox>
+      <ListLink
+        key={id}
+        text={allEntities?.byId[id].name || ''}
+        toScreen="EntityScreen"
+        toScreenParams={{ entityId: id }}
+        navMethod="push"
+      />
     ) : null
   );
 
   return (
     <WhiteFullPageScrollView>
-      <TransparentContainerView>
+      <TransparentPaddedView>
         {transportationLink}
         {accommodationLink}
         {activitiesLink}
         {childEntityList}
-      </TransparentContainerView>
+      </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  linkWrapper: {
-    width: '100%',
-    margin: 8,
-    paddingVertical: 0
-  },
-  listLink: {
-    shadowColor: 'transparent'
-  }
-});

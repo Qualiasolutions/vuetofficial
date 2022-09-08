@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
@@ -70,7 +70,7 @@ export default function ChildEntityList({
         text={t('misc.currentlyNoEntities', {
           entityType: entityTypes
             ? entityTypes
-                .map((entityType) => t(`entityTypes.${entityTypes}`))
+                .map((entityType) => t(`entityTypes.${entityType}`))
                 .join(' or ')
             : ''
         })}

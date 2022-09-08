@@ -9,9 +9,7 @@ import {
   DropDownWithOtherField,
   FormFieldTypes,
   hasListMode,
-  hasPermittedValues,
   hasPlaceholder,
-  hasValueToDisplay,
   OptionalYearDate,
   RadioField
 } from './formFieldTypes';
@@ -29,7 +27,6 @@ import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import createNullStringObject from './utils/createNullStringObject';
 import { FieldErrorTypes, FieldValueTypes } from './types';
 import { useTranslation } from 'react-i18next';
-import { UserFullResponse, UserResponse } from 'types/users';
 
 const parseFieldName = (name: string) => {
   return name
@@ -207,9 +204,11 @@ export default function TypedForm({
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
                 }}
+                containerStyle={styles.inlineDateInput}
                 textInputStyle={textInputStyle}
                 disabled={fields[field].disabled}
               />
+              <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
           </TransparentView>
         );
@@ -440,6 +439,29 @@ export default function TypedForm({
           </TransparentView>
         );
       }
+      case 'timezone':
+        return (
+          <TransparentView key={field}>
+            <TransparentView
+              key={field}
+              style={inlineFields ? styles.inlineInputPair : {}}
+            >
+              <TransparentView style={styles.inputLabelWrapper}>
+                {produceLabelFromFieldName(field)}
+              </TransparentView>
+              <TextInput
+                value={formValues[field]}
+                onChangeText={(newValue) => {
+                  onFormValuesChange({
+                    ...formValues,
+                    [field]: newValue
+                  });
+                }}
+                style={textInputStyle}
+              />
+            </TransparentView>
+          </TransparentView>
+        );
     }
   });
 

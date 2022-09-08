@@ -1,4 +1,4 @@
-import { Text } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
 import { FormFieldTypes, ImageField } from 'components/forms/formFieldTypes';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { CarResponseType, EntityTypeName } from 'types/entities';
@@ -22,6 +22,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import { fieldColorMapping } from './utils/fieldColorMapping';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -47,6 +48,14 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
   );
 
   const entityToEdit = allEntities?.byId ? allEntities.byId[entityId] : null;
+
+  const fieldColor = entityToEdit
+    ? useThemeColor(
+        {},
+        fieldColorMapping[entityToEdit.resourcetype] ||
+          fieldColorMapping.default
+      )
+    : '';
 
   if (isLoading || !entityToEdit || !allEntities || !entityId) {
     return <FullPageSpinner />;
@@ -109,9 +118,11 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
           onDeleteSuccess={onDeleteSuccess}
           clearOnSubmit={false}
           inlineFields={
-            (inlineFieldsMapping[entityToEdit?.resourcetype] ||
-              inlineFieldsMapping.default) as boolean
+            (entityToEdit.resourcetype in inlineFieldsMapping
+              ? inlineFieldsMapping[entityToEdit.resourcetype]
+              : inlineFieldsMapping.default) as boolean
           }
+          fieldColor={fieldColor}
           formDataType={dataType}
         />
       </TransparentView>

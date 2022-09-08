@@ -8,8 +8,13 @@ export type EntityTypeName =
   | 'List'
   | 'Holiday'
   | 'Trip'
-  | 'TripTransport'
-  | 'TripAccommodation'
+  | 'Flight'
+  | 'TrainBusFerry'
+  | 'RentalCar'
+  | 'TaxiOrTransfer'
+  | 'DriveTime'
+  | 'HotelOrRental'
+  | 'StayWithFriend'
   | 'TripActivity'
   | 'Pet'
   | 'DaysOff'
@@ -48,13 +53,6 @@ export interface CarParsedType extends BaseEntityType {
 
 export interface ListResponseType extends BaseEntityType {
   list_entries: ListEntryResponse[];
-}
-
-export interface TripAccommodationResponseType extends BaseEntityType {
-  transport_type: string;
-  flight_number: string | null;
-  start_datetime: string | null;
-  end_datetime: string | null;
 }
 
 export interface HolidayResponseType extends BaseEntityType {

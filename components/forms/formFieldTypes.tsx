@@ -15,6 +15,7 @@ export type PermittedTypes =
   | 'addFamilyMembers'
   | 'dropDown'
   | 'dropDownWithOther'
+  | 'timezone'
   | 'Image';
 
 export type BaseField<TypeName, ValueType> = {
@@ -77,6 +78,8 @@ export type ImageField = BaseField<'Image', object> & {
   sourceField: string;
 };
 
+export type TimezoneField = BaseField<'timezone', string>;
+
 export type Field =
   | StringField
   | DateField
@@ -90,7 +93,8 @@ export type Field =
   | AddFamilyMembersField
   | DropDownField
   | DropDownWithOtherField
-  | ImageField;
+  | ImageField
+  | TimezoneField;
 
 export type FormFieldTypes = {
   [key: string]: Field;

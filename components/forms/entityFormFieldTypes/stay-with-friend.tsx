@@ -2,7 +2,7 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 
-export const tripActivityForm = (): FormFieldTypes => {
+export const stayWithFriendForm = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -11,55 +11,40 @@ export const tripActivityForm = (): FormFieldTypes => {
   } = getUserFullDetails();
 
   return {
-    name: {
+    friend_name: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.name')
+      displayName: t('entities.stay-with-friend.friend_name')
     },
     address: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.address')
+      displayName: t('entities.mode-of-accommodation.address')
     },
-    company: {
+    contact_details: {
       type: 'string',
       required: true,
-      displayName: t('entities.trip-activity.company')
-    },
-    confirmation_number: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.trip-activity.confirmation_number')
+      displayName: t('entities.mode-of-accommodation.contact_details')
     },
     start_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('entities.trip-activity.start_datetime')
+      displayName: t('entities.stay-with-friend.start_datetime')
     },
     start_timezone: {
-      type: 'timezone',
+      type: 'string', // TODO
       required: true,
-      displayName: t('entities.trip-activity.start_timezone')
+      displayName: t('entities.stay-with-friend.start_timezone')
     },
     end_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('entities.trip-activity.end_datetime')
+      displayName: t('entities.stay-with-friend.end_datetime')
     },
     end_timezone: {
-      type: 'timezone',
+      type: 'string', // TODO
       required: true,
-      displayName: t('entities.trip-activity.end_timezone')
-    },
-    contact_phone: {
-      type: 'phoneNumber',
-      required: true,
-      displayName: t('entities.trip-activity.contact_phone')
-    },
-    contact_email: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.trip-activity.contact_email')
+      displayName: t('entities.stay-with-friend.end_timezone')
     },
     members: {
       type: 'addMembers',
