@@ -32,7 +32,7 @@ export const stayWithFriendForm = (): FormFieldTypes => {
       displayName: t('entities.stay-with-friend.start_datetime')
     },
     start_timezone: {
-      type: 'string', // TODO
+      type: 'timezone',
       required: true,
       displayName: t('entities.stay-with-friend.start_timezone')
     },
@@ -42,7 +42,7 @@ export const stayWithFriendForm = (): FormFieldTypes => {
       displayName: t('entities.stay-with-friend.end_datetime')
     },
     end_timezone: {
-      type: 'string', // TODO
+      type: 'timezone',
       required: true,
       displayName: t('entities.stay-with-friend.end_timezone')
     },

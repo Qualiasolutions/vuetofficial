@@ -2,9 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
 
 import { useThemeColor } from 'components/Themed';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLayoutEffect, useState } from 'react';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { backgroundComponents } from './utils/backgroundComponents';
 
@@ -33,7 +31,7 @@ export default function EditEntityScreen({
   const headerBackgroundColor = useThemeColor({}, 'almostWhite');
   const [entityType, setEntityType] = useState<string>('');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (allEntities) {
       const entityIdRaw = route.params.entityId;
       const entityId =

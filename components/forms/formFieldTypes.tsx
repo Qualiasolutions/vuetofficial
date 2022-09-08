@@ -52,20 +52,14 @@ export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {
 export type DropDownField = BaseField<'dropDown', any> & {
   permittedValues: any[];
   displayName?: string;
-  initialValue?: {
-    label: string;
-    value: string;
-  }[];
+  initialValue?: any;
   placeholder?: string;
   listMode?: ListModeType;
 };
 export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
   permittedValues: any[];
   displayName?: string;
-  initialValue?: {
-    label: string;
-    value: string;
-  }[];
+  initialValue?: any;
   placeholder?: string;
   listMode?: ListModeType;
 };
@@ -78,7 +72,12 @@ export type ImageField = BaseField<'Image', object> & {
   sourceField: string;
 };
 
-export type TimezoneField = BaseField<'timezone', string>;
+export type TimezoneField = BaseField<'timezone', string> & {
+  displayName?: string;
+  initialValue?: any;
+  placeholder?: string;
+  listMode?: ListModeType;
+};
 
 export type Field =
   | StringField

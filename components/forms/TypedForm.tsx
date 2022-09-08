@@ -11,7 +11,8 @@ import {
   hasListMode,
   hasPlaceholder,
   OptionalYearDate,
-  RadioField
+  RadioField,
+  TimezoneField
 } from './formFieldTypes';
 import RadioInput from 'components/forms/components/RadioInput';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
@@ -27,6 +28,7 @@ import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import createNullStringObject from './utils/createNullStringObject';
 import { FieldErrorTypes, FieldValueTypes } from './types';
 import { useTranslation } from 'react-i18next';
+import TimezoneSelect from './components/TimezoneSelect';
 
 const parseFieldName = (name: string) => {
   return name
@@ -439,29 +441,32 @@ export default function TypedForm({
           </TransparentView>
         );
       }
-      case 'timezone':
+      case 'timezone': {
+        const f = fields[field] as TimezoneField;
         return (
-          <TransparentView key={field}>
-            <TransparentView
-              key={field}
-              style={inlineFields ? styles.inlineInputPair : {}}
-            >
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field)}
-              </TransparentView>
-              <TextInput
-                value={formValues[field]}
-                onChangeText={(newValue) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                }}
-                style={textInputStyle}
-              />
+          <TransparentView
+            key={field}
+            style={inlineFields ? styles.inlineInputPair : {}}
+          >
+            <TransparentView style={styles.inputLabelWrapper}>
+              {produceLabelFromFieldName(field)}
             </TransparentView>
+            <TimezoneSelect
+              value={formValues[field]}
+              onSelectTimezone={(value) => {
+                onFormValuesChange({
+                  ...formValues,
+                  [field]: value
+                });
+              }}
+              listMode={f.listMode || 'MODAL'}
+              style={textInputStyle}
+              containerStyle={{ flex: 1 }}
+              disabled={f.disabled}
+            />
           </TransparentView>
         );
+      }
     }
   });
 

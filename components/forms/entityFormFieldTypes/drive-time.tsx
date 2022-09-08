@@ -27,7 +27,7 @@ export const driveTimeForm = (): FormFieldTypes => {
       displayName: t('entities.mode-of-transport.start_datetime')
     },
     start_timezone: {
-      type: 'string', // TODO
+      type: 'timezone',
       required: true,
       displayName: t('entities.mode-of-transport.start_timezone')
     },
@@ -37,7 +37,7 @@ export const driveTimeForm = (): FormFieldTypes => {
       displayName: t('entities.mode-of-transport.end_datetime')
     },
     end_timezone: {
-      type: 'string', // TODO
+      type: 'timezone',
       required: true,
       displayName: t('entities.mode-of-transport.end_timezone')
     },

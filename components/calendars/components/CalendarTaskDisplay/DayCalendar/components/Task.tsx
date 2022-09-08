@@ -144,7 +144,7 @@ export default function Task({
         <Pressable
           onPress={() =>
             (navigation.navigate as any)('EntityNavigator', {
-              screen: 'EntityScreen',
+              screen: 'EditEntity',
               initial: false,
               params: { entityId: entity.id }
             })

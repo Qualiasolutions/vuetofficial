@@ -32,7 +32,7 @@ export const hotelForm = (): FormFieldTypes => {
       displayName: t('entities.hotel.start_datetime')
     },
     start_timezone: {
-      type: 'string', // TODO
+      type: 'timezone',
       required: true,
       displayName: t('entities.hotel.start_timezone')
     },
@@ -42,7 +42,7 @@ export const hotelForm = (): FormFieldTypes => {
       displayName: t('entities.hotel.end_datetime')
     },
     end_timezone: {
-      type: 'string', // TODO
+      type: 'timezone',
       required: true,
       displayName: t('entities.hotel.end_timezone')
     },

@@ -18,7 +18,7 @@ export default function DropDown({
   disabled = false
 }: {
   value: string;
-  items: any[];
+  items: { label: string; value: any }[];
   setFormValues: (item: any) => void;
   dropdownPlaceholder?: string;
   listMode?: ListModeType;
