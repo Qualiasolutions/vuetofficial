@@ -19,6 +19,9 @@ module.exports = function (api) {
 
   return {
     presets: ['babel-preset-expo'],
-    plugins: [['module-resolver', rootImportOpts]]
+    plugins: [
+      ['module-resolver', rootImportOpts],
+      'react-native-reanimated/plugin'
+    ]
   };
 };

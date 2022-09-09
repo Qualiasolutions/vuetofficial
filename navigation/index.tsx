@@ -18,11 +18,11 @@ import {
 } from 'reduxStore/services/api/user';
 
 import { UnauthorisedNavigator } from './UnauthorisedNavigator';
-import { BottomTabNavigator } from './RootNavigator';
 import { SetupNavigator } from './SetupNavigator';
 import { FamilyRequestNavigator } from './FamilyRequestNavigator';
 import { DarkTheme, DefaultTheme } from 'constants/Colors';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import { SideNavigator } from './SideNavigator';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -80,7 +80,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       } else if (!userFullDetails.has_done_setup) {
         navigatorComponent = <SetupNavigator />;
       } else {
-        navigatorComponent = <BottomTabNavigator />;
+        navigatorComponent = <SideNavigator />;
       }
     }
   }

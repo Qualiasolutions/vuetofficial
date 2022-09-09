@@ -3,7 +3,10 @@ import * as React from 'react';
 import { StyleSheet, View, ImageSourcePropType } from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
-import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
+import CalendarScreen, {
+  CalendarScreenHeader,
+  CalendarScreenHeaderLeft
+} from '../screens/CalendarMain/CalendarScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
 import CreateTask from 'screens/CreateTask/CreateTask';
 import { RootTabParamList } from '../types/base';
@@ -126,7 +129,10 @@ export function BottomTabNavigator() {
               imageSource={require('../assets/images/Home.png')}
               title={t('pageTitles.home')}
             />
-          )
+          ),
+          header: CalendarScreenHeader,
+          headerLeft: (props) => <CalendarScreenHeaderLeft />,
+          title: t('pageTitles.home')
         }}
       />
       <BottomTab.Screen

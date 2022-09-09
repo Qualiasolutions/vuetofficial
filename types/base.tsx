@@ -98,6 +98,11 @@ export type EntityTabParamList = {
   };
 };
 
+// Side Drawer Stack
+export type SideNavigatorTabParamList = {
+  BottomTabNavigator: undefined;
+};
+
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
   NativeStackScreenProps<EntityTabParamList, Screen>;
 
@@ -110,6 +115,7 @@ export type RootTabParamList = {
   Home: undefined;
   SettingsNavigator: undefined;
   EntityNavigator: undefined;
+  SideNavigator: undefined;
   AddTask: { entityId: number | string };
   CreateTask: undefined;
   EditTask: { taskId: number };
