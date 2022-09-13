@@ -101,6 +101,12 @@ export type EntityTabParamList = {
 // Side Drawer Stack
 export type SideNavigatorTabParamList = {
   BottomTabNavigator: undefined;
+  SettingsNavigator: undefined;
+  Help: undefined;
+  Notifications: undefined;
+  MyAccount: undefined;
+  Contact: undefined;
+  Chat: undefined;
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =

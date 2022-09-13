@@ -35,6 +35,7 @@ import { EntityNavigator } from './EntityNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import Calendar from 'screens/Calendar/Calendar';
 import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
+import ChatScreen from 'screens/ChatScreen';
 
 const styles = StyleSheet.create({
   icon: {
@@ -164,8 +165,8 @@ export function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="SettingsNavigator"
-        component={SettingsNavigator}
+        name="Chat"
+        component={ChatScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

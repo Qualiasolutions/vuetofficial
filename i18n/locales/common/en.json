@@ -167,6 +167,9 @@
     "currentlyNoEntities": "You don't currently have any {{entityType}}. Click the + button below to add some"
   },
   "screens": {
+    "drawer": {
+      "logOut": "Log Out"
+    },
     "logIn": {
       "password": "Password",
       "welcomeBack": "Welcome back!",
