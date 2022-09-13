@@ -18,7 +18,12 @@ export function SettingsNavigator() {
   const headerTintColor = useThemeColor({}, 'primary');
 
   return (
-    <SettingsStack.Navigator initialRouteName="Settings">
+    <SettingsStack.Navigator
+      initialRouteName="Settings"
+      screenOptions={{
+        headerShown: false
+      }}
+    >
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}

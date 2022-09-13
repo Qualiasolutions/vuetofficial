@@ -18,7 +18,7 @@ import MyAccountScreen from 'screens/MyAccountScreen';
 import ContactScreen from 'screens/ContactScreen';
 import { Feather } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
   useGetPushTokensQuery,
@@ -30,6 +30,7 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 import { selectPushToken } from 'reduxStore/slices/notifications/selectors';
 import { blacklistTokenAsync } from 'utils/authRequests';
 import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
+import TransparentDrawerHeader from 'headers/TransparentDrawerHeader';
 
 const SideDrawer = createDrawerNavigator<SideNavigatorTabParamList>();
 
@@ -106,15 +107,18 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 export function SideNavigator() {
   const borderColor = useThemeColor({}, 'grey');
   const labelColor = useThemeColor({}, 'black');
+  const headerTintColor = useThemeColor({}, 'primary');
 
   return (
     <SideDrawer.Navigator
       initialRouteName="BottomTabNavigator"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        headerShown: false,
         drawerItemStyle: [styles.drawerItem, { borderColor }],
-        drawerLabelStyle: [styles.drawerLabel, { color: labelColor }]
+        drawerLabelStyle: [styles.drawerLabel, { color: labelColor }],
+        headerTintColor,
+        headerTitleAlign: 'center',
+        header: (props) => <TransparentDrawerHeader { ...props } />
       }}
     >
       <SideDrawer.Screen
@@ -122,6 +126,7 @@ export function SideNavigator() {
         component={BottomTabNavigator}
         options={{
           title: 'Home',
+          headerShown: false,
           drawerIcon: () => <CustomIcon name="home" />
         }}
       />

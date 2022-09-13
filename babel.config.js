@@ -13,7 +13,8 @@ module.exports = function (api) {
       globalStyles: './globalStyles',
       assets: './assets',
       types: './types',
-      hooks: './hooks'
+      hooks: './hooks',
+      headers: './headers'
     }
   };
 
