@@ -29,7 +29,6 @@ import {
   AlmostBlackText,
   PrimaryText
 } from 'components/molecules/TextComponents';
-import { SettingsNavigator } from './SettingsNavigator';
 import setupPushNotifications from 'hooks/setupPushNotifications';
 import { EntityNavigator } from './EntityNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';

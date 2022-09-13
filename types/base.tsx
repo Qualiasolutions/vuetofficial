@@ -106,7 +106,6 @@ export type SideNavigatorTabParamList = {
   Notifications: undefined;
   MyAccount: undefined;
   Contact: undefined;
-  Chat: undefined;
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
@@ -133,6 +132,7 @@ export type RootTabParamList = {
     endDate: Date;
   };
   Calendar: {};
+  Chat: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

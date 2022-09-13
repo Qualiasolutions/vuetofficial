@@ -172,8 +172,10 @@ export function SideNavigator() {
 const styles = StyleSheet.create({
   drawerItem: {
     borderBottomWidth: 1,
-    height: 60,
-    justifyContent: 'center'
+    height: 70,
+    justifyContent: 'center',
+    marginTop: 0,
+    marginBottom: 0
   },
   drawerLabel: {
     fontFamily: 'Poppins',
