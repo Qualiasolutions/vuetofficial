@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { TextInput, Button } from 'components/Themed';
+import { TextInput } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import {

@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { PageTitle, PageSubtitle } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';

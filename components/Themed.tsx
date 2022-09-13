@@ -81,45 +81,6 @@ export function TextInput(props: TextInputProps) {
   );
 }
 
-export function Button(
-  props: ThemeProps & {
-    onPress: (event: GestureResponderEvent) => void;
-    title: string;
-    style?: object;
-    disabled?: boolean;
-  }
-) {
-  const { style, title, lightColor, darkColor, disabled, ...otherProps } =
-    props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'buttonDefault'
-  );
-  const disabledBackgroundColor = useThemeColor({}, 'disabledGrey');
-  const textColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'buttonTextDefault'
-  );
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
-  return (
-    <Pressable
-      style={[
-        {
-          backgroundColor: disabled ? disabledBackgroundColor : backgroundColor,
-          color
-        },
-        styles.button,
-        style
-      ]}
-      disabled={disabled}
-      {...otherProps}
-    >
-      <BlackText style={[{ color: textColor }]} text={title} bold={true} />
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
   text: {
     fontFamily: 'Poppins'
@@ -133,12 +94,5 @@ const styles = StyleSheet.create({
     width: '100%',
     borderColor: '#D8D8D8',
     fontFamily: 'Poppins'
-  },
-  button: {
-    borderRadius: 10,
-    padding: 15,
-    textAlign: 'center',
-    width: '100%',
-    alignItems: 'center'
   }
 });

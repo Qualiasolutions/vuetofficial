@@ -1,4 +1,5 @@
-import { StyleSheet, Button } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { Text, View } from 'components/Themed';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

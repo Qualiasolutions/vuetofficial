@@ -5,7 +5,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { SetupTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

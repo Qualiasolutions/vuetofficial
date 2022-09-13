@@ -1,7 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { Button, Text, useThemeColor } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
+
 import {
   taskBottomFieldTypes,
   taskOneOffMiddleFieldTypes,

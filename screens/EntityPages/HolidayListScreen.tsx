@@ -3,7 +3,9 @@ import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponen
 import React, { useCallback, useEffect, useState } from 'react';
 import { useGetAllCountriesQuery } from 'reduxStore/services/api/holidays';
 import { Country } from 'reduxStore/services/api/types';
-import { Button, useThemeColor } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
+
 import { StyleSheet } from 'react-native';
 import {
   TransparentPaddedView,

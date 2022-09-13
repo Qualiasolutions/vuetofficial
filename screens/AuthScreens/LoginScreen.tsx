@@ -11,7 +11,8 @@ import {
   setUsername
 } from 'reduxStore/slices/auth/actions';
 
-import { Text, TextInput, Button } from 'components/Themed';
+import { Text, TextInput } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { getTokenAsync } from 'utils/authRequests';
 

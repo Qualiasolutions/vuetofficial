@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, Button, useThemeColor } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import {

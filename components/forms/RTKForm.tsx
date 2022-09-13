@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Text, Button } from 'components/Themed';
+import { Text } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 import dayjs from 'dayjs';
 import { FormFieldTypes } from './formFieldTypes';
 import {

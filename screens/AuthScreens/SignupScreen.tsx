@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, Button } from 'components/Themed';
+import { Text } from 'components/Themed';
+import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
 import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
