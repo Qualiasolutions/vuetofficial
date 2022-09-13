@@ -97,7 +97,6 @@ export default function EditTaskScreen({
           : null;
         setTaskToEdit(newTaskToEdit);
 
-        console.log(taskTopFields);
         const initialTopFields = createInitialObject(
           taskTopFields,
           userDetails,
@@ -230,7 +229,6 @@ export default function EditTaskScreen({
         delete (body as any).recurrence;
       }
 
-      console.log(body);
       updateTask(body);
     }
   };

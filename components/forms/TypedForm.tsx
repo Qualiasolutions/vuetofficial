@@ -10,6 +10,7 @@ import {
   FormFieldTypes,
   hasListMode,
   hasPlaceholder,
+  ImageField,
   OptionalYearDate,
   RadioField,
   TimezoneField
@@ -64,11 +65,16 @@ export default function TypedForm({
   ]);
 
   const produceLabelFromFieldName = (fieldName: string, style?: ViewStyle) => {
+    const displayName = Object.keys(fields[fieldName]).includes('displayName')
+      ? fields[fieldName].displayName
+      : parseFieldName(fieldName)
+
+    const asterisk = displayName && fields[fieldName].required
+      ? '*'
+      : ''
     return (
       <AlmostBlackText
-        text={`${fields[fieldName].displayName || parseFieldName(fieldName)}${
-          fields[fieldName].required ? '*' : ''
-        }`}
+        text={`${displayName}${asterisk}`}
         style={[styles.inputLabel, style]}
       />
     );
@@ -412,17 +418,20 @@ export default function TypedForm({
         );
       }
       case 'Image': {
+        const f = fields[field] as ImageField;
         return (
           <TransparentView key={field}>
             <TransparentView
               key={field}
-              style={inlineFields ? styles.inlineInputPair : {}}
+              style={[
+                inlineFields ? styles.inlineInputPair : {},
+                f.centered ? { alignItems: 'center' } : {}
+              ]}
             >
               <TransparentView style={styles.inputLabelWrapper}>
                 {produceLabelFromFieldName(field)}
               </TransparentView>
               <WhiteImagePicker
-                // style={styles.imagePicker}
                 onImageSelect={(image) => {
                   onFormValuesChange({
                     ...formValues,

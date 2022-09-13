@@ -145,9 +145,6 @@ const FriendSettingsScreen = ({
     userToListElement(user, true)
   );
 
-  console.log('userToDelete');
-  console.log(userToDelete);
-
   return (
     <ScrollView style={styles.scrollContainer}>
       <YesNoModal

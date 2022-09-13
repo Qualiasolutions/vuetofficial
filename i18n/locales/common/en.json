@@ -282,6 +282,9 @@
     },
     "eventPage": {
       "thingsToDo": "Things to do before the party"
+    },
+    "myAccount": {
+      "updateSuccess": "Account details successfully updated"
     }
   },
   "components": {

@@ -23,7 +23,7 @@ import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
-export default function EditEntityScreen({
+export default function EditFamilyMemberScreen({
   route,
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {

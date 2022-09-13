@@ -87,6 +87,18 @@ export default function Form({
     setFormValues(initialFormValues);
   };
 
+  useEffect(() => {
+    if (userDetails && fields) {
+      // TODO - THIS IS TRIGGERING ONCE AFTER UPDATING - FIGURE OUT WHY
+      console.log("RESET STATE")
+      console.log(Object.keys(fields))
+      console.log(Object.keys(fields.profile_image))
+      console.log(fields.profile_image.initialValue)
+      console.log(Object.keys(userDetails))
+      resetState()
+    }
+  }, [fields, userDetails])
+
   const methodHookTriggers: {
     [key: string]: {
       trigger: MutationTrigger<any>;
@@ -160,9 +172,6 @@ export default function Form({
           })
         : {};
 
-      console.log('derivedFields');
-      console.log(derivedFieldsFunction);
-      console.log(derivedFields);
       methodHookTriggers[submitMethod]
         .trigger({
           ...parsedFormValues,
