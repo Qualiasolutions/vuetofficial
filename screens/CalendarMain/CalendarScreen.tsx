@@ -7,10 +7,11 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import { RootTabScreenProps } from 'types/base';
 import { parsePresignedUrl } from 'utils/urls';
-import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
+import { HeaderBackButton } from '@react-navigation/elements';
 import { View } from 'components/Themed';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
+import { BlackText } from 'components/molecules/TextComponents';
 
 export function CalendarScreenHeader(props: BottomTabHeaderProps) {
   return (
@@ -26,9 +27,11 @@ export function CalendarScreenHeader(props: BottomTabHeaderProps) {
             />
           )}
         </View>
-        <HeaderTitle tintColor={props.options.headerTintColor}>
-          {props.options.title}
-        </HeaderTitle>
+        <BlackText
+          text={props.options.title || ''}
+          bold={true}
+          style={styles.headerTitle}
+        />
         <View style={styles.sideSections}>
           {props.options.headerRight ? props.options.headerRight({}) : null}
         </View>
@@ -72,6 +75,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { height: 2, width: 2 },
     elevation: 3
+  },
+  headerTitle: {
+    fontSize: 20
   },
   headerInnerWrapper: {
     flex: 1,

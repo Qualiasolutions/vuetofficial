@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ViewStyle
 } from 'react-native';
+import { WhiteText } from './TextComponents';
 
 export default function SquareButton({
   onPress,
@@ -40,7 +41,7 @@ export default function SquareButton({
     );
   } else if (buttonText) {
     icon = (
-      <Text
+      <WhiteText
         style={[
           styles.buttonText,
           {
@@ -49,9 +50,9 @@ export default function SquareButton({
           },
           buttonTextStyle
         ]}
-      >
-        {buttonText}
-      </Text>
+        text={buttonText}
+        bold={true}
+      />
     );
   } else if (customIcon) {
     icon = customIcon;
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   buttonText: {
-    fontWeight: 'bold',
     fontSize: 11
   }
 });

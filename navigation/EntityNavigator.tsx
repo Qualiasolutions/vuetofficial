@@ -19,7 +19,14 @@ const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 
 export function EntityNavigator() {
   return (
-    <EntityStack.Navigator initialRouteName="Categories">
+    <EntityStack.Navigator
+      initialRouteName="Categories"
+      screenOptions={{
+        headerTitleStyle: {
+          fontFamily: 'Poppins-Bold'
+        }
+      }}
+    >
       <EntityStack.Screen
         name="Categories"
         component={CategoriesGrid}

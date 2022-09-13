@@ -45,8 +45,10 @@ export default function CalendarView({ dates }: CalendarViewProps) {
       theme={{
         monthTextColor: primaryColor,
         textMonthFontSize: 16,
-        textMonthFontWeight: 'bold',
         selectedDayTextColor: primaryColor,
+        textDayFontFamily: 'Poppins',
+        textMonthFontFamily: 'Poppins',
+        textDayHeaderFontFamily: 'Poppins',
         ...calendarTheme
       }}
       pagingEnabled={true}

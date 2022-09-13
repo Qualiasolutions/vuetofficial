@@ -88,7 +88,7 @@ const SignupScreen = ({
           navigation.navigate('Login');
         }}
       >
-        <PrimaryText style={styles.login} text={t('screens.signUp.logIn')} />
+        <PrimaryText text={t('screens.signUp.logIn')} bold={true} />
       </Pressable>
     </AlmostWhiteContainerView>
   );
@@ -107,9 +107,6 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
-  },
-  login: {
-    fontWeight: 'bold'
   }
 });
 

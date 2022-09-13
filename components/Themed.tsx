@@ -14,6 +14,7 @@ import {
 
 import Colors, { ColorName } from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+import { BlackText } from './molecules/TextComponents';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -114,7 +115,7 @@ export function Button(
       disabled={disabled}
       {...otherProps}
     >
-      <Text style={[{ color: textColor }, styles.buttonText]}>{title}</Text>
+      <BlackText style={[{ color: textColor }]} text={title} bold={true} />
     </Pressable>
   );
 }
@@ -139,8 +140,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: '100%',
     alignItems: 'center'
-  },
-  buttonText: {
-    fontWeight: 'bold'
   }
 });

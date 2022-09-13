@@ -102,7 +102,7 @@ function Calendar({ filters }: CalendarProps) {
             setShownMonth(prevMonth);
           }}
         >
-          <BlackText text="<" style={styles.monthPickerArrow} />
+          <BlackText text="<" style={styles.monthPickerArrow} bold={true} />
         </Pressable>
         <BlackText
           text={dayjs(shownMonth).format('MMM')}
@@ -116,7 +116,7 @@ function Calendar({ filters }: CalendarProps) {
             setShownMonth(nextMonth);
           }}
         >
-          <BlackText text=">" style={styles.monthPickerArrow} />
+          <BlackText text=">" style={styles.monthPickerArrow} bold={true} />
         </Pressable>
       </TransparentView>
       <CalendarTaskDisplay
@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
   },
   monthPickerArrow: {
     fontSize: 40,
-    fontWeight: 'bold',
     marginHorizontal: 10
   }
 });

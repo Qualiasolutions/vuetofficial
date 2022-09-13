@@ -100,10 +100,7 @@ const LoginScreen = ({
         onChangeText={(text) => onChangePassword(text)}
       />
       <TransparentView style={styles.forgotPasswordWrapper}>
-        <PrimaryText
-          style={styles.forgotPassword}
-          text={t('screens.logIn.forgotPassword')}
-        />
+        <PrimaryText text={t('screens.logIn.forgotPassword')} bold={true} />
       </TransparentView>
       {submitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" />
@@ -123,7 +120,7 @@ const LoginScreen = ({
           navigation.navigate('Signup');
         }}
       >
-        <PrimaryText style={styles.signUp} text={t('screens.logIn.signUp')} />
+        <PrimaryText text={t('screens.logIn.signUp')} bold={true} />
       </Pressable>
     </AlmostWhiteContainerView>
   );
@@ -147,12 +144,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     width: '100%'
-  },
-  forgotPassword: {
-    fontWeight: 'bold'
-  },
-  signUp: {
-    fontWeight: 'bold'
   }
 });
 

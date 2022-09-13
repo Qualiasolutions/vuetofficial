@@ -11,6 +11,7 @@ import GenericError from 'components/molecules/GenericError';
 import { useTranslation } from 'react-i18next';
 import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import { BlackText } from 'components/molecules/TextComponents';
 
 const categoriesImages = {
   FAMILY: require('assets/images/categories/family.png'),
@@ -85,9 +86,11 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
             <View
               style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
             >
-              <Text style={[styles.gridText, { color: textColor }]}>
-                {t(`categories.${category.name}`)}
-              </Text>
+              <BlackText
+                style={[styles.gridText, { color: textColor }]}
+                text={t(`categories.${category.name}`)}
+                bold={true}
+              />
               {isPremiumTag}
             </View>
           </ImageBackground>
@@ -136,7 +139,6 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   gridText: {
-    fontWeight: 'bold',
     textAlign: 'center'
   },
   premiumTag: {

@@ -114,7 +114,10 @@ export function BottomTabNavigator() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: true,
-        headerTitleAlign: 'center'
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          fontFamily: 'Poppins-Bold'
+        }
       }}
       backBehavior="history"
       tabBar={(props) => <BottomNavBar {...props} />}

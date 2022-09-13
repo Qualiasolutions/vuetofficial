@@ -4,6 +4,7 @@ import { Text, View } from 'components/Themed';
 import Task from './components/Task';
 import { ScheduledTaskParsedType, TaskParsedType } from 'types/tasks';
 import dayjs from 'dayjs';
+import { BlackText } from 'components/molecules/TextComponents';
 
 type PropTypes = {
   date: string;
@@ -47,12 +48,16 @@ export default function DayCalendar({
     <View>
       <View style={styles.container}>
         <View style={styles.leftBar}>
-          <Text style={[styles.dateDay, highlight ? styles.highlight : {}]}>
-            {dayjs(date).format('MMM')}{' '}
-          </Text>
-          <Text style={[styles.dateMonth, highlight ? styles.highlight : {}]}>
-            {dayjs(date).format('DD')}{' '}
-          </Text>
+          <BlackText
+            style={[styles.dateDay, highlight ? styles.highlight : {}]}
+            text={dayjs(date).format('MMM') + ' '}
+            bold={highlight}
+          />
+          <BlackText
+            style={[styles.dateMonth, highlight ? styles.highlight : {}]}
+            text={dayjs(date).format('DD') + ' '}
+            bold={highlight}
+          />
           <View style={styles.verticalLine}></View>
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
@@ -75,8 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 15
   },
   highlight: {
-    fontWeight: 'bold',
-    fontSize: 24
+    fontSize: 20
   },
   separator: {
     marginVertical: 30,

@@ -114,10 +114,7 @@ const ValidatePhoneScreen = ({
           });
         }}
       >
-        <PrimaryText
-          style={styles.resend}
-          text={t('screens.validatePhone.resend')}
-        />
+        <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
       </Pressable>
     </AlmostWhiteContainerView>
   );
@@ -127,9 +124,6 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
-  },
-  resend: {
-    fontWeight: 'bold'
   },
   codeInputStyle: {
     backgroundColor: '#fff',

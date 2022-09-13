@@ -12,7 +12,6 @@ export const formStyles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold'
+    fontSize: 20
   }
 });

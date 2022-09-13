@@ -1,4 +1,5 @@
 import { useThemeColor } from 'components/Themed';
+import { ColorName } from 'constants/Colors';
 import { StyleSheet } from 'react-native';
 import { Text as DefaultText } from 'react-native';
 
@@ -7,7 +8,40 @@ type ThemeProps = {
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText['props'];
+export type TextProps = ThemeProps & DefaultText['props'] & { bold?: boolean };
+
+const colouredText = (colorName: ColorName) => {
+  return (props: TextProps & { text: string }) => {
+    const { style, text, ...otherProps } = props;
+    const color = useThemeColor({}, colorName);
+
+    return (
+      <DefaultText
+        style={[
+          { color },
+          props.bold
+            ? { fontFamily: 'Poppins-Bold' }
+            : { fontFamily: 'Poppins' },
+          style
+        ]}
+        {...otherProps}
+      >
+        {text}
+      </DefaultText>
+    );
+  };
+};
+
+export const PrimaryText = colouredText('primary');
+export const AlmostBlackText = colouredText('almostBlack');
+export const LightBlackText = colouredText('lightBlack');
+export const BlackText = colouredText('black');
+export const OrangeText = colouredText('orange');
+export const WhiteText = colouredText('white');
+export const AlmostWhiteText = colouredText('almostWhite');
+export const GreyText = colouredText('grey');
+export const MediumGreyText = colouredText('mediumGrey');
+export const MediumLightGreyText = colouredText('mediumLightGrey');
 
 export function PageTitle(props: TextProps & { text: string }) {
   const { style, text, lightColor, darkColor, ...otherProps } = props;
@@ -17,12 +51,12 @@ export function PageTitle(props: TextProps & { text: string }) {
   );
 
   return (
-    <DefaultText
+    <PrimaryText
       style={[{ color }, styles.common, styles.header, style]}
       {...otherProps}
-    >
-      {text}
-    </DefaultText>
+      text={text}
+      bold={true}
+    />
   );
 }
 
@@ -43,127 +77,13 @@ export function PageSubtitle(props: TextProps & { text: string }) {
   );
 }
 
-export function PrimaryText(props: TextProps & { text: string }) {
-  const { style, text, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'primary'
-  );
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function AlmostBlackText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'almostBlack');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function LightBlackText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'lightBlack');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function BlackText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'black');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function OrangeText(props: TextProps & { text: string | Text }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'orange');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function WhiteText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'white');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function AlmostWhiteText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'almostWhite');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function GreyText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'grey');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function MediumGreyText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'mediumGrey');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
-export function MediumLightGreyText(props: TextProps & { text: string }) {
-  const { style, text, ...otherProps } = props;
-  const color = useThemeColor({}, 'mediumLightGrey');
-
-  return (
-    <DefaultText style={[{ color }, styles.common, style]} {...otherProps}>
-      {text}
-    </DefaultText>
-  );
-}
-
 const styles = StyleSheet.create({
   common: {
     fontFamily: 'Poppins'
   },
   header: {
     fontSize: 26,
-    marginBottom: 20,
-    fontWeight: 'bold'
+    marginBottom: 20
   },
   subheader: {
     fontSize: 14,

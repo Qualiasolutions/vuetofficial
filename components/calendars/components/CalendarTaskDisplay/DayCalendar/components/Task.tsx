@@ -26,7 +26,11 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import { WhiteText, PrimaryText } from 'components/molecules/TextComponents';
+import {
+  WhiteText,
+  PrimaryText,
+  BlackText
+} from 'components/molecules/TextComponents';
 import Layout from 'constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import {
@@ -140,7 +144,11 @@ export default function Task({
         onPress={() => onHeaderPress(task)}
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
-        <WhiteText text={entity?.name} style={styles.expandedTitle} />
+        <WhiteText
+          text={entity?.name}
+          style={styles.expandedTitle}
+          bold={true}
+        />
         <Pressable
           onPress={() =>
             (navigation.navigate as any)('EntityNavigator', {
@@ -242,7 +250,7 @@ export default function Task({
         >
           {leftInfo}
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>{task.title}</Text>
+            <BlackText text={task.title} style={styles.title} bold={true} />
           </View>
         </TouchableOpacity>
         <Checkbox
@@ -288,7 +296,7 @@ const styles = StyleSheet.create({
     width: '40%'
   },
   title: {
-    fontWeight: 'bold',
+    fontSize: 14,
     textAlign: 'left'
   },
   leftInfo: {
@@ -332,7 +340,6 @@ const styles = StyleSheet.create({
     height: 53
   },
   expandedTitle: {
-    fontWeight: 'bold',
     fontSize: 18
   },
   expandedOptions: {

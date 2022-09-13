@@ -3,10 +3,12 @@ import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponen
 import React, { useCallback, useEffect, useState } from 'react';
 import { useGetAllCountriesQuery } from 'reduxStore/services/api/holidays';
 import { Country } from 'reduxStore/services/api/types';
-import GenericButton from 'components/molecules/GenericButton';
-import { useThemeColor } from 'components/Themed';
+import { Button, useThemeColor } from 'components/Themed';
 import { StyleSheet } from 'react-native';
-import { WhiteView } from 'components/molecules/ViewComponents';
+import {
+  TransparentPaddedView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
@@ -108,17 +110,18 @@ export default function HolidayListScreen({
             />
           ))}
       </WhiteFullPageScrollView>
-      <GenericButton
-        disabled={false}
-        title="Next"
-        onPress={() => {
-          navigation.navigate('HolidayDetail', {
-            countrycodes: selectedCountries.map((country) => country.code)
-          });
-        }}
-        style={styles.nextButton}
-        textStyle={{ color: whiteColor }}
-      />
+      <TransparentPaddedView>
+        <Button
+          disabled={false}
+          title="Next"
+          onPress={() => {
+            navigation.navigate('HolidayDetail', {
+              countrycodes: selectedCountries.map((country) => country.code)
+            });
+          }}
+          style={styles.nextButton}
+        />
+      </TransparentPaddedView>
     </WhiteView>
   );
 }
