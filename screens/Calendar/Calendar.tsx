@@ -66,7 +66,7 @@ function Calendar() {
 
   let periodsDates: CalendarViewProps = {};
   for (const p of allPeriods) {
-    let datesArray = getDateStringsBetween(p.start_date, p.end_date);
+    const datesArray = getDateStringsBetween(p.start_date, p.end_date);
     datesArray.forEach((date, i) => {
       periodsDates[date] = {
         backgroundColor: almostWhiteColor,

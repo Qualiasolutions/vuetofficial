@@ -1,7 +1,6 @@
 import {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
-  getDatesBetween,
   getDateStringsBetween
 } from 'utils/datesAndTimes';
 
@@ -125,6 +124,57 @@ it('datesAndTimes ::: getDateStringsBetween', () => {
     expect(getDateStringsBetween(testCase.start, testCase.end)).toStrictEqual(
       testCase.expectedOutput
     );
+  }
+
+  Date = originalDate;
+});
+
+it('datesAndTimes ::: getDateStringsBetween ::: utc', () => {
+  const originalDate = Date;
+
+  Date = timezonedDate.makeConstructor(0);
+  const gmtTestCases = [
+    {
+      start: '2022-06-05T01:00:00Z',
+      end: '2022-06-07T01:00:00Z',
+      expectedOutput: ['2022-06-05', '2022-06-06', '2022-06-07']
+    }
+  ];
+
+  for (const testCase of gmtTestCases) {
+    expect(
+      getDateStringsBetween(testCase.start, testCase.end, (utc = true))
+    ).toStrictEqual(testCase.expectedOutput);
+  }
+
+  Date = timezonedDate.makeConstructor(-300);
+  const colombiaTestCases = [
+    {
+      start: '2022-06-05T01:00:00Z',
+      end: '2022-06-07T01:00:00Z',
+      expectedOutput: ['2022-06-05', '2022-06-06', '2022-06-07']
+    }
+  ];
+
+  for (const testCase of colombiaTestCases) {
+    expect(
+      getDateStringsBetween(testCase.start, testCase.end, (utc = true))
+    ).toStrictEqual(testCase.expectedOutput);
+  }
+
+  Date = timezonedDate.makeConstructor(300);
+  const pakistanTestCases = [
+    {
+      start: '2022-06-05T23:00:00Z',
+      end: '2022-06-07T23:00:00Z',
+      expectedOutput: ['2022-06-05', '2022-06-06', '2022-06-07']
+    }
+  ];
+
+  for (const testCase of pakistanTestCases) {
+    expect(
+      getDateStringsBetween(testCase.start, testCase.end, (utc = true))
+    ).toStrictEqual(testCase.expectedOutput);
   }
 
   Date = originalDate;

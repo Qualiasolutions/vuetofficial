@@ -3,8 +3,9 @@ import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
 
-const getDateStringFromDateObject = (date: Date): string => {
-  return dayjs(date).format('YYYY-MM-DD');
+const getDateStringFromDateObject = (date: Date, utc: boolean = false): string => {
+  const dayjsFunction = utc ? dayjs.utc : dayjs
+  return dayjsFunction(date).format('YYYY-MM-DD');
 };
 
 const getTimeStringFromDateObject = (date: Date): string => {
@@ -34,24 +35,26 @@ const getUTCValuesFromDateString = (date: string) => {
   };
 };
 
-const getDatesBetween = (start: string | Date, end: string | Date): Date[] => {
+const getDatesBetween = (start: string | Date, end: string | Date, utc: boolean = false): Date[] => {
   const datesArray = [];
+  const dayjsFunction = utc ? dayjs.utc : dayjs
   for (
-    let dt = new Date(start);
-    dt <= new Date(end);
+    let dt = dayjsFunction(start).toDate();
+    dt <= dayjsFunction(end).toDate();
     dt.setDate(dt.getDate() + 1)
   ) {
-    datesArray.push(new Date(dt));
+    datesArray.push(dayjsFunction(dt).toDate());
   }
   return datesArray;
 };
 
 const getDateStringsBetween = (
   start: string | Date,
-  end: string | Date
+  end: string | Date,
+  utc: boolean = false
 ): string[] => {
-  const datesArray = getDatesBetween(start, end);
-  return datesArray.map((date) => getDateStringFromDateObject(date));
+  const datesArray = getDatesBetween(start, end, utc);
+  return datesArray.map((date) => getDateStringFromDateObject(date, utc));
 };
 
 function getNextDate(startDate: Date): Date {
