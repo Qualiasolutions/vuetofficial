@@ -1,5 +1,5 @@
 import { vuetApi } from './api';
-import { Country, AllPeriods } from './types';
+import { Country, Period } from './types';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,7 +19,7 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Period']
     }),
-    getScheduledPeriods: builder.query<AllPeriods[], number>({
+    getScheduledPeriods: builder.query<Period[], number>({
       query: () => ({
         url: 'core/scheduled_period/'
       }),

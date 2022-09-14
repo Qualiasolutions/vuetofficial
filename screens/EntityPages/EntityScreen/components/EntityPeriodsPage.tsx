@@ -1,9 +1,9 @@
-import Calendar from 'components/calendars/TaskCalendar';
+import PeriodCalendar from 'components/calendars/PeriodCalendar';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 
-function EntityCalendarPage({ entityId }: { entityId: number }) {
+function EntityPeriodsPage({ entityId }: { entityId: number }) {
   const { data: userDetails } = getUserFullDetails();
   const {
     data: allEntities,
@@ -18,7 +18,9 @@ function EntityCalendarPage({ entityId }: { entityId: number }) {
     return <PaddedSpinner />;
   }
 
-  return <Calendar filters={[(task) => task.entity === entityData.id]} />;
+  return (
+    <PeriodCalendar filters={[(period) => period.entity === entityData.id]} />
+  );
 }
 
-export default EntityCalendarPage;
+export default EntityPeriodsPage;

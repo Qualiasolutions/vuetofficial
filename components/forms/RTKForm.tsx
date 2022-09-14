@@ -90,10 +90,10 @@ export default function Form({
   useEffect(() => {
     if (userDetails && fields) {
       // TODO - THIS IS TRIGGERING ONCE AFTER UPDATING - FIGURE OUT WHY
-      console.log("RESET STATE")
-      resetState()
+      console.log('RESET STATE');
+      resetState();
     }
-  }, [fields, userDetails])
+  }, [fields, userDetails]);
 
   const methodHookTriggers: {
     [key: string]: {

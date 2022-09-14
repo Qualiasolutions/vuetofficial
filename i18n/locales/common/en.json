@@ -95,7 +95,8 @@
       "schedules": "Schedules",
       "lists": "Lists",
       "school": {
-        "schoolBreaks": "School Breaks"
+        "schoolBreaks": "School Breaks",
+        "calendar": "Calendar"
       }
     }
   },

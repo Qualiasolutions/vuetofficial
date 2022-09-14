@@ -68,7 +68,7 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
 
-export type ImageField = BaseField<'Image', (string | object)> & {
+export type ImageField = BaseField<'Image', string | object> & {
   sourceField: string;
   centered?: boolean;
 };

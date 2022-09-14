@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-import { Text, View } from 'components/Themed';
+import { View } from 'components/Themed';
 import Task from './components/Task';
-import { ScheduledTaskParsedType, TaskParsedType } from 'types/tasks';
+import { ScheduledTaskParsedType } from 'types/tasks';
 import dayjs from 'dayjs';
 import { BlackText } from 'components/molecules/TextComponents';
 

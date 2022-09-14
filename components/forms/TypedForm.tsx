@@ -67,11 +67,9 @@ export default function TypedForm({
   const produceLabelFromFieldName = (fieldName: string, style?: ViewStyle) => {
     const displayName = Object.keys(fields[fieldName]).includes('displayName')
       ? fields[fieldName].displayName
-      : parseFieldName(fieldName)
+      : parseFieldName(fieldName);
 
-    const asterisk = displayName && fields[fieldName].required
-      ? '*'
-      : ''
+    const asterisk = displayName && fields[fieldName].required ? '*' : '';
     return (
       <AlmostBlackText
         text={`${displayName}${asterisk}`}

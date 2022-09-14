@@ -3,8 +3,11 @@ import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
 
-const getDateStringFromDateObject = (date: Date, utc: boolean = false): string => {
-  const dayjsFunction = utc ? dayjs.utc : dayjs
+const getDateStringFromDateObject = (
+  date: Date,
+  utc: boolean = false
+): string => {
+  const dayjsFunction = utc ? dayjs.utc : dayjs;
   return dayjsFunction(date).format('YYYY-MM-DD');
 };
 
@@ -35,9 +38,13 @@ const getUTCValuesFromDateString = (date: string) => {
   };
 };
 
-const getDatesBetween = (start: string | Date, end: string | Date, utc: boolean = false): Date[] => {
+const getDatesBetween = (
+  start: string | Date,
+  end: string | Date,
+  utc: boolean = false
+): Date[] => {
   const datesArray = [];
-  const dayjsFunction = utc ? dayjs.utc : dayjs
+  const dayjsFunction = utc ? dayjs.utc : dayjs;
   for (
     let dt = dayjsFunction(start).toDate();
     dt <= dayjsFunction(end).toDate();

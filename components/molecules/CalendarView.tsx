@@ -17,28 +17,6 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const styles = style();
 
-  const calendarTheme = {
-    'stylesheet.day.basic': {
-      container: {
-        margin: 10
-      },
-      base: {
-        width: 58,
-        height: 76,
-        borderWidth: 0.2,
-        borderColor: useThemeColor({}, 'almostBlack'),
-        margin: 5,
-        padding: 5
-      },
-      selected: {
-        borderRadius: 0,
-        backgroundColor: useThemeColor({}, 'almostWhite')
-      },
-      today: {
-        borderRadius: 0
-      }
-    }
-  };
   return (
     <CalendarList
       minDate={'2012-05-10'}
@@ -48,9 +26,9 @@ export default function CalendarView({ dates }: CalendarViewProps) {
         selectedDayTextColor: primaryColor,
         textDayFontFamily: 'Poppins',
         textMonthFontFamily: 'Poppins',
-        textDayHeaderFontFamily: 'Poppins',
-        ...calendarTheme
+        textDayHeaderFontFamily: 'Poppins'
       }}
+      calendarStyle={{ height: '100%' }}
       pagingEnabled={true}
       horizontal={true}
       dayComponent={({ date, state }) => {
@@ -94,16 +72,11 @@ export default function CalendarView({ dates }: CalendarViewProps) {
 
 function style() {
   return StyleSheet.create({
-    container: {
-      height: '100%',
-      width: '100%'
-    },
     dayComponent: {
       width: 58,
-      height: 76,
+      height: 70,
       borderWidth: 0.2,
       borderColor: useThemeColor({}, 'almostBlack'),
-      margin: 5,
       padding: 5
     },
     date: { fontSize: 12, textAlign: 'left' }

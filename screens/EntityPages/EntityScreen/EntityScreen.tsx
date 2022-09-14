@@ -7,7 +7,7 @@ import GenericError from 'components/molecules/GenericError';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { EntityTabParamList } from 'types/base';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import ListEntityPage from './components/ListEntityPage';
@@ -18,10 +18,6 @@ import TripPage from './components/TripPage';
 import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
 import EntityCalendarPage from './components/EntityCalendarPage';
-import { headerRightMapping } from './headers/headerRightMapping';
-import { headerBackgroundMapping } from './headers/headerBackgroundMapping';
-import { headerTintColorMapping } from './headers/headerTintColorMapping';
-import { headerMapping } from './headers/headerMappings';
 import useEntityHeader from './headers/useEntityHeader';
 
 const resourceTypeToComponent = {

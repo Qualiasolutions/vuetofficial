@@ -1,20 +1,25 @@
 import React from 'react';
 import { WhiteView } from 'components/molecules/ViewComponents';
-import { useThemeColor, View } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import CalendarView from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import Periods from 'components/molecules/Periods';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
-import { CalendarViewProps } from 'reduxStore/services/api/types';
+import { CalendarViewProps, Period } from 'reduxStore/services/api/types';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 
-function Calendar() {
+type CalendarProps = {
+  filters?: ((period: Period) => boolean)[];
+};
+
+function Calendar({ filters = [] }: CalendarProps) {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
   const { data: userDetails } = getUserFullDetails();
 
+  // TODO - use real data
   const periods = [
     {
       title: 'Your upcoming days off',
@@ -64,8 +69,14 @@ function Calendar() {
 
   if (!allPeriods) return <FullPageSpinner />;
 
+  let filteredPeriods = allPeriods;
+
+  for (const periodFilter of filters) {
+    filteredPeriods = filteredPeriods.filter(periodFilter);
+  }
+
   let periodsDates: CalendarViewProps = {};
-  for (const p of allPeriods) {
+  for (const p of filteredPeriods) {
     const datesArray = getDateStringsBetween(p.start_date, p.end_date);
     datesArray.forEach((date, i) => {
       periodsDates[date] = {

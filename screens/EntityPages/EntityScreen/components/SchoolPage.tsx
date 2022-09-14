@@ -38,6 +38,14 @@ export default function SchoolScreen({ entityId }: { entityId: number }) {
           }}
           navMethod="push"
         />
+        <ListLink
+          text={t('linkTitles.education.school.calendar')}
+          toScreen="EntityPeriods"
+          toScreenParams={{
+            entityId: entityData.id
+          }}
+          navMethod="push"
+        />
       </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );

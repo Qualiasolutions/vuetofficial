@@ -32,7 +32,7 @@ import {
 import setupPushNotifications from 'hooks/setupPushNotifications';
 import { EntityNavigator } from './EntityNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
-import Calendar from 'screens/Calendar/Calendar';
+import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
 import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
 import ChatScreen from 'screens/ChatScreen';
 
@@ -154,8 +154,8 @@ export function BottomTabNavigator() {
       />
       <BottomTab.Screen name="CreateTask" component={CreateTask} />
       <BottomTab.Screen
-        name="Calendar" // This is just a placeholder really, not sure where it's supposed to go
-        component={Calendar}
+        name="Calendar"
+        component={PeriodCalendar}
         options={{
           tabBarIcon: ({ focused }) => (
             <BarIcon

@@ -80,6 +80,7 @@ export type EntityTabParamList = {
     listName: 'annualDates';
   };
   EntityScreen: { entityId: number | string };
+  EntityPeriods: { entityId: number };
   ChildEntitiesScreen: {
     entityId: number | string;
     entityTypes: EntityTypeName[];

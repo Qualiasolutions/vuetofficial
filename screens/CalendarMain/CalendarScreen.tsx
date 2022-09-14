@@ -1,4 +1,4 @@
-import Calendar from 'components/calendars/Calendar';
+import Calendar from 'components/calendars/TaskCalendar';
 import {
   TransparentView,
   WhiteView

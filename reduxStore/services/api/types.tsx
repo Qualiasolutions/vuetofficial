@@ -64,7 +64,7 @@ type CalendarViewProps = {
   };
 };
 
-type AllPeriods = {
+type Period = {
   end_date: string;
   entity: number;
   id: number;
@@ -85,5 +85,5 @@ export {
   SelectedHoliday,
   HolidayList,
   CalendarViewProps,
-  AllPeriods
+  Period
 };
