@@ -91,10 +91,6 @@ export default function Form({
     if (userDetails && fields) {
       // TODO - THIS IS TRIGGERING ONCE AFTER UPDATING - FIGURE OUT WHY
       console.log("RESET STATE")
-      console.log(Object.keys(fields))
-      console.log(Object.keys(fields.profile_image))
-      console.log(fields.profile_image.initialValue)
-      console.log(Object.keys(userDetails))
       resetState()
     }
   }, [fields, userDetails])
