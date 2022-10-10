@@ -26,11 +26,20 @@ const getLongDateFromDateObject = (date: Date, utc: boolean = true): string => {
   return dayjs(date).format('MMM DD, YYYY');
 };
 
-const getUTCValuesFromDateString = (date: string) => {
+type UTCValues = {
+  day: number;
+  month: number;
+  monthShortName: string;
+  monthName: string;
+  year: number;
+}
+
+const getUTCValuesFromDateString = (date: string): UTCValues => {
   const utcDate = getDateWithoutTimezone(date);
   const dayJsDate = dayjs.utc(utcDate);
+
   return {
-    day: dayJsDate.day(),
+    day: dayJsDate.date(),
     month: dayJsDate.month(),
     monthShortName: dayJsDate.format('MMM'),
     monthName: dayJsDate.format('MMMM'),

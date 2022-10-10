@@ -5,7 +5,7 @@ import CalendarView from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import Periods from 'components/molecules/Periods';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
-import { getDateStringsBetween } from 'utils/datesAndTimes';
+import { getDateStringsBetween, getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import { CalendarViewProps, Period } from 'reduxStore/services/api/types';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import getUserFullDetails from 'hooks/useGetUserDetails';
@@ -18,42 +18,6 @@ type CalendarProps = {
 function Calendar({ filters = [] }: CalendarProps) {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
   const { data: userDetails } = getUserFullDetails();
-
-  // TODO - use real data
-  const periods = [
-    {
-      title: 'Your upcoming days off',
-      key: 'upcoming-days-off',
-      data: [
-        {
-          title: '9 days - Annual leave',
-          message: '1 - 9 July 2022',
-          key: 1
-        },
-        {
-          title: '9 days - Annual leave',
-          message: '1 - 9 July 2022',
-          key: 2
-        },
-        {
-          title: '9 days - Annual leave',
-          message: '1 - 9 July 2022',
-          key: 3
-        }
-      ]
-    },
-    {
-      title: 'March 2022',
-      key: 'march-2022',
-      data: [
-        {
-          title: '9 days - Annual leave',
-          message: '1 - 9 July 2022',
-          key: 4
-        }
-      ]
-    }
-  ];
 
   const { data: allPeriods } = useGetScheduledPeriodsQuery(
     userDetails?.id || -1,
@@ -75,7 +39,7 @@ function Calendar({ filters = [] }: CalendarProps) {
     filteredPeriods = filteredPeriods.filter(periodFilter);
   }
 
-  let periodsDates: CalendarViewProps = {};
+  const periodsDates: CalendarViewProps = {};
   for (const p of filteredPeriods) {
     const datesArray = getDateStringsBetween(p.start_date, p.end_date);
     datesArray.forEach((date, i) => {
@@ -90,6 +54,31 @@ function Calendar({ filters = [] }: CalendarProps) {
     });
   }
 
+  const periodData: any = {};
+  for (const p of filteredPeriods) {
+    const periodStartUtcValues = getUTCValuesFromDateString(p.start_date)
+    const periodEndUtcValues = getUTCValuesFromDateString(p.end_date)
+    const monthName = `${periodStartUtcValues.monthName} ${periodStartUtcValues.year}`
+    const periodFormattedData = {
+      title: p.title,
+      message: `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`,
+      key: p.id
+    }
+    if (monthName in periodData) {
+      periodData[monthName].push(periodFormattedData)
+    } else {
+      periodData[monthName] = [ periodFormattedData ]
+    }
+  }
+
+  const formattedPeriodData = Object.keys(periodData).map(monthName => {
+    return {
+      title: monthName,
+      key: monthName,
+      data: periodData[monthName]
+    }
+  })
+
   const tabs = [
     {
       title: 'Calendar',
@@ -97,7 +86,7 @@ function Calendar({ filters = [] }: CalendarProps) {
     },
     {
       title: 'Periods',
-      component: () => <Periods periods={periods} />
+      component: () => <Periods periods={formattedPeriodData} />
     }
   ];
 

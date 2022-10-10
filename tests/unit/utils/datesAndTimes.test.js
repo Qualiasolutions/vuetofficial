@@ -1,7 +1,8 @@
 import {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
-  getDateStringsBetween
+  getDateStringsBetween,
+  getUTCValuesFromDateString
 } from 'utils/datesAndTimes';
 
 import timezonedDate from 'timezoned-date';
@@ -226,4 +227,15 @@ it('datesAndTimes ::: getTimeStringFromDateObject', () => {
   }
 
   Date = originalDate;
+});
+
+it('datesAndTimes ::: getUTCValuesFromDateString', () => {
+  const values = getUTCValuesFromDateString('2020-10-20');
+  expect(values).toStrictEqual({
+    day: 20,
+    month: 9,
+    monthShortName: 'Oct',
+    monthName: 'October',
+    year: 2020
+  });
 });
