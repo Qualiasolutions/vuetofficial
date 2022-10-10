@@ -1,12 +1,11 @@
-import { Text, useThemeColor, View } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { CalendarList, Calendar, DateData } from 'react-native-calendars';
+import { Calendar, DateData } from 'react-native-calendars';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { Period } from 'reduxStore/services/api/types';
 import { getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
-import ColourBar from './ColourBar';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
 
@@ -76,7 +75,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const selectedDayPeriods = (allPeriods && selectedDay) ? getPeriodsOnDay(selectedDay, allPeriods) : []
 
   return (
-    <WhiteFullPageScrollView>
+    <WhiteFullPageScrollView style={styles.container}>
       <Calendar
         minDate={'2012-05-10'}
         theme={{
@@ -96,37 +95,38 @@ export default function CalendarView({ dates }: CalendarViewProps) {
           setSelectedDay(day)
         }}
       />
-      {
-        allPeriods && selectedDayPeriods?.map(period => {
-          const periodStartUtcValues = getUTCValuesFromDateString(period.start_date)
-          const periodEndUtcValues = getUTCValuesFromDateString(period.end_date)
-          return (
-            <View style={styles.periodListElement} key={period.id}>
-              <AlmostBlackText
-                text={period.title}
-                style={styles.periodListTitleText}
-              />
-              <AlmostBlackText
-                text={`${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`}
-              />
-            </View>
-          )
-        })
-      }
+
+        {
+          allPeriods && selectedDayPeriods && (
+            <View style={styles.periodList}>
+              {
+                selectedDayPeriods.map(period => {
+                  const periodStartUtcValues = getUTCValuesFromDateString(period.start_date)
+                  const periodEndUtcValues = getUTCValuesFromDateString(period.end_date)
+                  return (
+                    <View style={styles.periodListElement} key={period.id}>
+                      <AlmostBlackText
+                        text={period.title}
+                        style={styles.periodListTitleText}
+                      />
+                      <AlmostBlackText
+                        text={`${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`}
+                      />
+                    </View>
+                  )
+                })
+              }
+          </View>
+        )
+        }
     </WhiteFullPageScrollView>
   );
 }
 
 function style() {
   return StyleSheet.create({
-    dayComponent: {
-      width: 58,
-      height: 70,
-      borderWidth: 0.2,
-      borderColor: useThemeColor({}, 'almostBlack'),
-      padding: 5
-    },
-    date: { fontSize: 12, textAlign: 'left' },
+    container: { marginBottom: 0 },
+    periodList: { paddingBottom: 200 },
     periodListElement: {margin: 10},
     periodListTitleText: { fontSize: 18 }
   });
