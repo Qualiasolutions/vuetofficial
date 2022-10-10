@@ -1,11 +1,20 @@
-import { vuetApi } from './api';
-import { Country, Period } from './types';
+import { normalizeData, vuetApi } from './api';
+import { AllPeriods, Period } from './types';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllPeriods: builder.query<Country[], number>({
+    getAllPeriods: builder.query<Period[], number>({
       query: () => ({
-        url: 'core/period/'
+        url: 'core/period/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: Period[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return await response.json();
+          }
+        }
       }),
       providesTags: ['Period']
     }),
@@ -19,9 +28,18 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Period']
     }),
-    getScheduledPeriods: builder.query<Period[], number>({
+    getScheduledPeriods: builder.query<AllPeriods, number>({
       query: () => ({
-        url: 'core/scheduled_period/'
+        url: 'core/scheduled_period/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: Period[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return await response.json();
+          }
+        }
       }),
       providesTags: ['Period']
     })

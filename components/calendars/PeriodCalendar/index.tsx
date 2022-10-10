@@ -1,12 +1,12 @@
 import React from 'react';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
-import CalendarView from 'components/molecules/CalendarView';
+import CalendarView, { CalendarViewProps } from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import Periods from 'components/molecules/Periods';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { getDateStringsBetween, getUTCValuesFromDateString } from 'utils/datesAndTimes';
-import { CalendarViewProps, Period } from 'reduxStore/services/api/types';
+import {  Period } from 'reduxStore/services/api/types';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { FullPageSpinner } from 'components/molecules/Spinners';
@@ -21,9 +21,7 @@ function Calendar({ filters = [] }: CalendarProps) {
 
   const { data: allPeriods } = useGetScheduledPeriodsQuery(
     userDetails?.id || -1,
-    {
-      skip: !userDetails?.id
-    }
+    { skip: !userDetails?.id }
   );
   const {
     data: userFullDetails,
@@ -33,24 +31,52 @@ function Calendar({ filters = [] }: CalendarProps) {
 
   if (!allPeriods) return <FullPageSpinner />;
 
-  let filteredPeriods = allPeriods;
+  let filteredPeriods = Object.values(allPeriods.byId);
 
   for (const periodFilter of filters) {
     filteredPeriods = filteredPeriods.filter(periodFilter);
   }
 
-  const periodsDates: CalendarViewProps = {};
+  const memberColour = userFullDetails?.member_colour || ''
+
+  const periodsDates: CalendarViewProps["dates"] = {};
   for (const p of filteredPeriods) {
     const datesArray = getDateStringsBetween(p.start_date, p.end_date);
+    
+    // Let's figure out the row on which we need to show the
+    // period, based on the previously placed periods
+    let placeIndex = 0
+    for (const date of datesArray) {
+      const placedPeriods = periodsDates[date]?.periods
+      if (!placedPeriods) continue
+
+      for (const period of placedPeriods) {
+        if (period.color === 'transparent') {
+          break
+        }
+        placeIndex = Math.max(placedPeriods.indexOf(period) + 1, placeIndex)
+      }
+    }
+
     datesArray.forEach((date, i) => {
-      periodsDates[date] = {
-        backgroundColor: almostWhiteColor,
-        text: i == 0 ? p.title : '',
-        member_colour:
-          userFullDetails?.family.users.find((user) =>
-            p.members.includes(user.id)
-          )?.member_colour || ''
-      };
+      const dateData = {
+        startingDay: i === 0,
+        endingDay: i === (datesArray.length - 1),
+        color: `#${memberColour}`,
+        id: p.id
+      }
+      if (!periodsDates[date]) {
+        periodsDates[date] = {
+          periods: []
+        }
+      }
+      if (!periodsDates[date].periods) {
+        periodsDates[date].periods = []
+      }
+      while (periodsDates[date].periods.length < placeIndex) {
+        periodsDates[date].periods.push({ color: 'transparent' })
+      }
+      periodsDates[date].periods.push(dateData)
     });
   }
 
