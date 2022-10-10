@@ -3,7 +3,7 @@ import { AllPeriods, Period } from './types';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllPeriods: builder.query<Period[], number>({
+    getAllPeriods: builder.query<AllPeriods, number>({
       query: () => ({
         url: 'core/period/',
         responseHandler: async (response) => {
@@ -28,18 +28,9 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Period']
     }),
-    getScheduledPeriods: builder.query<AllPeriods, number>({
-      query: () => ({
-        url: 'core/scheduled_period/',
-        responseHandler: async (response) => {
-          if (response.ok) {
-            const responseJson: Period[] = await response.json();
-            return normalizeData(responseJson);
-          } else {
-            // Just return the error data
-            return await response.json();
-          }
-        }
+    getScheduledPeriods: builder.query<Period[], { start_datetime: string; end_datetime: string; user_id: number }>({
+      query: ({ start_datetime, end_datetime }) => ({
+        url: `core/scheduled_period/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
       }),
       providesTags: ['Period']
     })

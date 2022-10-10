@@ -1,14 +1,22 @@
 import { Text, useThemeColor, View } from 'components/Themed';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { CalendarList, Calendar, DateData } from 'react-native-calendars';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { Period } from 'reduxStore/services/api/types';
-import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
+import { getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import ColourBar from './ColourBar';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
+
+const getPeriodsOnDay = (day: DateData, allPeriods: Period[]) => {
+  return allPeriods.filter(period => {
+    if (getDateWithoutTimezone(period.end_date) < getDateWithoutTimezone(day.dateString)) return false
+    if (getDateWithoutTimezone(period.start_date) > getDateWithoutTimezone(day.dateString)) return false
+    return true
+  })
+}
 
 export type CalendarViewProps = {
   dates: {
@@ -32,9 +40,26 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const styles = style();
 
   const { data: userDetails } = getUserFullDetails();
+
+  const [earliestPeriod, setEarliestPeriod] = useState<Date | null>(null)
+  const [latestPeriod, setLatestPeriod] = useState<Date | null>(null)
+
+  useEffect(() => {
+    const twoYearsAgo = new Date()
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2)
+    const twoYearsAhead = new Date()
+    twoYearsAhead.setFullYear(twoYearsAhead.getFullYear() + 2)
+    setEarliestPeriod(twoYearsAgo)
+    setLatestPeriod(twoYearsAhead)
+  }, [])
+
   const { data: allPeriods } = useGetScheduledPeriodsQuery(
-    userDetails?.id || -1,
-    { skip: !userDetails?.id }
+    {
+      user_id: userDetails?.id || -1,
+      start_datetime: earliestPeriod?.toISOString() as string,
+      end_datetime: latestPeriod?.toISOString() as string,
+    },
+    { skip: !(userDetails?.id && earliestPeriod && latestPeriod) }
   );
 
   const datesCopy = { ...dates }
@@ -48,7 +73,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
     datesCopy[selectedDay.dateString].selectedColor = greyColor
   }
 
-  const selectedDayPeriods = selectedDay ? datesCopy[selectedDay.dateString].periods : []
+  const selectedDayPeriods = (allPeriods && selectedDay) ? getPeriodsOnDay(selectedDay, allPeriods) : []
 
   return (
     <WhiteFullPageScrollView>
@@ -73,14 +98,12 @@ export default function CalendarView({ dates }: CalendarViewProps) {
       />
       {
         allPeriods && selectedDayPeriods?.map(period => {
-          if (!period.id) return null
-          const periodObj = allPeriods.byId[period.id]
-          const periodStartUtcValues = getUTCValuesFromDateString(periodObj.start_date)
-          const periodEndUtcValues = getUTCValuesFromDateString(periodObj.end_date)
+          const periodStartUtcValues = getUTCValuesFromDateString(period.start_date)
+          const periodEndUtcValues = getUTCValuesFromDateString(period.end_date)
           return (
-            <View style={styles.periodListElement} key={periodObj.id}>
+            <View style={styles.periodListElement} key={period.id}>
               <AlmostBlackText
-                text={periodObj.title}
+                text={period.title}
                 style={styles.periodListTitleText}
               />
               <AlmostBlackText
