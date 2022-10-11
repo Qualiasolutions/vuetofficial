@@ -13,14 +13,12 @@ import {
   ScheduledTaskParsedType
 } from 'types/tasks';
 
-import {
-  PeriodResponse
-} from 'types/periods';
+import { PeriodResponse } from 'types/periods';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
-  start_date: Date
-}
+  start_date: Date;
+};
 
 type SingleDateTasks = {
   tasks: ScheduledTaskParsedType[];
@@ -28,7 +26,7 @@ type SingleDateTasks = {
 };
 
 type AllDateTasks = {
-  [key: string]: SingleDateTasks
+  [key: string]: SingleDateTasks;
 };
 
 const parseTaskResponse = (
@@ -41,17 +39,13 @@ const parseTaskResponse = (
   };
 };
 
-
-const parsePeriodResponse = (
-  res: PeriodResponse
-): ParsedPeriod => {
+const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
   return {
     ...res,
     end_date: getDateWithoutTimezone(res.end_date),
     start_date: getDateWithoutTimezone(res.start_date)
   };
 };
-
 
 function Calendar({
   tasks,

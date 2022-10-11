@@ -32,7 +32,7 @@ type UTCValues = {
   monthShortName: string;
   monthName: string;
   year: number;
-}
+};
 
 const getUTCValuesFromDateString = (date: string): UTCValues => {
   const utcDate = getDateWithoutTimezone(date);

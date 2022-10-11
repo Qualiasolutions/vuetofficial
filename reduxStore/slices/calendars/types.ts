@@ -1,8 +1,8 @@
 export interface CalendarState {
-  data: {},
+  data: {};
   ui: {
     selectedTaskId: number;
     selectedPeriodId: number;
     selectedRecurrenceIndex: number;
-  }
+  };
 }

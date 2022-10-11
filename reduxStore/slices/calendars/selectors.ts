@@ -1,9 +1,10 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { EntireState } from "reduxStore/types";
-import { CalendarState } from "./types";
+import { createSelector } from '@reduxjs/toolkit';
+import { EntireState } from 'reduxStore/types';
+import { CalendarState } from './types';
 
-export const selectCalendarState = (state: EntireState): CalendarState | undefined =>
-  state?.calendar;
+export const selectCalendarState = (
+  state: EntireState
+): CalendarState | undefined => state?.calendar;
 
 export const selectSelectedTaskId = createSelector(
   selectCalendarState,
@@ -17,5 +18,6 @@ export const selectSelectedPeriodId = createSelector(
 
 export const selectSelectedRecurrenceIndex = createSelector(
   selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.selectedRecurrenceIndex || 0
+  (calendar: CalendarState | undefined) =>
+    calendar?.ui?.selectedRecurrenceIndex || 0
 );

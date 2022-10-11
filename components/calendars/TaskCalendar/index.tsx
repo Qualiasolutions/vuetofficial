@@ -59,7 +59,7 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   const allPeriods = useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, 0).dateString,
     getOffsetMonthStartDateString(shownMonth, 1).dateString
-  )
+  );
 
   const {
     data: allTasks,
@@ -81,7 +81,7 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, -1).dateString,
     getOffsetMonthStartDateString(shownMonth, 0).dateString
-  )
+  );
 
   // Preload next month
   useGetAllScheduledTasksQuery({
@@ -92,7 +92,7 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, 1).dateString,
     getOffsetMonthStartDateString(shownMonth, 2).dateString
-  )
+  );
 
   if (error) {
     return <GenericError />;
@@ -109,7 +109,7 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
 
   let filteredPeriods = allPeriods;
   for (const periodFilter of periodFilters) {
-    filteredPeriods = filteredPeriods.filter(periodFilter)
+    filteredPeriods = filteredPeriods.filter(periodFilter);
   }
 
   return (

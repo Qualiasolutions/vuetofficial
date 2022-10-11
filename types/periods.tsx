@@ -11,5 +11,5 @@ export type PeriodResponse = {
 
 export type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
-  start_date: Date
-}
+  start_date: Date;
+};

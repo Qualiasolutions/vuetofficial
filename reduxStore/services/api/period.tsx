@@ -29,9 +29,12 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Period']
     }),
-    getScheduledPeriods: builder.query<PeriodResponse[], { start_datetime: string; end_datetime: string; user_id: number }>({
+    getScheduledPeriods: builder.query<
+      PeriodResponse[],
+      { start_datetime: string; end_datetime: string; user_id: number }
+    >({
       query: ({ start_datetime, end_datetime }) => ({
-        url: `core/scheduled_period/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
+        url: `core/scheduled_period/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`
       }),
       providesTags: ['Period']
     })

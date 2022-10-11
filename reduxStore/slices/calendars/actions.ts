@@ -1,14 +1,12 @@
-import { createAction } from "typesafe-actions";
+import { createAction } from 'typesafe-actions';
 
-
-export const setSelectedTaskId = createAction(
-  "@calendars/setSelectedTaskId"
-)<{ taskId: number, recurrenceIndex: number }>();
+export const setSelectedTaskId = createAction('@calendars/setSelectedTaskId')<{
+  taskId: number;
+  recurrenceIndex: number;
+}>();
 
 export const setSelectedPeriodId = createAction(
-  "@calendars/setSelectedPeriodId"
-)<{ periodId: number, recurrenceIndex: number }>();
+  '@calendars/setSelectedPeriodId'
+)<{ periodId: number; recurrenceIndex: number }>();
 
-export const deselectTasks = createAction(
-  "@calendars/deselectTasks"
-)();
+export const deselectTasks = createAction('@calendars/deselectTasks')();

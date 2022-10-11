@@ -13,37 +13,36 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
   }
 };
 
-const calendarReducer = createReducer(
-  INITIAL_CALENDAR_STATE
-).handleAction(
-  actions.setSelectedTaskId,
-  (state: CalendarState, { payload }) => {
-    return {
-      ...state,
-      ui: {
-        ...state.ui,
-        selectedTaskId: payload.taskId,
-        selectedPeriodId: 0,
-        selectedRecurrenceIndex: payload.recurrenceIndex
-      }
-    };
-  }
-).handleAction(
-  actions.setSelectedPeriodId,
-  (state: CalendarState, { payload }) => {
-    return {
-      ...state,
-      ui: {
-        ...state.ui,
-        selectedTaskId: 0,
-        selectedPeriodId: payload.periodId,
-        selectedRecurrenceIndex: payload.recurrenceIndex
-      }
-    };
-  }
-).handleAction(
-  actions.deselectTasks,
-  (state: CalendarState) => {
+const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
+  .handleAction(
+    actions.setSelectedTaskId,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          selectedTaskId: payload.taskId,
+          selectedPeriodId: 0,
+          selectedRecurrenceIndex: payload.recurrenceIndex
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setSelectedPeriodId,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          selectedTaskId: 0,
+          selectedPeriodId: payload.periodId,
+          selectedRecurrenceIndex: payload.recurrenceIndex
+        }
+      };
+    }
+  )
+  .handleAction(actions.deselectTasks, (state: CalendarState) => {
     return {
       ...state,
       ui: {
@@ -53,7 +52,6 @@ const calendarReducer = createReducer(
         selectedRecurrenceIndex: -1
       }
     };
-  }
-);
+  });
 
 export { calendarReducer };

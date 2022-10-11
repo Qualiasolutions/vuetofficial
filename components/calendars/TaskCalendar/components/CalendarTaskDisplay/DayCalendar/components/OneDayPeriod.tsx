@@ -184,7 +184,8 @@ export default function OneDayPeriod({
           </View>
         </TouchableOpacity>
       </View>
-      {selected && ['FixedTask', 'FlexibleTask'].includes(period.resourcetype) ? (
+      {selected &&
+      ['FixedTask', 'FlexibleTask'].includes(period.resourcetype) ? (
         <Pressable
           onPress={() =>
             (navigation.navigate as any)('EditTask', { taskId: period.id })

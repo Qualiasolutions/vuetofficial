@@ -9,8 +9,16 @@ import { ParsedPeriod } from 'types/periods';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import OneDayPeriod from './components/OneDayPeriod';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSelectedPeriodId, selectSelectedRecurrenceIndex, selectSelectedTaskId } from 'reduxStore/slices/calendars/selectors';
-import { deselectTasks, setSelectedPeriodId, setSelectedTaskId } from 'reduxStore/slices/calendars/actions';
+import {
+  selectSelectedPeriodId,
+  selectSelectedRecurrenceIndex,
+  selectSelectedTaskId
+} from 'reduxStore/slices/calendars/selectors';
+import {
+  deselectTasks,
+  setSelectedPeriodId,
+  setSelectedTaskId
+} from 'reduxStore/slices/calendars/actions';
 
 type PropTypes = {
   date: string;
@@ -25,10 +33,10 @@ export default function DayCalendar({
   periods,
   highlight
 }: PropTypes) {
-  const selectedTaskId = useSelector(selectSelectedTaskId)
-  const selectedPeriodId = useSelector(selectSelectedPeriodId)
-  const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex)
-  const dispatch = useDispatch()
+  const selectedTaskId = useSelector(selectSelectedTaskId);
+  const selectedPeriodId = useSelector(selectSelectedPeriodId);
+  const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
+  const dispatch = useDispatch();
 
   const taskViews = tasks.map((task, i) => (
     <Task
@@ -39,53 +47,63 @@ export default function DayCalendar({
         task.recurrence_index === selectedRecurrenceIndex
       }
       onPress={(task: ScheduledTaskParsedType) => {
-        dispatch(setSelectedTaskId({
-          taskId: task.id,
-          recurrenceIndex: task.recurrence_index
-        }));
+        dispatch(
+          setSelectedTaskId({
+            taskId: task.id,
+            recurrenceIndex: task.recurrence_index
+          })
+        );
       }}
       onHeaderPress={() => {
-        dispatch(deselectTasks())
+        dispatch(deselectTasks());
       }}
     ></Task>
   ));
 
-  const { data: userDetails} = useGetUserDetails()
+  const { data: userDetails } = useGetUserDetails();
 
   if (!userDetails) {
-    return null
+    return null;
   }
 
-  const oneDayPeriods = periods.filter(period => period.start_date.toISOString() === period.end_date.toISOString())
-  const longPeriods = periods.filter(period => period.start_date.toISOString() !== period.end_date.toISOString())
+  const oneDayPeriods = periods.filter(
+    (period) =>
+      period.start_date.toISOString() === period.end_date.toISOString()
+  );
+  const longPeriods = periods.filter(
+    (period) =>
+      period.start_date.toISOString() !== period.end_date.toISOString()
+  );
   const periodLines = (
     <View style={{}}>
-      {
-        longPeriods.map((period, i) => (
-          <View key={i}>
-            <View style={[styles.periodLine, { backgroundColor: `#${userDetails.member_colour}` }]}>
-            </View>
-          </View>
-        ))
-      }
+      {longPeriods.map((period, i) => (
+        <View key={i}>
+          <View
+            style={[
+              styles.periodLine,
+              { backgroundColor: `#${userDetails.member_colour}` }
+            ]}
+          ></View>
+        </View>
+      ))}
     </View>
-  )
+  );
 
   const periodViews = oneDayPeriods.map((period, i) => (
     <OneDayPeriod
       period={period}
       key={`${period.id}_${i}`}
-      selected={
-        period.id === selectedPeriodId
-      }
+      selected={period.id === selectedPeriodId}
       onPress={(period: ParsedPeriod) => {
-        dispatch(setSelectedPeriodId({
-          periodId: period.id,
-          recurrenceIndex: 0
-        }));
+        dispatch(
+          setSelectedPeriodId({
+            periodId: period.id,
+            recurrenceIndex: 0
+          })
+        );
       }}
       onHeaderPress={() => {
-        dispatch(deselectTasks())
+        dispatch(deselectTasks());
       }}
     ></OneDayPeriod>
   ));
@@ -104,11 +122,11 @@ export default function DayCalendar({
             text={dayjs(date).format('DD') + ' '}
             bold={highlight}
           />
-          {
-            (longPeriods.length > 0)
-              ? periodLines
-              : <View style={styles.verticalLine}></View>
-          }
+          {longPeriods.length > 0 ? (
+            periodLines
+          ) : (
+            <View style={styles.verticalLine}></View>
+          )}
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
         <View style={styles.taskViews}>{periodViews}</View>
@@ -155,7 +173,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   periodLineText: {
-    transform: [{ rotate: '270deg'}]
+    transform: [{ rotate: '270deg' }]
   },
   leftBar: {
     flexGrow: 0,

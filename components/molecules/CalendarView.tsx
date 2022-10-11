@@ -3,30 +3,41 @@ import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { Period } from 'reduxStore/services/api/types';
-import { getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
+import {
+  getDateWithoutTimezone,
+  getUTCValuesFromDateString
+} from 'utils/datesAndTimes';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 
 const getPeriodsOnDay = (day: DateData, allPeriods: Period[]) => {
-  return allPeriods.filter(period => {
-    if (getDateWithoutTimezone(period.end_date) < getDateWithoutTimezone(day.dateString)) return false
-    if (getDateWithoutTimezone(period.start_date) > getDateWithoutTimezone(day.dateString)) return false
-    return true
-  })
-}
+  return allPeriods.filter((period) => {
+    if (
+      getDateWithoutTimezone(period.end_date) <
+      getDateWithoutTimezone(day.dateString)
+    )
+      return false;
+    if (
+      getDateWithoutTimezone(period.start_date) >
+      getDateWithoutTimezone(day.dateString)
+    )
+      return false;
+    return true;
+  });
+};
 
 export type CalendarViewProps = {
   dates: {
     [key: string]: {
       periods: {
-        startingDay?: boolean,
-        endingDay?: boolean,
-        color: string,
-        id?: number
-      }[],
-      selected?: boolean,
-      selectedColor?: string
+        startingDay?: boolean;
+        endingDay?: boolean;
+        color: string;
+        id?: number;
+      }[];
+      selected?: boolean;
+      selectedColor?: string;
     };
   };
 };
@@ -34,22 +45,25 @@ export type CalendarViewProps = {
 export default function CalendarView({ dates }: CalendarViewProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
-  const [ selectedDay, setSelectedDay ] = useState<DateData | null>(null)
+  const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = style();
-  const allPeriods = useScheduledPeriods()
+  const allPeriods = useScheduledPeriods();
 
-  const datesCopy = { ...dates }
+  const datesCopy = { ...dates };
   if (selectedDay) {
     if (!datesCopy[selectedDay.dateString]) {
-      datesCopy[selectedDay.dateString] = { periods: [] }
+      datesCopy[selectedDay.dateString] = { periods: [] };
     } else {
-      datesCopy[selectedDay.dateString] = { ...datesCopy[selectedDay.dateString] }
+      datesCopy[selectedDay.dateString] = {
+        ...datesCopy[selectedDay.dateString]
+      };
     }
-    datesCopy[selectedDay.dateString].selected = true
-    datesCopy[selectedDay.dateString].selectedColor = greyColor
+    datesCopy[selectedDay.dateString].selected = true;
+    datesCopy[selectedDay.dateString].selectedColor = greyColor;
   }
 
-  const selectedDayPeriods = (allPeriods && selectedDay) ? getPeriodsOnDay(selectedDay, allPeriods) : []
+  const selectedDayPeriods =
+    allPeriods && selectedDay ? getPeriodsOnDay(selectedDay, allPeriods) : [];
 
   return (
     <WhiteFullPageScrollView style={styles.container}>
@@ -69,33 +83,33 @@ export default function CalendarView({ dates }: CalendarViewProps) {
         pagingEnabled={true}
         horizontal={true}
         onDayPress={(day) => {
-          setSelectedDay(day)
+          setSelectedDay(day);
         }}
       />
 
-        {
-          allPeriods && selectedDayPeriods && (
-            <View style={styles.periodList}>
-              {
-                selectedDayPeriods.map(period => {
-                  const periodStartUtcValues = getUTCValuesFromDateString(period.start_date)
-                  const periodEndUtcValues = getUTCValuesFromDateString(period.end_date)
-                  return (
-                    <View style={styles.periodListElement} key={period.id}>
-                      <AlmostBlackText
-                        text={period.title}
-                        style={styles.periodListTitleText}
-                      />
-                      <AlmostBlackText
-                        text={`${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`}
-                      />
-                    </View>
-                  )
-                })
-              }
-          </View>
-        )
-        }
+      {allPeriods && selectedDayPeriods && (
+        <View style={styles.periodList}>
+          {selectedDayPeriods.map((period) => {
+            const periodStartUtcValues = getUTCValuesFromDateString(
+              period.start_date
+            );
+            const periodEndUtcValues = getUTCValuesFromDateString(
+              period.end_date
+            );
+            return (
+              <View style={styles.periodListElement} key={period.id}>
+                <AlmostBlackText
+                  text={period.title}
+                  style={styles.periodListTitleText}
+                />
+                <AlmostBlackText
+                  text={`${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`}
+                />
+              </View>
+            );
+          })}
+        </View>
+      )}
     </WhiteFullPageScrollView>
   );
 }
@@ -104,7 +118,7 @@ function style() {
   return StyleSheet.create({
     container: { marginBottom: 0 },
     periodList: { paddingBottom: 200 },
-    periodListElement: {margin: 10},
+    periodListElement: { margin: 10 },
     periodListTitleText: { fontSize: 18 }
   });
 }
