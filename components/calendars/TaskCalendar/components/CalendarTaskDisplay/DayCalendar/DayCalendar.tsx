@@ -5,26 +5,31 @@ import Task from './components/Task';
 import { ScheduledTaskParsedType } from 'types/tasks';
 import dayjs from 'dayjs';
 import { BlackText } from 'components/molecules/TextComponents';
+import { ParsedPeriod } from 'types/periods';
+import useGetUserDetails from 'hooks/useGetUserDetails';
+import OneDayPeriod from './components/OneDayPeriod';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSelectedPeriodId, selectSelectedRecurrenceIndex, selectSelectedTaskId } from 'reduxStore/slices/calendars/selectors';
+import { deselectTasks, setSelectedPeriodId, setSelectedTaskId } from 'reduxStore/slices/calendars/actions';
 
 type PropTypes = {
   date: string;
   tasks: ScheduledTaskParsedType[];
-  selectedTaskId: number | null;
-  selectedRecurrenceIndex: number | null;
-  setSelectedTaskId: Function;
-  setSelectedRecurrenceIndex: Function;
+  periods: ParsedPeriod[];
   highlight: boolean;
 };
 
 export default function DayCalendar({
   date,
   tasks,
-  selectedTaskId,
-  selectedRecurrenceIndex,
-  setSelectedTaskId,
-  setSelectedRecurrenceIndex,
+  periods,
   highlight
 }: PropTypes) {
+  const selectedTaskId = useSelector(selectSelectedTaskId)
+  const selectedPeriodId = useSelector(selectSelectedPeriodId)
+  const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex)
+  const dispatch = useDispatch()
+
   const taskViews = tasks.map((task, i) => (
     <Task
       task={task}
@@ -34,14 +39,55 @@ export default function DayCalendar({
         task.recurrence_index === selectedRecurrenceIndex
       }
       onPress={(task: ScheduledTaskParsedType) => {
-        setSelectedTaskId(task.id);
-        setSelectedRecurrenceIndex(task.recurrence_index);
+        dispatch(setSelectedTaskId({
+          taskId: task.id,
+          recurrenceIndex: task.recurrence_index
+        }));
       }}
       onHeaderPress={() => {
-        setSelectedTaskId(null);
-        setSelectedRecurrenceIndex(null);
+        dispatch(deselectTasks())
       }}
     ></Task>
+  ));
+
+  const { data: userDetails} = useGetUserDetails()
+
+  if (!userDetails) {
+    return null
+  }
+
+  const oneDayPeriods = periods.filter(period => period.start_date.toISOString() === period.end_date.toISOString())
+  const longPeriods = periods.filter(period => period.start_date.toISOString() !== period.end_date.toISOString())
+  const periodLines = (
+    <View style={{}}>
+      {
+        longPeriods.map((period, i) => (
+          <View key={i}>
+            <View style={[styles.periodLine, { backgroundColor: `#${userDetails.member_colour}` }]}>
+            </View>
+          </View>
+        ))
+      }
+    </View>
+  )
+
+  const periodViews = oneDayPeriods.map((period, i) => (
+    <OneDayPeriod
+      period={period}
+      key={`${period.id}_${i}`}
+      selected={
+        period.id === selectedPeriodId
+      }
+      onPress={(period: ParsedPeriod) => {
+        dispatch(setSelectedPeriodId({
+          periodId: period.id,
+          recurrenceIndex: 0
+        }));
+      }}
+      onHeaderPress={() => {
+        dispatch(deselectTasks())
+      }}
+    ></OneDayPeriod>
   ));
 
   return (
@@ -58,9 +104,14 @@ export default function DayCalendar({
             text={dayjs(date).format('DD') + ' '}
             bold={highlight}
           />
-          <View style={styles.verticalLine}></View>
+          {
+            (longPeriods.length > 0)
+              ? periodLines
+              : <View style={styles.verticalLine}></View>
+          }
         </View>
         <View style={styles.taskViews}>{taskViews}</View>
+        <View style={styles.taskViews}>{periodViews}</View>
       </View>
     </View>
   );
@@ -94,6 +145,17 @@ const styles = StyleSheet.create({
     minHeight: 10,
     backgroundColor: 'black',
     marginVertical: 10
+  },
+  periodLine: {
+    width: 6,
+    flex: 1,
+    flexGrow: 1,
+    minHeight: 10,
+    backgroundColor: 'black',
+    marginVertical: 10
+  },
+  periodLineText: {
+    transform: [{ rotate: '270deg'}]
   },
   leftBar: {
     flexGrow: 0,

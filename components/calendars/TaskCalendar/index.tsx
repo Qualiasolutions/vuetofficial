@@ -15,6 +15,8 @@ import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import { TaskResponseType } from 'types/tasks';
+import useScheduledPeriods from 'hooks/useScheduledPeriods';
+import { PeriodResponse } from 'types/periods';
 
 dayjs.extend(utc);
 
@@ -39,9 +41,10 @@ const getOffsetMonthStartDateString = (
 };
 
 type CalendarProps = {
-  filters: ((task: TaskResponseType) => boolean)[];
+  taskFilters: ((task: TaskResponseType) => boolean)[];
+  periodFilters: ((task: PeriodResponse) => boolean)[];
 };
-function Calendar({ filters }: CalendarProps) {
+function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const currentMonth = `${new Date().getFullYear()}-${
@@ -52,6 +55,11 @@ function Calendar({ filters }: CalendarProps) {
   const [shownMonth, setShownMonth] = React.useState<Date>(
     getOffsetMonthStartDateString(currentDate, 0).date
   );
+
+  const allPeriods = useScheduledPeriods(
+    getOffsetMonthStartDateString(shownMonth, 0).dateString,
+    getOffsetMonthStartDateString(shownMonth, 1).dateString
+  )
 
   const {
     data: allTasks,
@@ -70,6 +78,10 @@ function Calendar({ filters }: CalendarProps) {
     end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
     user_id: userDetails?.user_id || -1
   });
+  useScheduledPeriods(
+    getOffsetMonthStartDateString(shownMonth, -1).dateString,
+    getOffsetMonthStartDateString(shownMonth, 0).dateString
+  )
 
   // Preload next month
   useGetAllScheduledTasksQuery({
@@ -77,18 +89,27 @@ function Calendar({ filters }: CalendarProps) {
     end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
     user_id: userDetails?.user_id || -1
   });
+  useScheduledPeriods(
+    getOffsetMonthStartDateString(shownMonth, 1).dateString,
+    getOffsetMonthStartDateString(shownMonth, 2).dateString
+  )
 
   if (error) {
     return <GenericError />;
   }
 
-  if (isLoading || !allTasks) {
+  if (isLoading || !allTasks || !allPeriods) {
     return <FullPageSpinner />;
   }
 
   let filteredTasks = allTasks;
-  for (const taskFilter of filters) {
+  for (const taskFilter of taskFilters) {
     filteredTasks = filteredTasks.filter(taskFilter);
+  }
+
+  let filteredPeriods = allPeriods;
+  for (const periodFilter of periodFilters) {
+    filteredPeriods = filteredPeriods.filter(periodFilter)
   }
 
   return (
@@ -121,6 +142,7 @@ function Calendar({ filters }: CalendarProps) {
       </TransparentView>
       <CalendarTaskDisplay
         tasks={filteredTasks}
+        periods={filteredPeriods}
         alwaysIncludeCurrentDate={
           currentMonth ===
           `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`

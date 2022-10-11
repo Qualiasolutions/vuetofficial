@@ -4,23 +4,34 @@ import React from 'react';
 
 import {
   getDateStringFromDateObject,
-  getDateStringsBetween
+  getDateStringsBetween,
+  getDateWithoutTimezone
 } from 'utils/datesAndTimes';
 
 import {
-  FlexibleTaskResponseType,
-  FlexibleTaskParsedType,
   ScheduledTaskResponseType,
   ScheduledTaskParsedType
 } from 'types/tasks';
 
+import {
+  PeriodResponse
+} from 'types/periods';
+
+type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
+  end_date: Date;
+  start_date: Date
+}
+
 type SingleDateTasks = {
   tasks: ScheduledTaskParsedType[];
+  periods: ParsedPeriod[];
 };
 
-type AllDateTasks = { [key: string]: SingleDateTasks };
+type AllDateTasks = {
+  [key: string]: SingleDateTasks
+};
 
-const parseFixedTaskResponse = (
+const parseTaskResponse = (
   res: ScheduledTaskResponseType
 ): ScheduledTaskParsedType => {
   return {
@@ -30,20 +41,25 @@ const parseFixedTaskResponse = (
   };
 };
 
-const parseFlexibleTaskResponse = (
-  res: FlexibleTaskResponseType
-): FlexibleTaskParsedType => {
+
+const parsePeriodResponse = (
+  res: PeriodResponse
+): ParsedPeriod => {
   return {
     ...res,
-    due_date: new Date(res.due_date)
+    end_date: getDateWithoutTimezone(res.end_date),
+    start_date: getDateWithoutTimezone(res.start_date)
   };
 };
 
+
 function Calendar({
   tasks,
+  periods,
   alwaysIncludeCurrentDate = false
 }: {
   tasks: ScheduledTaskResponseType[];
+  periods: PeriodResponse[];
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
@@ -56,8 +72,8 @@ function Calendar({
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
-    for (const task of Object.values(tasks)) {
-      const parsedTask: ScheduledTaskParsedType = parseFixedTaskResponse(task);
+    for (const task of tasks) {
+      const parsedTask = parseTaskResponse(task);
       const taskDates = getDateStringsBetween(
         parsedTask.start_datetime,
         parsedTask.end_datetime
@@ -68,7 +84,28 @@ function Calendar({
           newTasksPerDate[taskDate].tasks.push(parsedTask);
         } else {
           newTasksPerDate[taskDate] = {
-            tasks: [parsedTask]
+            tasks: [parsedTask],
+            periods: []
+          };
+        }
+      }
+    }
+
+    for (const period of periods) {
+      const parsedPeriod = parsePeriodResponse(period);
+      const periodDates = getDateStringsBetween(
+        parsedPeriod.start_date,
+        parsedPeriod.end_date,
+        true // Use UTC
+      );
+
+      for (const periodDate of periodDates) {
+        if (newTasksPerDate[periodDate]) {
+          newTasksPerDate[periodDate].periods.push(parsedPeriod);
+        } else {
+          newTasksPerDate[periodDate] = {
+            tasks: [],
+            periods: [parsedPeriod]
           };
         }
       }
@@ -79,7 +116,8 @@ function Calendar({
       const currentDateString = getDateStringFromDateObject(currentDate);
       if (!(currentDateString in newTasksPerDate)) {
         newTasksPerDate[currentDateString] = {
-          tasks: []
+          tasks: [],
+          periods: []
         };
       }
     }
@@ -95,10 +133,7 @@ function Calendar({
         date={date}
         key={date}
         tasks={tasksPerDate[date].tasks}
-        selectedTaskId={selectedTaskId}
-        selectedRecurrenceIndex={selectedRecurrenceIndex}
-        setSelectedTaskId={setSelectedTaskId}
-        setSelectedRecurrenceIndex={setSelectedRecurrenceIndex}
+        periods={tasksPerDate[date].periods}
         highlight={date === getDateStringFromDateObject(new Date())}
       />
     ));

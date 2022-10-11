@@ -2,6 +2,7 @@ import { TaskResponseType } from 'types/tasks';
 import { EntityResponseType } from 'types/entities';
 import { FamilyResponse } from 'types/families';
 import { Category } from 'types/categories';
+import { PeriodResponse } from 'types/periods';
 
 type AllTasks = {
   ids: number[];
@@ -57,21 +58,10 @@ type HolidayList = {
   holiday_ids: string[];
 };
 
-type Period = {
-  end_date: string;
-  entity: number;
-  id: number;
-  members: number[];
-  polymorphic_ctype: number;
-  resourcetype: string;
-  start_date: string;
-  title: string;
-};
-
 type AllPeriods = {
   ids: number[];
   byId: {
-    [id: number]: Period;
+    [id: number]: PeriodResponse;
   };
 };
 
@@ -84,6 +74,5 @@ export {
   Holiday,
   AllHolidays,
   SelectedHoliday,
-  HolidayList,
-  Period
+  HolidayList
 };

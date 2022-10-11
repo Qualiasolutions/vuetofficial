@@ -4,13 +4,13 @@ import CalendarView, { CalendarViewProps } from 'components/molecules/CalendarVi
 import Tabs from 'components/molecules/Tabs';
 import Periods from 'components/molecules/Periods';
 import { getDateStringsBetween, getUTCValuesFromDateString } from 'utils/datesAndTimes';
-import {  Period } from 'reduxStore/services/api/types';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
+import { PeriodResponse } from 'types/periods';
 
 type CalendarProps = {
-  filters?: ((period: Period) => boolean)[];
+  filters?: ((period: PeriodResponse) => boolean)[];
 };
 
 function Calendar({ filters = [] }: CalendarProps) {

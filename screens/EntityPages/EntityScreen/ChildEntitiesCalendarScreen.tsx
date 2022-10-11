@@ -53,9 +53,10 @@ export default function ChildEntitiesCalendarScreen({
 
   return (
     <Calendar
-      filters={[
+      taskFilters={[
         (task) => childEntities.map((ent) => ent.id).includes(task.entity)
       ]}
+      periodFilters={[]}
     />
   );
 }

@@ -276,7 +276,7 @@ export default function TypedForm({
               </TransparentView>
               <MemberSelector
                 data={f.permittedValues}
-                values={formValues[field]}
+                values={formValues[field] || []}
                 onValueChange={(selectedMembers) => {
                   onFormValuesChange({
                     ...formValues,
@@ -331,7 +331,7 @@ export default function TypedForm({
             {produceLabelFromFieldName(field)}
             <FamilySelector
               data={f.permittedValues}
-              values={formValues[field]}
+              values={formValues[field] || []}
               onValueChange={(selectedMembers: any) => {
                 onFormValuesChange({
                   ...formValues,
@@ -437,7 +437,7 @@ export default function TypedForm({
                   });
                 }}
                 defaultImageUrl={
-                  formValues[field].uri || formValues[field] || ''
+                  formValues[field]?.uri || formValues[field] || ''
                 }
                 displayInternalImage={false}
                 style={{

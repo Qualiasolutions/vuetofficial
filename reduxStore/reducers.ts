@@ -5,10 +5,12 @@ import { logOut } from './slices/auth/actions';
 import { Action, getType } from 'typesafe-actions';
 import { EntireState } from './types';
 import { notificationsReducer } from './slices/notifications/reducer';
+import { calendarReducer } from './slices/calendars/reducer';
 
 const appReducer = combineReducers({
   authentication: authReducer,
   notifications: notificationsReducer,
+  calendar: calendarReducer,
   [vuetApi.reducerPath]: vuetApi.reducer
 });
 
