@@ -166,9 +166,11 @@ export default function HolidayDetailScreen({
                 }`}
                 showArrow={false}
                 onSelect={async (selected) => onPress(holiday, selected)}
+                onPressContainer={(selected) => {
+                  onPress(holiday, !!selected);
+                }}
                 navMethod={undefined}
                 selected={selectedHolidays.some((cou) => cou.id == holiday.id)}
-                disabled={true}
               />
             );
           })}

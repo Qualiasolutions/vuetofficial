@@ -89,8 +89,7 @@ export default function HolidayListScreen({
               text={country.name}
               showArrow={false}
               onSelect={async (selected) => onPress(country, selected)}
-              navMethod={undefined}
-              customOnPress={() => {}}
+              onPressContainer={async (selected) => onPress(country, selected)}
               selected={selectedCountries.some(
                 (cou) => cou.code == country.code
               )}
@@ -104,8 +103,7 @@ export default function HolidayListScreen({
               text={country.name}
               showArrow={false}
               onSelect={async (selected) => onPress(country, selected)}
-              navMethod={undefined}
-              customOnPress={() => {}}
+              onPressContainer={async (selected) => onPress(country, selected)}
               selected={selectedCountries.some(
                 (cou) => cou.code == country.code
               )}

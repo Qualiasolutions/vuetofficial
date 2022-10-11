@@ -28,7 +28,7 @@ type ListLinkProps = {
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
   selected?: boolean;
-  customOnPress?: () => void;
+  onPressContainer?: () => void;
   onSelect?: (v: boolean) => Promise<void>;
   subType?: string;
 };
@@ -40,7 +40,7 @@ export default function EventListLink({
   toScreenParams = {},
   style = {},
   selected = false,
-  customOnPress,
+  onPressContainer,
   onSelect,
   subType
 }: ListLinkProps) {
@@ -143,8 +143,8 @@ export default function EventListLink({
     >
       <Pressable
         onPress={() => {
-          if (customOnPress) {
-            return customOnPress();
+          if (onPressContainer) {
+            return onPressContainer();
           }
           !selected && onSelect && onSelect(selected);
         }}

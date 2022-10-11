@@ -18,7 +18,12 @@ function EntityCalendarPage({ entityId }: { entityId: number }) {
     return <PaddedSpinner />;
   }
 
-  return <Calendar filters={[(task) => task.entity === entityData.id]} />;
+  return (
+    <Calendar
+      taskFilters={[(task) => task.entity === entityData.id]}
+      periodFilters={[(period) => period.entity === entityData.id]}
+    />
+  );
 }
 
 export default EntityCalendarPage;

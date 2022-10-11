@@ -94,19 +94,19 @@ export default function OneDayPeriod({
     return <GenericError />;
   }
 
+  const entity = allEntities.byId[period.entity];
+
   const familyMembersList = userFullDetails?.family?.users?.filter(
-    (item: any) => period.members.includes(item.id)
+    (item: any) => period.members.includes(item.id) || entity.owner === item.id
   );
-  const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
-    period.members.includes(item.id)
+  const friendMembersList = userFullDetails?.friends?.filter(
+    (item: any) => period.members.includes(item.id) || entity.owner === item.id
   );
 
   const membersList = [
     ...(familyMembersList || []),
     ...(friendMembersList || [])
   ];
-
-  const entity = allEntities.byId[period.entity];
 
   const leftInfo = (
     <View style={styles.leftInfo}>
@@ -184,17 +184,6 @@ export default function OneDayPeriod({
           </View>
         </TouchableOpacity>
       </View>
-      {selected &&
-      ['FixedTask', 'FlexibleTask'].includes(period.resourcetype) ? (
-        <Pressable
-          onPress={() =>
-            (navigation.navigate as any)('EditTask', { taskId: period.id })
-          }
-          style={styles.viewEditContainer}
-        >
-          <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
-        </Pressable>
-      ) : null}
       {memberColour}
       {!selected && <View style={styles.separator}></View>}
     </WhiteView>

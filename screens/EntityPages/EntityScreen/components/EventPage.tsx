@@ -76,7 +76,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   const customLink = (
     <EventListLink
       text="Add New"
-      customOnPress={() => {
+      onPressContainer={() => {
         setAddNewModal(true);
       }}
       subType="add"

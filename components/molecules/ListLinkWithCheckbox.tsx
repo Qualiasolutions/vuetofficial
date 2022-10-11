@@ -33,7 +33,7 @@ type ListLinkProps = {
   navMethod?: 'push' | 'navigate' | undefined;
   style?: ViewStyle;
   selected?: boolean;
-  customOnPress?: () => void;
+  onPressContainer?: (selected?: boolean) => void;
   onSelect?: (v: boolean) => Promise<void>;
   showArrow?: boolean;
   subText?: string;
@@ -47,7 +47,7 @@ export default function ListLinkWithCheckbox({
   toScreenParams = {},
   style = {},
   selected = false,
-  customOnPress,
+  onPressContainer,
   onSelect,
   showArrow = true,
   subText = '',
@@ -63,8 +63,8 @@ export default function ListLinkWithCheckbox({
     <Pressable
       onPress={() => {
         if (!disabled) {
-          if (customOnPress) {
-            return customOnPress();
+          if (onPressContainer) {
+            return onPressContainer(selected);
           }
           if (navMethod === 'push') {
             (navigation as any).push(toScreen, toScreenParams);

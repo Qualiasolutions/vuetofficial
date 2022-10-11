@@ -104,7 +104,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const customLink = (
     <ListLinkWithCheckBox
       text={`+ ${t('common.addNew')}`}
-      customOnPress={() => {
+      onPressContainer={() => {
         setAddNewModal(true);
       }}
     />
