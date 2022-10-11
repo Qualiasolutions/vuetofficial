@@ -1,44 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { WhiteView } from 'components/molecules/ViewComponents';
-import { useThemeColor } from 'components/Themed';
 import CalendarView, { CalendarViewProps } from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import Periods from 'components/molecules/Periods';
-import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { getDateStringsBetween, getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import {  Period } from 'reduxStore/services/api/types';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import getUserFullDetails from 'hooks/useGetUserDetails';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import useScheduledPeriods from 'hooks/useScheduledPeriods';
 
 type CalendarProps = {
   filters?: ((period: Period) => boolean)[];
 };
 
 function Calendar({ filters = [] }: CalendarProps) {
-  const almostWhiteColor = useThemeColor({}, 'almostWhite');
-  const { data: userDetails } = getUserFullDetails();
-
-  const [earliestPeriod, setEarliestPeriod] = useState<Date | null>(null)
-  const [latestPeriod, setLatestPeriod] = useState<Date | null>(null)
-
-  useEffect(() => {
-    const twoYearsAgo = new Date()
-    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2)
-    const twoYearsAhead = new Date()
-    twoYearsAhead.setFullYear(twoYearsAhead.getFullYear() + 2)
-    setEarliestPeriod(twoYearsAgo)
-    setLatestPeriod(twoYearsAhead)
-  }, [])
-
-  const { data: allPeriods } = useGetScheduledPeriodsQuery(
-    {
-      user_id: userDetails?.id || -1,
-      start_datetime: earliestPeriod?.toISOString() as string,
-      end_datetime: latestPeriod?.toISOString() as string,
-    },
-    { skip: !(userDetails?.id && earliestPeriod && latestPeriod) }
-  );
+  const allPeriods = useScheduledPeriods()
 
   const {
     data: userFullDetails,

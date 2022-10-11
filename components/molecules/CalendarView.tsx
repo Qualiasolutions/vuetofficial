@@ -1,13 +1,12 @@
 import { useThemeColor, View } from 'components/Themed';
-import getUserFullDetails from 'hooks/useGetUserDetails';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
-import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
 import { Period } from 'reduxStore/services/api/types';
 import { getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
+import useScheduledPeriods from 'hooks/useScheduledPeriods';
 
 const getPeriodsOnDay = (day: DateData, allPeriods: Period[]) => {
   return allPeriods.filter(period => {
@@ -37,29 +36,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const greyColor = useThemeColor({}, 'grey');
   const [ selectedDay, setSelectedDay ] = useState<DateData | null>(null)
   const styles = style();
-
-  const { data: userDetails } = getUserFullDetails();
-
-  const [earliestPeriod, setEarliestPeriod] = useState<Date | null>(null)
-  const [latestPeriod, setLatestPeriod] = useState<Date | null>(null)
-
-  useEffect(() => {
-    const twoYearsAgo = new Date()
-    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2)
-    const twoYearsAhead = new Date()
-    twoYearsAhead.setFullYear(twoYearsAhead.getFullYear() + 2)
-    setEarliestPeriod(twoYearsAgo)
-    setLatestPeriod(twoYearsAhead)
-  }, [])
-
-  const { data: allPeriods } = useGetScheduledPeriodsQuery(
-    {
-      user_id: userDetails?.id || -1,
-      start_datetime: earliestPeriod?.toISOString() as string,
-      end_datetime: latestPeriod?.toISOString() as string,
-    },
-    { skip: !(userDetails?.id && earliestPeriod && latestPeriod) }
-  );
+  const allPeriods = useScheduledPeriods()
 
   const datesCopy = { ...dates }
   if (selectedDay) {
