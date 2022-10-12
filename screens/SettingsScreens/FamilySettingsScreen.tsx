@@ -173,6 +173,16 @@ const FamilySettingsScreen = ({
           style={styles.familyHeaderText}
           text={t('screens.familySettings.familyMembers')}
         />
+        <Pressable onPress={() => {
+          navigation.navigate('CreateUserInvite', {
+            familyRequest: true
+          });
+        }}>
+          <Image
+            source={require('assets/images/icons/plus.png')}
+            style={styles.plusIcon}
+          />
+        </Pressable>
       </AlmostWhiteView>
       <WhiteView style={styles.listContainer}>
         {familyMemberList}
@@ -187,6 +197,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20
   },
   familyHeaderText: { fontSize: 22 },
@@ -230,9 +241,9 @@ const styles = StyleSheet.create({
     margin: 5
   },
   plusIcon: {
-    width: 50,
-    height: 50,
-    margin: 5
+    width: 30,
+    height: 30,
+    marginLeft: 10
   }
 });
 

@@ -185,6 +185,16 @@ const FriendSettingsScreen = ({
           style={styles.friendsHeaderText}
           text={t('screens.friendSettings.friends')}
         />
+        <Pressable onPress={() => {
+          navigation.navigate('CreateUserInvite', {
+            familyRequest: false
+          });
+        }}>
+          <Image
+            source={require('assets/images/icons/plus.png')}
+            style={styles.plusIcon}
+          />
+        </Pressable>
       </AlmostWhiteView>
       <WhiteView style={styles.listContainer}>
         {friendsList}
@@ -199,6 +209,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20
   },
   friendsHeaderText: { fontSize: 22 },
@@ -242,9 +253,9 @@ const styles = StyleSheet.create({
     margin: 5
   },
   plusIcon: {
-    width: 50,
-    height: 50,
-    margin: 5
+    width: 30,
+    height: 30,
+    marginLeft: 10
   }
 });
 

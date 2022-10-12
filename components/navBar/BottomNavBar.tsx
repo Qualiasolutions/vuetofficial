@@ -141,14 +141,6 @@ export default function BottomNavBar({
                       entityTypes: entityTypes[0]
                     });
                   }
-                } else if (currentScreen === 'FamilySettings') {
-                  navigation.navigate('CreateUserInvite', {
-                    familyRequest: true
-                  });
-                } else if (currentScreen === 'FriendSettings') {
-                  navigation.navigate('CreateUserInvite', {
-                    familyRequest: false
-                  });
                 } else {
                   navigation.navigate('CreateTask');
                 }
