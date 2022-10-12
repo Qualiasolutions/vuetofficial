@@ -57,8 +57,15 @@ export default function MemberSelector({
     setShowMembersList(false);
   }, [setShowMembersList]);
 
+  const allMembers = [...data.family]
+  for (const member of data.friends) {
+    if (!data.family.map(user => user.id).includes(member.id)) {
+      allMembers.push(member)
+    }
+  }
+
   const selectedMembersList = useCallback(() => {
-    return [...data.family, ...data.friends]
+    return allMembers
       .filter((member) => values.includes(member.id))
       .map((member: any) => {
         return (
