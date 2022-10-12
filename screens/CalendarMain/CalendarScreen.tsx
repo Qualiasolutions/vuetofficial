@@ -54,14 +54,23 @@ export function CalendarScreenHeaderLeft() {
     : require('assets/images/icons/camera.png');
 
   return (
-    <Pressable onPress={() => (navigation as any).openDrawer()} style={[
-      styles.profileImageWrapper,
-      styles.elevated,
-      {
-        backgroundColor: whiteColor
-      }
-    ]}>
-      <Image source={imageSource} style={[styles.headerProfileImage, !userDetails.presigned_profile_image_url && styles.defaultProfileImage]} />
+    <Pressable
+      onPress={() => (navigation as any).openDrawer()}
+      style={[
+        styles.profileImageWrapper,
+        styles.elevated,
+        {
+          backgroundColor: whiteColor
+        }
+      ]}
+    >
+      <Image
+        source={imageSource}
+        style={[
+          styles.headerProfileImage,
+          !userDetails.presigned_profile_image_url && styles.defaultProfileImage
+        ]}
+      />
     </Pressable>
   );
 }
@@ -99,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   elevated: {
     shadowColor: '#000',
@@ -110,11 +119,11 @@ const styles = StyleSheet.create({
   },
   defaultProfileImage: {
     height: 30,
-    width: 30,
+    width: 30
   },
   headerProfileImage: {
     height: '100%',
-    width: '100%',
+    width: '100%'
   },
   sideSections: {
     width: 100,

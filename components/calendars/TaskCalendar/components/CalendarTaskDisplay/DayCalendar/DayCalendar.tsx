@@ -44,16 +44,16 @@ export default function DayCalendar({
       key={`${task.id}_${i}`}
       selected={
         task.id === selectedTaskId &&
-        (
-          !task.recurrence_index ||
-          task.recurrence_index === selectedRecurrenceIndex
-        )
+        (!task.recurrence_index ||
+          task.recurrence_index === selectedRecurrenceIndex)
       }
       onPress={(task: ScheduledTaskParsedType) => {
         dispatch(
           setSelectedTaskId({
             taskId: task.id,
-            recurrenceIndex: Object.keys(task).includes('recurrence_index') ? task.recurrence_index : -1
+            recurrenceIndex: Object.keys(task).includes('recurrence_index')
+              ? task.recurrence_index
+              : -1
           })
         );
       }}
@@ -77,8 +77,9 @@ export default function DayCalendar({
     (period) =>
       period.start_date.toISOString() !== period.end_date.toISOString()
   );
+
   const periodLines = (
-    <View style={{}}>
+    <View style={styles.periodLines}>
       {longPeriods.map((period, i) => (
         <View key={i}>
           <View
@@ -173,7 +174,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minHeight: 10,
     backgroundColor: 'black',
-    marginVertical: 10
+    marginVertical: 10,
+    marginHorizontal: 1
+  },
+  periodLines: {
+    flexDirection: 'row',
+    flexGrow: 1
   },
   periodLineText: {
     transform: [{ rotate: '270deg' }]

@@ -185,11 +185,13 @@ const FriendSettingsScreen = ({
           style={styles.friendsHeaderText}
           text={t('screens.friendSettings.friends')}
         />
-        <Pressable onPress={() => {
-          navigation.navigate('CreateUserInvite', {
-            familyRequest: false
-          });
-        }}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('CreateUserInvite', {
+              familyRequest: false
+            });
+          }}
+        >
           <Image
             source={require('assets/images/icons/plus.png')}
             style={styles.plusIcon}

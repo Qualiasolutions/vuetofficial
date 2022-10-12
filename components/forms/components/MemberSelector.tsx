@@ -57,10 +57,10 @@ export default function MemberSelector({
     setShowMembersList(false);
   }, [setShowMembersList]);
 
-  const allMembers = [...data.family]
+  const allMembers = [...data.family];
   for (const member of data.friends) {
-    if (!data.family.map(user => user.id).includes(member.id)) {
-      allMembers.push(member)
+    if (!data.family.map((user) => user.id).includes(member.id)) {
+      allMembers.push(member);
     }
   }
 

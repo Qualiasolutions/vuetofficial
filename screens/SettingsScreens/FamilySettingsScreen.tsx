@@ -173,11 +173,13 @@ const FamilySettingsScreen = ({
           style={styles.familyHeaderText}
           text={t('screens.familySettings.familyMembers')}
         />
-        <Pressable onPress={() => {
-          navigation.navigate('CreateUserInvite', {
-            familyRequest: true
-          });
-        }}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('CreateUserInvite', {
+              familyRequest: true
+            });
+          }}
+        >
           <Image
             source={require('assets/images/icons/plus.png')}
             style={styles.plusIcon}
