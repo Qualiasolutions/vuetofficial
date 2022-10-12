@@ -8,7 +8,7 @@ import { Image, Pressable, StyleSheet } from 'react-native';
 import { RootTabScreenProps } from 'types/base';
 import { parsePresignedUrl } from 'utils/urls';
 import { HeaderBackButton } from '@react-navigation/elements';
-import { View } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { BlackText } from 'components/molecules/TextComponents';
@@ -43,6 +43,7 @@ export function CalendarScreenHeader(props: BottomTabHeaderProps) {
 export function CalendarScreenHeaderLeft() {
   const { data: userDetails } = getUserFullDetails();
   const navigation = useNavigation();
+  const whiteColor = useThemeColor({}, 'white');
 
   if (!userDetails) {
     return null;
@@ -53,8 +54,14 @@ export function CalendarScreenHeaderLeft() {
     : require('assets/images/icons/camera.png');
 
   return (
-    <Pressable onPress={() => (navigation as any).openDrawer()}>
-      <Image source={imageSource} style={styles.headerProfileImage} />
+    <Pressable onPress={() => (navigation as any).openDrawer()} style={[
+      styles.profileImageWrapper,
+      styles.elevated,
+      {
+        backgroundColor: whiteColor
+      }
+    ]}>
+      <Image source={imageSource} style={[styles.headerProfileImage, !userDetails.presigned_profile_image_url && styles.defaultProfileImage]} />
     </Pressable>
   );
 }
@@ -85,11 +92,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  headerProfileImage: {
+  profileImageWrapper: {
     height: 60,
     width: 60,
     marginLeft: 40,
-    borderRadius: 30
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  elevated: {
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { height: 2, width: 2 },
+    elevation: 3
+  },
+  defaultProfileImage: {
+    height: 30,
+    width: 30,
+  },
+  headerProfileImage: {
+    height: '100%',
+    width: '100%',
   },
   sideSections: {
     width: 100,
