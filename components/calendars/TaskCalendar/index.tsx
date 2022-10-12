@@ -1,3 +1,7 @@
+/*
+  TaskCalendar - this is a calendar component for displaying tasks (and periods)
+*/
+
 import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
 import React from 'react';

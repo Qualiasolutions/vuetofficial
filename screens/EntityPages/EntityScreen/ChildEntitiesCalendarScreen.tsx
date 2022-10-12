@@ -1,3 +1,10 @@
+/*
+  ChildEntitiesCalendarScreen - this is a calendar component for displaying tasks (and periods) filtered to
+    specific child entities of a parent entity. The route parameter props that are used are:
+      - entityId: the ID of the parent entity
+      - entityTypes: the resource types of the child entities to show
+*/
+
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -56,7 +63,9 @@ export default function ChildEntitiesCalendarScreen({
       taskFilters={[
         (task) => childEntities.map((ent) => ent.id).includes(task.entity)
       ]}
-      periodFilters={[]}
+      periodFilters={[
+        (period) => childEntities.map((ent) => ent.id).includes(period.entity)
+      ]}
     />
   );
 }

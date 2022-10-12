@@ -1,3 +1,8 @@
+/*
+  EntityCalendarPage - this is a calendar component for displaying tasks (and periods) filtered to
+    a specific entity
+*/
+
 import Calendar from 'components/calendars/TaskCalendar';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import getUserFullDetails from 'hooks/useGetUserDetails';
