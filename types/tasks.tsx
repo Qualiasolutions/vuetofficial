@@ -40,6 +40,7 @@ interface ScheduledTaskResponseType extends BaseTaskType {
 interface ScheduledTaskParsedType extends BaseTaskType {
   start_datetime: Date;
   end_datetime: Date;
+  recurrence_index?: number;
 }
 
 type TaskResponseType =

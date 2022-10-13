@@ -44,14 +44,14 @@ export default function DayCalendar({
       key={`${task.id}_${i}`}
       selected={
         task.id === selectedTaskId &&
-        (!task.recurrence_index ||
+        ((task.recurrence_index === undefined) ||
           task.recurrence_index === selectedRecurrenceIndex)
       }
       onPress={(task: ScheduledTaskParsedType) => {
         dispatch(
           setSelectedTaskId({
             taskId: task.id,
-            recurrenceIndex: Object.keys(task).includes('recurrence_index')
+            recurrenceIndex: Object.keys(task).includes('recurrence_index') && (task.recurrence_index !== undefined)
               ? task.recurrence_index
               : -1
           })
