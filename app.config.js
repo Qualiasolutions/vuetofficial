@@ -1,9 +1,5 @@
 const extraData = {
-  vuetApiUrl: process.env.REACT_NATIVE_PACKAGER_HOSTNAME
-    ? `${process.env.REACT_NATIVE_PACKAGER_HOSTNAME.trim()}:8000`
-    : process.env.ENV === 'LOCAL'
-    ? 'localhost:8000'
-    : 'api.vuet.app',
+  vuetApiUrl: 'api.vuet.app',
   processEnv: process.env.ENV
 };
 
