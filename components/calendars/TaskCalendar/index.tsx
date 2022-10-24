@@ -4,7 +4,7 @@
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
@@ -74,6 +74,9 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     start_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
     end_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
     user_id: userDetails?.user_id || -1
+  }, {
+    skip: !userDetails?.user_id,
+    pollingInterval: 10000
   });
 
   // Preload previous month
@@ -81,6 +84,9 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     start_datetime: getOffsetMonthStartDateString(shownMonth, -1).dateString,
     end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
     user_id: userDetails?.user_id || -1
+  }, {
+    skip: !userDetails?.user_id,
+    pollingInterval: 20000
   });
   useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, -1).dateString,
@@ -92,11 +98,36 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     start_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
     end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
     user_id: userDetails?.user_id || -1
+  }, {
+    skip: !userDetails?.user_id,
+    pollingInterval: 20000
   });
   useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, 1).dateString,
     getOffsetMonthStartDateString(shownMonth, 2).dateString
   );
+
+  const filteredTasks = useMemo(() => {
+    if (!allTasks) {
+      return []
+    }
+    let filtered = allTasks;
+    for (const taskFilter of taskFilters) {
+      filtered = filtered.filter(taskFilter);
+    }
+    return filtered
+  }, [ allTasks, taskFilters ])
+
+  const filteredPeriods = useMemo(() => {
+    if (!allPeriods) {
+      return []
+    }
+    let filtered = allPeriods;
+    for (const periodFilter of periodFilters) {
+      filtered = filtered.filter(periodFilter);
+    }
+    return filtered
+  }, [ allPeriods, periodFilters])
 
   if (error) {
     return <GenericError />;
@@ -104,16 +135,6 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
 
   if (isLoading || !allTasks || !allPeriods) {
     return <FullPageSpinner />;
-  }
-
-  let filteredTasks = allTasks;
-  for (const taskFilter of taskFilters) {
-    filteredTasks = filteredTasks.filter(taskFilter);
-  }
-
-  let filteredPeriods = allPeriods;
-  for (const periodFilter of periodFilters) {
-    filteredPeriods = filteredPeriods.filter(periodFilter);
   }
 
   return (

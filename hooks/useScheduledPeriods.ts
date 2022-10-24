@@ -28,7 +28,10 @@ export default function useScheduledPeriods(
         earliestPeriod?.toISOString()) as string,
       end_datetime: (end_datetime || latestPeriod?.toISOString()) as string
     },
-    { skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod) }
+    {
+      skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod),
+      pollingInterval: 10000,
+    }
   );
 
   return allPeriods || null;

@@ -57,12 +57,6 @@ function Calendar({
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
-  const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(
-    null
-  );
-  const [selectedRecurrenceIndex, setSelectedRecurrenceIndex] = React.useState<
-    number | null
-  >(null);
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -119,7 +113,7 @@ function Calendar({
     setTasksPerDate(newTasksPerDate);
   };
 
-  React.useEffect(formatAndSetTasksPerDate, [tasks]);
+  React.useEffect(formatAndSetTasksPerDate, [tasks, periods, alwaysIncludeCurrentDate]);
 
   const dayCalendars = Object.keys(tasksPerDate)
     .sort()

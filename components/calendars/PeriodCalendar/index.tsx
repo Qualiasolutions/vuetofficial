@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import CalendarView, {
   CalendarViewProps
@@ -22,14 +22,20 @@ function Calendar({ filters = [] }: CalendarProps) {
   const allPeriods = useScheduledPeriods();
   const periodColour = useThemeColor({}, 'mediumLightGrey');
 
+  const filteredPeriods = useMemo(() => {
+    if (!allPeriods) {
+      return []
+    }
+
+    let filtered = allPeriods;
+    for (const periodFilter of filters) {
+      filtered = filtered.filter(periodFilter);
+    }
+
+    return filtered
+  }, [allPeriods])
+
   if (!allPeriods) return <FullPageSpinner />;
-
-  let filteredPeriods = allPeriods;
-
-  for (const periodFilter of filters) {
-    filteredPeriods = filteredPeriods.filter(periodFilter);
-  }
-
 
   const periodsDates: CalendarViewProps['dates'] = {};
   for (const p of filteredPeriods) {
