@@ -4,7 +4,7 @@ import { AllPeriods } from './types';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllPeriods: builder.query<AllPeriods, number>({
+    getAllPeriods: builder.query<AllPeriods, string>({
       query: () => ({
         url: 'core/period/',
         responseHandler: async (response) => {

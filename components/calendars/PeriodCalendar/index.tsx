@@ -72,7 +72,13 @@ function Calendar({ filters = [] }: CalendarProps) {
     });
   }
 
-  const periodData: any = {};
+  const periodData: {
+    [key: string ]: {
+      title: string,
+      message: string,
+      key: number
+    }[]
+  } = {};
   for (const p of filteredPeriods) {
     const periodStartUtcValues = getUTCValuesFromDateString(p.start_date);
     const periodEndUtcValues = getUTCValuesFromDateString(p.end_date);

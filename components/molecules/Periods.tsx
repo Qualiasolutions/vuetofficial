@@ -1,12 +1,32 @@
 import React from 'react';
 import { Text, useThemeColor } from 'components/Themed';
-import { SectionList, StyleSheet } from 'react-native';
+import { Pressable, SectionList, StyleSheet } from 'react-native';
 import { BlackText, PrimaryText } from './TextComponents';
 import { TransparentView, WhiteView } from './ViewComponents';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useGetAllPeriodsQuery } from 'reduxStore/services/api/period';
+import { FullPageSpinner } from './Spinners';
 
-export default function Periods({ periods }: any) {
+type PeriodsProps = {
+  periods: {
+    title: string;
+    key: string;
+    data: {
+      title: string,
+      message: string,
+      key: number
+    }[];
+  }[]
+}
+export default function Periods({ periods }: PeriodsProps) {
+  const navigation = useNavigation()
+  const { data: allPeriods } = useGetAllPeriodsQuery("");
   const styles = style();
+
+  if (!allPeriods) {
+    return <FullPageSpinner/>
+  }
 
   return (
     <WhiteView style={{ height: '100%' }}>
@@ -17,8 +37,14 @@ export default function Periods({ periods }: any) {
             <Text>{section.title}</Text>
           </TransparentView>
         )}
-        renderItem={({ item, index }) => (
-          <TransparentView style={styles.sectionItem}>
+        renderItem={({ item }) => (
+          <Pressable style={styles.sectionItem} onPress={() => {
+            (navigation.navigate as any)('EntityNavigator', {
+              screen: 'EntityScreen',
+              initial: false,
+              params: { entityId: allPeriods.byId[item.key].entity }
+            })}
+          }>
             <TransparentView style={styles.calendarContainer}>
               <Feather name="calendar" color={'#fff'} size={15} />
             </TransparentView>
@@ -27,7 +53,7 @@ export default function Periods({ periods }: any) {
               <PrimaryText text={item.title} />
               <BlackText text={item.message} />
             </TransparentView>
-          </TransparentView>
+          </Pressable>
         )}
         ItemSeparatorComponent={() => (
           <TransparentView style={styles.divider} />
