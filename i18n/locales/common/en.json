@@ -302,7 +302,8 @@
     "calendar": {
       "task": {
         "viewOrEdit": "View/Edit task"
-      }
+      },
+      "showOlderEvents": "Show older events"
     }
   }
 }

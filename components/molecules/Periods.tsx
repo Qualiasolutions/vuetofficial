@@ -1,37 +1,69 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import { Pressable, SectionList, StyleSheet } from 'react-native';
-import { BlackText, PrimaryText } from './TextComponents';
-import { TransparentView, WhiteView } from './ViewComponents';
+import { AlmostBlackText, BlackText, PrimaryText } from './TextComponents';
+import { TransparentView, WhiteContainerView, WhiteView } from './ViewComponents';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useGetAllPeriodsQuery } from 'reduxStore/services/api/period';
-import { FullPageSpinner } from './Spinners';
+import { FullPageSpinner, PaddedSpinner } from './Spinners';
+import { getDateWithoutTimezone } from 'utils/datesAndTimes';
+import { useTranslation } from 'react-i18next';
 
-type PeriodsProps = {
+export type PeriodData = {
+  title: string,
+  message: string,
+  key: number,
+  date: string
+}[]
+
+export type PeriodsProps = {
   periods: {
     title: string;
     key: string;
-    data: {
-      title: string,
-      message: string,
-      key: number
-    }[];
+    data: PeriodData;
   }[]
 }
 export default function Periods({ periods }: PeriodsProps) {
   const navigation = useNavigation()
+  const { t } = useTranslation();
   const { data: allPeriods } = useGetAllPeriodsQuery("");
+  const [ monthsBack, setMonthsBack ] = useState(0);
+
+  const earliestDate = useMemo(() => {
+    const earliest = new Date();
+    earliest.setDate(0)
+    earliest.setMonth(earliest.getMonth() - monthsBack);
+    return earliest
+  }, [ monthsBack ])
+
+  const filteredPeriods = useMemo(() => {
+    for (const period of periods) {
+      if (getDateWithoutTimezone(period.data[0].date) < earliestDate) {
+        continue
+      }
+      return periods.slice(periods.indexOf(period))
+    }
+    return []
+  }, [ periods, earliestDate ])
+
   const styles = style();
 
   if (!allPeriods) {
-    return <FullPageSpinner/>
+    return <PaddedSpinner style={{ height: '100%', paddingTop: 100 }}/>
   }
+
 
   return (
     <WhiteView style={{ height: '100%' }}>
+      { (monthsBack < 24) && <Pressable
+        onPress={() => setMonthsBack(monthsBack + 6)}
+        style={styles.showOlderWrapper}
+      >
+        <AlmostBlackText text={t("components.calendar.showOlderEvents")} style={styles.showOlderText}/>
+      </Pressable>}
       <SectionList
-        sections={periods}
+        sections={filteredPeriods}
         renderSectionHeader={({ section }) => (
           <TransparentView style={styles.sectionHeader}>
             <Text>{section.title}</Text>
@@ -89,6 +121,12 @@ function style() {
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: 13
+    },
+    showOlderWrapper: {
+      padding: 10
+    },
+    showOlderText: {
+      fontSize: 16
     }
   });
 }

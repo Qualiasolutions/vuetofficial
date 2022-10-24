@@ -1,10 +1,10 @@
 import React from 'react';
-import { WhiteView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import CalendarView, {
   CalendarViewProps
 } from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
-import Periods from 'components/molecules/Periods';
+import Periods, { PeriodData } from 'components/molecules/Periods';
 import {
   getDateStringsBetween,
   getUTCValuesFromDateString
@@ -73,11 +73,7 @@ function Calendar({ filters = [] }: CalendarProps) {
   }
 
   const periodData: {
-    [key: string ]: {
-      title: string,
-      message: string,
-      key: number
-    }[]
+    [key: string ]: PeriodData
   } = {};
   for (const p of filteredPeriods) {
     const periodStartUtcValues = getUTCValuesFromDateString(p.start_date);
@@ -91,7 +87,8 @@ function Calendar({ filters = [] }: CalendarProps) {
     const periodFormattedData = {
       title: p.title,
       message,
-      key: p.id
+      key: p.id,
+      date: p.start_date
     };
     if (monthName in periodData) {
       periodData[monthName].push(periodFormattedData);
@@ -104,7 +101,8 @@ function Calendar({ filters = [] }: CalendarProps) {
     return {
       title: monthName,
       key: monthName,
-      data: periodData[monthName]
+      data: periodData[monthName],
+      date: periodData[monthName][0].date
     };
   });
 
@@ -120,9 +118,9 @@ function Calendar({ filters = [] }: CalendarProps) {
   ];
 
   return (
-    <WhiteView>
+    <TransparentView>
       <Tabs tabs={tabs} />
-    </WhiteView>
+    </TransparentView>
   );
 }
 
