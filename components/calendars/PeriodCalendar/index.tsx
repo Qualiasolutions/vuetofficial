@@ -9,10 +9,10 @@ import {
   getDateStringsBetween,
   getUTCValuesFromDateString
 } from 'utils/datesAndTimes';
-import useGetUserDetails from 'hooks/useGetUserDetails';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { PeriodResponse } from 'types/periods';
+import { useThemeColor } from 'components/Themed';
 
 type CalendarProps = {
   filters?: ((period: PeriodResponse) => boolean)[];
@@ -20,12 +20,7 @@ type CalendarProps = {
 
 function Calendar({ filters = [] }: CalendarProps) {
   const allPeriods = useScheduledPeriods();
-
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingFullDetails,
-    error: fullDetailsError
-  } = useGetUserDetails();
+  const periodColour = useThemeColor({}, 'mediumLightGrey');
 
   if (!allPeriods) return <FullPageSpinner />;
 
@@ -35,7 +30,6 @@ function Calendar({ filters = [] }: CalendarProps) {
     filteredPeriods = filteredPeriods.filter(periodFilter);
   }
 
-  const memberColour = userFullDetails?.member_colour || '';
 
   const periodsDates: CalendarViewProps['dates'] = {};
   for (const p of filteredPeriods) {
@@ -60,7 +54,7 @@ function Calendar({ filters = [] }: CalendarProps) {
       const dateData = {
         startingDay: i === 0,
         endingDay: i === datesArray.length - 1,
-        color: `#${memberColour}`,
+        color: periodColour,
         id: p.id
       };
       if (!periodsDates[date]) {
@@ -83,9 +77,14 @@ function Calendar({ filters = [] }: CalendarProps) {
     const periodStartUtcValues = getUTCValuesFromDateString(p.start_date);
     const periodEndUtcValues = getUTCValuesFromDateString(p.end_date);
     const monthName = `${periodStartUtcValues.monthName} ${periodStartUtcValues.year}`;
+
+    const message = (periodStartUtcValues.day === periodEndUtcValues.day) && (periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName)
+      ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
+      : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`
+
     const periodFormattedData = {
       title: p.title,
-      message: `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`,
+      message,
       key: p.id
     };
     if (monthName in periodData) {
@@ -105,11 +104,11 @@ function Calendar({ filters = [] }: CalendarProps) {
 
   const tabs = [
     {
-      title: 'Calendar',
+      title: 'Calendar Format',
       component: () => <CalendarView dates={periodsDates} />
     },
     {
-      title: 'Periods',
+      title: 'List Format',
       component: () => <Periods periods={formattedPeriodData} />
     }
   ];

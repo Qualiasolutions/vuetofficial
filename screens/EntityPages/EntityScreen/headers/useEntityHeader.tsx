@@ -66,7 +66,8 @@ export default function useEntityHeader(entityId: number) {
         title: entity.name,
         headerRight,
         headerBackground,
-        headerTintColor
+        headerTintColor,
+        headerShown: true
       };
 
       if (header) {

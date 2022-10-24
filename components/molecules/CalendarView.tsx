@@ -1,8 +1,8 @@
 import { useThemeColor, View } from 'components/Themed';
 import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
-import { Period } from 'reduxStore/services/api/types';
+import { PeriodResponse } from 'types/periods';
 import {
   getDateWithoutTimezone,
   getUTCValuesFromDateString
@@ -10,8 +10,9 @@ import {
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
+import { useNavigation } from '@react-navigation/native';
 
-const getPeriodsOnDay = (day: DateData, allPeriods: Period[]) => {
+const getPeriodsOnDay = (day: DateData, allPeriods: PeriodResponse[]) => {
   return allPeriods.filter((period) => {
     if (
       getDateWithoutTimezone(period.end_date) <
@@ -48,6 +49,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = style();
   const allPeriods = useScheduledPeriods();
+  const navigation = useNavigation()
 
   const datesCopy = { ...dates };
   if (selectedDay) {
@@ -96,16 +98,26 @@ export default function CalendarView({ dates }: CalendarViewProps) {
             const periodEndUtcValues = getUTCValuesFromDateString(
               period.end_date
             );
+
+            const text = (periodStartUtcValues.day === periodEndUtcValues.day) && (periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName)
+              ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
+              : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`
             return (
-              <View style={styles.periodListElement} key={period.id}>
+              <Pressable style={styles.periodListElement} key={period.id} onPress={() => {
+                (navigation.navigate as any)('EntityNavigator', {
+                  screen: 'EntityScreen',
+                  initial: false,
+                  params: { entityId: period.entity }
+                })}
+              }>
                 <AlmostBlackText
                   text={period.title}
                   style={styles.periodListTitleText}
                 />
                 <AlmostBlackText
-                  text={`${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`}
+                  text={text}
                 />
-              </View>
+              </Pressable>
             );
           })}
         </View>
@@ -117,7 +129,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
 function style() {
   return StyleSheet.create({
     container: { marginBottom: 0 },
-    periodList: { paddingBottom: 200 },
+    periodList: { paddingBottom: 250 },
     periodListElement: { margin: 10 },
     periodListTitleText: { fontSize: 18 }
   });

@@ -17,7 +17,7 @@ export default function Periods({ periods }: any) {
             <Text>{section.title}</Text>
           </TransparentView>
         )}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <TransparentView style={styles.sectionItem}>
             <TransparentView style={styles.calendarContainer}>
               <Feather name="calendar" color={'#fff'} size={15} />
@@ -32,6 +32,7 @@ export default function Periods({ periods }: any) {
         ItemSeparatorComponent={() => (
           <TransparentView style={styles.divider} />
         )}
+        contentContainerStyle={{ paddingBottom: 400 }}
       />
     </WhiteView>
   );

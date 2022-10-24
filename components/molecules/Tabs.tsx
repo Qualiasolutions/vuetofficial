@@ -20,7 +20,10 @@ export default function Tabs({ tabs }: TabsProps) {
   return (
     <WhiteView>
       <TransparentView
-        style={{ backgroundColor: useThemeColor({}, 'lightBlue') }}
+        style={[
+          styles.tabsContainer,
+          { backgroundColor: useThemeColor({}, 'lightBlue') }
+        ]}
       >
         <TransparentView style={styles.tabs}>
           <FlatList
@@ -56,19 +59,17 @@ export default function Tabs({ tabs }: TabsProps) {
 
 function style() {
   return StyleSheet.create({
+    tabsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
     tabs: {
-      height: 37,
-      alignSelf: 'center',
-      borderTopLeftRadius: 20,
-      borderBottomLeftRadius: 20,
-      borderTopRightRadius: 20,
-      borderBottomRightRadius: 20,
+      borderRadius: 20,
       overflow: 'hidden',
       margin: 20
     },
     tabContainer: {
-      backgroundColor: useThemeColor({}, 'almostWhite'),
-      height: 37
+      backgroundColor: useThemeColor({}, 'almostWhite')
     },
     unSelectedTab: {
       backgroundColor: useThemeColor({}, 'almostWhite'),

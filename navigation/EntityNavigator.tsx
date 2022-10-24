@@ -60,7 +60,7 @@ export function EntityNavigator() {
         name="EntityScreen"
         component={EntityScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <EntityStack.Screen
