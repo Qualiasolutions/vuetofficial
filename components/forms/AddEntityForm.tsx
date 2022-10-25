@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import GenericError from 'components/molecules/GenericError';
 import {
   useCreateEntityMutation,
@@ -39,18 +38,8 @@ export default function AddEntityForm({
   entityType: EntityTypeName;
   parentId?: number;
 }) {
-  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
   const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms();
-
-  useFocusEffect(
-    useCallback(() => {
-      setCreateSuccessful(false);
-    }, [])
-  );
-
-  useEffect(() => {
-    setCreateSuccessful(false);
-  }, [entityType]);
+  const navigation = useNavigation();
 
   const { t } = useTranslation();
 
@@ -104,10 +93,6 @@ export default function AddEntityForm({
 
     return (
       <TransparentView>
-        {createSuccessful ? (
-          <Text>{t('screens.addEntity.createSuccess', { entityType })}</Text>
-        ) : null}
-
         <RTKForm
           fields={entityForms[entityType] || {}}
           methodHooks={{
@@ -120,9 +105,8 @@ export default function AddEntityForm({
           extraFields={extraFields}
           derivedFieldsFunction={derivedFieldsMapping[entityType]}
           onSubmitSuccess={() => {
-            setCreateSuccessful(true);
+            navigation.goBack();
           }}
-          onValueChange={() => setCreateSuccessful(false)}
           clearOnSubmit={true}
           inlineFields={
             (entityType in inlineFieldsMapping

@@ -15,6 +15,7 @@ import { PageTitle } from 'components/molecules/TextComponents';
 import { EntityTypeName } from 'types/entities';
 import DropDown from 'components/forms/components/DropDown';
 import { fieldColorMapping } from 'components/forms/utils/fieldColorMapping';
+import entityNameMappings from './utils/entityNameMappings';
 
 const titleMapping = {
   DaysOff: 'Add Days Off'
@@ -69,7 +70,7 @@ export default function AddEntityScreen({
             <PageTitle
               text={
                 titleMapping[selectedEntityType] ||
-                t('screens.addEntity.title', { entityType: selectedEntityType })
+                t('screens.addEntity.title', { entityType: entityNameMappings[selectedEntityType] || selectedEntityType })
               }
               style={{ marginBottom: 0 }}
             />
