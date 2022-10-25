@@ -80,7 +80,7 @@ export const carForm = (): FormFieldTypes => {
           value: 'CAR'
         },
         {
-          label: 'Motorbike',
+          label: 'Motorcycle',
           value: 'MOTORBIKE'
         }
       ],

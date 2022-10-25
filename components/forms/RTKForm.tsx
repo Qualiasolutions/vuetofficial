@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
-import dayjs from 'dayjs';
 import { FormFieldTypes } from './formFieldTypes';
 import {
   MutationTrigger,
@@ -187,7 +186,14 @@ export default function Form({
     } else if (formDataType === 'form') {
       const data = new FormData();
       for (const [fieldName, fieldValue] of Object.entries(parsedFormValues)) {
-        data.append(fieldName, fieldValue as any);
+        if ((typeof fieldValue === "object") && (fieldValue.length !== undefined)) {
+          // If the value is an array then it must be treated as such
+          for (const val of fieldValue) {
+            data.append(`${fieldName}[]`, val);
+          }
+        } else {
+          data.append(fieldName, fieldValue as any);
+        }
       }
       for (const [fieldName, fieldValue] of Object.entries(extraFields)) {
         data.append(fieldName, fieldValue as any);
