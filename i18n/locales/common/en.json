@@ -303,7 +303,8 @@
       "task": {
         "viewOrEdit": "View/Edit task"
       },
-      "showOlderEvents": "Show older events"
+      "showOlderEvents": "Show older events",
+      "noTasks": "Currently no tasks or deadlines have been added."
     }
   }
 }

@@ -8,19 +8,21 @@ import React, { useMemo } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
+import { useGetAllScheduledTasksQuery, useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
   TransparentView,
+  WhiteContainerView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import { BlackText } from 'components/molecules/TextComponents';
+import { AlmostBlackText, BlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import { TaskResponseType } from 'types/tasks';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { PeriodResponse } from 'types/periods';
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(utc);
 
@@ -55,6 +57,15 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     new Date().getMonth() + 1
   }`;
 
+  const { t } = useTranslation()
+
+  const {
+    data: allTasks,
+    isLoading: isLoadingAllTasks,
+  } = useGetAllTasksQuery(userDetails?.user_id || -1, {
+    skip: !userDetails?.user_id
+  });
+
   const currentDate = new Date();
   const [shownMonth, setShownMonth] = React.useState<Date>(
     getOffsetMonthStartDateString(currentDate, 0).date
@@ -66,9 +77,9 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   );
 
   const {
-    data: allTasks,
+    data: allScheduledTasks,
     error,
-    isLoading,
+    isLoading: isLoadingScheduledTasks,
     isFetching
   } = useGetAllScheduledTasksQuery(
     {
@@ -116,16 +127,27 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     getOffsetMonthStartDateString(shownMonth, 2).dateString
   );
 
-  const filteredTasks = useMemo(() => {
+  const filteredAllTasks = useMemo(() => {
     if (!allTasks) {
       return [];
     }
-    let filtered = allTasks;
+    let filtered = Object.values(allTasks.byId);
     for (const taskFilter of taskFilters) {
       filtered = filtered.filter(taskFilter);
     }
     return filtered;
-  }, [allTasks, taskFilters]);
+  }, [allTasks, taskFilters])
+
+  const filteredTasks = useMemo(() => {
+    if (!allScheduledTasks) {
+      return [];
+    }
+    let filtered = allScheduledTasks;
+    for (const taskFilter of taskFilters) {
+      filtered = filtered.filter(taskFilter);
+    }
+    return filtered;
+  }, [allScheduledTasks, taskFilters]);
 
   const filteredPeriods = useMemo(() => {
     if (!allPeriods) {
@@ -138,12 +160,21 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     return filtered;
   }, [allPeriods, periodFilters]);
 
+  
   if (error) {
     return <GenericError />;
   }
 
-  if (isLoading || !allTasks || !allPeriods) {
+  const isLoading = isLoadingScheduledTasks || isLoadingAllTasks
+
+  if (isLoading || !allScheduledTasks || !allPeriods) {
     return <FullPageSpinner />;
+  }
+  
+  if (filteredAllTasks && (filteredAllTasks.length === 0)) {
+    return <WhiteContainerView>
+      <AlmostBlackText text={t("components.calendar.noTasks")} style={{fontSize: 20}}/>
+    </WhiteContainerView>
   }
 
   return (
