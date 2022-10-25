@@ -30,7 +30,7 @@ export default function useScheduledPeriods(
     },
     {
       skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod),
-      pollingInterval: 10000,
+      pollingInterval: 10000
     }
   );
 

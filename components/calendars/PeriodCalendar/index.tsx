@@ -24,7 +24,7 @@ function Calendar({ filters = [] }: CalendarProps) {
 
   const filteredPeriods = useMemo(() => {
     if (!allPeriods) {
-      return []
+      return [];
     }
 
     let filtered = allPeriods;
@@ -32,8 +32,8 @@ function Calendar({ filters = [] }: CalendarProps) {
       filtered = filtered.filter(periodFilter);
     }
 
-    return filtered
-  }, [allPeriods])
+    return filtered;
+  }, [allPeriods]);
 
   if (!allPeriods) return <FullPageSpinner />;
 
@@ -79,16 +79,18 @@ function Calendar({ filters = [] }: CalendarProps) {
   }
 
   const periodData: {
-    [key: string ]: PeriodData
+    [key: string]: PeriodData;
   } = {};
   for (const p of filteredPeriods) {
     const periodStartUtcValues = getUTCValuesFromDateString(p.start_date);
     const periodEndUtcValues = getUTCValuesFromDateString(p.end_date);
     const monthName = `${periodStartUtcValues.monthName} ${periodStartUtcValues.year}`;
 
-    const message = (periodStartUtcValues.day === periodEndUtcValues.day) && (periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName)
-      ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
-      : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`
+    const message =
+      periodStartUtcValues.day === periodEndUtcValues.day &&
+      periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName
+        ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
+        : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
 
     const periodFormattedData = {
       title: p.title,

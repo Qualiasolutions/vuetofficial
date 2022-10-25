@@ -18,7 +18,7 @@ export type PermittedTypes =
   | 'timezone'
   | 'Image';
 
-export type TextTransform = 'uppercase' | 'lowercase'
+export type TextTransform = 'uppercase' | 'lowercase';
 
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
@@ -29,7 +29,7 @@ export type BaseField<TypeName, ValueType> = {
 };
 
 export type StringField = BaseField<'string', string> & {
-  transform?: TextTransform
+  transform?: TextTransform;
 };
 export type TextArea = BaseField<'TextArea', string>;
 export type DateField = BaseField<'Date', Date>;

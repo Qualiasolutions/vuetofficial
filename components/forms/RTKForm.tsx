@@ -145,8 +145,8 @@ export default function Form({
   const hasAllRequired = useMemo(() => {
     for (const fieldName in fields) {
       if (fields[fieldName].required) {
-        if (fields[fieldName].type === "addMembers") {
-          return formValues[fieldName] && (formValues[fieldName].length > 0)
+        if (fields[fieldName].type === 'addMembers') {
+          return formValues[fieldName] && formValues[fieldName].length > 0;
         } else if (!formValues[fieldName]) {
           return false;
         }
@@ -186,7 +186,7 @@ export default function Form({
     } else if (formDataType === 'form') {
       const data = new FormData();
       for (const [fieldName, fieldValue] of Object.entries(parsedFormValues)) {
-        if ((typeof fieldValue === "object") && (fieldValue.length !== undefined)) {
+        if (typeof fieldValue === 'object' && fieldValue.length !== undefined) {
           // If the value is an array then it must be treated as such
           for (const val of fieldValue) {
             data.append(fieldName, val);

@@ -1,7 +1,7 @@
-import { EntityTypeName } from "types/entities"
+import { EntityTypeName } from 'types/entities';
 
 export default {
-  Car: "Vehicle"
+  Car: 'Vehicle'
 } as {
-  [key in EntityTypeName]: string
-}
+  [key in EntityTypeName]: string;
+};

@@ -96,14 +96,16 @@ export default function TypedForm({
               </TransparentView>
               <TextInput
                 value={formValues[field]}
-                onChangeText={newValue => {
+                onChangeText={(newValue) => {
                   onFormValuesChange({
                     ...formValues,
                     [field]: newValue
                   });
                 }}
                 style={textInputStyle}
-                autoCapitalize={f.transform === "uppercase" ? "characters" : "none"}
+                autoCapitalize={
+                  f.transform === 'uppercase' ? 'characters' : 'none'
+                }
               />
             </TransparentView>
           </TransparentView>

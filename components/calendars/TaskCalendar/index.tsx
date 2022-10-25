@@ -70,38 +70,47 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     error,
     isLoading,
     isFetching
-  } = useGetAllScheduledTasksQuery({
-    start_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
-    end_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
-    user_id: userDetails?.user_id || -1
-  }, {
-    skip: !userDetails?.user_id,
-    pollingInterval: 10000
-  });
+  } = useGetAllScheduledTasksQuery(
+    {
+      start_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
+      end_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
+      user_id: userDetails?.user_id || -1
+    },
+    {
+      skip: !userDetails?.user_id,
+      pollingInterval: 10000
+    }
+  );
 
   // Preload previous month
-  useGetAllScheduledTasksQuery({
-    start_datetime: getOffsetMonthStartDateString(shownMonth, -1).dateString,
-    end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
-    user_id: userDetails?.user_id || -1
-  }, {
-    skip: !userDetails?.user_id,
-    pollingInterval: 20000
-  });
+  useGetAllScheduledTasksQuery(
+    {
+      start_datetime: getOffsetMonthStartDateString(shownMonth, -1).dateString,
+      end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
+      user_id: userDetails?.user_id || -1
+    },
+    {
+      skip: !userDetails?.user_id,
+      pollingInterval: 20000
+    }
+  );
   useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, -1).dateString,
     getOffsetMonthStartDateString(shownMonth, 0).dateString
   );
 
   // Preload next month
-  useGetAllScheduledTasksQuery({
-    start_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
-    end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
-    user_id: userDetails?.user_id || -1
-  }, {
-    skip: !userDetails?.user_id,
-    pollingInterval: 20000
-  });
+  useGetAllScheduledTasksQuery(
+    {
+      start_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
+      end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
+      user_id: userDetails?.user_id || -1
+    },
+    {
+      skip: !userDetails?.user_id,
+      pollingInterval: 20000
+    }
+  );
   useScheduledPeriods(
     getOffsetMonthStartDateString(shownMonth, 1).dateString,
     getOffsetMonthStartDateString(shownMonth, 2).dateString
@@ -109,25 +118,25 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
 
   const filteredTasks = useMemo(() => {
     if (!allTasks) {
-      return []
+      return [];
     }
     let filtered = allTasks;
     for (const taskFilter of taskFilters) {
       filtered = filtered.filter(taskFilter);
     }
-    return filtered
-  }, [ allTasks, taskFilters ])
+    return filtered;
+  }, [allTasks, taskFilters]);
 
   const filteredPeriods = useMemo(() => {
     if (!allPeriods) {
-      return []
+      return [];
     }
     let filtered = allPeriods;
     for (const periodFilter of periodFilters) {
       filtered = filtered.filter(periodFilter);
     }
-    return filtered
-  }, [ allPeriods, periodFilters])
+    return filtered;
+  }, [allPeriods, periodFilters]);
 
   if (error) {
     return <GenericError />;

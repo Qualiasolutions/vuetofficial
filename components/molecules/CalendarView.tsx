@@ -49,7 +49,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = style();
   const allPeriods = useScheduledPeriods();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const datesCopy = { ...dates };
   if (selectedDay) {
@@ -99,24 +99,29 @@ export default function CalendarView({ dates }: CalendarViewProps) {
               period.end_date
             );
 
-            const text = (periodStartUtcValues.day === periodEndUtcValues.day) && (periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName)
-              ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
-              : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`
+            const text =
+              periodStartUtcValues.day === periodEndUtcValues.day &&
+              periodStartUtcValues.monthShortName ===
+                periodEndUtcValues.monthShortName
+                ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
+                : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
             return (
-              <Pressable style={styles.periodListElement} key={period.id} onPress={() => {
-                (navigation.navigate as any)('EntityNavigator', {
-                  screen: 'EntityScreen',
-                  initial: false,
-                  params: { entityId: period.entity }
-                })}
-              }>
+              <Pressable
+                style={styles.periodListElement}
+                key={period.id}
+                onPress={() => {
+                  (navigation.navigate as any)('EntityNavigator', {
+                    screen: 'EntityScreen',
+                    initial: false,
+                    params: { entityId: period.entity }
+                  });
+                }}
+              >
                 <AlmostBlackText
                   text={period.title}
                   style={styles.periodListTitleText}
                 />
-                <AlmostBlackText
-                  text={text}
-                />
+                <AlmostBlackText text={text} />
               </Pressable>
             );
           })}

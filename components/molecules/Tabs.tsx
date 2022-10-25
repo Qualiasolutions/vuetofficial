@@ -61,7 +61,7 @@ function style() {
   return StyleSheet.create({
     tabsContainer: {
       flexDirection: 'row',
-      justifyContent: 'center',
+      justifyContent: 'center'
     },
     tabs: {
       borderRadius: 20,

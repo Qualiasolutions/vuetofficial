@@ -70,7 +70,10 @@ export default function AddEntityScreen({
             <PageTitle
               text={
                 titleMapping[selectedEntityType] ||
-                t('screens.addEntity.title', { entityType: entityNameMappings[selectedEntityType] || selectedEntityType })
+                t('screens.addEntity.title', {
+                  entityType:
+                    entityNameMappings[selectedEntityType] || selectedEntityType
+                })
               }
               style={{ marginBottom: 0 }}
             />

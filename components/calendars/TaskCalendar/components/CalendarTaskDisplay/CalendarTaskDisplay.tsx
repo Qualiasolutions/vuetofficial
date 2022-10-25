@@ -113,7 +113,11 @@ function Calendar({
     setTasksPerDate(newTasksPerDate);
   };
 
-  React.useEffect(formatAndSetTasksPerDate, [tasks, periods, alwaysIncludeCurrentDate]);
+  React.useEffect(formatAndSetTasksPerDate, [
+    tasks,
+    periods,
+    alwaysIncludeCurrentDate
+  ]);
 
   const dayCalendars = Object.keys(tasksPerDate)
     .sort()

@@ -2,7 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import { Pressable, SectionList, StyleSheet } from 'react-native';
 import { AlmostBlackText, BlackText, PrimaryText } from './TextComponents';
-import { TransparentView, WhiteContainerView, WhiteView } from './ViewComponents';
+import {
+  TransparentView,
+  WhiteContainerView,
+  WhiteView
+} from './ViewComponents';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useGetAllPeriodsQuery } from 'reduxStore/services/api/period';
@@ -11,57 +15,61 @@ import { getDateWithoutTimezone } from 'utils/datesAndTimes';
 import { useTranslation } from 'react-i18next';
 
 export type PeriodData = {
-  title: string,
-  message: string,
-  key: number,
-  date: string
-}[]
+  title: string;
+  message: string;
+  key: number;
+  date: string;
+}[];
 
 export type PeriodsProps = {
   periods: {
     title: string;
     key: string;
     data: PeriodData;
-  }[]
-}
+  }[];
+};
 export default function Periods({ periods }: PeriodsProps) {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const { t } = useTranslation();
-  const { data: allPeriods } = useGetAllPeriodsQuery("");
-  const [ monthsBack, setMonthsBack ] = useState(0);
+  const { data: allPeriods } = useGetAllPeriodsQuery('');
+  const [monthsBack, setMonthsBack] = useState(0);
 
   const earliestDate = useMemo(() => {
     const earliest = new Date();
-    earliest.setDate(0)
+    earliest.setDate(0);
     earliest.setMonth(earliest.getMonth() - monthsBack);
-    return earliest
-  }, [ monthsBack ])
+    return earliest;
+  }, [monthsBack]);
 
   const filteredPeriods = useMemo(() => {
     for (const period of periods) {
       if (getDateWithoutTimezone(period.data[0].date) < earliestDate) {
-        continue
+        continue;
       }
-      return periods.slice(periods.indexOf(period))
+      return periods.slice(periods.indexOf(period));
     }
-    return []
-  }, [ periods, earliestDate ])
+    return [];
+  }, [periods, earliestDate]);
 
   const styles = style();
 
   if (!allPeriods) {
-    return <PaddedSpinner style={{ height: '100%', paddingTop: 100 }}/>
+    return <PaddedSpinner style={{ height: '100%', paddingTop: 100 }} />;
   }
-
 
   return (
     <WhiteView style={{ height: '100%' }}>
-      { (monthsBack < 24) && <Pressable
-        onPress={() => setMonthsBack(monthsBack + 6)}
-        style={styles.showOlderWrapper}
-      >
-        <AlmostBlackText text={t("components.calendar.showOlderEvents")} style={styles.showOlderText}/>
-      </Pressable>}
+      {monthsBack < 24 && (
+        <Pressable
+          onPress={() => setMonthsBack(monthsBack + 6)}
+          style={styles.showOlderWrapper}
+        >
+          <AlmostBlackText
+            text={t('components.calendar.showOlderEvents')}
+            style={styles.showOlderText}
+          />
+        </Pressable>
+      )}
       <SectionList
         sections={filteredPeriods}
         renderSectionHeader={({ section }) => (
@@ -70,13 +78,16 @@ export default function Periods({ periods }: PeriodsProps) {
           </TransparentView>
         )}
         renderItem={({ item }) => (
-          <Pressable style={styles.sectionItem} onPress={() => {
-            (navigation.navigate as any)('EntityNavigator', {
-              screen: 'EntityScreen',
-              initial: false,
-              params: { entityId: allPeriods.byId[item.key].entity }
-            })}
-          }>
+          <Pressable
+            style={styles.sectionItem}
+            onPress={() => {
+              (navigation.navigate as any)('EntityNavigator', {
+                screen: 'EntityScreen',
+                initial: false,
+                params: { entityId: allPeriods.byId[item.key].entity }
+              });
+            }}
+          >
             <TransparentView style={styles.calendarContainer}>
               <Feather name="calendar" color={'#fff'} size={15} />
             </TransparentView>
