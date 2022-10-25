@@ -1,7 +1,5 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
 export const carForm = (): FormFieldTypes => {
@@ -41,7 +39,8 @@ export const carForm = (): FormFieldTypes => {
     registration: {
       type: 'string',
       required: false,
-      displayName: t('entities.car.registration')
+      displayName: t('entities.car.registration'),
+      transform: 'uppercase'
     },
     date_registered: {
       type: 'Date',

@@ -13,6 +13,7 @@ import {
   ImageField,
   OptionalYearDate,
   RadioField,
+  StringField,
   TimezoneField
 } from './formFieldTypes';
 import RadioInput from 'components/forms/components/RadioInput';
@@ -82,7 +83,8 @@ export default function TypedForm({
     const fieldType = fields[field];
 
     switch (fieldType.type) {
-      case 'string':
+      case 'string': {
+        const f = fields[field] as StringField;
         return (
           <TransparentView key={field}>
             <TransparentView
@@ -94,17 +96,19 @@ export default function TypedForm({
               </TransparentView>
               <TextInput
                 value={formValues[field]}
-                onChangeText={(newValue) => {
+                onChangeText={newValue => {
                   onFormValuesChange({
                     ...formValues,
                     [field]: newValue
                   });
                 }}
                 style={textInputStyle}
+                autoCapitalize={f.transform === "uppercase" ? "characters" : "none"}
               />
             </TransparentView>
           </TransparentView>
         );
+      }
       case 'phoneNumber':
         return (
           <TransparentView key={field}>

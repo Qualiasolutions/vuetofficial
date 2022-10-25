@@ -18,6 +18,8 @@ export type PermittedTypes =
   | 'timezone'
   | 'Image';
 
+export type TextTransform = 'uppercase' | 'lowercase'
+
 export type BaseField<TypeName, ValueType> = {
   type: TypeName;
   required: boolean;
@@ -26,7 +28,9 @@ export type BaseField<TypeName, ValueType> = {
   disabled?: boolean;
 };
 
-export type StringField = BaseField<'string', string>;
+export type StringField = BaseField<'string', string> & {
+  transform?: TextTransform
+};
 export type TextArea = BaseField<'TextArea', string>;
 export type DateField = BaseField<'Date', Date>;
 export type OptionalYearDate = BaseField<'OptionalYearDate', Date> & {
