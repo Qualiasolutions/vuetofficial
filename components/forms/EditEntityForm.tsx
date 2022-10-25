@@ -28,7 +28,6 @@ import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { t } = useTranslation();
   const navigation = useNavigation();
 
   const {
@@ -38,15 +37,6 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
   const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms();
-
-  const [updatedSuccessfully, setUpdatedSuccessfully] =
-    useState<boolean>(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      setUpdatedSuccessfully(false);
-    }, [])
-  );
 
   const entityToEdit = allEntities?.byId ? allEntities.byId[entityId] : null;
 
@@ -92,13 +82,6 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
 
     return (
       <TransparentView>
-        {updatedSuccessfully ? (
-          <Text>
-            {t('screens.editEntity.updateSuccess', {
-              entityName: entityToEdit.name
-            })}
-          </Text>
-        ) : null}
         <RTKForm
           fields={formFields}
           methodHooks={{
@@ -117,7 +100,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
             derivedFieldsMapping[entityToEdit.resourcetype]
           }
           onSubmitSuccess={() => {
-            setUpdatedSuccessfully(true);
+            navigation.goBack();
           }}
           onDeleteSuccess={onDeleteSuccess}
           clearOnSubmit={false}
