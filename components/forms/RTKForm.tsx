@@ -189,7 +189,7 @@ export default function Form({
         if ((typeof fieldValue === "object") && (fieldValue.length !== undefined)) {
           // If the value is an array then it must be treated as such
           for (const val of fieldValue) {
-            data.append(`${fieldName}[]`, val);
+            data.append(fieldName, val);
           }
         } else {
           data.append(fieldName, fieldValue as any);
