@@ -40,7 +40,7 @@ export const carForm = (): FormFieldTypes => {
     },
     registration: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.car.registration')
     },
     date_registered: {

@@ -145,8 +145,12 @@ export default function Form({
 
   const hasAllRequired = useMemo(() => {
     for (const fieldName in fields) {
-      if (fields[fieldName].required && !formValues[fieldName]) {
-        return false;
+      if (fields[fieldName].required) {
+        if (fields[fieldName].type === "addMembers") {
+          return formValues[fieldName] && (formValues[fieldName].length > 0)
+        } else if (!formValues[fieldName]) {
+          return false;
+        }
       }
     }
 
