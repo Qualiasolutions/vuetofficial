@@ -50,12 +50,12 @@ export const boatForm = (): FormFieldTypes => {
     },
     model: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.car.model')
     },
     registration: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.car.registration')
     },
     date_registered: {
@@ -85,7 +85,7 @@ export const boatForm = (): FormFieldTypes => {
           value: 'OTHER'
         }
       ],
-      required: false,
+      required: true,
       displayName: t('entities.car.vehicle_type'),
       listMode: 'MODAL'
     },
