@@ -56,7 +56,8 @@ export const boatForm = (): FormFieldTypes => {
     registration: {
       type: 'string',
       required: false,
-      displayName: t('entities.car.registration')
+      displayName: t('entities.car.registration'),
+      transform: 'uppercase'
     },
     date_registered: {
       type: 'Date',
