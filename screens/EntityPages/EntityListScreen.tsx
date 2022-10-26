@@ -52,6 +52,7 @@ export default function EntityListScreen({
   const {
     data: allEntities,
     isLoading,
+    isFetching,
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
     skip: !userDetails?.user_id
@@ -167,6 +168,7 @@ export default function EntityListScreen({
     <BackgroundComponent>
       <TransparentPaddedView style={styles.container}>
         {listLinks}
+        {isFetching && <FullPageSpinner/>}
         {showCreateForm && entityTypes?.length === 1 && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}

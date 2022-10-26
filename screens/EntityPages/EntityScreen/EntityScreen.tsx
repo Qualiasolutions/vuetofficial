@@ -7,7 +7,7 @@ import GenericError from 'components/molecules/GenericError';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { EntityTabParamList } from 'types/base';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import ListEntityPage from './components/ListEntityPage';
@@ -19,6 +19,7 @@ import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
 import EntityCalendarPage from './components/EntityCalendarPage';
 import useEntityHeader from './headers/useEntityHeader';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 const resourceTypeToComponent = {
   List: ListEntityPage,
@@ -43,6 +44,7 @@ export default function EntityScreen({
   const {
     data: allEntities,
     isLoading: isLoadingEntities,
+    isFetching: isFetchingEntities,
     error: entitiesError
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
@@ -53,10 +55,18 @@ export default function EntityScreen({
 
   useEntityHeader(entityId);
 
-  const isLoading = isLoadingEntities;
+  useEffect(() => {
+    if (allEntities && !entity) {
+      navigation.goBack()
+    }
+  }, [ entity ])
 
-  if (isLoading || !entity) {
-    return null;
+  if (isLoadingEntities || isFetchingEntities) {
+    return <FullPageSpinner/>;
+  }
+
+  if (!entity) {
+    return null
   }
 
   if (entitiesError) {
