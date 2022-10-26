@@ -42,6 +42,7 @@ const parseFieldName = (name: string) => {
 export default function TypedForm({
   fields,
   formValues,
+  formType,
   inlineFields = false,
   fieldColor = '#ffffff',
   onFormValuesChange = (formValues: FieldValueTypes) => {},
@@ -49,6 +50,7 @@ export default function TypedForm({
 }: {
   fields: FormFieldTypes;
   formValues: FieldValueTypes;
+  formType: 'UPDATE' | 'CREATE';
   inlineFields?: boolean;
   fieldColor?: string;
   onFormValuesChange?: Function;
@@ -199,7 +201,8 @@ export default function TypedForm({
             </TransparentView>
           </TransparentView>
         );
-      case 'DateTime':
+      case 'DateTime': {
+        const f = fields[field];
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
@@ -218,12 +221,15 @@ export default function TypedForm({
                 }}
                 containerStyle={styles.inlineDateInput}
                 textInputStyle={textInputStyle}
-                disabled={fields[field].disabled}
+                disabled={
+                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                }
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
             </TransparentView>
           </TransparentView>
         );
+      }
       case 'radio':
         const f = fields[field] as RadioField;
         const permittedValueObjects = f.permittedValues.map(
@@ -378,7 +384,9 @@ export default function TypedForm({
                 listMode={(hasListMode(f) && f.listMode) || undefined}
                 style={textInputStyle}
                 containerStyle={{ flex: 1 }}
-                disabled={f.disabled}
+                disabled={
+                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                }
               />
             </TransparentView>
           </View>
@@ -415,7 +423,9 @@ export default function TypedForm({
                 listMode={(hasListMode(f) && f.listMode) || undefined}
                 style={textInputStyle}
                 containerStyle={{ flex: 1 }}
-                disabled={f.disabled}
+                disabled={
+                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                }
               />
             </TransparentView>
           </View>
@@ -475,7 +485,9 @@ export default function TypedForm({
               listMode={f.listMode || 'MODAL'}
               style={textInputStyle}
               containerStyle={{ flex: 1 }}
-              disabled={f.disabled}
+              disabled={
+                f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+              }
             />
           </TransparentView>
         );

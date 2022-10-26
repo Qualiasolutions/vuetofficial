@@ -26,6 +26,7 @@ export type BaseField<TypeName, ValueType> = {
   displayName?: string | UseTranslationResponse<string> | undefined;
   initialValue?: ValueType;
   disabled?: boolean;
+  disableUpdate?: boolean;
 };
 
 export type StringField = BaseField<'string', string> & {

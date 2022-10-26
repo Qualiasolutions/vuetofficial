@@ -57,16 +57,16 @@ export default function EntityScreen({
 
   useEffect(() => {
     if (allEntities && !entity) {
-      navigation.goBack()
+      navigation.goBack();
     }
-  }, [ entity ])
+  }, [entity]);
 
   if (isLoadingEntities || isFetchingEntities) {
-    return <FullPageSpinner/>;
+    return <FullPageSpinner />;
   }
 
   if (!entity) {
-    return null
+    return null;
   }
 
   if (entitiesError) {

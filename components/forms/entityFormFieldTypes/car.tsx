@@ -84,7 +84,7 @@ export const carForm = (): FormFieldTypes => {
           value: 'MOTORBIKE'
         }
       ],
-      required: false,
+      required: true,
       displayName: t('entities.car.vehicle_type'),
       listMode: 'MODAL'
     },

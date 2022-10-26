@@ -168,7 +168,7 @@ export default function EntityListScreen({
     <BackgroundComponent>
       <TransparentPaddedView style={styles.container}>
         {listLinks}
-        {isFetching && <FullPageSpinner/>}
+        {isFetching && <FullPageSpinner />}
         {showCreateForm && entityTypes?.length === 1 && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}

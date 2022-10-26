@@ -76,6 +76,7 @@ export default function Form({
   const initialFormValues = userDetails
     ? createInitialObject(fields, userDetails)
     : {};
+
   const [formValues, setFormValues] =
     React.useState<FieldValueTypes>(initialFormValues);
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
@@ -235,6 +236,7 @@ export default function Form({
         <TypedForm
           fields={fields}
           formValues={formValues}
+          formType={formType}
           inlineFields={inlineFields}
           fieldColor={fieldColor}
           onFormValuesChange={(values: FieldValueTypes) => {
