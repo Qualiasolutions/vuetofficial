@@ -5,7 +5,7 @@ import AnniversaryCard from './AnniversaryCard';
 import EventCard from './EventCard';
 import DaysOffCard from './DaysOffCard';
 import HolidayCard from './HolidayCard';
-import CarCard from './CarCard';
+import VehicleCard from './VehicleCard';
 import SchoolBreakCard from './SchoolBreakCard';
 import ModeOfTransportCard from './ModeOfTransportCard';
 import ModeOfAccommodationCard from './ModeOfAccommodationCard';
@@ -22,7 +22,8 @@ export default {
   Event: EventCard,
   DaysOff: DaysOffCard,
   Holiday: HolidayCard,
-  Car: CarCard,
+  Car: VehicleCard,
+  Boat: VehicleCard,
   SchoolBreak: SchoolBreakCard,
   Flight: ModeOfTransportCard,
   TrainBusFerry: ModeOfTransportCard,
