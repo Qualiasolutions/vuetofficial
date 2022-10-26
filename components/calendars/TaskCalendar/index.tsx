@@ -4,22 +4,28 @@
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { useGetAllScheduledTasksQuery, useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import {
+  useGetAllScheduledTasksQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
   TransparentView,
   WhiteContainerView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import { AlmostBlackText, BlackText } from 'components/molecules/TextComponents';
+import {
+  AlmostBlackText,
+  BlackText
+} from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
-import { TaskResponseType } from 'types/tasks';
+import { ScheduledTaskResponseType, TaskResponseType } from 'types/tasks';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { PeriodResponse } from 'types/periods';
 import { useTranslation } from 'react-i18next';
@@ -48,7 +54,7 @@ const getOffsetMonthStartDateString = (
 
 type CalendarProps = {
   taskFilters: ((task: TaskResponseType) => boolean)[];
-  periodFilters: ((task: PeriodResponse) => boolean)[];
+  periodFilters: ((period: PeriodResponse) => boolean)[];
 };
 function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   const username = useSelector(selectUsername);
@@ -57,25 +63,23 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     new Date().getMonth() + 1
   }`;
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const {
-    data: allTasks,
-    isLoading: isLoadingAllTasks,
-  } = useGetAllTasksQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
-  });
+  const { data: allTasks, isLoading: isLoadingAllTasks } = useGetAllTasksQuery(
+    userDetails?.user_id || -1,
+    {
+      skip: !userDetails?.user_id
+    }
+  );
 
   const currentDate = new Date();
   const [shownMonth, setShownMonth] = React.useState<Date>(
     getOffsetMonthStartDateString(currentDate, 0).date
   );
 
-  const allPeriods = useScheduledPeriods(
-    getOffsetMonthStartDateString(shownMonth, 0).dateString,
-    getOffsetMonthStartDateString(shownMonth, 1).dateString
-  );
+  const allScheduledPeriods = useScheduledPeriods();
 
+  // Load current month
   const {
     data: allScheduledTasks,
     error,
@@ -93,6 +97,39 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     }
   );
 
+  // Load next 2 years
+  const {
+    data: next2YearsTasks,
+    isLoading: isLoadingNext2YearsScheduledTasks
+  } = useGetAllScheduledTasksQuery(
+    {
+      start_datetime: getOffsetMonthStartDateString(currentDate, 0).dateString,
+      end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString,
+      user_id: userDetails?.user_id || -1
+    },
+    {
+      skip: !userDetails?.user_id,
+      pollingInterval: 30000
+    }
+  );
+
+  // Load previous 2 years
+  const {
+    data: previous2YearsTasks,
+    isLoading: isLoadingPrevious2YearsScheduledTasks
+  } = useGetAllScheduledTasksQuery(
+    {
+      start_datetime: getOffsetMonthStartDateString(currentDate, -24)
+        .dateString,
+      end_datetime: getOffsetMonthStartDateString(currentDate, 0).dateString,
+      user_id: userDetails?.user_id || -1
+    },
+    {
+      skip: !userDetails?.user_id,
+      pollingInterval: 30000
+    }
+  );
+
   // Preload previous month
   useGetAllScheduledTasksQuery(
     {
@@ -104,10 +141,6 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
       skip: !userDetails?.user_id,
       pollingInterval: 20000
     }
-  );
-  useScheduledPeriods(
-    getOffsetMonthStartDateString(shownMonth, -1).dateString,
-    getOffsetMonthStartDateString(shownMonth, 0).dateString
   );
 
   // Preload next month
@@ -122,59 +155,173 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
       pollingInterval: 20000
     }
   );
-  useScheduledPeriods(
-    getOffsetMonthStartDateString(shownMonth, 1).dateString,
-    getOffsetMonthStartDateString(shownMonth, 2).dateString
-  );
 
-  const filteredAllTasks = useMemo(() => {
-    if (!allTasks) {
-      return [];
-    }
-    let filtered = Object.values(allTasks.byId);
-    for (const taskFilter of taskFilters) {
-      filtered = filtered.filter(taskFilter);
+  const tasksToFilter = {
+    allTasks: allTasks ? Object.values(allTasks.byId) : [],
+    allScheduledTasks,
+    next2YearsTasks,
+    previous2YearsTasks
+  } as { [key: string]: ScheduledTaskResponseType[] | undefined };
+
+  const filteredTasks = useMemo<{
+    [key: string]: ScheduledTaskResponseType[];
+  }>(() => {
+    const filtered: { [key: string]: ScheduledTaskResponseType[] } = {};
+    for (const tasksName in tasksToFilter) {
+      const tasks = tasksToFilter[tasksName];
+      if (!tasks) {
+        filtered[tasksName] = [];
+      } else {
+        filtered[tasksName] = tasks;
+        for (const taskFilter of taskFilters) {
+          filtered[tasksName] = filtered[tasksName].filter(taskFilter);
+        }
+      }
     }
     return filtered;
-  }, [allTasks, taskFilters])
+  }, [tasksToFilter, taskFilters]);
 
-  const filteredTasks = useMemo(() => {
-    if (!allScheduledTasks) {
+  const filteredAllPeriods = useMemo<PeriodResponse[]>(() => {
+    if (!allScheduledPeriods) {
       return [];
+    } else {
+      let filtered = allScheduledPeriods;
+      for (const periodFilter of periodFilters) {
+        filtered = filtered.filter(periodFilter);
+      }
+      return filtered;
     }
-    let filtered = allScheduledTasks;
-    for (const taskFilter of taskFilters) {
-      filtered = filtered.filter(taskFilter);
-    }
-    return filtered;
-  }, [allScheduledTasks, taskFilters]);
+  }, [allScheduledPeriods, periodFilters]);
 
-  const filteredPeriods = useMemo(() => {
-    if (!allPeriods) {
-      return [];
-    }
-    let filtered = allPeriods;
-    for (const periodFilter of periodFilters) {
-      filtered = filtered.filter(periodFilter);
-    }
-    return filtered;
-  }, [allPeriods, periodFilters]);
+  const filteredMonthPeriods = useMemo(() => {
+    return filteredAllPeriods
+      .filter((period) => {
+        const periodStartDate = new Date(period.start_date);
+        const periodEndDate = new Date(period.end_date);
 
-  
+        return (
+          periodStartDate.getFullYear() <= shownMonth.getFullYear() &&
+          periodStartDate.getMonth() <= shownMonth.getMonth() &&
+          periodEndDate.getFullYear() >= shownMonth.getFullYear() &&
+          periodEndDate.getMonth() >= shownMonth.getMonth()
+        );
+      })
+      .filter(
+        (period) =>
+          new Date(period.end_date).getMonth() === shownMonth.getMonth()
+      );
+  }, [filteredAllPeriods, shownMonth]);
+
+  const noTasks = useMemo(() => {
+    return (
+      filteredTasks.next2YearsTasks &&
+      filteredTasks.previous2YearsTasks &&
+      filteredAllPeriods &&
+      filteredTasks.next2YearsTasks.length === 0 &&
+      filteredTasks.previous2YearsTasks.length === 0 &&
+      filteredAllPeriods.length === 0
+    );
+  }, [filteredTasks, filteredAllPeriods]);
+
+  useEffect(() => {
+    if (!noTasks) {
+      const futurePeriods = filteredAllPeriods.filter(
+        (period) => new Date(period.start_date) > new Date()
+      );
+      const pastPeriods = filteredAllPeriods.filter(
+        (period) => new Date(period.start_date) <= new Date()
+      );
+
+      if (
+        filteredTasks.next2YearsTasks.length > 0 ||
+        futurePeriods.length > 0
+      ) {
+        const firstScheduledTask = filteredTasks.next2YearsTasks[0];
+        const firstScheduledPeriod = futurePeriods[0];
+
+        if (
+          firstScheduledTask &&
+          (!firstScheduledPeriod ||
+            new Date(firstScheduledTask.start_datetime) <
+              new Date(firstScheduledPeriod.start_date))
+        ) {
+          setShownMonth(
+            getOffsetMonthStartDateString(
+              new Date(firstScheduledTask.start_datetime),
+              0
+            ).date
+          );
+        } else {
+          setShownMonth(
+            getOffsetMonthStartDateString(
+              new Date(firstScheduledPeriod.start_date),
+              0
+            ).date
+          );
+        }
+      } else if (
+        filteredTasks.previous2YearsTasks.length > 0 ||
+        pastPeriods.length > 0
+      ) {
+        const lastScheduledTask =
+          filteredTasks.previous2YearsTasks[
+            filteredTasks.previous2YearsTasks.length - 1
+          ];
+        const lastScheduledPeriod = pastPeriods[pastPeriods.length - 1];
+        if (
+          lastScheduledTask &&
+          (!lastScheduledPeriod ||
+            new Date(lastScheduledTask.end_datetime) >
+              new Date(lastScheduledPeriod.end_date))
+        ) {
+          setShownMonth(
+            getOffsetMonthStartDateString(
+              new Date(lastScheduledTask.end_datetime),
+              0
+            ).date
+          );
+        } else {
+          setShownMonth(
+            getOffsetMonthStartDateString(
+              new Date(lastScheduledPeriod.end_date),
+              0
+            ).date
+          );
+        }
+
+        setShownMonth(
+          getOffsetMonthStartDateString(
+            new Date(lastScheduledTask.start_datetime),
+            0
+          ).date
+        );
+      }
+    }
+  }, [noTasks]);
+
   if (error) {
     return <GenericError />;
   }
 
-  const isLoading = isLoadingScheduledTasks || isLoadingAllTasks
+  const isLoading =
+    isLoadingScheduledTasks ||
+    isLoadingAllTasks ||
+    isLoadingNext2YearsScheduledTasks ||
+    isLoadingPrevious2YearsScheduledTasks;
 
-  if (isLoading || !allScheduledTasks || !allPeriods) {
+  if (isLoading || !allScheduledTasks || !allScheduledPeriods) {
     return <FullPageSpinner />;
   }
-  
-  if (filteredAllTasks && (filteredAllTasks.length === 0)) {
-    return <WhiteContainerView>
-      <AlmostBlackText text={t("components.calendar.noTasks")} style={{fontSize: 20}}/>
-    </WhiteContainerView>
+
+  if (noTasks) {
+    return (
+      <WhiteContainerView>
+        <AlmostBlackText
+          text={t('components.calendar.noTasks')}
+          style={{ fontSize: 20 }}
+        />
+      </WhiteContainerView>
+    );
   }
 
   return (
@@ -206,8 +353,8 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
         </Pressable>
       </TransparentView>
       <CalendarTaskDisplay
-        tasks={filteredTasks}
-        periods={filteredPeriods}
+        tasks={filteredTasks.allScheduledTasks}
+        periods={filteredMonthPeriods}
         alwaysIncludeCurrentDate={
           currentMonth ===
           `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`
