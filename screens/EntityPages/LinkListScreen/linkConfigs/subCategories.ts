@@ -1,3 +1,4 @@
+import { categoryToIdMapping } from 'utils/categories';
 import { List } from './types';
 
 export default {
@@ -191,9 +192,11 @@ export default {
     },
     {
       name: 'transport.calendar',
-      toScreen: '',
+      toScreen: 'CategoryCalendarScreen',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        categoryId: categoryToIdMapping.TRANSPORT
+      }
     }
   ]
 } as {

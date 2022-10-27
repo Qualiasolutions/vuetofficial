@@ -1,8 +1,4 @@
-import {
-  NativeStackHeaderProps,
-  NativeStackNavigationOptions,
-  NativeStackScreenProps
-} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -19,7 +15,11 @@ import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
 import EntityCalendarPage from './components/EntityCalendarPage';
 import useEntityHeader from './headers/useEntityHeader';
-import { FullPageSpinner } from 'components/molecules/Spinners';
+import { PaddedSpinner } from 'components/molecules/Spinners';
+
+const DefaultEntityPage = ( { entityId }: { entityId: number }) => {
+  return <EntityCalendarPage entityIds={[entityId]}/>
+}
 
 const resourceTypeToComponent = {
   List: ListEntityPage,
@@ -29,7 +29,7 @@ const resourceTypeToComponent = {
   Event: EventPage,
   Holiday: HolidayPage,
   School: SchoolPage,
-  default: EntityCalendarPage
+  default: DefaultEntityPage
 } as {
   default: React.ElementType;
   [key: string]: React.ElementType | undefined;
@@ -62,7 +62,7 @@ export default function EntityScreen({
   }, [entity]);
 
   if (isLoadingEntities || isFetchingEntities) {
-    return <FullPageSpinner />;
+    return <PaddedSpinner />;
   }
 
   if (!entity) {

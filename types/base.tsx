@@ -9,6 +9,7 @@ import {
   NavigatorScreenParams
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { CategoryName } from './categories';
 import { EntityTypeName } from './entities';
 
 declare global {
@@ -90,6 +91,9 @@ export type EntityTabParamList = {
     entityId: number | string;
     entityTypes: EntityTypeName[];
   };
+  CategoryCalendarScreen: {
+    categoryId: number;
+  },
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };

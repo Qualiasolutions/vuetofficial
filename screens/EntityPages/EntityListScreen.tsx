@@ -18,7 +18,7 @@ import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
-import { FullPageSpinner } from 'components/molecules/Spinners';
+import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { backgroundComponents } from 'screens/Forms/EntityForms/utils/backgroundComponents';
 import { headerRightMapping } from './utils/headerRightMapping';
 import { headerBackgroundMapping } from './utils/headerBackgroundMapping';
@@ -168,7 +168,7 @@ export default function EntityListScreen({
     <BackgroundComponent>
       <TransparentPaddedView style={styles.container}>
         {listLinks}
-        {isFetching && <FullPageSpinner />}
+        {isFetching && <PaddedSpinner />}
         {showCreateForm && entityTypes?.length === 1 && (
           <AddEntityForm entityType={entityTypes && entityTypes[0]} />
         )}
