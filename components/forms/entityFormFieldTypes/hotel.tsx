@@ -18,12 +18,12 @@ export const hotelForm = (): FormFieldTypes => {
     },
     address: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.mode-of-accommodation.address')
     },
     contact_details: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.mode-of-accommodation.contact_details')
     },
     start_datetime: {
