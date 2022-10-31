@@ -90,6 +90,7 @@ export type EntityTabParamList = {
   ChildEntitiesCalendarScreen: {
     entityId: number | string;
     entityTypes: EntityTypeName[];
+    includeParentTasks?: boolean;
   };
   CategoryCalendarScreen: {
     categoryId: number;

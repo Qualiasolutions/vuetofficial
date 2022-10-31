@@ -58,6 +58,10 @@ export default function ChildEntitiesCalendarScreen({
     );
   }
 
+  if (route.params.includeParentTasks) {
+    childEntities.push(entity);
+  }
+
   return (
     <Calendar
       taskFilters={[

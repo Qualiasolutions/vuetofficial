@@ -27,7 +27,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
 
   const transportationLink = (
     <ListLink
-      text="Transportation"
+      text={t('linkTitles.travel.transportation')}
       toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: [
@@ -45,7 +45,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
 
   const accommodationLink = (
     <ListLink
-      text="Accommodation"
+      text={t('linkTitles.travel.accommodation')}
       toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: ['HotelOrRental', 'StayWithFriend'],
@@ -55,9 +55,34 @@ export default function TripPage({ entityId }: { entityId: number }) {
     />
   );
 
+  const childEntities = entityData?.child_entities;
+  const childEntityTypes =
+    childEntities && allEntities
+      ? [
+          ...new Set(
+            childEntities.map(
+              (childId) => allEntities.byId[childId].resourcetype
+            )
+          )
+        ]
+      : [];
+
+  const calendarLink = (
+    <ListLink
+      text={t('linkTitles.travel.calendar')}
+      toScreen="ChildEntitiesCalendarScreen"
+      toScreenParams={{
+        entityTypes: childEntityTypes,
+        entityId: entityIdParsed,
+        includeParentTasks: true
+      }}
+      navMethod="push"
+    />
+  );
+
   const activitiesLink = (
     <ListLink
-      text="Activities"
+      text={t('linkTitles.travel.activities')}
       toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: ['TripActivity'],
@@ -86,6 +111,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
         {transportationLink}
         {accommodationLink}
         {activitiesLink}
+        {calendarLink}
         {childEntityList}
       </TransparentPaddedView>
     </WhiteFullPageScrollView>

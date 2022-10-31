@@ -55,7 +55,10 @@
     },
     "travel": {
       "myTrips": "My Trips",
-      "calendar": "Calendar"
+      "calendar": "Calendar",
+      "activities": "Food & Activities",
+      "accommodation": "Accommodation",
+      "transportation": "Transportation"
     },
     "healthBeauty": {
       "foodExercise": "Food & Exercise",
@@ -126,7 +129,7 @@
     "health-beauty": "Health & Beauty",
     "finance": "Finance",
     "SchoolBreak": "School Breaks",
-    "TripActivity": "Activities",
+    "TripActivity": "Food & Activities",
     "Flight": "Flights",
     "TrainBusFerry": "Trains",
     "RentalCar": "Rental Cars",
