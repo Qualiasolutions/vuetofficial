@@ -32,7 +32,8 @@ export const entityOrderings = {
   Birthday: orderByDateFieldNoYear('start_date'),
   Event: orderByDateField('date'),
   Holiday: orderByDateField('start_date'),
-  DaysOff: orderByDateField('start_date')
+  DaysOff: orderByDateField('start_date'),
+  Trip: orderByDateField('start_date')
 } as {
   [key: string]:
     | ((entity: EntityResponseType, otherEntity: EntityResponseType) => number)

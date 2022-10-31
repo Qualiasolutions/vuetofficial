@@ -26,6 +26,26 @@ const getLongDateFromDateObject = (date: Date, utc: boolean = true): string => {
   return dayjs(date).format('MMM DD, YYYY');
 };
 
+const getDatesPeriodString = (startDate: Date, endDate: Date): string => {
+  const sameYear = startDate.getFullYear() === endDate.getFullYear();
+  const sameDate =
+    getLongDateFromDateObject(startDate) === getLongDateFromDateObject(endDate);
+
+  if (sameDate) {
+    return getLongDateFromDateObject(startDate);
+  }
+
+  if (sameYear) {
+    return `${dayjs(startDate).format('MMM DD')} - ${dayjs(endDate).format(
+      'MMM DD YYYY'
+    )}`;
+  }
+
+  return `${getLongDateFromDateObject(startDate)} - ${getLongDateFromDateObject(
+    endDate
+  )}`;
+};
+
 type UTCValues = {
   day: number;
   month: number;
@@ -118,6 +138,7 @@ export {
   getTimeStringFromDateObject,
   getDateWithoutTimezone,
   getLongDateFromDateObject,
+  getDatesPeriodString,
   getUTCValuesFromDateString,
   getDatesBetween,
   getDateStringsBetween,

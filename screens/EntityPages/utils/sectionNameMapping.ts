@@ -25,5 +25,7 @@ export const sectionNameMapping = {
   Event: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'date'),
   DaysOff: (entity: EntityResponseType) =>
+    getMonthAndYearFromDateField(entity, 'start_date'),
+  Trip: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'start_date')
 } as { [key: string]: ((entity: EntityResponseType) => string) | undefined };

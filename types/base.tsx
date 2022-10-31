@@ -93,7 +93,7 @@ export type EntityTabParamList = {
   };
   CategoryCalendarScreen: {
     categoryId: number;
-  },
+  };
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };

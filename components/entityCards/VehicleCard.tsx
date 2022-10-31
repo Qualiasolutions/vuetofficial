@@ -8,7 +8,11 @@ import { useThemeColor } from 'components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import { parsePresignedUrl } from 'utils/urls';
 
-export default function VehicleCard({ entity }: { entity: EntityResponseType }) {
+export default function VehicleCard({
+  entity
+}: {
+  entity: EntityResponseType;
+}) {
   const blackColor = useThemeColor({}, 'black');
   const greyColor = useThemeColor({}, 'grey');
   const navigation = useNavigation();
@@ -21,11 +25,14 @@ export default function VehicleCard({ entity }: { entity: EntityResponseType }) 
       }}
     >
       <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
-        {
-          imageSource
-            ? <Image source={{ uri: imageSource }} style={[styles.image, { borderColor: blackColor }]} />
-            : <Feather name="image" size={40} color={greyColor} />
-        }
+        {imageSource ? (
+          <Image
+            source={{ uri: imageSource }}
+            style={[styles.image, { borderColor: blackColor }]}
+          />
+        ) : (
+          <Feather name="image" size={40} color={greyColor} />
+        )}
         <BlackText text={`${entity.name}`} style={styles.listEntryText} />
       </WhiteView>
     </Pressable>
@@ -45,7 +52,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     borderRadius: 10,
-    borderWidth: 1,
+    borderWidth: 1
   },
   listEntryText: {
     fontSize: 20,

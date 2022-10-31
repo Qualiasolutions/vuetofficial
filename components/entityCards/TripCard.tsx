@@ -1,25 +1,22 @@
 import {
-    AlmostBlackText,
-    LightBlackText
-  } from 'components/molecules/TextComponents';
-  import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
-  import { Image, Pressable, StyleSheet } from 'react-native';
-  import {
-    getDateWithoutTimezone,
-    getDaysToAge,
-    getLongDateFromDateObject
-  } from 'utils/datesAndTimes';
-  import { useNavigation } from '@react-navigation/native';
-  import { useThemeColor } from 'components/Themed';
-  import { EntityResponseType } from 'types/entities';
+  AlmostBlackText,
+  LightBlackText
+} from 'components/molecules/TextComponents';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
+import { Image, Pressable, StyleSheet } from 'react-native';
+import {
+  getDatesPeriodString,
+  getDateWithoutTimezone,
+  getDaysToAge,
+  getLongDateFromDateObject
+} from 'utils/datesAndTimes';
+import { useNavigation } from '@react-navigation/native';
+import { useThemeColor } from 'components/Themed';
+import { EntityResponseType } from 'types/entities';
 import { parsePresignedUrl } from 'utils/urls';
 import { Feather } from '@expo/vector-icons';
-  
-  export default function TripCard({
-    entity
-  }: {
-    entity: EntityResponseType;
-  }) {
+
+export default function TripCard({ entity }: { entity: EntityResponseType }) {
   const styles = StyleSheet.create({
     card: {
       marginTop: 10,
@@ -28,7 +25,7 @@ import { Feather } from '@expo/vector-icons';
       flexDirection: 'row'
     },
     listEntryText: {
-      fontSize: 20,
+      fontSize: 20
       // width: 200
     },
     imageOrPlaceholder: {
@@ -49,12 +46,8 @@ import { Feather } from '@expo/vector-icons';
   const blackColor = useThemeColor({}, 'black');
   const greyColor = useThemeColor({}, 'grey');
 
-  const startDateString = getLongDateFromDateObject(
-    getDateWithoutTimezone(entity?.start_date)
-  );
-  const endDateString = getLongDateFromDateObject(
-    getDateWithoutTimezone(entity?.end_date)
-  );
+  const startDate = getDateWithoutTimezone(entity?.start_date);
+  const endDate = getDateWithoutTimezone(entity?.end_date);
 
   const imageSource = parsePresignedUrl(entity.presigned_image_url);
 
@@ -65,18 +58,32 @@ import { Feather } from '@expo/vector-icons';
       }}
     >
       <WhiteBox style={styles.card}>
-        {
-          imageSource
-            ? <Image source={{ uri: imageSource }} style={[styles.image, styles.imageOrPlaceholder, { borderColor: blackColor }]} />
-            : <Feather name="image" size={40} color={greyColor} style={styles.imageOrPlaceholder} />
-        }
+        {imageSource ? (
+          <Image
+            source={{ uri: imageSource }}
+            style={[
+              styles.image,
+              styles.imageOrPlaceholder,
+              { borderColor: blackColor }
+            ]}
+          />
+        ) : (
+          <Feather
+            name="image"
+            size={40}
+            color={greyColor}
+            style={styles.imageOrPlaceholder}
+          />
+        )}
         <TransparentView style={styles.textContainer}>
-          <LightBlackText text={entity.name || ''} style={styles.listEntryText} numberOfLines={1}/>
+          <LightBlackText
+            text={entity.name || ''}
+            style={styles.listEntryText}
+            numberOfLines={1}
+          />
           <AlmostBlackText
             style={{ fontSize: 18 }}
-            text={`${startDateString}${
-              entity.end_date !== entity.start_date ? ` - ${endDateString}` : ''
-            }`}
+            text={getDatesPeriodString(startDate, endDate)}
           />
         </TransparentView>
       </WhiteBox>

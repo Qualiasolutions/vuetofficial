@@ -17,9 +17,9 @@ import EntityCalendarPage from './components/EntityCalendarPage';
 import useEntityHeader from './headers/useEntityHeader';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
-const DefaultEntityPage = ( { entityId }: { entityId: number }) => {
-  return <EntityCalendarPage entityIds={[entityId]}/>
-}
+const DefaultEntityPage = ({ entityId }: { entityId: number }) => {
+  return <EntityCalendarPage entityIds={[entityId]} />;
+};
 
 const resourceTypeToComponent = {
   List: ListEntityPage,

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { EntityTabScreenProps } from 'types/base';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -15,7 +15,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
@@ -23,6 +23,7 @@ import { backgroundComponents } from 'screens/Forms/EntityForms/utils/background
 import { headerRightMapping } from './utils/headerRightMapping';
 import { headerBackgroundMapping } from './utils/headerBackgroundMapping';
 import { headerTintColorMapping } from './utils/headerTintColorMapping';
+import { datetimeSettingsMapping } from './utils/datetimeSettingsMapping';
 import { headerMapping } from './utils/headerMappings';
 import {
   NativeStackHeaderProps,
@@ -61,6 +62,7 @@ export default function EntityListScreen({
     entityTypes.includes(entity.resourcetype)
   );
   const { t } = useTranslation();
+  const [monthsBack, setMonthsBack] = useState(0);
 
   useLayoutEffect(() => {
     const HeaderRightComponent =
@@ -101,16 +103,37 @@ export default function EntityListScreen({
     return <FullPageSpinner />;
   }
 
+  const entityDatetimeSettings =
+    datetimeSettingsMapping[entityData[0]?.resourcetype] || null;
   const ordering = entityOrderings[entityData[0]?.resourcetype] || null;
   const orderedEntityData = ordering
     ? entityData.sort(ordering)
     : [...entityData];
 
+  const datetimeFilteredEntityData = useMemo(() => {
+    const earliestDate = new Date();
+    earliestDate.setMonth(earliestDate.getMonth() - monthsBack);
+
+    if (!entityDatetimeSettings) {
+      return orderedEntityData;
+    }
+    if (!entityDatetimeSettings.hidePrevious) {
+      return orderedEntityData;
+    }
+
+    return orderedEntityData.filter((entity) => {
+      if (new Date(entity[entityDatetimeSettings.endField]) < earliestDate) {
+        return false;
+      }
+      return true;
+    });
+  }, [orderedEntityData, monthsBack]);
+
   const sections = {} as { [key: string]: EntityResponseType[] };
 
   const toSectionName = sectionNameMapping[entityData[0]?.resourcetype] || null;
   if (toSectionName) {
-    for (const entity of orderedEntityData) {
+    for (const entity of datetimeFilteredEntityData) {
       if (sections[toSectionName(entity)]) {
         sections[toSectionName(entity)].push(entity);
       } else {
@@ -149,9 +172,25 @@ export default function EntityListScreen({
       : WhiteFullPageScrollView
   ) as React.ElementType;
 
+  const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
+    ? monthsBack < 24 &&
+      datetimeFilteredEntityData.length < orderedEntityData.length && (
+        <Pressable
+          onPress={() => setMonthsBack(monthsBack + 6)}
+          style={styles.showOlderWrapper}
+        >
+          <AlmostBlackText
+            text={t('components.calendar.showOlderEvents')}
+            style={styles.showOlderText}
+          />
+        </Pressable>
+      )
+    : null;
+
   if (listLinks.length === 0) {
     return (
       <BackgroundComponent>
+        {showPreviousButton}
         <TransparentPaddedView style={styles.container}>
           <AlmostBlackText
             text={t('misc.currentlyNoEntities', {
@@ -166,6 +205,7 @@ export default function EntityListScreen({
 
   return (
     <BackgroundComponent>
+      {showPreviousButton}
       <TransparentPaddedView style={styles.container}>
         {listLinks}
         {isFetching && <PaddedSpinner />}
@@ -190,5 +230,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 27,
     fontWeight: '700'
+  },
+  showOlderWrapper: {
+    padding: 20,
+    paddingBottom: 0
+  },
+  showOlderText: {
+    fontSize: 16
   }
 });

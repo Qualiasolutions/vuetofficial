@@ -97,7 +97,12 @@ export function TransparentPaddedView(props: ViewProps) {
   const { style, ...otherProps } = props;
   const backgroundColor = useThemeColor({}, 'transparent');
 
-  return <TransparentView style={[styles.padded, { backgroundColor }, style]} {...otherProps} />;
+  return (
+    <TransparentView
+      style={[styles.padded, { backgroundColor }, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function WhitePaddedView(props: ViewProps) {

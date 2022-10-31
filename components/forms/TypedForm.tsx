@@ -42,7 +42,7 @@ const parseFieldName = (name: string) => {
 export default function TypedForm({
   fields,
   formValues,
-  formType = "CREATE",
+  formType = 'CREATE',
   inlineFields = false,
   fieldColor = '#ffffff',
   onFormValuesChange = (formValues: FieldValueTypes) => {},
