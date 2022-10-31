@@ -127,16 +127,12 @@ export default {
       }
     },
     {
-      name: 'travel.wishlists',
-      toScreen: '',
+      name: 'travel.calendar',
+      toScreen: 'CategoryCalendarScreen',
       navMethod: 'push',
-      toScreenParams: {}
-    },
-    {
-      name: 'travel.travelChecklists',
-      toScreen: '',
-      navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        categoryId: categoryToIdMapping.TRAVEL
+      }
     }
   ],
   HOME_GARDEN: [

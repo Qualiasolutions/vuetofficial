@@ -9,6 +9,7 @@ import VehicleCard from './VehicleCard';
 import SchoolBreakCard from './SchoolBreakCard';
 import ModeOfTransportCard from './ModeOfTransportCard';
 import ModeOfAccommodationCard from './ModeOfAccommodationCard';
+import TripCard from './TripCard';
 
 type LinkMapping = {
   [key in EntityTypeName]?: React.ElementType;
@@ -17,6 +18,7 @@ type LinkMapping = {
 export default {
   Pet: PetCard,
   TripActivity: TripActivityCard,
+  Trip: TripCard,
   Anniversary: AnniversaryCard,
   Birthday: AnniversaryCard,
   Event: EventCard,
