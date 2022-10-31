@@ -13,12 +13,12 @@ export const driveTimeForm = (): FormFieldTypes => {
   return {
     start_location: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.mode-of-transport.start_location')
     },
     end_location: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.mode-of-transport.end_location')
     },
     start_datetime: {

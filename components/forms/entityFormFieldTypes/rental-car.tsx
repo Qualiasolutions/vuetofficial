@@ -18,7 +18,7 @@ export const rentalCarForm = (): FormFieldTypes => {
     },
     booking_number: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.rental-car.booking_number')
     },
     start_location: {

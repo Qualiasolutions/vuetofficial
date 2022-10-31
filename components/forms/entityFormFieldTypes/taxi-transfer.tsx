@@ -18,12 +18,12 @@ export const taxiTransferForm = (): FormFieldTypes => {
     },
     contact_details: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.mode-of-transport.contact_details')
     },
     booking_number: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.taxi-transfer.booking_number')
     },
     start_location: {

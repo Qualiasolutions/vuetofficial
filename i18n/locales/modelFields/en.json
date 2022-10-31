@@ -132,12 +132,12 @@
     "rental-car": {
       "booking_number": "Confirmation number",
       "start_location": "Pick-up location",
-      "end_location": "Drof-off location"
+      "end_location": "Drop-off location"
     },
     "taxi-transfer": {
       "booking_number": "Confirmation number",
       "start_location": "Pick-up location",
-      "end_location": "Drof-off location"
+      "end_location": "Drop-off location"
     },
     "mode-of-accommodation": {
       "address": "Address",

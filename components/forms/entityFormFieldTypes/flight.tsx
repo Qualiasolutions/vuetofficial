@@ -18,7 +18,7 @@ export const flightForm = (): FormFieldTypes => {
     },
     booking_number: {
       type: 'string',
-      required: true,
+      required: false,
       displayName: t('entities.flight.booking_number')
     },
     start_location: {
