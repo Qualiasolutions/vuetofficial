@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { StyleSheet } from 'react-native';
 import linkConfig from './linkConfigs/subCategories';
-import LinkList from './components/LinkList';
+import LinkList from '../../../components/lists/LinkList';
 
 type EntityTypeListScreenProps = EntityTabScreenProps<'EntityTypeList'>;
 

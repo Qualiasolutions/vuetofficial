@@ -12,7 +12,7 @@ import {
   NativeStackHeaderProps,
   NativeStackNavigationOptions
 } from '@react-navigation/native-stack';
-import EntityListPage from './EntityListPage';
+import EntityListPage from '../../components/lists/EntityListPage';
 
 type EntityListScreenProps = EntityTabScreenProps<'EntityList'>;
 

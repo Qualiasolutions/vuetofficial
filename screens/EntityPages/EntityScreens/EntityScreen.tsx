@@ -13,7 +13,7 @@ import SchoolPage from './components/SchoolPage';
 import TripPage from './components/TripPage';
 import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
-import EntityCalendarPage from './components/EntityCalendarPage';
+import EntityCalendarPage from '../../../components/calendars/EntityCalendarPage';
 import useEntityHeader from './headers/useEntityHeader';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 

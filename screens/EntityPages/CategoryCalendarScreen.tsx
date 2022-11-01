@@ -5,7 +5,7 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { EntityTabScreenProps } from 'types/base';
-import EntityCalendarPage from './EntityScreen/components/EntityCalendarPage';
+import EntityCalendarPage from '../../components/calendars/EntityCalendarPage';
 
 type CategoryCalendarScreenProps =
   EntityTabScreenProps<'CategoryCalendarScreen'>;

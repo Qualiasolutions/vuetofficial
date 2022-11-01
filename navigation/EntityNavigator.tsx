@@ -6,18 +6,18 @@ import { EntityTabParamList } from '../types/base';
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import EntityListScreen from 'screens/EntityPages/EntityListScreen';
 import EntityTypeListScreen from 'screens/EntityPages/LinkListScreen/EntityTypeListScreen';
-import EntityScreen from 'screens/EntityPages/EntityScreen/EntityScreen';
-import ChildEntitiesScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesScreen';
+import EntityScreen from 'screens/EntityPages/EntityScreens/EntityScreen';
+import ChildEntitiesScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesScreen';
 import LinkListScreen from 'screens/EntityPages/LinkListScreen/LinkListScreen';
 import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
 import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
-import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesCalendarScreen';
+import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesCalendarScreen';
 import EntityPeriodsScreen from 'screens/EntityPages/EntityPeriodsScreen';
 import CategoryCalendarScreen from 'screens/EntityPages/CategoryCalendarScreen';
 import EntityTypesCalendarScreen from 'screens/EntityPages/EntityTypesCalendarScreen';
-import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesPeriodsScreen';
+import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesPeriodsScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 

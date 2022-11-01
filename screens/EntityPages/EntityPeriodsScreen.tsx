@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
-import EntityPeriodsPage from './EntityScreen/components/EntityPeriodsPage';
-import useEntityHeader from './EntityScreen/headers/useEntityHeader';
+import EntityPeriodsPage from '../../components/calendars/EntityPeriodsPage';
+import useEntityHeader from './EntityScreens/headers/useEntityHeader';
 
 function EntityPeriodsScreen({
   route

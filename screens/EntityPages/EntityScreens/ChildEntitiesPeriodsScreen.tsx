@@ -13,7 +13,7 @@ import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import useEntityHeader from './headers/useEntityHeader';
-import EntityPeriodsPage from './components/EntityPeriodsPage';
+import EntityPeriodsPage from '../../../components/calendars/EntityPeriodsPage';
 
 export default function ChildEntitiesPeriodsScreen({
   navigation,

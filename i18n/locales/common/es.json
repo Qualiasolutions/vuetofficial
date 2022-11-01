@@ -58,9 +58,6 @@
     }
   },
   "components": {
-    "deleteSuccess": {
-      "successfullyDeleted": "Borro {{name}} con exito"
-    },
     "genericError": {
       "message": "Ocurrio un error imprevisble"
     }

@@ -5,7 +5,7 @@ import { EntityTabParamList } from 'types/base';
 import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import useEntityHeader from './headers/useEntityHeader';
-import EntityListPage from '../EntityListPage';
+import EntityListPage from '../../../components/lists/EntityListPage';
 import { EntityResponseType } from 'types/entities';
 
 export default function ChildEntitiesScreen({

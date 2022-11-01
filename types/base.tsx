@@ -139,7 +139,6 @@ export type RootTabParamList = {
   CreateTask: undefined;
   EditTask: { taskId: number };
   Transport: undefined;
-  DeleteSuccess: { entityName: string };
   NotFound: undefined;
   CalendarScreen: {
     startDate: Date;
