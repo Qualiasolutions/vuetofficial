@@ -42,7 +42,7 @@ export default [
     }
   },
   {
-    name: 'education.lists',
+    name: 'generic.lists',
     toScreen: '',
     navMethod: 'push',
     toScreenParams: {}

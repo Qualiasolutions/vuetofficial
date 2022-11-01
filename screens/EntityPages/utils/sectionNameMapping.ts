@@ -27,5 +27,7 @@ export const sectionNameMapping = {
   DaysOff: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'start_date'),
   Trip: (entity: EntityResponseType) =>
+    getMonthAndYearFromDateField(entity, 'start_date'),
+  SchoolBreak: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'start_date')
 } as { [key: string]: ((entity: EntityResponseType) => string) | undefined };

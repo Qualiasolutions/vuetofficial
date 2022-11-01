@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useSelector } from 'react-redux';
@@ -12,6 +12,9 @@ import linkMapping from 'components/entityCards';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
+import { datetimeSettingsMapping } from 'screens/EntityPages/utils/datetimeSettingsMapping';
+import { entityOrderings } from 'screens/EntityPages/utils/entityOrderings';
+import { sectionNameMapping } from 'screens/EntityPages/utils/sectionNameMapping';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -36,6 +39,7 @@ export default function ChildEntityList({
   const { t } = useTranslation();
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
+  const [monthsBack, setMonthsBack] = useState(0);
   const {
     data: allEntities,
     isLoading,
@@ -56,6 +60,48 @@ export default function ChildEntityList({
     childEntities = childEntities.filter((entity) =>
       entityTypes.includes(entity.resourcetype)
     );
+  }
+
+  if (entityTypes && entityTypes.length === 1) {
+    const entityDatetimeSettings =
+      datetimeSettingsMapping[entityTypes[0]] || null;
+    const ordering = entityOrderings[entityTypes[0]] || null;
+    const orderedEntityData = ordering
+      ? childEntities.sort(ordering)
+      : [...childEntities];
+
+    const datetimeFilteredEntityData = useMemo(() => {
+      const earliestDate = new Date();
+      earliestDate.setMonth(earliestDate.getMonth() - monthsBack);
+
+      if (!entityDatetimeSettings) {
+        return orderedEntityData;
+      }
+      if (!entityDatetimeSettings.hidePrevious) {
+        return orderedEntityData;
+      }
+
+      return orderedEntityData.filter((entity) => {
+        if (new Date(entity[entityDatetimeSettings.endField]) < earliestDate) {
+          return false;
+        }
+        return true;
+      });
+    }, [orderedEntityData, monthsBack]);
+
+    const sections = {} as { [key: string]: EntityResponseType[] };
+
+    const toSectionName =
+      sectionNameMapping[entityData[0]?.resourcetype] || null;
+    if (toSectionName) {
+      for (const entity of datetimeFilteredEntityData) {
+        if (sections[toSectionName(entity)]) {
+          sections[toSectionName(entity)].push(entity);
+        } else {
+          sections[toSectionName(entity)] = [entity];
+        }
+      }
+    }
   }
 
   const childEntityList =

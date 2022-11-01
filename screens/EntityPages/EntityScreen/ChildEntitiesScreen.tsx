@@ -2,12 +2,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { EntityTabParamList } from 'types/base';
-import React, { useEffect } from 'react';
-import ChildEntityList from './components/ChildEntityList';
+import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import useEntityHeader from './headers/useEntityHeader';
+import EntityListPage from '../EntityListPage';
+import { EntityResponseType } from 'types/entities';
 
 export default function ChildEntitiesScreen({
   navigation,
@@ -39,14 +38,10 @@ export default function ChildEntitiesScreen({
   }
 
   return (
-    <TransparentFullPageScrollView>
-      <TransparentPaddedView>
-        <ChildEntityList
-          entityId={entityId}
-          entityTypes={route.params.entityTypes}
-          showCreateForm={route.params.showCreateForm}
-        />
-      </TransparentPaddedView>
-    </TransparentFullPageScrollView>
+    <EntityListPage
+      entityTypes={route.params.entityTypes}
+      entityTypeName={route.params.entityTypes[0]}
+      entityFilters={[(ent: EntityResponseType) => ent.parent === entityId]}
+    />
   );
 }

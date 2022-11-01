@@ -32,7 +32,8 @@
   },
   "linkTitles": {
     "generic": {
-      "calendar": "Calendar"
+      "calendar": "Calendar",
+      "lists": "Lists"
     },
     "family": {
       "familyMembers": "Family Members"
@@ -95,7 +96,6 @@
       "schools": "Schools",
       "academicPlans": "Academic Plans",
       "extracurricularPlans": "Extracurricular Plans",
-      "lists": "Lists",
       "school": {
         "schoolBreaks": "School Breaks"
       }

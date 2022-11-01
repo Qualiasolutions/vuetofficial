@@ -23,7 +23,7 @@ export const daysOffForm = (): FormFieldTypes => {
     },
     description: {
       type: 'TextArea',
-      required: true,
+      required: false,
       displayName: t('entities.entity.description')
     },
     start_date: {
@@ -35,6 +35,16 @@ export const daysOffForm = (): FormFieldTypes => {
       type: 'Date',
       required: true,
       displayName: t('entities.trip.end_date')
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || []
+      },
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('entities.entity.members')
     }
   };
 };

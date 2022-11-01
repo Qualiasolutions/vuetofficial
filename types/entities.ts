@@ -21,6 +21,8 @@ export type EntityTypeName =
   | 'DaysOff'
   | 'AcademicPlan'
   | 'ExtracurricularPlan'
+  | 'School'
+  | 'SchoolBreak'
   | 'HealthBeauty'
   | 'Finance';
 

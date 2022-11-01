@@ -18,5 +18,19 @@ export default [
       entityTypes: ['CareerGoal'],
       entityTypeName: 'career-goals'
     }
+  },
+  {
+    name: 'generic.calendar',
+    toScreen: 'EntityTypesCalendarScreen',
+    navMethod: 'push',
+    toScreenParams: {
+      entityTypes: ['DaysOff', 'CareerGoal']
+    }
+  },
+  {
+    name: 'generic.lists',
+    toScreen: '',
+    navMethod: 'push',
+    toScreenParams: {}
   }
 ] as List[];
