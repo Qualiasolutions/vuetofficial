@@ -147,7 +147,13 @@ export default function Form({
     for (const fieldName in fields) {
       if (fields[fieldName].required) {
         if (fields[fieldName].type === 'addMembers') {
-          return formValues[fieldName] && formValues[fieldName].length > 0;
+          if (!formValues[fieldName] || formValues[fieldName].length === 0) {
+            return false
+          }
+        } else if (fields[fieldName].type === 'dropDown') {
+          if (formValues[fieldName] === undefined) {
+            return false
+          }
         } else if (!formValues[fieldName]) {
           return false;
         }

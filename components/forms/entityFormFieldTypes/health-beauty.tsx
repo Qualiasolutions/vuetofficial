@@ -22,9 +22,9 @@ export const healthBeautyForm = (): FormFieldTypes => {
       displayName: t('entities.entity.name')
     },
     notes: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.entity.notes')
+      type: 'TextArea',
+      required: false,
+      displayName: t('entities.entity.description')
     },
     members: {
       type: 'addMembers',
