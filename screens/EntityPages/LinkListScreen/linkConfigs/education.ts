@@ -29,10 +29,17 @@ export default [
     }
   },
   {
-    name: 'education.schedules',
-    toScreen: '',
+    name: 'generic.calendar',
+    toScreen: 'EntityTypesCalendarScreen',
     navMethod: 'push',
-    toScreenParams: {}
+    toScreenParams: {
+      entityTypes: [
+        'School',
+        'AcademicPlan',
+        'ExtracurricularPlan',
+        'SchoolBreak'
+      ]
+    }
   },
   {
     name: 'education.lists',

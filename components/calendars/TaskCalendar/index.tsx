@@ -288,13 +288,6 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
             ).date
           );
         }
-
-        setShownMonth(
-          getOffsetMonthStartDateString(
-            new Date(lastScheduledTask.start_datetime),
-            0
-          ).date
-        );
       }
     }
   }, [noTasks]);

@@ -146,13 +146,16 @@ export default function Form({
   const hasAllRequired = useMemo(() => {
     for (const fieldName in fields) {
       if (fields[fieldName].required) {
-        if (fields[fieldName].type === 'addMembers') {
+        if (
+          ['addMembers', 'addFamilyMembers'].includes(fields[fieldName].type)
+        ) {
           if (!formValues[fieldName] || formValues[fieldName].length === 0) {
-            return false
+            return false;
           }
         } else if (fields[fieldName].type === 'dropDown') {
-          if (formValues[fieldName] === undefined) {
-            return false
+          // Need to allow true-false option
+          if (formValues[fieldName] === '') {
+            return false;
           }
         } else if (!formValues[fieldName]) {
           return false;

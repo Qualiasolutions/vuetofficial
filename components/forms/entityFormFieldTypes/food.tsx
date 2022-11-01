@@ -2,7 +2,7 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export const financeForm = (): FormFieldTypes => {
+export const foodForm = (): FormFieldTypes => {
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,

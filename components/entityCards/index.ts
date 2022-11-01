@@ -5,11 +5,11 @@ import AnniversaryCard from './AnniversaryCard';
 import EventCard from './EventCard';
 import DaysOffCard from './DaysOffCard';
 import HolidayCard from './HolidayCard';
-import VehicleCard from './VehicleCard';
 import SchoolBreakCard from './SchoolBreakCard';
 import ModeOfTransportCard from './ModeOfTransportCard';
 import ModeOfAccommodationCard from './ModeOfAccommodationCard';
 import TripCard from './TripCard';
+import GenericEntityWithImageCard from './GenericEntityWithImageCard';
 
 type LinkMapping = {
   [key in EntityTypeName]?: React.ElementType;
@@ -24,8 +24,10 @@ export default {
   Event: EventCard,
   DaysOff: DaysOffCard,
   Holiday: HolidayCard,
-  Car: VehicleCard,
-  Boat: VehicleCard,
+  Car: GenericEntityWithImageCard,
+  Boat: GenericEntityWithImageCard,
+  Home: GenericEntityWithImageCard,
+  School: GenericEntityWithImageCard,
   SchoolBreak: SchoolBreakCard,
   Flight: ModeOfTransportCard,
   TrainBusFerry: ModeOfTransportCard,

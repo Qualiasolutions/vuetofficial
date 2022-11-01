@@ -114,6 +114,14 @@ export default {
       toScreen: 'LinkList',
       navMethod: 'push',
       toScreenParams: { listName: 'career' }
+    },
+    {
+      name: 'generic.calendar',
+      toScreen: 'CategoryCalendarScreen',
+      navMethod: 'push',
+      toScreenParams: {
+        categoryId: categoryToIdMapping.EDUCATION_CAREER
+      }
     }
   ],
   TRAVEL: [
@@ -127,7 +135,7 @@ export default {
       }
     },
     {
-      name: 'travel.calendar',
+      name: 'generic.calendar',
       toScreen: 'CategoryCalendarScreen',
       navMethod: 'push',
       toScreenParams: {
@@ -147,15 +155,21 @@ export default {
     },
     {
       name: 'homeGarden.food',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['Food'],
+        entityTypeName: 'food'
+      }
     },
     {
       name: 'homeGarden.clothing',
-      toScreen: '',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: {}
+      toScreenParams: {
+        entityTypes: ['Clothing'],
+        entityTypeName: 'clothing'
+      }
     }
   ],
   TRANSPORT: [
@@ -187,7 +201,7 @@ export default {
       }
     },
     {
-      name: 'transport.calendar',
+      name: 'generic.calendar',
       toScreen: 'CategoryCalendarScreen',
       navMethod: 'push',
       toScreenParams: {

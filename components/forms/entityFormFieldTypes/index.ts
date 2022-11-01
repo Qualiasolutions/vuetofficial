@@ -28,6 +28,8 @@ import { hotelForm } from './hotel';
 import { stayWithFriendForm } from './stay-with-friend';
 import { healthBeautyForm } from './health-beauty';
 import { financeForm } from './finance';
+import { foodForm } from './food';
+import { clothingForm } from './clothing';
 
 export default () => {
   return {
@@ -47,6 +49,8 @@ export default () => {
     ExtracurricularPlan: extracurricularPlanForm(),
     CareerGoal: careerGoalForm(),
     Home: homeForm(),
+    Food: foodForm(),
+    Clothing: clothingForm(),
     SocialMedia: socialMediaForm(),
     SocialPlan: socialPlanForm(),
     Holiday: holidayForm(),

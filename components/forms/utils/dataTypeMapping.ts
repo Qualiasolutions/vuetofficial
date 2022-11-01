@@ -6,5 +6,6 @@ export const dataTypeMapping = {
   Boat: 'form',
   Home: 'form',
   Trip: 'form',
+  School: 'form',
   default: 'json'
 } as { [key: string]: FormDataType | undefined };

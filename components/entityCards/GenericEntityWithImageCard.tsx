@@ -8,7 +8,7 @@ import { useThemeColor } from 'components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import { parsePresignedUrl } from 'utils/urls';
 
-export default function VehicleCard({
+export default function GenericEntityWithImageCard({
   entity
 }: {
   entity: EntityResponseType;

@@ -19,7 +19,9 @@ export const derivedFieldsMapping = {
     name: `${formValues.carrier} ${formValues.booking_number || 'taxi'}`
   }),
   DriveTime: (formValues: FieldValueTypes) => ({
-    name: `Drive${formValues.start_location ? ` from ${formValues.start_location}` : ''} ${formValues.end_location ? ` to ${formValues.end_location}`: ''}`
+    name: `Drive${
+      formValues.start_location ? ` from ${formValues.start_location}` : ''
+    } ${formValues.end_location ? ` to ${formValues.end_location}` : ''}`
   }),
   HotelOrRental: (formValues: FieldValueTypes) => ({
     name: `Stay at ${formValues.hotel_name}`

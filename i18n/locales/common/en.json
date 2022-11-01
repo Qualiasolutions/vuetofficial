@@ -31,6 +31,9 @@
     "TRANSPORT": "Transport"
   },
   "linkTitles": {
+    "generic": {
+      "calendar": "Calendar"
+    },
     "family": {
       "familyMembers": "Family Members"
     },
@@ -55,7 +58,6 @@
     },
     "travel": {
       "myTrips": "My Trips",
-      "calendar": "Calendar",
       "activities": "Food & Activities",
       "accommodation": "Accommodation",
       "transportation": "Transportation"
@@ -79,8 +81,7 @@
     "transport": {
       "cars": "Cars & Motorcycles",
       "boats": "Boats & Other",
-      "publicTransport": "Public Transport",
-      "calendar": "Calendar"
+      "publicTransport": "Public Transport"
     },
     "annualDates": {
       "anniversaries": "Birthdays & Anniversaries",
@@ -94,11 +95,9 @@
       "schools": "Schools",
       "academicPlans": "Academic Plans",
       "extracurricularPlans": "Extracurricular Plans",
-      "schedules": "Schedules",
       "lists": "Lists",
       "school": {
-        "schoolBreaks": "School Breaks",
-        "calendar": "Calendar"
+        "schoolBreaks": "School Breaks"
       }
     }
   },
@@ -123,6 +122,8 @@
     "extracurricular-plans": "Extracurricular Plans",
     "career-goals": "Career Planning & Goals",
     "homes": "My Home(s)",
+    "food": "Food items",
+    "clothing": "Clothing items",
     "social-plans": "Social Plans",
     "social-media": "Social Media",
     "school-breaks": "School Breaks",

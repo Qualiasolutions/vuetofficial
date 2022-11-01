@@ -1,5 +1,5 @@
 import { useThemeColor, View } from 'components/Themed';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { PeriodResponse } from 'types/periods';
@@ -11,22 +11,6 @@ import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { useNavigation } from '@react-navigation/native';
-
-const getPeriodsOnDay = (day: DateData, allPeriods: PeriodResponse[]) => {
-  return allPeriods.filter((period) => {
-    if (
-      getDateWithoutTimezone(period.end_date) <
-      getDateWithoutTimezone(day.dateString)
-    )
-      return false;
-    if (
-      getDateWithoutTimezone(period.start_date) >
-      getDateWithoutTimezone(day.dateString)
-    )
-      return false;
-    return true;
-  });
-};
 
 export type CalendarViewProps = {
   dates: {
@@ -64,8 +48,35 @@ export default function CalendarView({ dates }: CalendarViewProps) {
     datesCopy[selectedDay.dateString].selectedColor = greyColor;
   }
 
-  const selectedDayPeriods =
-    allPeriods && selectedDay ? getPeriodsOnDay(selectedDay, allPeriods) : [];
+  const selectedDayPeriods = useMemo(() => {
+    if (allPeriods && selectedDay) {
+      if (selectedDay.dateString in dates) {
+        return allPeriods.filter((period) => {
+          if (
+            getDateWithoutTimezone(period.end_date) <
+            getDateWithoutTimezone(selectedDay.dateString)
+          ) {
+            return false;
+          }
+          if (
+            getDateWithoutTimezone(period.start_date) >
+            getDateWithoutTimezone(selectedDay.dateString)
+          ) {
+            return false;
+          }
+          return dates[selectedDay.dateString].periods
+            .map((p) => p.id)
+            .includes(period.id);
+        });
+      }
+    }
+    return [];
+  }, [selectedDay, dates, allPeriods]);
+
+  if (allPeriods) {
+    console.log(allPeriods.filter((p) => p.id === 104));
+    console.log(selectedDayPeriods);
+  }
 
   return (
     <WhiteFullPageScrollView style={styles.container}>

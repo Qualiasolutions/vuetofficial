@@ -39,8 +39,8 @@ export default function SchoolScreen({ entityId }: { entityId: number }) {
           navMethod="push"
         />
         <ListLink
-          text={t('linkTitles.education.school.calendar')}
-          toScreen="EntityPeriods"
+          text={t('linkTitles.generic.calendar')}
+          toScreen="ChildEntitiesPeriodsScreen"
           toScreenParams={{
             entityId: entityData.id
           }}

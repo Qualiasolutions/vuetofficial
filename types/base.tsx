@@ -92,6 +92,14 @@ export type EntityTabParamList = {
     entityTypes: EntityTypeName[];
     includeParentTasks?: boolean;
   };
+  ChildEntitiesPeriodsScreen: {
+    entityId: number | string;
+    entityTypes: EntityTypeName[];
+    includeParentTasks?: boolean;
+  };
+  EntityTypesCalendarScreen: {
+    entityTypes: EntityTypeName[];
+  };
   CategoryCalendarScreen: {
     categoryId: number;
   };

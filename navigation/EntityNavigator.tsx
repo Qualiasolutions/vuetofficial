@@ -16,6 +16,8 @@ import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesCalendarScreen';
 import EntityPeriodsScreen from 'screens/EntityPages/EntityPeriodsScreen';
 import CategoryCalendarScreen from 'screens/EntityPages/CategoryCalendarScreen';
+import EntityTypesCalendarScreen from 'screens/EntityPages/EntityTypesCalendarScreen';
+import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreen/ChildEntitiesPeriodsScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 
@@ -86,8 +88,22 @@ export function EntityNavigator() {
         }}
       />
       <EntityStack.Screen
+        name="ChildEntitiesPeriodsScreen"
+        component={ChildEntitiesPeriodsScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <EntityStack.Screen
         name="CategoryCalendarScreen"
         component={CategoryCalendarScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <EntityStack.Screen
+        name="EntityTypesCalendarScreen"
+        component={EntityTypesCalendarScreen}
         options={{
           headerShown: true
         }}

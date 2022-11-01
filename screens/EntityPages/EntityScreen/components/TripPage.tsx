@@ -69,7 +69,7 @@ export default function TripPage({ entityId }: { entityId: number }) {
 
   const calendarLink = (
     <ListLink
-      text={t('linkTitles.travel.calendar')}
+      text={t('linkTitles.generic.calendar')}
       toScreen="ChildEntitiesCalendarScreen"
       toScreenParams={{
         entityTypes: childEntityTypes,

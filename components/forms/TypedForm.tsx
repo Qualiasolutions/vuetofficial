@@ -106,7 +106,7 @@ export default function TypedForm({
                 }}
                 style={textInputStyle}
                 autoCapitalize={
-                  f.transform === 'uppercase' ? 'characters' : 'none'
+                  f.transform === 'uppercase' ? 'characters' : 'sentences'
                 }
               />
             </TransparentView>
