@@ -12,6 +12,8 @@ import { EntityTabParamList } from 'types/base';
 import { ListingModal } from 'components/molecules/Modals';
 import { EntityTypeName } from 'types/entities';
 import { useTranslation } from 'react-i18next';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const AddButton = ({ children, onPress }: { [key: string]: any }) => (
   <TransparentView style={styles.addButtonWrapper}>
@@ -53,6 +55,17 @@ export default function BottomNavBar({
       }
     }
   };
+
+  const { data: userDetails } = getUserFullDetails();
+  const {
+    data: allEntities,
+    isLoading,
+    error
+  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
+  });
+
+  const holidayEntities = allEntities ? Object.values(allEntities.byId).filter(ent => ent.resourcetype === 'Holiday') : []
 
   useEffect(() => {
     const { name, params } = getCurrentScreenAndParams();
@@ -137,9 +150,13 @@ export default function BottomNavBar({
                     );
                     setShowingEntityTypeSelector(true);
                   } else {
-                    navigation.navigate('AddEntity', {
-                      entityTypes: entityTypes[0]
-                    });
+                    if ((entityTypes[0] === 'Holiday') && (holidayEntities.length === 0)) {
+                      navigation.navigate('HolidayList');
+                    } else {
+                      navigation.navigate('AddEntity', {
+                        entityTypes: entityTypes[0]
+                      });
+                    }
                   }
                 } else {
                   navigation.navigate('CreateTask');
