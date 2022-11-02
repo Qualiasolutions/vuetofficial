@@ -154,6 +154,7 @@ export default function HolidayDetailScreen({
       <WhiteFullPageScrollView>
         {Object.values(holidays)
           .flat()
+          .sort((a, b) => ((new Date(a.start_date) < new Date(b.start_date)) ? -1 : 1))
           .map((holiday: Holiday) => {
             return (
               <ListLinkWithCheckbox
