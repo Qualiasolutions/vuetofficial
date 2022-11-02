@@ -16,15 +16,21 @@ export const hobbyForm = (): FormFieldTypes => {
   }
 
   return {
+    image: {
+      type: 'Image',
+      required: false,
+      displayName: t('entities.entity.image'),
+      sourceField: 'presigned_image_url'
+    },
     name: {
       type: 'string',
       required: true,
       displayName: t('entities.entity.name')
     },
     notes: {
-      type: 'string',
+      type: 'TextArea',
       required: true,
-      displayName: t('entities.entity.notes')
+      displayName: t('entities.entity.description')
     },
     members: {
       type: 'addMembers',
