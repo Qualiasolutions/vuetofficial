@@ -6,6 +6,9 @@ type DerivedFieldsMapping = {
 };
 
 export const derivedFieldsMapping = {
+  Birthday: (formValues: FieldValueTypes) => ({
+    name: `${formValues.first_name} ${formValues.last_name} Birthday`
+  }),
   Flight: (formValues: FieldValueTypes) => ({
     name: `${formValues.carrier} ${formValues.booking_number || 'flight'}`
   }),

@@ -16,10 +16,15 @@ export const birthdayForm = (): FormFieldTypes => {
   }
 
   return {
-    name: {
+    first_name: {
       type: 'string',
       required: true,
-      displayName: t('entities.entity.name')
+      displayName: t('entities.birthday.first_name')
+    },
+    last_name: {
+      type: 'string',
+      required: true,
+      displayName: t('entities.birthday.last_name')
     },
     start_date: {
       type: 'OptionalYearDate',

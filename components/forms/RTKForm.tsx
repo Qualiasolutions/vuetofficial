@@ -172,15 +172,15 @@ export default function Form({
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
     const parsedFormValues = parseFormValues(formValues, fields);
 
-    if (formDataType === 'json') {
-      // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
-      const derivedFields = derivedFieldsFunction
-        ? derivedFieldsFunction({
-            ...parsedFormValues,
-            ...extraFields
-          })
-        : {};
+    const derivedFields = derivedFieldsFunction
+      ? derivedFieldsFunction({
+          ...parsedFormValues,
+          ...extraFields
+        })
+      : {};
 
+    if (formDataType === 'json') {
+        // METHOD HOOKS MUST BE PROVIDED AT THIS POINT
       methodHookTriggers[submitMethod]
         .trigger({
           ...parsedFormValues,
@@ -195,7 +195,7 @@ export default function Form({
         });
     } else if (formDataType === 'form') {
       const data = new FormData();
-      for (const [fieldName, fieldValue] of Object.entries(parsedFormValues)) {
+      for (const [fieldName, fieldValue] of Object.entries({ ...parsedFormValues, ...derivedFields })) {
         if (typeof fieldValue === 'object' && fieldValue.length !== undefined) {
           // If the value is an array then it must be treated as such
           for (const val of fieldValue) {
