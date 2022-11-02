@@ -134,8 +134,12 @@ export default function DayCalendar({
             <View style={styles.verticalLine}></View>
           )}
         </View>
-        <View style={styles.taskViews}>{taskViews}</View>
-        <View style={styles.taskViews}>{periodViews}</View>
+        <View>
+          <View style={styles.taskViews}>
+            {taskViews}
+            {periodViews}
+          </View>
+        </View>
       </View>
     </View>
   );

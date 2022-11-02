@@ -101,8 +101,7 @@
       "has_outside_area": "Outside Area?"
     },
     "holiday": {
-      "start_date": "Start Date",
-      "end_date": "End Date"
+      "start_date": "Date"
     },
     "school": {
       "address": "Address",

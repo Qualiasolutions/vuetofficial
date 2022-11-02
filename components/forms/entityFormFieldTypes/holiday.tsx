@@ -26,11 +26,6 @@ export const holidayForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.holiday.start_date')
     },
-    end_date: {
-      type: 'Date',
-      required: true,
-      displayName: t('entities.holiday.end_date')
-    },
     members: {
       type: 'addMembers',
       required: true,
