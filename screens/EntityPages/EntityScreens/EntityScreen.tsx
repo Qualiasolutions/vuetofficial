@@ -61,7 +61,7 @@ export default function EntityScreen({
     }
   }, [entity]);
 
-  if (isLoadingEntities || isFetchingEntities) {
+  if (isLoadingEntities || (isFetchingEntities && entity?.resourcetype !== 'List')) {
     return <PaddedSpinner />;
   }
 

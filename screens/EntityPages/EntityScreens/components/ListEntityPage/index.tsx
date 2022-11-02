@@ -60,14 +60,6 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     return null;
   }
 
-  const listEntries = entityData.list_entries.map((listEntry) => (
-    <WhiteBox style={styles.listEntry} key={listEntry.id}>
-      <AlmostBlackText text={listEntry.title} />
-      <Pressable onPress={() => deleteListEntry(listEntry.id)}>
-        <Image source={require('assets/images/icons/remove-circle.png')} />
-      </Pressable>
-    </WhiteBox>
-  ));
   const memberIds = Array(
     ...new Set([...entityData.members, entityData.owner])
   );
