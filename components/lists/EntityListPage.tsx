@@ -76,24 +76,40 @@ export default function EntityListPage({
     ? filteredEntityData.sort(ordering)
     : [...filteredEntityData];
 
-  const datetimeFilteredEntityData = useMemo(() => {
-    const earliestDate = new Date();
-    earliestDate.setMonth(earliestDate.getMonth() - monthsBack);
+  const [monthsAhead, setMonthsAhead] = useState(
+    entityDatetimeSettings ? entityDatetimeSettings.monthsAhead || 0 : 0
+  );
 
-    if (!entityDatetimeSettings) {
-      return orderedEntityData;
-    }
-    if (!entityDatetimeSettings.hidePrevious) {
-      return orderedEntityData;
-    }
+  const [previousEntityData, datetimeFilteredEntityData, futureEntityData] =
+    useMemo(() => {
+      const earliestDate = new Date();
+      earliestDate.setMonth(earliestDate.getMonth() - monthsBack);
 
-    return orderedEntityData.filter((entity) => {
-      if (new Date(entity[entityDatetimeSettings.endField]) < earliestDate) {
-        return false;
-      }
-      return true;
-    });
-  }, [orderedEntityData, monthsBack]);
+      const latestDate = new Date();
+      latestDate.setMonth(latestDate.getMonth() + monthsAhead);
+
+      const previousEntityData = entityDatetimeSettings?.hidePrevious
+        ? orderedEntityData.filter(
+            (entity) =>
+              new Date(entity[entityDatetimeSettings.endField]) < earliestDate
+          )
+        : [];
+      const futureEntityData = entityDatetimeSettings?.monthsAhead
+        ? orderedEntityData.filter(
+            (entity) =>
+              new Date(entity[entityDatetimeSettings.startField]) > latestDate
+          )
+        : [];
+
+      const datetimeFilteredEntityData = orderedEntityData.filter((entity) => {
+        return ![
+          ...previousEntityData.map((ent) => ent.id),
+          ...futureEntityData.map((ent) => ent.id)
+        ].includes(entity.id);
+      });
+
+      return [previousEntityData, datetimeFilteredEntityData, futureEntityData];
+    }, [orderedEntityData, monthsBack]);
 
   const sections = {} as { [key: string]: EntityResponseType[] };
 
@@ -141,7 +157,7 @@ export default function EntityListPage({
 
   const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
     ? monthsBack < 24 &&
-      datetimeFilteredEntityData.length < orderedEntityData.length && (
+      previousEntityData.length > 0 && (
         <Pressable
           onPress={() => setMonthsBack(monthsBack + 6)}
           style={styles.showOlderWrapper}
@@ -153,6 +169,28 @@ export default function EntityListPage({
         </Pressable>
       )
     : null;
+
+  const showFutureButton =
+    entityDatetimeSettings?.monthsAhead &&
+    entityDatetimeSettings?.monthsAheadPerLoad
+      ? (!entityDatetimeSettings.maxMonthsAhead ||
+          monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
+        futureEntityData.length > 0 && (
+          <Pressable
+            onPress={() =>
+              setMonthsAhead(
+                monthsAhead + (entityDatetimeSettings?.monthsAheadPerLoad || 0)
+              )
+            }
+            style={styles.showOlderWrapper}
+          >
+            <AlmostBlackText
+              text={t('components.calendar.showNewerEvents')}
+              style={styles.showNewerText}
+            />
+          </Pressable>
+        )
+      : null;
 
   if (listLinks.length === 0) {
     return (
@@ -166,16 +204,18 @@ export default function EntityListPage({
             style={styles.noEntitiesText}
           />
         </TransparentPaddedView>
+        {showFutureButton}
       </BackgroundComponent>
     );
   }
 
   return (
     <BackgroundComponent>
-      {showPreviousButton}
       <TransparentPaddedView style={styles.container}>
+        {showPreviousButton}
         {listLinks}
         {isFetching && <PaddedSpinner />}
+        {showFutureButton}
       </TransparentPaddedView>
     </BackgroundComponent>
   );
@@ -200,6 +240,9 @@ const styles = StyleSheet.create({
     paddingBottom: 0
   },
   showOlderText: {
-    fontSize: 16
+    fontSize: 20
+  },
+  showNewerText: {
+    fontSize: 20
   }
 });

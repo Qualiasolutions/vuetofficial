@@ -6,6 +6,23 @@ type DatetimeSettings = {
   endField: string;
   hidePrevious: boolean;
   allowShowPrevious: boolean;
+  monthsAhead?: number;
+  maxMonthsAhead?: number;
+  monthsAheadPerLoad?: number;
+};
+
+const pastHiddenConfig: DatetimeSettings = {
+  datetimeType: 'date',
+  startField: 'start_date',
+  endField: 'end_date',
+  hidePrevious: true,
+  allowShowPrevious: false
+};
+
+const yearAheadConfig = {
+  monthsAhead: 12,
+  maxMonthsAhead: 36,
+  monthsAheadPerLoad: 12
 };
 
 const pastLoadableConfig: DatetimeSettings = {
@@ -21,5 +38,6 @@ export const datetimeSettingsMapping: {
 } = {
   Trip: pastLoadableConfig,
   SchoolBreak: pastLoadableConfig,
-  DaysOff: pastLoadableConfig
+  DaysOff: pastLoadableConfig,
+  Holiday: { ...pastHiddenConfig, ...yearAheadConfig }
 };

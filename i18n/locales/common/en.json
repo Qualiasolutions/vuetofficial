@@ -304,6 +304,7 @@
         "viewOrEdit": "View/Edit task"
       },
       "showOlderEvents": "Show older events",
+      "showNewerEvents": "Show more",
       "noTasks": "Currently no tasks or deadlines have been added."
     }
   }
