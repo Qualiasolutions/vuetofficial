@@ -1,6 +1,6 @@
 import ListLinkWithCheckbox from 'components/molecules/ListLinkWithCheckbox';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetHolidaysQuery } from 'reduxStore/services/api/holidays';
 import { Holiday } from 'reduxStore/services/api/types';
 import { WhiteView } from 'components/molecules/ViewComponents';
@@ -15,6 +15,12 @@ import {
 } from 'reduxStore/services/api/entities';
 import { HolidayResponseType } from 'types/entities';
 import { FullPageSpinner } from 'components/molecules/Spinners';
+import {
+  getDatesPeriodString,
+  getLongDateFromDateObject,
+  getUTCValuesFromDateString
+} from 'utils/datesAndTimes';
+import { Pressable, SectionList, StyleSheet } from 'react-native';
 
 export default function HolidayDetailScreen({
   navigation,
@@ -32,6 +38,13 @@ export default function HolidayDetailScreen({
       params = `${params}country_codes=${code}&`;
     }
   }
+
+  const currentYear = new Date().getFullYear();
+  for (let i = 0; i <= 4; i++) {
+    params = `${params}years=${currentYear + i}&`;
+  }
+
+  const [monthsAhead, setMonthsAhead] = useState(12);
 
   const { data: userDetails } = useGetUserDetails();
   const { data: allEntities } = useGetAllEntitiesQuery(userDetails?.id || -1, {
@@ -52,11 +65,8 @@ export default function HolidayDetailScreen({
     useBulkCreateEntitiesMutation();
   const [deleteEntities, deleteEntitiesResult] =
     useBulkDeleteEntitiesMutation();
-  const {
-    data: holidays,
-    isError,
-    error
-  } = useGetHolidaysQuery(`${params}years=${new Date().getFullYear()}`);
+
+  const { data: holidays, isError, error } = useGetHolidaysQuery(`${params}`);
 
   useEffect(() => {
     if (
@@ -147,35 +157,107 @@ export default function HolidayDetailScreen({
     });
   }, [selectedHolidays, previouslySelectedHolidays]);
 
+  const filteredHolidays = useMemo(() => {
+    console.log(holidays);
+    if (!holidays) {
+      return [];
+    }
+
+    const allHolidays = Object.values(holidays).flat();
+    const currentDate = new Date();
+    const latestDate = new Date();
+    latestDate.setMonth(latestDate.getMonth() + monthsAhead);
+    return allHolidays
+      .filter((holiday) => {
+        const holidayDate = new Date(holiday.start_date);
+        return holidayDate <= latestDate && holidayDate >= currentDate;
+      })
+      .sort((a, b) =>
+        new Date(a.start_date) < new Date(b.start_date) ? -1 : 1
+      );
+  }, [monthsAhead, holidays]);
+
   if (isSaving || !holidays) return <FullPageSpinner />;
 
-  return (
-    <WhiteView style={{ flex: 1 }}>
-      <WhiteFullPageScrollView>
-        {Object.values(holidays)
-          .flat()
-          .sort((a, b) => ((new Date(a.start_date) < new Date(b.start_date)) ? -1 : 1))
-          .map((holiday: Holiday) => {
-            return (
-              <ListLinkWithCheckbox
-                key={holiday.id}
-                text={holiday.name}
-                subText={`${holiday.start_date}${
-                  holiday.end_date !== holiday.start_date
-                    ? ` to ${holiday.end_date}`
-                    : ''
-                }`}
-                showArrow={false}
-                onSelect={async (selected) => onPress(holiday, selected)}
-                onPressContainer={(selected) => {
-                  onPress(holiday, !!selected);
-                }}
-                navMethod={undefined}
-                selected={selectedHolidays.some((cou) => cou.id == holiday.id)}
-              />
-            );
-          })}
-      </WhiteFullPageScrollView>
-    </WhiteView>
+  type SectionDict = {
+    [key: string]: {
+      title: string;
+      data: Holiday[];
+    };
+  };
+
+  const sectionDict: SectionDict = {};
+  for (const holiday of filteredHolidays) {
+    const { year: holidayYear, monthName: holidayMonth } =
+      getUTCValuesFromDateString(holiday.start_date);
+    const monthAndYear = `${holidayMonth} ${holidayYear}`;
+
+    if (sectionDict[monthAndYear]) {
+      sectionDict[monthAndYear].data.push(holiday);
+    } else {
+      sectionDict[monthAndYear] = {
+        title: monthAndYear,
+        data: [holiday]
+      };
+    }
+  }
+
+  const sectionList = (
+    <SectionList
+      sections={Object.values(sectionDict)}
+      keyExtractor={(holiday, index) => holiday.id}
+      renderItem={({ item: holiday }) => {
+        return (
+          <ListLinkWithCheckbox
+            key={holiday.id}
+            text={holiday.name}
+            subText={`${getDatesPeriodString(
+              new Date(holiday.start_date),
+              new Date(holiday.end_date)
+            )}`}
+            showArrow={false}
+            onSelect={async (selected) => onPress(holiday, selected)}
+            onPressContainer={(selected) => {
+              onPress(holiday, !!selected);
+            }}
+            navMethod={undefined}
+            selected={selectedHolidays.some((cou) => cou.id == holiday.id)}
+          />
+        );
+      }}
+      renderSectionHeader={({ section: { title } }) => {
+        return <AlmostBlackText text={title} style={styles.headerText} />;
+      }}
+      ListFooterComponent={
+        monthsAhead < 36 ? (
+          <Pressable
+            onPress={() => setMonthsAhead(monthsAhead + 12)}
+            style={styles.loadMoreButton}
+          >
+            <AlmostBlackText
+              text={'See more'}
+              style={styles.loadMoreButtonText}
+            />
+          </Pressable>
+        ) : null
+      }
+    />
   );
+
+  return <WhiteView style={{ flex: 1 }}>{sectionList}</WhiteView>;
 }
+
+const styles = StyleSheet.create({
+  loadMoreButton: {
+    padding: 20
+  },
+  loadMoreButtonText: {
+    fontSize: 20
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 20
+  }
+});

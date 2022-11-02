@@ -65,7 +65,11 @@ export default function BottomNavBar({
     skip: !userDetails?.id
   });
 
-  const holidayEntities = allEntities ? Object.values(allEntities.byId).filter(ent => ent.resourcetype === 'Holiday') : []
+  const holidayEntities = allEntities
+    ? Object.values(allEntities.byId).filter(
+        (ent) => ent.resourcetype === 'Holiday'
+      )
+    : [];
 
   useEffect(() => {
     const { name, params } = getCurrentScreenAndParams();
@@ -150,7 +154,10 @@ export default function BottomNavBar({
                     );
                     setShowingEntityTypeSelector(true);
                   } else {
-                    if ((entityTypes[0] === 'Holiday') && (holidayEntities.length === 0)) {
+                    if (
+                      entityTypes[0] === 'Holiday' &&
+                      holidayEntities.length === 0
+                    ) {
                       navigation.navigate('HolidayList');
                     } else {
                       navigation.navigate('AddEntity', {

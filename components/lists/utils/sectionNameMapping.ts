@@ -22,12 +22,17 @@ const getNextMonthAndYearFromDateField = (
   fieldName: string
 ) => {
   const now = new Date();
-  const { monthName, month, day, year } = getUTCValuesFromDateString(entity[fieldName]);
-  const currentYear = now.getFullYear()
-  if ((now.getMonth() < month) || ((now.getMonth() == month) && (now.getDate() <= day))) {
+  const { monthName, month, day, year } = getUTCValuesFromDateString(
+    entity[fieldName]
+  );
+  const currentYear = now.getFullYear();
+  if (
+    now.getMonth() < month ||
+    (now.getMonth() == month && now.getDate() <= day)
+  ) {
     return `${monthName} ${currentYear}`;
   }
-  return `${monthName} ${currentYear + 1}`
+  return `${monthName} ${currentYear + 1}`;
 };
 
 export const sectionNameMapping = {

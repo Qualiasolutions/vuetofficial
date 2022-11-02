@@ -290,7 +290,12 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
         }
       }
     }
-  }, [noTasks, filteredAllPeriods.length, filteredTasks.next2YearsTasks.length, filteredTasks.previous2YearsTasks.length]);
+  }, [
+    noTasks,
+    filteredAllPeriods.length,
+    filteredTasks.next2YearsTasks.length,
+    filteredTasks.previous2YearsTasks.length
+  ]);
 
   if (error) {
     return <GenericError />;
