@@ -29,7 +29,7 @@ export default function AnniversaryCard({
   });
 
   const dateString = getLongDateFromDateObject(
-    getDateWithoutTimezone(entity?.date)
+    new Date(entity?.start_datetime)
   );
   const navigation = useNavigation();
 

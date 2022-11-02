@@ -67,6 +67,19 @@ const getUTCValuesFromDateString = (date: string): UTCValues => {
   };
 };
 
+const getUTCValuesFromDateTimeString = (datetime: string): UTCValues => {
+  const utcDate = new Date(datetime);
+  const dayJsDate = dayjs.utc(utcDate);
+
+  return {
+    day: dayJsDate.date(),
+    month: dayJsDate.month(),
+    monthShortName: dayJsDate.format('MMM'),
+    monthName: dayJsDate.format('MMMM'),
+    year: dayJsDate.year()
+  };
+};
+
 const getDatesBetween = (
   start: string | Date,
   end: string | Date,
@@ -140,6 +153,7 @@ export {
   getLongDateFromDateObject,
   getDatesPeriodString,
   getUTCValuesFromDateString,
+  getUTCValuesFromDateTimeString,
   getDatesBetween,
   getDateStringsBetween,
   getDaysToAge,

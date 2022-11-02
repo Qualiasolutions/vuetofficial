@@ -21,10 +21,20 @@ export const eventForm = (): FormFieldTypes => {
       required: true,
       displayName: t('entities.entity.name')
     },
-    date: {
-      type: 'Date',
+    start_datetime: {
+      type: 'DateTime',
       required: true,
-      displayName: t('entities.event.date')
+      displayName: t('entities.event.start_datetime')
+    },
+    end_datetime: {
+      type: 'DateTime',
+      required: true,
+      displayName: t('entities.event.end_datetime')
+    },
+    notes: {
+      type: 'TextArea',
+      required: true,
+      displayName: t('entities.entity.description')
     },
     members: {
       type: 'addMembers',

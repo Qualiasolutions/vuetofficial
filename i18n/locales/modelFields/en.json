@@ -54,7 +54,8 @@
       "members": "Select Family Members to remind:"
     },
     "event": {
-      "date": "Date"
+      "start_datetime": "Start",
+      "end_datetime": "End"
     },
     "trip": {
       "start_date": "Start Date",

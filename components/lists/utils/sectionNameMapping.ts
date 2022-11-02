@@ -1,5 +1,5 @@
 import { EntityResponseType } from 'types/entities';
-import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
+import { getUTCValuesFromDateString, getUTCValuesFromDateTimeString } from 'utils/datesAndTimes';
 
 const getMonthFromDateField = (
   entity: EntityResponseType,
@@ -14,6 +14,14 @@ const getMonthAndYearFromDateField = (
   fieldName: string
 ) => {
   const { monthName, year } = getUTCValuesFromDateString(entity[fieldName]);
+  return `${monthName} ${year}`;
+};
+
+const getMonthAndYearFromDateTimeField = (
+  entity: EntityResponseType,
+  fieldName: string
+) => {
+  const { monthName, year } = getUTCValuesFromDateTimeString(entity[fieldName]);
   return `${monthName} ${year}`;
 };
 
@@ -43,7 +51,7 @@ export const sectionNameMapping = {
   Holiday: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'start_date'),
   Event: (entity: EntityResponseType) =>
-    getMonthAndYearFromDateField(entity, 'date'),
+    getMonthAndYearFromDateTimeField(entity, 'start_datetime'),
   DaysOff: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'start_date'),
   Trip: (entity: EntityResponseType) =>
