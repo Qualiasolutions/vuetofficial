@@ -200,7 +200,7 @@ export function ListingModal(props: ListingModalProps) {
     >
       <ScrollView>
         <WhiteView style={listingModalStyles.bottomContainer}>
-          <Search />
+          {/* <Search /> */}
           <SafeAreaView>{sections}</SafeAreaView>
         </WhiteView>
       </ScrollView>

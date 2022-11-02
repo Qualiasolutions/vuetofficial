@@ -30,6 +30,7 @@ const orderByDateFieldNoYear = (fieldName: string) => {
 
 export const entityOrderings = {
   Birthday: orderByDateFieldNoYear('start_date'),
+  Anniversary: orderByDateFieldNoYear('start_date'),
   Event: orderByDateField('date'),
   Holiday: orderByDateField('start_date'),
   DaysOff: orderByDateField('start_date'),

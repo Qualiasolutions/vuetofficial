@@ -100,6 +100,14 @@ export default {
         entityTypes: ['SocialMedia'],
         entityTypeName: 'social-media'
       }
+    },
+    {
+      name: 'generic.calendar',
+      toScreen: 'CategoryCalendarScreen',
+      navMethod: 'push',
+      toScreenParams: {
+        categoryId: categoryToIdMapping.SOCIAL_INTERESTS
+      }
     }
   ],
   EDUCATION_CAREER: [

@@ -24,6 +24,7 @@ export default {
   Event: EventCard,
   DaysOff: DaysOffCard,
   Holiday: HolidayCard,
+  SocialPlan: GenericEntityWithImageCard,
   Car: GenericEntityWithImageCard,
   Boat: GenericEntityWithImageCard,
   Home: GenericEntityWithImageCard,

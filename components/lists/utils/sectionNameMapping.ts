@@ -17,9 +17,24 @@ const getMonthAndYearFromDateField = (
   return `${monthName} ${year}`;
 };
 
+const getNextMonthAndYearFromDateField = (
+  entity: EntityResponseType,
+  fieldName: string
+) => {
+  const now = new Date();
+  const { monthName, month, day, year } = getUTCValuesFromDateString(entity[fieldName]);
+  const currentYear = now.getFullYear()
+  if ((now.getMonth() < month) || ((now.getMonth() == month) && (now.getDate() <= day))) {
+    return `${monthName} ${currentYear}`;
+  }
+  return `${monthName} ${currentYear + 1}`
+};
+
 export const sectionNameMapping = {
   Birthday: (entity: EntityResponseType) =>
-    getMonthFromDateField(entity, 'start_date'),
+    getNextMonthAndYearFromDateField(entity, 'start_date'),
+  Anniversary: (entity: EntityResponseType) =>
+    getNextMonthAndYearFromDateField(entity, 'start_date'),
   Holiday: (entity: EntityResponseType) =>
     getMonthAndYearFromDateField(entity, 'start_date'),
   Event: (entity: EntityResponseType) =>
