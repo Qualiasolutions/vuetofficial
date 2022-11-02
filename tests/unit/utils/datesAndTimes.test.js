@@ -2,7 +2,8 @@ import {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
   getDateStringsBetween,
-  getUTCValuesFromDateString
+  getUTCValuesFromDateString,
+  getDatesPeriodString
 } from 'utils/datesAndTimes';
 
 import timezonedDate from 'timezoned-date';
@@ -238,4 +239,76 @@ it('datesAndTimes ::: getUTCValuesFromDateString', () => {
     monthName: 'October',
     year: 2020
   });
+});
+
+it('datesAndTimes ::: getDatesPeriodString', () => {
+  const originalDate = Date;
+
+  Date = timezonedDate.makeConstructor(0);
+  const gmtTestCases = [
+    {
+      startDate: new Date('2022-02-02'),
+      endDate: new Date('2022-02-02'),
+      expectedString: 'Feb 02, 2022',
+      utc: true
+    },
+    {
+      startDate: new Date('2022-02-02'),
+      endDate: new Date('2022-02-02'),
+      expectedString: 'Feb 02, 2022',
+      utc: false
+    }
+  ];
+
+  for (const testCase of gmtTestCases) {
+    expect(
+      getDatesPeriodString(testCase.startDate, testCase.endDate, testCase.utc)
+    ).toBe(testCase.expectedString);
+  }
+
+  Date = timezonedDate.makeConstructor(-300);
+  const colombiaTestCases = [
+    {
+      startDate: new Date('2022-02-02'),
+      endDate: new Date('2022-02-02'),
+      utc: false,
+      expectedString: 'Feb 01, 2022'
+    },
+    {
+      startDate: new Date('2022-02-02'),
+      endDate: new Date('2022-02-02'),
+      utc: true,
+      expectedString: 'Feb 02, 2022'
+    }
+  ];
+
+  for (const testCase of colombiaTestCases) {
+    expect(
+      getDatesPeriodString(testCase.startDate, testCase.endDate, testCase.utc)
+    ).toBe(testCase.expectedString);
+  }
+
+  Date = timezonedDate.makeConstructor(300);
+  const pakistanTestCases = [
+    {
+      startDate: new Date('2022-02-02'),
+      endDate: new Date('2022-02-02'),
+      utc: false,
+      expectedString: 'Feb 02, 2022'
+    },
+    {
+      startDate: new Date('2022-02-02'),
+      endDate: new Date('2022-02-02'),
+      utc: true,
+      expectedString: 'Feb 02, 2022'
+    }
+  ];
+
+  for (const testCase of pakistanTestCases) {
+    expect(
+      getDatesPeriodString(testCase.startDate, testCase.endDate, testCase.utc)
+    ).toBe(testCase.expectedString);
+  }
+
+  Date = originalDate;
 });

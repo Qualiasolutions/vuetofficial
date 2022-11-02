@@ -99,8 +99,6 @@ export default function EventScreen({ entityId }: { entityId: number }) {
 
   return (
     <WhiteFullPageScrollView>
-      <BlackText text={entityData?.name || ''} style={styles.name} />
-
       <TransparentView style={styles.infoContainer}>
         <FontAwesome
           name="thumb-tack"
@@ -158,17 +156,6 @@ const style = function () {
     container: {
       paddingTop: 10
     },
-    detailsContainer: {
-      alignItems: 'center',
-      marginBottom: 20
-    },
-    name: {
-      fontSize: 26,
-      textAlign: 'center'
-    },
-    birthDetail: {
-      fontSize: 24
-    },
     addNewContainer: {
       height: 198,
       width: Layout.window.width - 120,
@@ -193,7 +180,8 @@ const style = function () {
     },
     infoContainer: {
       flexDirection: 'row',
-      paddingHorizontal: 10
+      paddingHorizontal: 10,
+      paddingVertical: 20
     },
     rightContainer: {
       marginLeft: 20

@@ -19,31 +19,46 @@ const getDateWithoutTimezone = (date: string): Date => {
   return new Date(`${date}T00:00:00`);
 };
 
-const getLongDateFromDateObject = (date: Date, utc: boolean = true): string => {
+const getLongDateFromDateObject = (
+  date: Date,
+  utc: boolean = false
+): string => {
   if (utc) {
     return dayjs.utc(date).format('MMM DD, YYYY');
   }
   return dayjs(date).format('MMM DD, YYYY');
 };
 
-const getDatesPeriodString = (startDate: Date, endDate: Date): string => {
+const getDatesPeriodString = (
+  startDate: Date,
+  endDate: Date,
+  utc: boolean = false
+): string => {
   const sameYear = startDate.getFullYear() === endDate.getFullYear();
   const sameDate =
-    getLongDateFromDateObject(startDate) === getLongDateFromDateObject(endDate);
+    getLongDateFromDateObject(startDate, utc) ===
+    getLongDateFromDateObject(endDate, utc);
 
   if (sameDate) {
-    return getLongDateFromDateObject(startDate);
+    return getLongDateFromDateObject(startDate, utc);
   }
 
   if (sameYear) {
-    return `${dayjs(startDate).format('MMM DD')} - ${dayjs(endDate).format(
-      'MMM DD YYYY'
-    )}`;
+    if (utc) {
+      return `${dayjs.utc(startDate).format('MMM DD')} - ${dayjs
+        .utc(endDate)
+        .format('MMM DD YYYY')}`;
+    } else {
+      return `${dayjs(startDate).format('MMM DD')} - ${dayjs(endDate).format(
+        'MMM DD YYYY'
+      )}`;
+    }
   }
 
-  return `${getLongDateFromDateObject(startDate)} - ${getLongDateFromDateObject(
-    endDate
-  )}`;
+  return `${getLongDateFromDateObject(
+    startDate,
+    utc
+  )} - ${getLongDateFromDateObject(endDate, utc)}`;
 };
 
 type UTCValues = {

@@ -1,48 +1,13 @@
-import {
-  AlmostBlackText,
-  LightBlackText
-} from 'components/molecules/TextComponents';
-import { WhiteBox } from 'components/molecules/ViewComponents';
-import { Pressable, StyleSheet } from 'react-native';
-import {
-  getDateWithoutTimezone,
-  getLongDateFromDateObject
-} from 'utils/datesAndTimes';
-import { useNavigation } from '@react-navigation/native';
-import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
+import EntityWithDateAndImageCard from './EntityWithDateAndImageCard';
 
-export default function AnniversaryCard({
-  entity
-}: {
-  entity: EntityResponseType;
-}) {
-  const styles = StyleSheet.create({
-    card: {
-      marginTop: 10,
-      alignItems: 'center',
-      borderColor: useThemeColor({}, 'almostBlack')
-    },
-    listEntryText: {
-      fontSize: 20
-    }
-  });
-
-  const dateString = getLongDateFromDateObject(
-    new Date(entity?.start_datetime)
-  );
-  const navigation = useNavigation();
-
+export default function EventCard({ entity }: { entity: EntityResponseType }) {
   return (
-    <Pressable
-      onPress={() => {
-        (navigation as any).push('EntityScreen', { entityId: entity.id });
-      }}
-    >
-      <WhiteBox style={styles.card}>
-        <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
-        <AlmostBlackText style={{ fontSize: 18 }} text={dateString} />
-      </WhiteBox>
-    </Pressable>
+    <EntityWithDateAndImageCard
+      entity={entity}
+      startDateField="start_datetime"
+      endDateField="end_datetime"
+      utc={false}
+    />
   );
 }

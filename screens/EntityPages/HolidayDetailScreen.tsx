@@ -213,7 +213,8 @@ export default function HolidayDetailScreen({
             text={holiday.name}
             subText={`${getDatesPeriodString(
               new Date(holiday.start_date),
-              new Date(holiday.end_date)
+              new Date(holiday.end_date),
+              true
             )}`}
             showArrow={false}
             onSelect={async (selected) => onPress(holiday, selected)}

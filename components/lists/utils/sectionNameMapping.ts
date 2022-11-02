@@ -1,5 +1,8 @@
 import { EntityResponseType } from 'types/entities';
-import { getUTCValuesFromDateString, getUTCValuesFromDateTimeString } from 'utils/datesAndTimes';
+import {
+  getUTCValuesFromDateString,
+  getUTCValuesFromDateTimeString
+} from 'utils/datesAndTimes';
 
 const getMonthFromDateField = (
   entity: EntityResponseType,

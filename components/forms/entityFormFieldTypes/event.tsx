@@ -16,6 +16,12 @@ export const eventForm = (): FormFieldTypes => {
   }
 
   return {
+    image: {
+      type: 'Image',
+      required: false,
+      displayName: t('entities.entity.image'),
+      sourceField: 'presigned_image_url'
+    },
     name: {
       type: 'string',
       required: true,
