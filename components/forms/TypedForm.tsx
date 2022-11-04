@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     minWidth: 110
   },
   inlineDateInput: {
-    flex: 1,
+    flexShrink: 1,
     width: '100%'
   },
   colourBox: {
@@ -532,11 +532,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  calendarIcon: { position: 'absolute', right: 20, bottom: 12, color: 'grey' },
+  calendarIcon: {
+    position: 'absolute',
+    right: 20,
+    bottom: 12,
+    color: 'grey'
+  },
   textInput: {
     height: 44,
-    flex: 1,
+    flexShrink: 1,
     minWidth: 100
   },
-  addFamilyMembers: { marginTop: 20 }
+  addFamilyMembers: {
+    marginTop: 20
+  }
 });

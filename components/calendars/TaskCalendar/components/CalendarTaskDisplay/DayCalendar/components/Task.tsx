@@ -221,6 +221,7 @@ export default function Task({
         task={task}
         title={'Please provide some details regarding your MOT appointment'}
         onSubmitSuccess={() => setShowTaskCompletionForm(false)}
+        onRequestClose={() => setShowTaskCompletionForm(false)}
       />
     ) : null;
 
@@ -257,6 +258,7 @@ export default function Task({
           disabled={task.is_complete}
           style={styles.checkbox}
           checked={task.is_complete}
+          smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
           onValueChange={async () => {
             if (taskTypesRequiringForm.includes(task.resourcetype)) {
               return setShowTaskCompletionForm(true);

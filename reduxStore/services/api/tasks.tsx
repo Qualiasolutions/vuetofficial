@@ -80,6 +80,8 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
+export default extendedApi;
+
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {

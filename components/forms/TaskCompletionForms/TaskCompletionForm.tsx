@@ -1,21 +1,23 @@
 import { Text, View } from 'components/Themed';
 import { completionFormFieldTypes } from './taskCompletionFormFieldTypes';
-import { formStyles } from '../formStyles';
 import RTKForm from 'components/forms/RTKForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { ScheduledTaskParsedType } from 'types/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
+import { Modal } from 'components/molecules/Modals';
 
 export default function TaskCompletionForm({
   task,
   title = '',
-  onSubmitSuccess = () => {}
+  onSubmitSuccess = () => {},
+  onRequestClose = () => {}
 }: {
   task: ScheduledTaskParsedType;
   title?: string;
   onSubmitSuccess?: Function;
+  onRequestClose?: () => void;
 }) {
   const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
 
@@ -33,9 +35,9 @@ export default function TaskCompletionForm({
   const permittedTaskForms = ['BookMOTTask'];
   if (task.resourcetype && permittedTaskForms.includes(task.resourcetype)) {
     return (
-      <SafeAreaView style={formStyles.container}>
-        <View style={formStyles.container}>
-          {title ? <Text style={formStyles.title}>{title}</Text> : null}
+      <Modal onRequestClose={onRequestClose || (() => {})}>
+        <View>
+          {title ? <Text>{title}</Text> : null}
           {createSuccessful ? (
             <Text>Successfully created new {task.resourcetype}</Text>
           ) : null}
@@ -54,9 +56,10 @@ export default function TaskCompletionForm({
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
             submitText="Mark complete"
+            // inlineFields={true}
           />
         </View>
-      </SafeAreaView>
+      </Modal>
     );
   }
   return null;

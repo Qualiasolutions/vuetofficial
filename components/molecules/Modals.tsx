@@ -22,16 +22,24 @@ import Colors from '../../constants/Colors';
 import Search from './Search';
 import { UserResponse } from 'types/users';
 import { Feather } from '@expo/vector-icons';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
 export function Modal(props: ModalProps) {
-  const { style, children, boxStyle, ...otherProps } = props;
+  const { style, children, boxStyle, onRequestClose, ...otherProps } = props;
 
   return (
-    <DefaultModal animationType="fade" transparent={true} {...otherProps}>
-      <View style={styles.opaqueBackground}></View>
+    <DefaultModal
+      animationType="fade"
+      transparent={true}
+      onRequestClose={onRequestClose}
+      {...otherProps}
+    >
       <TransparentContainerView>
+        <Pressable style={styles.opaqueBackground} onPress={onRequestClose}>
+          <View style={styles.opaqueBackground}></View>
+        </Pressable>
         <WhiteBox style={boxStyle}>{children}</WhiteBox>
       </TransparentContainerView>
     </DefaultModal>
@@ -233,7 +241,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     color: '#000000',
-    opacity: 0.5
+    opacity: 0.8
   },
   textWrapper: {
     padding: 20,

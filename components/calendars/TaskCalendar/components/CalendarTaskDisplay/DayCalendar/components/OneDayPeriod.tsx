@@ -58,12 +58,8 @@ export default function OneDayPeriod({
     | StackNavigationProp<EntityTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
-  const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
 
   const { data: userDetails } = getUserFullDetails();
-
-  const [triggerCreateCompletionForm, createCompletionFormResult] =
-    useCreateTaskCompletionFormMutation();
 
   const {
     data: allEntities,
@@ -78,8 +74,6 @@ export default function OneDayPeriod({
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.id || -1);
-
-  const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
@@ -97,10 +91,12 @@ export default function OneDayPeriod({
   const entity = allEntities.byId[period.entity];
 
   const familyMembersList = userFullDetails?.family?.users?.filter(
-    (item: any) => period.members.includes(item.id) || entity.owner === item.id
+    (item: any) =>
+      period.members.includes(item.id) || (entity && entity.owner === item.id)
   );
   const friendMembersList = userFullDetails?.friends?.filter(
-    (item: any) => period.members.includes(item.id) || entity.owner === item.id
+    (item: any) =>
+      period.members.includes(item.id) || (entity && entity.owner === item.id)
   );
 
   const membersList = [
