@@ -19,7 +19,8 @@ type CalendarProps = {
 };
 
 function Calendar({ filters = [] }: CalendarProps) {
-  const allPeriods = useScheduledPeriods();
+  const { periods: allPeriods, reminders: allReminders } =
+    useScheduledPeriods();
   const periodColour = useThemeColor({}, 'mediumLightGrey');
 
   const filteredPeriods = useMemo(() => {

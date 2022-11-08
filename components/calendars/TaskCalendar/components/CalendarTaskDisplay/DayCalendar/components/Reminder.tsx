@@ -25,18 +25,20 @@ import {
 } from 'components/molecules/ViewComponents';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ParsedPeriod } from 'types/periods';
+import { ParsedReminder } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import Checkbox from 'components/molecules/Checkbox';
+import { useUpdateReminderMutation } from 'reduxStore/services/api/reminder';
 
 type PropTypes = {
-  period: ParsedPeriod;
+  reminder: ParsedReminder;
   selected: boolean;
-  onPress: (event: ParsedPeriod) => void;
-  onHeaderPress: (event: ParsedPeriod) => void;
+  onPress: (event: ParsedReminder) => void;
+  onHeaderPress: (event: ParsedReminder) => void;
 };
 
-export default function OneDayPeriod({
-  period,
+export default function Reminder({
+  reminder,
   selected,
   onPress,
   onHeaderPress
@@ -66,6 +68,8 @@ export default function OneDayPeriod({
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
 
+  const [triggerUpdateReminder, updateReminderResult] = useUpdateReminderMutation()
+
   if (isLoading || !allEntities) {
     return null;
   }
@@ -74,15 +78,15 @@ export default function OneDayPeriod({
     return <GenericError />;
   }
 
-  const entity = allEntities.byId[period.entity];
+  const entity = allEntities.byId[reminder.entity];
 
   const familyMembersList = userFullDetails?.family?.users?.filter(
     (item: any) =>
-      period.members.includes(item.id) || (entity && entity.owner === item.id)
+      reminder.members.includes(item.id) || (entity && entity.owner === item.id)
   );
   const friendMembersList = userFullDetails?.friends?.filter(
     (item: any) =>
-      period.members.includes(item.id) || (entity && entity.owner === item.id)
+      reminder.members.includes(item.id) || (entity && entity.owner === item.id)
   );
 
   const membersList = [
@@ -95,7 +99,7 @@ export default function OneDayPeriod({
   const expandedHeader =
     entity && selected ? (
       <Pressable
-        onPress={() => onHeaderPress(period)}
+        onPress={() => onHeaderPress(reminder)}
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
         <WhiteText
@@ -152,14 +156,26 @@ export default function OneDayPeriod({
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
-            onPress(period);
+            onPress(reminder);
           }}
         >
           {leftInfo}
           <View style={styles.titleContainer}>
-            <BlackText text={period.title} style={styles.title} bold={true} />
+            <BlackText text={reminder.title} style={styles.title} bold={true} />
           </View>
         </TouchableOpacity>
+        <Checkbox
+          disabled={reminder.is_complete}
+          style={styles.checkbox}
+          checked={reminder.is_complete}
+          smoothChecking={true}
+          onValueChange={async () => {
+            await triggerUpdateReminder({
+              id: reminder.id,
+              is_complete: true
+            });
+          }}
+        />
       </View>
       {memberColour}
       {!selected && <View style={styles.separator}></View>}

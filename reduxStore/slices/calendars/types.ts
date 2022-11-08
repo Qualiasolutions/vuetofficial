@@ -4,5 +4,6 @@ export interface CalendarState {
     selectedTaskId: number;
     selectedPeriodId: number;
     selectedRecurrenceIndex: number;
+    selectedReminderId: number;
   };
 }

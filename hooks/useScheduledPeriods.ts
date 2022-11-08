@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
+import { PeriodReminder, ScheduledReminder } from 'types/periods';
 import getUserFullDetails from './useGetUserDetails';
 
 export default function useScheduledPeriods(
@@ -34,5 +35,28 @@ export default function useScheduledPeriods(
     }
   );
 
-  return allPeriods || null;
+  const allReminders = [];
+  if (allPeriods) {
+    for (const period of allPeriods) {
+      for (const reminder of period.reminders) {
+        allReminders.push({
+          ...reminder,
+          entity: period.entity,
+          start_date: reminder.reminder_date,
+          end_date: reminder.reminder_date,
+          members: period.members
+        } as ScheduledReminder);
+      }
+    }
+  }
+
+  return allPeriods
+    ? {
+        periods: allPeriods,
+        reminders: allReminders
+      }
+    : {
+        periods: [],
+        reminders: []
+      };
 }

@@ -9,6 +9,7 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
   ui: {
     selectedPeriodId: 0,
     selectedTaskId: 0,
+    selectedReminderId: 0,
     selectedRecurrenceIndex: -1
   }
 };
@@ -23,6 +24,7 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
           ...state.ui,
           selectedTaskId: payload.taskId,
           selectedPeriodId: 0,
+          selectedReminderId: 0,
           selectedRecurrenceIndex: payload.recurrenceIndex
         }
       };
@@ -37,7 +39,23 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
           ...state.ui,
           selectedTaskId: 0,
           selectedPeriodId: payload.periodId,
+          selectedReminderId: 0,
           selectedRecurrenceIndex: payload.recurrenceIndex
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setSelectedReminderId,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          selectedTaskId: 0,
+          selectedPeriodId: 0,
+          selectedReminderId: payload.reminderId,
+          selectedRecurrenceIndex: -1
         }
       };
     }
@@ -49,6 +67,7 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         ...state.ui,
         selectedTaskId: 0,
         selectedPeriodId: 0,
+        selectedReminderId: 0,
         selectedRecurrenceIndex: -1
       }
     };

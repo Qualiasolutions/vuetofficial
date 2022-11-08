@@ -27,7 +27,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import { ScheduledTaskResponseType, TaskResponseType } from 'types/tasks';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
-import { PeriodResponse } from 'types/periods';
+import { PeriodResponse, ScheduledReminder } from 'types/periods';
 import { useTranslation } from 'react-i18next';
 
 dayjs.extend(utc);
@@ -55,8 +55,13 @@ const getOffsetMonthStartDateString = (
 type CalendarProps = {
   taskFilters: ((task: TaskResponseType) => boolean)[];
   periodFilters: ((period: PeriodResponse) => boolean)[];
+  reminderFilters: ((period: ScheduledReminder) => boolean)[];
 };
-function Calendar({ taskFilters, periodFilters }: CalendarProps) {
+function Calendar({
+  taskFilters,
+  periodFilters,
+  reminderFilters
+}: CalendarProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const currentMonth = `${new Date().getFullYear()}-${
@@ -77,7 +82,8 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     getOffsetMonthStartDateString(currentDate, 0).date
   );
 
-  const allScheduledPeriods = useScheduledPeriods();
+  const { periods: allScheduledPeriods, reminders: allScheduledReminders } =
+    useScheduledPeriods();
 
   // Load current month
   const {
@@ -193,6 +199,18 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
     }
   }, [allScheduledPeriods, periodFilters]);
 
+  const filteredAllReminders = useMemo<ScheduledReminder[]>(() => {
+    if (!allScheduledReminders) {
+      return [];
+    } else {
+      let filtered = allScheduledReminders;
+      for (const reminderFilter of reminderFilters) {
+        filtered = filtered.filter(reminderFilter);
+      }
+      return filtered;
+    }
+  }, [allScheduledReminders, reminderFilters]);
+
   const filteredMonthPeriods = useMemo(() => {
     return filteredAllPeriods
       .filter((period) => {
@@ -212,16 +230,37 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
       );
   }, [filteredAllPeriods, shownMonth]);
 
+  const filteredMonthReminders = useMemo(() => {
+    return filteredAllReminders
+      .filter((reminder) => {
+        const reminderStartDate = new Date(reminder.start_date);
+        const reminderEndDate = new Date(reminder.end_date);
+
+        return (
+          reminderStartDate.getFullYear() <= shownMonth.getFullYear() &&
+          reminderStartDate.getMonth() <= shownMonth.getMonth() &&
+          reminderEndDate.getFullYear() >= shownMonth.getFullYear() &&
+          reminderEndDate.getMonth() >= shownMonth.getMonth()
+        );
+      })
+      .filter(
+        (reminder) =>
+          new Date(reminder.end_date).getMonth() === shownMonth.getMonth()
+      );
+  }, [filteredAllReminders, shownMonth]);
+
   const noTasks = useMemo(() => {
     return (
       filteredTasks.next2YearsTasks &&
       filteredTasks.previous2YearsTasks &&
       filteredAllPeriods &&
+      filteredAllReminders &&
       filteredTasks.next2YearsTasks.length === 0 &&
       filteredTasks.previous2YearsTasks.length === 0 &&
-      filteredAllPeriods.length === 0
+      filteredAllPeriods.length === 0 &&
+      filteredAllReminders.length === 0
     );
-  }, [filteredTasks, filteredAllPeriods]);
+  }, [filteredTasks, filteredAllPeriods, filteredAllReminders]);
 
   useEffect(() => {
     if (!noTasks) {
@@ -229,61 +268,125 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
         (period) => new Date(period.start_date) > new Date()
       );
       const pastPeriods = filteredAllPeriods.filter(
-        (period) => new Date(period.start_date) <= new Date()
+        (period) => new Date(period.end_date) <= new Date()
+      );
+
+      const futureReminders = filteredAllReminders.filter(
+        (reminder) => new Date(reminder.start_date) > new Date()
+      );
+      const pastReminders = filteredAllReminders.filter(
+        (reminder) => new Date(reminder.end_date) <= new Date()
       );
 
       if (
         filteredTasks.next2YearsTasks.length > 0 ||
-        futurePeriods.length > 0
+        futurePeriods.length > 0 ||
+        futureReminders.length > 0
       ) {
         const firstScheduledTask = filteredTasks.next2YearsTasks[0];
         const firstScheduledPeriod = futurePeriods[0];
+        const firstScheduledReminder = futureReminders[0];
 
-        if (
-          firstScheduledTask &&
-          (!firstScheduledPeriod ||
-            new Date(firstScheduledTask.start_datetime) <
-              new Date(firstScheduledPeriod.start_date))
-        ) {
+        const startTimes = [
+          {
+            type: 'TASK',
+            startTime:
+              firstScheduledTask && new Date(firstScheduledTask.start_datetime)
+          },
+          {
+            type: 'PERIOD',
+            startTime:
+              firstScheduledPeriod && new Date(firstScheduledPeriod.start_date)
+          },
+          {
+            type: 'REMINDER',
+            startTime:
+              firstScheduledReminder &&
+              new Date(firstScheduledReminder.start_date)
+          }
+        ].sort((a, b) => {
+          if (!b.startTime) return -1;
+          if (!a.startTime) return 1;
+          return b.startTime < a.startTime ? 1 : -1;
+        });
+        const firstType = startTimes[0].type;
+
+        if (firstType === 'TASK') {
           setShownMonth(
             getOffsetMonthStartDateString(
               new Date(firstScheduledTask.start_datetime),
               0
             ).date
           );
-        } else {
+        } else if (firstType === 'PERIOD') {
           setShownMonth(
             getOffsetMonthStartDateString(
               new Date(firstScheduledPeriod.start_date),
               0
             ).date
           );
+        } else {
+          setShownMonth(
+            getOffsetMonthStartDateString(
+              new Date(firstScheduledReminder.start_date),
+              0
+            ).date
+          );
         }
       } else if (
         filteredTasks.previous2YearsTasks.length > 0 ||
-        pastPeriods.length > 0
+        pastPeriods.length > 0 ||
+        pastReminders.length > 0
       ) {
         const lastScheduledTask =
           filteredTasks.previous2YearsTasks[
             filteredTasks.previous2YearsTasks.length - 1
           ];
         const lastScheduledPeriod = pastPeriods[pastPeriods.length - 1];
-        if (
-          lastScheduledTask &&
-          (!lastScheduledPeriod ||
-            new Date(lastScheduledTask.end_datetime) >
-              new Date(lastScheduledPeriod.end_date))
-        ) {
+        const lastScheduledReminder =
+          futureReminders[futureReminders.length - 1];
+
+        const endTimes = [
+          {
+            type: 'TASK',
+            startTime:
+              lastScheduledTask && new Date(lastScheduledTask.end_datetime)
+          },
+          {
+            type: 'PERIOD',
+            startTime:
+              lastScheduledPeriod && new Date(lastScheduledPeriod.end_date)
+          },
+          {
+            type: 'REMINDER',
+            startTime:
+              lastScheduledReminder && new Date(lastScheduledReminder.end_date)
+          }
+        ].sort((a, b) => {
+          if (!a.startTime) return 1;
+          if (!b.startTime) return -1;
+          return b.startTime < a.startTime ? -1 : 1;
+        });
+        const lastType = endTimes[0].type;
+
+        if (lastType === 'TASK') {
           setShownMonth(
             getOffsetMonthStartDateString(
               new Date(lastScheduledTask.end_datetime),
               0
             ).date
           );
-        } else {
+        } else if (lastType === 'PERIOD') {
           setShownMonth(
             getOffsetMonthStartDateString(
               new Date(lastScheduledPeriod.end_date),
+              0
+            ).date
+          );
+        } else {
+          setShownMonth(
+            getOffsetMonthStartDateString(
+              new Date(lastScheduledReminder.end_date),
               0
             ).date
           );
@@ -293,6 +396,7 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
   }, [
     noTasks,
     filteredAllPeriods.length,
+    filteredAllReminders.length,
     filteredTasks.next2YearsTasks.length,
     filteredTasks.previous2YearsTasks.length
   ]);
@@ -353,6 +457,7 @@ function Calendar({ taskFilters, periodFilters }: CalendarProps) {
       <CalendarTaskDisplay
         tasks={filteredTasks.allScheduledTasks}
         periods={filteredMonthPeriods}
+        reminders={filteredMonthReminders}
         alwaysIncludeCurrentDate={
           currentMonth ===
           `${shownMonth.getFullYear()}-${shownMonth.getMonth() + 1}`

@@ -16,6 +16,11 @@ export const selectSelectedPeriodId = createSelector(
   (calendar: CalendarState | undefined) => calendar?.ui?.selectedPeriodId || 0
 );
 
+export const selectSelectedReminderId = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.ui?.selectedReminderId || 0
+);
+
 export const selectSelectedRecurrenceIndex = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) =>

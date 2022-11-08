@@ -28,7 +28,8 @@
       "members": "Members",
       "description": "Description",
       "image": "Image",
-      "notes": "Notes"
+      "notes": "Notes",
+      "reminder": "Remind me"
     },
     "car": {
       "make": "Make",

@@ -13,9 +13,14 @@ import {
   ScheduledTaskParsedType
 } from 'types/tasks';
 
-import { PeriodResponse } from 'types/periods';
+import { PeriodResponse, ScheduledReminder } from 'types/periods';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
+  end_date: Date;
+  start_date: Date;
+};
+
+type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
   end_date: Date;
   start_date: Date;
 };
@@ -23,6 +28,7 @@ type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
 type SingleDateTasks = {
   tasks: ScheduledTaskParsedType[];
   periods: ParsedPeriod[];
+  reminders: ParsedReminder[];
 };
 
 type AllDateTasks = {
@@ -47,13 +53,23 @@ const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
   };
 };
 
+const parseReminder = (res: ScheduledReminder): ParsedReminder => {
+  return {
+    ...res,
+    end_date: getDateWithoutTimezone(res.end_date),
+    start_date: getDateWithoutTimezone(res.start_date)
+  };
+};
+
 function Calendar({
   tasks,
   periods,
+  reminders,
   alwaysIncludeCurrentDate = false
 }: {
   tasks: ScheduledTaskResponseType[];
   periods: PeriodResponse[];
+  reminders: ScheduledReminder[];
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
@@ -73,7 +89,8 @@ function Calendar({
         } else {
           newTasksPerDate[taskDate] = {
             tasks: [parsedTask],
-            periods: []
+            periods: [],
+            reminders: []
           };
         }
       }
@@ -93,7 +110,29 @@ function Calendar({
         } else {
           newTasksPerDate[periodDate] = {
             tasks: [],
-            periods: [parsedPeriod]
+            periods: [parsedPeriod],
+            reminders: []
+          };
+        }
+      }
+    }
+
+    for (const reminder of reminders) {
+      const parsedReminder = parseReminder(reminder);
+      const reminderDates = getDateStringsBetween(
+        parsedReminder.start_date,
+        parsedReminder.end_date,
+        true // Use UTC
+      );
+
+      for (const reminderDate of reminderDates) {
+        if (newTasksPerDate[reminderDate]) {
+          newTasksPerDate[reminderDate].reminders.push(parsedReminder);
+        } else {
+          newTasksPerDate[reminderDate] = {
+            tasks: [],
+            periods: [],
+            reminders: [parsedReminder]
           };
         }
       }
@@ -105,7 +144,8 @@ function Calendar({
       if (!(currentDateString in newTasksPerDate)) {
         newTasksPerDate[currentDateString] = {
           tasks: [],
-          periods: []
+          periods: [],
+          reminders: []
         };
       }
     }
@@ -127,6 +167,7 @@ function Calendar({
         key={date}
         tasks={tasksPerDate[date].tasks}
         periods={tasksPerDate[date].periods}
+        reminders={tasksPerDate[date].reminders}
         highlight={date === getDateStringFromDateObject(new Date())}
       />
     ));

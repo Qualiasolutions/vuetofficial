@@ -77,7 +77,7 @@ export function CalendarScreenHeaderLeft() {
 
 type Props = RootTabScreenProps<'CalendarScreen'>;
 function CalendarScreen({ navigation }: Props) {
-  return <Calendar taskFilters={[]} periodFilters={[]} />;
+  return <Calendar taskFilters={[]} periodFilters={[]} reminderFilters={[]} />;
 }
 
 const styles = StyleSheet.create({

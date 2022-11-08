@@ -6,10 +6,13 @@
 import Calendar from 'components/calendars/TaskCalendar';
 
 function EntityCalendarPage({ entityIds }: { entityIds: number[] }) {
+  const entityFilter = (scheduledItem: any) =>
+    entityIds.includes(scheduledItem.entity);
   return (
     <Calendar
-      taskFilters={[(task) => entityIds.includes(task.entity)]}
-      periodFilters={[(period) => entityIds.includes(period.entity)]}
+      taskFilters={[entityFilter]}
+      periodFilters={[entityFilter]}
+      reminderFilters={[entityFilter]}
     />
   );
 }

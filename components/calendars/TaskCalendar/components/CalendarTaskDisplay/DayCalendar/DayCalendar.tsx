@@ -5,36 +5,47 @@ import Task from './components/Task';
 import { ScheduledTaskParsedType } from 'types/tasks';
 import dayjs from 'dayjs';
 import { BlackText } from 'components/molecules/TextComponents';
-import { ParsedPeriod } from 'types/periods';
+import { ParsedPeriod, ScheduledReminder } from 'types/periods';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import OneDayPeriod from './components/OneDayPeriod';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectSelectedPeriodId,
   selectSelectedRecurrenceIndex,
+  selectSelectedReminderId,
   selectSelectedTaskId
 } from 'reduxStore/slices/calendars/selectors';
 import {
   deselectTasks,
   setSelectedPeriodId,
+  setSelectedReminderId,
   setSelectedTaskId
 } from 'reduxStore/slices/calendars/actions';
+import Reminder from './components/Reminder';
+
+type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
+  end_date: Date;
+  start_date: Date;
+};
 
 type PropTypes = {
   date: string;
   tasks: ScheduledTaskParsedType[];
   periods: ParsedPeriod[];
+  reminders: ParsedReminder[];
   highlight: boolean;
 };
 
 export default function DayCalendar({
   date,
   tasks,
+  reminders,
   periods,
   highlight
 }: PropTypes) {
   const selectedTaskId = useSelector(selectSelectedTaskId);
   const selectedPeriodId = useSelector(selectSelectedPeriodId);
+  const selectedReminderId = useSelector(selectSelectedReminderId);
   const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
   const dispatch = useDispatch();
 
@@ -114,6 +125,20 @@ export default function DayCalendar({
     ></OneDayPeriod>
   ));
 
+  const reminderViews = reminders.map((reminder, i) => (
+    <Reminder
+      reminder={reminder}
+      key={`${reminder.id}_${i}`}
+      selected={reminder.id === selectedReminderId}
+      onPress={(reminder) => {
+        dispatch(setSelectedReminderId({ reminderId: reminder.id }));
+      }}
+      onHeaderPress={() => {
+        dispatch(deselectTasks());
+      }}
+    ></Reminder>
+  ));
+
   return (
     <View>
       <View style={styles.container}>
@@ -138,6 +163,7 @@ export default function DayCalendar({
           <View style={styles.taskViews}>
             {taskViews}
             {periodViews}
+            {reminderViews}
           </View>
         </View>
       </View>

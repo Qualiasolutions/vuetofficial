@@ -32,7 +32,8 @@ export default function CalendarView({ dates }: CalendarViewProps) {
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = style();
-  const allPeriods = useScheduledPeriods();
+  const { periods: allPeriods, reminders: allReminders } =
+    useScheduledPeriods();
   const navigation = useNavigation();
 
   const datesCopy = { ...dates };
@@ -72,11 +73,6 @@ export default function CalendarView({ dates }: CalendarViewProps) {
     }
     return [];
   }, [selectedDay, dates, allPeriods]);
-
-  if (allPeriods) {
-    console.log(allPeriods.filter((p) => p.id === 104));
-    console.log(selectedDayPeriods);
-  }
 
   return (
     <WhiteFullPageScrollView style={styles.container}>

@@ -1,4 +1,4 @@
-import { FormFieldTypes } from 'components/forms/formFieldTypes';
+import { Field, FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
@@ -13,6 +13,31 @@ export const carForm = (): FormFieldTypes => {
   if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
     return {};
   }
+
+  const reminderDropDownField = {
+    type: 'dropDown',
+    permittedValues: [
+      {
+        label: '1 day before',
+        value: '1 day, 0:00:00'
+      },
+      {
+        label: '1 week before',
+        value: '7 days, 0:00:00'
+      },
+      {
+        label: '2 weeks before',
+        value: '14 days, 0:00:00'
+      },
+      {
+        label: '4 weeks before',
+        value: '28 days, 0:00:00'
+      },
+    ],
+    required: false,
+    displayName: t('entities.entity.reminder'),
+    listMode: 'MODAL'
+  } as Field
 
   return {
     image: {
@@ -52,26 +77,31 @@ export const carForm = (): FormFieldTypes => {
       required: false,
       displayName: t('entities.car.MOT_due_date')
     },
+    mot_reminder_timedelta: reminderDropDownField,
     tax_due_date: {
       type: 'Date',
       required: false,
       displayName: t('entities.car.tax_due_date')
     },
+    tax_reminder_timedelta: reminderDropDownField,
     service_due_date: {
       type: 'Date',
       required: false,
       displayName: t('entities.car.service_due_date')
     },
+    service_reminder_timedelta: reminderDropDownField,
     insurance_due_date: {
       type: 'Date',
       required: false,
       displayName: t('entities.car.insurance_due_date')
     },
+    insurance_reminder_timedelta: reminderDropDownField,
     warranty_due_date: {
       type: 'Date',
       required: false,
       displayName: t('entities.car.warranty_due_date')
     },
+    warranty_reminder_timedelta: reminderDropDownField,
     vehicle_type: {
       type: 'dropDown',
       permittedValues: [

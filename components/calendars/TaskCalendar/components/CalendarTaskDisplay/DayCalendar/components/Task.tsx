@@ -55,7 +55,6 @@ export default function Task({
   onPress,
   onHeaderPress
 }: PropTypes) {
-  const jwtAccessToken = useSelector(selectAccessToken);
   const username = useSelector(selectUsername);
 
   const navigation = useNavigation<
