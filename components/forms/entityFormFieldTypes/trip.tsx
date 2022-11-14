@@ -46,12 +46,14 @@ export const tripForm = (): FormFieldTypes => {
     start_date: {
       type: 'Date',
       required: true,
-      displayName: t('entities.trip.start_date')
+      displayName: t('entities.trip.start_date'),
+      associatedEndDateField: 'end_date'
     },
     end_date: {
       type: 'Date',
       required: true,
-      displayName: t('entities.trip.end_date')
+      displayName: t('entities.trip.end_date'),
+      associatedStartDateField: 'start_date'
     },
     members: {
       type: 'addMembers',
