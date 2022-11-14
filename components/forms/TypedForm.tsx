@@ -5,6 +5,8 @@ import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import {
   AddFamilyMembersField,
   AddMembersField,
+  DateField,
+  DateTimeField,
   DropDownField,
   DropDownWithOtherField,
   FormFieldTypes,
@@ -176,7 +178,19 @@ export default function TypedForm({
           </TransparentView>
         );
       }
-      case 'Date':
+      case 'Date': {
+        const f = fields[field] as DateField;
+        const limitValues: { [key: string]: Date } = {}
+        if (f.associatedEndDateField) {
+          if (formValues[f.associatedEndDateField]) {
+            limitValues.maximum = formValues[f.associatedEndDateField]
+          }
+        }
+        if (f.associatedStartDateField) {
+          if (formValues[f.associatedStartDateField]) {
+            limitValues.minimum = formValues[f.associatedStartDateField]
+          }
+        }
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
@@ -186,6 +200,8 @@ export default function TypedForm({
               </TransparentView>
               <DateTimeTextInput
                 value={formValues[field]}
+                maximumDate={limitValues.maximum}
+                minimumDate={limitValues.minimum}
                 onValueChange={(newValue: Date) => {
                   onFormValuesChange({
                     ...formValues,
@@ -201,8 +217,20 @@ export default function TypedForm({
             </TransparentView>
           </TransparentView>
         );
+      }
       case 'DateTime': {
-        const f = fields[field];
+        const f = fields[field] as DateTimeField;
+        const limitValues: { [key: string]: Date } = {}
+        if (f.associatedEndTimeField) {
+          if (formValues[f.associatedEndTimeField]) {
+            limitValues.maximum = formValues[f.associatedEndTimeField]
+          }
+        }
+        if (f.associatedStartTimeField) {
+          if (formValues[f.associatedStartTimeField]) {
+            limitValues.minimum = formValues[f.associatedStartTimeField]
+          }
+        }
         return (
           <TransparentView key={field}>
             {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
@@ -212,9 +240,31 @@ export default function TypedForm({
               </TransparentView>
               <DateTimeTextInput
                 value={formValues[field]}
+                maximumDate={limitValues.maximum}
+                minimumDate={limitValues.minimum}
                 onValueChange={(newValue: Date) => {
+                  const associatedUpdates: { [key: string]: Date } = {}
+                  if (f.associatedEndTimeField) {
+                    if (!formValues[f.associatedEndTimeField]) {
+                      if (newValue) {
+                        const associatedDateTime = new Date(newValue)
+                        associatedDateTime.setHours(associatedDateTime.getHours() + 1)
+                        associatedUpdates[f.associatedEndTimeField] = associatedDateTime
+                      }
+                    }
+                  }
+                  if (f.associatedStartTimeField) {
+                    if (!formValues[f.associatedStartTimeField]) {
+                      if (newValue) {
+                        const associatedDateTime = new Date(newValue)
+                        associatedDateTime.setHours(associatedDateTime.getHours() - 1)
+                        associatedUpdates[f.associatedStartTimeField] = associatedDateTime
+                      }
+                    }
+                  }
                   onFormValuesChange({
                     ...formValues,
+                    ...associatedUpdates,
                     [field]: newValue
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
@@ -357,7 +407,7 @@ export default function TypedForm({
       case 'dropDown': {
         const f = fields[field] as DropDownField;
         return (
-          <View
+          <TransparentView
             key={field}
             style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}
           >
@@ -389,13 +439,13 @@ export default function TypedForm({
                 }
               />
             </TransparentView>
-          </View>
+          </TransparentView>
         );
       }
       case 'dropDownWithOther': {
         const f = fields[field] as DropDownWithOtherField;
         return (
-          <View
+          <TransparentView
             key={field}
             style={Platform.OS === 'ios' ? { zIndex: 9999 } : {}}
           >
@@ -428,7 +478,7 @@ export default function TypedForm({
                 }
               />
             </TransparentView>
-          </View>
+          </TransparentView>
         );
       }
       case 'Image': {
@@ -497,7 +547,7 @@ export default function TypedForm({
 
   return (
     <TransparentView style={style}>
-      <View>{formFields}</View>
+      <TransparentView>{formFields}</TransparentView>
     </TransparentView>
   );
 }

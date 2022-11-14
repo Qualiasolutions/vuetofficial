@@ -30,12 +30,14 @@ export const eventForm = (): FormFieldTypes => {
     start_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('entities.event.start_datetime')
+      displayName: t('entities.event.start_datetime'),
+      associatedEndTimeField: 'end_datetime'
     },
     end_datetime: {
       type: 'DateTime',
       required: true,
-      displayName: t('entities.event.end_datetime')
+      displayName: t('entities.event.end_datetime'),
+      associatedStartTimeField: 'start_datetime'
     },
     notes: {
       type: 'TextArea',

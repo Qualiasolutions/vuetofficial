@@ -33,11 +33,17 @@ export type StringField = BaseField<'string', string> & {
   transform?: TextTransform;
 };
 export type TextArea = BaseField<'TextArea', string>;
-export type DateField = BaseField<'Date', Date>;
+export type DateField = BaseField<'Date', Date> & {
+  associatedStartDateField?: string;
+  associatedEndDateField?: string;
+};
 export type OptionalYearDate = BaseField<'OptionalYearDate', Date> & {
   knownYearField?: string | undefined;
 };
-export type DateTimeField = BaseField<'DateTime', Date>;
+export type DateTimeField = BaseField<'DateTime', Date> & {
+  associatedStartTimeField?: string;
+  associatedEndTimeField?: string;
+};
 export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
   valueToDisplay: Function;

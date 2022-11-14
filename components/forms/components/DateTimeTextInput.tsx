@@ -11,7 +11,9 @@ export default function DateTimeTextInput({
   containerStyle,
   onValueChange,
   Date = false,
-  disabled = false
+  disabled = false,
+  maximumDate,
+  minimumDate
 }: {
   value: Date | null;
   textInputStyle?: ViewStyle;
@@ -19,6 +21,8 @@ export default function DateTimeTextInput({
   onValueChange: Function;
   Date?: boolean;
   disabled?: boolean;
+  maximumDate?: Date,
+  minimumDate?: Date,
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
     React.useState<boolean>(false);
@@ -52,15 +56,21 @@ export default function DateTimeTextInput({
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode={Date ? 'date' : 'datetime'}
+        date={value || undefined}
         onConfirm={(newValue) => {
-          onValueChange(newValue);
           setIsDatePickerVisible(false);
+          if ((minimumDate && (newValue < minimumDate)) || (maximumDate && (newValue > maximumDate))) {
+            return onValueChange(null);
+          }
+          onValueChange(newValue);
         }}
         onCancel={() => {
           setIsDatePickerVisible(false);
           onValueChange(null);
         }}
         disabled={disabled}
+        maximumDate={maximumDate}
+        minimumDate={minimumDate}
       ></DateTimePickerModal>
     </TransparentView>
   );
