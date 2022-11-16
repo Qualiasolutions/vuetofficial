@@ -8,16 +8,11 @@ import {
   SettingsTabParamList
 } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import {
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
+import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import {
-  WhiteText,
-  BlackText
-} from 'components/molecules/TextComponents';
+import { WhiteText, BlackText } from 'components/molecules/TextComponents';
 import Layout from 'constants/Layout';
 import {
   TransparentView,
@@ -90,7 +85,7 @@ export default function OneDayPeriod({
     ...(friendMembersList || [])
   ];
 
-  const leftInfo = <View style={styles.leftInfo}/>;
+  const leftInfo = <View style={styles.leftInfo} />;
 
   const expandedHeader =
     entity && selected ? (

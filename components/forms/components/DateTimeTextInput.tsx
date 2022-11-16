@@ -21,8 +21,8 @@ export default function DateTimeTextInput({
   onValueChange: Function;
   Date?: boolean;
   disabled?: boolean;
-  maximumDate?: Date,
-  minimumDate?: Date,
+  maximumDate?: Date;
+  minimumDate?: Date;
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
     React.useState<boolean>(false);
@@ -59,7 +59,10 @@ export default function DateTimeTextInput({
         date={value || undefined}
         onConfirm={(newValue) => {
           setIsDatePickerVisible(false);
-          if ((minimumDate && (newValue < minimumDate)) || (maximumDate && (newValue > maximumDate))) {
+          if (
+            (minimumDate && newValue < minimumDate) ||
+            (maximumDate && newValue > maximumDate)
+          ) {
             return onValueChange(null);
           }
           onValueChange(newValue);

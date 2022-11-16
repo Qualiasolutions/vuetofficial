@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 import {
   TransparentContainerView,
+  TransparentView,
   WhiteBox,
   WhiteContainerView,
   WhiteView
@@ -29,6 +30,7 @@ import { UserResponse } from 'types/users';
 import MemberList from 'components/molecules/MemberList';
 import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { Button } from 'components/molecules/ButtonComponents';
 
 export default function ListScreen({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -88,9 +90,19 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     .slice()
     .sort((a, b) => a.id - b.id);
 
+  console.log(sortedListEntries);
+
   const listEntryComponents = sortedListEntries.map((listEntry) => (
     <ListEntry listEntry={listEntry} key={listEntry.id}></ListEntry>
   ));
+
+  const createEntry = () => {
+    createListEntry({
+      list: entityData.id,
+      title: newEntryTitle
+    });
+    setNewEntryTitle('');
+  };
 
   return (
     <WhiteFullPageScrollView>
@@ -101,19 +113,21 @@ export default function ListScreen({ entityId }: { entityId: number }) {
           onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
         /> */}
         {listEntryComponents}
-        <TextInput
-          value={newEntryTitle}
-          onChangeText={(value) => setNewEntryTitle(value)}
-          blurOnSubmit={false}
-          onSubmitEditing={() => {
-            createListEntry({
-              list: entityData.id,
-              title: newEntryTitle
-            })
-            setNewEntryTitle('');
-          }}
-          placeholder={t('screens.listEntity.typeOrUpload')}
-        />
+        <TransparentView style={styles.newItemInputWrapper}>
+          <TextInput
+            value={newEntryTitle}
+            onChangeText={(value) => setNewEntryTitle(value)}
+            blurOnSubmit={false}
+            onSubmitEditing={createEntry}
+            placeholder={t('screens.listEntity.typeOrUpload')}
+            style={styles.newItemInput}
+          />
+          <Button
+            title={t('common.add')}
+            onPress={createEntry}
+            style={styles.submitButton}
+          />
+        </TransparentView>
       </WhiteView>
     </WhiteFullPageScrollView>
   );
@@ -125,5 +139,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%'
   },
-  listEntryText: {}
+  listEntryText: {},
+  newItemInputWrapper: {
+    padding: 10,
+    marginBottom: 100,
+    height: 75,
+    flexDirection: 'row',
+    width: '100%'
+  },
+  newItemInput: {
+    height: '100%',
+    flexGrow: 1,
+    width: '50%'
+  },
+  submitButton: {
+    height: '100%',
+    marginLeft: 10,
+    width: 130
+  }
 });

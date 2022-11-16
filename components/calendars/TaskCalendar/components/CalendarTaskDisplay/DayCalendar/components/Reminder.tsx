@@ -8,16 +8,11 @@ import {
   SettingsTabParamList
 } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import {
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
+import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import {
-  WhiteText,
-  BlackText
-} from 'components/molecules/TextComponents';
+import { WhiteText, BlackText } from 'components/molecules/TextComponents';
 import Layout from 'constants/Layout';
 import {
   TransparentView,
@@ -68,7 +63,8 @@ export default function Reminder({
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
 
-  const [triggerUpdateReminder, updateReminderResult] = useUpdateReminderMutation()
+  const [triggerUpdateReminder, updateReminderResult] =
+    useUpdateReminderMutation();
 
   if (isLoading || !allEntities) {
     return null;
@@ -94,7 +90,7 @@ export default function Reminder({
     ...(friendMembersList || [])
   ];
 
-  const leftInfo = <View style={styles.leftInfo}/>;
+  const leftInfo = <View style={styles.leftInfo} />;
 
   const expandedHeader =
     entity && selected ? (

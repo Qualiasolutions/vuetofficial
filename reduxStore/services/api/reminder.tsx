@@ -15,11 +15,9 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['Period']
-    }),
+    })
   }),
   overrideExisting: true
 });
 
-export const {
-  useUpdateReminderMutation,
-} = extendedApi;
+export const { useUpdateReminderMutation } = extendedApi;

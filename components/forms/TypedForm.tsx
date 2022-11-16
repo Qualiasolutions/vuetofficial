@@ -180,15 +180,15 @@ export default function TypedForm({
       }
       case 'Date': {
         const f = fields[field] as DateField;
-        const limitValues: { [key: string]: Date } = {}
+        const limitValues: { [key: string]: Date } = {};
         if (f.associatedEndDateField) {
           if (formValues[f.associatedEndDateField]) {
-            limitValues.maximum = formValues[f.associatedEndDateField]
+            limitValues.maximum = formValues[f.associatedEndDateField];
           }
         }
         if (f.associatedStartDateField) {
           if (formValues[f.associatedStartDateField]) {
-            limitValues.minimum = formValues[f.associatedStartDateField]
+            limitValues.minimum = formValues[f.associatedStartDateField];
           }
         }
         return (
@@ -220,15 +220,15 @@ export default function TypedForm({
       }
       case 'DateTime': {
         const f = fields[field] as DateTimeField;
-        const limitValues: { [key: string]: Date } = {}
+        const limitValues: { [key: string]: Date } = {};
         if (f.associatedEndTimeField) {
           if (formValues[f.associatedEndTimeField]) {
-            limitValues.maximum = formValues[f.associatedEndTimeField]
+            limitValues.maximum = formValues[f.associatedEndTimeField];
           }
         }
         if (f.associatedStartTimeField) {
           if (formValues[f.associatedStartTimeField]) {
-            limitValues.minimum = formValues[f.associatedStartTimeField]
+            limitValues.minimum = formValues[f.associatedStartTimeField];
           }
         }
         return (
@@ -243,22 +243,28 @@ export default function TypedForm({
                 maximumDate={limitValues.maximum}
                 minimumDate={limitValues.minimum}
                 onValueChange={(newValue: Date) => {
-                  const associatedUpdates: { [key: string]: Date } = {}
+                  const associatedUpdates: { [key: string]: Date } = {};
                   if (f.associatedEndTimeField) {
                     if (!formValues[f.associatedEndTimeField]) {
                       if (newValue) {
-                        const associatedDateTime = new Date(newValue)
-                        associatedDateTime.setHours(associatedDateTime.getHours() + 1)
-                        associatedUpdates[f.associatedEndTimeField] = associatedDateTime
+                        const associatedDateTime = new Date(newValue);
+                        associatedDateTime.setHours(
+                          associatedDateTime.getHours() + 1
+                        );
+                        associatedUpdates[f.associatedEndTimeField] =
+                          associatedDateTime;
                       }
                     }
                   }
                   if (f.associatedStartTimeField) {
                     if (!formValues[f.associatedStartTimeField]) {
                       if (newValue) {
-                        const associatedDateTime = new Date(newValue)
-                        associatedDateTime.setHours(associatedDateTime.getHours() - 1)
-                        associatedUpdates[f.associatedStartTimeField] = associatedDateTime
+                        const associatedDateTime = new Date(newValue);
+                        associatedDateTime.setHours(
+                          associatedDateTime.getHours() - 1
+                        );
+                        associatedUpdates[f.associatedStartTimeField] =
+                          associatedDateTime;
                       }
                     }
                   }

@@ -2,24 +2,21 @@ import { useThemeColor } from 'components/Themed';
 import {
   StyleSheet,
   View,
-  Image,
   ViewStyle,
   Pressable,
   GestureResponderEvent
 } from 'react-native';
-import Constants from 'expo-constants';
 import * as ExpoImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
 import { parsePresignedUrl } from 'utils/urls';
-
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+import { TransparentView } from 'components/molecules/ViewComponents';
+import { Image } from 'components/molecules/ImageComponents';
 
 export type CustomFile = {
   height: number;
   width: number;
   uri: string;
   type: string;
-  cancelled: boolean;
 };
 
 export type PickedFile = File | CustomFile;
@@ -52,19 +49,25 @@ export function ImagePicker({
     out of sync with the parent. It defaults to `true` to support old code.
   */
   const [selectedImage, setSelectedImage] =
-    useState<ExpoImagePicker.ImageInfo | null>(null);
+    useState<ExpoImagePicker.ImagePickerResult | null>(null);
 
   const borderColor = useThemeColor({}, 'grey');
 
   useEffect(() => {
-    if (selectedImage && selectedImage.type === 'image') {
-      if (selectedImage.uri && selectedImage.width && selectedImage.height) {
-        const { uri } = selectedImage;
+    if (selectedImage && !selectedImage?.canceled) {
+      const imageAsset = selectedImage?.assets[0];
+      if (
+        imageAsset &&
+        imageAsset.uri &&
+        imageAsset.width &&
+        imageAsset.height
+      ) {
+        const { uri } = imageAsset;
         const nameParts = uri.split('.');
         const fileType = nameParts[nameParts.length - 1];
 
         onImageSelect({
-          ...selectedImage,
+          ...imageAsset,
           name: uri,
           type: 'application/' + fileType
         });
@@ -80,17 +83,21 @@ export function ImagePicker({
       quality: 1
     });
 
-    if (res.cancelled) {
+    if (res.canceled) {
       setSelectedImage(null);
     } else {
-      setSelectedImage(res as ExpoImagePicker.ImageInfo);
+      setSelectedImage(res);
     }
   };
 
+  // console.log(selectedImage)
+
   const imageSource =
     (displayInternalImage &&
-      selectedImage?.type === 'image' &&
-      selectedImage?.uri && { uri: selectedImage.uri }) ||
+      selectedImage &&
+      (selectedImage as any)?.assets[0] &&
+      (selectedImage as any)?.assets[0].uri &&
+      !((selectedImage as any).assets as any)[0].canceled) ||
     (defaultImageUrl && {
       uri: parsePresignedUrl(defaultImageUrl)
     }) ||
@@ -102,7 +109,9 @@ export function ImagePicker({
 
   return (
     <Pressable onPress={chooseImage}>
-      <View style={[{ backgroundColor, borderColor }, styles.container, style]}>
+      <TransparentView
+        style={[{ backgroundColor, borderColor }, styles.container, style]}
+      >
         <Image
           style={
             selectedImage || defaultImageUrl
@@ -112,7 +121,7 @@ export function ImagePicker({
           source={imageSource}
           resizeMode="cover"
         />
-      </View>
+      </TransparentView>
     </Pressable>
   );
 }
@@ -152,11 +161,8 @@ export function SmallImagePicker(
   const PressableComponent = (props: {
     onPress: (event: GestureResponderEvent) => void;
   }) => (
-    <Pressable onPress={props.onPress}>
-      <Image
-        style={styles.smallCameraIcon}
-        source={require('assets/images/icons/small-camera.png')}
-      />
+    <Pressable onPress={props.onPress} style={style}>
+      <Image source={require('assets/images/icons/small-camera.png')} />
     </Pressable>
   );
 
@@ -198,8 +204,5 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     height: 160,
     width: '100%'
-  },
-  smallCameraIcon: {
-    marginBottom: 10
   }
 });

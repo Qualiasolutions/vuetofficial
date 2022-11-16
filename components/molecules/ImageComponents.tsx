@@ -29,3 +29,7 @@ export function ConditionallyTintedImage(props: ImageProps) {
     />
   );
 }
+
+export function Image(props: DefaultImage['props']) {
+  return <DefaultImage {...props} />;
+}

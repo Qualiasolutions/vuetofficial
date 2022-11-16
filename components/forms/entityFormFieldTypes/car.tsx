@@ -32,12 +32,12 @@ export const carForm = (): FormFieldTypes => {
       {
         label: '4 weeks before',
         value: '28 days, 0:00:00'
-      },
+      }
     ],
     required: false,
     displayName: t('entities.entity.reminder'),
     listMode: 'MODAL'
-  } as Field
+  } as Field;
 
   return {
     image: {

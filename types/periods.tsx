@@ -14,7 +14,10 @@ export type ScheduledReminder = PeriodReminder & {
   members: number[];
 };
 
-export type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
+export type ParsedReminder = Omit<
+  ScheduledReminder,
+  'end_date' | 'start_date'
+> & {
   end_date: Date;
   start_date: Date;
 };
