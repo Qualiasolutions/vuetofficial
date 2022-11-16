@@ -1,5 +1,6 @@
 import { FormUpdateListEntryRequest, ListEntryResponse } from 'types/lists';
 import { vuetApi } from './api';
+import entitiesApi from './entities';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -41,7 +42,39 @@ const extendedApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity']
+      invalidatesTags: ['Entity'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of entitiesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Entity' }
+        ])) {
+          if (endpointName !== 'getAllEntities') continue;
+          const patchResult = dispatch(
+            entitiesApi.util.updateQueryData(
+              'getAllEntities',
+              originalArgs,
+              (draft) => {
+                const listsToUpdate = Object.values(draft.byId).filter(
+                  (entity) => entity.id === patch.list
+                );
+                for (const list of listsToUpdate) {
+                  list.list_entries.push({
+                    ...patch,
+                    id: Math.round(Math.random() * 1e10)
+                  })
+                }
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+      }
     }),
     deleteListEntry: builder.mutation<void, number>({
       query: (id) => {

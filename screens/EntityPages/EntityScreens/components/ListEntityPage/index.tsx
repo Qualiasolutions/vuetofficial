@@ -105,14 +105,13 @@ export default function ListScreen({ entityId }: { entityId: number }) {
           value={newEntryTitle}
           onChangeText={(value) => setNewEntryTitle(value)}
           blurOnSubmit={false}
-          onSubmitEditing={() =>
+          onSubmitEditing={() => {
             createListEntry({
               list: entityData.id,
               title: newEntryTitle
-            }).then(() => {
-              setNewEntryTitle('');
             })
-          }
+            setNewEntryTitle('');
+          }}
           placeholder={t('screens.listEntity.typeOrUpload')}
         />
       </WhiteView>

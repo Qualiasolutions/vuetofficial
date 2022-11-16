@@ -27,6 +27,7 @@ import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useThemeColor } from 'components/Themed';
 import Constants from 'expo-constants';
 import { parsePresignedUrl } from 'utils/urls';
+import { TransparentView } from 'components/molecules/ViewComponents';
 
 const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
 
@@ -182,7 +183,7 @@ export default function ListEntry({
         style={styles.listEntryContainer}
       >
         {showIcons ? (
-          <View style={styles.iconContainer}>
+          <TransparentView style={styles.iconContainer}>
             <Pressable onPress={() => setAddingNote(!addingNote)}>
               <Image source={noteImage} style={styles.icon} />
             </Pressable>
@@ -194,7 +195,7 @@ export default function ListEntry({
               <Image source={phoneImage} style={styles.icon} />
             </Pressable>
             <Image source={locationImage} style={styles.icon} />
-          </View>
+          </TransparentView>
         ) : (
           <></>
         )}
@@ -203,13 +204,13 @@ export default function ListEntry({
             updateShowIcons(!showIcons);
           }}
         >
-          <View style={styles.content}>
-            <View style={styles.titleWrapper}>
+          <TransparentView style={styles.content}>
+            <TransparentView style={styles.titleWrapper}>
               <Pressable onPress={() => updateSelected(!listEntry.selected)}>
                 <Checkbox checked={listEntry.selected} />
               </Pressable>
               <AlmostBlackText text={listEntry.title} style={styles.title} />
-            </View>
+            </TransparentView>
             {imageSource ? (
               <Image source={{ uri: imageSource }} style={styles.image} />
             ) : (
@@ -244,7 +245,7 @@ export default function ListEntry({
             ) : (
               <></>
             )}
-          </View>
+          </TransparentView>
           <Autosave experimentData={note} saveDataToDb={updateNoteInDb} />
           <Autosave
             experimentData={phoneNumber}
