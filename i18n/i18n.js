@@ -8,9 +8,7 @@ import 'dayjs/locale/es-us';
 import 'dayjs/locale/en-gb';
 
 import translationEN from './locales/common/en';
-import translationES from './locales/common/es';
 import modelFieldsEN from './locales/modelFields/en';
-import modelFieldsES from './locales/modelFields/es';
 // don't want to use this?
 // have a look at the Quick start guide
 // for passing in lng and translations on init
@@ -21,14 +19,6 @@ const resources = {
   en: {
     translation: translationEN,
     modelFields: modelFieldsEN
-  },
-  es: {
-    translation: translationES,
-    modelFields: modelFieldsES
-  },
-  'es-US': {
-    translation: translationES,
-    modelFields: modelFieldsES
   }
 };
 

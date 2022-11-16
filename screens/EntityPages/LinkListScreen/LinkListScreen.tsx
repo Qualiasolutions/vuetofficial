@@ -5,6 +5,7 @@ import career from './linkConfigs/career';
 import education from './linkConfigs/education';
 import LinkList from '../../../components/lists/LinkList';
 import { useTranslation } from 'react-i18next';
+import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 
 type EntityTypeListScreenProps = EntityTabScreenProps<'LinkList'>;
 
@@ -20,11 +21,7 @@ export default function LinkListScreen({
 }: EntityTypeListScreenProps) {
   const { t } = useTranslation();
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: t(`linkListTitles.${route.params.listName}`)
-    });
-  }, [route]);
+  useEntityTypeHeader(route.params.listName);
 
   return <LinkList links={listNameToLinks[route.params.listName]} />;
 }

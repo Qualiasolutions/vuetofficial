@@ -58,7 +58,7 @@ export default function App() {
             <GestureHandlerRootView style={{ width: '100%', height: '100%' }}>
               <Navigation colorScheme={colorScheme} />
             </GestureHandlerRootView>
-            <StatusBar />
+            <StatusBar translucent={true} />
           </SafeAreaProvider>
         </PersistGate>
       </Provider>

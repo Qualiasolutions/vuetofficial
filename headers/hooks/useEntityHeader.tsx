@@ -1,17 +1,19 @@
 import { useLayoutEffect } from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { headerRightMapping } from './headerRightMapping';
-import { headerBackgroundMapping } from './headerBackgroundMapping';
-import { headerTintColorMapping } from './headerTintColorMapping';
-import { headerMapping } from './headerMappings';
 import {
   NativeStackHeaderProps,
   NativeStackNavigationOptions
 } from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { headerMapping } from 'headers/utils/headerMappings';
+import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
+import { headerRightMapping } from 'headers/utils/headerRightMapping';
 
-export default function useEntityHeader(entityId: number) {
+export default function useEntityHeader(
+  entityId: number,
+  includeHeaderRight: boolean = true
+) {
   const navigation = useNavigation();
   const route = useRoute();
   const { data: userDetails } = useGetUserDetails();
@@ -29,22 +31,13 @@ export default function useEntityHeader(entityId: number) {
       const HeaderRightComponent = Object.keys(headerRightMapping).includes(
         entity.resourcetype
       )
-        ? headerRightMapping[entity.resourcetype]
-        : headerRightMapping.default;
+        ? headerRightMapping.entities[entity.resourcetype]
+        : headerRightMapping.entities.default;
 
       const headerRight = () =>
-        HeaderRightComponent ? (
+        includeHeaderRight && HeaderRightComponent ? (
           <HeaderRightComponent navigation={navigation} route={route} />
         ) : null;
-
-      const HeaderBackgroundComponent = Object.keys(
-        headerBackgroundMapping
-      ).includes(entity.resourcetype)
-        ? headerBackgroundMapping[entity.resourcetype]
-        : headerBackgroundMapping.default;
-
-      const headerBackground = () =>
-        HeaderBackgroundComponent ? <HeaderBackgroundComponent /> : null;
 
       const headerTintColor = Object.keys(headerTintColorMapping).includes(
         entity.resourcetype
@@ -52,11 +45,9 @@ export default function useEntityHeader(entityId: number) {
         ? headerTintColorMapping[entity.resourcetype]
         : headerTintColorMapping.default;
 
-      const HeaderComponent = Object.keys(headerMapping).includes(
-        entity.resourcetype
-      )
-        ? headerMapping[entity.resourcetype]
-        : headerMapping.default;
+      const HeaderComponent =
+        headerMapping.entities[entity.resourcetype] ||
+        headerMapping.entities.default;
 
       const header = HeaderComponent
         ? (props: NativeStackHeaderProps) => <HeaderComponent {...props} />
@@ -65,7 +56,6 @@ export default function useEntityHeader(entityId: number) {
       const options: Partial<NativeStackNavigationOptions> = {
         title: entity.name,
         headerRight,
-        headerBackground,
         headerTintColor,
         headerShown: true
       };

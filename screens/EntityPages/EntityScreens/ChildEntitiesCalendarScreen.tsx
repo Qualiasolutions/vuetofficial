@@ -13,7 +13,7 @@ import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import Calendar from 'components/calendars/TaskCalendar';
-import useEntityHeader from './headers/useEntityHeader';
+import useEntityHeader from '../../../headers/hooks/useEntityHeader';
 
 export default function ChildEntitiesCalendarScreen({
   navigation,

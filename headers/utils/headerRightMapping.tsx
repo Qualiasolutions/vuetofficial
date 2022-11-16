@@ -1,6 +1,9 @@
+import { WhiteText } from 'components/molecules/TextComponents';
+import { useTranslation } from 'react-i18next';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { Image } from 'components/molecules/ImageComponents';
 
 const EditPressable: React.ElementType = ({ route, navigation }) => {
   const backgroundColor = useThemeColor({}, 'lightPrimary');
@@ -22,8 +25,28 @@ const EditPressable: React.ElementType = ({ route, navigation }) => {
 };
 
 export const headerRightMapping = {
-  default: EditPressable
-} as { [key: string]: React.ElementType | undefined };
+  entities: {
+    default: EditPressable
+  },
+  entityTypes: {
+    holidays: ({ route, navigation }) => {
+      const { t } = useTranslation();
+      return (
+        <Pressable onPress={() => navigation.navigate('HolidayList')}>
+          <WhiteText text={t('misc.editCountryList')} />
+        </Pressable>
+      );
+    },
+    default: () => null
+  }
+} as {
+  entities: {
+    [key: string]: React.ElementType | undefined;
+  };
+  entityTypes: {
+    [key: string]: React.ElementType | undefined;
+  };
+};
 
 const styles = StyleSheet.create({
   wrapper: {

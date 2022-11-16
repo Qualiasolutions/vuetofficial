@@ -12,7 +12,7 @@ import { EntityTabParamList } from 'types/base';
 import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import useEntityHeader from './headers/useEntityHeader';
+import useEntityHeader from '../../../headers/hooks/useEntityHeader';
 import EntityPeriodsPage from '../../../components/calendars/EntityPeriodsPage';
 
 export default function ChildEntitiesPeriodsScreen({

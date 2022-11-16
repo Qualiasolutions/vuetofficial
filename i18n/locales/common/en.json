@@ -101,12 +101,10 @@
       }
     }
   },
-  "linkListTitles": {
+  "entityTypes": {
     "annualDates": "Annual Dates to Remember",
     "career": "Career",
-    "education": "Education"
-  },
-  "entityTypes": {
+    "education": "Education",
     "cars": "Cars & Motorcycles",
     "boats": "Boats & Other",
     "public-transport": "Public Transport",
@@ -139,7 +137,16 @@
     "HotelOrRental": "Hotels",
     "StayWithFriend": "Stays with friends",
     "Birthday": "Birthday",
-    "Anniversary": "Anniversary"
+    "Anniversary": "Anniversary",
+    "FAMILY": "Family",
+    "PETS": "Pets",
+    "SOCIAL_INTERESTS": "Social & Interests",
+    "EDUCATION_CAREER": "Education & Career",
+    "TRAVEL": "Travel",
+    "HEALTH_BEAUTY": "Health & Beauty",
+    "HOME_GARDEN": "Home & Garden",
+    "FINANCE": "Finance",
+    "TRANSPORT": "Transport"
   },
   "common": {
     "confirm": "Confirm",

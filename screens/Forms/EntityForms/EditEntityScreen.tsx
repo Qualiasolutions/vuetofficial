@@ -13,6 +13,7 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import EditEntityForm from 'components/forms/EditEntityForm';
 import { StyleSheet } from 'react-native';
+import useEntityHeader from 'headers/hooks/useEntityHeader';
 
 export default function EditEntityScreen({
   navigation,
@@ -21,34 +22,9 @@ export default function EditEntityScreen({
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-
-  const headerTintColor = useThemeColor({}, 'primary');
-  const headerBackgroundColor = useThemeColor({}, 'almostWhite');
   const [entityType, setEntityType] = useState<string>('');
 
-  useLayoutEffect(() => {
-    if (allEntities) {
-      const entityIdRaw = route.params.entityId;
-      const entityId =
-        typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
-      const entityToEdit = allEntities.byId[entityId];
-      if (entityToEdit) {
-        navigation.setOptions({
-          headerTitle: entityToEdit.name,
-          headerTintColor,
-          headerStyle: {
-            backgroundColor: headerBackgroundColor
-          }
-        });
-        setEntityType(entityToEdit.resourcetype);
-      }
-    }
-  }, [route.params.entityId, allEntities]);
+  useEntityHeader(route.params.entityId as number, false);
 
   const entityIdRaw = route.params.entityId;
   const entityId =

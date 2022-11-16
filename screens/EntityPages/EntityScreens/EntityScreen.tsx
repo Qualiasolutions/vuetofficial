@@ -14,7 +14,7 @@ import TripPage from './components/TripPage';
 import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
 import EntityCalendarPage from '../../../components/calendars/EntityCalendarPage';
-import useEntityHeader from './headers/useEntityHeader';
+import useEntityHeader from '../../../headers/hooks/useEntityHeader';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const DefaultEntityPage = ({ entityId }: { entityId: number }) => {

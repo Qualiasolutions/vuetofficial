@@ -1,6 +1,7 @@
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import { useLayoutEffect } from 'react';
+import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 import { useSelector } from 'react-redux';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
@@ -16,12 +17,15 @@ export default function CategoryCalendarScreen({
 }: CategoryCalendarScreenProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: allCategories } = useGetAllCategoriesQuery();
   const { data: allEntities, isLoading } = useGetAllEntitiesQuery(
     userDetails?.user_id || -1,
     {
       skip: !userDetails?.user_id
     }
   );
+
+  useEntityTypeHeader(allCategories?.byId[route.params.categoryId].name || '');
 
   if (isLoading || !allEntities) {
     return <FullPageSpinner />;

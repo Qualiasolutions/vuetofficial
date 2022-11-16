@@ -6,6 +6,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { StyleSheet } from 'react-native';
 import linkConfig from './linkConfigs/subCategories';
 import LinkList from '../../../components/lists/LinkList';
+import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 
 type EntityTypeListScreenProps = EntityTabScreenProps<'EntityTypeList'>;
 
@@ -18,13 +19,7 @@ export default function EntityTypeListScreen({
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (categoryData) {
-      navigation.setOptions({
-        title: t(`categories.${categoryData.name as string}`)
-      });
-    }
-  }, [allCategories]);
+  useEntityTypeHeader(categoryData?.name || '');
 
   if (!categoryData) {
     return <FullPageSpinner />;
