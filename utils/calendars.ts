@@ -1,6 +1,6 @@
-import { CalendarViewProps } from "components/molecules/CalendarView";
-import { PeriodResponse } from "types/periods";
-import { getDateStringsBetween } from "./datesAndTimes";
+import { CalendarViewProps } from 'components/molecules/CalendarView';
+import { PeriodResponse } from 'types/periods';
+import { getDateStringsBetween } from './datesAndTimes';
 
 export type DatePlacedPeriods = {
   periods: {
@@ -11,12 +11,15 @@ export type DatePlacedPeriods = {
   }[];
   selected?: boolean | undefined;
   selectedColor?: string | undefined;
-}
+};
 export type PlacedPeriods = {
-  [date: string]: DatePlacedPeriods
-}
+  [date: string]: DatePlacedPeriods;
+};
 
-export const placeOverlappingPeriods = (filteredPeriods: PeriodResponse[], periodColour: string): PlacedPeriods => {
+export const placeOverlappingPeriods = (
+  filteredPeriods: PeriodResponse[],
+  periodColour: string
+): PlacedPeriods => {
   const periodsDates: CalendarViewProps['dates'] = {};
   for (const p of filteredPeriods) {
     const datesArray = getDateStringsBetween(p.start_date, p.end_date);
@@ -57,5 +60,5 @@ export const placeOverlappingPeriods = (filteredPeriods: PeriodResponse[], perio
       periodsDates[date].periods.push(dateData);
     });
   }
-  return periodsDates
-}
+  return periodsDates;
+};

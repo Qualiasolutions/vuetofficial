@@ -26,17 +26,17 @@ import Checkbox from 'components/molecules/Checkbox';
 import { useUpdateReminderMutation } from 'reduxStore/services/api/reminder';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import { Image } from 'components/molecules/ImageComponents';
+import { selectSelectedReminderId } from 'reduxStore/slices/calendars/selectors';
+import { useSelector } from 'react-redux';
 
 type PropTypes = {
   reminder: ParsedReminder;
-  selected: boolean;
   onPress: (event: ParsedReminder) => void;
   onHeaderPress: (event: ParsedReminder) => void;
 };
 
 export default function Reminder({
   reminder,
-  selected,
   onPress,
   onHeaderPress
 }: PropTypes) {
@@ -47,6 +47,9 @@ export default function Reminder({
   >();
 
   const { data: userDetails } = getUserFullDetails();
+
+  const selectedReminderId = useSelector(selectSelectedReminderId);
+  const selected = reminder.id === selectedReminderId;
 
   const {
     data: allEntities,

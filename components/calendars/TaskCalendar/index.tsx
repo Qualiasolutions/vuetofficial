@@ -8,17 +8,13 @@ import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import {
-  useGetAllScheduledTasksQuery,
-} from 'reduxStore/services/api/tasks';
+import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
   WhiteContainerView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import {
-  AlmostBlackText,
-} from 'components/molecules/TextComponents';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
@@ -72,10 +68,11 @@ function Calendar({
   const {
     data: allScheduledTasks,
     error,
-    isLoading: isLoadingScheduledTasks,
+    isLoading: isLoadingScheduledTasks
   } = useGetAllScheduledTasksQuery(
     {
-      start_datetime: getOffsetMonthStartDateString(currentDate, -24).dateString,
+      start_datetime: getOffsetMonthStartDateString(currentDate, -24)
+        .dateString,
       end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString,
       user_id: userDetails?.user_id || -1
     },
@@ -87,9 +84,9 @@ function Calendar({
 
   const filteredTasks = useMemo<ScheduledTaskResponseType[]>(() => {
     if (!allScheduledTasks) {
-      return []
+      return [];
     }
-    let filtered: ScheduledTaskResponseType[] = allScheduledTasks
+    let filtered: ScheduledTaskResponseType[] = allScheduledTasks;
     for (const taskFilter of taskFilters) {
       filtered = filtered.filter(taskFilter);
     }
@@ -133,8 +130,7 @@ function Calendar({
     return <GenericError />;
   }
 
-  const isLoading =
-    isLoadingScheduledTasks
+  const isLoading = isLoadingScheduledTasks;
 
   if (isLoading || !allScheduledTasks || !allScheduledPeriods) {
     return <FullPageSpinner />;
@@ -166,7 +162,7 @@ function Calendar({
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-    width: '100%',
+    width: '100%'
   }
 });
 

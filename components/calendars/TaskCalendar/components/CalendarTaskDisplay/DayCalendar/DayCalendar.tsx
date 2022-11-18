@@ -8,13 +8,7 @@ import { BlackText } from 'components/molecules/TextComponents';
 import { ParsedPeriod, ScheduledReminder } from 'types/periods';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import OneDayPeriod from './components/OneDayPeriod';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectSelectedPeriodId,
-  selectSelectedRecurrenceIndex,
-  selectSelectedReminderId,
-  selectSelectedTaskId
-} from 'reduxStore/slices/calendars/selectors';
+import { useDispatch } from 'react-redux';
 import {
   deselectTasks,
   setSelectedPeriodId,
@@ -48,21 +42,11 @@ export default function DayCalendar({
   highlight,
   style
 }: PropTypes) {
-  const selectedTaskId = useSelector(selectSelectedTaskId);
-  const selectedPeriodId = useSelector(selectSelectedPeriodId);
-  const selectedReminderId = useSelector(selectSelectedReminderId);
-  const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
   const dispatch = useDispatch();
-
   const taskViews = tasks.map((task, i) => (
     <Task
       task={task}
       key={`${task.id}_${i}`}
-      selected={
-        task.id === selectedTaskId &&
-        (task.recurrence_index === undefined ||
-          task.recurrence_index === selectedRecurrenceIndex)
-      }
       onPress={(task: ScheduledTaskParsedType) => {
         dispatch(
           setSelectedTaskId({
@@ -94,8 +78,8 @@ export default function DayCalendar({
 
   const periodLines = (
     <View style={styles.periodLines}>
-      {
-        markedPeriods && markedPeriods.periods &&
+      {markedPeriods &&
+        markedPeriods.periods &&
         markedPeriods.periods.map((period, i) => (
           <View key={i}>
             <View
@@ -108,13 +92,12 @@ export default function DayCalendar({
                   borderTopLeftRadius: period.startingDay ? 10 : 0,
                   borderTopRightRadius: period.startingDay ? 10 : 0,
                   borderBottomLeftRadius: period.endingDay ? 10 : 0,
-                  borderBottomRightRadius: period.endingDay ? 10 : 0,
+                  borderBottomRightRadius: period.endingDay ? 10 : 0
                 }
               ]}
             ></View>
           </View>
-        ))
-      }
+        ))}
     </View>
   );
 
@@ -122,7 +105,6 @@ export default function DayCalendar({
     <OneDayPeriod
       period={period}
       key={`${period.id}_${i}`}
-      selected={period.id === selectedPeriodId}
       onPress={(period: ParsedPeriod) => {
         dispatch(
           setSelectedPeriodId({
@@ -141,7 +123,6 @@ export default function DayCalendar({
     <Reminder
       reminder={reminder}
       key={`${reminder.id}_${i}`}
-      selected={reminder.id === selectedReminderId}
       onPress={(reminder) => {
         dispatch(setSelectedReminderId({ reminderId: reminder.id }));
       }}

@@ -39,7 +39,7 @@ function Calendar({ filters = [] }: CalendarProps) {
 
   if (!allPeriods) return <FullPageSpinner />;
 
-  const periodsDates = placeOverlappingPeriods(filteredPeriods, periodColour)
+  const periodsDates = placeOverlappingPeriods(filteredPeriods, periodColour);
 
   const periodData: {
     [key: string]: PeriodData;

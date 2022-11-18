@@ -90,8 +90,6 @@ export function ImagePicker({
     }
   };
 
-  // console.log(selectedImage)
-
   const imageSource =
     (displayInternalImage &&
       selectedImage &&

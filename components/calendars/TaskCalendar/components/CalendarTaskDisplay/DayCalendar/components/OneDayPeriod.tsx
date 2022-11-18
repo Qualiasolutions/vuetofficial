@@ -24,17 +24,17 @@ import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Image } from 'components/molecules/ImageComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import { useSelector } from 'react-redux';
+import { selectSelectedPeriodId } from 'reduxStore/slices/calendars/selectors';
 
 type PropTypes = {
   period: ParsedPeriod;
-  selected: boolean;
   onPress: (event: ParsedPeriod) => void;
   onHeaderPress: (event: ParsedPeriod) => void;
 };
 
 export default function OneDayPeriod({
   period,
-  selected,
   onPress,
   onHeaderPress
 }: PropTypes) {
@@ -45,6 +45,8 @@ export default function OneDayPeriod({
   >();
 
   const { data: userDetails } = getUserFullDetails();
+  const selectedPeriodId = useSelector(selectSelectedPeriodId);
+  const selected = period.id === selectedPeriodId;
 
   const {
     data: allEntities,

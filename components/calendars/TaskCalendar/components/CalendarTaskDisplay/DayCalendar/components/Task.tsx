@@ -3,10 +3,8 @@ import { Text, useThemeColor, View } from 'components/Themed';
 import { isFixedTaskParsedType, ScheduledTaskParsedType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import { useSelector } from 'react-redux';
-import React, { useState } from 'react';
-import {
-  selectUsername
-} from 'reduxStore/slices/auth/selectors';
+import React, { useMemo, useState } from 'react';
+import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -41,21 +39,24 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { Image } from 'components/molecules/ImageComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import {
+  selectSelectedRecurrenceIndex,
+  selectSelectedTaskId
+} from 'reduxStore/slices/calendars/selectors';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
-  selected: boolean;
   onPress: (event: ScheduledTaskParsedType) => void;
   onHeaderPress: (event: ScheduledTaskParsedType) => void;
 };
 
-export default function Task({
-  task,
-  selected,
-  onPress,
-  onHeaderPress
-}: PropTypes) {
+export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
   const username = useSelector(selectUsername);
+  const selectedTaskId = useSelector(selectSelectedTaskId);
+  const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
+  const selected =
+    (task.id === selectedTaskId && task.recurrence_index === undefined) ||
+    task.recurrence_index === selectedRecurrenceIndex;
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -166,8 +167,8 @@ export default function Task({
       </Pressable>
     ) : null;
 
-  const expandedOptions =
-    selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
+  const expandedOptions = useMemo(() => {
+    return (selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype)) ? (
       <View style={styles.expandedOptions}>
         <View style={styles.expandedButtons}>
           {task.resourcetype === 'FixedTask' && !task.recurrence ? (
@@ -202,6 +203,7 @@ export default function Task({
         </View>
       </View>
     ) : null;
+  }, [selected])
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>

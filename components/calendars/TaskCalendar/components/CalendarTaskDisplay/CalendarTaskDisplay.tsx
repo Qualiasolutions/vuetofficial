@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import DayCalendar from './DayCalendar/DayCalendar';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   getDateStringFromDateObject,
@@ -19,9 +19,7 @@ import { placeOverlappingPeriods } from 'utils/calendars';
 import { Text, useThemeColor } from 'components/Themed';
 import { SectionList } from 'components/molecules/SectionListComponents';
 import dayjs from 'dayjs';
-import { AlmostWhiteView, TransparentView } from 'components/molecules/ViewComponents';
-import { useSelector } from 'react-redux';
-import { selectSelectedTaskId } from 'reduxStore/slices/calendars/selectors';
+import { AlmostWhiteView } from 'components/molecules/ViewComponents';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -82,8 +80,9 @@ function Calendar({
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
 
-  const primaryColor = useThemeColor({}, 'primary')
-  const periodsDates = placeOverlappingPeriods(periods, primaryColor)
+  const primaryColor = useThemeColor({}, 'primary');
+
+  const periodsDates = placeOverlappingPeriods(periods, primaryColor);
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -170,73 +169,72 @@ function Calendar({
     alwaysIncludeCurrentDate
   ]);
 
-  const dayCalendars = Object.keys(tasksPerDate)
-    .sort()
-    .map((date) => (
-      <DayCalendar
-        date={date}
-        key={date}
-        tasks={tasksPerDate[date].tasks}
-        periods={tasksPerDate[date].periods}
-        reminders={tasksPerDate[date].reminders}
-        markedPeriods={periodsDates[date]}
-        highlight={date === getDateStringFromDateObject(new Date())}
-      />
-    ));
-
-  const datesToShow = Object.keys(tasksPerDate).sort()
+  const datesToShow = Object.keys(tasksPerDate).sort();
 
   type SectionData = {
-    date: string,
-  }
-  // const sections: { title: string, key: string, data: SectionData[] }[] = []
-  const futureSections: { title: string, key: string, data: SectionData[] }[] = []
-  const pastSections: { title: string, key: string, data: SectionData[] }[] = []
-  for (const date of datesToShow) {
-    const { month, year } = getUTCValuesFromDateString(date)
-    const sectionsArray = (
-      (year < new Date().getFullYear())
-      || (year == new Date().getFullYear()) && (month < new Date().getMonth())
-    ) ? pastSections: futureSections
-    const monthName = `${dayjs(date).format('MMMM')} ${dayjs(date).format('YYYY')}`
-    const existingSection = sectionsArray.find(section => section.title === monthName)
-    const dateData = { date }
-    if (existingSection) {
-      existingSection.data.push(dateData)
-    } else {
-      sectionsArray.push({
-        title: monthName,
-        key: monthName,
-        data: [dateData]
-      })
-    }
-  }
+    date: string;
+  };
 
-  return <SectionList
-    sections={futureSections}
-    renderSectionHeader={({ section }) => (
-      <AlmostWhiteView style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{section.title}</Text>
-      </AlmostWhiteView>
-    )}
-    renderItem={({ item, index, section }) => {
-      const { date, events } = item
-      return (
-        <DayCalendar
-          date={date}
-          key={date}
-          tasks={tasksPerDate[date].tasks}
-          periods={tasksPerDate[date].periods}
-          reminders={tasksPerDate[date].reminders}
-          markedPeriods={periodsDates[date]}
-          highlight={date === getDateStringFromDateObject(new Date())}
-          style={(index === section.data.length - 1) ? { marginBottom: 20 } : {}}
-        />
-      )
-    }}
-    stickySectionHeadersEnabled
-    contentContainerStyle={{ paddingBottom: 400 }}
-  />
+  const [futureSections, pastSections] = useMemo(() => {
+    const future: { title: string; key: string; data: SectionData[] }[] = [];
+    const past: { title: string; key: string; data: SectionData[] }[] = [];
+    for (const date of datesToShow) {
+      const { month, year } = getUTCValuesFromDateString(date);
+      const sectionsArray =
+        year < new Date().getFullYear() ||
+        (year == new Date().getFullYear() && month < new Date().getMonth())
+          ? past
+          : future;
+      const monthName = `${dayjs(date).format('MMMM')} ${dayjs(date).format(
+        'YYYY'
+      )}`;
+      const existingSection = sectionsArray.find(
+        (section) => section.title === monthName
+      );
+      const dateData = { date };
+      if (existingSection) {
+        existingSection.data.push(dateData);
+      } else {
+        sectionsArray.push({
+          title: monthName,
+          key: monthName,
+          data: [dateData]
+        });
+      }
+    }
+    return [future, past];
+  }, [datesToShow]);
+
+  return (
+    <SectionList
+      sections={futureSections}
+      renderSectionHeader={({ section }) => (
+        <AlmostWhiteView style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>{section.title}</Text>
+        </AlmostWhiteView>
+      )}
+      renderItem={({ item, index, section }) => {
+        const { date } = item;
+
+        return (
+          <DayCalendar
+            date={date}
+            key={date}
+            tasks={tasksPerDate[date].tasks}
+            periods={tasksPerDate[date].periods}
+            reminders={tasksPerDate[date].reminders}
+            markedPeriods={periodsDates[date]}
+            highlight={date === getDateStringFromDateObject(new Date())}
+            style={
+              index === section.data.length - 1 ? { marginBottom: 20 } : {}
+            }
+          />
+        );
+      }}
+      stickySectionHeadersEnabled
+      contentContainerStyle={{ paddingBottom: 400 }}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
@@ -258,7 +256,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 15,
     borderTopWidth: 2,
-    borderBottomWidth: 2,
+    borderBottomWidth: 2
   },
   sectionHeaderText: {
     fontSize: 20
