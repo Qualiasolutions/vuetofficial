@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import DayCalendar from './DayCalendar/DayCalendar';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import {
   getDateStringFromDateObject,
@@ -19,7 +19,9 @@ import { placeOverlappingPeriods } from 'utils/calendars';
 import { Text, useThemeColor } from 'components/Themed';
 import { SectionList } from 'components/molecules/SectionListComponents';
 import dayjs from 'dayjs';
-import { AlmostWhiteView } from 'components/molecules/ViewComponents';
+import { AlmostWhiteView, TransparentView } from 'components/molecules/ViewComponents';
+import { LinkButton } from 'components/molecules/ButtonComponents';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -79,10 +81,12 @@ function Calendar({
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
-
   const primaryColor = useThemeColor({}, 'primary');
-
   const periodsDates = placeOverlappingPeriods(periods, primaryColor);
+
+  const [ futureMonthsToShow, setFutureMonthsToShow ] = useState(3)
+  const [ pastMonthsToShow, setPastMonthsToShow ] = useState(0)
+  const [ rerenderingList, setRerenderingList ] = useState(false)
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -205,17 +209,25 @@ function Calendar({
     return [future, past];
   }, [datesToShow]);
 
+  const shownSections = [...pastSections.slice(pastSections.length - pastMonthsToShow), ...futureSections.slice(0, futureMonthsToShow)]
   return (
     <SectionList
-      sections={futureSections}
-      renderSectionHeader={({ section }) => (
-        <AlmostWhiteView style={styles.sectionHeader}>
-          <Text style={styles.sectionHeaderText}>{section.title}</Text>
-        </AlmostWhiteView>
-      )}
+      sections={shownSections}
+      renderSectionHeader={({ section }) => {
+        return (
+          <AlmostWhiteView style={styles.sectionHeader}>
+            <Text style={styles.sectionHeaderText}>{section.title}</Text>
+          </AlmostWhiteView>
+        )
+      }}
+      refreshing={false}
+      onRefresh={() => {
+        console.log("REFRESHHHHHHH")
+        setPastMonthsToShow(0)
+        setFutureMonthsToShow(3)
+      }}
       renderItem={({ item, index, section }) => {
         const { date } = item;
-
         return (
           <DayCalendar
             date={date}
@@ -231,8 +243,36 @@ function Calendar({
           />
         );
       }}
+      contentContainerStyle={{ paddingBottom: 100 }}
+      ListHeaderComponent={
+        () => {
+          if (rerenderingList) {
+            return <TransparentView style={styles.loadMoreButtonWrapper}>
+              <PaddedSpinner spinnerColor='buttonDefault'/>
+            </TransparentView>
+          }
+          return (pastMonthsToShow < 24)
+            ? <TransparentView style={styles.loadMoreButtonWrapper}>
+              <LinkButton
+                title="Load older"
+                onPress={() => {
+                  // Suuuuuuuper hacky way to make the button
+                  // a little bit more responsive to clicks
+                  setRerenderingList(true)
+                  setTimeout(() => {
+                    setPastMonthsToShow(pastMonthsToShow + 3)
+                  }, 300)
+                  setTimeout(() => {
+                    setRerenderingList(false)
+                  }, 2000)
+                }}
+                style={styles.loadMoreButton}
+              />
+            </TransparentView>
+            : null
+        }
+      }
       stickySectionHeadersEnabled
-      contentContainerStyle={{ paddingBottom: 400 }}
     />
   );
 }
@@ -260,6 +300,16 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     fontSize: 20
+  },
+  loadMoreButtonWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    height: 60,
+    alignItems: 'center'
+  },
+  loadMoreButton: {
+    flex: 1,
+    maxWidth: 200
   }
 });
 

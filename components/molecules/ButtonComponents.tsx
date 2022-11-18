@@ -32,12 +32,38 @@ export function Button(props: {
   );
 }
 
+export function LinkButton(props: {
+  onPress: (event: GestureResponderEvent) => void;
+  title: string;
+  style?: object;
+  disabled?: boolean;
+}) {
+  const { style, title, disabled, ...otherProps } = props;
+  const textColor = useThemeColor({}, 'secondary');
+
+  return (
+    <Pressable
+      style={[
+        styles.linkButton,
+        style
+      ]}
+      disabled={disabled}
+      {...otherProps}
+    >
+      <BlackText style={[{ color: textColor }]} text={title} bold={true} />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 15,
     textAlign: 'center',
-    width: '100%',
     alignItems: 'center'
-  }
+  },
+  linkButton: {
+    textAlign: 'center',
+    alignItems: 'center'
+  },
 });
