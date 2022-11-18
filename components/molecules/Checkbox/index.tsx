@@ -1,7 +1,8 @@
 import { useThemeColor } from 'components/Themed';
 import React, { useEffect, useState } from 'react';
 import { ViewStyle } from 'react-native';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { Image } from '../ImageComponents';
 const CHECKBOX_HEIGHT = 23;
 const CHECKBOX_WIDTH = 23;
 const CHECKBOX_RADIUS = 2;
@@ -11,6 +12,7 @@ type CheckboxProps = {
   style?: ViewStyle;
   disabled?: boolean;
   smoothChecking?: boolean;
+  color?: string;
   onValueChange?: (value: any) => Promise<void>;
 };
 
@@ -19,6 +21,7 @@ export default function Checkbox({
   style = {},
   disabled = false,
   smoothChecking = true,
+  color,
   onValueChange
 }: CheckboxProps) {
   const primaryColor = useThemeColor({}, 'primary');
@@ -28,7 +31,7 @@ export default function Checkbox({
   const isChecked = smoothChecking
     ? (submitting && !checked) || (!submitting && checked)
     : checked;
-  const backgroundColor = isChecked ? primaryColor : greyColor;
+  const backgroundColor = isChecked ? (color || primaryColor) : greyColor;
   const activeStyle = isChecked ? styles.active : styles.inactive;
 
   /*

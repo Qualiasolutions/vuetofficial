@@ -55,8 +55,10 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
   const selectedTaskId = useSelector(selectSelectedTaskId);
   const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
   const selected =
-    (task.id === selectedTaskId && task.recurrence_index === undefined) ||
-    task.recurrence_index === selectedRecurrenceIndex;
+    (!task.is_complete) && (
+      (task.id === selectedTaskId && task.recurrence_index === undefined) ||
+      task.recurrence_index === selectedRecurrenceIndex
+    )
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -88,6 +90,8 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
 
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
+  const isCompleteBackgroundColor = useThemeColor({}, 'grey');
+  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
 
   const { t } = useTranslation();
 
@@ -132,10 +136,14 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
   };
 
   const leftInfo = (
-    <View style={styles.leftInfo}>
-      <Text> {getTimeStringFromDateObject(task.start_datetime)} </Text>
-      <Text> {getTimeStringFromDateObject(task.end_datetime)} </Text>
-    </View>
+    <TransparentView style={styles.leftInfo}>
+      <Text style={task.is_complete && {color: isCompleteTextColor}}>
+        {getTimeStringFromDateObject(task.start_datetime)}
+      </Text>
+      <Text style={task.is_complete && {color: isCompleteTextColor}}>
+        {getTimeStringFromDateObject(task.end_datetime)}
+      </Text>
+    </TransparentView>
   );
 
   const expandedHeader =
@@ -169,8 +177,8 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
 
   const expandedOptions = useMemo(() => {
     return (selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype)) ? (
-      <View style={styles.expandedOptions}>
-        <View style={styles.expandedButtons}>
+      <TransparentView style={styles.expandedOptions}>
+        <TransparentView style={styles.expandedButtons}>
           {task.resourcetype === 'FixedTask' && !task.recurrence ? (
             <>
               <SquareButton
@@ -200,8 +208,8 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
             }
             buttonStyle={{ backgroundColor: primaryColor }}
           />
-        </View>
-      </View>
+        </TransparentView>
+      </TransparentView>
     ) : null;
   }, [selected])
 
@@ -230,15 +238,17 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
     <WhiteView
       style={[
         styles.container,
-        entity &&
-          selected && {
-            ...styles.selectedTask,
-            borderColor: greyColor
-          }
+        entity && selected && {
+          ...styles.selectedTask,
+          borderColor: greyColor
+        },
+        task.is_complete && {
+          backgroundColor: isCompleteBackgroundColor,
+        }
       ]}
     >
       {expandedHeader}
-      <View
+      <TransparentView
         style={[
           styles.touchableContainerWrapper,
           selected && styles.selectedTouchableContainer
@@ -247,19 +257,28 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
-            onPress(task);
+            if (!task.is_complete) {
+              onPress(task);
+            }
           }}
         >
           {leftInfo}
-          <View style={styles.titleContainer}>
-            <BlackText text={task.title} style={styles.title} bold={true} />
-          </View>
+          <TransparentView style={styles.titleContainer}>
+            <BlackText
+              text={task.title}
+              style={[styles.title, task.is_complete && {
+                color: isCompleteTextColor,
+              }]}
+              bold={true}
+            />
+          </TransparentView>
         </TouchableOpacity>
         <Checkbox
           disabled={task.is_complete}
           style={styles.checkbox}
           checked={task.is_complete}
           smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
+          color={isCompleteTextColor}
           onValueChange={async () => {
             if (taskTypesRequiringForm.includes(task.resourcetype)) {
               return setShowTaskCompletionForm(true);
@@ -271,7 +290,7 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
             });
           }}
         />
-      </View>
+      </TransparentView>
       {selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
         <Pressable
           onPress={() =>
@@ -292,7 +311,10 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10
+    marginTop: 10,
+    paddingTop: 10,
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   titleContainer: {
     width: '40%'
@@ -357,7 +379,8 @@ const styles = StyleSheet.create({
     width: 31
   },
   selectedTask: {
-    borderRadius: 10,
+    paddingTop: 0,
+    marginTop: 10,
     overflow: 'hidden',
     marginVertical: 15,
     shadowColor: '#000000',

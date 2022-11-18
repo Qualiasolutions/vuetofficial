@@ -49,7 +49,7 @@ export default function Reminder({
   const { data: userDetails } = getUserFullDetails();
 
   const selectedReminderId = useSelector(selectSelectedReminderId);
-  const selected = reminder.id === selectedReminderId;
+  const selected = (!reminder.is_complete) && reminder.id === selectedReminderId;
 
   const {
     data: allEntities,
@@ -67,6 +67,8 @@ export default function Reminder({
 
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
+  const isCompleteBackgroundColor = useThemeColor({}, 'grey');
+  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
 
   const [triggerUpdateReminder, updateReminderResult] =
     useUpdateReminderMutation();
@@ -95,7 +97,7 @@ export default function Reminder({
     ...(friendMembersList || [])
   ];
 
-  const leftInfo = <View style={styles.leftInfo} />;
+  const leftInfo = <TransparentView style={styles.leftInfo} />;
 
   const expandedHeader =
     entity && selected ? (
@@ -140,15 +142,17 @@ export default function Reminder({
     <WhiteView
       style={[
         styles.container,
-        entity &&
-          selected && {
-            ...styles.selectedTask,
-            borderColor: greyColor
-          }
+        entity && selected && {
+          ...styles.selectedTask,
+          borderColor: greyColor
+        },
+        reminder.is_complete && {
+          backgroundColor: isCompleteBackgroundColor,
+        }
       ]}
     >
       {expandedHeader}
-      <View
+      <TransparentView
         style={[
           styles.touchableContainerWrapper,
           selected && styles.selectedTouchableContainer
@@ -157,19 +161,28 @@ export default function Reminder({
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
-            onPress(reminder);
+            if (!reminder.is_complete) {
+              onPress(reminder);
+            }
           }}
         >
           {leftInfo}
-          <View style={styles.titleContainer}>
-            <BlackText text={reminder.title} style={styles.title} bold={true} />
-          </View>
+          <TransparentView style={styles.titleContainer}>
+            <BlackText
+              text={reminder.title}
+              style={[styles.title, reminder.is_complete && {
+                color: isCompleteTextColor,
+              }]}
+              bold={true}
+            />
+          </TransparentView>
         </TouchableOpacity>
         <Checkbox
           disabled={reminder.is_complete}
           style={styles.checkbox}
           checked={reminder.is_complete}
           smoothChecking={true}
+          color={isCompleteTextColor}
           onValueChange={async () => {
             await triggerUpdateReminder({
               id: reminder.id,
@@ -177,16 +190,19 @@ export default function Reminder({
             });
           }}
         />
-      </View>
+      </TransparentView>
       {memberColour}
-      {!selected && <View style={styles.separator}></View>}
+      {!selected && <TransparentView style={styles.separator}></TransparentView>}
     </WhiteView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10
+    marginTop: 10,
+    paddingTop: 10,
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   titleContainer: {
     width: '60%',
@@ -238,6 +254,7 @@ const styles = StyleSheet.create({
     width: 31
   },
   selectedTask: {
+    paddingTop: 0,
     borderRadius: 10,
     overflow: 'hidden',
     marginVertical: 15,
