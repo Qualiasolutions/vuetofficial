@@ -179,6 +179,37 @@ function Calendar({
     date: string;
   };
 
+  const ListHeaderOrFooterComponent = ({ isFooter }: { isFooter: boolean}) => {
+    if (rerenderingList) {
+      return <TransparentView style={styles.loadMoreButtonWrapper}>
+        <PaddedSpinner spinnerColor='buttonDefault'/>
+      </TransparentView>
+    }
+    return ((isFooter && futureMonthsToShow < 24) || (!isFooter && pastMonthsToShow < 24))
+      ? <TransparentView style={styles.loadMoreButtonWrapper}>
+        <LinkButton
+          title={isFooter ? "Load more" : "Load older"}
+          onPress={() => {
+            // Suuuuuuuper hacky way to make the button
+            // a little bit more responsive to clicks
+            setRerenderingList(true)
+            setTimeout(() => {
+              if (isFooter) {
+                setFutureMonthsToShow(futureMonthsToShow + 3)
+              } else {
+                setPastMonthsToShow(pastMonthsToShow + 3)
+              }
+            }, 300)
+            setTimeout(() => {
+              setRerenderingList(false)
+            }, 2000)
+          }}
+          style={styles.loadMoreButton}
+        />
+      </TransparentView>
+      : null
+  }
+
   const [futureSections, pastSections] = useMemo(() => {
     const future: { title: string; key: string; data: SectionData[] }[] = [];
     const past: { title: string; key: string; data: SectionData[] }[] = [];
@@ -222,7 +253,6 @@ function Calendar({
       }}
       refreshing={false}
       onRefresh={() => {
-        console.log("REFRESHHHHHHH")
         setPastMonthsToShow(0)
         setFutureMonthsToShow(3)
       }}
@@ -244,34 +274,8 @@ function Calendar({
         );
       }}
       contentContainerStyle={{ paddingBottom: 100 }}
-      ListHeaderComponent={
-        () => {
-          if (rerenderingList) {
-            return <TransparentView style={styles.loadMoreButtonWrapper}>
-              <PaddedSpinner spinnerColor='buttonDefault'/>
-            </TransparentView>
-          }
-          return (pastMonthsToShow < 24)
-            ? <TransparentView style={styles.loadMoreButtonWrapper}>
-              <LinkButton
-                title="Load older"
-                onPress={() => {
-                  // Suuuuuuuper hacky way to make the button
-                  // a little bit more responsive to clicks
-                  setRerenderingList(true)
-                  setTimeout(() => {
-                    setPastMonthsToShow(pastMonthsToShow + 3)
-                  }, 300)
-                  setTimeout(() => {
-                    setRerenderingList(false)
-                  }, 2000)
-                }}
-                style={styles.loadMoreButton}
-              />
-            </TransparentView>
-            : null
-        }
-      }
+      ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false}/>}
+      ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true}/>}
       stickySectionHeadersEnabled
     />
   );
