@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 
 import { View } from 'components/Themed';
 import Task from './components/Task';
@@ -36,6 +36,7 @@ type PropTypes = {
   markedPeriods: DatePlacedPeriods;
   reminders: ParsedReminder[];
   highlight: boolean;
+  style?: ViewStyle;
 };
 
 export default function DayCalendar({
@@ -44,7 +45,8 @@ export default function DayCalendar({
   reminders,
   periods,
   markedPeriods,
-  highlight
+  highlight,
+  style
 }: PropTypes) {
   const selectedTaskId = useSelector(selectSelectedTaskId);
   const selectedPeriodId = useSelector(selectSelectedPeriodId);
@@ -150,7 +152,7 @@ export default function DayCalendar({
   ));
 
   return (
-    <View>
+    <View style={style}>
       <View style={styles.container}>
         <View style={styles.leftBar}>
           <View style={styles.leftBarPeriodLines}>

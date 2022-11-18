@@ -30,7 +30,6 @@ import {
   PrimaryText,
   BlackText
 } from 'components/molecules/TextComponents';
-import Layout from 'constants/Layout';
 import { Feather } from '@expo/vector-icons';
 import {
   TransparentView,

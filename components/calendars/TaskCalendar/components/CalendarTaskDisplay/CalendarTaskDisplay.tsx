@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import DayCalendar from './DayCalendar/DayCalendar';
 import React from 'react';
 
@@ -20,6 +20,8 @@ import { Text, useThemeColor } from 'components/Themed';
 import { SectionList } from 'components/molecules/SectionListComponents';
 import dayjs from 'dayjs';
 import { AlmostWhiteView, TransparentView } from 'components/molecules/ViewComponents';
+import { useSelector } from 'react-redux';
+import { selectSelectedTaskId } from 'reduxStore/slices/calendars/selectors';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -217,7 +219,7 @@ function Calendar({
         <Text style={styles.sectionHeaderText}>{section.title}</Text>
       </AlmostWhiteView>
     )}
-    renderItem={({ item }) => {
+    renderItem={({ item, index, section }) => {
       const { date, events } = item
       return (
         <DayCalendar
@@ -228,6 +230,7 @@ function Calendar({
           reminders={tasksPerDate[date].reminders}
           markedPeriods={periodsDates[date]}
           highlight={date === getDateStringFromDateObject(new Date())}
+          style={(index === section.data.length - 1) ? { marginBottom: 20 } : {}}
         />
       )
     }}
@@ -253,7 +256,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 18,
     paddingVertical: 20,
-    borderBottomWidth: 2
+    marginBottom: 15,
+    borderTopWidth: 2,
+    borderBottomWidth: 2,
   },
   sectionHeaderText: {
     fontSize: 20
