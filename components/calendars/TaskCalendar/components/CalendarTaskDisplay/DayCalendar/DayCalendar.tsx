@@ -22,6 +22,7 @@ import {
   setSelectedTaskId
 } from 'reduxStore/slices/calendars/actions';
 import Reminder from './components/Reminder';
+import { DatePlacedPeriods } from 'utils/calendars';
 
 type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -32,6 +33,7 @@ type PropTypes = {
   date: string;
   tasks: ScheduledTaskParsedType[];
   periods: ParsedPeriod[];
+  markedPeriods: DatePlacedPeriods;
   reminders: ParsedReminder[];
   highlight: boolean;
 };
@@ -41,6 +43,7 @@ export default function DayCalendar({
   tasks,
   reminders,
   periods,
+  markedPeriods,
   highlight
 }: PropTypes) {
   const selectedTaskId = useSelector(selectSelectedTaskId);
@@ -86,23 +89,30 @@ export default function DayCalendar({
     (period) =>
       period.start_date.toISOString() === period.end_date.toISOString()
   );
-  const longPeriods = periods.filter(
-    (period) =>
-      period.start_date.toISOString() !== period.end_date.toISOString()
-  );
 
   const periodLines = (
     <View style={styles.periodLines}>
-      {longPeriods.map((period, i) => (
-        <View key={i}>
-          <View
-            style={[
-              styles.periodLine,
-              { backgroundColor: `#${userDetails.member_colour}` }
-            ]}
-          ></View>
-        </View>
-      ))}
+      {
+        markedPeriods && markedPeriods.periods &&
+        markedPeriods.periods.map((period, i) => (
+          <View key={i}>
+            <View
+              style={[
+                styles.periodLine,
+                {
+                  backgroundColor: period.color,
+                  marginTop: period.startingDay ? 10 : 0,
+                  marginBottom: period.endingDay ? 10 : 0,
+                  borderTopLeftRadius: period.startingDay ? 10 : 0,
+                  borderTopRightRadius: period.startingDay ? 10 : 0,
+                  borderBottomLeftRadius: period.endingDay ? 10 : 0,
+                  borderBottomRightRadius: period.endingDay ? 10 : 0,
+                }
+              ]}
+            ></View>
+          </View>
+        ))
+      }
     </View>
   );
 
@@ -143,28 +153,27 @@ export default function DayCalendar({
     <View>
       <View style={styles.container}>
         <View style={styles.leftBar}>
-          <BlackText
-            style={[styles.dateDay, highlight ? styles.highlight : {}]}
-            text={dayjs(date).format('MMM') + ' '}
-            bold={highlight}
-          />
-          <BlackText
-            style={[styles.dateMonth, highlight ? styles.highlight : {}]}
-            text={dayjs(date).format('DD') + ' '}
-            bold={highlight}
-          />
-          {longPeriods.length > 0 ? (
-            periodLines
-          ) : (
-            <View style={styles.verticalLine}></View>
-          )}
-        </View>
-        <View>
-          <View style={styles.taskViews}>
-            {taskViews}
-            {periodViews}
-            {reminderViews}
+          <View style={styles.leftBarPeriodLines}>
+            {markedPeriods && markedPeriods.periods && periodLines}
           </View>
+          <View style={styles.leftBarDate}>
+            <BlackText
+              style={[styles.dateDay, highlight ? styles.highlight : {}]}
+              text={dayjs(date).format('dd') + ' '}
+              bold={highlight}
+            />
+            <BlackText
+              style={[styles.dateMonth, highlight ? styles.highlight : {}]}
+              text={dayjs(date).format('DD') + ' '}
+              bold={highlight}
+            />
+            <View style={styles.verticalLine}></View>
+          </View>
+        </View>
+        <View style={styles.taskViews}>
+          {taskViews}
+          {periodViews}
+          {reminderViews}
         </View>
       </View>
     </View>
@@ -174,6 +183,7 @@ export default function DayCalendar({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between'
@@ -187,44 +197,47 @@ const styles = StyleSheet.create({
   highlight: {
     fontSize: 20
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%'
-  },
   verticalLine: {
     width: 1,
     flex: 1,
     flexGrow: 1,
     minHeight: 10,
     backgroundColor: 'black',
-    marginVertical: 10
+    marginVertical: 4
   },
   periodLine: {
-    width: 6,
+    width: 4,
     flex: 1,
     flexGrow: 1,
-    minHeight: 10,
+    flexShrink: 1,
     backgroundColor: 'black',
-    marginVertical: 10,
     marginHorizontal: 1
   },
   periodLines: {
     flexDirection: 'row',
     flexGrow: 1
   },
-  periodLineText: {
-    transform: [{ rotate: '270deg' }]
-  },
   leftBar: {
     flexGrow: 0,
     marginRight: 20,
-    width: 40,
+    width: 60,
     height: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  leftBarPeriodLines: {
+    width: 30,
+    flexDirection: 'row',
+    height: '100%'
+  },
+  leftBarDate: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginLeft: 5
   },
   taskViews: {
     paddingTop: 30,
-    paddingBottom: 60
+    paddingBottom: 60,
+    flex: 1
   }
 });

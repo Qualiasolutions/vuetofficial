@@ -14,6 +14,8 @@ import {
 } from 'types/tasks';
 
 import { PeriodResponse, ScheduledReminder } from 'types/periods';
+import { placeOverlappingPeriods } from 'utils/calendars';
+import { useThemeColor } from 'components/Themed';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -73,6 +75,9 @@ function Calendar({
   alwaysIncludeCurrentDate?: boolean;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
+
+  const primaryColor = useThemeColor({}, 'primary')
+  const periodsDates = placeOverlappingPeriods(periods, primaryColor)
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -168,6 +173,7 @@ function Calendar({
         tasks={tasksPerDate[date].tasks}
         periods={tasksPerDate[date].periods}
         reminders={tasksPerDate[date].reminders}
+        markedPeriods={periodsDates[date]}
         highlight={date === getDateStringFromDateObject(new Date())}
       />
     ));

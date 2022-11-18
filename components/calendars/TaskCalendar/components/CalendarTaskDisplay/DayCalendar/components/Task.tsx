@@ -1,11 +1,10 @@
-import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { Text, useThemeColor, View } from 'components/Themed';
 import { isFixedTaskParsedType, ScheduledTaskParsedType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
 import {
-  selectAccessToken,
   selectUsername
 } from 'reduxStore/slices/auth/selectors';
 import SquareButton from 'components/molecules/SquareButton';
@@ -41,6 +40,8 @@ import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'components/molecules/ImageComponents';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
@@ -290,7 +291,6 @@ export default function Task({
 
 const styles = StyleSheet.create({
   container: {
-    width: Layout.window.width - 100,
     marginTop: 10
   },
   titleContainer: {
@@ -327,7 +327,6 @@ const styles = StyleSheet.create({
     margin: 10
   },
   separator: {
-    marginTop: 20,
     height: 1,
     width: '100%',
     backgroundColor: '#eee'

@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useThemeColor, View } from 'components/Themed';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -24,6 +24,8 @@ import { ParsedReminder } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import Checkbox from 'components/molecules/Checkbox';
 import { useUpdateReminderMutation } from 'reduxStore/services/api/reminder';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import { Image } from 'components/molecules/ImageComponents';
 
 type PropTypes = {
   reminder: ParsedReminder;
@@ -181,7 +183,6 @@ export default function Reminder({
 
 const styles = StyleSheet.create({
   container: {
-    width: Layout.window.width - 100,
     marginTop: 10
   },
   titleContainer: {
@@ -210,16 +211,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%'
   },
-  viewEditContainer: {
-    marginTop: 10,
-    paddingTop: 0,
-    marginLeft: 30
-  },
   checkbox: {
     margin: 10
   },
   separator: {
-    marginTop: 20,
     height: 1,
     width: '100%',
     backgroundColor: '#eee'
@@ -235,15 +230,6 @@ const styles = StyleSheet.create({
   expandedTitle: {
     fontSize: 18
   },
-  expandedOptions: {
-    marginTop: 10,
-    alignItems: 'flex-end'
-  },
-  expandedButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 5
-  },
   editImage: {
     height: 27,
     width: 31
@@ -258,11 +244,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.16,
     elevation: 5,
     borderWidth: 1
-  },
-  buttonTextStyle: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 12
   },
   selectedTouchableContainer: { alignItems: 'flex-start', marginTop: 20 },
   memberColor: {

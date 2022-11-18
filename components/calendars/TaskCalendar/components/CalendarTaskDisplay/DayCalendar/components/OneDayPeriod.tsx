@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useThemeColor, View } from 'components/Themed';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -22,6 +22,8 @@ import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import { Image } from 'components/molecules/ImageComponents';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 type PropTypes = {
   period: ParsedPeriod;
@@ -164,7 +166,6 @@ export default function OneDayPeriod({
 
 const styles = StyleSheet.create({
   container: {
-    width: Layout.window.width - 100,
     marginTop: 10
   },
   titleContainer: {
@@ -202,7 +203,6 @@ const styles = StyleSheet.create({
     margin: 10
   },
   separator: {
-    marginTop: 20,
     height: 1,
     width: '100%',
     backgroundColor: '#eee'

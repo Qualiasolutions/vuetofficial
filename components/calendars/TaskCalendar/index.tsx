@@ -470,7 +470,8 @@ function Calendar({
 const styles = StyleSheet.create({
   container: {
     height: '100%',
-    width: '100%'
+    width: '100%',
+    paddingTop: 20
   },
   monthPicker: {
     flexDirection: 'row',

@@ -1,8 +1,7 @@
 import { useThemeColor, View } from 'components/Themed';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
-import { PeriodResponse } from 'types/periods';
 import {
   getDateWithoutTimezone,
   getUTCValuesFromDateString
