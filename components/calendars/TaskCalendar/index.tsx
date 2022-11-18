@@ -85,32 +85,15 @@ function Calendar({
   const { periods: allScheduledPeriods, reminders: allScheduledReminders } =
     useScheduledPeriods();
 
-  // Load current month
+  // Load all scheduled tasks
   const {
     data: allScheduledTasks,
     error,
     isLoading: isLoadingScheduledTasks,
-    isFetching
   } = useGetAllScheduledTasksQuery(
     {
-      start_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
-      end_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
-      user_id: userDetails?.user_id || -1
-    },
-    {
-      skip: !userDetails?.user_id,
-      pollingInterval: 10000
-    }
-  );
-
-  // Load next 2 years
-  const {
-    data: next2YearsTasks,
-    isLoading: isLoadingNext2YearsScheduledTasks
-  } = useGetAllScheduledTasksQuery(
-    {
-      start_datetime: getOffsetMonthStartDateString(currentDate, 0).dateString,
-      end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString,
+      start_datetime: getOffsetMonthStartDateString(shownMonth, -24).dateString,
+      end_datetime: getOffsetMonthStartDateString(shownMonth, 24).dateString,
       user_id: userDetails?.user_id || -1
     },
     {
@@ -119,69 +102,33 @@ function Calendar({
     }
   );
 
-  // Load previous 2 years
-  const {
-    data: previous2YearsTasks,
-    isLoading: isLoadingPrevious2YearsScheduledTasks
-  } = useGetAllScheduledTasksQuery(
-    {
-      start_datetime: getOffsetMonthStartDateString(currentDate, -24)
-        .dateString,
-      end_datetime: getOffsetMonthStartDateString(currentDate, 0).dateString,
-      user_id: userDetails?.user_id || -1
-    },
-    {
-      skip: !userDetails?.user_id,
-      pollingInterval: 30000
-    }
-  );
+  type FilteredTasksDict = {
+    allTasks: TaskResponseType[];
+    allScheduledTasks: ScheduledTaskResponseType[];
+  }
 
-  // Preload previous month
-  useGetAllScheduledTasksQuery(
-    {
-      start_datetime: getOffsetMonthStartDateString(shownMonth, -1).dateString,
-      end_datetime: getOffsetMonthStartDateString(shownMonth, 0).dateString,
-      user_id: userDetails?.user_id || -1
-    },
-    {
-      skip: !userDetails?.user_id,
-      pollingInterval: 20000
-    }
-  );
-
-  // Preload next month
-  useGetAllScheduledTasksQuery(
-    {
-      start_datetime: getOffsetMonthStartDateString(shownMonth, 1).dateString,
-      end_datetime: getOffsetMonthStartDateString(shownMonth, 2).dateString,
-      user_id: userDetails?.user_id || -1
-    },
-    {
-      skip: !userDetails?.user_id,
-      pollingInterval: 20000
-    }
-  );
-
-  const tasksToFilter = {
+  const tasksToFilter: FilteredTasksDict = {
     allTasks: allTasks ? Object.values(allTasks.byId) : [],
-    allScheduledTasks,
-    next2YearsTasks,
-    previous2YearsTasks
-  } as { [key: string]: ScheduledTaskResponseType[] | undefined };
+    allScheduledTasks: allScheduledTasks || []
+  };
 
-  const filteredTasks = useMemo<{
-    [key: string]: ScheduledTaskResponseType[];
-  }>(() => {
-    const filtered: { [key: string]: ScheduledTaskResponseType[] } = {};
-    for (const tasksName in tasksToFilter) {
-      const tasks = tasksToFilter[tasksName];
-      if (!tasks) {
-        filtered[tasksName] = [];
-      } else {
-        filtered[tasksName] = tasks;
-        for (const taskFilter of taskFilters) {
-          filtered[tasksName] = filtered[tasksName].filter(taskFilter);
-        }
+  const filteredTasks = useMemo<FilteredTasksDict>(() => {
+    const filtered: FilteredTasksDict = {
+      allTasks: [],
+      allScheduledTasks: []
+    };
+    const tasks = tasksToFilter["allTasks"];
+    if (tasks) {
+      filtered["allTasks"] = tasks;
+      for (const taskFilter of taskFilters) {
+        filtered["allTasks"] = filtered["allTasks"].filter(taskFilter);
+      }
+    }
+    const scheduledTasks = tasksToFilter["allScheduledTasks"];
+    if (scheduledTasks) {
+      filtered["allScheduledTasks"] = scheduledTasks;
+      for (const taskFilter of taskFilters) {
+        filtered["allScheduledTasks"] = filtered["allScheduledTasks"].filter(taskFilter);
       }
     }
     return filtered;
@@ -251,12 +198,8 @@ function Calendar({
 
   const noTasks = useMemo(() => {
     return (
-      filteredTasks.next2YearsTasks &&
-      filteredTasks.previous2YearsTasks &&
       filteredAllPeriods &&
       filteredAllReminders &&
-      filteredTasks.next2YearsTasks.length === 0 &&
-      filteredTasks.previous2YearsTasks.length === 0 &&
       filteredAllPeriods.length === 0 &&
       filteredAllReminders.length === 0
     );
@@ -278,12 +221,24 @@ function Calendar({
         (reminder) => new Date(reminder.end_date) <= new Date()
       );
 
+      const timeNow = new Date()
+      const futureTasks = filteredTasks.allScheduledTasks
+        .filter(task => new Date(task.start_datetime) > timeNow)
+        .sort((a, b) => {
+          return new Date(b.startTime) < new Date(a.startTime) ? 1 : -1;
+        })
+      const pastTasks = filteredTasks.allScheduledTasks
+        .filter(task => new Date(task.start_datetime) > timeNow)
+        .sort((a, b) => {
+          return new Date(b.startTime) < new Date(a.startTime) ? -1 : 1;
+        })
+
       if (
-        filteredTasks.next2YearsTasks.length > 0 ||
+        futureTasks.length > 0 ||
         futurePeriods.length > 0 ||
         futureReminders.length > 0
       ) {
-        const firstScheduledTask = filteredTasks.next2YearsTasks[0];
+        const firstScheduledTask = futureTasks[0];
         const firstScheduledPeriod = futurePeriods[0];
         const firstScheduledReminder = futureReminders[0];
 
@@ -334,14 +289,11 @@ function Calendar({
           );
         }
       } else if (
-        filteredTasks.previous2YearsTasks.length > 0 ||
+        pastTasks.length > 0 ||
         pastPeriods.length > 0 ||
         pastReminders.length > 0
       ) {
-        const lastScheduledTask =
-          filteredTasks.previous2YearsTasks[
-            filteredTasks.previous2YearsTasks.length - 1
-          ];
+        const lastScheduledTask = pastTasks[0];
         const lastScheduledPeriod = pastPeriods[pastPeriods.length - 1];
         const lastScheduledReminder =
           futureReminders[futureReminders.length - 1];
@@ -397,8 +349,6 @@ function Calendar({
     noTasks,
     filteredAllPeriods.length,
     filteredAllReminders.length,
-    filteredTasks.next2YearsTasks.length,
-    filteredTasks.previous2YearsTasks.length
   ]);
 
   if (error) {
@@ -407,9 +357,7 @@ function Calendar({
 
   const isLoading =
     isLoadingScheduledTasks ||
-    isLoadingAllTasks ||
-    isLoadingNext2YearsScheduledTasks ||
-    isLoadingPrevious2YearsScheduledTasks;
+    isLoadingAllTasks
 
   if (isLoading || !allScheduledTasks || !allScheduledPeriods) {
     return <FullPageSpinner />;
@@ -428,32 +376,6 @@ function Calendar({
 
   return (
     <WhiteView style={styles.container}>
-      <TransparentView style={styles.monthPicker}>
-        <Pressable
-          style={styles.monthPickerArrowWrapper}
-          onPress={() => {
-            const prevMonth = new Date(shownMonth.getTime());
-            prevMonth.setMonth(prevMonth.getMonth() - 1);
-            setShownMonth(prevMonth);
-          }}
-        >
-          <BlackText text="<" style={styles.monthPickerArrow} bold={true} />
-        </Pressable>
-        <BlackText
-          text={dayjs(shownMonth).format('MMM')}
-          style={styles.monthPickerText}
-        />
-        <Pressable
-          style={styles.monthPickerArrowWrapper}
-          onPress={() => {
-            const nextMonth = new Date(shownMonth.getTime());
-            nextMonth.setMonth(nextMonth.getMonth() + 1);
-            setShownMonth(nextMonth);
-          }}
-        >
-          <BlackText text=">" style={styles.monthPickerArrow} bold={true} />
-        </Pressable>
-      </TransparentView>
       <CalendarTaskDisplay
         tasks={filteredTasks.allScheduledTasks}
         periods={filteredMonthPeriods}
@@ -471,7 +393,6 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    paddingTop: 20
   },
   monthPicker: {
     flexDirection: 'row',

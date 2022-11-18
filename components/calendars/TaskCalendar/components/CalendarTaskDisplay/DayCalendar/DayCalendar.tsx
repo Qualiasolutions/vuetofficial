@@ -186,7 +186,8 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingRight: 10
   },
   dateDay: {
     fontSize: 20
@@ -220,7 +221,8 @@ const styles = StyleSheet.create({
   leftBar: {
     flexGrow: 0,
     marginRight: 20,
-    width: 60,
+    paddingLeft: 10,
+    width: 70,
     height: '100%',
     alignItems: 'center',
     flexDirection: 'row'
