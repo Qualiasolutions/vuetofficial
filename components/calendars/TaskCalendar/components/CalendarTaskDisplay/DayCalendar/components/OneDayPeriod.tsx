@@ -168,7 +168,10 @@ export default function OneDayPeriod({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10
+    marginTop: 10,
+    paddingTop: 10,
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   titleContainer: {
     width: '60%',
@@ -234,7 +237,7 @@ const styles = StyleSheet.create({
     width: 31
   },
   selectedTask: {
-    borderRadius: 10,
+    paddingTop: 0,
     overflow: 'hidden',
     marginVertical: 15,
     shadowColor: '#000000',
