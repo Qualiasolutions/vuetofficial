@@ -32,7 +32,7 @@ export const taskTopFieldTypes = (
         friends: userFullDetails?.friends || []
       },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
+      displayName: t('tasks.task.members')
     },
     duration_minutes: {
       type: 'dropDown',
@@ -185,7 +185,7 @@ export const fixedTaskForm = (): FormFieldTypes => {
         friends: userFullDetails?.friends || []
       },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
+      displayName: t('tasks.task.members')
     },
     start_datetime: {
       type: 'DateTime',

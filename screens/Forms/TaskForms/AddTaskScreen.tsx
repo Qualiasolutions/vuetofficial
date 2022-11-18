@@ -29,6 +29,7 @@ import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import RadioInput from 'components/forms/components/RadioInput';
 import useGetUserDetails from 'hooks/useGetUserDetails';
+import useColouredHeader from 'headers/hooks/useColouredHeader';
 
 const formTypes = [
   {
@@ -71,6 +72,19 @@ export default function AddTaskScreen({
   );
 
   const fieldColor = useThemeColor({}, 'almostWhite');
+  const headerBackgroundColor = useThemeColor({}, 'almostBlack');
+  const headerTintColor = useThemeColor({}, 'white');
+  const headerTitle = {
+    TASK: "Add task",
+    APPOINTMENT: "Add Appointment",
+    DUE_DATE: "Add Due Date",
+  }[formType]
+
+  useColouredHeader(
+    headerBackgroundColor,
+    headerTintColor,
+    headerTitle,
+  )
 
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
     {}

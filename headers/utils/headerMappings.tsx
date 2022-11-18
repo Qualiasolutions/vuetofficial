@@ -4,7 +4,7 @@ import { useThemeColor, View } from 'components/Themed';
 import { ImageBackground, ImageSourcePropType, StyleSheet } from 'react-native';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
-const headerWithBackgroundColor = (
+export const headerWithBackgroundColor = (
   backgroundColor: string,
   height: number = 150
 ) => {
@@ -29,7 +29,7 @@ const headerWithBackgroundColor = (
   };
 };
 
-const headerWithBackground = (
+export const headerWithBackground = (
   backgroundImage: ImageSourcePropType,
   height: number = 150
 ) => {
