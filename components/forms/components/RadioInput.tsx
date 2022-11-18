@@ -33,21 +33,22 @@ export default function RadioInput({
         checked={value === obj.value.id}
         smoothChecking={false}
         onValueChange={async (val) => {
-          onValueChange(obj.value)
+          onValueChange(obj.value);
         }}
         label={obj.label}
+        key={i}
       />
     );
   });
-  return <TransparentView style={styles.wrapper}>
-    {label && <AlmostBlackText text={label} style={styles.label}/>}
-    <TransparentView>
-      {radioButtons}
+  return (
+    <TransparentView style={styles.wrapper}>
+      {label && <AlmostBlackText text={label} style={styles.label} />}
+      <TransparentView>{radioButtons}</TransparentView>
     </TransparentView>
-  </TransparentView>;
+  );
 }
 
 const styles = StyleSheet.create({
   label: { marginRight: 10 },
   wrapper: { flexDirection: 'row' }
-})
+});

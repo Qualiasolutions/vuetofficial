@@ -19,7 +19,10 @@ import { placeOverlappingPeriods } from 'utils/calendars';
 import { Text, useThemeColor } from 'components/Themed';
 import { SectionList } from 'components/molecules/SectionListComponents';
 import dayjs from 'dayjs';
-import { AlmostWhiteView, TransparentView } from 'components/molecules/ViewComponents';
+import {
+  AlmostWhiteView,
+  TransparentView
+} from 'components/molecules/ViewComponents';
 import { LinkButton } from 'components/molecules/ButtonComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { t } from 'i18next';
@@ -83,11 +86,11 @@ function Calendar({
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
   const primaryColor = useThemeColor({}, 'primary');
-  const periodsDates = placeOverlappingPeriods(periods, primaryColor);
+  const periodsDates = placeOverlappingPeriods(periods, primaryColor, false);
 
-  const [ futureMonthsToShow, setFutureMonthsToShow ] = useState(3)
-  const [ pastMonthsToShow, setPastMonthsToShow ] = useState(0)
-  const [ rerenderingList, setRerenderingList ] = useState(false)
+  const [futureMonthsToShow, setFutureMonthsToShow] = useState(3);
+  const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
+  const [rerenderingList, setRerenderingList] = useState(false);
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -180,36 +183,39 @@ function Calendar({
     date: string;
   };
 
-  const ListHeaderOrFooterComponent = ({ isFooter }: { isFooter: boolean}) => {
+  const ListHeaderOrFooterComponent = ({ isFooter }: { isFooter: boolean }) => {
     if (rerenderingList) {
-      return <TransparentView style={styles.loadMoreButtonWrapper}>
-        <PaddedSpinner spinnerColor='buttonDefault'/>
-      </TransparentView>
+      return (
+        <TransparentView style={styles.loadMoreButtonWrapper}>
+          <PaddedSpinner spinnerColor="buttonDefault" />
+        </TransparentView>
+      );
     }
-    return ((isFooter && futureMonthsToShow < 24) || (!isFooter && pastMonthsToShow < 24))
-      ? <TransparentView style={styles.loadMoreButtonWrapper}>
+    return (isFooter && futureMonthsToShow < 24) ||
+      (!isFooter && pastMonthsToShow < 24) ? (
+      <TransparentView style={styles.loadMoreButtonWrapper}>
         <LinkButton
-          title={isFooter ? t("common.loadMore") : t("common.loadOlder")}
+          title={isFooter ? t('common.loadMore') : t('common.loadOlder')}
           onPress={() => {
             // Suuuuuuuper hacky way to make the button
             // a little bit more responsive to clicks
-            setRerenderingList(true)
+            setRerenderingList(true);
             setTimeout(() => {
               if (isFooter) {
-                setFutureMonthsToShow(futureMonthsToShow + 3)
+                setFutureMonthsToShow(futureMonthsToShow + 3);
               } else {
-                setPastMonthsToShow(pastMonthsToShow + 3)
+                setPastMonthsToShow(pastMonthsToShow + 3);
               }
-            }, 300)
+            }, 300);
             setTimeout(() => {
-              setRerenderingList(false)
-            }, 2000)
+              setRerenderingList(false);
+            }, 2000);
           }}
           style={styles.loadMoreButton}
         />
       </TransparentView>
-      : null
-  }
+    ) : null;
+  };
 
   const [futureSections, pastSections] = useMemo(() => {
     const future: { title: string; key: string; data: SectionData[] }[] = [];
@@ -241,7 +247,10 @@ function Calendar({
     return [future, past];
   }, [datesToShow]);
 
-  const shownSections = [...pastSections.slice(pastSections.length - pastMonthsToShow), ...futureSections.slice(0, futureMonthsToShow)]
+  const shownSections = [
+    ...pastSections.slice(pastSections.length - pastMonthsToShow),
+    ...futureSections.slice(0, futureMonthsToShow)
+  ];
   return (
     <SectionList
       sections={shownSections}
@@ -250,12 +259,12 @@ function Calendar({
           <AlmostWhiteView style={styles.sectionHeader}>
             <Text style={styles.sectionHeaderText}>{section.title}</Text>
           </AlmostWhiteView>
-        )
+        );
       }}
       refreshing={false}
       onRefresh={() => {
-        setPastMonthsToShow(0)
-        setFutureMonthsToShow(3)
+        setPastMonthsToShow(0);
+        setFutureMonthsToShow(3);
       }}
       renderItem={({ item, index, section }) => {
         const { date } = item;
@@ -275,8 +284,8 @@ function Calendar({
         );
       }}
       contentContainerStyle={{ paddingBottom: 100 }}
-      ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false}/>}
-      ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true}/>}
+      ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false} />}
+      ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true} />}
       stickySectionHeadersEnabled
     />
   );

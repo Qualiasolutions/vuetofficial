@@ -55,10 +55,9 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
   const selectedTaskId = useSelector(selectSelectedTaskId);
   const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
   const selected =
-    (!task.is_complete) && (
-      (task.id === selectedTaskId && task.recurrence_index === undefined) ||
-      task.recurrence_index === selectedRecurrenceIndex
-    )
+    !task.is_complete &&
+    ((task.id === selectedTaskId && task.recurrence_index === undefined) ||
+      task.recurrence_index === selectedRecurrenceIndex);
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -137,10 +136,10 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
 
   const leftInfo = (
     <TransparentView style={styles.leftInfo}>
-      <Text style={task.is_complete && {color: isCompleteTextColor}}>
+      <Text style={task.is_complete && { color: isCompleteTextColor }}>
         {getTimeStringFromDateObject(task.start_datetime)}
       </Text>
-      <Text style={task.is_complete && {color: isCompleteTextColor}}>
+      <Text style={task.is_complete && { color: isCompleteTextColor }}>
         {getTimeStringFromDateObject(task.end_datetime)}
       </Text>
     </TransparentView>
@@ -176,7 +175,8 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
     ) : null;
 
   const expandedOptions = useMemo(() => {
-    return (selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype)) ? (
+    return selected &&
+      ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
       <TransparentView style={styles.expandedOptions}>
         <TransparentView style={styles.expandedButtons}>
           {task.resourcetype === 'FixedTask' && !task.recurrence ? (
@@ -211,7 +211,7 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
         </TransparentView>
       </TransparentView>
     ) : null;
-  }, [selected])
+  }, [selected]);
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -238,12 +238,13 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
     <WhiteView
       style={[
         styles.container,
-        entity && selected && {
-          ...styles.selectedTask,
-          borderColor: greyColor
-        },
+        entity &&
+          selected && {
+            ...styles.selectedTask,
+            borderColor: greyColor
+          },
         task.is_complete && {
-          backgroundColor: isCompleteBackgroundColor,
+          backgroundColor: isCompleteBackgroundColor
         }
       ]}
     >
@@ -266,9 +267,12 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
           <TransparentView style={styles.titleContainer}>
             <BlackText
               text={task.title}
-              style={[styles.title, task.is_complete && {
-                color: isCompleteTextColor,
-              }]}
+              style={[
+                styles.title,
+                task.is_complete && {
+                  color: isCompleteTextColor
+                }
+              ]}
               bold={true}
             />
           </TransparentView>

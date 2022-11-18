@@ -67,6 +67,38 @@ export const taskTopFieldTypes = (
   };
 };
 
+export const periodFieldTypes = (): FormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserDetails();
+
+  return {
+    title: {
+      type: 'string',
+      required: true,
+      displayName: t('tasks.task.title')
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || []
+      },
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('tasks.task.members')
+    },
+    start_date: {
+      type: 'Date',
+      required: true,
+      displayName: t('tasks.due_date.date')
+    }
+  };
+};
+
 export const taskRecurrentMiddleFieldTypes = (
   disabledRecurrenceFields: boolean = false
 ): FormFieldTypes => {

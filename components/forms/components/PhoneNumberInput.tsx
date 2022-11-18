@@ -21,7 +21,6 @@ export default function PhoneNumberInput(props: PhoneNumberInputProps) {
       ref={phoneInput}
       defaultCode="GB"
       layout="second"
-      autoFocus
       {...otherProps}
       containerStyle={[
         styles.textInputContainer,

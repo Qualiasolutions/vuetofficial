@@ -17,10 +17,15 @@ export type PlacedPeriods = {
 };
 
 export const placeOverlappingPeriods = (
-  filteredPeriods: PeriodResponse[],
-  periodColour: string
+  periods: PeriodResponse[],
+  periodColour: string,
+  includeOneDayPeriods: boolean = true
 ): PlacedPeriods => {
   const periodsDates: CalendarViewProps['dates'] = {};
+
+  const filteredPeriods = includeOneDayPeriods
+    ? periods
+    : periods.filter((p) => p.start_date !== p.end_date);
   for (const p of filteredPeriods) {
     const datesArray = getDateStringsBetween(p.start_date, p.end_date);
 

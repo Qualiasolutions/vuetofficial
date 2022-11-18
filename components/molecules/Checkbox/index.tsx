@@ -33,9 +33,9 @@ export default function Checkbox({
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const isChecked = smoothChecking
-    ? ((submitting && !checked) || (!submitting && checked))
+    ? (submitting && !checked) || (!submitting && checked)
     : checked;
-  const backgroundColor = isChecked ? (color || primaryColor) : greyColor;
+  const backgroundColor = isChecked ? color || primaryColor : greyColor;
 
   /*
   In order to smooth the checking, we ensure that it is checked
@@ -60,7 +60,7 @@ export default function Checkbox({
         setSubmitting(false);
       }
     }
-  }
+  };
 
   return (
     <TransparentView style={styles.wrapper}>
@@ -76,12 +76,11 @@ export default function Checkbox({
           />
         )}
       </Pressable>
-      {label && <Pressable
-        onPress={onPress}
-        disabled={disabled}
-      >
-        <AlmostBlackText text={label}/>
-      </Pressable>}
+      {label && (
+        <Pressable onPress={onPress} disabled={disabled}>
+          <AlmostBlackText text={label} />
+        </Pressable>
+      )}
     </TransparentView>
   );
 }

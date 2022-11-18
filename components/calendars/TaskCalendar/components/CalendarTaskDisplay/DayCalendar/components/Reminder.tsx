@@ -49,7 +49,7 @@ export default function Reminder({
   const { data: userDetails } = getUserFullDetails();
 
   const selectedReminderId = useSelector(selectSelectedReminderId);
-  const selected = (!reminder.is_complete) && reminder.id === selectedReminderId;
+  const selected = !reminder.is_complete && reminder.id === selectedReminderId;
 
   const {
     data: allEntities,
@@ -142,12 +142,13 @@ export default function Reminder({
     <WhiteView
       style={[
         styles.container,
-        entity && selected && {
-          ...styles.selectedTask,
-          borderColor: greyColor
-        },
+        entity &&
+          selected && {
+            ...styles.selectedTask,
+            borderColor: greyColor
+          },
         reminder.is_complete && {
-          backgroundColor: isCompleteBackgroundColor,
+          backgroundColor: isCompleteBackgroundColor
         }
       ]}
     >
@@ -170,9 +171,12 @@ export default function Reminder({
           <TransparentView style={styles.titleContainer}>
             <BlackText
               text={reminder.title}
-              style={[styles.title, reminder.is_complete && {
-                color: isCompleteTextColor,
-              }]}
+              style={[
+                styles.title,
+                reminder.is_complete && {
+                  color: isCompleteTextColor
+                }
+              ]}
               bold={true}
             />
           </TransparentView>
@@ -192,7 +196,9 @@ export default function Reminder({
         />
       </TransparentView>
       {memberColour}
-      {!selected && <TransparentView style={styles.separator}></TransparentView>}
+      {!selected && (
+        <TransparentView style={styles.separator}></TransparentView>
+      )}
     </WhiteView>
   );
 }

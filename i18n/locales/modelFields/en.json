@@ -19,6 +19,9 @@
     },
     "flexibleTask": {
       "due_date": "Due Date"
+    },
+    "due_date": {
+      "date": "Date"
     }
   },
   "entities": {

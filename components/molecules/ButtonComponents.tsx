@@ -43,10 +43,7 @@ export function LinkButton(props: {
 
   return (
     <Pressable
-      style={[
-        styles.linkButton,
-        style
-      ]}
+      style={[styles.linkButton, style]}
       disabled={disabled}
       {...otherProps}
     >
@@ -65,5 +62,5 @@ const styles = StyleSheet.create({
   linkButton: {
     textAlign: 'center',
     alignItems: 'center'
-  },
+  }
 });
