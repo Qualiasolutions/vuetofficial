@@ -226,6 +226,7 @@ export default function AddTaskScreen({
           {createError ? <Text>{createError}</Text> : null}
           <RadioInput
             value={formType}
+            label={t("common.addNew")}
             permittedValues={formTypes}
             onValueChange={(value) => {
               setFormType(value.id as AddTaskFormType);

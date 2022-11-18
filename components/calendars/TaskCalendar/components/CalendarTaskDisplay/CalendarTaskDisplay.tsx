@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import { AlmostWhiteView, TransparentView } from 'components/molecules/ViewComponents';
 import { LinkButton } from 'components/molecules/ButtonComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import { t } from 'i18next';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -188,7 +189,7 @@ function Calendar({
     return ((isFooter && futureMonthsToShow < 24) || (!isFooter && pastMonthsToShow < 24))
       ? <TransparentView style={styles.loadMoreButtonWrapper}>
         <LinkButton
-          title={isFooter ? "Load more" : "Load older"}
+          title={isFooter ? t("common.loadMore") : t("common.loadOlder")}
           onPress={() => {
             // Suuuuuuuper hacky way to make the button
             // a little bit more responsive to clicks

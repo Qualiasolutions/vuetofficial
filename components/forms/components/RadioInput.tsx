@@ -1,3 +1,7 @@
+import Checkbox from 'components/molecules/Checkbox';
+import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
+import { StyleSheet } from 'react-native';
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
@@ -14,40 +18,36 @@ export type RadioPermittedValues = {
 
 export default function RadioInput({
   value,
+  label,
   permittedValues,
   onValueChange
 }: {
   value: any;
+  label?: string;
   permittedValues: RadioPermittedValues;
   onValueChange: (value: RadioObjectValueType) => void;
 }) {
   const radioButtons = permittedValues.map((obj: any, i: number) => {
     return (
-      <RadioButton labelHorizontal={true} key={i}>
-        <RadioButtonInput
-          obj={obj}
-          index={i}
-          isSelected={value === obj.value.id}
-          onPress={() => {
-            onValueChange(obj.value);
-          }}
-          buttonInnerColor={'#AAAAAA'}
-          buttonOuterColor={'#CCCCCC'}
-          buttonSize={12}
-          buttonOuterSize={24}
-          buttonStyle={{}}
-          buttonWrapStyle={{ marginLeft: 10 }}
-        />
-        <RadioButtonLabel
-          obj={obj}
-          index={i}
-          labelHorizontal={true}
-          onPress={() => {
-            onValueChange(obj.value);
-          }}
-        />
-      </RadioButton>
+      <Checkbox
+        checked={value === obj.value.id}
+        smoothChecking={false}
+        onValueChange={async (val) => {
+          onValueChange(obj.value)
+        }}
+        label={obj.label}
+      />
     );
   });
-  return <RadioForm>{radioButtons}</RadioForm>;
+  return <TransparentView style={styles.wrapper}>
+    {label && <AlmostBlackText text={label} style={styles.label}/>}
+    <TransparentView>
+      {radioButtons}
+    </TransparentView>
+  </TransparentView>;
 }
+
+const styles = StyleSheet.create({
+  label: { marginRight: 10 },
+  wrapper: { flexDirection: 'row' }
+})

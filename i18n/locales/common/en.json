@@ -169,7 +169,9 @@
     "thing": "Thing",
     "pleaseSelect": "Please select",
     "selectAll": "Select all",
-    "addAnother": "Add Another"
+    "addAnother": "Add Another",
+    "loadMore": "Load more",
+    "loadOlder": "Load older"
   },
   "misc": {
     "turnsAgeIn": "Turns {{age}} in {{year}}",
