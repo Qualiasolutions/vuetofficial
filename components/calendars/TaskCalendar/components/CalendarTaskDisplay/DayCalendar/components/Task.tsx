@@ -174,9 +174,8 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
       </Pressable>
     ) : null;
 
-  const expandedOptions = useMemo(() => {
-    return selected &&
-      ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
+  const expandedOptions =
+    selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
       <TransparentView style={styles.expandedOptions}>
         <TransparentView style={styles.expandedButtons}>
           {task.resourcetype === 'FixedTask' && !task.recurrence ? (
@@ -211,7 +210,6 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
         </TransparentView>
       </TransparentView>
     ) : null;
-  }, [selected]);
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
