@@ -1,4 +1,4 @@
-import { FormFieldTypes } from 'components/forms/formFieldTypes';
+import { Field, FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
@@ -75,6 +75,31 @@ export const periodFieldTypes = (): FormFieldTypes => {
     error: fullDetailsError
   } = useGetUserDetails();
 
+  const reminderDropDownField = {
+    type: 'dropDown',
+    permittedValues: [
+      {
+        label: '1 day before',
+        value: '1 day, 0:00:00'
+      },
+      {
+        label: '1 week before',
+        value: '7 days, 0:00:00'
+      },
+      {
+        label: '2 weeks before',
+        value: '14 days, 0:00:00'
+      },
+      {
+        label: '4 weeks before',
+        value: '28 days, 0:00:00'
+      }
+    ],
+    required: false,
+    displayName: t('entities.entity.reminder'),
+    listMode: 'MODAL'
+  } as Field;
+
   return {
     title: {
       type: 'string',
@@ -95,7 +120,8 @@ export const periodFieldTypes = (): FormFieldTypes => {
       type: 'Date',
       required: true,
       displayName: t('tasks.due_date.date')
-    }
+    },
+    reminder_timedelta: reminderDropDownField
   };
 };
 

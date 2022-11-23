@@ -135,7 +135,8 @@ export default function AddTaskScreen({
 
       const initialPeriodFields = createInitialObject(
         periodFields,
-        userDetails
+        userDetails,
+        { reminder_timedelta: "14 days, 0:00:00" }
       );
       setPeriodFieldValues(initialPeriodFields);
 
