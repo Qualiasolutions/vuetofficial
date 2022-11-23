@@ -29,6 +29,7 @@
       "name": "Name",
       "owner": "Owner",
       "members": "Members",
+      "taskMembers": "Assigned to",
       "description": "Description",
       "image": "Image",
       "notes": "Notes",
