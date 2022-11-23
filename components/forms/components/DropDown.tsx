@@ -55,7 +55,8 @@ export default function DropDown({
         style={[
           {
             borderWidth: 1,
-            borderColor
+            borderColor,
+            minHeight: 0 // Need to override the default
           },
           style
         ]}
