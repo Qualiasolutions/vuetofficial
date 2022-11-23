@@ -122,7 +122,13 @@ export function EntityNavigator() {
           headerShown: true
         }}
       />
-      <EntityStack.Screen name="EditEntity" component={EditEntityScreen} />
+      <EntityStack.Screen
+        name="EditEntity"
+        component={EditEntityScreen}
+        options={{
+          headerShown: false
+        }}
+      />
       <EntityStack.Screen name="AddEntity" component={AddEntityScreen} />
     </EntityStack.Navigator>
   );
