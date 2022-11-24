@@ -13,7 +13,16 @@ export const headerWithBackgroundColor = (
     const borderColor = useThemeColor({}, 'grey');
     return (
       <TransparentView style={{ height: height }}>
-        <View style={[styles.overlay, { backgroundColor, borderBottomWidth: 4, borderBottomColor: borderColor }]}>
+        <View
+          style={[
+            styles.overlay,
+            {
+              backgroundColor,
+              borderBottomWidth: 4,
+              borderBottomColor: borderColor
+            }
+          ]}
+        >
           <HeaderBackButton
             tintColor={props.options.headerTintColor}
             onPress={props.navigation.goBack}

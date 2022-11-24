@@ -12,7 +12,8 @@ import { headerRightMapping } from 'headers/utils/headerRightMapping';
 
 export default function useEntityHeader(
   entityId: number,
-  includeHeaderRight: boolean = true
+  includeHeaderRight: boolean = true,
+  title: string = ''
 ) {
   const navigation = useNavigation();
   const route = useRoute();
@@ -54,7 +55,7 @@ export default function useEntityHeader(
         : null;
 
       const options: Partial<NativeStackNavigationOptions> = {
-        title: entity.name,
+        title: title || entity.name,
         headerRight,
         headerTintColor,
         headerShown: true

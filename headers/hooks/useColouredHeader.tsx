@@ -1,5 +1,8 @@
 import { useLayoutEffect } from 'react';
-import { NativeStackHeaderProps, NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import {
+  NativeStackHeaderProps,
+  NativeStackNavigationOptions
+} from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { headerWithBackgroundColor } from 'headers/utils/headerMappings';
 
@@ -9,7 +12,7 @@ export default function useColouredHeader(
   title: string
 ) {
   const navigation = useNavigation();
-  const HeaderComponent = headerWithBackgroundColor(backgroundColor)
+  const HeaderComponent = headerWithBackgroundColor(backgroundColor);
 
   useLayoutEffect(() => {
     const options: Partial<NativeStackNavigationOptions> = {

@@ -35,6 +35,7 @@ import useGetUserDetails from 'hooks/useGetUserDetails';
 import { TaskResponseType } from 'types/tasks';
 import dayjs from 'dayjs';
 import { deepCopy } from 'utils/copy';
+import useEntityHeader from 'headers/hooks/useEntityHeader';
 
 export default function EditTaskScreen({
   route,
@@ -134,6 +135,8 @@ export default function EditTaskScreen({
       }
     }
   }, [allTasks, userDetails, route.params.taskId]);
+
+  useEntityHeader(taskToEdit?.entity || 0, false, t('pageTitles.editTask'));
 
   const hasAllRequired = useMemo(() => {
     for (const fieldName in taskTopFields) {
@@ -240,7 +243,7 @@ export default function EditTaskScreen({
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
-        <WhitePaddedView style={styles.individualForm}>
+        <TransparentView>
           {updateSuccessful ? (
             <Text>{t('screens.editTask.updateSuccess')}</Text>
           ) : null}
@@ -256,8 +259,8 @@ export default function EditTaskScreen({
             inlineFields={true}
             fieldColor={fieldColor}
           />
-        </WhitePaddedView>
-        <WhitePaddedView style={styles.individualForm}>
+        </TransparentView>
+        <TransparentView>
           {taskTopFieldValues.recurrence ? (
             <TypedForm
               fields={taskRecurrentMiddleFields}
@@ -283,8 +286,8 @@ export default function EditTaskScreen({
               fieldColor={fieldColor}
             />
           )}
-        </WhitePaddedView>
-        <WhitePaddedView style={styles.individualForm}>
+        </TransparentView>
+        <TransparentView>
           <TypedForm
             fields={taskBottomFields}
             formValues={taskBottomFieldValues}
@@ -296,7 +299,7 @@ export default function EditTaskScreen({
             inlineFields={true}
             fieldColor={fieldColor}
           />
-        </WhitePaddedView>
+        </TransparentView>
 
         {isSubmitting ? (
           <PaddedSpinner
@@ -331,15 +334,6 @@ export default function EditTaskScreen({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 100
-  },
-  individualForm: {
-    marginBottom: 30,
-    paddingVertical: 30,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    shadowOffset: { height: 2, width: 2 },
-    elevation: 3
   },
   bottomButtons: {
     flexDirection: 'row',
