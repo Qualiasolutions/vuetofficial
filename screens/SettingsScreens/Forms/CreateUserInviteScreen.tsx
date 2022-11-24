@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import RTKForm from 'components/forms/RTKForm';
 import {
@@ -75,7 +75,7 @@ const CreateUserInviteScreen = ({
 
   return (
     <TransparentFullPageScrollView>
-      <TransparentPaddedView style={styles.formContainer}>
+      <TransparentView>
         {errorContent}
         <RTKForm
           fields={isFamilyRequest ? familyFormFields : friendFormFields}
@@ -95,15 +95,9 @@ const CreateUserInviteScreen = ({
           }}
           extraFields={extraFields}
         />
-      </TransparentPaddedView>
+      </TransparentView>
     </TransparentFullPageScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 100
-  }
-});
 
 export default CreateUserInviteScreen;

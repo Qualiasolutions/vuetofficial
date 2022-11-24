@@ -26,6 +26,7 @@ const SettingsScreen = ({
           onPress={() => {
             navigation.navigate('FamilySettings');
           }}
+          style={styles.familySettingsButton}
         />
         <Button
           title="FRIEND SETTINGS"
@@ -51,6 +52,9 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%'
+  },
+  familySettingsButton: {
+    marginBottom: 10
   }
 });
 

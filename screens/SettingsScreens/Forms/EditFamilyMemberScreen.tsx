@@ -18,7 +18,7 @@ import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useLayoutEffect } from 'react';
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -78,7 +78,7 @@ export default function EditFamilyMemberScreen({
 
     return (
       <TransparentFullPageScrollView>
-        <TransparentPaddedView style={styles.formContainer}>
+        <TransparentView style={styles.formContainer}>
           <RTKForm
             fields={formFields}
             methodHooks={{
@@ -90,7 +90,7 @@ export default function EditFamilyMemberScreen({
               navigation.navigate('FamilySettings');
             }}
           />
-        </TransparentPaddedView>
+        </TransparentView>
       </TransparentFullPageScrollView>
     );
   }

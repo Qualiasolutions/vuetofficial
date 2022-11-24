@@ -8,7 +8,7 @@ import { useFormUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
 import { useState } from 'react';
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -38,7 +38,7 @@ export default function MyAccountScreen() {
 
     return (
       <TransparentFullPageScrollView>
-        <TransparentPaddedView style={styles.formContainer}>
+        <TransparentView style={styles.formContainer}>
           {updateSuccess && (
             <BlackText text={t('screens.myAccount.updateSuccess')} />
           )}
@@ -53,7 +53,7 @@ export default function MyAccountScreen() {
             onValueChange={() => setUpdateSuccess(false)}
             formDataType="form"
           />
-        </TransparentPaddedView>
+        </TransparentView>
       </TransparentFullPageScrollView>
     );
   }

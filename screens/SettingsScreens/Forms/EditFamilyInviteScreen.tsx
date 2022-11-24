@@ -1,19 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SettingsTabParamList } from 'types/base';
 
-import { Text, View } from 'components/Themed';
 import {
   familyMemberForm,
   FamilyMemberFormFieldTypes
 } from './familyMemberFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { deepCopy } from 'utils/copy';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
   useGetUserInvitesQuery,
-  useUpdateUserDetailsMutation,
   useUpdateUserInviteMutation
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
@@ -21,9 +18,9 @@ import { useTranslation } from 'react-i18next';
 import GenericError from 'components/molecules/GenericError';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { useEffect } from 'react';
-import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 export default function EditEntityScreen({
   route,
@@ -86,19 +83,21 @@ export default function EditEntityScreen({
     }
 
     return (
-      <AlmostWhiteContainerView>
-        <RTKForm
-          fields={formFields}
-          methodHooks={{
-            PATCH: useUpdateUserInviteMutation
-          }}
-          formType="UPDATE"
-          extraFields={{ id: familyInviteToEdit.id }}
-          onSubmitSuccess={() => {
-            navigation.navigate('FamilySettings');
-          }}
-        />
-      </AlmostWhiteContainerView>
+      <TransparentFullPageScrollView>
+        <TransparentView>
+          <RTKForm
+            fields={formFields}
+            methodHooks={{
+              PATCH: useUpdateUserInviteMutation
+            }}
+            formType="UPDATE"
+            extraFields={{ id: familyInviteToEdit.id }}
+            onSubmitSuccess={() => {
+              navigation.navigate('FamilySettings');
+            }}
+          />
+        </TransparentView>
+      </TransparentFullPageScrollView>
     );
   }
   return null;
