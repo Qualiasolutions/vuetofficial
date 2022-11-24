@@ -17,7 +17,6 @@ import { Pressable, StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
-import { backgroundComponents } from 'screens/Forms/EntityForms/utils/backgroundComponents';
 import { datetimeSettingsMapping } from './utils/datetimeSettingsMapping';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
@@ -149,12 +148,6 @@ export default function EntityListPage({
     });
   }
 
-  const BackgroundComponent = (
-    listLinks.length === 0 && entityTypes
-      ? backgroundComponents[entityTypes[0]] || backgroundComponents.default
-      : WhiteFullPageScrollView
-  ) as React.ElementType;
-
   const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
     ? monthsBack < 24 &&
       previousEntityData.length > 0 && (
@@ -194,7 +187,7 @@ export default function EntityListPage({
 
   if (listLinks.length === 0) {
     return (
-      <BackgroundComponent>
+      <WhiteFullPageScrollView>
         {showPreviousButton}
         <TransparentPaddedView style={styles.container}>
           <AlmostBlackText
@@ -205,19 +198,19 @@ export default function EntityListPage({
           />
         </TransparentPaddedView>
         {showFutureButton}
-      </BackgroundComponent>
+      </WhiteFullPageScrollView>
     );
   }
 
   return (
-    <BackgroundComponent>
+    <WhiteFullPageScrollView>
       <TransparentPaddedView style={styles.container}>
         {showPreviousButton}
         {listLinks}
         {isFetching && <PaddedSpinner />}
         {showFutureButton}
       </TransparentPaddedView>
-    </BackgroundComponent>
+    </WhiteFullPageScrollView>
   );
 }
 

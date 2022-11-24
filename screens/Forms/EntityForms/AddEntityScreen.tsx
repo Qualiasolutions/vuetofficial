@@ -1,31 +1,20 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EntityTabParamList } from 'types/base';
 import AddEntityForm from 'components/forms/AddEntityForm';
-import {
-  TransparentPaddedView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
-import { useTranslation } from 'react-i18next';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
-import { backgroundComponents } from './utils/backgroundComponents';
-import { backgroundColours } from './utils/backgroundColours';
 import { Platform, StyleSheet, View } from 'react-native';
-import { PageTitle } from 'components/molecules/TextComponents';
 import { EntityTypeName } from 'types/entities';
 import DropDown from 'components/forms/components/DropDown';
 import { fieldColorMapping } from 'components/forms/utils/fieldColorMapping';
-import entityNameMappings from './utils/entityNameMappings';
-
-const titleMapping = {
-  DaysOff: 'Add Days Off'
-} as { [key: string]: string | undefined };
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import useAddEntityHeader from 'headers/hooks/useAddEntityHeader';
 
 export default function AddEntityScreen({
   route,
   navigation
 }: NativeStackScreenProps<EntityTabParamList, 'AddEntity'>) {
-  const { t } = useTranslation();
   const parentId = route.params.parentId;
   const rawEntityTypes = route.params.entityTypes;
   const parsedId = parentId
@@ -37,58 +26,19 @@ export default function AddEntityScreen({
   const entityTypes: EntityTypeName[] =
     typeof rawEntityTypes === 'string' ? [rawEntityTypes] : rawEntityTypes;
 
-  const headerTintColor = useThemeColor({}, 'primary');
   const [selectedEntityType, selectEntityType] = useState<EntityTypeName>(
     entityTypes[0]
-  );
-  const headerBackgroundColor = useThemeColor(
-    {},
-    backgroundColours[selectedEntityType] || backgroundColours.default
   );
 
   const fieldColor =
     selectedEntityType &&
     useThemeColor({}, fieldColorMapping[selectedEntityType]);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTintColor,
-      headerStyle: {
-        backgroundColor: headerBackgroundColor
-      },
-      headerShadowVisible: false,
-      headerTitleAlign: 'center',
-      headerTitle: (props) => {
-        return (
-          <TransparentView
-            style={{
-              height: 80,
-              alignItems: 'center',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <PageTitle
-              text={
-                titleMapping[selectedEntityType] ||
-                t('screens.addEntity.title', {
-                  entityType:
-                    entityNameMappings[selectedEntityType] || selectedEntityType
-                })
-              }
-              style={{ marginBottom: 0 }}
-            />
-          </TransparentView>
-        );
-      }
-    });
-  }, [selectedEntityType]);
-
-  const BackgroundComponent = (backgroundComponents[selectedEntityType] ||
-    backgroundComponents.default) as React.ElementType;
+  useAddEntityHeader(selectedEntityType);
 
   const entityTypeSelector =
     entityTypes && entityTypes.length > 1 ? (
-      <View
+      <TransparentView
         style={[
           styles.entityTypeSelectorWrapper,
           Platform.OS === 'ios' && { zIndex: 9999 }
@@ -105,16 +55,16 @@ export default function AddEntityScreen({
           }}
           style={{ backgroundColor: fieldColor }}
         ></DropDown>
-      </View>
+      </TransparentView>
     ) : null;
 
   return (
-    <BackgroundComponent>
+    <TransparentFullPageScrollView>
       {entityTypeSelector}
-      <TransparentPaddedView style={styles.formContainer}>
+      <TransparentView style={styles.formContainer}>
         <AddEntityForm entityType={selectedEntityType} parentId={parsedId} />
-      </TransparentPaddedView>
-    </BackgroundComponent>
+      </TransparentView>
+    </TransparentFullPageScrollView>
   );
 }
 

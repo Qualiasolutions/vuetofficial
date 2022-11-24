@@ -1,6 +1,6 @@
 import { UserFullResponse, UserResponse } from 'types/users';
 import { deepCopy } from 'utils/copy';
-import { FormFieldTypes, ImageField } from '../formFieldTypes';
+import { Field, FormFieldTypes, ImageField } from '../formFieldTypes';
 
 const createInitialObject = (
   fields: FormFieldTypes,
@@ -9,7 +9,10 @@ const createInitialObject = (
     [key: string]: any;
   }
 ): { [key: string]: any } => {
-  const formFields = deepCopy<FormFieldTypes>(fields);
+  if (Array.isArray(fields)) {
+    throw Error('`fields` cannot be an array');
+  }
+  const formFields = deepCopy<{ [key: string]: Field }>(fields);
   if (initialOverrides) {
     for (const fieldName in formFields) {
       if (Object.keys(formFields[fieldName]).includes('sourceField')) {

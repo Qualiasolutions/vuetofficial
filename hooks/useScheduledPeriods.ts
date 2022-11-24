@@ -11,7 +11,8 @@ export default function useScheduledPeriods(
   const [earliestPeriod, setEarliestPeriod] = useState<Date | null>(null);
   const [latestPeriod, setLatestPeriod] = useState<Date | null>(null);
 
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails, isLoading: isLoadingUserDetails } =
+    getUserFullDetails();
 
   useEffect(() => {
     const twoYearsAgo = new Date();
@@ -22,18 +23,19 @@ export default function useScheduledPeriods(
     setLatestPeriod(twoYearsAhead);
   }, []);
 
-  const { data: allPeriods } = useGetScheduledPeriodsQuery(
-    {
-      user_id: userDetails?.id || -1,
-      start_datetime: (start_datetime ||
-        earliestPeriod?.toISOString()) as string,
-      end_datetime: (end_datetime || latestPeriod?.toISOString()) as string
-    },
-    {
-      skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod),
-      pollingInterval: 30000
-    }
-  );
+  const { data: allPeriods, isLoading: isLoadingPeriods } =
+    useGetScheduledPeriodsQuery(
+      {
+        user_id: userDetails?.id || -1,
+        start_datetime: (start_datetime ||
+          earliestPeriod?.toISOString()) as string,
+        end_datetime: (end_datetime || latestPeriod?.toISOString()) as string
+      },
+      {
+        skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod),
+        pollingInterval: 30000
+      }
+    );
 
   const allReminders = [];
   if (allPeriods) {
@@ -53,10 +55,12 @@ export default function useScheduledPeriods(
   return allPeriods
     ? {
         periods: allPeriods,
-        reminders: allReminders
+        reminders: allReminders,
+        isLoading: isLoadingPeriods || isLoadingUserDetails
       }
     : {
         periods: [],
-        reminders: []
+        reminders: [],
+        isLoading: isLoadingPeriods || isLoadingUserDetails
       };
 }

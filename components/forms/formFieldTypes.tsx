@@ -107,9 +107,10 @@ export type Field =
   | ImageField
   | TimezoneField;
 
-export type FormFieldTypes = {
+export type FlatFormFieldTypes = {
   [key: string]: Field;
 };
+export type FormFieldTypes = FlatFormFieldTypes | FlatFormFieldTypes[];
 
 export const hasValueToDisplay = (
   x: any

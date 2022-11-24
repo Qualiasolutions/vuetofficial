@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import { FormFieldTypes } from '../formFieldTypes';
+import { FlatFormFieldTypes, FormFieldTypes } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
 
 const parseFormValues = (
   formValues: FieldValueTypes,
-  fields: FormFieldTypes
+  fields: FlatFormFieldTypes
 ) => {
   const parsedFormValues = { ...formValues };
   for (const field in parsedFormValues) {

@@ -73,8 +73,13 @@ export default function Form({
   formDataType?: FormDataType;
 }) {
   const { data: userDetails } = getUserFullDetails();
+
+  const flatFields = Array.isArray(fields)
+    ? fields.reduce((a, b) => ({ ...a, ...b }))
+    : fields;
+
   const initialFormValues = userDetails
-    ? createInitialObject(fields, userDetails)
+    ? createInitialObject(flatFields, userDetails)
     : {};
 
   const [formValues, setFormValues] =
@@ -144,15 +149,17 @@ export default function Form({
   }
 
   const hasAllRequired = useMemo(() => {
-    for (const fieldName in fields) {
-      if (fields[fieldName].required) {
+    for (const fieldName in flatFields) {
+      if (flatFields[fieldName].required) {
         if (
-          ['addMembers', 'addFamilyMembers'].includes(fields[fieldName].type)
+          ['addMembers', 'addFamilyMembers'].includes(
+            flatFields[fieldName].type
+          )
         ) {
           if (!formValues[fieldName] || formValues[fieldName].length === 0) {
             return false;
           }
-        } else if (fields[fieldName].type === 'dropDown') {
+        } else if (flatFields[fieldName].type === 'dropDown') {
           // Need to allow true-false option
           if (formValues[fieldName] === '') {
             return false;
@@ -170,7 +177,7 @@ export default function Form({
     setSubmittingForm(true);
 
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
-    const parsedFormValues = parseFormValues(formValues, fields);
+    const parsedFormValues = parseFormValues(formValues, flatFields);
 
     const derivedFields = derivedFieldsFunction
       ? derivedFieldsFunction({
@@ -243,7 +250,7 @@ export default function Form({
           setShowDeleteModal(false);
         }}
       />
-      <View>
+      <TransparentView>
         {submitError ? <Text>{submitError}</Text> : null}
         <TypedForm
           fields={fields}
@@ -256,7 +263,7 @@ export default function Form({
             onValueChange();
           }}
         />
-      </View>
+      </TransparentView>
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={{ marginTop: 20 }} />
       ) : (
@@ -294,7 +301,7 @@ const styles = StyleSheet.create({
   bottomButtons: {
     flexDirection: 'row',
     width: '100%',
-    marginTop: 30,
+    paddingHorizontal: 50,
     zIndex: -1,
     justifyContent: 'center'
   },

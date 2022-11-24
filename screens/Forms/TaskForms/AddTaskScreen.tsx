@@ -19,7 +19,8 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import {
   TransparentPaddedView,
   TransparentView,
-  WhitePaddedView
+  WhitePaddedView,
+  WhiteView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
@@ -136,7 +137,7 @@ export default function AddTaskScreen({
       const initialPeriodFields = createInitialObject(
         periodFields,
         userDetails,
-        { reminder_timedelta: "14 days, 0:00:00" }
+        { reminder_timedelta: '14 days, 0:00:00' }
       );
       setPeriodFieldValues(initialPeriodFields);
 
@@ -287,19 +288,23 @@ export default function AddTaskScreen({
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
-        <WhitePaddedView style={styles.individualForm}>
-          {createSuccessful ? (
-            <Text>{t('screens.addTask.createSuccess')}</Text>
-          ) : null}
-          {createError ? <Text>{createError}</Text> : null}
-          <RadioInput
-            value={formType}
-            label={t('common.addNew')}
-            permittedValues={formTypes}
-            onValueChange={(value) => {
-              setFormType(value.id as AddTaskFormType);
-            }}
-          />
+        <TransparentView>
+          <WhiteView style={styles.typeSelector}>
+            {createSuccessful ? (
+              <Text style={styles.createSuccessful}>
+                {t('screens.addTask.createSuccess')}
+              </Text>
+            ) : null}
+            {createError ? <Text>{createError}</Text> : null}
+            <RadioInput
+              value={formType}
+              label={t('common.addNew')}
+              permittedValues={formTypes}
+              onValueChange={(value) => {
+                setFormType(value.id as AddTaskFormType);
+              }}
+            />
+          </WhiteView>
           {formType === 'DUE_DATE' ? (
             <TypedForm
               fields={periodFields}
@@ -325,9 +330,9 @@ export default function AddTaskScreen({
               fieldColor={fieldColor}
             />
           )}
-        </WhitePaddedView>
+        </TransparentView>
         {formType !== 'DUE_DATE' && (
-          <WhitePaddedView style={styles.individualForm}>
+          <TransparentView>
             {taskTopFieldValues.recurrence ? (
               <TypedForm
                 fields={taskRecurrentMiddleFields}
@@ -353,10 +358,10 @@ export default function AddTaskScreen({
                 fieldColor={fieldColor}
               />
             )}
-          </WhitePaddedView>
+          </TransparentView>
         )}
         {formType === 'APPOINTMENT' && (
-          <WhitePaddedView style={styles.individualForm}>
+          <TransparentView>
             <TypedForm
               fields={taskBottomFields}
               formValues={taskBottomFieldValues}
@@ -368,7 +373,7 @@ export default function AddTaskScreen({
               inlineFields={true}
               fieldColor={fieldColor}
             />
-          </WhitePaddedView>
+          </TransparentView>
         )}
 
         {isSubmitting ? (
@@ -396,14 +401,13 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 100
   },
-  individualForm: {
-    marginBottom: 30,
-    paddingVertical: 30,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    shadowOffset: { height: 2, width: 2 },
-    elevation: 3
+  typeSelector: {
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    marginBottom: 20
+  },
+  createSuccessful: {
+    marginBottom: 20
   },
   bottomButtons: {
     flexDirection: 'row',

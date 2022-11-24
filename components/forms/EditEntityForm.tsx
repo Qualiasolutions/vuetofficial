@@ -67,14 +67,18 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     navigation.goBack();
   };
 
+  const flatFields = Array.isArray(formFields)
+    ? formFields.reduce((a, b) => ({ ...a, ...b }))
+    : formFields;
+
   if (entityId && allEntities.byId[entityId]) {
-    for (const fieldName in formFields) {
-      if (Object.keys(formFields[fieldName]).includes('sourceField')) {
-        formFields[fieldName].initialValue =
-          entityToEdit[(formFields[fieldName] as ImageField).sourceField] ||
+    for (const fieldName in flatFields) {
+      if (Object.keys(flatFields[fieldName]).includes('sourceField')) {
+        flatFields[fieldName].initialValue =
+          entityToEdit[(flatFields[fieldName] as ImageField).sourceField] ||
           null;
       } else if (fieldName in entityToEdit) {
-        formFields[fieldName].initialValue = entityToEdit[fieldName] || null;
+        flatFields[fieldName].initialValue = entityToEdit[fieldName] || null;
       }
     }
 

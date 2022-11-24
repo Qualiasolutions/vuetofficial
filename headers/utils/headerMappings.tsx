@@ -10,9 +10,10 @@ export const headerWithBackgroundColor = (
 ) => {
   return (props: NativeStackHeaderProps) => {
     const headerRight = props.options.headerRight;
+    const borderColor = useThemeColor({}, 'grey');
     return (
       <TransparentView style={{ height: height }}>
-        <View style={[styles.overlay, { backgroundColor }]}>
+        <View style={[styles.overlay, { backgroundColor, borderBottomWidth: 4, borderBottomColor: borderColor }]}>
           <HeaderBackButton
             tintColor={props.options.headerTintColor}
             onPress={props.navigation.goBack}
@@ -35,11 +36,17 @@ export const headerWithBackground = (
 ) => {
   return (props: NativeStackHeaderProps) => {
     const overlayColor = useThemeColor({}, 'overlay');
+    const borderColor = useThemeColor({}, 'grey');
     const headerRight = props.options.headerRight;
     return (
       <TransparentView style={{ height: height }}>
         <ImageBackground
-          style={{ width: '100%', height: '100%' }}
+          style={{
+            width: '100%',
+            height: '100%',
+            borderBottomWidth: 4,
+            borderBottomColor: borderColor
+          }}
           source={backgroundImage}
         >
           <View

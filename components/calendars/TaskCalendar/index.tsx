@@ -61,14 +61,18 @@ function Calendar({
   const { t } = useTranslation();
 
   const currentDate = new Date();
-  const { periods: allScheduledPeriods, reminders: allScheduledReminders } =
-    useScheduledPeriods();
+  const {
+    periods: allScheduledPeriods,
+    reminders: allScheduledReminders,
+    isLoading: isLoadingPeriods
+  } = useScheduledPeriods();
 
   // Load all scheduled tasks
   const {
     data: allScheduledTasks,
     error,
-    isLoading: isLoadingScheduledTasks
+    isLoading: isLoadingScheduledTasks,
+    isFetching: isFetchingScheduledTasks
   } = useGetAllScheduledTasksQuery(
     {
       start_datetime: getOffsetMonthStartDateString(currentDate, -24)
@@ -130,9 +134,14 @@ function Calendar({
     return <GenericError />;
   }
 
-  const isLoading = isLoadingScheduledTasks;
+  const isLoading = isLoadingScheduledTasks || isLoadingPeriods;
 
-  if (isLoading || !allScheduledTasks || !allScheduledPeriods) {
+  if (
+    isLoading ||
+    isFetchingScheduledTasks ||
+    !allScheduledTasks ||
+    !allScheduledPeriods
+  ) {
     return <FullPageSpinner />;
   }
 

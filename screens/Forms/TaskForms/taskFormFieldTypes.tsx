@@ -1,4 +1,8 @@
-import { Field, FormFieldTypes } from 'components/forms/formFieldTypes';
+import {
+  Field,
+  FlatFormFieldTypes,
+  FormFieldTypes
+} from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
@@ -10,7 +14,7 @@ import useGetUserDetails from 'hooks/useGetUserDetails';
 
 export const taskTopFieldTypes = (
   disabledRecurrenceFields: boolean = false
-): FormFieldTypes => {
+): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -67,7 +71,7 @@ export const taskTopFieldTypes = (
   };
 };
 
-export const periodFieldTypes = (): FormFieldTypes => {
+export const periodFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -127,7 +131,7 @@ export const periodFieldTypes = (): FormFieldTypes => {
 
 export const taskRecurrentMiddleFieldTypes = (
   disabledRecurrenceFields: boolean = false
-): FormFieldTypes => {
+): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {
@@ -140,7 +144,7 @@ export const taskRecurrentMiddleFieldTypes = (
   };
 };
 
-export const taskOneOffMiddleFieldTypes = (): FormFieldTypes => {
+export const taskOneOffMiddleFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {
@@ -152,7 +156,7 @@ export const taskOneOffMiddleFieldTypes = (): FormFieldTypes => {
   };
 };
 
-export const taskBottomFieldTypes = (): FormFieldTypes => {
+export const taskBottomFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {
@@ -184,7 +188,7 @@ export const taskBottomFieldTypes = (): FormFieldTypes => {
   };
 };
 
-const taskFieldTypes = (): FormFieldTypes => {
+const taskFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {
@@ -216,7 +220,7 @@ const taskFieldTypes = (): FormFieldTypes => {
   };
 };
 
-export const fixedTaskForm = (): FormFieldTypes => {
+export const fixedTaskForm = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const username = useSelector(selectUsername);
   const {

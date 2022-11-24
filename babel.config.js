@@ -14,7 +14,8 @@ module.exports = function (api) {
       assets: './assets',
       types: './types',
       hooks: './hooks',
-      headers: './headers'
+      headers: './headers',
+      styles: './styles'
     }
   };
 
