@@ -42,6 +42,8 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
+export default extendedApi;
+
 export const {
   useGetAllPeriodsQuery,
   useCreatePeriodMutation,

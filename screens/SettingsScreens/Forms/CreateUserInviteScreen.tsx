@@ -21,7 +21,6 @@ import {
 import { deepCopy } from 'utils/copy';
 import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { StyleSheet } from 'react-native';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { friendForm, FriendFormFieldTypes } from './friendFormFieldTypes';
 

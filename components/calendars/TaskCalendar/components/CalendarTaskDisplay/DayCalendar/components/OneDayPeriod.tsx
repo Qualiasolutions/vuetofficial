@@ -199,14 +199,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%'
   },
-  viewEditContainer: {
-    marginTop: 10,
-    paddingTop: 0,
-    marginLeft: 30
-  },
-  checkbox: {
-    margin: 10
-  },
   separator: {
     height: 1,
     width: '100%',
@@ -223,15 +215,6 @@ const styles = StyleSheet.create({
   expandedTitle: {
     fontSize: 18
   },
-  expandedOptions: {
-    marginTop: 10,
-    alignItems: 'flex-end'
-  },
-  expandedButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 5
-  },
   editImage: {
     height: 27,
     width: 31
@@ -246,11 +229,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.16,
     elevation: 5,
     borderWidth: 1
-  },
-  buttonTextStyle: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 12
   },
   selectedTouchableContainer: { alignItems: 'flex-start', marginTop: 20 },
   memberColor: {
