@@ -158,7 +158,6 @@ export default function HolidayDetailScreen({
   }, [selectedHolidays, previouslySelectedHolidays]);
 
   const filteredHolidays = useMemo(() => {
-    console.log(holidays);
     if (!holidays) {
       return [];
     }

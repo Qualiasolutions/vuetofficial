@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Text } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 import { FormFieldTypes } from './formFieldTypes';

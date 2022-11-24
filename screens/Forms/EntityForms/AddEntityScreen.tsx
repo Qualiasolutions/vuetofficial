@@ -17,7 +17,7 @@ export default function AddEntityScreen({
 }: NativeStackScreenProps<EntityTabParamList, 'AddEntity'>) {
   const parentId = route.params.parentId;
   const rawEntityTypes = route.params.entityTypes;
-  const parsedId = parentId
+  const parsedParentId = parentId
     ? typeof parentId === 'number'
       ? parentId
       : parseInt(parentId)
@@ -62,7 +62,10 @@ export default function AddEntityScreen({
     <TransparentFullPageScrollView>
       {entityTypeSelector}
       <TransparentView style={styles.formContainer}>
-        <AddEntityForm entityType={selectedEntityType} parentId={parsedId} />
+        <AddEntityForm
+          entityType={selectedEntityType}
+          parentId={parsedParentId}
+        />
       </TransparentView>
     </TransparentFullPageScrollView>
   );

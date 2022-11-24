@@ -126,7 +126,8 @@ function Calendar({
       filteredAllPeriods &&
       filteredAllReminders &&
       filteredAllPeriods.length === 0 &&
-      filteredAllReminders.length === 0
+      filteredAllReminders.length === 0 &&
+      filteredTasks.length === 0
     );
   }, [filteredTasks, filteredAllPeriods, filteredAllReminders]);
 

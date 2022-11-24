@@ -33,11 +33,13 @@ const extendedApi = vuetApi.injectEndpoints({
               'getScheduledPeriods',
               originalArgs,
               (draft) => {
-                let periodsToUpdate = draft.filter(
-                  (period) => period.reminders.map(r => r.id).includes(patch.id)
+                let periodsToUpdate = draft.filter((period) =>
+                  period.reminders.map((r) => r.id).includes(patch.id)
                 );
                 for (const period of periodsToUpdate) {
-                  const remindersToUpdate = period.reminders.filter(r => r.id === patch.id)
+                  const remindersToUpdate = period.reminders.filter(
+                    (r) => r.id === patch.id
+                  );
                   for (const reminder of remindersToUpdate) {
                     Object.assign(reminder, patch);
                   }
