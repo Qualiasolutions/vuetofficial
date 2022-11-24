@@ -137,8 +137,11 @@ function Calendar({
   const isLoading = isLoadingScheduledTasks || isLoadingPeriods;
 
   if (
-    isLoading ||
-    isFetchingScheduledTasks ||
+    // If we include this then every time we poll for changes
+    // we get a loading spinner - try and figure out how to
+    // resolve this
+    // isLoading ||
+    // isFetchingScheduledTasks ||
     !allScheduledTasks ||
     !allScheduledPeriods
   ) {
