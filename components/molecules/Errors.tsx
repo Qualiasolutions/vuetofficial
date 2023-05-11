@@ -1,6 +1,6 @@
-import { useThemeColor } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
 import { StyleSheet, TextStyle } from 'react-native';
-import { View as DefaultView, Text } from 'react-native';
+import { View as DefaultView } from 'react-native';
 
 type ThemeProps = {
   lightColor?: string;
@@ -24,6 +24,18 @@ export function ErrorBox(
     'errorText'
   );
 
+
+  const styles = StyleSheet.create({
+    errorBox: {
+      paddingVertical: 10,
+      margin: 10,
+      paddingHorizontal: 15,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: textColor
+    }
+  });
+
   return (
     <DefaultView
       style={[{ backgroundColor }, styles.errorBox, style]}
@@ -33,10 +45,3 @@ export function ErrorBox(
     </DefaultView>
   );
 }
-
-const styles = StyleSheet.create({
-  errorBox: {
-    padding: 10,
-    margin: 10
-  }
-});
