@@ -199,6 +199,7 @@
     "continue": "Continue",
     "skip": "Skip",
     "save": "Save",
+    "cancel": "Cancel",
     "addTitle": "Add title",
     "addNew": "Add new",
     "accept": "Accept",
@@ -357,6 +358,10 @@
       "showOlderEvents": "Show older events",
       "showNewerEvents": "Show more",
       "noTasks": "Currently no tasks or deadlines have been added."
+    },
+    "logOutModal": {
+      "logOut": "Log Out",
+      "sure": "Are you sure you would like to log out?"
     }
   }
 }

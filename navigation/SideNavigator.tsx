@@ -6,7 +6,7 @@ import {
   DrawerItemList
 } from '@react-navigation/drawer';
 
-import * as React from 'react';
+import React, { useState } from 'react';
 
 import { SideNavigatorTabParamList } from '../types/base';
 
@@ -31,6 +31,7 @@ import { selectPushToken } from 'reduxStore/slices/notifications/selectors';
 import { blacklistTokenAsync } from 'utils/authRequests';
 import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
 import TransparentDrawerHeader from 'headers/TransparentDrawerHeader';
+import { YesNoModal } from 'components/molecules/Modals';
 
 const SideDrawer = createDrawerNavigator<SideNavigatorTabParamList>();
 
@@ -59,6 +60,7 @@ function CustomIcon({ name, showChevron = true }: CustomIconProps) {
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const [loggingOut, setLoggingOut] = useState(false);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userDetails } = getUserFullDetails();
   const devicePushToken = useSelector(selectPushToken);
@@ -96,9 +98,16 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItemList {...props} />
       <DrawerItem
         label={t('screens.drawer.logOut')}
-        onPress={logOut}
+        onPress={() => { setLoggingOut(true) }}
         icon={() => <CustomIcon name="log-out" showChevron={false} />}
         labelStyle={[styles.drawerLabel, { color: labelColor }]}
+      />
+      <YesNoModal
+        title={t("components.logOutModal.logOut")}
+        question={t("components.logOutModal.sure")}
+        visible={!!loggingOut}
+        onYes={logOut}
+        onNo={() => { setLoggingOut(false) }}
       />
     </DrawerContentScrollView>
   );
