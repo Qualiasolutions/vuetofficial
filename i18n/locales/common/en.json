@@ -193,6 +193,7 @@
     "confirm": "Confirm",
     "verify": "Verify",
     "add": "Add",
+    "oops": "Oops",
     "genericError": "Oops, something went wrong. Please try again later.",
     "next": "Next",
     "hide": "Hide",
@@ -206,6 +207,7 @@
     "reject": "Reject",
     "yes": "Yes",
     "no": "No",
+    "update": "Update",
     "search": "Type any keyword to search",
     "category": "Category",
     "thing": "Thing",
@@ -341,6 +343,12 @@
     },
     "myAccount": {
       "updateSuccess": "Account details successfully updated"
+    },
+    "editPhoneNumber": {
+      "currentPhone": "Current phone number associated to this account:",
+      "enterNew": "To update the phone number associated to this account, please enter your new number below:",
+      "invalidPhone": "That doesn't seem to be a valid phone number.",
+      "updateSuccess": "Successfully updated phone number."
     }
   },
   "components": {

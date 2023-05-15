@@ -9,7 +9,6 @@ import { UnauthorisedTabParamList } from 'types/base';
 import {
   useCreateAccountMutation,
   useCreatePhoneValidationMutation,
-  useUpdatePhoneValidationMutation
 } from 'reduxStore/services/api/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Constants from 'expo-constants';

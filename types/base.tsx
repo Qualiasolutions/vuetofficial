@@ -14,7 +14,7 @@ import { EntityTypeName } from './entities';
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
+    interface RootParamList extends RootStackParamList { }
   }
 }
 
@@ -68,6 +68,15 @@ export type SettingsTabParamList = {
 export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
   NativeStackScreenProps<SettingsTabParamList, Screen>;
 
+// MyAccount Stack
+export type MyAccountTabParamList = {
+  MyAccount: undefined;
+  EditPhoneNumber: undefined;
+  EditAccountType: undefined;
+};
+export type MyAccountTabScreenProps<Screen extends keyof MyAccountTabParamList> =
+  NativeStackScreenProps<MyAccountTabParamList, Screen>;
+
 // Entities Stack
 export type EntityTabParamList = {
   Categories: { initial: boolean; screen: string };
@@ -116,9 +125,9 @@ export type EntityTabParamList = {
 export type SideNavigatorTabParamList = {
   BottomTabNavigator: undefined;
   SettingsNavigator: undefined;
+  MyAccountNavigator: undefined;
   Help: undefined;
   Notifications: undefined;
-  MyAccount: undefined;
   Contact: undefined;
 };
 
@@ -159,4 +168,5 @@ export type TabParamList = RootTabParamList &
   UnauthorisedTabParamList &
   SetupTabParamList &
   FamilyRequestTabParamList &
-  SettingsTabParamList;
+  SettingsTabParamList &
+  MyAccountTabParamList;

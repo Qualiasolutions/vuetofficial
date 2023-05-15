@@ -8,18 +8,21 @@ import { useFormUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
 import { useState } from 'react';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentPaddedView, TransparentView, WhitePaddedView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { BlackText } from 'components/molecules/TextComponents';
+import { Button } from 'components/molecules/ButtonComponents';
+import { useNavigation } from '@react-navigation/native';
 
 export default function MyAccountScreen() {
   const { data: userDetails } = getUserFullDetails();
   const { t } = useTranslation();
   const formFields = deepCopy<MyAccountFormFieldTypes>(myAccountForm());
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const navigation = useNavigation();
 
   if (!userDetails) {
     return <FullPageSpinner />;
@@ -54,6 +57,32 @@ export default function MyAccountScreen() {
             formDataType="form"
           />
         </TransparentView>
+        <TransparentPaddedView>
+          <TransparentPaddedView>
+            <Button
+              title="Account Type"
+              onPress={() => { (navigation.navigate as any)('EditAccountType') }}
+            />
+          </TransparentPaddedView>
+          <TransparentPaddedView>
+            <Button
+              title="Phone Number"
+              onPress={() => { (navigation.navigate as any)('EditPhoneNumber') }}
+            />
+          </TransparentPaddedView>
+          <TransparentPaddedView>
+            <Button
+              title="Settings"
+              onPress={() => { (navigation.navigate as any)('SettingsNavigator') }}
+            />
+          </TransparentPaddedView>
+          <TransparentPaddedView>
+            <Button
+              title="My Family"
+              onPress={() => { (navigation.navigate as any)('SettingsNavigator', { screen: "FamilySettings" }) }}
+            />
+          </TransparentPaddedView>
+        </TransparentPaddedView>
       </TransparentFullPageScrollView>
     );
   }
@@ -63,6 +92,6 @@ export default function MyAccountScreen() {
 
 const styles = StyleSheet.create({
   formContainer: {
-    marginBottom: 100
+    marginBottom: 20
   }
 });

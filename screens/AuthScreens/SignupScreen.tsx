@@ -75,6 +75,10 @@ const SignupScreen = ({
         onChangeFormattedText={(text) => {
           onChangePhoneNumber(text);
         }}
+        containerStyle={{ height: 50 }}
+        textInputStyle={{
+          height: 50
+        }}
       />
       <Button
         title={t('common.confirm')}

@@ -13,7 +13,6 @@ export type MyAccountFormFieldTypes = {
   last_name: StringField;
   dob: DateField;
   member_colour: ColourField;
-  phone_number: PhoneNumberField;
 };
 
 export const myAccountForm = (): MyAccountFormFieldTypes => {
@@ -46,11 +45,6 @@ export const myAccountForm = (): MyAccountFormFieldTypes => {
       type: 'colour',
       required: true,
       displayName: t('familyMember.member_colour')
-    },
-    phone_number: {
-      type: 'phoneNumber',
-      required: true,
-      displayName: t('familyMember.phone_number')
     }
   };
 };

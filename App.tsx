@@ -20,6 +20,7 @@ import { vuetApi } from 'reduxStore/services/api/api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import './i18n/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 
 const persistConfig = {
   key: 'root',
@@ -59,6 +60,7 @@ export default function App() {
               <Navigation colorScheme={colorScheme} />
             </GestureHandlerRootView>
             <StatusBar translucent={true} />
+            <Toast position='bottom' />
           </SafeAreaProvider>
         </PersistGate>
       </Provider>

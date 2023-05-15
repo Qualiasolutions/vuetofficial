@@ -30,16 +30,18 @@ export type RegisterAccountResponse = {
 
 export function isInvalidPhoneNumberError(
   error: unknown
-): error is { data: { phone_number: ['Enter a valid phone number.'] } } {
+): error is { data: { phone_number: ['Enter a valid phone number.' | 'The phone number entered is not valid.'] } } {
   return (
     typeof error === 'object' &&
     error !== null &&
     'data' in error &&
-    typeof (error as any).data === 'object' &&
     typeof ((error as any).data as any) === 'object' &&
     typeof ((error as any).data as any).phone_number === 'object' &&
-    (((error as any).data as any).phone_number as any)['0'] ===
-      'Enter a valid phone number.'
+    [
+      'Enter a valid phone number.',
+      'The phone number entered is not valid.'
+    ]
+      .includes((((error as any).data as any).phone_number as any)['0'])
   );
 }
 

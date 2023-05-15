@@ -14,7 +14,6 @@ import { BottomTabNavigator } from './RootNavigator';
 import { SettingsNavigator } from './SettingsNavigator';
 import HelpScreen from 'screens/HelpScreen';
 import NotificationsScreen from 'screens/NotificationsScreen';
-import MyAccountScreen from 'screens/MyAccountScreen';
 import ContactScreen from 'screens/ContactScreen';
 import { Feather } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
@@ -32,6 +31,7 @@ import { blacklistTokenAsync } from 'utils/authRequests';
 import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
 import TransparentDrawerHeader from 'headers/TransparentDrawerHeader';
 import { YesNoModal } from 'components/molecules/Modals';
+import { MyAccountNavigator } from './MyAccountNavigator';
 
 const SideDrawer = createDrawerNavigator<SideNavigatorTabParamList>();
 
@@ -140,8 +140,8 @@ export function SideNavigator() {
         }}
       />
       <SideDrawer.Screen
-        name="MyAccount"
-        component={MyAccountScreen}
+        name="MyAccountNavigator"
+        component={MyAccountNavigator}
         options={{
           title: 'My Account',
           drawerIcon: () => <CustomIcon name="user" />

@@ -65,6 +65,7 @@ export type UpdateUserRequest = {
   user_id: number;
   family?: number;
   username?: string;
+  phone_number?: string;
   first_name?: string;
   last_name?: string;
   dob?: string;
