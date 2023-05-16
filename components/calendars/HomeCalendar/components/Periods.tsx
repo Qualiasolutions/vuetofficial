@@ -1,23 +1,21 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import { Pressable, SectionList, StyleSheet } from 'react-native';
-import { AlmostBlackText, BlackText, PrimaryText } from './TextComponents';
+import { AlmostBlackText, BlackText, PrimaryText } from 'components/molecules/TextComponents';
 import {
   TransparentView,
-  WhiteContainerView,
   WhiteView
-} from './ViewComponents';
+} from 'components/molecules/ViewComponents';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useGetAllPeriodsQuery } from 'reduxStore/services/api/period';
-import { FullPageSpinner, PaddedSpinner } from './Spinners';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 import { getDateWithoutTimezone } from 'utils/datesAndTimes';
 import { useTranslation } from 'react-i18next';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
-export type TaskData = {
+export type PeriodData = {
   title: string;
   message: string;
-  key: number;
+  key: string;
   date: string;
 }[];
 
@@ -25,21 +23,24 @@ export type PeriodsProps = {
   periods: {
     title: string;
     key: string;
-    data: TaskData;
+    data: PeriodData;
   }[];
+  onChangeFirstDate?: (date: string) => void;
+  defaultDate?: string | null;
 };
-export default function Periods({ periods }: PeriodsProps) {
-  const navigation = useNavigation();
+export default function Periods({ periods, onChangeFirstDate, defaultDate }: PeriodsProps) {
   const { t } = useTranslation();
-  const { data: allPeriods } = useGetAllPeriodsQuery('');
   const [monthsBack, setMonthsBack] = useState(0);
+  const listRef = useRef<SectionList | null>(null)
 
   const earliestDate = useMemo(() => {
-    const earliest = new Date();
-    earliest.setDate(0);
+    const earliest = defaultDate ? new Date(defaultDate) : new Date();
+    if (!defaultDate) {
+      earliest.setDate(0);
+    }
     earliest.setMonth(earliest.getMonth() - monthsBack);
     return earliest;
-  }, [monthsBack]);
+  }, [monthsBack, defaultDate]);
 
   const filteredPeriods = useMemo(() => {
     for (const period of periods) {
@@ -53,14 +54,10 @@ export default function Periods({ periods }: PeriodsProps) {
 
   const styles = style();
 
-  if (!allPeriods) {
-    return <PaddedSpinner style={{ height: '100%', paddingTop: 100 }} />;
-  }
-
   return (
     <WhiteView style={{ height: '100%' }}>
       {monthsBack < 24 && (
-        <Pressable
+        <TouchableOpacity
           onPress={() => setMonthsBack(monthsBack + 6)}
           style={styles.showOlderWrapper}
         >
@@ -68,9 +65,10 @@ export default function Periods({ periods }: PeriodsProps) {
             text={t('components.calendar.showOlderEvents')}
             style={styles.showOlderText}
           />
-        </Pressable>
+        </TouchableOpacity>
       )}
       <SectionList
+        ref={listRef}
         sections={filteredPeriods}
         renderSectionHeader={({ section }) => (
           <TransparentView style={styles.sectionHeader}>
@@ -80,21 +78,15 @@ export default function Periods({ periods }: PeriodsProps) {
         renderItem={({ item }) => (
           <Pressable
             style={styles.sectionItem}
-            onPress={() => {
-              (navigation.navigate as any)('EntityNavigator', {
-                screen: 'EntityScreen',
-                initial: false,
-                params: { entityId: allPeriods.byId[item.key].entity }
-              });
-            }}
+            onPress={() => { }}
           >
             <TransparentView style={styles.calendarContainer}>
               <Feather name="calendar" color={'#fff'} size={15} />
             </TransparentView>
 
-            <TransparentView>
+            <TransparentView style={{ flexDirection: "row" }}>
+              {item.message && <BlackText text={item.message} style={{ marginRight: 10 }} />}
               <PrimaryText text={item.title} />
-              <BlackText text={item.message} />
             </TransparentView>
           </Pressable>
         )}
@@ -102,6 +94,11 @@ export default function Periods({ periods }: PeriodsProps) {
           <TransparentView style={styles.divider} />
         )}
         contentContainerStyle={{ paddingBottom: 400 }}
+        onViewableItemsChanged={(items) => {
+          if (onChangeFirstDate) {
+            onChangeFirstDate(items.viewableItems[0]?.section?.date)
+          }
+        }}
       />
     </WhiteView>
   );

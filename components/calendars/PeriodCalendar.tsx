@@ -1,14 +1,9 @@
 import React, { useMemo } from 'react';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import CalendarView, {
-  CalendarViewProps
-} from 'components/molecules/CalendarView';
+import CalendarView from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
-import Periods, { PeriodData } from 'components/molecules/Periods';
-import {
-  getDateStringsBetween,
-  getUTCValuesFromDateString
-} from 'utils/datesAndTimes';
+import Periods, { TaskData } from 'components/molecules/Periods';
+import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { PeriodResponse } from 'types/periods';
@@ -42,7 +37,7 @@ function Calendar({ filters = [] }: CalendarProps) {
   const periodsDates = placeOverlappingPeriods(filteredPeriods, periodColour);
 
   const periodData: {
-    [key: string]: PeriodData;
+    [key: string]: TaskData;
   } = {};
   for (const p of filteredPeriods) {
     const periodStartUtcValues = getUTCValuesFromDateString(p.start_date);
@@ -51,7 +46,7 @@ function Calendar({ filters = [] }: CalendarProps) {
 
     const message =
       periodStartUtcValues.day === periodEndUtcValues.day &&
-      periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName
+        periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName
         ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
         : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
 

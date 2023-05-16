@@ -33,7 +33,6 @@ export default function useScheduledPeriods(
       },
       {
         skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod),
-        pollingInterval: 30000
       }
     );
 
@@ -54,13 +53,13 @@ export default function useScheduledPeriods(
 
   return allPeriods
     ? {
-        periods: allPeriods,
-        reminders: allReminders,
-        isLoading: isLoadingPeriods || isLoadingUserDetails
-      }
+      periods: allPeriods,
+      reminders: allReminders,
+      isLoading: isLoadingPeriods || isLoadingUserDetails
+    }
     : {
-        periods: [],
-        reminders: [],
-        isLoading: isLoadingPeriods || isLoadingUserDetails
-      };
+      periods: [],
+      reminders: [],
+      isLoading: isLoadingPeriods || isLoadingUserDetails
+    };
 }

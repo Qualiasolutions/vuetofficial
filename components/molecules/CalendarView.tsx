@@ -24,9 +24,12 @@ export type CalendarViewProps = {
       selectedColor?: string;
     };
   };
+  defaultMonth?: string | null;
+  onChangeDate?: (date: string) => void;
 };
 
-export default function CalendarView({ dates }: CalendarViewProps) {
+export default function CalendarView({ dates, defaultMonth, onChangeDate }: CalendarViewProps) {
+  console.log("STARTING")
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
@@ -73,6 +76,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
     return [];
   }, [selectedDay, dates, allPeriods]);
 
+  console.log("RETURNING")
   return (
     <WhiteFullPageScrollView style={styles.container}>
       <Calendar
@@ -92,7 +96,17 @@ export default function CalendarView({ dates }: CalendarViewProps) {
         horizontal={true}
         onDayPress={(day) => {
           setSelectedDay(day);
+          console.log(day.dateString)
+          if (onChangeDate) {
+            onChangeDate(day.dateString)
+          }
         }}
+        onMonthChange={(date) => {
+          if (onChangeDate) {
+            onChangeDate(date.dateString)
+          }
+        }}
+        current={defaultMonth || undefined}
       />
 
       {allPeriods && selectedDayPeriods && (
@@ -107,7 +121,7 @@ export default function CalendarView({ dates }: CalendarViewProps) {
 
             const text =
               periodStartUtcValues.day === periodEndUtcValues.day &&
-              periodStartUtcValues.monthShortName ===
+                periodStartUtcValues.monthShortName ===
                 periodEndUtcValues.monthShortName
                 ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
                 : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
