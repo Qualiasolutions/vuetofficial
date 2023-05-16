@@ -1,7 +1,7 @@
 import { Button } from "components/molecules/ButtonComponents";
 import { FullPageSpinner } from "components/molecules/Spinners";
 import { PageTitle } from "components/molecules/TextComponents";
-import { TransparentContainerView } from "components/molecules/ViewComponents";
+import { TransparentContainerView, TransparentPaddedView } from "components/molecules/ViewComponents";
 import { Text, TextInput } from "components/Themed";
 import getUserFullDetails from "hooks/useGetUserDetails";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function EditSecurityScreen() {
     return <FullPageSpinner />
   }
 
-  return <TransparentContainerView>
+  return <TransparentPaddedView>
     <PageTitle text={t("screens.editSecurity.updatePassword")} />
     <TextInput
       value={oldPassword}
@@ -63,5 +63,5 @@ export default function EditSecurityScreen() {
       }}
       disabled={!oldPassword || !newPassword || !(newPassword === newPasswordConf)}
     />
-  </TransparentContainerView>
+  </TransparentPaddedView>
 }

@@ -1,6 +1,5 @@
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
+import { HeaderTitle } from '@react-navigation/elements';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { View } from 'components/Themed';
 import { ImageBackground, StyleSheet } from 'react-native';

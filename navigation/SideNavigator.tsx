@@ -127,7 +127,7 @@ export function SideNavigator() {
         drawerLabelStyle: [styles.drawerLabel, { color: labelColor }],
         headerTintColor,
         headerTitleAlign: 'center',
-        header: (props) => <TransparentDrawerHeader {...props} />
+        header: (props) => <TransparentDrawerHeader {...props} />,
       }}
     >
       <SideDrawer.Screen

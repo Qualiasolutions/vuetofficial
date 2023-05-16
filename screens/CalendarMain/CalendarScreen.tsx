@@ -78,7 +78,10 @@ export function CalendarScreenHeaderLeft() {
 
 type Props = RootTabScreenProps<'CalendarScreen'>;
 function CalendarScreen({ navigation }: Props) {
-  return <HomeCalendar />
+  return <HomeCalendar
+    taskFilters={[]}
+    periodFilters={[]}
+  />
   // return <Calendar taskFilters={[]} periodFilters={[]} reminderFilters={[]} />;
 }
 
