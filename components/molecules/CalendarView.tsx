@@ -29,7 +29,6 @@ export type CalendarViewProps = {
 };
 
 export default function CalendarView({ dates, defaultMonth, onChangeDate }: CalendarViewProps) {
-  console.log("STARTING")
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
@@ -76,7 +75,6 @@ export default function CalendarView({ dates, defaultMonth, onChangeDate }: Cale
     return [];
   }, [selectedDay, dates, allPeriods]);
 
-  console.log("RETURNING")
   return (
     <WhiteFullPageScrollView style={styles.container}>
       <Calendar
