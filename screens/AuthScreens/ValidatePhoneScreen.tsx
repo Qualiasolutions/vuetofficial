@@ -37,10 +37,10 @@ const ValidatePhoneScreen = ({
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.validatePhone.title')} />
-      <PageSubtitle text={t('screens.validatePhone.enterCode')} />
       {errorContent}
       <ValidationCodeInput
         validationId={route?.params?.validationId}
+        phoneNumber={route?.params?.phoneNumber}
         onSuccess={() => {
           navigation.navigate('CreatePassword', {
             phoneNumber: route.params.phoneNumber
@@ -54,16 +54,6 @@ const ValidatePhoneScreen = ({
           }
         }}
       />
-      <Text>{t('screens.validatePhone.didntGetCode')}</Text>
-      <Pressable
-        onPress={() => {
-          createPhoneValidation({
-            phone_number: route.params?.phoneNumber
-          });
-        }}
-      >
-        <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
-      </Pressable>
     </AlmostWhiteContainerView>
   );
 };

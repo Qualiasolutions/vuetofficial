@@ -25,19 +25,12 @@ export function EditPhoneNumberScreen() {
     return <FullPageSpinner />
   }
 
-  // console.log("userDetails")
-  // console.log(userDetails)
-  // console.log(userDetails["phone_number"])
-  // console.log(newPhone)
-
   if (validationId) {
     return <TransparentFullPageScrollView>
       <TransparentPaddedView>
-        <Text>
-          {t("screens.validatePhone.enterCode")}
-        </Text>
         <ValidationCodeInput
           validationId={validationId}
+          phoneNumber={newPhone}
           onSuccess={() => {
             updateUserDetails({ user_id: userDetails.id, phone_number: newPhone })
               .unwrap()

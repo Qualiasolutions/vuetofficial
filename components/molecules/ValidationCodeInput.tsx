@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
 import { Text, useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
+  useCreatePhoneValidationMutation,
   useUpdatePhoneValidationMutation
 } from 'reduxStore/services/api/signup';
 
@@ -15,13 +16,16 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell
 } from 'react-native-confirmation-code-field';
+import { PrimaryText } from './TextComponents';
+import { TransparentContainerView } from './ViewComponents';
 
 type ValidationCodeInputProps = {
   validationId: number;
+  phoneNumber: string;
   onSuccess: () => void;
   onError: (err: any) => void;
 }
-export default function ValidationCodeInput({ validationId, onSuccess, onError }: ValidationCodeInputProps) {
+export default function ValidationCodeInput({ validationId, phoneNumber, onSuccess, onError }: ValidationCodeInputProps) {
   const [validationCode, onChangeValidationCode] = React.useState<string>('');
   const ref = useBlurOnFulfill({ value: validationCode, cellCount: 6 });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -29,6 +33,7 @@ export default function ValidationCodeInput({ validationId, onSuccess, onError }
     setValue: onChangeValidationCode
   });
   const [updatePhoneValidation, result] = useUpdatePhoneValidationMutation();
+  const [createPhoneValidation, createPhoneValidationResult] = useCreatePhoneValidationMutation();
 
   const greyColor = useThemeColor({}, 'grey');
   const whiteColor = useThemeColor({}, 'white');
@@ -45,7 +50,10 @@ export default function ValidationCodeInput({ validationId, onSuccess, onError }
     }
   }, [result]);
 
-  return <>
+  return <TransparentContainerView>
+    <Text>
+      {t("screens.validatePhone.enterCode")}
+    </Text>
     <CodeField
       ref={ref}
       {...props}
@@ -81,7 +89,17 @@ export default function ValidationCodeInput({ validationId, onSuccess, onError }
       }}
       style={styles.confirmButton}
     />
-  </>
+    <Text>{t('screens.validatePhone.didntGetCode')}</Text>
+    <Pressable
+      onPress={() => {
+        createPhoneValidation({
+          phone_number: phoneNumber
+        });
+      }}
+    >
+      <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
+    </Pressable>
+  </TransparentContainerView>
 }
 
 const styles = StyleSheet.create({
