@@ -7,7 +7,8 @@ import {
   UpdateUserRequest,
   UserInviteResponse,
   UserResponse,
-  UserFullResponse
+  UserFullResponse,
+  SecureUpdateUserRequest
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -28,6 +29,14 @@ const extendedApi = vuetApi.injectEndpoints({
     updateUserDetails: builder.mutation<UserResponse, UpdateUserRequest>({
       query: (body) => ({
         url: `core/user-simple/${body.user_id}/`,
+        method: 'PATCH',
+        body
+      }),
+      invalidatesTags: ['User']
+    }),
+    secureUpdateUserDetails: builder.mutation<UserResponse, SecureUpdateUserRequest>({
+      query: (body) => ({
+        url: `core/user-secure-update/${body.user_id}/`,
         method: 'PATCH',
         body
       }),
@@ -91,6 +100,7 @@ export const {
   useGetUserFullDetailsQuery,
   useGetUserDetailsQuery,
   useUpdateUserDetailsMutation,
+  useSecureUpdateUserDetailsMutation,
   useFormUpdateUserDetailsMutation,
   useGetUserInvitesQuery,
   useCreateUserInviteMutation,

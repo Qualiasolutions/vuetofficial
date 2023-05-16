@@ -73,6 +73,8 @@ export type MyAccountTabParamList = {
   MyAccount: undefined;
   EditPhoneNumber: undefined;
   EditAccountType: undefined;
+  EditAccountDetails: undefined;
+  EditSecurity: undefined;
 };
 export type MyAccountTabScreenProps<Screen extends keyof MyAccountTabParamList> =
   NativeStackScreenProps<MyAccountTabParamList, Screen>;

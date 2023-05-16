@@ -71,6 +71,13 @@ export type UpdateUserRequest = {
   dob?: string;
   member_colour?: string;
   has_done_setup?: boolean;
+  is_premium?: boolean;
+};
+
+export type SecureUpdateUserRequest = {
+  user_id: number;
+  old_password: string;
+  password?: string;
 };
 
 export type FormUpdateUserRequest = {
@@ -104,6 +111,7 @@ export type UserFullResponse = {
   friends: UserResponse[];
   last_login: string;
   is_superuser: boolean;
+  is_premium: boolean;
   username: string;
   first_name: string;
   last_name: string;

@@ -1,0 +1,67 @@
+import { Button } from "components/molecules/ButtonComponents";
+import { FullPageSpinner } from "components/molecules/Spinners";
+import { PageTitle } from "components/molecules/TextComponents";
+import { TransparentContainerView } from "components/molecules/ViewComponents";
+import { Text, TextInput } from "components/Themed";
+import getUserFullDetails from "hooks/useGetUserDetails";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { useSecureUpdateUserDetailsMutation } from "reduxStore/services/api/user";
+import { isFieldErrorCodeError } from "types/signup";
+
+export default function EditSecurityScreen() {
+  const { t } = useTranslation();
+  const [oldPassword, setOldPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [newPasswordConf, setNewPasswordConf] = useState("")
+  const [updateUserDetails, updateUserDetailsResult] = useSecureUpdateUserDetailsMutation()
+  const { data: userDetails } = getUserFullDetails();
+
+  if (!userDetails) {
+    return <FullPageSpinner />
+  }
+
+  return <TransparentContainerView>
+    <PageTitle text={t("screens.editSecurity.updatePassword")} />
+    <TextInput
+      value={oldPassword}
+      onChangeText={setOldPassword}
+      placeholder={t("screens.editSecurity.oldPassword")}
+      style={{ marginBottom: 30 }}
+      secureTextEntry={true}
+    />
+    <TextInput value={newPassword} onChangeText={setNewPassword} placeholder={t("screens.editSecurity.newPassword")} style={{ marginBottom: 10 }} secureTextEntry={true} />
+    <TextInput value={newPasswordConf} onChangeText={setNewPasswordConf} placeholder={t("screens.editSecurity.newPasswordConf")} style={{ marginBottom: 30 }} secureTextEntry={true} />
+
+    <Button
+      title={t("common.update")}
+      onPress={async () => {
+        try {
+          await updateUserDetails({
+            user_id: userDetails.id,
+            password: newPassword,
+            old_password: oldPassword,
+          }).unwrap()
+          Toast.show({
+            type: "success",
+            text1: t("screens.editSecurity.passwordSuccess")
+          })
+        } catch (err) {
+          if (isFieldErrorCodeError('old_password', 'invalid_old_password')(err)) {
+            Toast.show({
+              type: "error",
+              text1: t("screens.editSecurity.oldPasswordIncorrect")
+            })
+          } else {
+            Toast.show({
+              type: "error",
+              text1: t("common.genericError")
+            })
+          }
+        }
+      }}
+      disabled={!oldPassword || !newPassword || !(newPassword === newPasswordConf)}
+    />
+  </TransparentContainerView>
+}

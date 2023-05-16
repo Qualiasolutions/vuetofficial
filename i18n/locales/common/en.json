@@ -350,6 +350,23 @@
       "invalidPhone": "That doesn't seem to be a valid phone number.",
       "takenPhone": "That phone number is already in use.",
       "updateSuccess": "Successfully updated phone number."
+    },
+    "editAccountType": {
+      "currentAccountType": "Current account type",
+      "standardPlan": "Standard plan",
+      "premiumPlan": "Premium plan",
+      "upgradeNow": "Upgrade now for all of these benefits:",
+      "upgrade": "Upgrade",
+      "renewsOn": "Renews on",
+      "changePlan": "Change my plan"
+    },
+    "editSecurity": {
+      "updatePassword": "Update your password",
+      "oldPassword": "Old Password",
+      "newPassword": "New Password",
+      "newPasswordConf": "Confirm New Password",
+      "oldPasswordIncorrect": "Your old password was not correct",
+      "passwordSuccess": "Your password was successfully updated"
     }
   },
   "components": {
