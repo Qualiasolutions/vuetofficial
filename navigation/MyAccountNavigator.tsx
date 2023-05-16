@@ -18,7 +18,7 @@ const MyAccountHeader = (props: NativeStackHeaderProps) => {
     return null
   }
 
-  return <TransparentView style={{ height: 30, padding: 0, paddingLeft: 20, marginBottom: 10 }}>
+  return <TransparentView style={{ height: 30, padding: 0, paddingLeft: 20, marginBottom: 30 }}>
     <HeaderBackButton
       tintColor={props.options.headerTintColor}
       onPress={props.navigation.goBack}

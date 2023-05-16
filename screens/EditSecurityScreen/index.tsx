@@ -1,8 +1,8 @@
 import { Button } from "components/molecules/ButtonComponents";
 import { FullPageSpinner } from "components/molecules/Spinners";
 import { PageTitle } from "components/molecules/TextComponents";
-import { TransparentContainerView, TransparentPaddedView } from "components/molecules/ViewComponents";
-import { Text, TextInput } from "components/Themed";
+import { TransparentPaddedView } from "components/molecules/ViewComponents";
+import { TextInput } from "components/Themed";
 import getUserFullDetails from "hooks/useGetUserDetails";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
