@@ -9,24 +9,70 @@ import { useState } from "react";
 import { Button } from "components/molecules/ButtonComponents";
 import { useCreatePhoneValidationMutation } from "reduxStore/services/api/signup";
 import { useUpdateUserDetailsMutation } from "reduxStore/services/api/user";
-import _ from "lodash";
-import { isInvalidPhoneNumberError } from "types/signup";
+import { isFieldErrorCodeError, isInvalidPhoneNumberError, isTakenPhoneNumberError } from "types/signup";
 import Toast from 'react-native-toast-message';
+import ValidationCodeInput from "components/molecules/ValidationCodeInput";
 
 export function EditPhoneNumberScreen() {
   const { t } = useTranslation()
   const { data: userDetails } = getUserFullDetails();
   const [newPhone, setNewPhone] = useState("")
+  const [validationId, setValidationId] = useState<number | null>(null)
   const [updateUserDetails, updateUserDetailsResult] = useUpdateUserDetailsMutation();
+  const [createPhoneValidation, createPhoneValidationResult] = useCreatePhoneValidationMutation();
 
   if (!userDetails) {
     return <FullPageSpinner />
   }
 
-  console.log("userDetails")
-  console.log(userDetails)
-  console.log(userDetails["phone_number"])
-  console.log(newPhone)
+  // console.log("userDetails")
+  // console.log(userDetails)
+  // console.log(userDetails["phone_number"])
+  // console.log(newPhone)
+
+  if (validationId) {
+    return <TransparentFullPageScrollView>
+      <TransparentPaddedView>
+        <Text>
+          {t("screens.validatePhone.enterCode")}
+        </Text>
+        <ValidationCodeInput
+          validationId={validationId}
+          onSuccess={() => {
+            updateUserDetails({ user_id: userDetails.id, phone_number: newPhone })
+              .unwrap()
+              .then(() => {
+                Toast.show({
+                  type: 'success',
+                  text1: t('screens.editPhoneNumber.updateSuccess')
+                });
+                setValidationId(null)
+                setNewPhone("")
+              })
+              .catch((err) => {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.validatePhone.invalidCodeError')
+                });
+              })
+          }}
+          onError={(err) => {
+            if (isFieldErrorCodeError('code', 'invalid_code')(err)) {
+              Toast.show({
+                type: 'error',
+                text1: t('screens.validatePhone.invalidCodeError')
+              });
+            } else {
+              Toast.show({
+                type: 'error',
+                text1: t('common.genericError')
+              });
+            }
+          }}
+        />
+      </TransparentPaddedView>
+    </TransparentFullPageScrollView>
+  }
 
   return <TransparentFullPageScrollView>
     <TransparentPaddedView>
@@ -47,22 +93,27 @@ export function EditPhoneNumberScreen() {
       <Button
         title={t("common.update")}
         onPress={async () => {
-          await updateUserDetails({
-            user_id: userDetails.id,
+          await createPhoneValidation({
             phone_number: newPhone,
-            username: newPhone,
           }).unwrap()
             .then((res) => {
-              Toast.show({
-                type: 'success',
-                text1: t('screens.editPhoneNumber.updateSuccess')
-              });
+              setValidationId(res.id)
             })
             .catch((err) => {
               if (isInvalidPhoneNumberError(err)) {
                 Toast.show({
                   type: 'error',
                   text1: t('screens.editPhoneNumber.invalidPhone')
+                });
+              } else if (isTakenPhoneNumberError(err)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.editPhoneNumber.takenPhone')
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.genericError')
                 });
               }
             })

@@ -45,6 +45,19 @@ export function isInvalidPhoneNumberError(
   );
 }
 
+export function isTakenPhoneNumberError(
+  error: unknown
+): error is { data: { phone_number: { code: "phone_number_used" } } } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'data' in error &&
+    typeof ((error as any).data as any) === 'object' &&
+    typeof ((error as any).data as any).phone_number === 'object' &&
+    ((((error as any).data as any).phone_number as any).code === "phone_number_used")
+  );
+}
+
 /*
 This helper function produces type-checking functions which return true if the
 fieldName field has an error of code errorCode. i.e. if the error returned is

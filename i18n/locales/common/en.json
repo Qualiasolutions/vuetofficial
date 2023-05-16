@@ -348,6 +348,7 @@
       "currentPhone": "Current phone number associated to this account:",
       "enterNew": "To update the phone number associated to this account, please enter your new number below:",
       "invalidPhone": "That doesn't seem to be a valid phone number.",
+      "takenPhone": "That phone number is already in use.",
       "updateSuccess": "Successfully updated phone number."
     }
   },
