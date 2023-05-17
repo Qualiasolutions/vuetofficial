@@ -35,11 +35,11 @@ type PropTypes = {
 
 function DayCalendar({
   date,
+  highlight,
   tasks,
   reminders,
   periods,
   markedPeriods,
-  highlight,
   style
 }: PropTypes) {
   console.log("RENDER DAY " + date + " " + Math.random())
@@ -58,9 +58,12 @@ function DayCalendar({
     return null;
   }
 
-  const oneDayPeriods = periods.filter(
-    (period) =>
-      period.start_date.toISOString() === period.end_date.toISOString()
+  const oneDayPeriods = useMemo(() => (
+    periods.filter(
+      (period) =>
+        period.start_date.toISOString() === period.end_date.toISOString()
+    )),
+    [periods]
   );
 
   const periodViews = useMemo(() => (oneDayPeriods.map((period, i) => (

@@ -249,15 +249,17 @@ function Calendar({
     }
 
     return () => (
-      <CalendarTaskDisplay
-        tasks={filteredTasks}
-        periods={filteredAllPeriods}
-        reminders={filteredAllReminders}
-        alwaysIncludeCurrentDate={true}
-        onChangeFirstDate={(date) => {
-          dispatch(setListEnforcedDate({ date }))
-        }}
-      />
+      <TransparentView style={{ marginBottom: 200 }}>
+        <CalendarTaskDisplay
+          tasks={filteredTasks}
+          periods={filteredAllPeriods}
+          reminders={filteredAllReminders}
+          alwaysIncludeCurrentDate={true}
+          onChangeFirstDate={(date) => {
+            dispatch(setListEnforcedDate({ date }))
+          }}
+        />
+      </TransparentView>
     );
   }, [
     JSON.stringify(filteredTasks),
