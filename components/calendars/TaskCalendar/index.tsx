@@ -142,7 +142,7 @@ function Calendar({
     if (error) {
       return () => null
     }
-    if (!allScheduledTasks || allScheduledPeriods) {
+    if (!allScheduledTasks || !allScheduledPeriods) {
       return () => null
     }
     if (noTasks) {
@@ -172,7 +172,7 @@ function Calendar({
     if (error) {
       return () => null
     }
-    if (!allScheduledTasks || allScheduledPeriods) {
+    if (!allScheduledTasks || !allScheduledPeriods) {
       return () => null
     }
     if (noTasks) {
