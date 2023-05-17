@@ -6,11 +6,6 @@ export const selectCalendarState = (
   state: EntireState
 ): CalendarState | undefined => state?.calendar;
 
-export const selectSelectedTaskId = createSelector(
-  selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.selectedTaskId || 0
-);
-
 export const selectSelectedPeriodId = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.ui?.selectedPeriodId || 0

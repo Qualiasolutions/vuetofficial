@@ -8,12 +8,11 @@ import { BlackText } from 'components/molecules/TextComponents';
 import { ParsedPeriod, ScheduledReminder } from 'types/periods';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import OneDayPeriod from './components/OneDayPeriod';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   deselectTasks,
   setSelectedPeriodId,
   setSelectedReminderId,
-  setSelectedTaskId
 } from 'reduxStore/slices/calendars/actions';
 import Reminder from './components/Reminder';
 import { DatePlacedPeriods } from 'utils/calendars';
@@ -43,26 +42,13 @@ function DayCalendar({
   highlight,
   style
 }: PropTypes) {
+  console.log("RENDER DAY " + date + " " + Math.random())
   const dispatch = useDispatch();
+
   const taskViews = useMemo(() => (tasks.map((task, i) => (
     <Task
       task={task}
       key={`${task.id}_${i}`}
-      onPress={(task: ScheduledTaskParsedType) => {
-        dispatch(
-          setSelectedTaskId({
-            taskId: task.id,
-            recurrenceIndex:
-              Object.keys(task).includes('recurrence_index') &&
-                task.recurrence_index !== undefined
-                ? task.recurrence_index
-                : -1
-          })
-        );
-      }}
-      onHeaderPress={() => {
-        dispatch(deselectTasks());
-      }}
     ></Task>
   ))), [tasks]);
 

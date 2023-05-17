@@ -6,7 +6,6 @@ import {
   getDateStringFromDateObject,
   getDateStringsBetween,
   getDateWithoutTimezone,
-  getUTCValuesFromDateString
 } from 'utils/datesAndTimes';
 
 import {

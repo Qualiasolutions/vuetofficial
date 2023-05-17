@@ -39,25 +39,14 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { Image } from 'components/molecules/ImageComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
-import {
-  selectSelectedRecurrenceIndex,
-  selectSelectedTaskId
-} from 'reduxStore/slices/calendars/selectors';
 
 type PropTypes = {
   task: ScheduledTaskParsedType;
-  onPress: (event: ScheduledTaskParsedType) => void;
-  onHeaderPress: (event: ScheduledTaskParsedType) => void;
 };
 
-function Task({ task, onPress, onHeaderPress }: PropTypes) {
+function Task({ task }: PropTypes) {
   const username = useSelector(selectUsername);
-  const selectedTaskId = useSelector(selectSelectedTaskId);
-  const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
-  const selected =
-    !task.is_complete &&
-    ((task.id === selectedTaskId && task.recurrence_index === undefined) ||
-      task.recurrence_index === selectedRecurrenceIndex);
+  const [selected, setSelected] = useState(false);
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -148,7 +137,7 @@ function Task({ task, onPress, onHeaderPress }: PropTypes) {
   const expandedHeader =
     entity && selected ? (
       <Pressable
-        onPress={() => onHeaderPress(task)}
+        onPress={() => setSelected(false)}
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
         <WhiteText
@@ -255,11 +244,7 @@ function Task({ task, onPress, onHeaderPress }: PropTypes) {
       >
         <TouchableOpacity
           style={styles.touchableContainer}
-          onPress={() => {
-            if (!task.is_complete) {
-              onPress(task);
-            }
-          }}
+          onPress={() => setSelected(true)}
         >
           {leftInfo}
           <TransparentView style={styles.titleContainer}>
