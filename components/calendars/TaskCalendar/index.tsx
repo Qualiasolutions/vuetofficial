@@ -138,12 +138,67 @@ function Calendar({
 
   const periodColour = useThemeColor({}, 'mediumLightGrey');
 
+  const listView = useMemo(() => {
+    if (error) {
+      return () => null
+    }
+    if (!allScheduledTasks || allScheduledPeriods) {
+      return () => null
+    }
+    if (noTasks) {
+      return () => null
+    }
+
+    return () => (
+      <CalendarTaskDisplay
+        tasks={filteredTasks}
+        periods={filteredAllPeriods}
+        reminders={filteredAllReminders}
+        alwaysIncludeCurrentDate={true}
+        onChangeFirstDate={(date) => {
+          setListEnforcedDateToView(date)
+        }}
+        defaultDate={monthEnforcedDateToView}
+      />
+    );
+  }, [
+    JSON.stringify(filteredTasks),
+    JSON.stringify(filteredAllPeriods),
+    JSON.stringify(filteredAllReminders),
+    monthEnforcedDateToView
+  ])
+
+  const calendarView = useMemo(() => {
+    if (error) {
+      return () => null
+    }
+    if (!allScheduledTasks || allScheduledPeriods) {
+      return () => null
+    }
+    if (noTasks) {
+      return () => null
+    }
+
+    return () => <CalendarView
+      dates={periodsDates}
+      defaultMonth={listEnforcedDateToView}
+      onChangeDate={(date) => {
+        setMonthEnforcedDateToView(date)
+      }}
+    />
+  }, [
+    JSON.stringify(filteredTasks),
+    JSON.stringify(filteredAllPeriods),
+    JSON.stringify(filteredAllReminders),
+    listEnforcedDateToView
+  ])
+
+
   if (error) {
     return <GenericError />;
   }
 
   const isLoading = isLoadingScheduledTasks || isLoadingPeriods;
-
   if (
     // If we include this then every time we poll for changes
     // we get a loading spinner - try and figure out how to
@@ -166,41 +221,6 @@ function Calendar({
       </WhiteContainerView>
     );
   }
-
-  const listView = useMemo(() => {
-    return () => (
-      <CalendarTaskDisplay
-        tasks={filteredTasks}
-        periods={filteredAllPeriods}
-        reminders={filteredAllReminders}
-        alwaysIncludeCurrentDate={true}
-        onChangeFirstDate={(date) => {
-          setListEnforcedDateToView(date)
-        }}
-        defaultDate={monthEnforcedDateToView}
-      />
-    );
-  }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredAllPeriods),
-    JSON.stringify(filteredAllReminders),
-    monthEnforcedDateToView
-  ])
-
-  const calendarView = useMemo(() => {
-    return () => <CalendarView
-      dates={periodsDates}
-      defaultMonth={listEnforcedDateToView}
-      onChangeDate={(date) => {
-        setMonthEnforcedDateToView(date)
-      }}
-    />
-  }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredAllPeriods),
-    JSON.stringify(filteredAllReminders),
-    listEnforcedDateToView
-  ])
 
   const periodsDates = placeOverlappingPeriods(filteredAllPeriods, periodColour);
 

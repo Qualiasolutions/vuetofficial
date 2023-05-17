@@ -5,7 +5,7 @@ import { TransparentView, WhiteView } from './ViewComponents';
 
 type tab = {
   title: string;
-  component: () => JSX.Element;
+  component: () => JSX.Element | null;
 };
 
 type TabsProps = {
