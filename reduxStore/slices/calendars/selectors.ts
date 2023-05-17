@@ -26,3 +26,22 @@ export const selectSelectedRecurrenceIndex = createSelector(
   (calendar: CalendarState | undefined) =>
     calendar?.ui?.selectedRecurrenceIndex || 0
 );
+
+export const selectListEnforcedDate = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) =>
+    calendar?.ui?.listEnforcedDate
+);
+
+export const selectMonthEnforcedDate = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) =>
+    calendar?.ui?.monthEnforcedDate
+);
+
+export const selectEnforcedDate = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) =>
+    calendar?.ui?.enforcedDate
+);
+

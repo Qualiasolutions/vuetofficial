@@ -5,5 +5,8 @@ export interface CalendarState {
     selectedPeriodId: number;
     selectedRecurrenceIndex: number;
     selectedReminderId: number;
+    listEnforcedDate: string;
+    monthEnforcedDate: string;
+    enforcedDate: string;
   };
 }

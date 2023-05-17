@@ -90,8 +90,6 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     .slice()
     .sort((a, b) => a.id - b.id);
 
-  console.log(sortedListEntries);
-
   const listEntryComponents = sortedListEntries.map((listEntry) => (
     <ListEntry listEntry={listEntry} key={listEntry.id}></ListEntry>
   ));

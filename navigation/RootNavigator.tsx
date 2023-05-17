@@ -3,10 +3,7 @@ import * as React from 'react';
 import { StyleSheet, View, ImageSourcePropType } from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
-import CalendarScreen, {
-  CalendarScreenHeader,
-  CalendarScreenHeaderLeft
-} from '../screens/CalendarMain/CalendarScreen';
+import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
 import CreateTask from 'screens/CreateTask/CreateTask';
 import { RootTabParamList } from '../types/base';

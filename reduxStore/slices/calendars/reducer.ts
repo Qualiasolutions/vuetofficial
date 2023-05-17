@@ -10,7 +10,10 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     selectedPeriodId: 0,
     selectedTaskId: 0,
     selectedReminderId: 0,
-    selectedRecurrenceIndex: -1
+    selectedRecurrenceIndex: -1,
+    listEnforcedDate: "",
+    monthEnforcedDate: "",
+    enforcedDate: ""
   }
 };
 
@@ -69,6 +72,26 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         selectedPeriodId: 0,
         selectedReminderId: 0,
         selectedRecurrenceIndex: -1
+      }
+    };
+  })
+  .handleAction(actions.setListEnforcedDate, (state: CalendarState, { payload }) => {
+    return {
+      ...state,
+      ui: {
+        ...state.ui,
+        listEnforcedDate: payload.date,
+        enforcedDate: payload.date,
+      }
+    };
+  })
+  .handleAction(actions.setMonthEnforcedDate, (state: CalendarState, { payload }) => {
+    return {
+      ...state,
+      ui: {
+        ...state.ui,
+        monthEnforcedDate: payload.date,
+        enforcedDate: payload.date
       }
     };
   });

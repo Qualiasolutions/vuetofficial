@@ -6,7 +6,7 @@ import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDi
 import GenericError from 'components/molecules/GenericError';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
@@ -35,6 +35,8 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { elevation } from 'styles/elevation';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { setListEnforcedDate, setMonthEnforcedDate } from 'reduxStore/slices/calendars/actions';
+import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 
 dayjs.extend(utc);
 
@@ -59,12 +61,16 @@ const getOffsetMonthStartDateString = (
 };
 
 
-const MonthSelector = ({ currentDate, onValueChange }: { currentDate: string; onValueChange: (date: Date) => void }) => {
+const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date) => void, fullPage: boolean }) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
-  const { monthName, year } = getUTCValuesFromDateString(currentDate)
+  const enforcedDate = useSelector(selectEnforcedDate)
   const navigation = useNavigation()
   const { data: userDetails } = getUserFullDetails()
   const whiteColor = useThemeColor({}, "white")
+
+  const { monthName, year } = enforcedDate
+    ? getUTCValuesFromDateString(enforcedDate)
+    : { monthName: "", year: "" }
 
   if (!userDetails) {
     return null
@@ -83,37 +89,41 @@ const MonthSelector = ({ currentDate, onValueChange }: { currentDate: string; on
     },
     elevation.elevated
   ]}>
-    <Pressable
-      onPress={() => (navigation as any).openDrawer()}
-      style={[
-        {
-          height: 60,
-          width: 60,
-          marginLeft: 40,
-          borderRadius: 30,
-          justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden',
-          backgroundColor: whiteColor
-        },
-        elevation.elevated,
-      ]}
-    >
-      <Image
-        source={imageSource}
-        style={[
-          {
-            height: '100%',
-            width: '100%',
-            backgroundColor: whiteColor
-          },
-          !userDetails.presigned_profile_image_url && {
-            height: 30,
-            width: 30
-          }
-        ]}
-      />
-    </Pressable>
+    {
+      fullPage
+        ? <Pressable
+          onPress={() => (navigation as any).openDrawer()}
+          style={[
+            {
+              height: 60,
+              width: 60,
+              marginLeft: 40,
+              borderRadius: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflow: 'hidden',
+              backgroundColor: whiteColor
+            },
+            elevation.elevated,
+          ]}
+        >
+          <Image
+            source={imageSource}
+            style={[
+              {
+                height: '100%',
+                width: '100%',
+                backgroundColor: whiteColor
+              },
+              !userDetails.presigned_profile_image_url && {
+                height: 30,
+                width: 30
+              }
+            ]}
+          />
+        </Pressable>
+        : <View style={{ width: "20%" }}></View>
+    }
     <Pressable
       onPress={() => {
         setIsDatePickerVisible(true)
@@ -127,7 +137,7 @@ const MonthSelector = ({ currentDate, onValueChange }: { currentDate: string; on
     <DateTimePickerModal
       isVisible={isDatePickerVisible}
       mode={'date'}
-      date={currentDate ? new Date(currentDate) : undefined}
+      date={enforcedDate ? new Date(enforcedDate) : undefined}
       onConfirm={(newValue) => {
         setIsDatePickerVisible(false);
         onValueChange(newValue);
@@ -143,27 +153,19 @@ type CalendarProps = {
   taskFilters: ((task: TaskResponseType) => boolean)[];
   periodFilters: ((period: PeriodResponse) => boolean)[];
   reminderFilters: ((period: ScheduledReminder) => boolean)[];
+  fullPage: boolean;
 };
 function Calendar({
   taskFilters,
   periodFilters,
-  reminderFilters
+  reminderFilters,
+  fullPage
 }: CalendarProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const { t } = useTranslation();
-
-  const [listEnforcedDateToView, setListEnforcedDateToView] = useState<string | null>(null)
-  const [monthEnforcedDateToView, setMonthEnforcedDateToView] = useState<string | null>(null)
-  const [enforcedDateToView, setEnforcedDateToView] = useState<string | null>(null)
-
-  useEffect(() => {
-    setEnforcedDateToView(monthEnforcedDateToView)
-  }, [monthEnforcedDateToView])
-  useEffect(() => {
-    setEnforcedDateToView(listEnforcedDateToView)
-  }, [listEnforcedDateToView])
+  const dispatch = useDispatch();
 
   const currentDate = new Date();
   const {
@@ -253,16 +255,14 @@ function Calendar({
         reminders={filteredAllReminders}
         alwaysIncludeCurrentDate={true}
         onChangeFirstDate={(date) => {
-          setListEnforcedDateToView(date)
+          dispatch(setListEnforcedDate({ date }))
         }}
-        defaultDate={monthEnforcedDateToView}
       />
     );
   }, [
     JSON.stringify(filteredTasks),
     JSON.stringify(filteredAllPeriods),
     JSON.stringify(filteredAllReminders),
-    monthEnforcedDateToView
   ])
 
   const calendarView = useMemo(() => {
@@ -280,16 +280,14 @@ function Calendar({
 
     return () => <CalendarView
       dates={periodsDates}
-      defaultMonth={listEnforcedDateToView}
       onChangeDate={(date) => {
-        setMonthEnforcedDateToView(date)
+        dispatch(setMonthEnforcedDate({ date }))
       }}
     />
   }, [
     JSON.stringify(filteredTasks),
     JSON.stringify(filteredAllPeriods),
     JSON.stringify(filteredAllReminders),
-    listEnforcedDateToView
   ])
 
 
@@ -333,20 +331,19 @@ function Calendar({
   ];
 
   return (
-    <SafeAreaView>
-      <TransparentView style={styles.container}>
-        <MonthSelector
-          currentDate={enforcedDateToView || getDateStringFromDateObject(currentDate)}
-          onValueChange={(date) => {
-            if (date) {
-              setListEnforcedDateToView(getDateStringFromDateObject(date))
-              setMonthEnforcedDateToView(getDateStringFromDateObject(date))
-            }
-          }}
-        />
-        <Tabs tabs={tabs} />
-      </TransparentView>
-    </SafeAreaView>
+    <TransparentView style={styles.container}>
+      <MonthSelector
+        onValueChange={(date) => {
+          if (date) {
+            const dateString = getDateStringFromDateObject(date)
+            dispatch(setMonthEnforcedDate({ date: dateString }))
+            dispatch(setListEnforcedDate({ date: dateString }))
+          }
+        }}
+        fullPage={fullPage}
+      />
+      <Tabs tabs={tabs} />
+    </TransparentView>
   );
 }
 

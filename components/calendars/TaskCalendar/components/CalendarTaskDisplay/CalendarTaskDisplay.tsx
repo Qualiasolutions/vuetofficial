@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, SectionList } from 'react-native';
 import DayCalendar from './DayCalendar/DayCalendar';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   getDateStringFromDateObject,
@@ -17,7 +17,6 @@ import {
 import { PeriodResponse, ScheduledReminder } from 'types/periods';
 import { placeOverlappingPeriods } from 'utils/calendars';
 import { Text, useThemeColor } from 'components/Themed';
-import { SectionList } from 'components/molecules/SectionListComponents';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
@@ -26,6 +25,8 @@ import {
 import { LinkButton } from 'components/molecules/ButtonComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { t } from 'i18next';
+import { useSelector } from 'react-redux';
+import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -78,7 +79,6 @@ function Calendar({
   periods,
   reminders,
   onChangeFirstDate,
-  defaultDate,
   alwaysIncludeCurrentDate = false
 }: {
   tasks: ScheduledTaskResponseType[];
@@ -86,7 +86,6 @@ function Calendar({
   reminders: ScheduledReminder[];
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
-  defaultDate?: string | null;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
   const primaryColor = useThemeColor({}, 'primary');
@@ -95,9 +94,10 @@ function Calendar({
   const [futureMonthsToShow, setFutureMonthsToShow] = useState(3);
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
+  const monthEnforcedDate = useSelector(selectMonthEnforcedDate)
+  const sectionListRef = useRef<any>(null)
 
   const updateDate = (newDate: string) => {
-    console.log("updateDate")
     if (onChangeFirstDate && newDate) {
       onChangeFirstDate(newDate)
     }
@@ -183,11 +183,25 @@ function Calendar({
     setTasksPerDate(newTasksPerDate);
   };
 
-  React.useEffect(formatAndSetTasksPerDate, [
+  useEffect(formatAndSetTasksPerDate, [
     tasks,
     periods,
     alwaysIncludeCurrentDate
   ]);
+
+  useEffect(() => {
+    setPastMonthsToShow(0)
+    if (monthEnforcedDate && sectionListRef?.current) {
+      try {
+        sectionListRef.current.scrollToLocation({
+          sectionIndex: 0,
+          itemIndex: 0
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }, [monthEnforcedDate])
 
   const datesToShow = Object.keys(tasksPerDate).sort();
 
@@ -233,7 +247,8 @@ function Calendar({
     const future: { title: string; key: string; data: SectionData[] }[] = [];
     const past: { title: string; key: string; data: SectionData[] }[] = [];
 
-    const currentlyShownDate = defaultDate ? new Date(defaultDate) : new Date()
+    const currentlyShownDate = monthEnforcedDate ? new Date(monthEnforcedDate) : new Date()
+
     for (const date of datesToShow) {
       const sectionsArray = new Date(date) < currentlyShownDate
         ? past
@@ -258,7 +273,7 @@ function Calendar({
       }
     }
     return [future, past];
-  }, [datesToShow, defaultDate]);
+  }, [datesToShow, monthEnforcedDate]);
 
   const shownSections = [
     ...pastSections.slice(pastSections.length - (pastMonthsToShow * 30)),
@@ -301,6 +316,7 @@ function Calendar({
           updateDate(items.viewableItems[0]?.section?.data?.[0]?.date)
         }
       }}
+      ref={sectionListRef}
     />
   );
 }

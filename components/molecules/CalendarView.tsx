@@ -1,5 +1,5 @@
 import { useThemeColor, View } from 'components/Themed';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import {
@@ -10,6 +10,8 @@ import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { AlmostBlackText } from './TextComponents';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 
 export type CalendarViewProps = {
   dates: {
@@ -24,11 +26,10 @@ export type CalendarViewProps = {
       selectedColor?: string;
     };
   };
-  defaultMonth?: string | null;
   onChangeDate?: (date: string) => void;
 };
 
-export default function CalendarView({ dates, defaultMonth, onChangeDate }: CalendarViewProps) {
+export default function CalendarView({ dates, onChangeDate }: CalendarViewProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
@@ -36,19 +37,12 @@ export default function CalendarView({ dates, defaultMonth, onChangeDate }: Cale
   const { periods: allPeriods, reminders: allReminders } =
     useScheduledPeriods();
   const navigation = useNavigation();
-
-  const updateDateTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const listEnforcedDate = useSelector(selectListEnforcedDate)
 
   const updateDate = (newDate: string) => {
-    if (updateDateTimeout.current) {
-      clearTimeout(updateDateTimeout.current)
+    if (onChangeDate) {
+      onChangeDate(newDate)
     }
-
-    updateDateTimeout.current = setTimeout(() => {
-      if (onChangeDate && newDate) {
-        onChangeDate(newDate)
-      }
-    }, 100)
   }
 
   const datesCopy = { ...dates };
@@ -108,14 +102,24 @@ export default function CalendarView({ dates, defaultMonth, onChangeDate }: Cale
         horizontal={true}
         onDayPress={(day) => {
           setSelectedDay(day);
-          // Making this async so that it changes faster
           updateDate(day.dateString)
         }}
-        onMonthChange={(date) => {
-          // Making this async so that it changes faster
-          updateDate(date.dateString)
+        // onMonthChange={(date) => {
+        //   updateDate(date.dateString)
+        // }}
+        onPressArrowLeft={(cb, date) => {
+          cb()
+          if (date) {
+            updateDate(date.addMonths(-1).toString('yyyy-MM-dd'))
+          }
         }}
-        current={defaultMonth || undefined}
+        onPressArrowRight={(cb, date) => {
+          cb()
+          if (date) {
+            updateDate(date.addMonths(1).toString('yyyy-MM-dd'))
+          }
+        }}
+        initialDate={listEnforcedDate || undefined}
       />
 
       {allPeriods && selectedDayPeriods && (

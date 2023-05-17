@@ -13,6 +13,7 @@ function EntityCalendarPage({ entityIds }: { entityIds: number[] }) {
       taskFilters={[entityFilter]}
       periodFilters={[entityFilter]}
       reminderFilters={[entityFilter]}
+      fullPage={false}
     />
   );
 }
