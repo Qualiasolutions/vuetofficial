@@ -133,9 +133,7 @@ export function BottomTabNavigator() {
               title={t('pageTitles.home')}
             />
           ),
-          header: CalendarScreenHeader,
-          headerLeft: (props) => <CalendarScreenHeaderLeft />,
-          title: t('pageTitles.home')
+          headerShown: false
         }}
       />
       <BottomTab.Screen

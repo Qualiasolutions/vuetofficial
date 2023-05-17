@@ -48,7 +48,7 @@ export default function CalendarView({ dates, defaultMonth, onChangeDate }: Cale
       if (onChangeDate && newDate) {
         onChangeDate(newDate)
       }
-    }, 500)
+    }, 100)
   }
 
   const datesCopy = { ...dates };

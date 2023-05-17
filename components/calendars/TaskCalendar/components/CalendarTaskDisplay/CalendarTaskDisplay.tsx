@@ -96,18 +96,11 @@ function Calendar({
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
 
-  const updateDateTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-
   const updateDate = (newDate: string) => {
-    if (updateDateTimeout.current) {
-      clearTimeout(updateDateTimeout.current)
+    console.log("updateDate")
+    if (onChangeFirstDate && newDate) {
+      onChangeFirstDate(newDate)
     }
-
-    updateDateTimeout.current = setTimeout(() => {
-      if (onChangeFirstDate && newDate) {
-        onChangeFirstDate(newDate)
-      }
-    }, 500)
   }
 
 

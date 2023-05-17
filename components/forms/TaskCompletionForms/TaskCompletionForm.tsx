@@ -1,7 +1,6 @@
 import { Text, View } from 'components/Themed';
 import { completionFormFieldTypes } from './taskCompletionFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { ScheduledTaskParsedType } from 'types/tasks';
@@ -11,8 +10,8 @@ import { Modal } from 'components/molecules/Modals';
 export default function TaskCompletionForm({
   task,
   title = '',
-  onSubmitSuccess = () => {},
-  onRequestClose = () => {}
+  onSubmitSuccess = () => { },
+  onRequestClose = () => { }
 }: {
   task: ScheduledTaskParsedType;
   title?: string;
@@ -35,7 +34,7 @@ export default function TaskCompletionForm({
   const permittedTaskForms = ['BookMOTTask'];
   if (task.resourcetype && permittedTaskForms.includes(task.resourcetype)) {
     return (
-      <Modal onRequestClose={onRequestClose || (() => {})}>
+      <Modal onRequestClose={onRequestClose || (() => { })}>
         <View>
           {title ? <Text>{title}</Text> : null}
           {createSuccessful ? (
@@ -56,7 +55,7 @@ export default function TaskCompletionForm({
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
             submitText="Mark complete"
-            // inlineFields={true}
+          // inlineFields={true}
           />
         </View>
       </Modal>

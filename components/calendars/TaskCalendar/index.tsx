@@ -4,8 +4,8 @@
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
-import React, { useMemo, useRef, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
@@ -13,7 +13,7 @@ import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
   TransparentView,
   WhiteContainerView,
-  WhiteView
+  WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
@@ -26,7 +26,15 @@ import { useTranslation } from 'react-i18next';
 import CalendarView from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import { placeOverlappingPeriods } from 'utils/calendars';
-import { useThemeColor } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
+import { getDateStringFromDateObject, getUTCValuesFromDateString } from 'utils/datesAndTimes';
+import { useNavigation } from '@react-navigation/native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { Image } from 'components/molecules/ImageComponents';
+import getUserFullDetails from 'hooks/useGetUserDetails';
+import { parsePresignedUrl } from 'utils/urls';
+import { elevation } from 'styles/elevation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 dayjs.extend(utc);
 
@@ -50,6 +58,87 @@ const getOffsetMonthStartDateString = (
   };
 };
 
+
+const MonthSelector = ({ currentDate, onValueChange }: { currentDate: string; onValueChange: (date: Date) => void }) => {
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
+  const { monthName, year } = getUTCValuesFromDateString(currentDate)
+  const navigation = useNavigation()
+  const { data: userDetails } = getUserFullDetails()
+  const whiteColor = useThemeColor({}, "white")
+
+  if (!userDetails) {
+    return null
+  }
+
+  const imageSource = userDetails.presigned_profile_image_url
+    ? { uri: parsePresignedUrl(userDetails.presigned_profile_image_url) }
+    : require('assets/images/icons/camera.png');
+
+  return <WhitePaddedView style={[
+    {
+      paddingVertical: 20,
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between'
+    },
+    elevation.elevated
+  ]}>
+    <Pressable
+      onPress={() => (navigation as any).openDrawer()}
+      style={[
+        {
+          height: 60,
+          width: 60,
+          marginLeft: 40,
+          borderRadius: 30,
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden',
+          backgroundColor: whiteColor
+        },
+        elevation.elevated,
+      ]}
+    >
+      <Image
+        source={imageSource}
+        style={[
+          {
+            height: '100%',
+            width: '100%',
+            backgroundColor: whiteColor
+          },
+          !userDetails.presigned_profile_image_url && {
+            height: 30,
+            width: 30
+          }
+        ]}
+      />
+    </Pressable>
+    <Pressable
+      onPress={() => {
+        setIsDatePickerVisible(true)
+      }}
+      style={{ flexDirection: 'row', alignItems: 'center' }}
+    >
+      <AlmostBlackText text={`${monthName} ${year}`} style={{ fontWeight: 'bold', fontSize: 20, marginRight: 10 }} />
+      <AlmostBlackText text="▼" />
+    </Pressable>
+    <View style={{ width: "20%" }}></View>
+    <DateTimePickerModal
+      isVisible={isDatePickerVisible}
+      mode={'date'}
+      date={currentDate ? new Date(currentDate) : undefined}
+      onConfirm={(newValue) => {
+        setIsDatePickerVisible(false);
+        onValueChange(newValue);
+      }}
+      onCancel={() => {
+        setIsDatePickerVisible(false);
+      }}
+    ></DateTimePickerModal>
+  </WhitePaddedView>
+}
+
 type CalendarProps = {
   taskFilters: ((task: TaskResponseType) => boolean)[];
   periodFilters: ((period: PeriodResponse) => boolean)[];
@@ -67,6 +156,14 @@ function Calendar({
 
   const [listEnforcedDateToView, setListEnforcedDateToView] = useState<string | null>(null)
   const [monthEnforcedDateToView, setMonthEnforcedDateToView] = useState<string | null>(null)
+  const [enforcedDateToView, setEnforcedDateToView] = useState<string | null>(null)
+
+  useEffect(() => {
+    setEnforcedDateToView(monthEnforcedDateToView)
+  }, [monthEnforcedDateToView])
+  useEffect(() => {
+    setEnforcedDateToView(listEnforcedDateToView)
+  }, [listEnforcedDateToView])
 
   const currentDate = new Date();
   const {
@@ -179,6 +276,8 @@ function Calendar({
       return () => null
     }
 
+    const periodsDates = placeOverlappingPeriods(filteredAllPeriods, periodColour);
+
     return () => <CalendarView
       dates={periodsDates}
       defaultMonth={listEnforcedDateToView}
@@ -222,8 +321,6 @@ function Calendar({
     );
   }
 
-  const periodsDates = placeOverlappingPeriods(filteredAllPeriods, periodColour);
-
   const tabs = [
     {
       title: 'List',
@@ -236,9 +333,20 @@ function Calendar({
   ];
 
   return (
-    <TransparentView style={styles.container}>
-      <Tabs tabs={tabs} />
-    </TransparentView>
+    <SafeAreaView>
+      <TransparentView style={styles.container}>
+        <MonthSelector
+          currentDate={enforcedDateToView || getDateStringFromDateObject(currentDate)}
+          onValueChange={(date) => {
+            if (date) {
+              setListEnforcedDateToView(getDateStringFromDateObject(date))
+              setMonthEnforcedDateToView(getDateStringFromDateObject(date))
+            }
+          }}
+        />
+        <Tabs tabs={tabs} />
+      </TransparentView>
+    </SafeAreaView>
   );
 }
 
