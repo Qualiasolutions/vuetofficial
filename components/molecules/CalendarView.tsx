@@ -1,5 +1,5 @@
 import { useThemeColor, View } from 'components/Themed';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import {
@@ -36,6 +36,20 @@ export default function CalendarView({ dates, defaultMonth, onChangeDate }: Cale
   const { periods: allPeriods, reminders: allReminders } =
     useScheduledPeriods();
   const navigation = useNavigation();
+
+  const updateDateTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const updateDate = (newDate: string) => {
+    if (updateDateTimeout.current) {
+      clearTimeout(updateDateTimeout.current)
+    }
+
+    updateDateTimeout.current = setTimeout(() => {
+      if (onChangeDate && newDate) {
+        onChangeDate(newDate)
+      }
+    }, 500)
+  }
 
   const datesCopy = { ...dates };
   if (selectedDay) {
@@ -94,15 +108,12 @@ export default function CalendarView({ dates, defaultMonth, onChangeDate }: Cale
         horizontal={true}
         onDayPress={(day) => {
           setSelectedDay(day);
-          console.log(day.dateString)
-          if (onChangeDate) {
-            onChangeDate(day.dateString)
-          }
+          // Making this async so that it changes faster
+          updateDate(day.dateString)
         }}
         onMonthChange={(date) => {
-          if (onChangeDate) {
-            onChangeDate(date.dateString)
-          }
+          // Making this async so that it changes faster
+          updateDate(date.dateString)
         }}
         current={defaultMonth || undefined}
       />

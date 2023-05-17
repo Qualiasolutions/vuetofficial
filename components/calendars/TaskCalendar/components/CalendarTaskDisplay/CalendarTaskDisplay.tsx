@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import DayCalendar from './DayCalendar/DayCalendar';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import {
   getDateStringFromDateObject,
@@ -77,12 +77,16 @@ function Calendar({
   tasks,
   periods,
   reminders,
+  onChangeFirstDate,
+  defaultDate,
   alwaysIncludeCurrentDate = false
 }: {
   tasks: ScheduledTaskResponseType[];
   periods: PeriodResponse[];
   reminders: ScheduledReminder[];
   alwaysIncludeCurrentDate?: boolean;
+  onChangeFirstDate?: (date: string) => void;
+  defaultDate?: string | null;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
   const primaryColor = useThemeColor({}, 'primary');
@@ -91,6 +95,21 @@ function Calendar({
   const [futureMonthsToShow, setFutureMonthsToShow] = useState(3);
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
+
+  const updateDateTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const updateDate = (newDate: string) => {
+    if (updateDateTimeout.current) {
+      clearTimeout(updateDateTimeout.current)
+    }
+
+    updateDateTimeout.current = setTimeout(() => {
+      if (onChangeFirstDate && newDate) {
+        onChangeFirstDate(newDate)
+      }
+    }, 500)
+  }
+
 
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
@@ -220,37 +239,39 @@ function Calendar({
   const [futureSections, pastSections] = useMemo(() => {
     const future: { title: string; key: string; data: SectionData[] }[] = [];
     const past: { title: string; key: string; data: SectionData[] }[] = [];
+
+    const currentlyShownDate = defaultDate ? new Date(defaultDate) : new Date()
     for (const date of datesToShow) {
-      const { month, year } = getUTCValuesFromDateString(date);
-      const sectionsArray =
-        year < new Date().getFullYear() ||
-        (year == new Date().getFullYear() && month < new Date().getMonth())
-          ? past
-          : future;
-      const monthName = `${dayjs(date).format('MMMM')} ${dayjs(date).format(
+      const sectionsArray = new Date(date) < currentlyShownDate
+        ? past
+        : future;
+
+      const dayJsDate = dayjs(date)
+      const dayName = `${dayJsDate.format('DD')} ${dayJsDate.format('MMMM')} ${dayJsDate.format(
         'YYYY'
       )}`;
       const existingSection = sectionsArray.find(
-        (section) => section.title === monthName
+        (section) => section.title === dayName
       );
       const dateData = { date };
       if (existingSection) {
         existingSection.data.push(dateData);
       } else {
         sectionsArray.push({
-          title: monthName,
-          key: monthName,
+          title: dayName,
+          key: dayName,
           data: [dateData]
         });
       }
     }
     return [future, past];
-  }, [datesToShow]);
+  }, [datesToShow, defaultDate]);
 
   const shownSections = [
-    ...pastSections.slice(pastSections.length - pastMonthsToShow),
-    ...futureSections.slice(0, futureMonthsToShow)
+    ...pastSections.slice(pastSections.length - (pastMonthsToShow * 30)),
+    ...futureSections.slice(0, (futureMonthsToShow * 30))
   ];
+
   return (
     <SectionList
       sections={shownSections}
@@ -266,8 +287,7 @@ function Calendar({
         setPastMonthsToShow(0);
         setFutureMonthsToShow(3);
       }}
-      renderItem={({ item, index, section }) => {
-        const { date } = item;
+      renderItem={({ item: { date } }) => {
         return (
           <DayCalendar
             date={date}
@@ -277,16 +297,17 @@ function Calendar({
             reminders={tasksPerDate[date].reminders}
             markedPeriods={periodsDates[date]}
             highlight={date === getDateStringFromDateObject(new Date())}
-            style={
-              index === section.data.length - 1 ? { marginBottom: 20 } : {}
-            }
           />
         );
       }}
-      contentContainerStyle={{ paddingBottom: 100 }}
+      contentContainerStyle={{ paddingBottom: 150 }}
       ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false} />}
       ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true} />}
-      stickySectionHeadersEnabled
+      onViewableItemsChanged={(items) => {
+        if (onChangeFirstDate) {
+          updateDate(items.viewableItems[0]?.section?.data?.[0]?.date)
+        }
+      }}
     />
   );
 }
@@ -308,7 +329,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 18,
     paddingVertical: 20,
-    marginBottom: 15,
+    marginBottom: 5,
     borderTopWidth: 2,
     borderBottomWidth: 2
   },

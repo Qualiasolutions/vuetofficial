@@ -50,7 +50,7 @@ type PropTypes = {
   onHeaderPress: (event: ScheduledTaskParsedType) => void;
 };
 
-export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
+function Task({ task, onPress, onHeaderPress }: PropTypes) {
   const username = useSelector(selectUsername);
   const selectedTaskId = useSelector(selectSelectedTaskId);
   const selectedRecurrenceIndex = useSelector(selectSelectedRecurrenceIndex);
@@ -237,10 +237,10 @@ export default function Task({ task, onPress, onHeaderPress }: PropTypes) {
       style={[
         styles.container,
         entity &&
-          selected && {
-            ...styles.selectedTask,
-            borderColor: greyColor
-          },
+        selected && {
+          ...styles.selectedTask,
+          borderColor: greyColor
+        },
         task.is_complete && {
           backgroundColor: isCompleteBackgroundColor
         }
@@ -405,3 +405,6 @@ const styles = StyleSheet.create({
     marginTop: 13
   }
 });
+
+
+export default Task

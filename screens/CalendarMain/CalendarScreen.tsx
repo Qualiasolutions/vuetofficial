@@ -5,14 +5,12 @@ import {
 } from 'components/molecules/ViewComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Image, Pressable, StyleSheet } from 'react-native';
-import { RootTabScreenProps } from 'types/base';
 import { parsePresignedUrl } from 'utils/urls';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useThemeColor, View } from 'components/Themed';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { BlackText } from 'components/molecules/TextComponents';
-import HomeCalendar from 'components/calendars/HomeCalendar';
 
 export function CalendarScreenHeader(props: BottomTabHeaderProps) {
   return (
@@ -76,13 +74,8 @@ export function CalendarScreenHeaderLeft() {
   );
 }
 
-type Props = RootTabScreenProps<'CalendarScreen'>;
-function CalendarScreen({ navigation }: Props) {
-  return <HomeCalendar
-    taskFilters={[]}
-    periodFilters={[]}
-  />
-  // return <Calendar taskFilters={[]} periodFilters={[]} reminderFilters={[]} />;
+function CalendarScreen() {
+  return <Calendar taskFilters={[]} periodFilters={[]} reminderFilters={[]} />;
 }
 
 const styles = StyleSheet.create({

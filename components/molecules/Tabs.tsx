@@ -15,7 +15,16 @@ type TabsProps = {
 export default function Tabs({ tabs }: TabsProps) {
   const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
 
-  const Component = tabs[selectedTabIndex].component;
+  const components = tabs.map((tab, i) => {
+    const Component = tab.component;
+    return <TransparentView
+      key={i}
+      style={selectedTabIndex === i ? {} : { height: 0 }}
+    >
+      <Component />
+    </TransparentView>
+  })
+
   const styles = style();
   return (
     <WhiteView>
@@ -51,8 +60,7 @@ export default function Tabs({ tabs }: TabsProps) {
           />
         </TransparentView>
       </TransparentView>
-
-      <Component />
+      {components}
     </WhiteView>
   );
 }

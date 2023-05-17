@@ -4,13 +4,14 @@
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
+  TransparentView,
   WhiteContainerView,
   WhiteView
 } from 'components/molecules/ViewComponents';
@@ -22,6 +23,10 @@ import { ScheduledTaskResponseType, TaskResponseType } from 'types/tasks';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { PeriodResponse, ScheduledReminder } from 'types/periods';
 import { useTranslation } from 'react-i18next';
+import CalendarView from 'components/molecules/CalendarView';
+import Tabs from 'components/molecules/Tabs';
+import { placeOverlappingPeriods } from 'utils/calendars';
+import { useThemeColor } from 'components/Themed';
 
 dayjs.extend(utc);
 
@@ -60,6 +65,9 @@ function Calendar({
 
   const { t } = useTranslation();
 
+  const [listEnforcedDateToView, setListEnforcedDateToView] = useState<string | null>(null)
+  const [monthEnforcedDateToView, setMonthEnforcedDateToView] = useState<string | null>(null)
+
   const currentDate = new Date();
   const {
     periods: allScheduledPeriods,
@@ -80,10 +88,7 @@ function Calendar({
       end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString,
       user_id: userDetails?.user_id || -1
     },
-    {
-      skip: !userDetails?.user_id,
-      pollingInterval: 30000
-    }
+    { skip: !userDetails?.user_id }
   );
 
   const filteredTasks = useMemo<ScheduledTaskResponseType[]>(() => {
@@ -131,6 +136,8 @@ function Calendar({
     );
   }, [filteredTasks, filteredAllPeriods, filteredAllReminders]);
 
+  const periodColour = useThemeColor({}, 'mediumLightGrey');
+
   if (error) {
     return <GenericError />;
   }
@@ -160,15 +167,58 @@ function Calendar({
     );
   }
 
-  return (
-    <WhiteView style={styles.container}>
+  const listView = useMemo(() => {
+    return () => (
       <CalendarTaskDisplay
         tasks={filteredTasks}
         periods={filteredAllPeriods}
         reminders={filteredAllReminders}
         alwaysIncludeCurrentDate={true}
+        onChangeFirstDate={(date) => {
+          setListEnforcedDateToView(date)
+        }}
+        defaultDate={monthEnforcedDateToView}
       />
-    </WhiteView>
+    );
+  }, [
+    JSON.stringify(filteredTasks),
+    JSON.stringify(filteredAllPeriods),
+    JSON.stringify(filteredAllReminders),
+    monthEnforcedDateToView
+  ])
+
+  const calendarView = useMemo(() => {
+    return () => <CalendarView
+      dates={periodsDates}
+      defaultMonth={listEnforcedDateToView}
+      onChangeDate={(date) => {
+        setMonthEnforcedDateToView(date)
+      }}
+    />
+  }, [
+    JSON.stringify(filteredTasks),
+    JSON.stringify(filteredAllPeriods),
+    JSON.stringify(filteredAllReminders),
+    listEnforcedDateToView
+  ])
+
+  const periodsDates = placeOverlappingPeriods(filteredAllPeriods, periodColour);
+
+  const tabs = [
+    {
+      title: 'List',
+      component: listView
+    },
+    {
+      title: 'Month',
+      component: calendarView
+    },
+  ];
+
+  return (
+    <TransparentView style={styles.container}>
+      <Tabs tabs={tabs} />
+    </TransparentView>
   );
 }
 

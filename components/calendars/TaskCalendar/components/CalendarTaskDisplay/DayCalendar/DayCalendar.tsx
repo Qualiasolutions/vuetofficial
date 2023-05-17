@@ -17,6 +17,7 @@ import {
 } from 'reduxStore/slices/calendars/actions';
 import Reminder from './components/Reminder';
 import { DatePlacedPeriods } from 'utils/calendars';
+import React, { useMemo } from 'react';
 
 type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -33,7 +34,7 @@ type PropTypes = {
   style?: ViewStyle;
 };
 
-export default function DayCalendar({
+function DayCalendar({
   date,
   tasks,
   reminders,
@@ -43,7 +44,7 @@ export default function DayCalendar({
   style
 }: PropTypes) {
   const dispatch = useDispatch();
-  const taskViews = tasks.map((task, i) => (
+  const taskViews = useMemo(() => (tasks.map((task, i) => (
     <Task
       task={task}
       key={`${task.id}_${i}`}
@@ -53,7 +54,7 @@ export default function DayCalendar({
             taskId: task.id,
             recurrenceIndex:
               Object.keys(task).includes('recurrence_index') &&
-              task.recurrence_index !== undefined
+                task.recurrence_index !== undefined
                 ? task.recurrence_index
                 : -1
           })
@@ -63,7 +64,7 @@ export default function DayCalendar({
         dispatch(deselectTasks());
       }}
     ></Task>
-  ));
+  ))), [tasks]);
 
   const { data: userDetails } = useGetUserDetails();
 
@@ -76,32 +77,7 @@ export default function DayCalendar({
       period.start_date.toISOString() === period.end_date.toISOString()
   );
 
-  const periodLines = (
-    <View style={styles.periodLines}>
-      {markedPeriods &&
-        markedPeriods.periods &&
-        markedPeriods.periods.map((period, i) => (
-          <View key={i}>
-            <View
-              style={[
-                styles.periodLine,
-                {
-                  backgroundColor: period.color,
-                  marginTop: period.startingDay ? 10 : 0,
-                  marginBottom: period.endingDay ? 10 : 0,
-                  borderTopLeftRadius: period.startingDay ? 10 : 0,
-                  borderTopRightRadius: period.startingDay ? 10 : 0,
-                  borderBottomLeftRadius: period.endingDay ? 10 : 0,
-                  borderBottomRightRadius: period.endingDay ? 10 : 0
-                }
-              ]}
-            ></View>
-          </View>
-        ))}
-    </View>
-  );
-
-  const periodViews = oneDayPeriods.map((period, i) => (
+  const periodViews = useMemo(() => (oneDayPeriods.map((period, i) => (
     <OneDayPeriod
       period={period}
       key={`${period.id}_${i}`}
@@ -117,9 +93,9 @@ export default function DayCalendar({
         dispatch(deselectTasks());
       }}
     ></OneDayPeriod>
-  ));
+  ))), [oneDayPeriods]);
 
-  const reminderViews = reminders.map((reminder, i) => (
+  const reminderViews = useMemo(() => (reminders.map((reminder, i) => (
     <Reminder
       reminder={reminder}
       key={`${reminder.id}_${i}`}
@@ -130,29 +106,11 @@ export default function DayCalendar({
         dispatch(deselectTasks());
       }}
     ></Reminder>
-  ));
+  ))), [reminders]);
 
   return (
     <View style={style}>
       <View style={styles.container}>
-        <View style={styles.leftBar}>
-          <View style={styles.leftBarPeriodLines}>
-            {markedPeriods && markedPeriods.periods && periodLines}
-          </View>
-          <View style={styles.leftBarDate}>
-            <BlackText
-              style={[styles.dateDay, highlight ? styles.highlight : {}]}
-              text={dayjs(date).format('dd') + ' '}
-              bold={highlight}
-            />
-            <BlackText
-              style={[styles.dateMonth, highlight ? styles.highlight : {}]}
-              text={dayjs(date).format('DD') + ' '}
-              bold={highlight}
-            />
-            <View style={styles.verticalLine}></View>
-          </View>
-        </View>
         <View style={styles.taskViews}>
           {taskViews}
           {periodViews}
@@ -167,62 +125,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    paddingRight: 10
-  },
-  dateDay: {
-    fontSize: 20
-  },
-  dateMonth: {
-    fontSize: 15
+    paddingHorizontal: 10
   },
   highlight: {
     fontSize: 20
   },
-  verticalLine: {
-    width: 1,
-    flex: 1,
-    flexGrow: 1,
-    minHeight: 10,
-    backgroundColor: 'black',
-    marginVertical: 4
-  },
-  periodLine: {
-    width: 4,
-    flex: 1,
-    flexGrow: 1,
-    flexShrink: 1,
-    backgroundColor: 'black',
-    marginHorizontal: 1
-  },
-  periodLines: {
-    flexDirection: 'row',
-    flexGrow: 1
-  },
-  leftBar: {
-    flexGrow: 0,
-    marginRight: 20,
-    paddingLeft: 10,
-    width: 70,
-    height: '100%',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  leftBarPeriodLines: {
-    width: 30,
-    flexDirection: 'row',
-    height: '100%'
-  },
-  leftBarDate: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginLeft: 5
-  },
   taskViews: {
-    paddingTop: 30,
-    paddingBottom: 60,
+    paddingTop: 10,
+    paddingBottom: 20,
     flex: 1
   }
 });
+
+export default React.memo(DayCalendar)
