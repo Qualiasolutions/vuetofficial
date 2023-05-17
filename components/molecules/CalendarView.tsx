@@ -45,7 +45,7 @@ export default function CalendarView({ dates, onChangeDate }: CalendarViewProps)
       // to wait for updates
       setTimeout(() => {
         onChangeDate(newDate)
-      }, 100)
+      }, 1)
     }
   }
 
