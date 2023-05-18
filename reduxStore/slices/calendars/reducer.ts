@@ -7,9 +7,6 @@ export type CalendarAction = ActionType<typeof actions>;
 const INITIAL_CALENDAR_STATE: CalendarState = {
   data: {},
   ui: {
-    selectedPeriodId: 0,
-    selectedReminderId: 0,
-    selectedRecurrenceIndex: -1,
     listEnforcedDate: "",
     monthEnforcedDate: "",
     enforcedDate: ""
@@ -17,45 +14,6 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
 };
 
 const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
-  .handleAction(
-    actions.setSelectedPeriodId,
-    (state: CalendarState, { payload }) => {
-      return {
-        ...state,
-        ui: {
-          ...state.ui,
-          selectedPeriodId: payload.periodId,
-          selectedReminderId: 0,
-          selectedRecurrenceIndex: payload.recurrenceIndex
-        }
-      };
-    }
-  )
-  .handleAction(
-    actions.setSelectedReminderId,
-    (state: CalendarState, { payload }) => {
-      return {
-        ...state,
-        ui: {
-          ...state.ui,
-          selectedPeriodId: 0,
-          selectedReminderId: payload.reminderId,
-          selectedRecurrenceIndex: -1
-        }
-      };
-    }
-  )
-  .handleAction(actions.deselectTasks, (state: CalendarState) => {
-    return {
-      ...state,
-      ui: {
-        ...state.ui,
-        selectedPeriodId: 0,
-        selectedReminderId: 0,
-        selectedRecurrenceIndex: -1
-      }
-    };
-  })
   .handleAction(actions.setListEnforcedDate, (state: CalendarState, { payload }) => {
     return {
       ...state,

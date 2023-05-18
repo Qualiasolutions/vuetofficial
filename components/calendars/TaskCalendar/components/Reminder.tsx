@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { useThemeColor, View } from 'components/Themed';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   EntityTabParamList,
@@ -13,7 +13,6 @@ import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import { WhiteText, BlackText } from 'components/molecules/TextComponents';
-import Layout from 'constants/Layout';
 import {
   TransparentView,
   WhiteView
@@ -26,20 +25,10 @@ import Checkbox from 'components/molecules/Checkbox';
 import { useUpdateReminderMutation } from 'reduxStore/services/api/reminder';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import { Image } from 'components/molecules/ImageComponents';
-import { selectSelectedReminderId } from 'reduxStore/slices/calendars/selectors';
-import { useSelector } from 'react-redux';
 
-type PropTypes = {
-  reminder: ParsedReminder;
-  onPress?: (event: ParsedReminder) => void;
-  onHeaderPress?: (event: ParsedReminder) => void;
-};
+type PropTypes = { reminder: ParsedReminder; };
 
-export default function Reminder({
-  reminder,
-  onPress = () => { },
-  onHeaderPress = () => { }
-}: PropTypes) {
+export default function Reminder({ reminder }: PropTypes) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
@@ -47,9 +36,7 @@ export default function Reminder({
   >();
 
   const { data: userDetails } = getUserFullDetails();
-
-  const selectedReminderId = useSelector(selectSelectedReminderId);
-  const selected = !reminder.is_complete && reminder.id === selectedReminderId;
+  const [selected, setSelected] = useState(false);
 
   const {
     data: allEntities,
@@ -102,7 +89,9 @@ export default function Reminder({
   const expandedHeader =
     entity && selected ? (
       <Pressable
-        onPress={() => onHeaderPress(reminder)}
+        onPress={() => {
+          setSelected(false)
+        }}
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
         <WhiteText
@@ -163,7 +152,7 @@ export default function Reminder({
           style={styles.touchableContainer}
           onPress={() => {
             if (!reminder.is_complete) {
-              onPress(reminder);
+              setSelected(true)
             }
           }}
         >

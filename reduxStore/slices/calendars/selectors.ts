@@ -6,22 +6,6 @@ export const selectCalendarState = (
   state: EntireState
 ): CalendarState | undefined => state?.calendar;
 
-export const selectSelectedPeriodId = createSelector(
-  selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.selectedPeriodId || 0
-);
-
-export const selectSelectedReminderId = createSelector(
-  selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.selectedReminderId || 0
-);
-
-export const selectSelectedRecurrenceIndex = createSelector(
-  selectCalendarState,
-  (calendar: CalendarState | undefined) =>
-    calendar?.ui?.selectedRecurrenceIndex || 0
-);
-
 export const selectListEnforcedDate = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) =>

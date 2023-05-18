@@ -3,7 +3,7 @@ import { Text, useThemeColor, View } from 'components/Themed';
 import { isFixedTaskParsedType, ScheduledTaskParsedType, ScheduledTaskResponseType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import { useSelector } from 'react-redux';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
@@ -88,6 +88,12 @@ function Task({ task }: PropTypes) {
       })
     }
   )
+
+  useEffect(() => {
+    if (isComplete) {
+      setSelected(false)
+    }
+  }, [isComplete])
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -286,7 +292,11 @@ function Task({ task }: PropTypes) {
       >
         <TouchableOpacity
           style={styles.touchableContainer}
-          onPress={() => setSelected(true)}
+          onPress={() => {
+            if (!isComplete) {
+              setSelected(true)
+            }
+          }}
         >
           {leftInfo}
           <TransparentView style={styles.titleContainer}>

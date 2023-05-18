@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { useThemeColor, View } from 'components/Themed';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   EntityTabParamList,
@@ -13,7 +13,6 @@ import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import { WhiteText, BlackText } from 'components/molecules/TextComponents';
-import Layout from 'constants/Layout';
 import {
   TransparentView,
   WhiteView
@@ -24,29 +23,18 @@ import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Image } from 'components/molecules/ImageComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
-import { useSelector } from 'react-redux';
-import { selectSelectedPeriodId } from 'reduxStore/slices/calendars/selectors';
 
-type PropTypes = {
-  period: ParsedPeriod;
-  onPress?: (event: ParsedPeriod) => void;
-  onHeaderPress?: (event: ParsedPeriod) => void;
-};
+type PropTypes = { period: ParsedPeriod; };
 
-export default function OneDayPeriod({
-  period,
-  onPress = () => { },
-  onHeaderPress = () => { }
-}: PropTypes) {
+export default function OneDayPeriod({ period }: PropTypes) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
 
+  const [selected, setSelected] = useState(false)
   const { data: userDetails } = getUserFullDetails();
-  const selectedPeriodId = useSelector(selectSelectedPeriodId);
-  const selected = period.id === selectedPeriodId;
 
   const {
     data: allEntities,
@@ -94,7 +82,7 @@ export default function OneDayPeriod({
   const expandedHeader =
     entity && selected ? (
       <Pressable
-        onPress={() => onHeaderPress(period)}
+        onPress={() => setSelected(false)}
         style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
       >
         <WhiteText
@@ -151,7 +139,7 @@ export default function OneDayPeriod({
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
-            onPress(period);
+            setSelected(true)
           }}
         >
           {leftInfo}
