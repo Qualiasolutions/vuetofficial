@@ -409,7 +409,8 @@ const styles = StyleSheet.create({
   expandedButtons: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingRight: 5
+    paddingRight: 5,
+    paddingBottom: 10
   },
   editImage: {
     height: 27,
