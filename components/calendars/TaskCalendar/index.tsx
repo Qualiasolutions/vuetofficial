@@ -90,9 +90,10 @@ const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date
   const { data: userDetails } = getUserFullDetails()
   const whiteColor = useThemeColor({}, "white")
 
+  const now = dayjs(new Date())
   const { monthName, year } = enforcedDate
     ? getUTCValuesFromDateString(enforcedDate)
-    : { monthName: "", year: "" }
+    : { monthName: now.format('MMM'), year: now.format('YYYY') }
 
   if (!userDetails) {
     return null
@@ -367,17 +368,6 @@ function Calendar({
     return <FullPageSpinner />;
   }
 
-  if (noTasks) {
-    return (
-      <WhiteContainerView>
-        <AlmostBlackText
-          text={t('components.calendar.noTasks')}
-          style={{ fontSize: 20 }}
-        />
-      </WhiteContainerView>
-    );
-  }
-
   const tabs = [
     {
       title: 'List',
@@ -388,6 +378,16 @@ function Calendar({
       component: calendarView
     },
   ];
+
+
+  const noTasksContent = (
+    <WhiteContainerView>
+      <AlmostBlackText
+        text={t('components.calendar.noTasks')}
+        style={{ fontSize: 20 }}
+      />
+    </WhiteContainerView>
+  );
 
   return (
     <TransparentView style={styles.container}>
@@ -401,7 +401,9 @@ function Calendar({
         }}
         fullPage={fullPage}
       />
-      <Tabs tabs={tabs} />
+      {
+        noTasks ? noTasksContent : <Tabs tabs={tabs} />
+      }
     </TransparentView>
   );
 }

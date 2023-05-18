@@ -28,16 +28,15 @@ import {
   AlmostWhiteContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const LoginScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'>) => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [submitting, setSubmitting] = React.useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -48,7 +47,6 @@ const LoginScreen = ({
     usernameToUse: string,
     passwordToUse: string
   ) => {
-    setErrorMessage('');
     try {
       const { access, refresh } = await getTokenAsync(
         usernameToUse,
@@ -59,25 +57,26 @@ const LoginScreen = ({
         dispatch(setRefreshToken(refresh));
         dispatch(setUsername(usernameToUse));
       } else {
-        setErrorMessage(t('screens.logIn.failedLogin'));
+        Toast.show({
+          type: "error",
+          text1: t('screens.logIn.failedLogin')
+        })
         setSubmitting(false);
       }
     } catch (err) {
       console.log(err);
-      setErrorMessage(t('screens.logIn.failedLogin'));
+      Toast.show({
+        type: "error",
+        text1: t('screens.logIn.failedLogin')
+      })
       setSubmitting(false);
     }
   };
-
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
-  ) : null;
 
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.logIn.welcomeBack')} />
       <PageSubtitle text={t('screens.logIn.enterNumber')} />
-      {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}

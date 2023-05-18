@@ -108,9 +108,6 @@ export default function CalendarView({ dates, onChangeDate }: CalendarViewProps)
           setSelectedDay(day);
           updateDate(day.dateString)
         }}
-        // onMonthChange={(date) => {
-        //   updateDate(date.dateString)
-        // }}
         onPressArrowLeft={(cb, date) => {
           cb()
           if (date) {

@@ -287,7 +287,10 @@ function Calendar({
       ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true} />}
       onViewableItemsChanged={(items) => {
         if (onChangeFirstDate) {
-          updateDate(items.viewableItems[0]?.section?.data?.[0]?.date)
+          if (items.viewableItems[0]?.section?.data?.[0]?.start_datetime) {
+            const newDate = getDateStringFromDateObject(new Date(items.viewableItems[0]?.section?.data?.[0]?.start_datetime))
+            updateDate(newDate)
+          }
         }
       }}
       ref={sectionListRef}
