@@ -3,9 +3,9 @@ import { completionFormFieldTypes } from './taskCompletionFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { ScheduledTaskParsedType } from 'types/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 import { Modal } from 'components/molecules/Modals';
+import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 
 export default function TaskCompletionForm({
   task,
@@ -13,7 +13,7 @@ export default function TaskCompletionForm({
   onSubmitSuccess = () => { },
   onRequestClose = () => { }
 }: {
-  task: ScheduledTaskParsedType;
+  task: MinimalScheduledTask;
   title?: string;
   onSubmitSuccess?: Function;
   onRequestClose?: () => void;

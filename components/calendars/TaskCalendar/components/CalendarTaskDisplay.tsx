@@ -1,5 +1,4 @@
 import { StyleSheet, SectionList } from 'react-native';
-import DayCalendar from './DayCalendar/DayCalendar';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -19,6 +18,7 @@ import { Text, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
+  TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { LinkButton } from 'components/molecules/ButtonComponents';
@@ -26,6 +26,9 @@ import { PaddedSpinner } from 'components/molecules/Spinners';
 import { t } from 'i18next';
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import Task, { MinimalScheduledTask } from './Task';
+import OneDayPeriod from './OneDayPeriod';
+import Reminder from './Reminder';
 
 type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
   end_date: Date;
@@ -38,23 +41,13 @@ type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
 };
 
 type SingleDateTasks = {
-  tasks: ScheduledTaskParsedType[];
+  tasks: MinimalScheduledTask[];
   periods: ParsedPeriod[];
   reminders: ParsedReminder[];
 };
 
 type AllDateTasks = {
   [key: string]: SingleDateTasks;
-};
-
-const parseTaskResponse = (
-  res: ScheduledTaskResponseType
-): ScheduledTaskParsedType => {
-  return {
-    ...res,
-    end_datetime: new Date(res.end_datetime),
-    start_datetime: new Date(res.start_datetime)
-  };
 };
 
 const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
@@ -73,6 +66,30 @@ const parseReminder = (res: ScheduledReminder): ParsedReminder => {
   };
 };
 
+type ItemType = "TASK" | "PERIOD" | "REMINDER"
+type ItemData = (ParsedPeriod | ParsedReminder | MinimalScheduledTask) & { type: ItemType }
+const isTask = (item: ItemData): item is MinimalScheduledTask & { type: "TASK" } => {
+  return item.type === "TASK"
+}
+const isPeriod = (item: ItemData): item is ParsedPeriod & { type: "PERIOD" } => {
+  return item.type === "PERIOD"
+}
+const isReminder = (item: ItemData): item is ParsedReminder & { type: "REMINDER" } => {
+  return item.type === "REMINDER"
+}
+const ListItem = React.memo(({ data }: { data: ItemData }) => {
+  if (isTask(data)) {
+    return <Task task={data} />
+  }
+  if (isPeriod(data)) {
+    return <OneDayPeriod period={data} />
+  }
+  if (isReminder(data)) {
+    return <Reminder reminder={data} />
+  }
+  return null
+})
+
 function Calendar({
   tasks,
   periods,
@@ -80,16 +97,13 @@ function Calendar({
   onChangeFirstDate,
   alwaysIncludeCurrentDate = false
 }: {
-  tasks: ScheduledTaskResponseType[];
+  tasks: MinimalScheduledTask[];
   periods: PeriodResponse[];
   reminders: ScheduledReminder[];
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
-  const primaryColor = useThemeColor({}, 'primary');
-  const periodsDates = placeOverlappingPeriods(periods, primaryColor, false);
-
   const [futureMonthsToShow, setFutureMonthsToShow] = useState(3);
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
@@ -106,18 +120,17 @@ function Calendar({
   const formatAndSetTasksPerDate = (): void => {
     const newTasksPerDate: AllDateTasks = {};
     for (const task of tasks) {
-      const parsedTask = parseTaskResponse(task);
       const taskDates = getDateStringsBetween(
-        parsedTask.start_datetime,
-        parsedTask.end_datetime
+        task.start_datetime,
+        task.end_datetime
       );
 
       for (const taskDate of taskDates) {
         if (newTasksPerDate[taskDate]) {
-          newTasksPerDate[taskDate].tasks.push(parsedTask);
+          newTasksPerDate[taskDate].tasks.push(task);
         } else {
           newTasksPerDate[taskDate] = {
-            tasks: [parsedTask],
+            tasks: [task],
             periods: [],
             reminders: []
           };
@@ -204,10 +217,6 @@ function Calendar({
 
   const datesToShow = Object.keys(tasksPerDate).sort();
 
-  type SectionData = {
-    date: string;
-  };
-
   const ListHeaderOrFooterComponent = ({ isFooter }: { isFooter: boolean }) => {
     if (rerenderingList) {
       return (
@@ -243,8 +252,8 @@ function Calendar({
   };
 
   const [futureSections, pastSections] = useMemo(() => {
-    const future: { title: string; key: string; data: SectionData[] }[] = [];
-    const past: { title: string; key: string; data: SectionData[] }[] = [];
+    const future: { title: string; key: string; data: ItemData[] }[] = [];
+    const past: { title: string; key: string; data: ItemData[] }[] = [];
 
     const currentlyShownDate = monthEnforcedDate ? new Date(monthEnforcedDate) : new Date()
 
@@ -257,19 +266,15 @@ function Calendar({
       const dayName = `${dayJsDate.format('DD')} ${dayJsDate.format('MMMM')} ${dayJsDate.format(
         'YYYY'
       )}`;
-      const existingSection = sectionsArray.find(
-        (section) => section.title === dayName
-      );
-      const dateData = { date };
-      if (existingSection) {
-        existingSection.data.push(dateData);
-      } else {
-        sectionsArray.push({
-          title: dayName,
-          key: dayName,
-          data: [dateData]
-        });
-      }
+      sectionsArray.push({
+        title: dayName,
+        key: dayName,
+        data: [
+          ...(tasksPerDate[date].tasks.map(task => ({ ...task, type: ("TASK" as ItemType) }))),
+          ...(tasksPerDate[date].periods.map(period => ({ ...period, type: ("PERIOD" as ItemType) }))),
+          ...(tasksPerDate[date].reminders.map(reminder => ({ ...reminder, type: ("REMINDER" as ItemType) }))),
+        ]
+      });
     }
     return [future, past];
   }, [datesToShow, monthEnforcedDate]);
@@ -279,6 +284,7 @@ function Calendar({
     ...futureSections.slice(0, (futureMonthsToShow * 30))
   ];
 
+  console.log("FULL RERENDER")
   return (
     <SectionList
       sections={shownSections}
@@ -294,18 +300,10 @@ function Calendar({
         setPastMonthsToShow(0);
         setFutureMonthsToShow(3);
       }}
-      renderItem={({ item: { date } }) => {
-        return (
-          <DayCalendar
-            date={date}
-            key={date}
-            tasks={tasksPerDate[date].tasks}
-            periods={tasksPerDate[date].periods}
-            reminders={tasksPerDate[date].reminders}
-            markedPeriods={periodsDates[date]}
-            highlight={date === getDateStringFromDateObject(new Date())}
-          />
-        );
+      renderItem={({ item }) => {
+        return <TransparentPaddedView>
+          <ListItem data={item} />
+        </TransparentPaddedView>
       }}
       contentContainerStyle={{ paddingBottom: 150 }}
       ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false} />}

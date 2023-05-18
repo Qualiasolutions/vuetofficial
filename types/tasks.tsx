@@ -6,8 +6,9 @@ interface BaseTaskType {
   polymorphic_ctype: number;
   resourcetype: string;
   title: string;
-  [key: string]: any;
   members: number[];
+  recurrence?: any;
+  recurrence_index?: number;
 }
 
 interface FixedTaskResponseType extends BaseTaskType {

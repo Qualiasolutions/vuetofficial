@@ -10,7 +10,7 @@ const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllScheduledTasks: builder.query<
       ScheduledTaskResponseType[],
-      { start_datetime: string; end_datetime: string; user_id: number }
+      { start_datetime: string; end_datetime: string; }
     >({
       query: ({ start_datetime, end_datetime }) => ({
         url: `core/scheduled_task/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,

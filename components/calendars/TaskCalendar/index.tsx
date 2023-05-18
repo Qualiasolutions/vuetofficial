@@ -2,9 +2,9 @@
   TaskCalendar - this is a calendar component for displaying tasks (and periods)
 */
 
-import CalendarTaskDisplay from './components/CalendarTaskDisplay/CalendarTaskDisplay';
+import CalendarTaskDisplay from './components/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
@@ -19,7 +19,6 @@ import { AlmostBlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
-import { ScheduledTaskResponseType, TaskResponseType } from 'types/tasks';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { PeriodResponse, ScheduledReminder } from 'types/periods';
 import { useTranslation } from 'react-i18next';
@@ -34,9 +33,9 @@ import { Image } from 'components/molecules/ImageComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { elevation } from 'styles/elevation';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { setListEnforcedDate, setMonthEnforcedDate } from 'reduxStore/slices/calendars/actions';
 import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import { MinimalScheduledTask } from './components/Task';
 
 dayjs.extend(utc);
 
@@ -150,7 +149,7 @@ const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date
 }
 
 type CalendarProps = {
-  taskFilters: ((task: TaskResponseType) => boolean)[];
+  taskFilters: ((task: MinimalScheduledTask) => boolean)[];
   periodFilters: ((period: PeriodResponse) => boolean)[];
   reminderFilters: ((period: ScheduledReminder) => boolean)[];
   fullPage: boolean;
@@ -185,21 +184,39 @@ function Calendar({
       start_datetime: getOffsetMonthStartDateString(currentDate, -24)
         .dateString,
       end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString,
-      user_id: userDetails?.user_id || -1
     },
     { skip: !userDetails?.user_id }
   );
 
-  const filteredTasks = useMemo<ScheduledTaskResponseType[]>(() => {
-    if (!allScheduledTasks) {
+
+  const minimalScheduledTasks = useMemo(() => {
+    return allScheduledTasks?.map(task => ({
+      id: task.id,
+      start_datetime: new Date(task.start_datetime),
+      end_datetime: new Date(task.end_datetime),
+      title: task.title,
+      members: task.members,
+      recurrence_index: task.recurrence_index,
+      recurrence: task.recurrence,
+      entity: task.entity,
+      resourcetype: task.resourcetype
+    }))
+  }, [allScheduledTasks])
+
+
+  const filteredTasks = useMemo<MinimalScheduledTask[]>(() => {
+    if (!minimalScheduledTasks) {
       return [];
     }
-    let filtered: ScheduledTaskResponseType[] = allScheduledTasks;
+    let filtered: MinimalScheduledTask[] = minimalScheduledTasks;
     for (const taskFilter of taskFilters) {
       filtered = filtered.filter(taskFilter);
     }
     return filtered;
-  }, [allScheduledTasks, taskFilters]);
+  }, [
+    JSON.stringify(minimalScheduledTasks),
+    taskFilters
+  ]);
 
   const filteredAllPeriods = useMemo<PeriodResponse[]>(() => {
     if (!allScheduledPeriods) {
@@ -233,11 +250,16 @@ function Calendar({
       filteredAllReminders.length === 0 &&
       filteredTasks.length === 0
     );
-  }, [filteredTasks, filteredAllPeriods, filteredAllReminders]);
+  }, [
+    JSON.stringify(filteredTasks),
+    JSON.stringify(filteredAllPeriods),
+    JSON.stringify(filteredAllReminders),
+  ]);
 
   const periodColour = useThemeColor({}, 'mediumLightGrey');
 
   const listView = useMemo(() => {
+    console.log("LIST VIEWWWWW")
     if (error) {
       return () => null
     }
@@ -268,6 +290,7 @@ function Calendar({
   ])
 
   const calendarView = useMemo(() => {
+    console.log("CALENDAR VIEWWWWW")
     if (error) {
       return () => null
     }

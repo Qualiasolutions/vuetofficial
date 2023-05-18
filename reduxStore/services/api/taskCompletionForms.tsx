@@ -20,7 +20,7 @@ const extendedApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['TaskCompletionForm', 'Task'],
+      // invalidatesTags: ['TaskCompletionForm', 'Task'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }

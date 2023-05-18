@@ -31,14 +31,14 @@ import { useSelector } from 'react-redux';
 
 type PropTypes = {
   reminder: ParsedReminder;
-  onPress: (event: ParsedReminder) => void;
-  onHeaderPress: (event: ParsedReminder) => void;
+  onPress?: (event: ParsedReminder) => void;
+  onHeaderPress?: (event: ParsedReminder) => void;
 };
 
 export default function Reminder({
   reminder,
-  onPress,
-  onHeaderPress
+  onPress = () => { },
+  onHeaderPress = () => { }
 }: PropTypes) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -143,10 +143,10 @@ export default function Reminder({
       style={[
         styles.container,
         entity &&
-          selected && {
-            ...styles.selectedTask,
-            borderColor: greyColor
-          },
+        selected && {
+          ...styles.selectedTask,
+          borderColor: greyColor
+        },
         reminder.is_complete && {
           backgroundColor: isCompleteBackgroundColor
         }

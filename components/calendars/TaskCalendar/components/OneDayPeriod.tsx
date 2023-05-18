@@ -29,14 +29,14 @@ import { selectSelectedPeriodId } from 'reduxStore/slices/calendars/selectors';
 
 type PropTypes = {
   period: ParsedPeriod;
-  onPress: (event: ParsedPeriod) => void;
-  onHeaderPress: (event: ParsedPeriod) => void;
+  onPress?: (event: ParsedPeriod) => void;
+  onHeaderPress?: (event: ParsedPeriod) => void;
 };
 
 export default function OneDayPeriod({
   period,
-  onPress,
-  onHeaderPress
+  onPress = () => { },
+  onHeaderPress = () => { }
 }: PropTypes) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -135,10 +135,10 @@ export default function OneDayPeriod({
       style={[
         styles.container,
         entity &&
-          selected && {
-            ...styles.selectedTask,
-            borderColor: greyColor
-          }
+        selected && {
+          ...styles.selectedTask,
+          borderColor: greyColor
+        }
       ]}
     >
       {expandedHeader}
