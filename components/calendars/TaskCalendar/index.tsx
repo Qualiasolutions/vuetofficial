@@ -291,7 +291,6 @@ function Calendar({
   ]);
 
   const listView = useMemo(() => {
-    console.log("LIST VIEWWWWW")
     if (error) {
       return () => null
     }
@@ -322,7 +321,6 @@ function Calendar({
   ])
 
   const calendarView = useMemo(() => {
-    console.log("CALENDAR VIEWWWWW")
     if (error) {
       return () => null
     }
@@ -332,8 +330,6 @@ function Calendar({
     if (noTasks) {
       return () => null
     }
-
-    const calendarData = {}
 
     return () => <CalendarView
       tasks={filteredTasks}

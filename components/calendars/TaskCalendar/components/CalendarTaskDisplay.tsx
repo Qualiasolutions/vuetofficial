@@ -89,6 +89,7 @@ function Calendar({
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate)
   const sectionListRef = useRef<any>(null)
+  const [firstDate, setFirstDate] = useState<Date>(new Date())
 
   const updateDate = (newDate: string) => {
     if (onChangeFirstDate && newDate) {
@@ -106,8 +107,32 @@ function Calendar({
   ]);
 
   useEffect(() => {
-    setPastMonthsToShow(0)
     if (monthEnforcedDate && sectionListRef?.current) {
+      const newDate = new Date(monthEnforcedDate)
+      if (firstDate && (firstDate < newDate)) {
+        let sectionIndex = 0
+        for (const date in tasksPerDate) {
+          const dateObj = new Date(date)
+          if ((dateObj < newDate) && (firstDate < dateObj)) {
+            sectionIndex += 1
+          }
+        }
+        // SCROLL TO THE RIGHT DATE
+        try {
+          sectionListRef.current.scrollToLocation({
+            sectionIndex,
+            itemIndex: 0
+          })
+        } catch (err) {
+          console.error(err)
+        }
+        return
+      }
+
+      // Otherwise scroll to the start and set
+      // the first date to be the new date
+      setPastMonthsToShow(0)
+      setFirstDate(newDate)
       try {
         sectionListRef.current.scrollToLocation({
           sectionIndex: 0,
@@ -159,10 +184,8 @@ function Calendar({
     const future: { title: string; key: string; data: ItemData[] }[] = [];
     const past: { title: string; key: string; data: ItemData[] }[] = [];
 
-    const currentlyShownDate = monthEnforcedDate ? new Date(monthEnforcedDate) : new Date()
-
     for (const date of datesToShow) {
-      const sectionsArray = new Date(date) < currentlyShownDate
+      const sectionsArray = new Date(date) < firstDate
         ? past
         : future;
 
@@ -181,14 +204,13 @@ function Calendar({
       });
     }
     return [future, past];
-  }, [datesToShow, monthEnforcedDate]);
+  }, [datesToShow, firstDate]);
 
   const shownSections = [
     ...pastSections.slice(pastSections.length - (pastMonthsToShow * 30)),
     ...futureSections.slice(0, (futureMonthsToShow * 30))
   ];
 
-  console.log("FULL RERENDER")
   return (
     <SectionList
       sections={shownSections}
@@ -204,7 +226,7 @@ function Calendar({
         setPastMonthsToShow(0);
         setFutureMonthsToShow(3);
       }}
-      renderItem={({ item }) => {
+      renderItem={({ item, section, index }) => {
         return <TransparentPaddedView>
           <ListItem data={item} />
         </TransparentPaddedView>
