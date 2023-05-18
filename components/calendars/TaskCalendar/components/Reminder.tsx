@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { useThemeColor, View } from 'components/Themed';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   EntityTabParamList,
@@ -19,12 +19,15 @@ import {
 } from 'components/molecules/ViewComponents';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ParsedReminder } from 'types/periods';
+import { ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import Checkbox from 'components/molecules/Checkbox';
 import { useUpdateReminderMutation } from 'reduxStore/services/api/reminder';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import { Image } from 'components/molecules/ImageComponents';
+import { createSelector } from '@reduxjs/toolkit';
+import { useGetAllPeriodsQuery, useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
+import useScheduledPeriods from 'hooks/useScheduledPeriods';
 
 type PropTypes = { reminder: ParsedReminder; };
 
@@ -59,6 +62,45 @@ export default function Reminder({ reminder }: PropTypes) {
 
   const [triggerUpdateReminder, updateReminderResult] =
     useUpdateReminderMutation();
+
+
+  console.log(reminder.period)
+
+  const selectIsComplete = useMemo(() => {
+    // Return a unique selector instance for this page so that
+    // the filtered results are correctly memoized
+    return createSelector(
+      (allPeriods: { data: PeriodResponse[] }) => {
+        return allPeriods?.data || []
+      },
+      (data) => {
+        const reminderPeriod = data?.find(period => (
+          (period.id === reminder.period)
+        ))
+        if (reminderPeriod?.reminders) {
+          const rem = reminderPeriod.reminders.find(r => r.id === reminder.id)
+          if (rem) {
+            return rem.is_complete
+          }
+        }
+        return false
+      }
+    )
+  }, [])
+
+  const { isComplete } = useGetScheduledPeriodsQuery(
+    {
+      start_datetime: "2020-01-01T00:00:00Z",
+      end_datetime: "2030-01-01T00:00:00Z",
+    },
+    {
+      selectFromResult: (result: any) => ({
+        isComplete: selectIsComplete(result)
+      })
+    }
+  )
+
+  console.log(isComplete)
 
   if (isLoading || !allEntities) {
     return null;
@@ -136,7 +178,7 @@ export default function Reminder({ reminder }: PropTypes) {
           ...styles.selectedTask,
           borderColor: greyColor
         },
-        reminder.is_complete && {
+        isComplete && {
           backgroundColor: isCompleteBackgroundColor
         }
       ]}
@@ -151,7 +193,7 @@ export default function Reminder({ reminder }: PropTypes) {
         <TouchableOpacity
           style={styles.touchableContainer}
           onPress={() => {
-            if (!reminder.is_complete) {
+            if (!isComplete) {
               setSelected(true)
             }
           }}
@@ -162,7 +204,7 @@ export default function Reminder({ reminder }: PropTypes) {
               text={reminder.title}
               style={[
                 styles.title,
-                reminder.is_complete && {
+                isComplete && {
                   color: isCompleteTextColor
                 }
               ]}
@@ -171,9 +213,9 @@ export default function Reminder({ reminder }: PropTypes) {
           </TransparentView>
         </TouchableOpacity>
         <Checkbox
-          disabled={reminder.is_complete}
+          disabled={isComplete}
           style={styles.checkbox}
-          checked={reminder.is_complete}
+          checked={isComplete}
           smoothChecking={true}
           color={isCompleteTextColor}
           onValueChange={async () => {

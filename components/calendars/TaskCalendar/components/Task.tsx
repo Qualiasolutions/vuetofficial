@@ -62,8 +62,6 @@ function Task({ task }: PropTypes) {
   const username = useSelector(selectUsername);
   const [selected, setSelected] = useState(false);
 
-  console.log("RENDERING " + task.title + " " + task.start_datetime)
-
   const selectIsComplete = useMemo(() => {
     // Return a unique selector instance for this page so that
     // the filtered results are correctly memoized

@@ -26,7 +26,6 @@ export default function useScheduledPeriods(
   const { data: allPeriods, isLoading: isLoadingPeriods } =
     useGetScheduledPeriodsQuery(
       {
-        user_id: userDetails?.id || -1,
         start_datetime: (start_datetime ||
           earliestPeriod?.toISOString()) as string,
         end_datetime: (end_datetime || latestPeriod?.toISOString()) as string
@@ -39,7 +38,7 @@ export default function useScheduledPeriods(
   const allReminders = [];
   if (allPeriods) {
     for (const period of allPeriods) {
-      for (const reminder of period.reminders) {
+      for (const reminder of (period?.reminders || [])) {
         allReminders.push({
           ...reminder,
           entity: period.entity,

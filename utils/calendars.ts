@@ -1,5 +1,5 @@
 import { CalendarViewProps } from 'components/molecules/CalendarView';
-import { PeriodResponse } from 'types/periods';
+import { ParsedPeriod, PeriodResponse } from 'types/periods';
 import { getDateStringsBetween } from './datesAndTimes';
 
 export type DatePlacedPeriods = {
@@ -17,7 +17,7 @@ export type PlacedPeriods = {
 };
 
 export const placeOverlappingPeriods = (
-  periods: PeriodResponse[],
+  periods: ParsedPeriod[],
   periodColour: string,
   includeOneDayPeriods: boolean = true
 ): PlacedPeriods => {

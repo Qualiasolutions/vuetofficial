@@ -20,13 +20,13 @@ import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
-import { PeriodResponse, ScheduledReminder } from 'types/periods';
+import { ParsedPeriod, ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
 import { useTranslation } from 'react-i18next';
 import CalendarView from 'components/molecules/CalendarView';
 import Tabs from 'components/molecules/Tabs';
 import { placeOverlappingPeriods } from 'utils/calendars';
 import { useThemeColor, View } from 'components/Themed';
-import { getDateStringFromDateObject, getUTCValuesFromDateString } from 'utils/datesAndTimes';
+import { getDateStringFromDateObject, getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Image } from 'components/molecules/ImageComponents';
@@ -38,6 +38,29 @@ import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { MinimalScheduledTask } from './components/Task';
 
 dayjs.extend(utc);
+
+const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
+  const parsedPeriod = {
+    ...res,
+    end_date: getDateWithoutTimezone(res.end_date),
+    start_date: getDateWithoutTimezone(res.start_date)
+  };
+  delete parsedPeriod.reminders
+
+  return parsedPeriod
+};
+
+const parseReminder = (res: ScheduledReminder): ParsedReminder => {
+  const parsedReminder = {
+    ...res,
+    end_date: getDateWithoutTimezone(res.end_date),
+    start_date: getDateWithoutTimezone(res.start_date)
+  };
+  delete parsedReminder?.is_complete
+
+  return parsedReminder
+};
+
 
 const getOffsetMonthStartDateString = (
   date: Date,
@@ -150,8 +173,8 @@ const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date
 
 type CalendarProps = {
   taskFilters: ((task: MinimalScheduledTask) => boolean)[];
-  periodFilters: ((period: PeriodResponse) => boolean)[];
-  reminderFilters: ((period: ScheduledReminder) => boolean)[];
+  periodFilters: ((period: ParsedPeriod) => boolean)[];
+  reminderFilters: ((period: ParsedReminder) => boolean)[];
   fullPage: boolean;
 };
 function Calendar({
@@ -203,6 +226,14 @@ function Calendar({
     }))
   }, [allScheduledTasks])
 
+  const parsedPeriods = useMemo(() => {
+    return allScheduledPeriods.map(period => parsePeriodResponse(period))
+  }, [allScheduledPeriods])
+
+  const parsedReminders = useMemo(() => {
+    return allScheduledReminders.map(reminder => parseReminder(reminder))
+  }, [allScheduledReminders])
+
 
   const filteredTasks = useMemo<MinimalScheduledTask[]>(() => {
     if (!minimalScheduledTasks) {
@@ -218,29 +249,32 @@ function Calendar({
     taskFilters
   ]);
 
-  const filteredAllPeriods = useMemo<PeriodResponse[]>(() => {
-    if (!allScheduledPeriods) {
+  const filteredAllPeriods = useMemo<ParsedPeriod[]>(() => {
+    if (!parsedPeriods) {
       return [];
     } else {
-      let filtered = allScheduledPeriods;
+      let filtered = parsedPeriods;
       for (const periodFilter of periodFilters) {
         filtered = filtered.filter(periodFilter);
       }
       return filtered;
     }
-  }, [allScheduledPeriods, periodFilters]);
+  }, [
+    JSON.stringify(parsedPeriods),
+    periodFilters
+  ]);
 
-  const filteredAllReminders = useMemo<ScheduledReminder[]>(() => {
-    if (!allScheduledReminders) {
+  const filteredAllReminders = useMemo<ParsedReminder[]>(() => {
+    if (!parsedReminders) {
       return [];
     } else {
-      let filtered = allScheduledReminders;
+      let filtered = parsedReminders;
       for (const reminderFilter of reminderFilters) {
         filtered = filtered.filter(reminderFilter);
       }
       return filtered;
     }
-  }, [allScheduledReminders, reminderFilters]);
+  }, [JSON.stringify(parsedReminders), reminderFilters]);
 
   const noTasks = useMemo(() => {
     return (

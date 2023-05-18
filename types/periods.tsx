@@ -1,6 +1,6 @@
 export type PeriodReminder = {
   id: number;
-  is_complete: boolean;
+  is_complete?: boolean;
   period: number;
   reminder_date: string;
   reminder_timedelta: string;
@@ -31,10 +31,10 @@ export type PeriodResponse = {
   resourcetype: string;
   start_date: string;
   title: string;
-  reminders: PeriodReminder[];
+  reminders?: PeriodReminder[];
 };
 
-export type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
+export type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date' | 'reminders'> & {
   end_date: Date;
   start_date: Date;
 };

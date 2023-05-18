@@ -7,14 +7,8 @@ import {
   getDateWithoutTimezone,
 } from 'utils/datesAndTimes';
 
-import {
-  ScheduledTaskResponseType,
-  ScheduledTaskParsedType
-} from 'types/tasks';
-
-import { PeriodResponse, ScheduledReminder } from 'types/periods';
-import { placeOverlappingPeriods } from 'utils/calendars';
-import { Text, useThemeColor } from 'components/Themed';
+import { ParsedPeriod, ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
+import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
@@ -30,16 +24,6 @@ import Task, { MinimalScheduledTask } from './Task';
 import OneDayPeriod from './OneDayPeriod';
 import Reminder from './Reminder';
 
-type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date'> & {
-  end_date: Date;
-  start_date: Date;
-};
-
-type ParsedReminder = Omit<ScheduledReminder, 'end_date' | 'start_date'> & {
-  end_date: Date;
-  start_date: Date;
-};
-
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
   periods: ParsedPeriod[];
@@ -50,20 +34,15 @@ type AllDateTasks = {
   [key: string]: SingleDateTasks;
 };
 
-const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
-  return {
-    ...res,
-    end_date: getDateWithoutTimezone(res.end_date),
-    start_date: getDateWithoutTimezone(res.start_date)
-  };
-};
-
 const parseReminder = (res: ScheduledReminder): ParsedReminder => {
-  return {
+  const parsedReminder = {
     ...res,
     end_date: getDateWithoutTimezone(res.end_date),
     start_date: getDateWithoutTimezone(res.start_date)
   };
+  delete parsedReminder?.is_complete
+
+  return parsedReminder
 };
 
 type ItemType = "TASK" | "PERIOD" | "REMINDER"
@@ -98,8 +77,8 @@ function Calendar({
   alwaysIncludeCurrentDate = false
 }: {
   tasks: MinimalScheduledTask[];
-  periods: PeriodResponse[];
-  reminders: ScheduledReminder[];
+  periods: ParsedPeriod[];
+  reminders: ParsedReminder[];
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
 }) {
@@ -138,8 +117,7 @@ function Calendar({
       }
     }
 
-    for (const period of periods) {
-      const parsedPeriod = parsePeriodResponse(period);
+    for (const parsedPeriod of periods) {
       const periodDates = getDateStringsBetween(
         parsedPeriod.start_date,
         parsedPeriod.end_date,
@@ -159,8 +137,7 @@ function Calendar({
       }
     }
 
-    for (const reminder of reminders) {
-      const parsedReminder = parseReminder(reminder);
+    for (const parsedReminder of reminders) {
       const reminderDates = getDateStringsBetween(
         parsedReminder.start_date,
         parsedReminder.end_date,

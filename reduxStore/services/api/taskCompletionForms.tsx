@@ -41,7 +41,7 @@ const extendedApi = vuetApi.injectEndpoints({
                 let tasksToUpdate = draft.filter(
                   (task) => task.id === patch.task
                 );
-                if (patch.recurrence_index) {
+                if ((patch.recurrence_index !== null) && (patch.recurrence_index !== undefined)) {
                   tasksToUpdate = tasksToUpdate.filter(
                     (task) =>
                       task.recurrence &&
