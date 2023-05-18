@@ -1,5 +1,6 @@
 const lightColors = {
   primary: '#AC3201',
+  lightYellow: '#D9B67E',
   lightPrimary: '#C9663E',
   secondary: '#3E3647',
   error: '#ff0000',
@@ -35,6 +36,7 @@ const colors = {
     primary: lightColors.primary,
     secondary: lightColors.secondary,
     lightPrimary: lightColors.lightPrimary,
+    lightYellow: lightColors.lightYellow,
     black: lightColors.black,
     white: lightColors.white,
     almostBlack: lightColors.almostBlack,
@@ -69,6 +71,7 @@ const colors = {
     primary: darkColors.primary,
     secondary: lightColors.secondary,
     lightPrimary: lightColors.lightPrimary,
+    lightYellow: lightColors.lightYellow,
     black: darkColors.black,
     white: darkColors.white,
     almostBlack: darkColors.almostBlack,

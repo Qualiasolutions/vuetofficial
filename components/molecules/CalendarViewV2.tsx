@@ -31,6 +31,7 @@ export default function CalendarView({ onChangeDate, tasks, periods, reminders }
   const listEnforcedDate = useSelector(selectListEnforcedDate)
   const whiteColor = useThemeColor({}, "white")
   const almostWhiteColor = useThemeColor({}, "almostWhite")
+  const currentDayColor = useThemeColor({}, 'lightYellow')
 
   const updateDate = (newDate: string) => {
     setForcedInitialDate(newDate)
@@ -85,7 +86,13 @@ export default function CalendarView({ onChangeDate, tasks, periods, reminders }
                 style={[
                   styles.dayComponent,
                   {
-                    backgroundColor: (currentDate && parseInt(currentDate.split("-")[1]) === date.month) ? whiteColor : almostWhiteColor
+                    backgroundColor: (
+                      (currentDate && (parseInt(currentDate.split("-")[1]) === date.month))
+                        ? (parseInt(currentDate.split("-")[2]) === date.day)
+                          ? currentDayColor
+                          : whiteColor
+                        : almostWhiteColor
+                    )
                   }
                 ]}
               >
