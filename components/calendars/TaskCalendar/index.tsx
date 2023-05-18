@@ -22,9 +22,8 @@ import utc from 'dayjs/plugin/utc';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { ParsedPeriod, ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
 import { useTranslation } from 'react-i18next';
-import CalendarView from 'components/molecules/CalendarView';
+import CalendarView from 'components/molecules/CalendarViewV2';
 import Tabs from 'components/molecules/Tabs';
-import { placeOverlappingPeriods } from 'utils/calendars';
 import { useThemeColor, View } from 'components/Themed';
 import { getDateStringFromDateObject, getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
@@ -291,8 +290,6 @@ function Calendar({
     JSON.stringify(filteredAllReminders),
   ]);
 
-  const periodColour = useThemeColor({}, 'mediumLightGrey');
-
   const listView = useMemo(() => {
     console.log("LIST VIEWWWWW")
     if (error) {
@@ -336,10 +333,12 @@ function Calendar({
       return () => null
     }
 
-    const periodsDates = placeOverlappingPeriods(filteredAllPeriods, periodColour);
+    const calendarData = {}
 
     return () => <CalendarView
-      dates={periodsDates}
+      tasks={filteredTasks}
+      periods={filteredAllPeriods}
+      reminders={filteredAllReminders}
       onChangeDate={(date) => {
         dispatch(setMonthEnforcedDate({ date }))
       }}

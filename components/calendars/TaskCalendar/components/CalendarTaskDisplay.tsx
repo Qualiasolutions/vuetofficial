@@ -23,6 +23,7 @@ import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import Task, { MinimalScheduledTask } from './Task';
 import OneDayPeriod from './OneDayPeriod';
 import Reminder from './Reminder';
+import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
 
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
@@ -95,84 +96,10 @@ function Calendar({
     }
   }
 
-
-  const formatAndSetTasksPerDate = (): void => {
-    const newTasksPerDate: AllDateTasks = {};
-    for (const task of tasks) {
-      const taskDates = getDateStringsBetween(
-        task.start_datetime,
-        task.end_datetime
-      );
-
-      for (const taskDate of taskDates) {
-        if (newTasksPerDate[taskDate]) {
-          newTasksPerDate[taskDate].tasks.push(task);
-        } else {
-          newTasksPerDate[taskDate] = {
-            tasks: [task],
-            periods: [],
-            reminders: []
-          };
-        }
-      }
-    }
-
-    for (const parsedPeriod of periods) {
-      const periodDates = getDateStringsBetween(
-        parsedPeriod.start_date,
-        parsedPeriod.end_date,
-        true // Use UTC
-      );
-
-      for (const periodDate of periodDates) {
-        if (newTasksPerDate[periodDate]) {
-          newTasksPerDate[periodDate].periods.push(parsedPeriod);
-        } else {
-          newTasksPerDate[periodDate] = {
-            tasks: [],
-            periods: [parsedPeriod],
-            reminders: []
-          };
-        }
-      }
-    }
-
-    for (const parsedReminder of reminders) {
-      const reminderDates = getDateStringsBetween(
-        parsedReminder.start_date,
-        parsedReminder.end_date,
-        true // Use UTC
-      );
-
-      for (const reminderDate of reminderDates) {
-        if (newTasksPerDate[reminderDate]) {
-          newTasksPerDate[reminderDate].reminders.push(parsedReminder);
-        } else {
-          newTasksPerDate[reminderDate] = {
-            tasks: [],
-            periods: [],
-            reminders: [parsedReminder]
-          };
-        }
-      }
-    }
-
-    if (alwaysIncludeCurrentDate) {
-      const currentDate = new Date();
-      const currentDateString = getDateStringFromDateObject(currentDate);
-      if (!(currentDateString in newTasksPerDate)) {
-        newTasksPerDate[currentDateString] = {
-          tasks: [],
-          periods: [],
-          reminders: []
-        };
-      }
-    }
-
+  useEffect(() => {
+    const newTasksPerDate = formatTasksAndPeriods(tasks, periods, reminders, alwaysIncludeCurrentDate)
     setTasksPerDate(newTasksPerDate);
-  };
-
-  useEffect(formatAndSetTasksPerDate, [
+  }, [
     tasks,
     periods,
     alwaysIncludeCurrentDate
