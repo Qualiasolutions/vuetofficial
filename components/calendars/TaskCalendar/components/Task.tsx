@@ -78,7 +78,7 @@ function Task({ task }: PropTypes) {
   const { isComplete } = useGetAllScheduledTasksQuery(
     {
       start_datetime: "2020-01-01T00:00:00Z",
-      end_datetime: "2025-01-01T00:00:00Z",
+      end_datetime: "2030-01-01T00:00:00Z",
     },
     {
       selectFromResult: (result: any) => ({
