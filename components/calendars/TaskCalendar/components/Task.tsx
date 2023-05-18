@@ -125,222 +125,217 @@ function Task({ task }: PropTypes) {
   const { t } = useTranslation();
 
 
-  const content = useMemo(() => {
-    if (isLoading || !allEntities) {
-      return null;
+  if (isLoading || !allEntities) {
+    return null;
+  }
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  const familyMembersList = userFullDetails?.family?.users?.filter(
+    (item: any) => task.members.includes(item.id)
+  );
+  const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
+    task.members.includes(item.id)
+  );
+
+  const membersList = [
+    ...(familyMembersList || []),
+    ...(friendMembersList || [])
+  ];
+
+  const entity = allEntities.byId[task.entity];
+
+  const addDays = (numDays = 1) => {
+    if (isFixedTaskParsedType(task)) {
+      const newStart = new Date(task.start_datetime);
+      newStart.setDate(newStart.getDate() + numDays);
+
+      const newEnd = new Date(task.end_datetime);
+      newEnd.setDate(newEnd.getDate() + numDays);
+
+      /* TODO - handle errors */
+      triggerUpdateTask({
+        id: task.id,
+        start_datetime: newStart,
+        end_datetime: newEnd,
+        resourcetype: task.resourcetype
+      });
     }
+  };
 
-    if (error) {
-      return <GenericError />;
-    }
+  const leftInfo = (
+    <TransparentView style={styles.leftInfo}>
+      <Text style={isComplete && { color: isCompleteTextColor }}>
+        {getTimeStringFromDateObject(task.start_datetime)}
+      </Text>
+      <Text style={isComplete && { color: isCompleteTextColor }}>
+        {getTimeStringFromDateObject(task.end_datetime)}
+      </Text>
+    </TransparentView>
+  );
 
-    const familyMembersList = userFullDetails?.family?.users?.filter(
-      (item: any) => task.members.includes(item.id)
-    );
-    const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
-      task.members.includes(item.id)
-    );
-
-    const membersList = [
-      ...(familyMembersList || []),
-      ...(friendMembersList || [])
-    ];
-
-    const entity = allEntities.byId[task.entity];
-
-    const addDays = (numDays = 1) => {
-      if (isFixedTaskParsedType(task)) {
-        const newStart = new Date(task.start_datetime);
-        newStart.setDate(newStart.getDate() + numDays);
-
-        const newEnd = new Date(task.end_datetime);
-        newEnd.setDate(newEnd.getDate() + numDays);
-
-        /* TODO - handle errors */
-        triggerUpdateTask({
-          id: task.id,
-          start_datetime: newStart,
-          end_datetime: newEnd,
-          resourcetype: task.resourcetype
-        });
-      }
-    };
-
-    const leftInfo = (
-      <TransparentView style={styles.leftInfo}>
-        <Text style={isComplete && { color: isCompleteTextColor }}>
-          {getTimeStringFromDateObject(task.start_datetime)}
-        </Text>
-        <Text style={isComplete && { color: isCompleteTextColor }}>
-          {getTimeStringFromDateObject(task.end_datetime)}
-        </Text>
-      </TransparentView>
-    );
-
-    const expandedHeader =
-      entity && selected ? (
+  const expandedHeader =
+    entity && selected ? (
+      <Pressable
+        onPress={() => setSelected(false)}
+        style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
+      >
+        <WhiteText
+          text={entity?.name}
+          style={styles.expandedTitle}
+          bold={true}
+        />
         <Pressable
-          onPress={() => setSelected(false)}
+          onPress={() =>
+            (navigation.navigate as any)('EntityNavigator', {
+              screen: 'EditEntity',
+              initial: false,
+              params: { entityId: entity.id }
+            })
+          }
           style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
         >
-          <WhiteText
-            text={entity?.name}
-            style={styles.expandedTitle}
-            bold={true}
+          <Image
+            source={require('assets/images/edit.png')}
+            style={styles.editImage}
           />
-          <Pressable
-            onPress={() =>
-              (navigation.navigate as any)('EntityNavigator', {
-                screen: 'EditEntity',
-                initial: false,
-                params: { entityId: entity.id }
-              })
-            }
-            style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-          >
-            <Image
-              source={require('assets/images/edit.png')}
-              style={styles.editImage}
-            />
-          </Pressable>
         </Pressable>
-      ) : null;
+      </Pressable>
+    ) : null;
 
-    const expandedOptions =
-      selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
-        <TransparentView style={styles.expandedOptions}>
-          <TransparentView style={styles.expandedButtons}>
-            {task.resourcetype === 'FixedTask' && !task.recurrence ? (
-              <>
-                <SquareButton
-                  buttonText={`+1\nDay`}
-                  onPress={() => {
-                    addDays(1);
-                  }}
-                  buttonStyle={{ backgroundColor: primaryColor }}
-                  buttonTextStyle={styles.buttonTextStyle}
-                  buttonSize={35}
-                />
-                <SquareButton
-                  buttonText={'+1\nWeek'}
-                  onPress={() => {
-                    addDays(7);
-                  }}
-                  buttonStyle={{ backgroundColor: primaryColor }}
-                  buttonTextStyle={styles.buttonTextStyle}
-                  buttonSize={35}
-                />
-              </>
-            ) : null}
-            <SquareButton
-              customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
-              onPress={() =>
-                (navigation.navigate as any)('EditTask', { taskId: task.id })
-              }
-              buttonStyle={{ backgroundColor: primaryColor }}
-            />
-          </TransparentView>
-        </TransparentView>
-      ) : null;
-
-    const memberColour = (
-      <TransparentView pointerEvents="none" style={styles.memberColor}>
-        <ColourBar
-          colourHexcodes={
-            membersList?.map(({ member_colour }) => member_colour) || []
-          }
-        />
-      </TransparentView>
-    );
-
-    const taskTypesRequiringForm = ['BookMOTTask'];
-    const taskCompletionForm =
-      taskTypesRequiringForm.includes(task.resourcetype) && showTaskForm ? (
-        <TaskCompletionForm
-          task={task}
-          title={'Please provide some details regarding your MOT appointment'}
-          onSubmitSuccess={() => setShowTaskCompletionForm(false)}
-          onRequestClose={() => setShowTaskCompletionForm(false)}
-        />
-      ) : null;
-
-    return (
-      <WhiteView
-        style={[
-          styles.container,
-          entity &&
-          selected && {
-            ...styles.selectedTask,
-            borderColor: greyColor
-          },
-          isComplete && {
-            backgroundColor: isCompleteBackgroundColor
-          }
-        ]}
-      >
-        {expandedHeader}
-        <TransparentView
-          style={[
-            styles.touchableContainerWrapper,
-            selected && styles.selectedTouchableContainer
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.touchableContainer}
-            onPress={() => setSelected(true)}
-          >
-            {leftInfo}
-            <TransparentView style={styles.titleContainer}>
-              <BlackText
-                text={task.title}
-                style={[
-                  styles.title,
-                  isComplete && {
-                    color: isCompleteTextColor
-                  }
-                ]}
-                bold={true}
+  const expandedOptions =
+    selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
+      <TransparentView style={styles.expandedOptions}>
+        <TransparentView style={styles.expandedButtons}>
+          {task.resourcetype === 'FixedTask' && !task.recurrence ? (
+            <>
+              <SquareButton
+                buttonText={`+1\nDay`}
+                onPress={() => {
+                  addDays(1);
+                }}
+                buttonStyle={{ backgroundColor: primaryColor }}
+                buttonTextStyle={styles.buttonTextStyle}
+                buttonSize={35}
               />
-            </TransparentView>
-          </TouchableOpacity>
-          <Checkbox
-            disabled={isComplete}
-            style={styles.checkbox}
-            checked={isComplete}
-            smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
-            color={isCompleteTextColor}
-            onValueChange={async () => {
-              if (taskTypesRequiringForm.includes(task.resourcetype)) {
-                return setShowTaskCompletionForm(true);
-              }
-              await triggerCreateCompletionForm({
-                resourcetype: `${task.resourcetype}CompletionForm`,
-                recurrence_index: task.recurrence_index,
-                task: task.id
-              });
-            }}
-          />
-        </TransparentView>
-        {selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
-          <Pressable
+              <SquareButton
+                buttonText={'+1\nWeek'}
+                onPress={() => {
+                  addDays(7);
+                }}
+                buttonStyle={{ backgroundColor: primaryColor }}
+                buttonTextStyle={styles.buttonTextStyle}
+                buttonSize={35}
+              />
+            </>
+          ) : null}
+          <SquareButton
+            customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
             onPress={() =>
               (navigation.navigate as any)('EditTask', { taskId: task.id })
             }
-            style={styles.viewEditContainer}
-          >
-            <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
-          </Pressable>
-        ) : null}
-        {taskCompletionForm}
-        {expandedOptions}
-        {memberColour}
-        {!selected && <View style={styles.separator}></View>}
-      </WhiteView>
-    );
-  }, [isComplete, JSON.stringify(task)])
+            buttonStyle={{ backgroundColor: primaryColor }}
+          />
+        </TransparentView>
+      </TransparentView>
+    ) : null;
 
+  const memberColour = (
+    <TransparentView pointerEvents="none" style={styles.memberColor}>
+      <ColourBar
+        colourHexcodes={
+          membersList?.map(({ member_colour }) => member_colour) || []
+        }
+      />
+    </TransparentView>
+  );
 
-  return content
+  const taskTypesRequiringForm = ['BookMOTTask'];
+  const taskCompletionForm =
+    taskTypesRequiringForm.includes(task.resourcetype) && showTaskForm ? (
+      <TaskCompletionForm
+        task={task}
+        title={'Please provide some details regarding your MOT appointment'}
+        onSubmitSuccess={() => setShowTaskCompletionForm(false)}
+        onRequestClose={() => setShowTaskCompletionForm(false)}
+      />
+    ) : null;
+
+  return (
+    <WhiteView
+      style={[
+        styles.container,
+        entity &&
+        selected && {
+          ...styles.selectedTask,
+          borderColor: greyColor
+        },
+        isComplete && {
+          backgroundColor: isCompleteBackgroundColor
+        }
+      ]}
+    >
+      {expandedHeader}
+      <TransparentView
+        style={[
+          styles.touchableContainerWrapper,
+          selected && styles.selectedTouchableContainer
+        ]}
+      >
+        <TouchableOpacity
+          style={styles.touchableContainer}
+          onPress={() => setSelected(true)}
+        >
+          {leftInfo}
+          <TransparentView style={styles.titleContainer}>
+            <BlackText
+              text={task.title}
+              style={[
+                styles.title,
+                isComplete && {
+                  color: isCompleteTextColor
+                }
+              ]}
+              bold={true}
+            />
+          </TransparentView>
+        </TouchableOpacity>
+        <Checkbox
+          disabled={isComplete}
+          style={styles.checkbox}
+          checked={isComplete}
+          smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
+          color={isCompleteTextColor}
+          onValueChange={async () => {
+            if (taskTypesRequiringForm.includes(task.resourcetype)) {
+              return setShowTaskCompletionForm(true);
+            }
+            await triggerCreateCompletionForm({
+              resourcetype: `${task.resourcetype}CompletionForm`,
+              recurrence_index: task.recurrence_index,
+              task: task.id
+            });
+          }}
+        />
+      </TransparentView>
+      {selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
+        <Pressable
+          onPress={() =>
+            (navigation.navigate as any)('EditTask', { taskId: task.id })
+          }
+          style={styles.viewEditContainer}
+        >
+          <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
+        </Pressable>
+      ) : null}
+      {taskCompletionForm}
+      {expandedOptions}
+      {memberColour}
+      {!selected && <View style={styles.separator}></View>}
+    </WhiteView>
+  );
 }
 
 const styles = StyleSheet.create({
