@@ -36,18 +36,6 @@ export default function MyAccountScreen() {
             onPress={() => { (navigation.navigate as any)('EditSecurity') }}
           />
         </TransparentPaddedView>
-        <TransparentPaddedView>
-          <Button
-            title="Settings"
-            onPress={() => { (navigation.navigate as any)('SettingsNavigator') }}
-          />
-        </TransparentPaddedView>
-        <TransparentPaddedView>
-          <Button
-            title="My Family"
-            onPress={() => { (navigation.navigate as any)('SettingsNavigator', { screen: "FamilySettings" }) }}
-          />
-        </TransparentPaddedView>
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
   );

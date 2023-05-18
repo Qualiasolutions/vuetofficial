@@ -22,6 +22,7 @@ import { dataTypeMapping } from './utils/dataTypeMapping';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { fieldColorMapping } from './utils/fieldColorMapping';
 import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
@@ -40,10 +41,10 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
 
   const fieldColor = entityToEdit
     ? useThemeColor(
-        {},
-        fieldColorMapping[entityToEdit.resourcetype] ||
-          fieldColorMapping.default
-      )
+      {},
+      fieldColorMapping[entityToEdit.resourcetype] ||
+      fieldColorMapping.default
+    )
     : '';
 
   if (isLoading || !entityToEdit || !allEntities || !entityId) {
@@ -64,6 +65,10 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
       dataTypeMapping.default) as FormDataType);
 
   const onDeleteSuccess = (res: CarResponseType) => {
+    Toast.show({
+      type: "success",
+      text1: "Succesfully deleted entity"
+    })
     navigation.goBack();
   };
 
@@ -102,6 +107,10 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
             derivedFieldsMapping[entityToEdit.resourcetype]
           }
           onSubmitSuccess={() => {
+            Toast.show({
+              type: "success",
+              text1: `Succesfully updated ${entityToEdit.name}`
+            })
             navigation.goBack();
           }}
           onDeleteSuccess={onDeleteSuccess}

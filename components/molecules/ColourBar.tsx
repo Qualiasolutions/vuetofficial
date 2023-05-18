@@ -22,16 +22,19 @@ export default function ColourBar({
 
 const styles = StyleSheet.create({
   container: {
-    bottom: 0,
-    right: 0,
-    height: 10,
+    bottom: 5,
+    right: 5,
     display: 'flex',
     flexDirection: 'row-reverse',
     width: '100%',
-    position: 'absolute'
+    position: 'absolute',
+    alignItems: 'center',
+    paddingHorizontal: 5
   },
   colourBar: {
-    width: 90,
-    height: 10
+    width: 30,
+    height: 10,
+    borderRadius: 5,
+    marginLeft: 2
   }
 });
