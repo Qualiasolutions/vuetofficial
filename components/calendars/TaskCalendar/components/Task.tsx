@@ -41,6 +41,7 @@ import { Image } from 'components/molecules/ImageComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import { createSelector } from '@reduxjs/toolkit';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 export type MinimalScheduledTask = {
   id: number;
@@ -59,7 +60,6 @@ type PropTypes = {
 };
 
 function Task({ task }: PropTypes) {
-  const username = useSelector(selectUsername);
   const [selected, setSelected] = useState(false);
 
   const selectIsComplete = useMemo(() => {
@@ -75,7 +75,7 @@ function Task({ task }: PropTypes) {
     )
   }, [])
 
-  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userDetails } = getUserFullDetails();
 
   const { isComplete } = useGetAllScheduledTasksQuery(
     {
@@ -83,7 +83,7 @@ function Task({ task }: PropTypes) {
       end_datetime: "2030-01-01T00:00:00Z",
     },
     {
-      skip: !!userDetails?.user_id,
+      skip: !!userDetails?.id,
       selectFromResult: (result: any) => ({
         isComplete: selectIsComplete(result, task)
       })
@@ -110,15 +110,15 @@ function Task({ task }: PropTypes) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
+  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
   });
 
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
-  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
+  } = useGetUserFullDetailsQuery(userDetails?.id || -1);
 
   const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
@@ -311,7 +311,7 @@ function Task({ task }: PropTypes) {
             />
           </TransparentView>
         </TouchableOpacity>
-        <Checkbox
+        {userDetails?.is_premium && <Checkbox
           disabled={isComplete}
           style={styles.checkbox}
           checked={isComplete}
@@ -327,7 +327,7 @@ function Task({ task }: PropTypes) {
               task: task.id
             });
           }}
-        />
+        />}
       </TransparentView>
       {selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
         <Pressable

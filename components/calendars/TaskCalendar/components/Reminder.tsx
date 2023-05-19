@@ -207,7 +207,7 @@ export default function Reminder({ reminder }: PropTypes) {
             />
           </TransparentView>
         </TouchableOpacity>
-        <Checkbox
+        {userDetails?.is_premium && <Checkbox
           disabled={isComplete}
           style={styles.checkbox}
           checked={isComplete}
@@ -219,7 +219,7 @@ export default function Reminder({ reminder }: PropTypes) {
               is_complete: true
             });
           }}
-        />
+        />}
       </TransparentView>
       {memberColour}
       {!selected && (
