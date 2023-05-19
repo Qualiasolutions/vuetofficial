@@ -63,9 +63,6 @@ export default function Reminder({ reminder }: PropTypes) {
   const [triggerUpdateReminder, updateReminderResult] =
     useUpdateReminderMutation();
 
-
-  console.log(reminder.period)
-
   const selectIsComplete = useMemo(() => {
     // Return a unique selector instance for this page so that
     // the filtered results are correctly memoized
@@ -99,8 +96,6 @@ export default function Reminder({ reminder }: PropTypes) {
       })
     }
   )
-
-  console.log(isComplete)
 
   if (isLoading || !allEntities) {
     return null;

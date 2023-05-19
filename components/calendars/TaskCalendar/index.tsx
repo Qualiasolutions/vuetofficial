@@ -384,6 +384,9 @@ function Calendar({
     </WhiteContainerView>
   );
 
+  console.log(allScheduledTasks)
+  console.log(filteredTasks)
+
   return (
     <TransparentView style={styles.container}>
       <MonthSelector

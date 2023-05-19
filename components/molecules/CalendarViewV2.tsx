@@ -107,13 +107,13 @@ export default function CalendarView({ onChangeDate, tasks, periods, reminders }
                       {date.day}
                     </Text>
                     {
-                      formattedTasks[date.dateString]?.tasks?.map(task => <Text style={styles.taskText}>{task.title}</Text>)
+                      formattedTasks[date.dateString]?.tasks?.map(task => <Text key={`${task.id}_${task.recurrence_index}`} style={styles.taskText}>{task.title}</Text>)
                     }
                     {
-                      formattedTasks[date.dateString]?.periods?.map(period => <Text style={styles.taskText}>{period.title}</Text>)
+                      formattedTasks[date.dateString]?.periods?.map(period => <Text key={period.id} style={styles.taskText}>{period.title}</Text>)
                     }
                     {
-                      formattedTasks[date.dateString]?.reminders?.map(reminder => <Text style={styles.taskText}>{reminder.title}</Text>)
+                      formattedTasks[date.dateString]?.reminders?.map(reminder => <Text key={reminder.id} style={styles.taskText}>{reminder.title}</Text>)
                     }
                   </TransparentView>
                 </ScrollView>

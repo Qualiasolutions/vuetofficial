@@ -107,24 +107,31 @@ function Calendar({
   ]);
 
   useEffect(() => {
-    if (monthEnforcedDate && sectionListRef?.current) {
+    console.log("EFFECT")
+    if (monthEnforcedDate && sectionListRef?.current && (Object.keys(tasksPerDate).length > 0)) {
+      console.log(monthEnforcedDate)
       const newDate = new Date(monthEnforcedDate)
       if (firstDate && (firstDate < newDate)) {
-        let sectionIndex = 0
+        let sectionIndex = -1
         for (const date in tasksPerDate) {
           const dateObj = new Date(date)
           if ((dateObj < newDate) && (firstDate < dateObj)) {
             sectionIndex += 1
           }
         }
-        // SCROLL TO THE RIGHT DATE
-        try {
-          sectionListRef.current.scrollToLocation({
-            sectionIndex,
-            itemIndex: 0
-          })
-        } catch (err) {
-          console.error(err)
+
+        if (sectionIndex >= 0) {
+          // SCROLL TO THE RIGHT DATE
+          console.log("SCROLLING TO DATE")
+          console.log(tasksPerDate)
+          try {
+            sectionListRef.current.scrollToLocation({
+              sectionIndex,
+              itemIndex: 0
+            })
+          } catch (err) {
+            console.error(err)
+          }
         }
         return
       }
@@ -134,6 +141,7 @@ function Calendar({
       setPastMonthsToShow(0)
       setFirstDate(newDate)
       try {
+        console.log("SCROLLING TO START")
         sectionListRef.current.scrollToLocation({
           sectionIndex: 0,
           itemIndex: 0

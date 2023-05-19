@@ -75,12 +75,15 @@ function Task({ task }: PropTypes) {
     )
   }, [])
 
+  const { data: userDetails } = useGetUserDetailsQuery(username);
+
   const { isComplete } = useGetAllScheduledTasksQuery(
     {
       start_datetime: "2020-01-01T00:00:00Z",
       end_datetime: "2030-01-01T00:00:00Z",
     },
     {
+      skip: !!userDetails?.user_id,
       selectFromResult: (result: any) => ({
         isComplete: selectIsComplete(result, task)
       })
@@ -99,8 +102,6 @@ function Task({ task }: PropTypes) {
     | StackNavigationProp<SettingsTabParamList>
   >();
   const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
-
-  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const [triggerCreateCompletionForm, createCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
