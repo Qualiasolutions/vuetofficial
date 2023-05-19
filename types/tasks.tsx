@@ -1,3 +1,17 @@
+type RecurrenceType = "DAILY" |
+  "WEEKLY" |
+  "MONTHLY" |
+  "MONTH_WEEKLY" |
+  "YEARLY" |
+  "YEAR_MONTH_WEEKLY"
+
+interface Recurrence {
+  earliest_occurrence: string;
+  latest_occurrence: string | null;
+  interval_length: number;
+  recurrence: RecurrenceType;
+}
+
 interface BaseTaskType {
   entity: number;
   id: number;
@@ -7,7 +21,7 @@ interface BaseTaskType {
   resourcetype: string;
   title: string;
   members: number[];
-  recurrence?: any;
+  recurrence?: Recurrence | null;
   recurrence_index?: number;
 }
 
@@ -61,6 +75,8 @@ const isFlexibleTaskParsedType = (task: any): task is FlexibleTaskParsedType =>
   task.resourcetype === 'FlexibleTask';
 
 export {
+  RecurrenceType,
+  Recurrence,
   FixedTaskResponseType,
   FixedTaskParsedType,
   FlexibleTaskResponseType,

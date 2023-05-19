@@ -27,7 +27,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
 
 export function Modal(props: ModalProps) {
-  const { style, children, boxStyle, onRequestClose, ...otherProps } = props;
+  const { children, boxStyle, onRequestClose, ...otherProps } = props;
 
   return (
     <DefaultModal
@@ -113,7 +113,7 @@ export function ListingModal(props: ListingModalProps) {
     sectionSettings,
     data = {},
     itemToName = (item) => item.name,
-    onClose = () => {},
+    onClose = () => { },
     onSelect,
     ListItemComponent = DefaultListItemComponent
   } = props;

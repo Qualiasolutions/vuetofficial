@@ -72,7 +72,7 @@ const createInitialObject = (
         continue;
 
       default:
-        initialObj[key] = null;
+        initialObj[key] = formFields[key].initialValue || null;
     }
   }
 

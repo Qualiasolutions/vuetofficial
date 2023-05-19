@@ -14,13 +14,14 @@ export type PermittedTypes =
   | 'TextArea'
   | 'addFamilyMembers'
   | 'dropDown'
+  | 'recurrenceSelector'
   | 'dropDownWithOther'
   | 'timezone'
   | 'Image';
 
 export type TextTransform = 'uppercase' | 'lowercase';
 
-export type BaseField<TypeName, ValueType> = {
+export type BaseField<TypeName extends PermittedTypes, ValueType> = {
   type: TypeName;
   required: boolean;
   displayName?: string | UseTranslationResponse<string> | undefined;
@@ -75,6 +76,10 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
   listMode?: ListModeType;
 };
 
+export type RecurrenceSelectorField = BaseField<'recurrenceSelector', any> & {
+  firstOccurrenceField: string
+}
+
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
@@ -104,6 +109,7 @@ export type Field =
   | AddFamilyMembersField
   | DropDownField
   | DropDownWithOtherField
+  | RecurrenceSelectorField
   | ImageField
   | TimezoneField;
 

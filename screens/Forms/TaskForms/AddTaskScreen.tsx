@@ -7,8 +7,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 import {
   periodFieldTypes,
   taskBottomFieldTypes,
-  taskOneOffMiddleFieldTypes,
-  taskRecurrentMiddleFieldTypes,
+  taskMiddleFieldTypes,
   taskTopFieldTypes
 } from './taskFormFieldTypes';
 import { useFocusEffect } from '@react-navigation/native';
@@ -33,6 +32,7 @@ import RadioInput from 'components/forms/components/RadioInput';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
 import { useCreatePeriodMutation } from 'reduxStore/services/api/period';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const formTypes = [
   {
@@ -61,20 +61,12 @@ export default function AddTaskScreen({
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
-  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
-  const [createError, setCreateError] = useState<string>('');
   const [formType, setFormType] = useState<AddTaskFormType>('TASK');
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createPeriod, createPeriodResult] = useCreatePeriodMutation();
   const isSubmitting =
     createTaskResult.isLoading || createPeriodResult.isLoading;
-
-  useFocusEffect(
-    useCallback(() => {
-      setCreateSuccessful(false);
-    }, [])
-  );
 
   const fieldColor = useThemeColor({}, 'almostWhite');
   const headerBackgroundColor = useThemeColor({}, 'secondary');
@@ -90,9 +82,8 @@ export default function AddTaskScreen({
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
     {}
   );
-  const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] =
-    useState<FieldValueTypes>({});
-  const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] =
+  useState<FieldValueTypes>({});
+  const [taskMiddleFieldValues, setTaskMiddleFieldValues] =
     useState<FieldValueTypes>({});
   const [taskBottomFieldValues, setTaskBottomFieldValues] =
     useState<FieldValueTypes>({});
@@ -100,33 +91,26 @@ export default function AddTaskScreen({
     {}
   );
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
-  const [resetState, setResetState] = useState<() => void>(() => () => {});
+  const [resetState, setResetState] = useState<() => void>(() => () => { });
 
   const taskTopFields = taskTopFieldTypes();
-  const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes();
-  const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
+  const taskMiddleFields = taskMiddleFieldTypes();
   const taskBottomFields = taskBottomFieldTypes();
   const periodFields = periodFieldTypes();
 
   useEffect(() => {
     if (userDetails) {
-      const initialTopFields = createInitialObject(taskTopFields, userDetails, {
-        duration_minutes: formType === 'TASK' ? 15 : 60,
-        recurrence: null
-      });
+      const initialTopFields = createInitialObject(taskTopFields, userDetails);
       setTaskTopFieldValues(initialTopFields);
 
-      const initialRecurrentMiddleFields = createInitialObject(
-        taskRecurrentMiddleFields,
-        userDetails
+      const initialMiddleFields = createInitialObject(
+        taskMiddleFields,
+        userDetails, {
+        duration_minutes: formType === 'TASK' ? 15 : 60,
+        recurrence: null
+      }
       );
-      setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
-
-      const initialOneOffMiddleFields = createInitialObject(
-        taskOneOffMiddleFields,
-        userDetails
-      );
-      setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+      setTaskMiddleFieldValues(initialMiddleFields);
 
       const initialBottomFields = createInitialObject(
         taskBottomFields,
@@ -144,8 +128,7 @@ export default function AddTaskScreen({
       setResetState(() => () => {
         setPeriodFieldValues(initialPeriodFields);
         setTaskTopFieldValues(initialTopFields);
-        setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
-        setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+        setTaskMiddleFieldValues(initialMiddleFields);
         setTaskBottomFieldValues(initialBottomFields);
       });
 
@@ -168,12 +151,8 @@ export default function AddTaskScreen({
         return false;
       }
     }
-    const middleFields = taskTopFieldValues.recurrence
-      ? taskRecurrentMiddleFields
-      : taskOneOffMiddleFields;
-    const middleFieldValues = taskTopFieldValues.recurrence
-      ? taskRecurrentMiddleFieldValues
-      : taskOneOffMiddleFieldValues;
+    const middleFields = taskMiddleFields;
+    const middleFieldValues = taskMiddleFieldValues;
     for (const fieldName in middleFields) {
       if (middleFields[fieldName].required && !middleFieldValues[fieldName]) {
         return false;
@@ -190,29 +169,38 @@ export default function AddTaskScreen({
     return true;
   }, [
     taskTopFieldValues,
-    taskOneOffMiddleFields,
-    taskRecurrentMiddleFieldValues,
+    taskMiddleFields,
     taskBottomFieldValues
   ]);
 
   useEffect(() => {
     if (createTaskResult.isSuccess) {
-      setCreateError('');
-      setCreateSuccessful(true);
+      Toast.show({
+        type: "success",
+        text1: t('screens.addTask.createSuccess')
+      })
       resetState();
     } else if (createTaskResult.isError) {
-      setCreateError('An unexpected error occurred');
+      Toast.show({
+        type: "error",
+        text1: t('common.genericError')
+      })
       console.log(createTaskResult.error);
     }
   }, [createTaskResult]);
 
   useEffect(() => {
     if (createPeriodResult.isSuccess) {
-      setCreateError('');
-      setCreateSuccessful(true);
+      Toast.show({
+        type: "success",
+        text1: t('screens.addTask.createSuccess')
+      })
       resetState();
     } else if (createPeriodResult.isError) {
-      setCreateError('An unexpected error occurred');
+      Toast.show({
+        type: "error",
+        text1: t('common.genericError')
+      })
       console.log(createPeriodResult.error);
     }
   }, [createPeriodResult]);
@@ -231,12 +219,8 @@ export default function AddTaskScreen({
         entity: route.params.entityId
       };
     } else {
-      const middleFieldValues = taskTopFieldValues.recurrence
-        ? taskRecurrentMiddleFieldValues
-        : taskOneOffMiddleFieldValues;
-      const middleFields = taskTopFieldValues.recurrence
-        ? taskRecurrentMiddleFields
-        : taskOneOffMiddleFields;
+      const middleFieldValues = taskMiddleFieldValues;
+      const middleFields = taskMiddleFields;
 
       const parsedTopFieldValues = parseFormValues(
         taskTopFieldValues,
@@ -253,7 +237,7 @@ export default function AddTaskScreen({
 
       const endDatetime = new Date(
         middleFieldValues.start_datetime.getTime() +
-          taskTopFieldValues.duration_minutes * 60000
+        middleFieldValues.duration_minutes * 60000
       );
 
       parsedFieldValues = {
@@ -261,18 +245,13 @@ export default function AddTaskScreen({
         ...parsedMiddleFieldValues,
         ...parsedBottomFieldValues,
         end_datetime: endDatetime,
-        recurrence: parsedTopFieldValues.recurrence
-          ? {
-              earliest_occurrence: middleFieldValues.start_datetime,
-              latest_occurrence: null,
-              recurrence: parsedTopFieldValues.recurrence
-            }
-          : null,
         type: formType,
         resourcetype: 'FixedTask',
         entity: route.params.entityId
       };
     }
+
+    console.log(parsedFieldValues)
 
     if (formType === 'DUE_DATE') {
       createPeriod(parsedFieldValues);
@@ -290,12 +269,6 @@ export default function AddTaskScreen({
       <TransparentView style={styles.container}>
         <TransparentView>
           <WhiteView style={styles.typeSelector}>
-            {createSuccessful ? (
-              <Text style={styles.createSuccessful}>
-                {t('screens.addTask.createSuccess')}
-              </Text>
-            ) : null}
-            {createError ? <Text>{createError}</Text> : null}
             <RadioInput
               value={formType}
               label={t('common.addNew')}
@@ -311,8 +284,6 @@ export default function AddTaskScreen({
               formValues={periodFieldValues}
               onFormValuesChange={(values: FieldValueTypes) => {
                 setPeriodFieldValues(values);
-                setCreateError('');
-                setCreateSuccessful(false);
               }}
               inlineFields={true}
               fieldColor={fieldColor}
@@ -323,8 +294,6 @@ export default function AddTaskScreen({
               formValues={taskTopFieldValues}
               onFormValuesChange={(values: FieldValueTypes) => {
                 setTaskTopFieldValues(values);
-                setCreateError('');
-                setCreateSuccessful(false);
               }}
               inlineFields={true}
               fieldColor={fieldColor}
@@ -333,31 +302,15 @@ export default function AddTaskScreen({
         </TransparentView>
         {formType !== 'DUE_DATE' && (
           <TransparentView>
-            {taskTopFieldValues.recurrence ? (
-              <TypedForm
-                fields={taskRecurrentMiddleFields}
-                formValues={taskRecurrentMiddleFieldValues}
-                onFormValuesChange={(values: FieldValueTypes) => {
-                  setTaskRecurrentMiddleFieldValues(values);
-                  setCreateError('');
-                  setCreateSuccessful(false);
-                }}
-                inlineFields={true}
-                fieldColor={fieldColor}
-              />
-            ) : (
-              <TypedForm
-                fields={taskOneOffMiddleFields}
-                formValues={taskOneOffMiddleFieldValues}
-                onFormValuesChange={(values: FieldValueTypes) => {
-                  setTaskOneOffMiddleFieldValues(values);
-                  setCreateError('');
-                  setCreateSuccessful(false);
-                }}
-                inlineFields={true}
-                fieldColor={fieldColor}
-              />
-            )}
+            <TypedForm
+              fields={taskMiddleFields}
+              formValues={taskMiddleFieldValues}
+              onFormValuesChange={(values: FieldValueTypes) => {
+                setTaskMiddleFieldValues(values);
+              }}
+              inlineFields={true}
+              fieldColor={fieldColor}
+            />
           </TransparentView>
         )}
         {formType === 'APPOINTMENT' && (
@@ -367,8 +320,6 @@ export default function AddTaskScreen({
               formValues={taskBottomFieldValues}
               onFormValuesChange={(values: FieldValueTypes) => {
                 setTaskBottomFieldValues(values);
-                setCreateError('');
-                setCreateSuccessful(false);
               }}
               inlineFields={true}
               fieldColor={fieldColor}
@@ -404,9 +355,6 @@ const styles = StyleSheet.create({
   typeSelector: {
     paddingHorizontal: 30,
     paddingVertical: 20,
-    marginBottom: 20
-  },
-  createSuccessful: {
     marginBottom: 20
   },
   bottomButtons: {

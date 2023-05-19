@@ -15,6 +15,7 @@ import {
   ImageField,
   OptionalYearDate,
   RadioField,
+  RecurrenceSelectorField,
   StringField,
   TimezoneField
 } from './formFieldTypes';
@@ -38,6 +39,7 @@ import { FieldErrorTypes, FieldValueTypes } from './types';
 import { useTranslation } from 'react-i18next';
 import TimezoneSelect from './components/TimezoneSelect';
 import { elevation } from '../../styles/elevation';
+import RecurrenceSelector from './components/RecurrenceSelector';
 
 const parseFieldName = (name: string) => {
   return name
@@ -52,7 +54,7 @@ export default function TypedForm({
   formType = 'CREATE',
   inlineFields = false,
   fieldColor = '#ffffff',
-  onFormValuesChange = (formValues: FieldValueTypes) => {},
+  onFormValuesChange = (formValues: FieldValueTypes) => { },
   style = {}
 }: {
   fields: FormFieldTypes;
@@ -178,9 +180,9 @@ export default function TypedForm({
                     const knownYearFields = (f as OptionalYearDate)
                       .knownYearField
                       ? {
-                          [(f as OptionalYearDate).knownYearField as string]:
-                            knownYear
-                        }
+                        [(f as OptionalYearDate).knownYearField as string]:
+                          knownYear
+                      }
                       : {};
                     onFormValuesChange({
                       ...formValues,
@@ -315,7 +317,7 @@ export default function TypedForm({
             </TransparentView>
           );
         }
-        case 'radio':
+        case 'radio': {
           const f = flatFields[field] as RadioField;
           const permittedValueObjects = f.permittedValues.map(
             (value: any, i: number) => ({
@@ -343,6 +345,7 @@ export default function TypedForm({
               </TransparentView>
             </TransparentView>
           );
+        }
         case 'colour':
           return (
             <WhiteBox key={field} style={styles.colourBox} elevated={false}>
@@ -579,6 +582,40 @@ export default function TypedForm({
             </TransparentView>
           );
         }
+        case 'recurrenceSelector': {
+          const f = flatFields[field] as RecurrenceSelectorField;
+          const firstOccurrence: Date = formValues[f.firstOccurrenceField]
+
+          if (!firstOccurrence) {
+            return null
+          }
+
+          return (
+            <TransparentView key={field}>
+              <TransparentView
+                key={field}
+                style={inlineFields ? styles.inlineInputPair : {}}
+              >
+                <TransparentView style={styles.inputLabelWrapper}>
+                  {produceLabelFromFieldName(field)}
+                </TransparentView>
+                <TransparentView style={styles.inputLabel}>
+                  <RecurrenceSelector
+                    value={formValues[field]}
+                    onChange={(value) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: value
+                      });
+                    }}
+                    firstOccurrence={firstOccurrence}
+                    disabled={f.disabled || false}
+                  />
+                </TransparentView>
+              </TransparentView>
+            </TransparentView>
+          );
+        }
       }
     });
     return (
@@ -599,13 +636,15 @@ const styles = StyleSheet.create({
   inlineInputPair: {
     flexDirection: 'row',
     width: '100%',
-    marginTop: 10
+    marginTop: 10,
   },
   inputLabel: {
     fontSize: 14,
     textAlign: 'left',
     marginTop: 14,
-    marginRight: 10
+    marginRight: 10,
+    flexShrink: 1,
+    width: '100%'
   },
   inputLabelWrapper: {
     alignItems: 'flex-start',

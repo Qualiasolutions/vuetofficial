@@ -6,8 +6,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 
 import {
   taskBottomFieldTypes,
-  taskOneOffMiddleFieldTypes,
-  taskRecurrentMiddleFieldTypes,
+  taskMiddleFieldTypes,
   taskTopFieldTypes
 } from './taskFormFieldTypes';
 import { useFocusEffect } from '@react-navigation/native';
@@ -36,6 +35,7 @@ import { TaskResponseType } from 'types/tasks';
 import dayjs from 'dayjs';
 import { deepCopy } from 'utils/copy';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
+
 
 export default function EditTaskScreen({
   route,
@@ -70,17 +70,14 @@ export default function EditTaskScreen({
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
     {}
   );
-  const [taskRecurrentMiddleFieldValues, setTaskRecurrentMiddleFieldValues] =
-    useState<FieldValueTypes>({});
-  const [taskOneOffMiddleFieldValues, setTaskOneOffMiddleFieldValues] =
+  const [taskMiddleFieldValues, setTaskMiddleFieldValues] =
     useState<FieldValueTypes>({});
   const [taskBottomFieldValues, setTaskBottomFieldValues] =
     useState<FieldValueTypes>({});
-  const [resetState, setResetState] = useState<() => void>(() => () => {});
+  const [resetState, setResetState] = useState<() => void>(() => () => { });
 
-  const taskTopFields = taskTopFieldTypes(true);
-  const taskRecurrentMiddleFields = taskRecurrentMiddleFieldTypes(true);
-  const taskOneOffMiddleFields = taskOneOffMiddleFieldTypes();
+  const taskTopFields = taskTopFieldTypes();
+  const taskMiddleFields = taskMiddleFieldTypes(true);
   const taskBottomFields = taskBottomFieldTypes();
 
   useEffect(() => {
@@ -90,12 +87,9 @@ export default function EditTaskScreen({
         newTaskToEdit.duration_minutes = Math.round(
           (dayjs(newTaskToEdit.end_datetime).toDate().getTime() -
             dayjs(newTaskToEdit.start_datetime).toDate().getTime()) /
-            (60 * 1000)
+          (60 * 1000)
         );
 
-        newTaskToEdit.recurrence = newTaskToEdit.recurrence
-          ? newTaskToEdit.recurrence.recurrence
-          : null;
         setTaskToEdit(newTaskToEdit);
 
         const initialTopFields = createInitialObject(
@@ -105,19 +99,12 @@ export default function EditTaskScreen({
         );
         setTaskTopFieldValues(initialTopFields);
 
-        const initialRecurrentMiddleFields = createInitialObject(
-          taskRecurrentMiddleFields,
+        const initialMiddleFields = createInitialObject(
+          taskMiddleFields,
           userDetails,
           newTaskToEdit
         );
-        setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
-
-        const initialOneOffMiddleFields = createInitialObject(
-          taskOneOffMiddleFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+        setTaskMiddleFieldValues(initialMiddleFields);
 
         const initialBottomFields = createInitialObject(
           taskBottomFields,
@@ -128,8 +115,7 @@ export default function EditTaskScreen({
 
         setResetState(() => () => {
           setTaskTopFieldValues(initialTopFields);
-          setTaskRecurrentMiddleFieldValues(initialRecurrentMiddleFields);
-          setTaskOneOffMiddleFieldValues(initialOneOffMiddleFields);
+          setTaskMiddleFieldValues(initialMiddleFields);
           setTaskBottomFieldValues(initialBottomFields);
         });
       }
@@ -144,12 +130,8 @@ export default function EditTaskScreen({
         return false;
       }
     }
-    const middleFields = taskTopFieldValues.recurrence
-      ? taskRecurrentMiddleFields
-      : taskOneOffMiddleFields;
-    const middleFieldValues = taskTopFieldValues.recurrence
-      ? taskRecurrentMiddleFieldValues
-      : taskOneOffMiddleFieldValues;
+    const middleFields = taskMiddleFields;
+    const middleFieldValues = taskMiddleFieldValues;
     for (const fieldName in middleFields) {
       if (middleFields[fieldName].required && !middleFieldValues[fieldName]) {
         return false;
@@ -166,8 +148,7 @@ export default function EditTaskScreen({
     return true;
   }, [
     taskTopFieldValues,
-    taskOneOffMiddleFields,
-    taskRecurrentMiddleFieldValues,
+    taskMiddleFields,
     taskBottomFieldValues
   ]);
 
@@ -193,12 +174,8 @@ export default function EditTaskScreen({
 
   const submitUpdateForm = () => {
     if (taskToEdit) {
-      const middleFieldValues = taskTopFieldValues.recurrence
-        ? taskRecurrentMiddleFieldValues
-        : taskOneOffMiddleFieldValues;
-      const middleFields = taskTopFieldValues.recurrence
-        ? taskRecurrentMiddleFields
-        : taskOneOffMiddleFields;
+      const middleFieldValues = taskMiddleFieldValues;
+      const middleFields = taskMiddleFields;
 
       const parsedTopFieldValues = parseFormValues(
         taskTopFieldValues,
@@ -215,7 +192,7 @@ export default function EditTaskScreen({
 
       const endDatetime = new Date(
         middleFieldValues.start_datetime.getTime() +
-          taskTopFieldValues.duration_minutes * 60000
+        taskTopFieldValues.duration_minutes * 60000
       );
 
       const body = {
@@ -261,31 +238,17 @@ export default function EditTaskScreen({
           />
         </TransparentView>
         <TransparentView>
-          {taskTopFieldValues.recurrence ? (
-            <TypedForm
-              fields={taskRecurrentMiddleFields}
-              formValues={taskRecurrentMiddleFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskRecurrentMiddleFieldValues(values);
-                setUpdateError('');
-                setUpdateSuccessful(false);
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-            />
-          ) : (
-            <TypedForm
-              fields={taskOneOffMiddleFields}
-              formValues={taskOneOffMiddleFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskOneOffMiddleFieldValues(values);
-                setUpdateError('');
-                setUpdateSuccessful(false);
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-            />
-          )}
+          <TypedForm
+            fields={taskMiddleFields}
+            formValues={taskMiddleFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskMiddleFieldValues(values);
+              setUpdateError('');
+              setUpdateSuccessful(false);
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
         </TransparentView>
         <TransparentView>
           <TypedForm
