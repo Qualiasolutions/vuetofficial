@@ -17,7 +17,6 @@ import {
   useDeleteUserInviteMutation,
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
-  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
@@ -29,27 +28,19 @@ import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
 import UserWithColor from 'components/molecules/UserWithColor';
+import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const FamilySettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'FamilySettings'>) => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null);
   const [userInviteToDelete, setUserInviteToDelete] =
     useState<UserInviteResponse | null>(null);
 
-  const { data: userInvites } = useGetUserInvitesQuery(
-    userDetails?.user_id || -1
-  );
+  const { data: userInvites } = useActiveInvitesForUser(false)
 
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
   const [deleteUserInvite, deleteUserInviteResult] =
@@ -88,7 +79,7 @@ const FamilySettingsScreen = ({
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
       <UserWithColor
-        name={isPending ? `${user.phone_number} (pending)` : `${user.first_name} ${user.last_name}`}
+        name={isPending ? `${user.phone_number} (${t("common.pending")})` : `${user.first_name} ${user.last_name}`}
         memberColour={user.member_colour}
         userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
       />

@@ -34,7 +34,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userFullDetails, isLoading: isLoadingUserDetails } = getUserFullDetails();
-  const { isLoading: isLoadingUserInvites, data: invitesForUser } = useActiveInvitesForUser()
+  const { isLoading: isLoadingUserInvites, data: invitesForUser } = useActiveInvitesForUser(true)
 
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;

@@ -95,7 +95,7 @@ const FriendSettingsScreen = ({
     return (
       <TransparentView style={styles.listElement} key={user.id}>
         <UserWithColor
-          name={`${nameToShow}${isPending ? ' (pending)' : ''}`}
+          name={`${nameToShow}${isPending ? ` (${t("common.pending")})` : ''}`}
           memberColour={user.member_colour || 'efefef'}
           userImage={
             isUserResponse(user) ? user.presigned_profile_image_url : ''

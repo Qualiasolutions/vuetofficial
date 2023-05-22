@@ -26,7 +26,7 @@ const FamilyRequestScreen = () => {
 
   const { t } = useTranslation();
 
-  const { data: invitesForUser, isLoading: isLoadingUserInvites } = useActiveInvitesForUser()
+  const { data: invitesForUser, isLoading: isLoadingUserInvites } = useActiveInvitesForUser(true)
 
   if (!(invitesForUser && userFullDetails)) {
     return null;

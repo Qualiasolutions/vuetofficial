@@ -216,6 +216,7 @@
     "addAnother": "Add Another",
     "loadMore": "Load more",
     "loadOlder": "Load older",
+    "pending": "pending",
     "errors": {
       "generic": "Oops, something went wrong. Please try again later.",
       "invalidPhone": "That doesn't seem to be a valid phone number."
