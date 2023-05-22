@@ -1,13 +1,11 @@
-import React, { useLayoutEffect } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { TransparentView } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
-import RTKForm from 'components/forms/RTKForm';
+import { TransparentContainerView, TransparentView } from 'components/molecules/ViewComponents';
 import {
   familyMemberForm,
   FamilyMemberFormFieldTypes
@@ -23,6 +21,11 @@ import { useSelector } from 'react-redux';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { friendForm, FriendFormFieldTypes } from './friendFormFieldTypes';
+import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
+import { Button } from 'components/molecules/ButtonComponents';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { FullPageSpinner } from 'components/molecules/Spinners';
+import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
 
 const CreateUserInviteScreen = ({
   navigation,
@@ -31,6 +34,7 @@ const CreateUserInviteScreen = ({
   const isFamilyRequest = route.params?.familyRequest;
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
+  const [phoneNumber, setPhoneNumber] = useState("")
   const {
     data: userFullDetails,
     isLoading,
@@ -39,44 +43,74 @@ const CreateUserInviteScreen = ({
     skip: !userDetails?.user_id
   });
 
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [createUserInvite, createUserInviteResult] = useCreateUserInviteMutation()
 
-  const familyFormFields = deepCopy<FamilyMemberFormFieldTypes>(
-    familyMemberForm()
-  );
-  const friendFormFields = deepCopy<FriendFormFieldTypes>(friendForm());
 
   const { t } = useTranslation();
 
-  useLayoutEffect(() => {
-    if (isFamilyRequest) {
-      navigation.setOptions({
-        headerTitle: t('pageTitles.addFamilyMember')
-      });
-    } else {
-      navigation.setOptions({
-        headerTitle: t('pageTitles.addFriend')
-      });
-    }
-  }, []);
-
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
-  ) : null;
-
-  const extraFields = {
-    invitee: userFullDetails?.id
-  } as { [key: string]: any };
-
-  if (isFamilyRequest) {
-    extraFields.family = userFullDetails?.family.id;
+  if (!userFullDetails) {
+    return <FullPageSpinner />
   }
 
   return (
     <TransparentFullPageScrollView>
-      <TransparentView>
-        {errorContent}
-        <RTKForm
+      <TransparentContainerView>
+        <PhoneNumberInput
+          value={phoneNumber}
+          onChangeFormattedText={setPhoneNumber}
+          containerStyle={{ marginBottom: 30 }}
+        />
+        <Button
+          title={t("common.invite")}
+          disabled={!(phoneNumber.length > 10)}
+          onPress={async () => {
+            try {
+              await createUserInvite({
+                invitee: userFullDetails.id,
+                family: isFamilyRequest ? userFullDetails.family.id : null,
+                phone_number: phoneNumber,
+              }).unwrap()
+              Toast.show({
+                type: 'success',
+                text1: t('screens.createUserInvite.success')
+              });
+              if (isFamilyRequest) {
+                navigation.navigate('FamilySettings');
+              } else {
+                navigation.navigate('FriendSettings');
+              }
+            } catch (err) {
+              console.log(err)
+              if (isInvalidPhoneNumberError(err)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.invalidPhone')
+                });
+              } else if (isFieldErrorCodeError("phone_number", "already_has_family")(err)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.createUserInvite.errors.alreadyHasFamily')
+                });
+              } else if (isFieldErrorCodeError("phone_number", "already_in_family")(err)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.createUserInvite.errors.alreadyInFamily')
+                });
+              } else if (isFieldErrorCodeError("phone_number", "already_invited")(err)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.createUserInvite.errors.alreadyInvited')
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }
+          }}
+        />
+        {/* <RTKForm
           fields={isFamilyRequest ? familyFormFields : friendFormFields}
           methodHooks={{
             POST: useCreateUserInviteMutation
@@ -90,11 +124,11 @@ const CreateUserInviteScreen = ({
             }
           }}
           onSubmitFailure={() => {
-            setErrorMessage(t('common.genericError'));
+            setErrorMessage(t('common.errors.generic'));
           }}
           extraFields={extraFields}
-        />
-      </TransparentView>
+        /> */}
+      </TransparentContainerView>
     </TransparentFullPageScrollView>
   );
 };

@@ -58,7 +58,7 @@ export function EditPhoneNumberScreen() {
             } else {
               Toast.show({
                 type: 'error',
-                text1: t('common.genericError')
+                text1: t('common.errors.generic')
               });
             }
           }}
@@ -78,10 +78,7 @@ export function EditPhoneNumberScreen() {
       <Text style={{ marginBottom: 20 }}>{t("screens.editPhoneNumber.enterNew")}</Text>
       <PhoneNumberInput
         onChangeFormattedText={setNewPhone}
-        containerStyle={{ flex: 1, height: 50 }}
-        textInputStyle={{
-          height: 50
-        }}
+        containerStyle={{ flex: 1 }}
       />
       <Button
         title={t("common.update")}
@@ -106,7 +103,7 @@ export function EditPhoneNumberScreen() {
               } else {
                 Toast.show({
                   type: 'error',
-                  text1: t('common.genericError')
+                  text1: t('common.errors.generic')
                 });
               }
             })

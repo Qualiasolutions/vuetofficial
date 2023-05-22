@@ -24,10 +24,18 @@ export default function PhoneNumberInput(props: PhoneNumberInputProps) {
       {...otherProps}
       containerStyle={[
         styles.textInputContainer,
-        { borderColor },
+        {
+          borderColor,
+          height: 50
+        },
         containerStyle
       ]}
-      textInputStyle={[textInputStyle]}
+      textInputStyle={[
+        {
+          height: 50
+        },
+        textInputStyle
+      ]}
       textContainerStyle={[textContainerStyle]}
       codeTextStyle={[codeTextStyle]}
     />

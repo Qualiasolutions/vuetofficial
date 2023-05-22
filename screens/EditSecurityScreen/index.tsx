@@ -56,7 +56,7 @@ export default function EditSecurityScreen() {
           } else {
             Toast.show({
               type: "error",
-              text1: t("common.genericError")
+              text1: t("common.errors.generic")
             })
           }
         }

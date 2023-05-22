@@ -7,13 +7,13 @@ export type AuthDetails = {
 };
 
 export type CreateUserInviteRequest = {
-  family: number;
+  family: number | null;
   invitee: number;
-  first_name: string;
-  last_name: string;
+  first_name?: string;
+  last_name?: string;
   phone_number: string;
-  dob: string;
-  member_colour: string;
+  dob?: string;
+  member_colour?: string;
 };
 
 export type UpdateUserInviteRequest = {

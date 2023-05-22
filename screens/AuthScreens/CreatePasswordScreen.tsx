@@ -55,7 +55,7 @@ const CreatePasswordScreen = ({
       dispatch(setUsername(phone_number));
     } else {
       if (createAccountResult.error) {
-        setErrorMessage(t('common.genericError'));
+        setErrorMessage(t('common.errors.generic'));
       }
     }
   }, [createAccountResult]);

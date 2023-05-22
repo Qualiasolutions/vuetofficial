@@ -87,10 +87,6 @@ const LoginScreen = ({
         onChangeFormattedText={(username) => {
           onChangeUsername(username);
         }}
-        containerStyle={{ height: 50 }}
-        textInputStyle={{
-          height: 50
-        }}
       />
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText

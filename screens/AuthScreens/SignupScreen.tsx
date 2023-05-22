@@ -48,9 +48,9 @@ const SignupScreen = ({
         ) {
           setErrorMessage(t('screens.signUp.phoneUsedError'));
         } else if (isInvalidPhoneNumberError(result.error)) {
-          setErrorMessage(t('screens.signUp.phoneInvalidError'));
+          setErrorMessage(t('common.errors.invalidPhone'));
         } else {
-          setErrorMessage(t('common.genericError'));
+          setErrorMessage(t('common.errors.generic'));
         }
       }
     }
@@ -74,10 +74,6 @@ const SignupScreen = ({
       <PhoneNumberInput
         onChangeFormattedText={(text) => {
           onChangePhoneNumber(text);
-        }}
-        containerStyle={{ height: 50 }}
-        textInputStyle={{
-          height: 50
         }}
       />
       <Button

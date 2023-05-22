@@ -63,7 +63,7 @@ const AddFamilyMemberScreen = ({
             navigation.push('AddFamily');
           }}
           onSubmitFailure={() => {
-            setErrorMessage(t('common.genericError'));
+            setErrorMessage(t('common.errors.generic'));
           }}
           extraFields={{
             family: userFullDetails?.family.id,

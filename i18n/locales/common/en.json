@@ -193,8 +193,8 @@
     "confirm": "Confirm",
     "verify": "Verify",
     "add": "Add",
+    "invite": "Invite",
     "oops": "Oops",
-    "genericError": "Oops, something went wrong. Please try again later.",
     "next": "Next",
     "hide": "Hide",
     "continue": "Continue",
@@ -215,7 +215,11 @@
     "selectAll": "Select all",
     "addAnother": "Add Another",
     "loadMore": "Load more",
-    "loadOlder": "Load older"
+    "loadOlder": "Load older",
+    "errors": {
+      "generic": "Oops, something went wrong. Please try again later.",
+      "invalidPhone": "That doesn't seem to be a valid phone number."
+    }
   },
   "misc": {
     "turnsAgeIn": "Turns {{age}} in {{year}}",
@@ -289,6 +293,14 @@
       "add": "Add",
       "invalidDateMessage": "Invalid date detected - please enter a date in the past",
       "allFieldsRequiredError": "All fields on this page must be completed"
+    },
+    "createUserInvite": {
+      "success": "Successfully invited user",
+      "errors": {
+        "alreadyHasFamily": "This user is already a member of a family",
+        "alreadyInFamily": "This user has already been added to your family",
+        "alreadyInvited": "This user has already been invited to your family" 
+      }
     },
     "welcomeToVuet": {
       "title": "Welcome to Vuet App {{name}}",

@@ -149,10 +149,6 @@ export default function TypedForm({
                       [field]: newValue
                     });
                   }}
-                  containerStyle={{ flex: 1, height: 50 }}
-                  textInputStyle={{
-                    height: 50
-                  }}
                   textContainerStyle={{
                     backgroundColor: fieldColor
                   }}

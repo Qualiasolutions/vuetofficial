@@ -50,7 +50,7 @@ const ValidatePhoneScreen = ({
           if (isFieldErrorCodeError('code', 'invalid_code')(err)) {
             setErrorMessage(t('screens.validatePhone.invalidCodeError'));
           } else {
-            setErrorMessage(t('common.genericError'));
+            setErrorMessage(t('common.errors.generic'));
           }
         }}
       />

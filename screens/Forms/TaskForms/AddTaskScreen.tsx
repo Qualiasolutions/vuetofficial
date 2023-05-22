@@ -183,7 +183,7 @@ export default function AddTaskScreen({
     } else if (createTaskResult.isError) {
       Toast.show({
         type: "error",
-        text1: t('common.genericError')
+        text1: t('common.errors.generic')
       })
       console.log(createTaskResult.error);
     }
@@ -199,7 +199,7 @@ export default function AddTaskScreen({
     } else if (createPeriodResult.isError) {
       Toast.show({
         type: "error",
-        text1: t('common.genericError')
+        text1: t('common.errors.generic')
       })
       console.log(createPeriodResult.error);
     }

@@ -10,6 +10,7 @@ import CreateUserInviteScreen from 'screens/SettingsScreens/Forms/CreateUserInvi
 import EditFamilyMemberScreen from 'screens/SettingsScreens/Forms/EditFamilyMemberScreen';
 import EditFamilyInviteScreen from 'screens/SettingsScreens/Forms/EditFamilyInviteScreen';
 import FriendSettingsScreen from 'screens/SettingsScreens/FriendsSettingsScreen';
+import BackOnlyHeader from 'headers/BackOnlyHeader';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
 
@@ -21,7 +22,7 @@ export function SettingsNavigator() {
     <SettingsStack.Navigator
       initialRouteName="Settings"
       screenOptions={{
-        headerShown: false
+        header: BackOnlyHeader,
       }}
     >
       <SettingsStack.Screen
@@ -29,7 +30,8 @@ export function SettingsNavigator() {
         component={SettingsScreen}
         options={{
           title: t('pageTitles.settings'),
-          headerTintColor
+          headerTintColor,
+          headerShown: false
         }}
       />
       <SettingsStack.Screen

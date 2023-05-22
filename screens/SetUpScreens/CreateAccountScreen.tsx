@@ -71,7 +71,7 @@ const CreateAccountScreen = ({
       navigation.push('AddFamily');
     } else {
       if (result.error) {
-        setErrorMessage(t('common.genericError'));
+        setErrorMessage(t('common.errors.generic'));
       }
     }
   }, [result]);

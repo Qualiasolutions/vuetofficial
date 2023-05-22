@@ -88,26 +88,11 @@ const FamilySettingsScreen = ({
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
       <UserWithColor
-        name={`${user.first_name} ${user.last_name}${
-          isPending ? ' (pending)' : ''
-        }`}
+        name={isPending ? `${user.phone_number} (pending)` : `${user.first_name} ${user.last_name}`}
         memberColour={user.member_colour}
         userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
       />
       <TransparentView style={styles.listRight}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate(
-              isPending ? 'EditFamilyInvite' : 'EditFamilyMember',
-              { id: user.id }
-            );
-          }}
-        >
-          <Image
-            style={styles.editIcon}
-            source={require('../../assets/images/icons/feather-edit.png')}
-          />
-        </Pressable>
         <Pressable
           onPress={() => {
             const isUserInvite = (user: any): user is UserInviteResponse =>
@@ -141,7 +126,7 @@ const FamilySettingsScreen = ({
         title="Before you proceed"
         question={`Are you sure you want to remove ${userToDelete?.first_name} ${userToDelete?.last_name} from the family?`}
         visible={!!userToDelete}
-        onYes={() => {}}
+        onYes={() => { }}
         onNo={() => {
           setUserToDelete(null);
         }}

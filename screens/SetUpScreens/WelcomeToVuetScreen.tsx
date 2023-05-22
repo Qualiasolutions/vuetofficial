@@ -48,7 +48,7 @@ const WelcomeToVuetScreen = ({
 
   useEffect(() => {
     if (result.error) {
-      setErrorMessage(t('common.genericError'));
+      setErrorMessage(t('common.errors.generic'));
     }
   }, [result]);
 
