@@ -106,6 +106,9 @@ const CreateAccountScreen = ({
     return null;
   }
 
+
+  const hasAllRequired = firstName && lastName && dateOfBirth && memberColour
+
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.createAccount.title')} />
@@ -153,7 +156,7 @@ const CreateAccountScreen = ({
           setErrorMessage(t('screens.createAccount.invalidDateMessage'));
         }}
       />
-      <WhiteBox style={styles.memberColorBox}>
+      <WhiteBox style={styles.memberColorBox} elevated={false}>
         <AlmostBlackText
           style={styles.inputLabel}
           text={t('screens.createAccount.memberColour')}
@@ -167,8 +170,9 @@ const CreateAccountScreen = ({
       </WhiteBox>
       <Button
         title={t('common.next')}
+        disabled={!hasAllRequired}
         onPress={() => {
-          if (firstName && lastName && dateOfBirth && memberColour) {
+          if (hasAllRequired) {
             if (userDetails?.user_id) {
               updateUserDetails({
                 user_id: userDetails?.user_id,
