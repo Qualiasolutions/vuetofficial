@@ -80,7 +80,7 @@ const FamilySettingsScreen = ({
     <TransparentView style={styles.listElement} key={user.id}>
       <UserWithColor
         name={isPending ? `${user.phone_number} (${t("common.pending")})` : `${user.first_name} ${user.last_name}`}
-        memberColour={user.member_colour}
+        memberColour={user.member_colour || 'efefef'}
         userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
       />
       <TransparentView style={styles.listRight}>

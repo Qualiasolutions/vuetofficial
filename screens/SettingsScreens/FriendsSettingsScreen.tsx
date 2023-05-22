@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { SettingsTabParamList } from 'types/base';
@@ -15,11 +14,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import {
   useDeleteUserInviteMutation,
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
-  useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
@@ -29,30 +24,19 @@ import {
   useDeleteFriendshipMutation,
   useGetAllFriendshipsQuery
 } from 'reduxStore/services/api/friendships';
+import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const FriendSettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'FriendSettings'>) => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null);
   const [userInviteToDelete, setUserInviteToDelete] =
     useState<UserInviteResponse | null>(null);
 
-  const { data: userInvites } = useGetUserInvitesQuery(
-    userDetails?.user_id || -1,
-    {
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userInvites } = useActiveInvitesForUser(false);
 
   const [deleteUserInvite, deleteUserInviteResult] =
     useDeleteUserInviteMutation();
@@ -61,8 +45,8 @@ const FriendSettingsScreen = ({
     useDeleteFriendshipMutation();
 
   const { data: allFriendships, isLoading: isLoadingFriendships } =
-    useGetAllFriendshipsQuery(userDetails?.user_id || -1, {
-      skip: !userDetails?.user_id
+    useGetAllFriendshipsQuery(userFullDetails?.id || -1, {
+      skip: !userFullDetails?.id
     });
 
   const { t } = useTranslation();
@@ -102,21 +86,6 @@ const FriendSettingsScreen = ({
           }
         />
         <TransparentView style={styles.listRight}>
-          {isPending && (
-            <Pressable
-              onPress={() => {
-                navigation.navigate(
-                  'EditFamilyInvite', // TODO - rename this to `EditUserInvite`
-                  { id: user.id }
-                );
-              }}
-            >
-              <Image
-                style={styles.editIcon}
-                source={require('../../assets/images/icons/feather-edit.png')}
-              />
-            </Pressable>
-          )}
           <Pressable
             onPress={() => {
               const isUserInvite = (user: any): user is UserInviteResponse =>
@@ -168,7 +137,7 @@ const FriendSettingsScreen = ({
       />
       <YesNoModal
         title="Before you proceed"
-        question={`Are you sure you want to remove ${userInviteToDelete?.first_name} ${userInviteToDelete?.last_name} from your Vuet circle?`}
+        question={`Are you sure you want to remove ${userInviteToDelete?.phone_number} from your Vuet circle?`}
         visible={!!userInviteToDelete}
         onYes={() => {
           if (userInviteToDelete) {
