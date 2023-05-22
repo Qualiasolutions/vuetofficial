@@ -100,6 +100,7 @@ const AddFamilyScreen = ({
           uploadProfileImage(image as any);
         }}
         defaultImageUrl={userFullDetails?.family?.presigned_image_url}
+        displayInternalImage={false}
       />
       {addedMembersContent}
       <Button

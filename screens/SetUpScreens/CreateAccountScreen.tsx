@@ -118,6 +118,7 @@ const CreateAccountScreen = ({
           uploadProfileImage(image as any);
         }}
         defaultImageUrl={userFullDetails?.presigned_profile_image_url}
+        displayInternalImage={false}
       />
       {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
