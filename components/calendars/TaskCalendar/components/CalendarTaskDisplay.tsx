@@ -193,9 +193,7 @@ function Calendar({
         : future;
 
       const dayJsDate = dayjs(date)
-      const dayName = `${dayJsDate.format('DD')} ${dayJsDate.format('MMMM')} ${dayJsDate.format(
-        'YYYY'
-      )}`;
+      const dayName = `${dayJsDate.format('dd')} ${dayJsDate.format('DD')} ${dayJsDate.format('MMM')}`;
       sectionsArray.push({
         title: dayName,
         key: dayName,
@@ -266,13 +264,13 @@ const styles = StyleSheet.create({
   sectionHeader: {
     justifyContent: 'center',
     paddingLeft: 18,
-    paddingVertical: 20,
+    paddingVertical: 6,
     marginBottom: 5,
     borderTopWidth: 2,
     borderBottomWidth: 2
   },
   sectionHeaderText: {
-    fontSize: 20
+    fontSize: 18
   },
   loadMoreButtonWrapper: {
     flexDirection: 'row',
