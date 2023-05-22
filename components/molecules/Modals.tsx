@@ -74,13 +74,22 @@ export function YesNoModal(props: YesNoModalProps) {
       <TransparentView style={[{ borderColor }, styles.yesNoButtons]}>
         <Pressable
           onPress={onYes}
-          style={[{ borderColor }, styles.yesNoButton, styles.yesButton]}
+          style={({ pressed }) => [{
+            borderColor,
+            backgroundColor: pressed ? borderColor : ""
+          }, styles.yesNoButton, styles.yesButton]}
         >
           <TransparentView>
             <AlmostBlackText text={t('common.yes')} />
           </TransparentView>
         </Pressable>
-        <Pressable onPress={onNo} style={styles.yesNoButton}>
+        <Pressable
+          onPress={onNo}
+          style={({ pressed }) => [{
+            borderColor,
+            backgroundColor: pressed ? borderColor : ""
+          }, styles.yesNoButton]}
+        >
           <TransparentView>
             <AlmostBlackText text={t('common.no')} />
           </TransparentView>
@@ -256,7 +265,8 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   yesNoBoxStyle: {
-    padding: 0
+    padding: 0,
+    overflow: "hidden"
   },
   yesNoButtons: {
     width: '100%',
