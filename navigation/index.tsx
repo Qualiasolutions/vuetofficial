@@ -25,6 +25,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SideNavigator } from './SideNavigator';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -35,6 +36,9 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userFullDetails, isLoading: isLoadingUserDetails } = getUserFullDetails();
   const { isLoading: isLoadingUserInvites, data: invitesForUser } = useActiveInvitesForUser(true)
+
+  // Force fetch of categories on app load
+  useGetAllCategoriesQuery();
 
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;

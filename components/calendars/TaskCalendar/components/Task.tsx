@@ -2,9 +2,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Text, useThemeColor, View } from 'components/Themed';
 import { isFixedTaskParsedType, ScheduledTaskParsedType, ScheduledTaskResponseType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import { useSelector } from 'react-redux';
 import React, { useEffect, useMemo, useState } from 'react';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import SquareButton from 'components/molecules/SquareButton';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -352,7 +350,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   titleContainer: {
     width: '40%'

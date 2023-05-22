@@ -1,5 +1,5 @@
-import { StyleSheet, SectionList } from 'react-native';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { StyleSheet, SectionList, ViewToken } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   getDateStringFromDateObject,
@@ -7,7 +7,7 @@ import {
   getDateWithoutTimezone,
 } from 'utils/datesAndTimes';
 
-import { ParsedPeriod, ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
+import { ParsedPeriod, ParsedReminder, ScheduledReminder } from 'types/periods';
 import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
@@ -212,6 +212,33 @@ function Calendar({
     ...futureSections.slice(0, (futureMonthsToShow * 30))
   ];
 
+  const renderItem = useCallback(({ item }: { item: ItemData }) => {
+    return <TransparentPaddedView>
+      <ListItem data={item} />
+    </TransparentPaddedView>
+  }, [])
+  const onViewableItemsChanged = useCallback((items: { viewableItems: ViewToken[] }) => {
+    if (onChangeFirstDate) {
+      if (items.viewableItems[0]?.section?.data?.[0]?.start_datetime) {
+        const newDate = getDateStringFromDateObject(new Date(items.viewableItems[0]?.section?.data?.[0]?.start_datetime))
+        updateDate(newDate)
+      }
+    }
+  }, [])
+
+  const keyExtractor = useCallback((item: ItemData) => {
+    if (isTask(item)) {
+      return (`${item.id}_${item.resourcetype}`)
+    }
+    if (isPeriod(item)) {
+      return (`${item.id}_${item.resourcetype}`)
+    }
+    if (isReminder(item)) {
+      return (`${item.id}_reminder`)
+    }
+    return ""
+  }, [])
+
   return (
     <SectionList
       sections={shownSections}
@@ -227,33 +254,23 @@ function Calendar({
         setPastMonthsToShow(0);
         setFutureMonthsToShow(3);
       }}
-      renderItem={({ item, section, index }) => {
-        return <TransparentPaddedView>
-          <ListItem data={item} />
-        </TransparentPaddedView>
-      }}
+      renderItem={renderItem}
       contentContainerStyle={{ paddingBottom: 150 }}
       ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false} />}
       ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true} />}
-      onViewableItemsChanged={(items) => {
-        if (onChangeFirstDate) {
-          if (items.viewableItems[0]?.section?.data?.[0]?.start_datetime) {
-            const newDate = getDateStringFromDateObject(new Date(items.viewableItems[0]?.section?.data?.[0]?.start_datetime))
-            updateDate(newDate)
-          }
-        }
-      }}
+      onViewableItemsChanged={onViewableItemsChanged}
+      // getItemLayout={getItemLayout} - this should be used when
+      // items have fixed height for performance gains. Our items
+      // get bigger when clicked but performance could be better if
+      // they didnt
+      keyExtractor={keyExtractor}
       ref={sectionListRef}
+      windowSize={11}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-    width: '100%',
-    height: '100%'
-  },
   spinnerWrapper: {
     flex: 1,
     width: '100%',

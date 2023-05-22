@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   titleContainer: {
     width: '60%',

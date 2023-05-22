@@ -1,7 +1,9 @@
 type RecurrenceType = "DAILY" |
   "WEEKLY" |
+  "WEEKDAILY" |
   "MONTHLY" |
   "MONTH_WEEKLY" |
+  "MONTHLY_LAST_WEEK" |
   "YEARLY" |
   "YEAR_MONTH_WEEKLY"
 

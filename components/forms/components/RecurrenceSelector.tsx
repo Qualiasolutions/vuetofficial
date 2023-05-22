@@ -6,15 +6,8 @@ import ordinal from "ordinal";
 import { useState } from "react";
 import { Pressable } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { Recurrence } from "types/tasks";
+import { Recurrence, RecurrenceType } from "types/tasks";
 
-
-type RecurrenceType = "DAILY" |
-  "WEEKLY" |
-  "MONTHLY" |
-  "MONTH_WEEKLY" |
-  "YEARLY" |
-  "YEAR_MONTH_WEEKLY"
 
 const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
   const { interval_length: intervalLength, recurrence: type } = recurrence
@@ -24,6 +17,8 @@ const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
       WEEKLY: "week",
       MONTHLY: "month",
       YEARLY: "year",
+      WEEKDAILY: "weekday",
+      MONTHLY_LAST_WEEK: "",
       MONTH_WEEKLY: "",
       YEAR_MONTH_WEEKLY: ""
     }
@@ -51,6 +46,16 @@ const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
       return `Every other month on the ${ordinal(weekNumber)} ${dayName}`
     }
     return `Every ${ordinal(intervalLength)} month on the ${ordinal(weekNumber)} ${dayName}`
+  }
+
+  if (type === "MONTHLY_LAST_WEEK") {
+    if (intervalLength === 1) {
+      return `Every month on the last ${dayName}`
+    }
+    if (intervalLength === 2) {
+      return `Every other month on the last ${dayName}`
+    }
+    return `Every ${ordinal(intervalLength)} month on the last ${dayName}`
   }
 
   if (type === "YEAR_MONTH_WEEKLY") {
@@ -108,9 +113,13 @@ const TypeSelector = ({ value, firstOccurrence, onChange }: { value: string; fir
   const firstOccDayJs = dayjs(firstOccurrence)
   const dayName = firstOccDayJs.format("dddd")
   const dayNumber = parseInt(firstOccDayJs.format("D"))
+  const weekdayNumber = parseInt(firstOccDayJs.format("d"))
   const weekNumber = Math.floor((dayNumber - 1) / 7) + 1
   const monthName = firstOccDayJs.format("MMMM")
 
+  const firstOccurrenceCopy = new Date(firstOccurrence);
+  firstOccurrenceCopy.setDate(firstOccurrenceCopy.getDate() + 7);
+  const isLastWeek = firstOccurrence.getMonth() !== firstOccurrenceCopy.getMonth()
 
   const typeItems: {
     value: RecurrenceType,
@@ -119,28 +128,51 @@ const TypeSelector = ({ value, firstOccurrence, onChange }: { value: string; fir
       {
         value: "DAILY",
         label: "Day"
-      },
-      {
-        value: "WEEKLY",
-        label: "Week"
-      },
-      {
-        value: "MONTHLY",
-        label: "Month"
-      },
-      {
-        value: "YEARLY",
-        label: "Year"
-      },
-      {
-        value: "MONTH_WEEKLY",
-        label: `month on the ${ordinal(weekNumber)} ${dayName}`
-      },
-      {
-        value: "YEAR_MONTH_WEEKLY",
-        label: `year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
-      },
+      }
     ]
+
+  if (weekdayNumber < 5) {
+    typeItems.push({
+      value: "WEEKDAILY",
+      label: "Weekday"
+    })
+  }
+
+  typeItems.push({
+    value: "WEEKLY",
+    label: "Week"
+  })
+
+
+  typeItems.push({
+    value: "MONTHLY",
+    label: "Month"
+  })
+
+  typeItems.push({
+    value: "YEARLY",
+    label: "Year"
+  })
+
+  if (weekNumber < 5) {
+    typeItems.push({
+      value: "MONTH_WEEKLY",
+      label: `month on the ${ordinal(weekNumber)} ${dayName}`
+    })
+  }
+
+  if (isLastWeek) {
+    typeItems.push({
+      value: "MONTHLY_LAST_WEEK",
+      label: `month on the last ${dayName}`
+    })
+  }
+
+  typeItems.push({
+    value: "YEAR_MONTH_WEEKLY",
+    label: `year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
+  })
+
   return <TransparentView>
     <DropDownPicker
       value={value}
