@@ -23,6 +23,8 @@ import { FamilyRequestNavigator } from './FamilyRequestNavigator';
 import { DarkTheme, DefaultTheme } from 'constants/Colors';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SideNavigator } from './SideNavigator';
+import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -31,62 +33,23 @@ interface NavigationProps {
 const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
-  const username = useSelector(selectUsername);
+  const { data: userFullDetails, isLoading: isLoadingUserDetails } = getUserFullDetails();
+  const { isLoading: isLoadingUserInvites, data: invitesForUser } = useActiveInvitesForUser()
 
-  ///////////// Load the data
-
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserDetailsQuery(username, {
-      skip: !(jwtAccessToken && username)
-    });
-
-  const { data: userFullDetails, isLoading: isLoadingUserFullDetails } =
-    useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-      skip: !(jwtAccessToken && userDetails?.user_id)
-    });
-
-  const { data: userInvites, isLoading: isLoadingUserInvites } =
-    useGetUserInvitesQuery(userFullDetails?.family?.id || -1, {
-      skip: !(jwtAccessToken && userFullDetails?.family?.id)
-    });
-
-  const isLoading =
-    isLoadingUserDetails || isLoadingUserFullDetails || isLoadingUserInvites;
-
-  ///////////// Filter any relevant family invites
-
-  const invitesForUser = userInvites?.filter(
-    (invite) =>
-      // Only want invites for user
-      invite.phone_number === userFullDetails?.phone_number &&
-      // Don't want rejected invites
-      !invite.rejected &&
-      // Don't want invites for own family
-      userFullDetails?.family?.id !== invite.family &&
-      (
-        // Don't want friend invites for already-added friends
-        !(
-          !invite.family &&
-          userFullDetails?.friends
-            ?.map((user) => user.id)
-            .includes(invite.invitee.id)
-        )
-      )
-  );
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
-  /////////////
-
   let navigatorComponent = <FullPageSpinner />;
+
+  const isLoading = isLoadingUserDetails || isLoadingUserInvites
 
   if (!isLoading) {
     if (!(jwtAccessToken && jwtRefreshToken)) {
       navigatorComponent = <UnauthorisedNavigator />;
-    } else if (userDetails && userFullDetails && userInvites) {
+    } else {
       if (firstInviteForUser) {
         navigatorComponent = <FamilyRequestNavigator />;
-      } else if (!userFullDetails.has_done_setup) {
+      } else if (!userFullDetails?.has_done_setup) {
         navigatorComponent = <SetupNavigator />;
       } else {
         navigatorComponent = <SideNavigator />;

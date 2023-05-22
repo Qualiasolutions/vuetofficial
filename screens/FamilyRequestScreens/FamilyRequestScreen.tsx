@@ -2,67 +2,38 @@ import React from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { PageTitle, PageSubtitle } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
 import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
-  useGetUserInvitesQuery,
   useUpdateUserDetailsMutation,
   useUpdateUserInviteMutation
 } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useCreateFriendshipMutation } from 'reduxStore/services/api/friendships';
+import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const FamilyRequestScreen = () => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
-
-  const { data: userInvites } = useGetUserInvitesQuery(
-    userFullDetails?.family?.id || -1
-  );
+  const { data: userFullDetails } = getUserFullDetails()
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
   const [updateUserInvite, userInviteResult] = useUpdateUserInviteMutation();
   const [createFriendship, createFriendshipResult] =
     useCreateFriendshipMutation();
 
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
-
   const { t } = useTranslation();
 
-  const invitesForUser = userInvites?.filter(
-    (invite) =>
-      invite.phone_number === userFullDetails?.phone_number &&
-      !invite.rejected &&
-      userFullDetails?.family?.id !== invite.family &&
-      !userFullDetails?.friends
-        ?.map((user) => user.id)
-        .includes(invite.invitee.id)
-  );
-  const firstInviteForUser =
-    invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
+  const { data: invitesForUser, isLoading: isLoadingUserInvites } = useActiveInvitesForUser()
 
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
-  ) : null;
-
-  if (!(userInvites && userFullDetails)) {
+  if (!(invitesForUser && userFullDetails)) {
     return null;
   }
+
+  const firstInviteForUser =
+    invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
   return (
     <AlmostWhiteContainerView>
@@ -77,14 +48,13 @@ const FamilyRequestScreen = () => {
         text={
           firstInviteForUser?.family
             ? t('screens.familyRequest.familySubtitle', {
-                name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
-              })
+              name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+            })
             : t('screens.familyRequest.friendSubtitle', {
-                name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
-              })
+              name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+            })
         }
       />
-      {errorContent}
       <Button
         title={t('common.accept')}
         onPress={() => {

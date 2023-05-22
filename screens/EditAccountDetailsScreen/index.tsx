@@ -7,22 +7,17 @@ import { deepCopy } from 'utils/copy';
 import { useFormUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
-import { useState } from 'react';
-import { TransparentView, WhitePaddedView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import { BlackText } from 'components/molecules/TextComponents';
-import { Button } from 'components/molecules/ButtonComponents';
-import { useNavigation } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 export default function EditAccountDetailsScreen() {
   const { data: userDetails } = getUserFullDetails();
   const { t } = useTranslation();
   const formFields = deepCopy<MyAccountFormFieldTypes>(myAccountForm());
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const navigation = useNavigation();
 
   if (!userDetails) {
     return <FullPageSpinner />;
@@ -42,9 +37,6 @@ export default function EditAccountDetailsScreen() {
     return (
       <TransparentFullPageScrollView>
         <TransparentView style={styles.formContainer}>
-          {updateSuccess && (
-            <BlackText text={t('screens.myAccount.updateSuccess')} />
-          )}
           <RTKForm
             fields={formFields}
             methodHooks={{
@@ -52,8 +44,12 @@ export default function EditAccountDetailsScreen() {
             }}
             formType="UPDATE"
             extraFields={{ userId: userDetails.id }}
-            onSubmitSuccess={() => setUpdateSuccess(true)}
-            onValueChange={() => setUpdateSuccess(false)}
+            onSubmitSuccess={() => {
+              Toast.show({
+                type: "success",
+                text1: t('screens.myAccount.updateSuccess')
+              })
+            }}
             formDataType="form"
           />
         </TransparentView>
