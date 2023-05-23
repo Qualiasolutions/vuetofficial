@@ -136,7 +136,7 @@ export const taskMiddleFieldTypes = (disabledRecurrenceFields: boolean = false):
       reverse: true,
       firstOccurrenceField: 'start_datetime',
       displayName: t('tasks.task.reminders'),
-      disabled: disabledRecurrenceFields,
+      // disabled: disabledRecurrenceFields,
       max: 3
     }
   };

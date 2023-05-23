@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { Text, useThemeColor } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
@@ -32,9 +32,9 @@ import {
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { TaskResponseType } from 'types/tasks';
-import dayjs from 'dayjs';
 import { deepCopy } from 'utils/copy';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 
 export default function EditTaskScreen({
@@ -42,18 +42,10 @@ export default function EditTaskScreen({
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
   const { t } = useTranslation();
-  const [updateSuccessful, setUpdateSuccessful] = useState<boolean>(false);
-  const [updateError, setUpdateError] = useState<string>('');
 
   const [updateTask, updateTaskResult] = useUpdateTaskMutation();
   const [deleteTask, deleteTaskResult] = useDeleteTaskMutation();
   const isSubmitting = updateTaskResult.isLoading || deleteTaskResult.isLoading;
-
-  useFocusEffect(
-    useCallback(() => {
-      setUpdateSuccessful(false);
-    }, [])
-  );
 
   const { data: userDetails } = useGetUserDetails();
   const {
@@ -84,12 +76,6 @@ export default function EditTaskScreen({
     if (allTasks && userDetails) {
       const newTaskToEdit = deepCopy(allTasks.byId[route.params.taskId]);
       if (newTaskToEdit) {
-        newTaskToEdit.duration_minutes = Math.round(
-          (dayjs(newTaskToEdit.end_datetime).toDate().getTime() -
-            dayjs(newTaskToEdit.start_datetime).toDate().getTime()) /
-          (60 * 1000)
-        );
-
         setTaskToEdit(newTaskToEdit);
 
         const initialTopFields = createInitialObject(
@@ -154,12 +140,16 @@ export default function EditTaskScreen({
 
   useEffect(() => {
     if (updateTaskResult.isSuccess) {
-      setUpdateError('');
-      setUpdateSuccessful(true);
+      Toast.show({
+        type: 'success',
+        text1: t('screens.editTask.updateSuccess')
+      })
       resetState();
     } else if (updateTaskResult.isError) {
-      setUpdateError('An unexpected error occurred');
-      console.log(updateTaskResult.error);
+      Toast.show({
+        type: 'error',
+        text1: t('common.errors.generic')
+      })
     }
   }, [updateTaskResult]);
 
@@ -167,8 +157,10 @@ export default function EditTaskScreen({
     if (deleteTaskResult.isSuccess) {
       navigation.goBack();
     } else if (deleteTaskResult.isError) {
-      setUpdateError('An unexpected error occurred');
-      console.log(deleteTaskResult.error);
+      Toast.show({
+        type: 'error',
+        text1: t('common.errors.generic')
+      })
     }
   }, [deleteTaskResult]);
 
@@ -190,11 +182,6 @@ export default function EditTaskScreen({
         taskBottomFields
       );
 
-      const endDatetime = new Date(
-        middleFieldValues.start_datetime.getTime() +
-        taskTopFieldValues.duration_minutes * 60000
-      );
-
       const body = {
         ...parsedTopFieldValues,
         ...parsedMiddleFieldValues,
@@ -202,7 +189,6 @@ export default function EditTaskScreen({
         resourcetype: 'FixedTask' as 'FixedTask' | 'FlexibleTask', // TODO
         id: taskToEdit.id,
         entity: taskToEdit.entity,
-        end_datetime: endDatetime
       };
 
       if (Object.keys(body as any).includes('recurrence')) {
@@ -221,17 +207,11 @@ export default function EditTaskScreen({
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
         <TransparentView>
-          {updateSuccessful ? (
-            <Text>{t('screens.editTask.updateSuccess')}</Text>
-          ) : null}
-          {updateError ? <Text>{updateError}</Text> : null}
           <TypedForm
             fields={taskTopFields}
             formValues={taskTopFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
               setTaskTopFieldValues(values);
-              setUpdateError('');
-              setUpdateSuccessful(false);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
@@ -243,8 +223,6 @@ export default function EditTaskScreen({
             formValues={taskMiddleFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
               setTaskMiddleFieldValues(values);
-              setUpdateError('');
-              setUpdateSuccessful(false);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
@@ -256,8 +234,6 @@ export default function EditTaskScreen({
             formValues={taskBottomFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
               setTaskBottomFieldValues(values);
-              setUpdateError('');
-              setUpdateSuccessful(false);
             }}
             inlineFields={true}
             fieldColor={fieldColor}
