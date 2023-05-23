@@ -14,12 +14,22 @@ import { getUTCValuesFromDateString, getUTCValuesFromDateTimeString } from "util
 import DateTimeTextInput from "./DateTimeTextInput";
 
 
-const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
+const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date, reverse?: boolean) => {
   const { interval_length: intervalLength, recurrence: type } = recurrence
 
   const latestOccurenceUtcValues = recurrence.latest_occurrence ? getUTCValuesFromDateTimeString(recurrence.latest_occurrence) : null
   const latestOccurrenceString = latestOccurenceUtcValues ? `${latestOccurenceUtcValues.day} ${latestOccurenceUtcValues.monthName} ${latestOccurenceUtcValues.year}` : ""
-  const untilString = latestOccurrenceString ? `${t("components.recurrenceSelector.until").toLowerCase()} ${latestOccurrenceString}` : t("components.recurrenceSelector.forever").toLowerCase()
+  const untilString = latestOccurrenceString
+    ? (
+      reverse
+        ? `${t("components.recurrenceSelector.from").toLowerCase()} ${latestOccurrenceString}`
+        : `${t("components.recurrenceSelector.until").toLowerCase()} ${latestOccurrenceString}`
+    )
+    : (
+      reverse
+        ? `${t("components.recurrenceSelector.from").toLowerCase()} ${t("components.recurrenceSelector.now").toLowerCase()}`
+        : t("components.recurrenceSelector.forever").toLowerCase()
+    )
 
   if (["DAILY", "WEEKLY", "MONTHLY", "YEARLY", "WEEKDAILY"].includes(type)) {
     const typeMap: { [key in RecurrenceType]: string } = {
@@ -206,9 +216,10 @@ type RecurrenceFormProps = {
   value: Recurrence | null;
   onChange: (newValue: Recurrence | null) => void;
   firstOccurrence: Date;
+  reverse?: boolean;
 }
-const RecurrenceForm = ({ value, onChange, firstOccurrence }: RecurrenceFormProps) => {
-  const valueString = (value && firstOccurrence) ? recurrenceToName(value, firstOccurrence) : null
+const RecurrenceForm = ({ value, onChange, firstOccurrence, reverse }: RecurrenceFormProps) => {
+  const valueString = (value && firstOccurrence) ? recurrenceToName(value, firstOccurrence, reverse) : null
   const defaultValues: Recurrence = {
     earliest_occurrence: firstOccurrence.toISOString(),
     latest_occurrence: null,
@@ -258,7 +269,7 @@ const RecurrenceForm = ({ value, onChange, firstOccurrence }: RecurrenceFormProp
       </TransparentView>
     </TransparentView>
     <InputWithLabel
-      label={t("components.recurrenceSelector.until")}
+      label={reverse ? t("components.recurrenceSelector.from") : t("components.recurrenceSelector.until")}
       inlineFields={true}
     >
       <DateTimeTextInput
@@ -278,7 +289,7 @@ const RecurrenceForm = ({ value, onChange, firstOccurrence }: RecurrenceFormProp
           }
         }}
         Date={true}
-        placeholder={t("components.recurrenceSelector.forever")}
+        placeholder={reverse ? t("components.recurrenceSelector.now") : t("components.recurrenceSelector.forever")}
       />
     </InputWithLabel>
     <TransparentView style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 10, width: '100%' }}>
@@ -296,11 +307,12 @@ type RecurrenceSelectorProps = {
   value: Recurrence | null;
   onChange: (newValue: Recurrence | null) => void;
   firstOccurrence: Date | null;
-  disabled: boolean;
+  disabled?: boolean;
+  reverse?: boolean;
 }
-export default function RecurrenceSelector({ value, onChange, firstOccurrence, disabled }: RecurrenceSelectorProps) {
+export default function RecurrenceSelector({ value, onChange, firstOccurrence, disabled, reverse }: RecurrenceSelectorProps) {
   const [editing, setEditing] = useState(false)
-  const valueString = (value && firstOccurrence) ? recurrenceToName(value, firstOccurrence) : "None"
+  const valueString = (value && firstOccurrence) ? recurrenceToName(value, firstOccurrence, reverse) : "None"
 
   return <TransparentView>
     <Pressable onPress={() => {
@@ -313,8 +325,8 @@ export default function RecurrenceSelector({ value, onChange, firstOccurrence, d
     <Modal visible={editing} onRequestClose={() => setEditing(false)} boxStyle={{ width: '100%' }}>
       {
         firstOccurrence
-          ? <RecurrenceForm value={value} onChange={onChange} firstOccurrence={firstOccurrence} />
-          : <Text>Please set the first task occurence</Text>
+          ? <RecurrenceForm value={value} onChange={onChange} firstOccurrence={firstOccurrence} reverse={reverse} />
+          : <Text>Please set the first occurence</Text>
       }
     </Modal>
   </TransparentView>

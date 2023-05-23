@@ -6,6 +6,7 @@
       "members": "Doers",
       "duration_minutes": "Duration of task",
       "recurrence": "Recurrence",
+      "reminders": "Reminders",
       "start_datetime": "Starts",
       "end_datetime": "Ends",
       "first_start_datetime": "First occurrence",

@@ -15,6 +15,7 @@ export type PermittedTypes =
   | 'addFamilyMembers'
   | 'dropDown'
   | 'recurrenceSelector'
+  | 'multiRecurrenceSelector'
   | 'calculatedDuration'
   | 'dropDownWithOther'
   | 'timezone'
@@ -79,6 +80,13 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
 
 export type RecurrenceSelectorField = BaseField<'recurrenceSelector', any> & {
   firstOccurrenceField: string
+  reverse?: boolean
+}
+
+export type MultiRecurrenceSelectorField = BaseField<'multiRecurrenceSelector', any> & {
+  firstOccurrenceField: string;
+  reverse?: boolean;
+  max?: number;
 }
 
 export type CalculatedDurationField = BaseField<'calculatedDuration', any> & {
@@ -116,6 +124,7 @@ export type Field =
   | DropDownField
   | DropDownWithOtherField
   | RecurrenceSelectorField
+  | MultiRecurrenceSelectorField
   | CalculatedDurationField
   | ImageField
   | TimezoneField;

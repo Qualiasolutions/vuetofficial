@@ -14,6 +14,7 @@ import {
   hasListMode,
   hasPlaceholder,
   ImageField,
+  MultiRecurrenceSelectorField,
   OptionalYearDate,
   RadioField,
   RecurrenceSelectorField,
@@ -43,6 +44,7 @@ import { elevation } from '../../styles/elevation';
 import RecurrenceSelector from './components/RecurrenceSelector';
 import Duration from './components/Duration';
 import InputWithLabel from 'components/molecules/InputWithLabel';
+import MultipleRecurrenceSelector from './components/MultipleRecurrenceSelector';
 
 const parseFieldName = (name: string) => {
   return name
@@ -223,46 +225,68 @@ export default function TypedForm({
         }
         case 'DateTime': {
           const f = flatFields[field] as DateTimeField;
-          const limitValues: { [key: string]: Date } = {};
-          if (f.associatedEndTimeField) {
-            if (formValues[f.associatedEndTimeField]) {
-              limitValues.maximum = formValues[f.associatedEndTimeField];
-            }
-          }
-          if (f.associatedStartTimeField) {
-            if (formValues[f.associatedStartTimeField]) {
-              limitValues.minimum = formValues[f.associatedStartTimeField];
-            }
-          }
           return (
             <InputPair field={field} key={field}>
               <DateTimeTextInput
                 value={formValues[field]}
-                maximumDate={limitValues.maximum}
-                minimumDate={limitValues.minimum}
                 onValueChange={(newValue: Date) => {
                   const associatedUpdates: { [key: string]: Date } = {};
                   if (f.associatedEndTimeField) {
-                    if (!formValues[f.associatedEndTimeField]) {
-                      if (newValue) {
+                    if (newValue) {
+                      if (
+                        !formValues[f.associatedEndTimeField]
+                        || (!formValues[field] && (formValues[f.associatedEndTimeField] < newValue))
+                      ) {
+                        /*
+                          If the end time field isn't set or the previous start time isn't
+                          set but the end time is before the new start time then set the
+                          end time to be an hour ahead of the new start time.
+                        */
                         const associatedDateTime = new Date(newValue);
                         associatedDateTime.setHours(
                           associatedDateTime.getHours() + 1
                         );
                         associatedUpdates[f.associatedEndTimeField] =
                           associatedDateTime;
+                      } else if (formValues[field]) {
+                        /*
+                          Otherwise is the old start time is set then maintain the
+                          event length
+                        */
+                        const currentDelta = (formValues[f.associatedEndTimeField].getTime() - formValues[field].getTime())
+                        associatedUpdates[f.associatedEndTimeField] =
+                          new Date(newValue.getTime() + currentDelta)
                       }
                     }
                   }
                   if (f.associatedStartTimeField) {
-                    if (!formValues[f.associatedStartTimeField]) {
-                      if (newValue) {
+                    if (newValue) {
+                      if (
+                        !formValues[f.associatedStartTimeField]
+                        || (!formValues[field] && (formValues[f.associatedStartTimeField] > newValue))
+                      ) {
+                        /*
+                          If the start time field isn't set or the previous end time isn't
+                          set but the start time is after the new end time then set the
+                          start time to be an hour before the new end time.
+                        */
                         const associatedDateTime = new Date(newValue);
                         associatedDateTime.setHours(
                           associatedDateTime.getHours() - 1
                         );
                         associatedUpdates[f.associatedStartTimeField] =
                           associatedDateTime;
+                      } else if (
+                        formValues[field]
+                        && (newValue < formValues[f.associatedStartTimeField])
+                      ) {
+                        /*
+                          Otherwise if the old end time is set but the new end time
+                          is before the start time then maintain the event length
+                        */
+                        const currentDelta = (formValues[field].getTime() - formValues[f.associatedStartTimeField].getTime())
+                        associatedUpdates[f.associatedStartTimeField] =
+                          new Date(newValue.getTime() - currentDelta)
                       }
                     }
                   }
@@ -509,6 +533,35 @@ export default function TypedForm({
                   }}
                   firstOccurrence={firstOccurrence}
                   disabled={f.disabled || false}
+                  reverse={f.reverse}
+                />
+              </TransparentView>
+            </InputPair>
+          );
+        }
+        case 'multiRecurrenceSelector': {
+          const f = flatFields[field] as MultiRecurrenceSelectorField;
+          const firstOccurrence: Date = formValues[f.firstOccurrenceField]
+
+          if (!firstOccurrence) {
+            return null
+          }
+
+          return (
+            <InputPair field={field} key={field}>
+              <TransparentView>
+                <MultipleRecurrenceSelector
+                  value={formValues[field]}
+                  onChange={(value) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: value
+                    });
+                  }}
+                  firstOccurrence={firstOccurrence}
+                  disabled={f.disabled || false}
+                  reverse={f.reverse}
+                  max={f.max}
                 />
               </TransparentView>
             </InputPair>

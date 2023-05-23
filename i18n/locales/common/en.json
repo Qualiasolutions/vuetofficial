@@ -408,7 +408,9 @@
     },
     "recurrenceSelector": {
       "forever": "Forever",
-      "until": "Until"
+      "now": "Now",
+      "until": "Until",
+      "from": "From"
     }
   }
 }

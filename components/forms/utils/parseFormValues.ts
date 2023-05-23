@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { FlatFormFieldTypes, FormFieldTypes } from '../formFieldTypes';
+import { Recurrence } from 'types/tasks';
+import { FlatFormFieldTypes, FormFieldTypes, MultiRecurrenceSelectorField } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
 
 const parseFormValues = (
@@ -31,6 +32,28 @@ const parseFormValues = (
         typeof parsedFormValues[field] === 'string'
       ) {
         delete parsedFormValues[field];
+      }
+    }
+    if (['multiRecurrenceSelector'].includes(fields[field]?.type)) {
+      const f = fields[field] as MultiRecurrenceSelectorField
+      const value = parsedFormValues[field] as Recurrence[]
+      if (f.reverse) {
+        const lastTime = new Date(parsedFormValues[f.firstOccurrenceField])
+        parsedFormValues[field] = value.map(recurrence => {
+          const earliest = recurrence.latest_occurrence ? new Date(recurrence.latest_occurrence) : null
+          if (earliest) {
+            earliest.setHours(0)
+            earliest.setMinutes(0)
+            earliest.setSeconds(0)
+            earliest.setMilliseconds(0)
+          }
+
+          return {
+            ...recurrence,
+            "recurrence_type": recurrence.recurrence,
+            "earliest_timedelta": earliest ? ((lastTime.getTime() - earliest.getTime()) / 1000) : null
+          }
+        })
       }
     }
   }
