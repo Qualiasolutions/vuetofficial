@@ -213,6 +213,9 @@ function Calendar({
   }, [allScheduledTasks])
 
   const parsedPeriods = useMemo(() => {
+    if (!allScheduledPeriods) {
+      return []
+    }
     return allScheduledPeriods.map(period => parsePeriodResponse(period))
   }, [allScheduledPeriods])
 
@@ -318,8 +321,7 @@ function Calendar({
     // If we include this then every time we poll for changes
     // we get a loading spinner - try and figure out how to
     // resolve this
-    // isLoading ||
-    // isFetchingScheduledTasks ||
+    isLoading ||
     !allScheduledTasks ||
     !allScheduledPeriods
   ) {

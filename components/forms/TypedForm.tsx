@@ -109,7 +109,7 @@ export default function TypedForm({
     >
       {children}
     </InputWithLabel>
-  }, [flatFields.length])
+  }, [JSON.stringify(fields)])
 
   const formFields = fieldSections.map((section, i) => {
     const sectionFields = Object.keys(section).map((field: string) => {
