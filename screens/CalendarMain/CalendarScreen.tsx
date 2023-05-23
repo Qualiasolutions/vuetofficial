@@ -7,6 +7,6 @@ export default function CalendarScreen() {
     marginTop: StatusBar.currentHeight,
     height: '100%'
   }}>
-    <Calendar taskFilters={[]} periodFilters={[]} reminderFilters={[]} fullPage={true} />
+    <Calendar taskFilters={[]} periodFilters={[]} fullPage={true} />
   </SafeAreaView>
 }

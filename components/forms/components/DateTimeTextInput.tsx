@@ -13,7 +13,8 @@ export default function DateTimeTextInput({
   Date = false,
   disabled = false,
   maximumDate,
-  minimumDate
+  minimumDate,
+  placeholder
 }: {
   value: Date | null;
   textInputStyle?: ViewStyle;
@@ -23,6 +24,7 @@ export default function DateTimeTextInput({
   disabled?: boolean;
   maximumDate?: Date;
   minimumDate?: Date;
+  placeholder?: string;
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] =
     React.useState<boolean>(false);
@@ -49,7 +51,7 @@ export default function DateTimeTextInput({
               textInputStyle || {},
               disabled ? { color: disabledTextColor } : {}
             ]}
-            placeholder={Date ? 'DD/MM/YYYY' : ''}
+            placeholder={placeholder || (Date ? 'DD/MM/YYYY' : '')}
           />
         </TransparentView>
       </Pressable>

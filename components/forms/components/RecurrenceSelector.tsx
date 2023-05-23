@@ -1,17 +1,27 @@
+import InputWithLabel from "components/molecules/InputWithLabel";
 import { Modal } from "components/molecules/Modals";
+import { PrimaryText } from "components/molecules/TextComponents";
 import { TransparentView, WhiteView } from "components/molecules/ViewComponents";
 import { Text } from "components/Themed";
 import dayjs from "dayjs";
+import { t } from "i18next";
 import ordinal from "ordinal";
 import { useState } from "react";
 import { Pressable } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Recurrence, RecurrenceType } from "types/tasks";
+import { getUTCValuesFromDateString, getUTCValuesFromDateTimeString } from "utils/datesAndTimes";
+import DateTimeTextInput from "./DateTimeTextInput";
 
 
 const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
   const { interval_length: intervalLength, recurrence: type } = recurrence
-  if (["DAILY", "WEEKLY", "MONTHLY", "YEARLY"].includes(type)) {
+
+  const latestOccurenceUtcValues = recurrence.latest_occurrence ? getUTCValuesFromDateTimeString(recurrence.latest_occurrence) : null
+  const latestOccurrenceString = latestOccurenceUtcValues ? `${latestOccurenceUtcValues.day} ${latestOccurenceUtcValues.monthName} ${latestOccurenceUtcValues.year}` : ""
+  const untilString = latestOccurrenceString ? `${t("components.recurrenceSelector.until").toLowerCase()} ${latestOccurrenceString}` : t("components.recurrenceSelector.forever").toLowerCase()
+
+  if (["DAILY", "WEEKLY", "MONTHLY", "YEARLY", "WEEKDAILY"].includes(type)) {
     const typeMap: { [key in RecurrenceType]: string } = {
       DAILY: "day",
       WEEKLY: "week",
@@ -24,12 +34,12 @@ const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
     }
 
     if (intervalLength === 1) {
-      return `Every ${typeMap[type]}`
+      return `Every ${typeMap[type]} ${untilString}`
     }
     if (intervalLength === 2) {
-      return `Every other ${typeMap[type]}`
+      return `Every other ${typeMap[type]} ${untilString}`
     }
-    return `Every ${intervalLength} ${typeMap[type]}s`
+    return `Every ${intervalLength} ${typeMap[type]}s ${untilString}`
   }
 
   const firstOccDayJs = dayjs(firstOccurrence)
@@ -40,32 +50,32 @@ const recurrenceToName = (recurrence: Recurrence, firstOccurrence: Date) => {
 
   if (type === "MONTH_WEEKLY") {
     if (intervalLength === 1) {
-      return `Every month on the ${ordinal(weekNumber)} ${dayName}`
+      return `Every month on the ${ordinal(weekNumber)} ${dayName} ${untilString}`
     }
     if (intervalLength === 2) {
-      return `Every other month on the ${ordinal(weekNumber)} ${dayName}`
+      return `Every other month on the ${ordinal(weekNumber)} ${dayName} ${untilString}`
     }
-    return `Every ${ordinal(intervalLength)} month on the ${ordinal(weekNumber)} ${dayName}`
+    return `Every ${ordinal(intervalLength)} month on the ${ordinal(weekNumber)} ${dayName} ${untilString}`
   }
 
   if (type === "MONTHLY_LAST_WEEK") {
     if (intervalLength === 1) {
-      return `Every month on the last ${dayName}`
+      return `Every month on the last ${dayName} ${untilString}`
     }
     if (intervalLength === 2) {
-      return `Every other month on the last ${dayName}`
+      return `Every other month on the last ${dayName} ${untilString}`
     }
-    return `Every ${ordinal(intervalLength)} month on the last ${dayName}`
+    return `Every ${ordinal(intervalLength)} month on the last ${dayName} ${untilString}`
   }
 
   if (type === "YEAR_MONTH_WEEKLY") {
     if (intervalLength === 1) {
-      return `Every year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
+      return `Every year on the ${ordinal(weekNumber)} ${dayName} in ${monthName} ${untilString}`
     }
     if (intervalLength === 2) {
-      return `Every other year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
+      return `Every other year on the ${ordinal(weekNumber)} ${dayName} in ${monthName} ${untilString}`
     }
-    return `Every ${intervalLength} years on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
+    return `Every ${intervalLength} years on the ${ordinal(weekNumber)} ${dayName} in ${monthName} ${untilString}`
   }
 
   return ""
@@ -102,6 +112,7 @@ const IntervalSelector = ({ value, onChange }: { value: string; onChange: (value
       open={open}
       setOpen={setOpen}
       listMode="MODAL"
+      placeholder={t("common.frequency")}
     />
   </WhiteView>
 }
@@ -186,6 +197,7 @@ const TypeSelector = ({ value, firstOccurrence, onChange }: { value: string; fir
       open={open}
       setOpen={setOpen}
       listMode="MODAL"
+      placeholder={t("common.timePeriod")}
     />
   </TransparentView>
 }
@@ -196,10 +208,16 @@ type RecurrenceFormProps = {
   firstOccurrence: Date;
 }
 const RecurrenceForm = ({ value, onChange, firstOccurrence }: RecurrenceFormProps) => {
-  const valueString = (value && firstOccurrence) ? recurrenceToName(value, firstOccurrence) : "None"
+  const valueString = (value && firstOccurrence) ? recurrenceToName(value, firstOccurrence) : null
+  const defaultValues: Recurrence = {
+    earliest_occurrence: firstOccurrence.toISOString(),
+    latest_occurrence: null,
+    interval_length: 1,
+    recurrence: "DAILY"
+  }
   return <TransparentView style={{ width: '100%' }}>
     <TransparentView style={{ flexDirection: 'row' }}>
-      <TransparentView style={{ margin: 5, flex: 1 }}>
+      <TransparentView style={{ marginRight: 5, flex: 1 }}>
         <IntervalSelector
           value={String(value?.interval_length) || ""}
           onChange={(intervalLength) => {
@@ -219,7 +237,7 @@ const RecurrenceForm = ({ value, onChange, firstOccurrence }: RecurrenceFormProp
           }}
         />
       </TransparentView>
-      <TransparentView style={{ margin: 5, flex: 1 }}>
+      <TransparentView style={{ marginLeft: 5, flex: 1 }}>
         <TypeSelector
           value={value?.recurrence || ""}
           firstOccurrence={firstOccurrence}
@@ -231,17 +249,46 @@ const RecurrenceForm = ({ value, onChange, firstOccurrence }: RecurrenceFormProp
               })
             } else {
               onChange({
+                ...defaultValues,
                 recurrence: type,
-                earliest_occurrence: firstOccurrence.toISOString(),
-                latest_occurrence: null,
-                interval_length: 1
               })
             }
           }}
         />
       </TransparentView>
     </TransparentView>
-    <Text style={{ margin: 10, fontSize: 20 }}>{valueString}</Text>
+    <InputWithLabel
+      label={t("components.recurrenceSelector.until")}
+      inlineFields={true}
+    >
+      <DateTimeTextInput
+        value={value?.latest_occurrence ? new Date(value.latest_occurrence) : null}
+        minimumDate={new Date()}
+        onValueChange={(newValue: Date | null) => {
+          if (value) {
+            onChange({
+              ...value,
+              latest_occurrence: newValue ? newValue.toISOString() : null
+            })
+          } else {
+            onChange({
+              ...defaultValues,
+              latest_occurrence: newValue ? newValue.toISOString() : null
+            })
+          }
+        }}
+        Date={true}
+        placeholder={t("components.recurrenceSelector.forever")}
+      />
+    </InputWithLabel>
+    <TransparentView style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 10, width: '100%' }}>
+      <Text style={{ margin: 10, fontSize: 18, width: "70%" }}>{valueString || t("common.none")}</Text>
+      {valueString && <Pressable onPress={() => {
+        onChange(null)
+      }}>
+        <PrimaryText text={t("common.clear")} />
+      </Pressable>}
+    </TransparentView>
   </TransparentView>
 }
 

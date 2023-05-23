@@ -34,7 +34,7 @@ export default function CalendarView({ dates, onChangeDate }: CalendarViewProps)
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = style();
-  const { periods: allPeriods, reminders: allReminders } =
+  const { periods: allPeriods } =
     useScheduledPeriods();
   const navigation = useNavigation();
   const listEnforcedDate = useSelector(selectListEnforcedDate)

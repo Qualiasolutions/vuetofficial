@@ -1,11 +1,10 @@
 import { MinimalScheduledTask } from "components/calendars/TaskCalendar/components/Task";
-import { ParsedPeriod, ParsedReminder } from "types/periods";
+import { ParsedPeriod } from "types/periods";
 import { getDateStringFromDateObject, getDateStringsBetween } from "./datesAndTimes";
 
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
   periods: ParsedPeriod[];
-  reminders: ParsedReminder[];
 };
 
 
@@ -13,7 +12,7 @@ type AllDateTasks = {
   [key: string]: SingleDateTasks;
 };
 
-export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], periods: ParsedPeriod[], reminders: ParsedReminder[], alwaysIncludeCurrentDate?: boolean) {
+export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], periods: ParsedPeriod[], alwaysIncludeCurrentDate?: boolean) {
   const newTasksPerDate: AllDateTasks = {};
   for (const task of tasks) {
     const taskDates = getDateStringsBetween(
@@ -28,7 +27,6 @@ export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], per
         newTasksPerDate[taskDate] = {
           tasks: [task],
           periods: [],
-          reminders: []
         };
       }
     }
@@ -48,27 +46,6 @@ export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], per
         newTasksPerDate[periodDate] = {
           tasks: [],
           periods: [parsedPeriod],
-          reminders: []
-        };
-      }
-    }
-  }
-
-  for (const parsedReminder of reminders) {
-    const reminderDates = getDateStringsBetween(
-      parsedReminder.start_date,
-      parsedReminder.end_date,
-      true // Use UTC
-    );
-
-    for (const reminderDate of reminderDates) {
-      if (newTasksPerDate[reminderDate]) {
-        newTasksPerDate[reminderDate].reminders.push(parsedReminder);
-      } else {
-        newTasksPerDate[reminderDate] = {
-          tasks: [],
-          periods: [],
-          reminders: [parsedReminder]
         };
       }
     }
@@ -81,7 +58,6 @@ export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], per
       newTasksPerDate[currentDateString] = {
         tasks: [],
         periods: [],
-        reminders: []
       };
     }
   }

@@ -42,6 +42,7 @@ import TimezoneSelect from './components/TimezoneSelect';
 import { elevation } from '../../styles/elevation';
 import RecurrenceSelector from './components/RecurrenceSelector';
 import Duration from './components/Duration';
+import InputWithLabel from 'components/molecules/InputWithLabel';
 
 const parseFieldName = (name: string) => {
   return name
@@ -93,30 +94,22 @@ export default function TypedForm({
       ? flatFields[fieldName].displayName
       : parseFieldName(fieldName);
 
-    const asterisk = displayName && flatFields[fieldName].required ? '*' : '';
-    return (
-      <AlmostBlackText
-        text={`${displayName}${asterisk}`}
-        style={[styles.inputLabel, style]}
-      />
-    );
+    const asterisk = displayName && flatFields && flatFields[fieldName]?.required ? '*' : '';
+    return `${displayName}${asterisk}`
   };
 
-  const InputWithLabel = useMemo(() => ({ field, children }: { field: string; children: ReactNode }) => {
-    return <TransparentView key={field}>
-      {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-      <TransparentView
-        style={inlineFields ? styles.inlineInputPair : {}}
-      >
-        <TransparentView style={styles.inputLabelWrapper}>
-          {produceLabelFromFieldName(field)}
-        </TransparentView>
-        <TransparentView style={{ flex: 1 }}>
-          {children}
-        </TransparentView>
-      </TransparentView>
-    </TransparentView>
-  }, [])
+  const InputPair = useMemo(() => ({ field, children, labelStyle }: { field: string; children: ReactNode; labelStyle?: ViewStyle; }) => {
+    return <InputWithLabel
+      key={field}
+      error={formErrors[field] || ""}
+      label={produceLabelFromFieldName(field)}
+      inlineFields={inlineFields}
+      labelStyle={labelStyle}
+      labelWrapperStyle={{ minWidth: 110 }}
+    >
+      {children}
+    </InputWithLabel>
+  }, [flatFields.length])
 
   const formFields = fieldSections.map((section, i) => {
     const sectionFields = Object.keys(section).map((field: string) => {
@@ -126,7 +119,7 @@ export default function TypedForm({
         case 'string': {
           const f = flatFields[field] as StringField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <TextInput
                 value={formValues[field]}
                 onChangeText={(newValue) => {
@@ -140,12 +133,12 @@ export default function TypedForm({
                   f.transform === 'uppercase' ? 'characters' : 'sentences'
                 }
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'phoneNumber':
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <PhoneNumberInput
                 defaultValue={formValues[field]}
                 onChangeFormattedText={(newValue) => {
@@ -160,13 +153,14 @@ export default function TypedForm({
                 placeholder={
                   inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')
                 }
+                containerStyle={{ width: '100%' }}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         case 'OptionalYearDate': {
           const f = flatFields[field];
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <OptionalYearDateInput
                 value={formValues[field]}
                 onValueChange={(newValue: Date, knownYear: boolean) => {
@@ -186,7 +180,7 @@ export default function TypedForm({
                 }}
                 textInputStyle={textInputStyle}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'Date': {
@@ -203,7 +197,7 @@ export default function TypedForm({
             }
           }
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <DateTimeTextInput
                 value={formValues[field]}
                 maximumDate={limitValues.maximum}
@@ -224,7 +218,7 @@ export default function TypedForm({
                 size={20}
                 style={styles.calendarIcon}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'DateTime': {
@@ -241,7 +235,7 @@ export default function TypedForm({
             }
           }
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <DateTimeTextInput
                 value={formValues[field]}
                 maximumDate={limitValues.maximum}
@@ -290,7 +284,7 @@ export default function TypedForm({
                 size={20}
                 style={styles.calendarIcon}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'radio': {
@@ -303,7 +297,7 @@ export default function TypedForm({
           );
 
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <RadioInput
                 value={formValues[field]}
                 permittedValues={permittedValueObjects}
@@ -315,32 +309,31 @@ export default function TypedForm({
                   setFormErrors({ ...formErrors, [field]: '' });
                 }}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'colour':
           return (
             <WhiteBox key={field} style={styles.colourBox} elevated={false}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <TransparentView style={styles.inputLabelWrapper}>
-                {produceLabelFromFieldName(field, { marginTop: 0 })}
-              </TransparentView>
-              <ColorPicker
-                value={formValues[field]}
-                onValueChange={(value: string) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: value
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                }}
-              />
+              <InputPair field={field} key={field}>
+                <ColorPicker
+                  value={formValues[field]}
+                  onValueChange={(value: string) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: value
+                    });
+                    setFormErrors({ ...formErrors, [field]: '' });
+                  }}
+                />
+              </InputPair>
             </WhiteBox>
           );
         case 'addMembers': {
           const f = flatFields[field] as AddMembersField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <MemberSelector
                 data={f.permittedValues}
                 values={formValues[field] || []}
@@ -351,12 +344,12 @@ export default function TypedForm({
                   });
                 }}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'TextArea':
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <TransparentView style={{ flex: 1 }}>
                 <TextInput
                   value={formValues[field]}
@@ -379,12 +372,12 @@ export default function TypedForm({
                   style={{ textAlign: 'right' }}
                 />
               </TransparentView>
-            </InputWithLabel>
+            </InputPair>
           );
         case 'addFamilyMembers': {
           const f = flatFields[field] as AddFamilyMembersField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <FamilySelector
                 data={f.permittedValues}
                 values={formValues[field] || []}
@@ -395,13 +388,13 @@ export default function TypedForm({
                   });
                 }}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'dropDown': {
           const f = flatFields[field] as DropDownField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <DropDown
                 value={formValues[field]}
                 items={f.permittedValues}
@@ -421,13 +414,13 @@ export default function TypedForm({
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'dropDownWithOther': {
           const f = flatFields[field] as DropDownWithOtherField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <DropDown
                 value={formValues[field]}
                 items={f.permittedValues}
@@ -448,13 +441,13 @@ export default function TypedForm({
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'Image': {
           const f = flatFields[field] as ImageField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <WhiteImagePicker
                 onImageSelect={(image) => {
                   onFormValuesChange({
@@ -470,13 +463,13 @@ export default function TypedForm({
                   backgroundColor: fieldColor
                 }}
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'timezone': {
           const f = flatFields[field] as TimezoneField;
           return (
-            <InputWithLabel field={field} key={field}>
+            <InputPair field={field} key={field}>
               <TimezoneSelect
                 value={formValues[field]}
                 onSelectTimezone={(value) => {
@@ -492,7 +485,7 @@ export default function TypedForm({
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }
               />
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'recurrenceSelector': {
@@ -504,8 +497,8 @@ export default function TypedForm({
           }
 
           return (
-            <InputWithLabel field={field} key={field}>
-              <TransparentView style={styles.inputLabel}>
+            <InputPair field={field} key={field}>
+              <TransparentView>
                 <RecurrenceSelector
                   value={formValues[field]}
                   onChange={(value) => {
@@ -518,7 +511,7 @@ export default function TypedForm({
                   disabled={f.disabled || false}
                 />
               </TransparentView>
-            </InputWithLabel>
+            </InputPair>
           );
         }
         case 'calculatedDuration': {
@@ -530,11 +523,11 @@ export default function TypedForm({
             return null
           }
 
-          return <InputWithLabel field={field} key={field}>
+          return <InputPair field={field} key={field}>
             <Duration startDatetime={startDatetime} endDatetime={endDatetime} textInputStyle={{
               backgroundColor: fieldColor
             }} />
-          </InputWithLabel>
+          </InputPair>
         }
       }
     });
@@ -553,24 +546,6 @@ export default function TypedForm({
 }
 
 const styles = StyleSheet.create({
-  inlineInputPair: {
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: 10,
-  },
-  inputLabel: {
-    fontSize: 14,
-    textAlign: 'left',
-    marginTop: 14,
-    marginRight: 10,
-    flexShrink: 1,
-    width: '100%'
-  },
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    minWidth: 110
-  },
   inlineDateInput: {
     flexShrink: 1,
     width: '100%'

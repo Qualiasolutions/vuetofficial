@@ -191,6 +191,10 @@
   },
   "common": {
     "confirm": "Confirm",
+    "clear": "Clear",
+    "frequency": "Frequency",
+    "timePeriod": "Time period",
+    "none": "None",
     "verify": "Verify",
     "add": "Add",
     "invite": "Invite",
@@ -401,6 +405,10 @@
     "logOutModal": {
       "logOut": "Log Out",
       "sure": "Are you sure you would like to log out?"
+    },
+    "recurrenceSelector": {
+      "forever": "Forever",
+      "until": "Until"
     }
   }
 }

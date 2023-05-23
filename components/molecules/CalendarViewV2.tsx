@@ -1,19 +1,12 @@
-import { Text, useThemeColor, View } from 'components/Themed';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Text, useThemeColor } from 'components/Themed';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { Calendar, DateData } from 'react-native-calendars';
-import {
-  getDateWithoutTimezone,
-  getUTCValuesFromDateString
-} from 'utils/datesAndTimes';
+import { Calendar } from 'react-native-calendars';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
-import { AlmostBlackText } from './TextComponents';
-import useScheduledPeriods from 'hooks/useScheduledPeriods';
-import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
-import { ParsedPeriod, ParsedReminder } from 'types/periods';
+import { ParsedPeriod } from 'types/periods';
 import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -21,11 +14,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 export type CalendarViewProps = {
   tasks: MinimalScheduledTask[],
   periods: ParsedPeriod[],
-  reminders: ParsedReminder[],
   onChangeDate?: (date: string) => void;
 };
 
-export default function CalendarView({ onChangeDate, tasks, periods, reminders }: CalendarViewProps) {
+export default function CalendarView({ onChangeDate, tasks, periods }: CalendarViewProps) {
   const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(null)
   const styles = style();
   const listEnforcedDate = useSelector(selectListEnforcedDate)
@@ -49,8 +41,8 @@ export default function CalendarView({ onChangeDate, tasks, periods, reminders }
   }, [listEnforcedDate])
 
   const formattedTasks = useMemo(() => {
-    return formatTasksAndPeriods(tasks, periods, reminders)
-  }, [tasks, periods, reminders])
+    return formatTasksAndPeriods(tasks, periods)
+  }, [tasks, periods])
 
 
   const currentDate = forcedInitialDate || listEnforcedDate || undefined
@@ -111,9 +103,6 @@ export default function CalendarView({ onChangeDate, tasks, periods, reminders }
                     }
                     {
                       formattedTasks[date.dateString]?.periods?.map(period => <Text key={period.id} style={styles.taskText}>{period.title}</Text>)
-                    }
-                    {
-                      formattedTasks[date.dateString]?.reminders?.map(reminder => <Text key={reminder.id} style={styles.taskText}>{reminder.title}</Text>)
                     }
                   </TransparentView>
                 </ScrollView>

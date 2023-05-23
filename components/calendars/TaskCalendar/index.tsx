@@ -20,7 +20,7 @@ import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
-import { ParsedPeriod, ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
+import { ParsedPeriod, PeriodResponse } from 'types/periods';
 import { useTranslation } from 'react-i18next';
 import CalendarView from 'components/molecules/CalendarViewV2';
 import Tabs from 'components/molecules/Tabs';
@@ -47,17 +47,6 @@ const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
   delete parsedPeriod.reminders
 
   return parsedPeriod
-};
-
-const parseReminder = (res: ScheduledReminder): ParsedReminder => {
-  const parsedReminder = {
-    ...res,
-    end_date: getDateWithoutTimezone(res.end_date),
-    start_date: getDateWithoutTimezone(res.start_date)
-  };
-  delete parsedReminder?.is_complete
-
-  return parsedReminder
 };
 
 
@@ -174,13 +163,11 @@ const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date
 type CalendarProps = {
   taskFilters: ((task: MinimalScheduledTask) => boolean)[];
   periodFilters: ((period: ParsedPeriod) => boolean)[];
-  reminderFilters: ((period: ParsedReminder) => boolean)[];
   fullPage: boolean;
 };
 function Calendar({
   taskFilters,
   periodFilters,
-  reminderFilters,
   fullPage
 }: CalendarProps) {
   const username = useSelector(selectUsername);
@@ -192,7 +179,6 @@ function Calendar({
   const currentDate = new Date();
   const {
     periods: allScheduledPeriods,
-    reminders: allScheduledReminders,
     isLoading: isLoadingPeriods
   } = useScheduledPeriods();
 
@@ -230,10 +216,6 @@ function Calendar({
     return allScheduledPeriods.map(period => parsePeriodResponse(period))
   }, [allScheduledPeriods])
 
-  const parsedReminders = useMemo(() => {
-    return allScheduledReminders.map(reminder => parseReminder(reminder))
-  }, [allScheduledReminders])
-
 
   const filteredTasks = useMemo<MinimalScheduledTask[]>(() => {
     if (!minimalScheduledTasks) {
@@ -264,30 +246,15 @@ function Calendar({
     periodFilters
   ]);
 
-  const filteredAllReminders = useMemo<ParsedReminder[]>(() => {
-    if (!parsedReminders) {
-      return [];
-    } else {
-      let filtered = parsedReminders;
-      for (const reminderFilter of reminderFilters) {
-        filtered = filtered.filter(reminderFilter);
-      }
-      return filtered;
-    }
-  }, [JSON.stringify(parsedReminders), reminderFilters]);
-
   const noTasks = useMemo(() => {
     return (
       filteredAllPeriods &&
-      filteredAllReminders &&
       filteredAllPeriods.length === 0 &&
-      filteredAllReminders.length === 0 &&
       filteredTasks.length === 0
     );
   }, [
     JSON.stringify(filteredTasks),
     JSON.stringify(filteredAllPeriods),
-    JSON.stringify(filteredAllReminders),
   ]);
 
   const listView = useMemo(() => {
@@ -306,7 +273,6 @@ function Calendar({
         <CalendarTaskDisplay
           tasks={filteredTasks}
           periods={filteredAllPeriods}
-          reminders={filteredAllReminders}
           alwaysIncludeCurrentDate={true}
           onChangeFirstDate={(date) => {
             dispatch(setListEnforcedDate({ date }))
@@ -317,7 +283,6 @@ function Calendar({
   }, [
     JSON.stringify(filteredTasks),
     JSON.stringify(filteredAllPeriods),
-    JSON.stringify(filteredAllReminders),
   ])
 
   const calendarView = useMemo(() => {
@@ -334,7 +299,6 @@ function Calendar({
     return () => <CalendarView
       tasks={filteredTasks}
       periods={filteredAllPeriods}
-      reminders={filteredAllReminders}
       onChangeDate={(date) => {
         dispatch(setMonthEnforcedDate({ date }))
       }}
@@ -342,7 +306,6 @@ function Calendar({
   }, [
     JSON.stringify(filteredTasks),
     JSON.stringify(filteredAllPeriods),
-    JSON.stringify(filteredAllReminders),
   ])
 
 

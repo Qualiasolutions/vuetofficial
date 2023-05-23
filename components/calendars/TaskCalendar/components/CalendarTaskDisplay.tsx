@@ -5,7 +5,7 @@ import {
   getDateStringFromDateObject,
 } from 'utils/datesAndTimes';
 
-import { ParsedPeriod, ParsedReminder } from 'types/periods';
+import { ParsedPeriod } from 'types/periods';
 import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
@@ -19,30 +19,25 @@ import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import Task, { MinimalScheduledTask } from './Task';
 import OneDayPeriod from './OneDayPeriod';
-import Reminder from './Reminder';
 import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
 import { ITEM_HEIGHT } from './shared';
 
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
   periods: ParsedPeriod[];
-  reminders: ParsedReminder[];
 };
 
 type AllDateTasks = {
   [key: string]: SingleDateTasks;
 };
 
-type ItemType = "TASK" | "PERIOD" | "REMINDER"
-type ItemData = (ParsedPeriod | ParsedReminder | MinimalScheduledTask) & { type: ItemType }
+type ItemType = "TASK" | "PERIOD"
+type ItemData = (ParsedPeriod | MinimalScheduledTask) & { type: ItemType }
 const isTask = (item: ItemData): item is MinimalScheduledTask & { type: "TASK" } => {
   return item.type === "TASK"
 }
 const isPeriod = (item: ItemData): item is ParsedPeriod & { type: "PERIOD" } => {
   return item.type === "PERIOD"
-}
-const isReminder = (item: ItemData): item is ParsedReminder & { type: "REMINDER" } => {
-  return item.type === "REMINDER"
 }
 const ListItem = React.memo(({ data }: { data: ItemData }) => {
   if (isTask(data)) {
@@ -50,9 +45,6 @@ const ListItem = React.memo(({ data }: { data: ItemData }) => {
   }
   if (isPeriod(data)) {
     return <OneDayPeriod period={data} />
-  }
-  if (isReminder(data)) {
-    return <Reminder reminder={data} />
   }
   return null
 })
@@ -62,13 +54,11 @@ const SECTION_HEADER_HEIGHT = 40
 function Calendar({
   tasks,
   periods,
-  reminders,
   onChangeFirstDate,
   alwaysIncludeCurrentDate = false
 }: {
   tasks: MinimalScheduledTask[];
   periods: ParsedPeriod[];
-  reminders: ParsedReminder[];
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
 }) {
@@ -86,7 +76,7 @@ function Calendar({
   }
 
   useEffect(() => {
-    const newTasksPerDate = formatTasksAndPeriods(tasks, periods, reminders, alwaysIncludeCurrentDate)
+    const newTasksPerDate = formatTasksAndPeriods(tasks, periods, alwaysIncludeCurrentDate)
     setTasksPerDate(newTasksPerDate);
   }, [
     tasks,
@@ -183,7 +173,6 @@ function Calendar({
         data: [
           ...(tasksPerDate[date].tasks.map(task => ({ ...task, type: ("TASK" as ItemType) }))),
           ...(tasksPerDate[date].periods.map(period => ({ ...period, type: ("PERIOD" as ItemType) }))),
-          ...(tasksPerDate[date].reminders.map(reminder => ({ ...reminder, type: ("REMINDER" as ItemType) }))),
         ]
       });
     }
@@ -215,9 +204,6 @@ function Calendar({
     }
     if (isPeriod(item)) {
       return (`${item.id}_${item.resourcetype}`)
-    }
-    if (isReminder(item)) {
-      return (`${item.id}_reminder`)
     }
     return ""
   }, [])

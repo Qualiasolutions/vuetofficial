@@ -70,10 +70,7 @@ export default function ChildEntitiesCalendarScreen({
       periodFilters={[
         (period) => childEntities.map((ent) => ent.id).includes(period.entity)
       ]}
-      reminderFilters={[
-        (reminder) =>
-          childEntities.map((ent) => ent.id).includes(reminder.entity)
-      ]}
+      fullPage={false}
     />
   );
 }
