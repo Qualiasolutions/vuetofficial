@@ -66,6 +66,13 @@ type TaskResponseType =
   | ScheduledTaskResponseType;
 type TaskParsedType = FixedTaskParsedType | FlexibleTaskParsedType;
 
+type CreateTaskRequest = {
+  start_datetime?: string;
+  end_datetime?: string;
+  resourcetype: string;
+  entity: number | string;
+}
+
 const isFixedTaskResponseType = (task: any): task is FixedTaskResponseType =>
   task.resourcetype === 'FixedTask';
 const isFlexibleTaskResponseType = (
@@ -85,6 +92,7 @@ export {
   FlexibleTaskParsedType,
   TaskResponseType,
   TaskParsedType,
+  CreateTaskRequest,
   ScheduledTaskResponseType,
   ScheduledTaskParsedType,
   isFixedTaskResponseType,

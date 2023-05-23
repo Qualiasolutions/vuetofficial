@@ -10,15 +10,13 @@ import {
   taskMiddleFieldTypes,
   taskTopFieldTypes
 } from './taskFormFieldTypes';
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentPaddedView,
   TransparentView,
-  WhitePaddedView,
   WhiteView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
@@ -103,12 +101,30 @@ export default function AddTaskScreen({
       const initialTopFields = createInitialObject(taskTopFields, userDetails);
       setTaskTopFieldValues(initialTopFields);
 
+      const currentTime = new Date()
+      const defaultStartTime = new Date(currentTime)
+      defaultStartTime.setMinutes(0)
+      defaultStartTime.setSeconds(0)
+      defaultStartTime.setMilliseconds(0)
+      defaultStartTime.setHours(defaultStartTime.getHours() + 1)
+
+      const defaultEndTime = new Date(defaultStartTime)
+
+      if (formType === "TASK") {
+        defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15)
+      }
+      if (formType === "APPOINTMENT") {
+        defaultEndTime.setHours(defaultStartTime.getHours() + 1)
+      }
+
       const initialMiddleFields = createInitialObject(
         taskMiddleFields,
-        userDetails, {
-        duration_minutes: formType === 'TASK' ? 15 : 60,
-        recurrence: null
-      }
+        userDetails,
+        {
+          start_datetime: defaultStartTime,
+          end_datetime: defaultEndTime,
+          recurrence: null,
+        }
       );
       setTaskMiddleFieldValues(initialMiddleFields);
 
@@ -206,18 +222,19 @@ export default function AddTaskScreen({
   }, [createPeriodResult]);
 
   const submitForm = () => {
-    let parsedFieldValues = {};
     if (formType === 'DUE_DATE') {
       const parsedPeriodFieldValues = parseFormValues(
         periodFieldValues,
         periodFields
       );
-      parsedFieldValues = {
+      const parsedFieldValues = {
         ...parsedPeriodFieldValues,
         end_date: parsedPeriodFieldValues.start_date,
         resourcetype: 'FixedPeriod',
         entity: route.params.entityId
       };
+
+      createPeriod(parsedFieldValues);
     } else {
       const middleFieldValues = taskMiddleFieldValues;
       const middleFields = taskMiddleFields;
@@ -235,27 +252,15 @@ export default function AddTaskScreen({
         taskBottomFields
       );
 
-      const endDatetime = new Date(
-        middleFieldValues.start_datetime.getTime() +
-        middleFieldValues.duration_minutes * 60000
-      );
-
-      parsedFieldValues = {
+      const parsedFieldValues = {
         ...parsedTopFieldValues,
         ...parsedMiddleFieldValues,
         ...parsedBottomFieldValues,
-        end_datetime: endDatetime,
         type: formType,
         resourcetype: 'FixedTask',
         entity: route.params.entityId
       };
-    }
 
-    console.log(parsedFieldValues)
-
-    if (formType === 'DUE_DATE') {
-      createPeriod(parsedFieldValues);
-    } else {
       createTask(parsedFieldValues);
     }
   };

@@ -105,20 +105,23 @@ export const taskMiddleFieldTypes = (disabledRecurrenceFields: boolean = false):
       type: 'DateTime',
       required: true,
       displayName: t('tasks.task.start_datetime'),
-      disabled: disabledRecurrenceFields
+      disabled: disabledRecurrenceFields,
+      associatedEndTimeField: 'end_datetime'
+    },
+    end_datetime: {
+      type: 'DateTime',
+      required: true,
+      displayName: t('tasks.task.end_datetime'),
+      disabled: disabledRecurrenceFields,
+      associatedStartTimeField: 'start_datetime'
     },
     duration_minutes: {
-      type: 'dropDown',
-      required: true,
-      permittedValues: [
-        { label: '5 Minutes', value: 5 },
-        { label: '15 Minutes', value: 15 },
-        { label: '30 Minutes', value: 30 },
-        { label: '1 Hour', value: 60 }
-      ],
+      type: 'calculatedDuration',
       displayName: t('tasks.task.duration_minutes'),
-      listMode: 'MODAL',
-      disabled: disabledRecurrenceFields
+      disabled: true,
+      required: false,
+      startFieldName: 'start_datetime',
+      endFieldName: 'end_datetime'
     },
     recurrence: {
       type: 'recurrenceSelector',
@@ -158,80 +161,6 @@ export const taskBottomFieldTypes = (): FlatFormFieldTypes => {
       type: 'TextArea',
       required: false,
       displayName: t('tasks.task.notes')
-    }
-  };
-};
-
-const taskFieldTypes = (): FlatFormFieldTypes => {
-  const { t } = useTranslation('modelFields');
-
-  return {
-    title: {
-      type: 'string',
-      required: true,
-      displayName: t('tasks.task.title')
-    },
-    location: {
-      type: 'string',
-      required: false
-    },
-    contact_name: {
-      type: 'string',
-      required: false
-    },
-    contact_email: {
-      type: 'string',
-      required: false
-    },
-    contact_number: {
-      type: 'phoneNumber',
-      required: false
-    },
-    notes: {
-      type: 'string',
-      required: false
-    }
-  };
-};
-
-export const fixedTaskForm = (): FlatFormFieldTypes => {
-  const { t } = useTranslation('modelFields');
-  const username = useSelector(selectUsername);
-  const {
-    data: userDetails,
-    isLoading: isLoadingUserDetails,
-    error: userDetailsError
-  } = useGetUserDetailsQuery(username);
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingFullDetails,
-    error: fullDetailsError
-  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1);
-
-  const baseTaskFieldsTypes = taskFieldTypes();
-
-  return {
-    title: baseTaskFieldsTypes.title,
-    location: baseTaskFieldsTypes.location,
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
-      },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('tasks.task.members')
-    },
-    start_datetime: {
-      type: 'DateTime',
-      required: true,
-      displayName: t('tasks.fixedTask.start_datetime')
-    },
-    end_datetime: {
-      type: 'DateTime',
-      required: true,
-      displayName: t('tasks.fixedTask.end_datetime')
     }
   };
 };

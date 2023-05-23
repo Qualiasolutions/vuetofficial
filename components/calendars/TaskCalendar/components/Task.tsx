@@ -1,9 +1,8 @@
 import { Pressable, StyleSheet } from 'react-native';
-import { Text, useThemeColor, View } from 'components/Themed';
-import { isFixedTaskParsedType, ScheduledTaskParsedType, ScheduledTaskResponseType } from 'types/tasks';
+import { Text, useThemeColor } from 'components/Themed';
+import { isFixedTaskParsedType, ScheduledTaskResponseType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import React, { useEffect, useMemo, useState } from 'react';
-import SquareButton from 'components/molecules/SquareButton';
+import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   EntityTabParamList,
@@ -12,34 +11,26 @@ import {
 } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
+import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import {
-  WhiteText,
   PrimaryText,
   BlackText
 } from 'components/molecules/TextComponents';
-import { Feather } from '@expo/vector-icons';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
-import { Image } from 'components/molecules/ImageComponents';
-import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import { createSelector } from '@reduxjs/toolkit';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import EntityTag from 'components/molecules/EntityTag';
+import { ITEM_HEIGHT } from './shared';
 
 export type MinimalScheduledTask = {
   id: number;
@@ -58,8 +49,6 @@ type PropTypes = {
 };
 
 function Task({ task }: PropTypes) {
-  const [selected, setSelected] = useState(false);
-
   const selectIsComplete = useMemo(() => {
     // Return a unique selector instance for this page so that
     // the filtered results are correctly memoized
@@ -88,12 +77,6 @@ function Task({ task }: PropTypes) {
     }
   )
 
-  useEffect(() => {
-    if (isComplete) {
-      setSelected(false)
-    }
-  }, [isComplete])
-
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
@@ -120,9 +103,7 @@ function Task({ task }: PropTypes) {
 
   const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
 
-  const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
-  const isCompleteBackgroundColor = useThemeColor({}, 'grey');
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
 
   const { t } = useTranslation();
@@ -150,24 +131,6 @@ function Task({ task }: PropTypes) {
 
   const entity = allEntities.byId[task.entity];
 
-  const addDays = (numDays = 1) => {
-    if (isFixedTaskParsedType(task)) {
-      const newStart = new Date(task.start_datetime);
-      newStart.setDate(newStart.getDate() + numDays);
-
-      const newEnd = new Date(task.end_datetime);
-      newEnd.setDate(newEnd.getDate() + numDays);
-
-      /* TODO - handle errors */
-      triggerUpdateTask({
-        id: task.id,
-        start_datetime: newStart,
-        end_datetime: newEnd,
-        resourcetype: task.resourcetype
-      });
-    }
-  };
-
   const leftInfo = (
     <TransparentView style={styles.leftInfo}>
       <Text style={isComplete && { color: isCompleteTextColor }}>
@@ -178,72 +141,6 @@ function Task({ task }: PropTypes) {
       </Text>
     </TransparentView>
   );
-
-  const expandedHeader =
-    entity && selected ? (
-      <Pressable
-        onPress={() => setSelected(false)}
-        style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-      >
-        <WhiteText
-          text={entity?.name}
-          style={styles.expandedTitle}
-          bold={true}
-        />
-        <Pressable
-          onPress={() =>
-            (navigation.navigate as any)('EntityNavigator', {
-              screen: 'EditEntity',
-              initial: false,
-              params: { entityId: entity.id }
-            })
-          }
-          style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-        >
-          <Image
-            source={require('assets/images/edit.png')}
-            style={styles.editImage}
-          />
-        </Pressable>
-      </Pressable>
-    ) : null;
-
-  const expandedOptions =
-    selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
-      <TransparentView style={styles.expandedOptions}>
-        <TransparentView style={styles.expandedButtons}>
-          {task.resourcetype === 'FixedTask' && !task.recurrence ? (
-            <>
-              <SquareButton
-                buttonText={`+1\nDay`}
-                onPress={() => {
-                  addDays(1);
-                }}
-                buttonStyle={{ backgroundColor: primaryColor }}
-                buttonTextStyle={styles.buttonTextStyle}
-                buttonSize={35}
-              />
-              <SquareButton
-                buttonText={'+1\nWeek'}
-                onPress={() => {
-                  addDays(7);
-                }}
-                buttonStyle={{ backgroundColor: primaryColor }}
-                buttonTextStyle={styles.buttonTextStyle}
-                buttonSize={35}
-              />
-            </>
-          ) : null}
-          <SquareButton
-            customIcon={<Feather name="calendar" color={'#fff'} size={25} />}
-            onPress={() =>
-              (navigation.navigate as any)('EditTask', { taskId: task.id })
-            }
-            buttonStyle={{ backgroundColor: primaryColor }}
-          />
-        </TransparentView>
-      </TransparentView>
-    ) : null;
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -267,33 +164,14 @@ function Task({ task }: PropTypes) {
     ) : null;
 
   return (
-    <WhiteView
-      style={[
-        styles.container,
-        entity &&
-        selected && {
-          ...styles.selectedTask,
-          borderColor: greyColor
-        },
-        isComplete && {
-          backgroundColor: isCompleteBackgroundColor
-        }
-      ]}
-    >
-      {expandedHeader}
+    <TransparentView style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}>
       <TransparentView
         style={[
-          styles.touchableContainerWrapper,
-          selected && styles.selectedTouchableContainer
+          styles.containerWrapper,
         ]}
       >
-        <TouchableOpacity
-          style={styles.touchableContainer}
-          onPress={() => {
-            if (!isComplete) {
-              setSelected(true)
-            }
-          }}
+        <TransparentView
+          style={styles.container}
         >
           {leftInfo}
           <TransparentView style={styles.titleContainer}>
@@ -307,11 +185,20 @@ function Task({ task }: PropTypes) {
               ]}
               bold={true}
             />
+            {
+              ['FixedTask', 'FlexibleTask'].includes(task.resourcetype)
+              && <Pressable
+                onPress={() =>
+                  (navigation.navigate as any)('EditTask', { taskId: task.id })
+                }
+              >
+                <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
+              </Pressable>
+            }
           </TransparentView>
-        </TouchableOpacity>
+        </TransparentView>
         {userDetails?.is_premium && <Checkbox
           disabled={isComplete}
-          style={styles.checkbox}
           checked={isComplete}
           smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
           color={isCompleteTextColor}
@@ -327,112 +214,49 @@ function Task({ task }: PropTypes) {
           }}
         />}
       </TransparentView>
-      {selected && ['FixedTask', 'FlexibleTask'].includes(task.resourcetype) ? (
-        <Pressable
-          onPress={() =>
-            (navigation.navigate as any)('EditTask', { taskId: task.id })
-          }
-          style={styles.viewEditContainer}
-        >
-          <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
-        </Pressable>
-      ) : null}
+      <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <TransparentView style={{ flexDirection: 'row' }}>
+          <EntityTag entity={entity} />
+        </TransparentView>
+        {memberColour}
+      </TransparentView>
       {taskCompletionForm}
-      {expandedOptions}
-      {memberColour}
-      {!selected && <View style={styles.separator}></View>}
-    </WhiteView>
+    </TransparentView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
   titleContainer: {
-    width: '40%'
+    flex: 1,
+    justifyContent: 'flex-start'
   },
   title: {
     fontSize: 14,
-    textAlign: 'left'
+    textAlign: 'left',
+    wrap: 'nowrap'
   },
   leftInfo: {
     width: '20%',
-    marginRight: 30,
-    marginLeft: 13
+    marginRight: 5,
   },
-  touchableContainerWrapper: {
+  containerWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%'
   },
-  touchableContainer: {
+  container: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%'
-  },
-  viewEditContainer: {
-    marginTop: 10,
-    paddingTop: 0,
-    marginLeft: 30
-  },
-  checkbox: {
-    margin: 10
-  },
-  separator: {
-    height: 1,
     width: '100%',
-    backgroundColor: '#eee'
-  },
-  expandedHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 13,
-    height: 53
-  },
-  expandedTitle: {
-    fontSize: 18
-  },
-  expandedOptions: {
-    marginTop: 10,
-    alignItems: 'flex-end'
-  },
-  expandedButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 5,
-    paddingBottom: 10
-  },
-  editImage: {
-    height: 27,
-    width: 31
-  },
-  selectedTask: {
-    paddingTop: 0,
-    marginTop: 10,
-    overflow: 'hidden',
-    marginVertical: 15,
-    shadowColor: '#000000',
-    shadowOffset: { height: 0, width: 2 },
-    shadowRadius: 5,
-    shadowOpacity: 0.16,
-    elevation: 5,
-    borderWidth: 1
   },
   buttonTextStyle: {
     color: '#fff',
     textAlign: 'center',
     fontSize: 12
   },
-  selectedTouchableContainer: { alignItems: 'flex-start', marginTop: 20 },
   memberColor: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

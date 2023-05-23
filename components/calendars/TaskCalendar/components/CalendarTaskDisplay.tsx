@@ -3,16 +3,13 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   getDateStringFromDateObject,
-  getDateStringsBetween,
-  getDateWithoutTimezone,
 } from 'utils/datesAndTimes';
 
-import { ParsedPeriod, ParsedReminder, ScheduledReminder } from 'types/periods';
+import { ParsedPeriod, ParsedReminder } from 'types/periods';
 import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
-  TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { LinkButton } from 'components/molecules/ButtonComponents';
@@ -24,6 +21,7 @@ import Task, { MinimalScheduledTask } from './Task';
 import OneDayPeriod from './OneDayPeriod';
 import Reminder from './Reminder';
 import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
+import { ITEM_HEIGHT } from './shared';
 
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
@@ -33,17 +31,6 @@ type SingleDateTasks = {
 
 type AllDateTasks = {
   [key: string]: SingleDateTasks;
-};
-
-const parseReminder = (res: ScheduledReminder): ParsedReminder => {
-  const parsedReminder = {
-    ...res,
-    end_date: getDateWithoutTimezone(res.end_date),
-    start_date: getDateWithoutTimezone(res.start_date)
-  };
-  delete parsedReminder?.is_complete
-
-  return parsedReminder
 };
 
 type ItemType = "TASK" | "PERIOD" | "REMINDER"
@@ -70,6 +57,8 @@ const ListItem = React.memo(({ data }: { data: ItemData }) => {
   return null
 })
 
+const SECTION_HEADER_HEIGHT = 40
+
 function Calendar({
   tasks,
   periods,
@@ -84,7 +73,6 @@ function Calendar({
   onChangeFirstDate?: (date: string) => void;
 }) {
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
-  const [futureMonthsToShow, setFutureMonthsToShow] = useState(3);
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate)
@@ -149,7 +137,7 @@ function Calendar({
 
   const datesToShow = Object.keys(tasksPerDate).sort();
 
-  const ListHeaderOrFooterComponent = ({ isFooter }: { isFooter: boolean }) => {
+  const ListHeaderComponent = () => {
     if (rerenderingList) {
       return (
         <TransparentView style={styles.loadMoreButtonWrapper}>
@@ -157,21 +145,16 @@ function Calendar({
         </TransparentView>
       );
     }
-    return (isFooter && futureMonthsToShow < 24) ||
-      (!isFooter && pastMonthsToShow < 24) ? (
+    return (pastMonthsToShow < 24) ? (
       <TransparentView style={styles.loadMoreButtonWrapper}>
         <LinkButton
-          title={isFooter ? t('common.loadMore') : t('common.loadOlder')}
+          title={t('common.loadOlder')}
           onPress={() => {
             // Suuuuuuuper hacky way to make the button
             // a little bit more responsive to clicks
             setRerenderingList(true);
             setTimeout(() => {
-              if (isFooter) {
-                setFutureMonthsToShow(futureMonthsToShow + 3);
-              } else {
-                setPastMonthsToShow(pastMonthsToShow + 3);
-              }
+              setPastMonthsToShow(pastMonthsToShow + 3);
             }, 300);
             setTimeout(() => {
               setRerenderingList(false);
@@ -209,13 +192,13 @@ function Calendar({
 
   const shownSections = [
     ...pastSections.slice(pastSections.length - (pastMonthsToShow * 30)),
-    ...futureSections.slice(0, (futureMonthsToShow * 30))
+    ...futureSections
   ];
 
   const renderItem = useCallback(({ item }: { item: ItemData }) => {
-    return <TransparentPaddedView>
+    return <TransparentView style={{ paddingHorizontal: 20 }}>
       <ListItem data={item} />
-    </TransparentPaddedView>
+    </TransparentView>
   }, [])
   const onViewableItemsChanged = useCallback((items: { viewableItems: ViewToken[] }) => {
     if (onChangeFirstDate) {
@@ -239,12 +222,48 @@ function Calendar({
     return ""
   }, [])
 
+  const itemsLayout = useMemo(() => {
+    if (!shownSections) return [];
+    const layouts: any[] = [];
+    let index = 0;
+    let offset = 0;
+    shownSections.forEach(section => {
+      // Section header
+      const TOTAL_HEADER_HEIGHT = SECTION_HEADER_HEIGHT;
+      layouts[index] = { length: TOTAL_HEADER_HEIGHT, offset, index };
+      index++;
+      offset += TOTAL_HEADER_HEIGHT;
+
+      // Section items
+      section.data.forEach((_match, i) => {
+        /* -----------------------
+         * We need to remove the last ItemSeparator from our calculations otherwise
+         * we might offset our layout a little. As per the documentation, a ItemSeparatorComponent is
+         * "Rendered in between adjacent Items within each section."
+         * ----------------------- */
+        const MATCH_HEIGHT = ITEM_HEIGHT;
+        layouts[index] = {
+          length: MATCH_HEIGHT,
+          offset,
+          index,
+        };
+        index++;
+        offset += MATCH_HEIGHT;
+      });
+
+      // Section footer
+      layouts[index] = { length: 0, offset, index };
+      index++;
+    });
+    return layouts;
+  }, [shownSections]);
+
   return (
     <SectionList
       sections={shownSections}
       renderSectionHeader={({ section }) => {
         return (
-          <AlmostWhiteView style={styles.sectionHeader}>
+          <AlmostWhiteView style={[styles.sectionHeader, { height: SECTION_HEADER_HEIGHT }]}>
             <Text style={styles.sectionHeaderText}>{section.title}</Text>
           </AlmostWhiteView>
         );
@@ -252,20 +271,15 @@ function Calendar({
       refreshing={false}
       onRefresh={() => {
         setPastMonthsToShow(0);
-        setFutureMonthsToShow(3);
       }}
       renderItem={renderItem}
       contentContainerStyle={{ paddingBottom: 150 }}
-      ListHeaderComponent={<ListHeaderOrFooterComponent isFooter={false} />}
-      ListFooterComponent={<ListHeaderOrFooterComponent isFooter={true} />}
+      ListHeaderComponent={<ListHeaderComponent />}
       onViewableItemsChanged={onViewableItemsChanged}
-      // getItemLayout={getItemLayout} - this should be used when
-      // items have fixed height for performance gains. Our items
-      // get bigger when clicked but performance could be better if
-      // they didnt
+      getItemLayout={(d, index) => itemsLayout[index] ?? { length: 0, offset: 0, index }}
       keyExtractor={keyExtractor}
       ref={sectionListRef}
-      windowSize={11}
+      windowSize={31}
     />
   );
 }
@@ -281,8 +295,6 @@ const styles = StyleSheet.create({
   sectionHeader: {
     justifyContent: 'center',
     paddingLeft: 18,
-    paddingVertical: 6,
-    marginBottom: 5,
     borderTopWidth: 2,
     borderBottomWidth: 2
   },

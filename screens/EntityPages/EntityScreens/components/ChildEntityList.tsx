@@ -12,9 +12,9 @@ import linkMapping from 'components/entityCards';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
-import { datetimeSettingsMapping } from 'screens/EntityPages/utils/datetimeSettingsMapping';
-import { entityOrderings } from 'screens/EntityPages/utils/entityOrderings';
-import { sectionNameMapping } from 'screens/EntityPages/utils/sectionNameMapping';
+import { datetimeSettingsMapping } from 'components/lists/utils/datetimeSettingsMapping';
+import { entityOrderings } from 'components/lists/utils/entityOrderings';
+import { sectionNameMapping } from 'components/lists/utils/sectionNameMapping';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -116,8 +116,8 @@ export default function ChildEntityList({
         text={t('misc.currentlyNoEntities', {
           entityType: entityTypes
             ? entityTypes
-                .map((entityType) => t(`entityTypes.${entityType}`))
-                .join(' or ')
+              .map((entityType) => t(`entityTypes.${entityType}`))
+              .join(' or ')
             : ''
         })}
         style={styles.noEntitiesText}

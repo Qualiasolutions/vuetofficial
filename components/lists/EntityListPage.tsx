@@ -64,10 +64,6 @@ export default function EntityListPage({
     }
   }
 
-  if (isLoading || !filteredEntityData) {
-    return <FullPageSpinner />;
-  }
-
   const entityDatetimeSettings =
     datetimeSettingsMapping[filteredEntityData[0]?.resourcetype] || null;
   const ordering = entityOrderings[filteredEntityData[0]?.resourcetype] || null;
@@ -89,15 +85,15 @@ export default function EntityListPage({
 
       const previousEntityData = entityDatetimeSettings?.hidePrevious
         ? orderedEntityData.filter(
-            (entity) =>
-              new Date(entity[entityDatetimeSettings.endField]) < earliestDate
-          )
+          (entity) =>
+            new Date(entity[entityDatetimeSettings.endField]) < earliestDate
+        )
         : [];
       const futureEntityData = entityDatetimeSettings?.monthsAhead
         ? orderedEntityData.filter(
-            (entity) =>
-              new Date(entity[entityDatetimeSettings.startField]) > latestDate
-          )
+          (entity) =>
+            new Date(entity[entityDatetimeSettings.startField]) > latestDate
+        )
         : [];
 
       const datetimeFilteredEntityData = orderedEntityData.filter((entity) => {
@@ -109,6 +105,11 @@ export default function EntityListPage({
 
       return [previousEntityData, datetimeFilteredEntityData, futureEntityData];
     }, [orderedEntityData, monthsBack]);
+
+
+  if (isLoading || !filteredEntityData) {
+    return <FullPageSpinner />;
+  }
 
   const sections = {} as { [key: string]: EntityResponseType[] };
 
@@ -150,39 +151,39 @@ export default function EntityListPage({
 
   const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
     ? monthsBack < 24 &&
-      previousEntityData.length > 0 && (
-        <Pressable
-          onPress={() => setMonthsBack(monthsBack + 6)}
-          style={styles.showOlderWrapper}
-        >
-          <AlmostBlackText
-            text={t('components.calendar.showOlderEvents')}
-            style={styles.showOlderText}
-          />
-        </Pressable>
-      )
+    previousEntityData.length > 0 && (
+      <Pressable
+        onPress={() => setMonthsBack(monthsBack + 6)}
+        style={styles.showOlderWrapper}
+      >
+        <AlmostBlackText
+          text={t('components.calendar.showOlderEvents')}
+          style={styles.showOlderText}
+        />
+      </Pressable>
+    )
     : null;
 
   const showFutureButton =
     entityDatetimeSettings?.monthsAhead &&
-    entityDatetimeSettings?.monthsAheadPerLoad
+      entityDatetimeSettings?.monthsAheadPerLoad
       ? (!entityDatetimeSettings.maxMonthsAhead ||
-          monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
-        futureEntityData.length > 0 && (
-          <Pressable
-            onPress={() =>
-              setMonthsAhead(
-                monthsAhead + (entityDatetimeSettings?.monthsAheadPerLoad || 0)
-              )
-            }
-            style={styles.showOlderWrapper}
-          >
-            <AlmostBlackText
-              text={t('components.calendar.showNewerEvents')}
-              style={styles.showNewerText}
-            />
-          </Pressable>
-        )
+        monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
+      futureEntityData.length > 0 && (
+        <Pressable
+          onPress={() =>
+            setMonthsAhead(
+              monthsAhead + (entityDatetimeSettings?.monthsAheadPerLoad || 0)
+            )
+          }
+          style={styles.showOlderWrapper}
+        >
+          <AlmostBlackText
+            text={t('components.calendar.showNewerEvents')}
+            style={styles.showNewerText}
+          />
+        </Pressable>
+      )
       : null;
 
   if (listLinks.length === 0) {

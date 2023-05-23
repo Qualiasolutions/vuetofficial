@@ -3,7 +3,8 @@ import { vuetApi, normalizeData } from './api';
 import {
   TaskParsedType,
   TaskResponseType,
-  ScheduledTaskResponseType
+  ScheduledTaskResponseType,
+  CreateTaskRequest
 } from 'types/tasks';
 
 const extendedApi = vuetApi.injectEndpoints({
@@ -54,7 +55,7 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Task']
     }),
-    createTask: builder.mutation<TaskResponseType, Omit<TaskParsedType, 'id'>>({
+    createTask: builder.mutation<TaskResponseType, CreateTaskRequest>({
       query: (body) => {
         return {
           url: 'core/task/',

@@ -15,6 +15,7 @@ export type PermittedTypes =
   | 'addFamilyMembers'
   | 'dropDown'
   | 'recurrenceSelector'
+  | 'calculatedDuration'
   | 'dropDownWithOther'
   | 'timezone'
   | 'Image';
@@ -80,6 +81,11 @@ export type RecurrenceSelectorField = BaseField<'recurrenceSelector', any> & {
   firstOccurrenceField: string
 }
 
+export type CalculatedDurationField = BaseField<'calculatedDuration', any> & {
+  startFieldName: string;
+  endFieldName: string;
+}
+
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
@@ -110,6 +116,7 @@ export type Field =
   | DropDownField
   | DropDownWithOtherField
   | RecurrenceSelectorField
+  | CalculatedDurationField
   | ImageField
   | TimezoneField;
 

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useThemeColor, View } from 'components/Themed';
 import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -12,57 +12,24 @@ import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import { WhiteText, BlackText } from 'components/molecules/TextComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import {
   TransparentView,
-  WhiteView
 } from 'components/molecules/ViewComponents';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ParsedReminder, PeriodResponse, ScheduledReminder } from 'types/periods';
+import { ParsedReminder, PeriodResponse } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import Checkbox from 'components/molecules/Checkbox';
 import { useUpdateReminderMutation } from 'reduxStore/services/api/reminder';
-import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
-import { Image } from 'components/molecules/ImageComponents';
 import { createSelector } from '@reduxjs/toolkit';
-import { useGetAllPeriodsQuery, useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
-import useScheduledPeriods from 'hooks/useScheduledPeriods';
+import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
+import EntityTag from 'components/molecules/EntityTag';
+import { ITEM_HEIGHT } from './shared';
 
 type PropTypes = { reminder: ParsedReminder; };
 
 export default function Reminder({ reminder }: PropTypes) {
-  const navigation = useNavigation<
-    | BottomTabNavigationProp<RootTabParamList>
-    | StackNavigationProp<EntityTabParamList>
-    | StackNavigationProp<SettingsTabParamList>
-  >();
-
-  const { data: userDetails } = getUserFullDetails();
-  const [selected, setSelected] = useState(false);
-
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
-    skip: !userDetails?.id
-  });
-
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingFullDetails,
-    error: fullDetailsError
-  } = useGetUserFullDetailsQuery(userDetails?.id || -1);
-
-  const primaryColor = useThemeColor({}, 'primary');
-  const greyColor = useThemeColor({}, 'grey');
-  const isCompleteBackgroundColor = useThemeColor({}, 'grey');
-  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
-
-  const [triggerUpdateReminder, updateReminderResult] =
-    useUpdateReminderMutation();
-
   const selectIsComplete = useMemo(() => {
     // Return a unique selector instance for this page so that
     // the filtered results are correctly memoized
@@ -85,6 +52,11 @@ export default function Reminder({ reminder }: PropTypes) {
     )
   }, [])
 
+  const { data: userDetails } = getUserFullDetails();
+
+  const [triggerUpdateReminder, updateReminderResult] =
+    useUpdateReminderMutation();
+
   const { isComplete } = useGetScheduledPeriodsQuery(
     {
       start_datetime: "2020-01-01T00:00:00Z",
@@ -97,6 +69,31 @@ export default function Reminder({ reminder }: PropTypes) {
     }
   )
 
+  const navigation = useNavigation<
+    | BottomTabNavigationProp<RootTabParamList>
+    | StackNavigationProp<EntityTabParamList>
+    | StackNavigationProp<SettingsTabParamList>
+  >();
+  const [showTaskForm, setShowTaskCompletionForm] = useState<boolean>(false);
+
+  const {
+    data: allEntities,
+    isLoading,
+    error
+  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
+  });
+
+  const {
+    data: userFullDetails,
+    isLoading: isLoadingFullDetails,
+    error: fullDetailsError
+  } = useGetUserFullDetailsQuery(userDetails?.id || -1);
+
+  const greyColor = useThemeColor({}, 'grey');
+  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
+
+
   if (isLoading || !allEntities) {
     return null;
   }
@@ -105,15 +102,11 @@ export default function Reminder({ reminder }: PropTypes) {
     return <GenericError />;
   }
 
-  const entity = allEntities.byId[reminder.entity];
-
   const familyMembersList = userFullDetails?.family?.users?.filter(
-    (item: any) =>
-      reminder.members.includes(item.id) || (entity && entity.owner === item.id)
+    (item: any) => reminder.members.includes(item.id)
   );
-  const friendMembersList = userFullDetails?.friends?.filter(
-    (item: any) =>
-      reminder.members.includes(item.id) || (entity && entity.owner === item.id)
+  const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
+    reminder.members.includes(item.id)
   );
 
   const membersList = [
@@ -121,38 +114,7 @@ export default function Reminder({ reminder }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const leftInfo = <TransparentView style={styles.leftInfo} />;
-
-  const expandedHeader =
-    entity && selected ? (
-      <Pressable
-        onPress={() => {
-          setSelected(false)
-        }}
-        style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-      >
-        <WhiteText
-          text={entity?.name}
-          style={styles.expandedTitle}
-          bold={true}
-        />
-        <Pressable
-          onPress={() =>
-            (navigation.navigate as any)('EntityNavigator', {
-              screen: 'EditEntity',
-              initial: false,
-              params: { entityId: entity.id }
-            })
-          }
-          style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-        >
-          <Image
-            source={require('assets/images/edit.png')}
-            style={styles.editImage}
-          />
-        </Pressable>
-      </Pressable>
-    ) : null;
+  const entity = allEntities.byId[reminder.entity];
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -165,35 +127,15 @@ export default function Reminder({ reminder }: PropTypes) {
   );
 
   return (
-    <WhiteView
-      style={[
-        styles.container,
-        entity &&
-        selected && {
-          ...styles.selectedTask,
-          borderColor: greyColor
-        },
-        isComplete && {
-          backgroundColor: isCompleteBackgroundColor
-        }
-      ]}
-    >
-      {expandedHeader}
+    <TransparentView style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}>
       <TransparentView
         style={[
-          styles.touchableContainerWrapper,
-          selected && styles.selectedTouchableContainer
+          styles.containerWrapper,
         ]}
       >
-        <TouchableOpacity
-          style={styles.touchableContainer}
-          onPress={() => {
-            if (!isComplete) {
-              setSelected(true)
-            }
-          }}
+        <TransparentView
+          style={styles.container}
         >
-          {leftInfo}
           <TransparentView style={styles.titleContainer}>
             <BlackText
               text={reminder.title}
@@ -206,7 +148,7 @@ export default function Reminder({ reminder }: PropTypes) {
               bold={true}
             />
           </TransparentView>
-        </TouchableOpacity>
+        </TransparentView>
         {userDetails?.is_premium && <Checkbox
           disabled={isComplete}
           style={styles.checkbox}
@@ -221,21 +163,17 @@ export default function Reminder({ reminder }: PropTypes) {
           }}
         />}
       </TransparentView>
-      {memberColour}
-      {!selected && (
-        <TransparentView style={styles.separator}></TransparentView>
-      )}
-    </WhiteView>
+      <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <TransparentView style={{ flexDirection: 'row' }}>
+          <EntityTag entity={entity} />
+        </TransparentView>
+        {memberColour}
+      </TransparentView>
+    </TransparentView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
   titleContainer: {
     width: '60%',
     flex: 1
@@ -249,13 +187,13 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginLeft: 0
   },
-  touchableContainerWrapper: {
+  containerWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%'
   },
-  touchableContainer: {
+  container: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -270,34 +208,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#eee'
   },
-  expandedHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 13,
-    height: 53
-  },
-  expandedTitle: {
-    fontSize: 18
-  },
-  editImage: {
-    height: 27,
-    width: 31
-  },
-  selectedTask: {
-    paddingTop: 0,
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginVertical: 15,
-    shadowColor: '#000000',
-    shadowOffset: { height: 0, width: 2 },
-    shadowRadius: 5,
-    shadowOpacity: 0.16,
-    elevation: 5,
-    borderWidth: 1
-  },
-  selectedTouchableContainer: { alignItems: 'flex-start', marginTop: 20 },
   memberColor: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

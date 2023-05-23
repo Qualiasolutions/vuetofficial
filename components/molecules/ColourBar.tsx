@@ -22,14 +22,9 @@ export default function ColourBar({
 
 const styles = StyleSheet.create({
   container: {
-    bottom: 5,
-    right: 5,
     display: 'flex',
     flexDirection: 'row-reverse',
-    width: '100%',
-    position: 'absolute',
     alignItems: 'center',
-    paddingHorizontal: 5
   },
   colourBar: {
     width: 30,

@@ -1,39 +1,23 @@
-import { Pressable, StyleSheet } from 'react-native';
-import { useThemeColor, View } from 'components/Themed';
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import {
-  EntityTabParamList,
-  RootTabParamList,
-  SettingsTabParamList
-} from 'types/base';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { StyleSheet } from 'react-native';
+import { useThemeColor } from 'components/Themed';
+import React from 'react';
 import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import { WhiteText, BlackText } from 'components/molecules/TextComponents';
+import { BlackText } from 'components/molecules/TextComponents';
 import {
   TransparentView,
-  WhiteView
 } from 'components/molecules/ViewComponents';
 import ColourBar from 'components/molecules/ColourBar';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import { Image } from 'components/molecules/ImageComponents';
-import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import EntityTag from 'components/molecules/EntityTag';
+import { ITEM_HEIGHT } from './shared';
 
 type PropTypes = { period: ParsedPeriod; };
 
 export default function OneDayPeriod({ period }: PropTypes) {
-  const navigation = useNavigation<
-    | BottomTabNavigationProp<RootTabParamList>
-    | StackNavigationProp<EntityTabParamList>
-    | StackNavigationProp<SettingsTabParamList>
-  >();
-
-  const [selected, setSelected] = useState(false)
   const { data: userDetails } = getUserFullDetails();
 
   const {
@@ -50,7 +34,6 @@ export default function OneDayPeriod({ period }: PropTypes) {
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.id || -1);
 
-  const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
 
   if (isLoading || !allEntities) {
@@ -61,15 +44,11 @@ export default function OneDayPeriod({ period }: PropTypes) {
     return <GenericError />;
   }
 
-  const entity = allEntities.byId[period.entity];
-
   const familyMembersList = userFullDetails?.family?.users?.filter(
-    (item: any) =>
-      period.members.includes(item.id) || (entity && entity.owner === item.id)
+    (item: any) => period.members.includes(item.id)
   );
-  const friendMembersList = userFullDetails?.friends?.filter(
-    (item: any) =>
-      period.members.includes(item.id) || (entity && entity.owner === item.id)
+  const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
+    period.members.includes(item.id)
   );
 
   const membersList = [
@@ -77,36 +56,7 @@ export default function OneDayPeriod({ period }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const leftInfo = <View style={styles.leftInfo} />;
-
-  const expandedHeader =
-    entity && selected ? (
-      <Pressable
-        onPress={() => setSelected(false)}
-        style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-      >
-        <WhiteText
-          text={entity?.name}
-          style={styles.expandedTitle}
-          bold={true}
-        />
-        <Pressable
-          onPress={() =>
-            (navigation.navigate as any)('EntityNavigator', {
-              screen: 'EditEntity',
-              initial: false,
-              params: { entityId: entity.id }
-            })
-          }
-          style={[styles.expandedHeader, { backgroundColor: primaryColor }]}
-        >
-          <Image
-            source={require('assets/images/edit.png')}
-            style={styles.editImage}
-          />
-        </Pressable>
-      </Pressable>
-    ) : null;
+  const entity = allEntities.byId[period.entity];
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -119,39 +69,34 @@ export default function OneDayPeriod({ period }: PropTypes) {
   );
 
   return (
-    <WhiteView
-      style={[
-        styles.container,
-        entity &&
-        selected && {
-          ...styles.selectedTask,
-          borderColor: greyColor
-        }
-      ]}
-    >
-      {expandedHeader}
-      <View
+    <TransparentView style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}>
+      <TransparentView
         style={[
-          styles.touchableContainerWrapper,
-          selected && styles.selectedTouchableContainer
+          styles.containerWrapper,
         ]}
       >
-        <TouchableOpacity
-          style={styles.touchableContainer}
-          onPress={() => {
-            setSelected(true)
-          }}
+        <TransparentView
+          style={styles.container}
         >
-          {leftInfo}
-          <View style={styles.titleContainer}>
-            <BlackText text={period.title} style={styles.title} bold={true} />
-          </View>
-        </TouchableOpacity>
-      </View>
-      {memberColour}
-      {!selected && <View style={styles.separator}></View>}
-    </WhiteView>
-  );
+          <TransparentView style={styles.titleContainer}>
+            <BlackText
+              text={period.title}
+              style={[
+                styles.title
+              ]}
+              bold={true}
+            />
+          </TransparentView>
+        </TransparentView>
+      </TransparentView>
+      <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <TransparentView style={{ flexDirection: 'row' }}>
+          <EntityTag entity={entity} />
+        </TransparentView>
+        {memberColour}
+      </TransparentView>
+    </TransparentView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -162,7 +107,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   titleContainer: {
-    width: '60%',
     flex: 1
   },
   title: {
@@ -174,7 +118,7 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginLeft: 0
   },
-  touchableContainerWrapper: {
+  containerWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -187,38 +131,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%'
   },
-  separator: {
-    height: 1,
-    width: '100%',
-    backgroundColor: '#eee'
-  },
-  expandedHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 13,
-    height: 53
-  },
-  expandedTitle: {
-    fontSize: 18
-  },
-  editImage: {
-    height: 27,
-    width: 31
-  },
-  selectedTask: {
-    paddingTop: 0,
-    overflow: 'hidden',
-    marginVertical: 15,
-    shadowColor: '#000000',
-    shadowOffset: { height: 0, width: 2 },
-    shadowRadius: 5,
-    shadowOpacity: 0.16,
-    elevation: 5,
-    borderWidth: 1
-  },
-  selectedTouchableContainer: { alignItems: 'flex-start', marginTop: 20 },
   memberColor: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

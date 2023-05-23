@@ -10,7 +10,7 @@ const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllEntities: builder.query<AllEntities, number>({
       query: () => ({
-        url: 'core/entity/',
+        url: 'core/readonly/entity/',
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: EntityResponseType[] = await response.json();
