@@ -14,6 +14,12 @@ interface Recurrence {
   recurrence: RecurrenceType;
 }
 
+interface Reminder {
+  earliest_timedelta: string;
+  interval_length: number;
+  recurrence_type: RecurrenceType;
+}
+
 interface BaseTaskType {
   entity: number;
   id: number;
@@ -25,6 +31,7 @@ interface BaseTaskType {
   members: number[];
   recurrence?: Recurrence | null;
   recurrence_index?: number;
+  reminders: Reminder[];
 }
 
 interface FixedTaskResponseType extends BaseTaskType {
@@ -86,6 +93,7 @@ const isFlexibleTaskParsedType = (task: any): task is FlexibleTaskParsedType =>
 export {
   RecurrenceType,
   Recurrence,
+  Reminder,
   FixedTaskResponseType,
   FixedTaskParsedType,
   FlexibleTaskResponseType,

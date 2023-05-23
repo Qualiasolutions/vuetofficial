@@ -1,6 +1,7 @@
+import { Reminder } from 'types/tasks';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { deepCopy } from 'utils/copy';
-import { Field, FormFieldTypes, ImageField } from '../formFieldTypes';
+import { Field, FormFieldTypes, ImageField, MultiRecurrenceSelectorField } from '../formFieldTypes';
 
 const createInitialObject = (
   fields: FormFieldTypes,
@@ -70,6 +71,32 @@ const createInitialObject = (
           formFields[key].initialValue ||
           (userDetails ? [userDetails?.id] : []);
         continue;
+
+      case 'multiRecurrenceSelector':
+        const f = formFields[key] as MultiRecurrenceSelectorField
+
+        if (f.initialValue) {
+          if (f.reverse) {
+            const taskStartTime = new Date(formFields[f.firstOccurrenceField].initialValue)
+            const timeDelta = f.initialValue.earliest_timedelta
+
+            let latestOccurrence: null | Date = null
+            if (timeDelta) {
+              const latestOccurrence = new Date(taskStartTime)
+              const [days, time] = timeDelta.split(" ")
+              latestOccurrence.setDate(latestOccurrence.getDate() - days)
+            }
+
+            const initialValue = f.initialValue.map((rec: Reminder) => ({
+              ...rec,
+              recurrence: rec.recurrence_type,
+              latest_occurrence: latestOccurrence
+            }))
+
+            initialObj[key] = initialValue
+          }
+          continue
+        }
 
       default:
         initialObj[key] = formFields[key].initialValue || null;

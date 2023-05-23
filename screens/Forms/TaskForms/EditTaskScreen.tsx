@@ -9,15 +9,13 @@ import {
   taskMiddleFieldTypes,
   taskTopFieldTypes
 } from './taskFormFieldTypes';
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentPaddedView,
   TransparentView,
-  WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';

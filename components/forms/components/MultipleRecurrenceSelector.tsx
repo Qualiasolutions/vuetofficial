@@ -29,7 +29,6 @@ export default function MultipleRecurrenceSelector({ value, reverse, firstOccurr
     firstOccurrence={firstOccurrence}
     disabled={disabled}
     onChange={(newRecurrence) => {
-      console.log("ONCHANGE")
       if (newRecurrence) {
         onChange(recurrences.map(oldRecurrence => (oldRecurrence === recurrence) ? newRecurrence : oldRecurrence).filter(r => r))
       } else {
