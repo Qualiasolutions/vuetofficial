@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Pressable } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Recurrence, RecurrenceType } from "types/tasks";
-import { getUTCValuesFromDateString, getUTCValuesFromDateTimeString } from "utils/datesAndTimes";
+import { getUTCValuesFromDateTimeString } from "utils/datesAndTimes";
 import DateTimeTextInput from "./DateTimeTextInput";
 
 

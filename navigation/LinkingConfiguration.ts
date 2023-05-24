@@ -29,7 +29,7 @@ const linking: LinkingOptions<TabParamList> = {
         path: 'entities',
         screens: {
           Categories: 'categories-grid',
-          EntityTypeList: 'entity-type-list',
+          CategoryList: 'category-list',
           EntityList: 'entity-list',
           EntityScreen: 'entity-screen',
           EditEntity: 'edit-entity',

@@ -57,23 +57,9 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       return (
         <Pressable
           onPress={() => {
-            if (category.name === 'HEALTH_BEAUTY') {
-              navigation.navigate('EntityList', {
-                entityTypes: ['HealthBeauty'],
-                entityTypeName: 'health-beauty',
-                showCreateForm: false
-              });
-            } else if (category.name === 'FINANCE') {
-              navigation.navigate('EntityList', {
-                entityTypes: ['Finance'],
-                entityTypeName: 'finance',
-                showCreateForm: false
-              });
-            } else {
-              navigation.navigate('EntityTypeList', {
-                categoryId: category.id
-              });
-            }
+            navigation.navigate('CategoryList', {
+              categoryId: category.id
+            });
           }}
           disabled={!isEnabled}
           key={category.id}

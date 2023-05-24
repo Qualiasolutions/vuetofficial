@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { EntityTabScreenProps } from 'types/base';
 import annualDates from './linkConfigs/annualDates';
 import career from './linkConfigs/career';
 import education from './linkConfigs/education';
-import LinkList from '../../../components/lists/LinkList';
-import { useTranslation } from 'react-i18next';
+import LinkList from 'components/lists/LinkList';
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 
-type EntityTypeListScreenProps = EntityTabScreenProps<'LinkList'>;
+type LinkListScreenProps = EntityTabScreenProps<'LinkList'>;
 
 const listNameToLinks = {
   annualDates,
@@ -15,12 +14,7 @@ const listNameToLinks = {
   education
 };
 
-export default function LinkListScreen({
-  navigation,
-  route
-}: EntityTypeListScreenProps) {
-  const { t } = useTranslation();
-
+export default function LinkListScreen({ route }: LinkListScreenProps) {
   useEntityTypeHeader(route.params.listName);
 
   return <LinkList links={listNameToLinks[route.params.listName]} />;

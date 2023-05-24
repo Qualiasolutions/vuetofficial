@@ -26,7 +26,7 @@
     "EDUCATION_CAREER": "Education & Career",
     "TRAVEL": "Travel",
     "HEALTH_BEAUTY": "Health & Beauty",
-    "HOME_GARDEN": "Home & Garden",
+    "HOME_GARDEN": "Home, Food & Laundry",
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
   },
@@ -40,10 +40,10 @@
     },
     "pets": {
       "myPets": "My Pets",
-      "feedingSchedule": "Feeding Schedule",
-      "physicalMental": "Physical / Mental Schedule",
-      "cleaningGrooming": "Cleaning / Grooming Schedule",
-      "vetsMedsMeasurements": "Vets, Meds and Measurements"
+      "feedingSchedule": "Feeding",
+      "physicalMental": "Exercise",
+      "cleaningGrooming": "Grooming",
+      "vetsMedsMeasurements": "Health"
     },
     "social": {
       "anniversaries": "Birthdays & Anniversaries",
@@ -61,23 +61,23 @@
       "myTrips": "My Trips",
       "activities": "Food & Activities",
       "accommodation": "Accommodation",
-      "transportation": "Transportation"
+      "transportation": "Transportation",
+      "travellerInfo": "Traveller Information"
     },
     "healthBeauty": {
       "foodExercise": "Food & Exercise",
       "appointments": "Appointments",
-      "measurements": "Measurements"
+      "measurements": "Measurements",
+      "goals": "Health & Beauty Goals",
+      "patients": "Patients"
     },
     "homeGarden": {
-      "myHome": "My home(s)",
+      "myHome": "Home & Garden",
       "food": "Food",
-      "clothing": "Clothing"
+      "clothing": "Laundry"
     },
     "finance": {
-      "billsAdmin": "Bills and Admin",
-      "filing": "Filing",
-      "taxPlanning": "Tax planning",
-      "netWorth": "Net worth"
+      "myFinances": "My Finances"
     },
     "transport": {
       "cars": "Cars & Motorcycles",
@@ -121,7 +121,7 @@
     "career-goals": "Career Planning & Goals",
     "homes": "My Home(s)",
     "food": "Food items",
-    "clothing": "Clothing items",
+    "clothing": "Laundry items",
     "social-plans": "Social Plans",
     "social-media": "Social Media",
     "school-breaks": "School Breaks",
@@ -144,7 +144,7 @@
     "EDUCATION_CAREER": "Education & Career",
     "TRAVEL": "Travel",
     "HEALTH_BEAUTY": "Health & Beauty",
-    "HOME_GARDEN": "Home & Garden",
+    "HOME_GARDEN": "Home, Food & Laundry",
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
   },
@@ -183,7 +183,7 @@
     "SchoolBreak": "School Break",
     "Home": "Home",
     "Food": "Food",
-    "Clothing": "Clothing",
+    "Clothing": "Laundry",
     "SocialMedia": "Social Media",
     "SocialPlan": "Social Plan",
     "HealthBeauty": "Health / Beauty",
@@ -384,6 +384,10 @@
       "newPasswordConf": "Confirm New Password",
       "oldPasswordIncorrect": "Your old password was not correct",
       "passwordSuccess": "Your password was successfully updated"
+    },
+    "categoryList": {
+      "categoryPreferences": "{{category}} Preferences",
+      "quickNav": "Quick Nav"
     }
   },
   "components": {

@@ -5,10 +5,10 @@ import { EntityTabParamList } from '../types/base';
 
 import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import EntityListScreen from 'screens/EntityPages/EntityListScreen';
-import EntityTypeListScreen from 'screens/EntityPages/LinkListScreen/EntityTypeListScreen';
+import CategoryListScreen from 'screens/Categories/CategoryListScreen';
 import EntityScreen from 'screens/EntityPages/EntityScreens/EntityScreen';
 import ChildEntitiesScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesScreen';
-import LinkListScreen from 'screens/EntityPages/LinkListScreen/LinkListScreen';
+import LinkListScreen from 'screens/LinkListScreen';
 import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
 import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
@@ -18,6 +18,7 @@ import EntityPeriodsScreen from 'screens/EntityPages/EntityPeriodsScreen';
 import CategoryCalendarScreen from 'screens/EntityPages/CategoryCalendarScreen';
 import EntityTypesCalendarScreen from 'screens/EntityPages/EntityTypesCalendarScreen';
 import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesPeriodsScreen';
+import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 
@@ -53,8 +54,15 @@ export function EntityNavigator() {
       />
 
       <EntityStack.Screen
-        name="EntityTypeList"
-        component={EntityTypeListScreen}
+        name="CategoryList"
+        component={CategoryListScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <EntityStack.Screen
+        name="CategoryPreferences"
+        component={CategoryPreferencesScreen}
         options={{
           headerShown: true
         }}

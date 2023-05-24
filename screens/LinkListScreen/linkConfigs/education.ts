@@ -1,4 +1,4 @@
-import { List } from './types';
+import { LinkListLink } from "components/lists/LinkList";
 
 export default [
   {
@@ -47,4 +47,4 @@ export default [
     navMethod: 'push',
     toScreenParams: {}
   }
-] as List[];
+] as LinkListLink[];

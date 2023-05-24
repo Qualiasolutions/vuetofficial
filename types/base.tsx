@@ -82,7 +82,8 @@ export type MyAccountTabScreenProps<Screen extends keyof MyAccountTabParamList> 
 // Entities Stack
 export type EntityTabParamList = {
   Categories: { initial: boolean; screen: string };
-  EntityTypeList: { categoryId: number };
+  CategoryPreferences: { categoryId: number };
+  CategoryList: { categoryId: number };
   EntityList: {
     entityTypes: EntityTypeName[];
     entityTypeName: string;

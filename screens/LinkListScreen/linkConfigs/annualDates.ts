@@ -1,4 +1,4 @@
-import { List } from './types';
+import { LinkListLink } from "components/lists/LinkList";
 
 export default [
   {
@@ -19,4 +19,4 @@ export default [
       entityTypeName: 'holidays'
     }
   }
-] as List[];
+] as LinkListLink[];

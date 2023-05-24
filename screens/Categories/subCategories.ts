@@ -1,15 +1,6 @@
-import { categoryToIdMapping } from 'utils/categories';
-import { List } from './types';
+import { LinkListLink } from 'components/lists/LinkList';
 
 export default {
-  FAMILY: [
-    {
-      name: 'family.familyMembers',
-      navMethod: 'navigate',
-      toScreen: 'SettingsNavigator',
-      toScreenParams: { screen: 'FamilySettings' }
-    }
-  ],
   PETS: [
     {
       name: 'pets.myPets',
@@ -100,14 +91,6 @@ export default {
         entityTypes: ['SocialMedia'],
         entityTypeName: 'social-media'
       }
-    },
-    {
-      name: 'generic.calendar',
-      toScreen: 'CategoryCalendarScreen',
-      navMethod: 'push',
-      toScreenParams: {
-        categoryId: categoryToIdMapping.SOCIAL_INTERESTS
-      }
     }
   ],
   EDUCATION_CAREER: [
@@ -122,14 +105,6 @@ export default {
       toScreen: 'LinkList',
       navMethod: 'push',
       toScreenParams: { listName: 'career' }
-    },
-    {
-      name: 'generic.calendar',
-      toScreen: 'CategoryCalendarScreen',
-      navMethod: 'push',
-      toScreenParams: {
-        categoryId: categoryToIdMapping.EDUCATION_CAREER
-      }
     }
   ],
   TRAVEL: [
@@ -143,13 +118,52 @@ export default {
       }
     },
     {
-      name: 'generic.calendar',
-      toScreen: 'CategoryCalendarScreen',
+      name: 'travel.travellerInfo',
+      toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
-        categoryId: categoryToIdMapping.TRAVEL
+        entityTypes: ['Traveller'],
+        entityTypeName: 'traveller'
       }
     }
+  ],
+  HEALTH_BEAUTY: [
+    {
+      name: 'healthBeauty.patients',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Patient'],
+        entityTypeName: 'patient'
+      }
+    },
+    {
+      name: 'healthBeauty.appointments',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Appointment'],
+        entityTypeName: 'appointment'
+      }
+    },
+    {
+      name: 'healthBeauty.goals',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['HealthGoal'],
+        entityTypeName: 'health-goal'
+      }
+    },
+    {
+      name: 'healthBeauty.measurements',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['HealthMeasurement'],
+        entityTypeName: 'health-measurement'
+      }
+    },
   ],
   HOME_GARDEN: [
     {
@@ -180,6 +194,17 @@ export default {
       }
     }
   ],
+  FINANCE: [
+    {
+      name: 'finance.myFinances',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Finance'],
+        entityTypeName: 'finance'
+      }
+    }
+  ],
   TRANSPORT: [
     {
       name: 'transport.cars',
@@ -207,16 +232,8 @@ export default {
         entityTypes: ['PublicTransport'],
         entityTypeName: 'public-transport'
       }
-    },
-    {
-      name: 'generic.calendar',
-      toScreen: 'CategoryCalendarScreen',
-      navMethod: 'push',
-      toScreenParams: {
-        categoryId: categoryToIdMapping.TRANSPORT
-      }
     }
   ]
 } as {
-  [key: string]: List[];
+  [key: string]: LinkListLink[];
 };
