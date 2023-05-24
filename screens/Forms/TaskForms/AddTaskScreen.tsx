@@ -31,6 +31,7 @@ import useGetUserDetails from 'hooks/useGetUserDetails';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
 import { useCreatePeriodMutation } from 'reduxStore/services/api/period';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import hasAllRequired from 'components/forms/utils/hasAllRequired';
 
 const formTypes = [
   {
@@ -152,41 +153,29 @@ export default function AddTaskScreen({
     }
   }, [userDetails, formType]);
 
-  const hasAllRequired = useMemo(() => {
+  const hasRequired = useMemo(() => {
     if (formType === 'DUE_DATE') {
-      for (const fieldName in periodFields) {
-        if (periodFields[fieldName].required && !periodFieldValues[fieldName]) {
-          return false;
-        }
-      }
-      return true;
+      return hasAllRequired(
+        periodFieldValues,
+        periodFields
+      )
+    } else {
+      return (hasAllRequired(
+        taskTopFieldValues,
+        taskTopFields
+      ) && hasAllRequired(
+        taskMiddleFieldValues,
+        taskMiddleFields
+      ) && hasAllRequired(
+        taskBottomFieldValues,
+        taskBottomFields
+      ))
     }
-
-    for (const fieldName in taskTopFields) {
-      if (taskTopFields[fieldName].required && !taskTopFieldValues[fieldName]) {
-        return false;
-      }
-    }
-    const middleFields = taskMiddleFields;
-    const middleFieldValues = taskMiddleFieldValues;
-    for (const fieldName in middleFields) {
-      if (middleFields[fieldName].required && !middleFieldValues[fieldName]) {
-        return false;
-      }
-    }
-    for (const fieldName in taskBottomFields) {
-      if (
-        taskBottomFields[fieldName].required &&
-        !taskBottomFieldValues[fieldName]
-      ) {
-        return false;
-      }
-    }
-    return true;
   }, [
     taskTopFieldValues,
     taskMiddleFields,
-    taskBottomFieldValues
+    taskBottomFieldValues,
+    periodFieldValues
   ]);
 
   useEffect(() => {
@@ -231,21 +220,17 @@ export default function AddTaskScreen({
         ...parsedPeriodFieldValues,
         end_date: parsedPeriodFieldValues.start_date,
         resourcetype: 'FixedPeriod',
-        entity: route.params.entityId
       };
 
       createPeriod(parsedFieldValues);
     } else {
-      const middleFieldValues = taskMiddleFieldValues;
-      const middleFields = taskMiddleFields;
-
       const parsedTopFieldValues = parseFormValues(
         taskTopFieldValues,
         taskTopFields
       );
       const parsedMiddleFieldValues = parseFormValues(
-        middleFieldValues,
-        middleFields
+        taskMiddleFieldValues,
+        taskMiddleFields
       );
       const parsedBottomFieldValues = parseFormValues(
         taskBottomFieldValues,
@@ -258,7 +243,6 @@ export default function AddTaskScreen({
         ...parsedBottomFieldValues,
         type: formType,
         resourcetype: 'FixedTask',
-        entity: route.params.entityId
       };
 
       createTask(parsedFieldValues);
@@ -344,7 +328,7 @@ export default function AddTaskScreen({
               onPress={() => {
                 submitForm();
               }}
-              disabled={!hasAllRequired}
+              disabled={!hasRequired}
             />
           </TransparentPaddedView>
         )}

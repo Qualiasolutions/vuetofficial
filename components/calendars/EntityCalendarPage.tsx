@@ -4,10 +4,12 @@
 */
 
 import Calendar from 'components/calendars/TaskCalendar';
+import { ParsedPeriod } from 'types/periods';
+import { MinimalScheduledTask } from './TaskCalendar/components/Task';
 
 function EntityCalendarPage({ entityIds }: { entityIds: number[] }) {
-  const entityFilter = (scheduledItem: any) =>
-    entityIds.includes(scheduledItem.entity);
+  const entityFilter = (scheduledItem: MinimalScheduledTask | ParsedPeriod) =>
+    scheduledItem.entities.some(entity => entityIds.includes(entity));
   return (
     <Calendar
       taskFilters={[entityFilter]}

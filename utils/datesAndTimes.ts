@@ -161,9 +161,15 @@ function getDaysToAge(startDate: Date): {
   };
 }
 
+
+function getCurrentDateString() {
+  return getDateStringFromDateObject(new Date())
+}
+
 export {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
+  getCurrentDateString,
   getDateWithoutTimezone,
   getLongDateFromDateObject,
   getDatesPeriodString,

@@ -177,6 +177,7 @@ function Calendar({
   const dispatch = useDispatch();
 
   const currentDate = new Date();
+
   const {
     periods: allScheduledPeriods,
     isLoading: isLoadingPeriods
@@ -207,7 +208,7 @@ function Calendar({
       members: task.members,
       recurrence_index: task.recurrence_index,
       recurrence: task.recurrence,
-      entity: task.entity,
+      entities: task.entities,
       resourcetype: task.resourcetype
     }))
   }, [allScheduledTasks])

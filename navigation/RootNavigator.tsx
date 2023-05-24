@@ -5,7 +5,6 @@ import { StyleSheet, View, ImageSourcePropType } from 'react-native';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import CalendarScreen from '../screens/CalendarMain/CalendarScreen';
 import AddTaskScreen from 'screens/Forms/TaskForms/AddTaskScreen';
-import CreateTask from 'screens/CreateTask/CreateTask';
 import { RootTabParamList } from '../types/base';
 
 import { useTranslation } from 'react-i18next';
@@ -147,7 +146,7 @@ export function BottomTabNavigator() {
           )
         }}
       />
-      <BottomTab.Screen name="CreateTask" component={CreateTask} />
+      <BottomTab.Screen name="PlusButton" component={CalendarScreen} />
       <BottomTab.Screen
         name="Calendar"
         component={PeriodCalendar}

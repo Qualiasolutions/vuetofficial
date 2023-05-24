@@ -31,7 +31,7 @@ const CategoryPreferences = ({ categoryId }: { categoryId: number }) => {
       onPress={() => {
         navigation.navigate('CategoryPreferences', { categoryId })
       }}
-      style={StyleSheet.flatten([styles.listLink, styles.quickNavButton])}
+      style={StyleSheet.flatten([styles.quickNavButton])}
     />
   </TransparentView>
 }
@@ -62,7 +62,6 @@ const QuickNav = ({ categoryId }: { categoryId: number }) => {
     {
       open && <LinkList
         links={quickNavLinks}
-        linkStyle={styles.listLink}
       />
     }
   </TransparentView>

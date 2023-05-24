@@ -72,7 +72,13 @@ export default function EditTaskScreen({
 
   useEffect(() => {
     if (allTasks && userDetails) {
-      const newTaskToEdit = deepCopy(allTasks.byId[route.params.taskId]);
+      const oldTask = allTasks.byId[route.params.taskId]
+      const newTaskToEdit = {
+        ...oldTask,
+        tags: {
+          entities: oldTask.entities
+        }
+      };
       if (newTaskToEdit) {
         setTaskToEdit(newTaskToEdit);
 
@@ -106,7 +112,7 @@ export default function EditTaskScreen({
     }
   }, [allTasks, userDetails, route.params.taskId]);
 
-  useEntityHeader(taskToEdit?.entity || 0, false, t('pageTitles.editTask'));
+  useEntityHeader(0, false, t('pageTitles.editTask'));
 
   const hasAllRequired = useMemo(() => {
     for (const fieldName in taskTopFields) {
@@ -186,7 +192,6 @@ export default function EditTaskScreen({
         ...parsedBottomFieldValues,
         resourcetype: 'FixedTask' as 'FixedTask' | 'FlexibleTask', // TODO
         id: taskToEdit.id,
-        entity: taskToEdit.entity,
       };
 
       if (Object.keys(body as any).includes('recurrence')) {

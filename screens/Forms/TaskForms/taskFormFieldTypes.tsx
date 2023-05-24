@@ -138,6 +138,10 @@ export const taskMiddleFieldTypes = (disabledRecurrenceFields: boolean = false):
       displayName: t('tasks.task.reminders'),
       // disabled: disabledRecurrenceFields,
       max: 3
+    },
+    tags: {
+      type: 'tagSelector',
+      required: true
     }
   };
 };

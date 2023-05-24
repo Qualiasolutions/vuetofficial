@@ -7,24 +7,9 @@ export type PeriodReminder = {
   title: string;
 };
 
-export type ScheduledReminder = PeriodReminder & {
-  entity: number;
-  start_date: string;
-  end_date: string;
-  members: number[];
-};
-
-export type ParsedReminder = Omit<
-  ScheduledReminder,
-  'end_date' | 'start_date'
-> & {
-  end_date: Date;
-  start_date: Date;
-};
-
 export type PeriodResponse = {
   end_date: string;
-  entity: number;
+  entities: number[];
   id: number;
   members: number[];
   polymorphic_ctype: number;

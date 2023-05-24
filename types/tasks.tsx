@@ -21,7 +21,7 @@ interface Reminder {
 }
 
 interface BaseTaskType {
-  entity: number;
+  entities: number[];
   id: number;
   is_complete: boolean;
   location: string;
@@ -77,7 +77,6 @@ type CreateTaskRequest = {
   start_datetime?: string;
   end_datetime?: string;
   resourcetype: string;
-  entity: number | string;
 }
 
 const isFixedTaskResponseType = (task: any): task is FixedTaskResponseType =>

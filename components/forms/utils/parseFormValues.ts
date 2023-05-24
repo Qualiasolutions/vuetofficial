@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Recurrence } from 'types/tasks';
-import { FlatFormFieldTypes, FormFieldTypes, MultiRecurrenceSelectorField } from '../formFieldTypes';
+import { FlatFormFieldTypes, MultiRecurrenceSelectorField } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
 
 const parseFormValues = (
@@ -39,7 +39,7 @@ const parseFormValues = (
       const value = parsedFormValues[field] as Recurrence[]
       if (f.reverse) {
         const lastTime = new Date(parsedFormValues[f.firstOccurrenceField])
-        parsedFormValues[field] = value.map(recurrence => {
+        parsedFormValues[field] = value ? value.map(recurrence => {
           const earliest = recurrence.latest_occurrence ? new Date(recurrence.latest_occurrence) : null
           if (earliest) {
             earliest.setHours(0)
@@ -53,8 +53,12 @@ const parseFormValues = (
             "recurrence_type": recurrence.recurrence,
             "earliest_timedelta": earliest ? ((lastTime.getTime() - earliest.getTime()) / 1000) : null
           }
-        })
+        }) : []
       }
+    }
+
+    if (['tagSelector'].includes(fields[field]?.type)) {
+      parsedFormValues.entities = parsedFormValues[field].entities
     }
   }
 

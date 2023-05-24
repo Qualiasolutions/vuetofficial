@@ -2,6 +2,7 @@ import { StyleSheet, SectionList, ViewToken } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
+  getCurrentDateString,
   getDateStringFromDateObject,
 } from 'utils/datesAndTimes';
 
@@ -67,7 +68,12 @@ function Calendar({
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate)
   const sectionListRef = useRef<any>(null)
-  const [firstDate, setFirstDate] = useState<Date>(new Date())
+
+  const currentDate = useMemo(() => {
+    return new Date(getCurrentDateString())
+  }, [])
+
+  const [firstDate, setFirstDate] = useState<Date>(currentDate)
 
   const updateDate = (newDate: string) => {
     if (onChangeFirstDate && newDate) {

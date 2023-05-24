@@ -113,12 +113,12 @@ export default function BottomNavBar({
         const { options } = descriptors[route.key];
         const isFocused = state?.index === index;
 
-        if (route.name === 'CreateTask') {
+        if (route.name === 'PlusButton') {
           return (
             <AddButton
               key={index}
               onPress={() => {
-                const ignoredScreens = ['AddTask', 'CreateTask'];
+                const ignoredScreens = ['AddTask'];
                 if (ignoredScreens.includes(currentScreen)) {
                   return;
                 } else if (currentScreen === 'EntityScreen') {
@@ -166,7 +166,7 @@ export default function BottomNavBar({
                     }
                   }
                 } else {
-                  navigation.navigate('CreateTask');
+                  navigation.navigate('AddTask');
                 }
               }}
             />

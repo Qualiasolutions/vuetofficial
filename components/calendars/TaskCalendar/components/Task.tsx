@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
-import { isFixedTaskParsedType, ScheduledTaskResponseType } from 'types/tasks';
+import { ScheduledTaskResponseType } from 'types/tasks';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -21,7 +21,7 @@ import {
   PrimaryText,
   BlackText
 } from 'components/molecules/TextComponents';
-import { TransparentView, WhiteView } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -31,6 +31,7 @@ import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import EntityTag from 'components/molecules/EntityTag';
 import { ITEM_HEIGHT } from './shared';
+import EntityTags from 'components/molecules/EntityTags';
 
 export type MinimalScheduledTask = {
   id: number;
@@ -39,7 +40,7 @@ export type MinimalScheduledTask = {
   title: string;
   members: number[];
   recurrence_index?: number;
-  entity: number;
+  entities: number[];
   resourcetype: string;
   recurrence?: any;
 }
@@ -129,7 +130,7 @@ function Task({ task }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const entity = allEntities.byId[task.entity];
+  const entities = task.entities.map(entityId => allEntities.byId[entityId]);
 
   const leftInfo = (
     <TransparentView style={styles.leftInfo}>
@@ -215,8 +216,8 @@ function Task({ task }: PropTypes) {
         />}
       </TransparentView>
       <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <TransparentView style={{ flexDirection: 'row' }}>
-          <EntityTag entity={entity} />
+        <TransparentView style={{ flexDirection: 'row', width: '50%', flex: 0 }}>
+          <EntityTags entities={entities} />
         </TransparentView>
         {memberColour}
       </TransparentView>

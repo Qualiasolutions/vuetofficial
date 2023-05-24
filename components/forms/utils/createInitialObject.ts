@@ -72,6 +72,14 @@ const createInitialObject = (
           (userDetails ? [userDetails?.id] : []);
         continue;
 
+      case 'tagSelector':
+        initialObj[key] =
+          formFields[key].initialValue ||
+          {
+            entities: []
+          }
+        continue;
+
       case 'multiRecurrenceSelector':
         const f = formFields[key] as MultiRecurrenceSelectorField
 

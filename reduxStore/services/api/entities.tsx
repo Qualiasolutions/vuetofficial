@@ -23,6 +23,21 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['Entity']
     }),
+    getMemberEntities: builder.query<AllEntities, number>({
+      query: () => ({
+        url: 'core/entity/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: EntityResponseType[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return await response.json();
+          }
+        }
+      }),
+      providesTags: ['Entity']
+    }),
     updateEntity: builder.mutation<
       EntityResponseType,
       Partial<EntityResponseType> & Pick<EntityResponseType, 'id'>
@@ -123,6 +138,7 @@ export default extendedApi;
 // auto-generated based on the defined endpoints
 export const {
   useGetAllEntitiesQuery,
+  useGetMemberEntitiesQuery,
   useUpdateEntityMutation,
   useDeleteEntityMutation,
   useCreateEntityMutation,

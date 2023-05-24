@@ -16,6 +16,7 @@ export type PermittedTypes =
   | 'dropDown'
   | 'recurrenceSelector'
   | 'multiRecurrenceSelector'
+  | 'tagSelector'
   | 'calculatedDuration'
   | 'dropDownWithOther'
   | 'timezone'
@@ -89,6 +90,8 @@ export type MultiRecurrenceSelectorField = BaseField<'multiRecurrenceSelector', 
   max?: number;
 }
 
+export type TagSelectorField = BaseField<'tagSelector', any>
+
 export type CalculatedDurationField = BaseField<'calculatedDuration', any> & {
   startFieldName: string;
   endFieldName: string;
@@ -125,6 +128,7 @@ export type Field =
   | DropDownWithOtherField
   | RecurrenceSelectorField
   | MultiRecurrenceSelectorField
+  | TagSelectorField
   | CalculatedDurationField
   | ImageField
   | TimezoneField;

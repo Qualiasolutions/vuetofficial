@@ -14,6 +14,7 @@ import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import EntityTag from 'components/molecules/EntityTag';
 import { ITEM_HEIGHT } from './shared';
+import EntityTags from 'components/molecules/EntityTags';
 
 type PropTypes = { period: ParsedPeriod; };
 
@@ -56,7 +57,7 @@ export default function OneDayPeriod({ period }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const entity = allEntities.byId[period.entity];
+  const entities = period.entities.map(entity => allEntities.byId[entity]);
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -91,7 +92,7 @@ export default function OneDayPeriod({ period }: PropTypes) {
       </TransparentView>
       <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <TransparentView style={{ flexDirection: 'row' }}>
-          <EntityTag entity={entity} />
+          <EntityTags entities={entities} />
         </TransparentView>
         {memberColour}
       </TransparentView>

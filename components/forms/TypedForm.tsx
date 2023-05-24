@@ -15,6 +15,7 @@ import {
   hasPlaceholder,
   ImageField,
   MultiRecurrenceSelectorField,
+  TagSelectorField,
   OptionalYearDate,
   RadioField,
   RecurrenceSelectorField,
@@ -45,6 +46,7 @@ import RecurrenceSelector from './components/RecurrenceSelector';
 import Duration from './components/Duration';
 import InputWithLabel from 'components/molecules/InputWithLabel';
 import MultipleRecurrenceSelector from './components/MultipleRecurrenceSelector';
+import TagSelector from './components/TagSelector';
 
 const parseFieldName = (name: string) => {
   return name
@@ -562,6 +564,24 @@ export default function TypedForm({
                   disabled={f.disabled || false}
                   reverse={f.reverse}
                   max={f.max}
+                />
+              </TransparentView>
+            </InputPair>
+          );
+        }
+        case 'tagSelector': {
+          const f = flatFields[field] as TagSelectorField;
+          return (
+            <InputPair field={field} key={field}>
+              <TransparentView>
+                <TagSelector
+                  value={formValues[field]}
+                  onChange={(value) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: value
+                    });
+                  }}
                 />
               </TransparentView>
             </InputPair>
