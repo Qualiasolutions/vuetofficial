@@ -338,8 +338,8 @@
     "friendSettings": {
       "friends": "Friends"
     },
-    "taskLimits": {
-      "noLimits": "No task limits have currently been set"
+    "whatMyFamilySees": {
+      "blurb": "Family members will see all tasks, due date and appointments to which they have been assigned. You can share other appointments using the settings below."
     },
     "addTask": {
       "title": "Add Task",
