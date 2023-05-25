@@ -98,16 +98,20 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItemList {...props} />
       <DrawerItem
         label={t('screens.drawer.logOut')}
-        onPress={() => { setLoggingOut(true) }}
+        onPress={() => {
+          setLoggingOut(true);
+        }}
         icon={() => <CustomIcon name="log-out" showChevron={false} />}
         labelStyle={[styles.drawerLabel, { color: labelColor }]}
       />
       <YesNoModal
-        title={t("components.logOutModal.logOut")}
-        question={t("components.logOutModal.sure")}
+        title={t('components.logOutModal.logOut')}
+        question={t('components.logOutModal.sure')}
         visible={!!loggingOut}
         onYes={logOut}
-        onNo={() => { setLoggingOut(false) }}
+        onNo={() => {
+          setLoggingOut(false);
+        }}
       />
     </DrawerContentScrollView>
   );
@@ -127,7 +131,7 @@ export function SideNavigator() {
         drawerLabelStyle: [styles.drawerLabel, { color: labelColor }],
         headerTintColor,
         headerTitleAlign: 'center',
-        header: (props) => <TransparentDrawerHeader {...props} />,
+        header: (props) => <TransparentDrawerHeader {...props} />
       }}
     >
       <SideDrawer.Screen

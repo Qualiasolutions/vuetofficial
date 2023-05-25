@@ -1,17 +1,20 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier', 'react'],
+  plugins: ['@typescript-eslint', 'prettier', 'react', 'import'],
+  parserOptions: {
+    project: ['./tsconfig.json'], 
+  },
   extends: [
     '@react-native-community',
     'airbnb-typescript',
     'prettier',
-    'prettier/@typescript-eslint',
-    'prettier/react'
   ],
   rules: {
     'no-console': 1, // Means warning
+    'no-unused-vars': 1, // Means warning
+    '@typescript-eslint/no-unused-vars': 1, // Means warning
     'prettier/prettier': 2, // Means error
-    indent: ['error', 2]
+    "react/react-in-jsx-scope": "off",
   }
 };

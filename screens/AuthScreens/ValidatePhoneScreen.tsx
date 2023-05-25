@@ -5,9 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Text } from 'components/Themed';
 
 import { UnauthorisedTabParamList } from 'types/base';
-import {
-  useCreatePhoneValidationMutation,
-} from 'reduxStore/services/api/signup';
+import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { isFieldErrorCodeError } from 'types/signup';
 import {
@@ -31,7 +29,7 @@ const ValidatePhoneScreen = ({
   const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
+    <ErrorBox errorText={errorMessage} />
   ) : null;
 
   return (

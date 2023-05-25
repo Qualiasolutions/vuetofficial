@@ -43,7 +43,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     ? useThemeColor(
       {},
       fieldColorMapping[entityToEdit.resourcetype] ||
-      fieldColorMapping.default
+          fieldColorMapping.default
     )
     : '';
 
@@ -66,9 +66,9 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
 
   const onDeleteSuccess = (res: CarResponseType) => {
     Toast.show({
-      type: "success",
-      text1: "Succesfully deleted entity"
-    })
+      type: 'success',
+      text1: 'Succesfully deleted entity'
+    });
     navigation.goBack();
   };
 
@@ -108,9 +108,9 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
           }
           onSubmitSuccess={() => {
             Toast.show({
-              type: "success",
+              type: 'success',
               text1: `Succesfully updated ${entityToEdit.name}`
-            })
+            });
             navigation.goBack();
           }}
           onDeleteSuccess={onDeleteSuccess}

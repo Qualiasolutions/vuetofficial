@@ -76,7 +76,7 @@ export default function DateTimeTextInput({
         disabled={disabled}
         maximumDate={maximumDate}
         minimumDate={minimumDate}
-      ></DateTimePickerModal>
+      />
     </TransparentView>
   );
 }

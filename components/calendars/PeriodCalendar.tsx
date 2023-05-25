@@ -15,8 +15,7 @@ type CalendarProps = {
 };
 
 function Calendar({ filters = [] }: CalendarProps) {
-  const { periods: allPeriods } =
-    useScheduledPeriods();
+  const { periods: allPeriods } = useScheduledPeriods();
   const periodColour = useThemeColor({}, 'mediumLightGrey');
 
   const filteredPeriods = useMemo(() => {
@@ -46,7 +45,7 @@ function Calendar({ filters = [] }: CalendarProps) {
 
     const message =
       periodStartUtcValues.day === periodEndUtcValues.day &&
-        periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName
+      periodStartUtcValues.monthShortName === periodEndUtcValues.monthShortName
         ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
         : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
 

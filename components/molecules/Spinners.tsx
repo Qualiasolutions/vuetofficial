@@ -1,7 +1,10 @@
 import { useThemeColor } from 'components/Themed';
 import { ColorName } from 'constants/Colors';
 import { ActivityIndicator, ViewStyle } from 'react-native';
-import { TransparentContainerView, TransparentPaddedView } from './ViewComponents';
+import {
+  TransparentContainerView,
+  TransparentPaddedView
+} from './ViewComponents';
 
 export type SpinnerProps = {
   spinnerColor?: ColorName;

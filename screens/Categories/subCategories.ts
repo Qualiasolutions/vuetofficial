@@ -163,7 +163,7 @@ export default {
         entityTypes: ['HealthMeasurement'],
         entityTypeName: 'health-measurement'
       }
-    },
+    }
   ],
   HOME_GARDEN: [
     {

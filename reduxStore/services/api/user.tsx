@@ -34,7 +34,10 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['User']
     }),
-    secureUpdateUserDetails: builder.mutation<UserResponse, SecureUpdateUserRequest>({
+    secureUpdateUserDetails: builder.mutation<
+      UserResponse,
+      SecureUpdateUserRequest
+    >({
       query: (body) => ({
         url: `core/user-secure-update/${body.user_id}/`,
         method: 'PATCH',

@@ -1,7 +1,12 @@
 import { Reminder } from 'types/tasks';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { deepCopy } from 'utils/copy';
-import { Field, FormFieldTypes, ImageField, MultiRecurrenceSelectorField } from '../formFieldTypes';
+import {
+  Field,
+  FormFieldTypes,
+  ImageField,
+  MultiRecurrenceSelectorField
+} from '../formFieldTypes';
 
 const createInitialObject = (
   fields: FormFieldTypes,
@@ -73,37 +78,37 @@ const createInitialObject = (
         continue;
 
       case 'tagSelector':
-        initialObj[key] =
-          formFields[key].initialValue ||
-          {
-            entities: []
-          }
+        initialObj[key] = formFields[key].initialValue || {
+        entities: []
+      };
         continue;
 
       case 'multiRecurrenceSelector':
-        const f = formFields[key] as MultiRecurrenceSelectorField
+        const f = formFields[key] as MultiRecurrenceSelectorField;
 
         if (f.initialValue) {
           if (f.reverse) {
-            const taskStartTime = new Date(formFields[f.firstOccurrenceField].initialValue)
-            const timeDelta = f.initialValue.earliest_timedelta
+            const taskStartTime = new Date(
+            formFields[f.firstOccurrenceField].initialValue
+          );
+            const timeDelta = f.initialValue.earliest_timedelta;
 
-            let latestOccurrence: null | Date = null
+            let latestOccurrence: null | Date = null;
             if (timeDelta) {
-              const latestOccurrence = new Date(taskStartTime)
-              const [days, time] = timeDelta.split(" ")
-              latestOccurrence.setDate(latestOccurrence.getDate() - days)
+              const latestOccurrence = new Date(taskStartTime);
+              const [days, time] = timeDelta.split(' ');
+              latestOccurrence.setDate(latestOccurrence.getDate() - days);
             }
 
             const initialValue = f.initialValue.map((rec: Reminder) => ({
               ...rec,
               recurrence: rec.recurrence_type,
               latest_occurrence: latestOccurrence
-            }))
+            }));
 
-            initialObj[key] = initialValue
+            initialObj[key] = initialValue;
           }
-          continue
+          continue;
         }
 
       default:

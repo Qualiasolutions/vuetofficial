@@ -46,9 +46,15 @@ function ScrollViewWithColor(
   };
 }
 
-export const TransparentScrollView = ScrollViewWithColor("transparent", "transparent")
+export const TransparentScrollView = ScrollViewWithColor(
+  'transparent',
+  'transparent'
+);
 
-export const WhiteFullPageScrollView = FullPageScrollViewWithColor('white', 'grey');
+export const WhiteFullPageScrollView = FullPageScrollViewWithColor(
+  'white',
+  'grey'
+);
 export const TransparentFullPageScrollView = FullPageScrollViewWithColor(
   'transparent',
   'grey'

@@ -25,14 +25,21 @@ import { useTranslation } from 'react-i18next';
 import CalendarView from 'components/molecules/CalendarViewV2';
 import Tabs from 'components/molecules/Tabs';
 import { useThemeColor, View } from 'components/Themed';
-import { getDateStringFromDateObject, getDateWithoutTimezone, getUTCValuesFromDateString } from 'utils/datesAndTimes';
+import {
+  getDateStringFromDateObject,
+  getDateWithoutTimezone,
+  getUTCValuesFromDateString
+} from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Image } from 'components/molecules/ImageComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { elevation } from 'styles/elevation';
-import { setListEnforcedDate, setMonthEnforcedDate } from 'reduxStore/slices/calendars/actions';
+import {
+  setListEnforcedDate,
+  setMonthEnforcedDate
+} from 'reduxStore/slices/calendars/actions';
 import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { MinimalScheduledTask } from './components/Task';
 
@@ -44,11 +51,10 @@ const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
     end_date: getDateWithoutTimezone(res.end_date),
     start_date: getDateWithoutTimezone(res.start_date)
   };
-  delete parsedPeriod.reminders
+  delete parsedPeriod.reminders;
 
-  return parsedPeriod
+  return parsedPeriod;
 };
-
 
 const getOffsetMonthStartDateString = (
   date: Date,
@@ -70,39 +76,46 @@ const getOffsetMonthStartDateString = (
   };
 };
 
+const MonthSelector = ({
+  onValueChange,
+  fullPage
+}: {
+  onValueChange: (date: Date) => void;
+  fullPage: boolean;
+}) => {
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const enforcedDate = useSelector(selectEnforcedDate);
+  const navigation = useNavigation();
+  const { data: userDetails } = getUserFullDetails();
+  const whiteColor = useThemeColor({}, 'white');
 
-const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date) => void, fullPage: boolean }) => {
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
-  const enforcedDate = useSelector(selectEnforcedDate)
-  const navigation = useNavigation()
-  const { data: userDetails } = getUserFullDetails()
-  const whiteColor = useThemeColor({}, "white")
-
-  const now = dayjs(new Date())
+  const now = dayjs(new Date());
   const { monthName, year } = enforcedDate
     ? getUTCValuesFromDateString(enforcedDate)
-    : { monthName: now.format('MMM'), year: now.format('YYYY') }
+    : { monthName: now.format('MMM'), year: now.format('YYYY') };
 
   if (!userDetails) {
-    return null
+    return null;
   }
 
   const imageSource = userDetails.presigned_profile_image_url
     ? { uri: parsePresignedUrl(userDetails.presigned_profile_image_url) }
     : require('assets/images/icons/camera.png');
 
-  return <WhitePaddedView style={[
-    {
-      paddingVertical: 20,
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between'
-    },
-    elevation.elevated
-  ]}>
-    {
-      fullPage
-        ? <Pressable
+  return (
+    <WhitePaddedView
+      style={[
+        {
+          paddingVertical: 20,
+          alignItems: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-between'
+        },
+        elevation.elevated
+      ]}
+    >
+      {fullPage ? (
+        <Pressable
           onPress={() => (navigation as any).openDrawer()}
           style={[
             {
@@ -115,7 +128,7 @@ const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date
               overflow: 'hidden',
               backgroundColor: whiteColor
             },
-            elevation.elevated,
+            elevation.elevated
           ]}
         >
           <Image
@@ -133,43 +146,44 @@ const MonthSelector = ({ onValueChange, fullPage }: { onValueChange: (date: Date
             ]}
           />
         </Pressable>
-        : <View style={{ width: "20%" }}></View>
-    }
-    <Pressable
-      onPress={() => {
-        setIsDatePickerVisible(true)
-      }}
-      style={{ flexDirection: 'row', alignItems: 'center' }}
-    >
-      <AlmostBlackText text={`${monthName} ${year}`} style={{ fontWeight: 'bold', fontSize: 20, marginRight: 10 }} />
-      <AlmostBlackText text="▼" />
-    </Pressable>
-    <View style={{ width: "20%" }}></View>
-    <DateTimePickerModal
-      isVisible={isDatePickerVisible}
-      mode={'date'}
-      date={enforcedDate ? new Date(enforcedDate) : undefined}
-      onConfirm={(newValue) => {
-        setIsDatePickerVisible(false);
-        onValueChange(newValue);
-      }}
-      onCancel={() => {
-        setIsDatePickerVisible(false);
-      }}
-    ></DateTimePickerModal>
-  </WhitePaddedView>
-}
+      ) : (
+        <View style={{ width: '20%' }} />
+      )}
+      <Pressable
+        onPress={() => {
+          setIsDatePickerVisible(true);
+        }}
+        style={{ flexDirection: 'row', alignItems: 'center' }}
+      >
+        <AlmostBlackText
+          text={`${monthName} ${year}`}
+          style={{ fontWeight: 'bold', fontSize: 20, marginRight: 10 }}
+        />
+        <AlmostBlackText text="▼" />
+      </Pressable>
+      <View style={{ width: '20%' }} />
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode={'date'}
+        date={enforcedDate ? new Date(enforcedDate) : undefined}
+        onConfirm={(newValue) => {
+          setIsDatePickerVisible(false);
+          onValueChange(newValue);
+        }}
+        onCancel={() => {
+          setIsDatePickerVisible(false);
+        }}
+      />
+    </WhitePaddedView>
+  );
+};
 
 type CalendarProps = {
   taskFilters: ((task: MinimalScheduledTask) => boolean)[];
   periodFilters: ((period: ParsedPeriod) => boolean)[];
   fullPage: boolean;
 };
-function Calendar({
-  taskFilters,
-  periodFilters,
-  fullPage
-}: CalendarProps) {
+function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
@@ -178,10 +192,8 @@ function Calendar({
 
   const currentDate = new Date();
 
-  const {
-    periods: allScheduledPeriods,
-    isLoading: isLoadingPeriods
-  } = useScheduledPeriods();
+  const { periods: allScheduledPeriods, isLoading: isLoadingPeriods } =
+    useScheduledPeriods();
 
   // Load all scheduled tasks
   const {
@@ -193,14 +205,13 @@ function Calendar({
     {
       start_datetime: getOffsetMonthStartDateString(currentDate, -24)
         .dateString,
-      end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString,
+      end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString
     },
     { skip: !userDetails?.user_id }
   );
 
-
   const minimalScheduledTasks = useMemo(() => {
-    return allScheduledTasks?.map(task => ({
+    return allScheduledTasks?.map((task) => ({
       id: task.id,
       start_datetime: new Date(task.start_datetime),
       end_datetime: new Date(task.end_datetime),
@@ -210,16 +221,15 @@ function Calendar({
       recurrence: task.recurrence,
       entities: task.entities,
       resourcetype: task.resourcetype
-    }))
-  }, [allScheduledTasks])
+    }));
+  }, [allScheduledTasks]);
 
   const parsedPeriods = useMemo(() => {
     if (!allScheduledPeriods) {
-      return []
+      return [];
     }
-    return allScheduledPeriods.map(period => parsePeriodResponse(period))
-  }, [allScheduledPeriods])
-
+    return allScheduledPeriods.map((period) => parsePeriodResponse(period));
+  }, [allScheduledPeriods]);
 
   const filteredTasks = useMemo<MinimalScheduledTask[]>(() => {
     if (!minimalScheduledTasks) {
@@ -230,10 +240,7 @@ function Calendar({
       filtered = filtered.filter(taskFilter);
     }
     return filtered;
-  }, [
-    JSON.stringify(minimalScheduledTasks),
-    taskFilters
-  ]);
+  }, [JSON.stringify(minimalScheduledTasks), taskFilters]);
 
   const filteredAllPeriods = useMemo<ParsedPeriod[]>(() => {
     if (!parsedPeriods) {
@@ -245,10 +252,7 @@ function Calendar({
       }
       return filtered;
     }
-  }, [
-    JSON.stringify(parsedPeriods),
-    periodFilters
-  ]);
+  }, [JSON.stringify(parsedPeriods), periodFilters]);
 
   const noTasks = useMemo(() => {
     return (
@@ -256,20 +260,17 @@ function Calendar({
       filteredAllPeriods.length === 0 &&
       filteredTasks.length === 0
     );
-  }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredAllPeriods),
-  ]);
+  }, [JSON.stringify(filteredTasks), JSON.stringify(filteredAllPeriods)]);
 
   const listView = useMemo(() => {
     if (error) {
-      return () => null
+      return () => null;
     }
     if (!allScheduledTasks || !allScheduledPeriods) {
-      return () => null
+      return () => null;
     }
     if (noTasks) {
-      return () => null
+      return () => null;
     }
 
     return () => (
@@ -279,39 +280,34 @@ function Calendar({
           periods={filteredAllPeriods}
           alwaysIncludeCurrentDate={true}
           onChangeFirstDate={(date) => {
-            dispatch(setListEnforcedDate({ date }))
+            dispatch(setListEnforcedDate({ date }));
           }}
         />
       </TransparentView>
     );
-  }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredAllPeriods),
-  ])
+  }, [JSON.stringify(filteredTasks), JSON.stringify(filteredAllPeriods)]);
 
   const calendarView = useMemo(() => {
     if (error) {
-      return () => null
+      return () => null;
     }
     if (!allScheduledTasks || !allScheduledPeriods) {
-      return () => null
+      return () => null;
     }
     if (noTasks) {
-      return () => null
+      return () => null;
     }
 
-    return () => <CalendarView
-      tasks={filteredTasks}
-      periods={filteredAllPeriods}
-      onChangeDate={(date) => {
-        dispatch(setMonthEnforcedDate({ date }))
-      }}
-    />
-  }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredAllPeriods),
-  ])
-
+    return () => (
+      <CalendarView
+        tasks={filteredTasks}
+        periods={filteredAllPeriods}
+        onChangeDate={(date) => {
+          dispatch(setMonthEnforcedDate({ date }));
+        }}
+      />
+    );
+  }, [JSON.stringify(filteredTasks), JSON.stringify(filteredAllPeriods)]);
 
   if (error) {
     return <GenericError />;
@@ -337,9 +333,8 @@ function Calendar({
     {
       title: 'Month',
       component: calendarView
-    },
+    }
   ];
-
 
   const noTasksContent = (
     <WhiteContainerView>
@@ -355,16 +350,14 @@ function Calendar({
       <MonthSelector
         onValueChange={(date) => {
           if (date) {
-            const dateString = getDateStringFromDateObject(date)
-            dispatch(setMonthEnforcedDate({ date: dateString }))
-            dispatch(setListEnforcedDate({ date: dateString }))
+            const dateString = getDateStringFromDateObject(date);
+            dispatch(setMonthEnforcedDate({ date: dateString }));
+            dispatch(setListEnforcedDate({ date: dateString }));
           }
         }}
         fullPage={fullPage}
       />
-      {
-        noTasks ? noTasksContent : <Tabs tabs={tabs} />
-      }
+      {noTasks ? noTasksContent : <Tabs tabs={tabs} />}
     </TransparentView>
   );
 }

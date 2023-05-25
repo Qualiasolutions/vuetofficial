@@ -235,7 +235,7 @@ export default function Form({
 
   const makeDeleteRequest = () => {
     setSubmittingForm(true);
-    methodHookTriggers['DELETE'].trigger(extraFields);
+    methodHookTriggers.DELETE.trigger(extraFields);
     setSubmittingForm(false);
   };
 
@@ -281,7 +281,7 @@ export default function Form({
             disabled={submittingForm || !hasAllRequired}
             style={styles.button}
           />
-          {formType === 'UPDATE' && methodHookTriggers['DELETE'] ? (
+          {formType === 'UPDATE' && methodHookTriggers.DELETE ? (
             <Button
               title="DELETE"
               onPress={() => {

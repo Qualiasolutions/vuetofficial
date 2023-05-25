@@ -97,7 +97,9 @@ export const periodFieldTypes = (): FlatFormFieldTypes => {
   };
 };
 
-export const taskMiddleFieldTypes = (disabledRecurrenceFields: boolean = false): FlatFormFieldTypes => {
+export const taskMiddleFieldTypes = (
+  disabledRecurrenceFields: boolean = false
+): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {

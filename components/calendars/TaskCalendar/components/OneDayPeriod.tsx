@@ -6,9 +6,7 @@ import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
 import { BlackText } from 'components/molecules/TextComponents';
-import {
-  TransparentView,
-} from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import ColourBar from 'components/molecules/ColourBar';
 import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
@@ -16,7 +14,7 @@ import EntityTag from 'components/molecules/EntityTag';
 import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
 
-type PropTypes = { period: ParsedPeriod; };
+type PropTypes = { period: ParsedPeriod };
 
 export default function OneDayPeriod({ period }: PropTypes) {
   const { data: userDetails } = getUserFullDetails();
@@ -57,7 +55,7 @@ export default function OneDayPeriod({ period }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const entities = period.entities.map(entity => allEntities.byId[entity]);
+  const entities = period.entities.map((entity) => allEntities.byId[entity]);
 
   const memberColour = (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -70,34 +68,30 @@ export default function OneDayPeriod({ period }: PropTypes) {
   );
 
   return (
-    <TransparentView style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}>
-      <TransparentView
-        style={[
-          styles.containerWrapper,
-        ]}
-      >
-        <TransparentView
-          style={styles.container}
-        >
+    <TransparentView
+      style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}
+    >
+      <TransparentView style={[styles.containerWrapper]}>
+        <TransparentView style={styles.container}>
           <TransparentView style={styles.titleContainer}>
-            <BlackText
-              text={period.title}
-              style={[
-                styles.title
-              ]}
-              bold={true}
-            />
+            <BlackText text={period.title} style={[styles.title]} bold={true} />
           </TransparentView>
         </TransparentView>
       </TransparentView>
-      <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+      <TransparentView
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end'
+        }}
+      >
         <TransparentView style={{ flexDirection: 'row' }}>
           <EntityTags entities={entities} />
         </TransparentView>
         {memberColour}
       </TransparentView>
     </TransparentView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -105,7 +99,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   titleContainer: {
     flex: 1

@@ -9,36 +9,36 @@ const hasAllRequired = (
   const parsedFormValues = { ...formValues };
   for (const field in parsedFormValues) {
     if (!fields[field].required) {
-      continue
+      continue;
     }
 
     if (['multiRecurrenceSelector'].includes(fields[field]?.type)) {
-      const value = parsedFormValues[field] as Recurrence[]
-      if (value && value.filter(v => v).length > 0) {
-        continue
+      const value = parsedFormValues[field] as Recurrence[];
+      if (value && value.filter((v) => v).length > 0) {
+        continue;
       }
-      return false
+      return false;
     }
 
     if (['addMembers'].includes(fields[field]?.type)) {
-      const value = parsedFormValues[field]
+      const value = parsedFormValues[field];
       if (value && value.length > 0) {
-        continue
+        continue;
       }
-      return false
+      return false;
     }
 
     if (['tagSelector'].includes(fields[field]?.type)) {
-      const value = parsedFormValues[field]
+      const value = parsedFormValues[field];
       if (value && value.entities && value.entities.length > 0) {
-        continue
+        continue;
       }
-      return false
+      return false;
     }
 
-    const value = parsedFormValues[field]
+    const value = parsedFormValues[field];
     if (!value) {
-      return false
+      return false;
     }
   }
 

@@ -15,9 +15,9 @@ import ListButton from './ListButton';
 type ListLinkProps = {
   text: string;
   toScreen:
-  | keyof RootTabParamList
-  | keyof EntityTabParamList
-  | keyof SettingsTabParamList;
+    | keyof RootTabParamList
+    | keyof EntityTabParamList
+    | keyof SettingsTabParamList;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;
@@ -35,18 +35,20 @@ export default function ListLink({
     | StackNavigationProp<EntityTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
-  return <ListButton
-    text={text}
-    onPress={() => {
-      if (navMethod === 'push') {
-        (navigation as any).push(toScreen, toScreenParams);
-      } else {
-        (navigation.navigate as any)(toScreen, toScreenParams);
-      }
-    }}
-    style={StyleSheet.flatten([style, styles.listLink])}
-    iconName="chevron-right"
-  />
+  return (
+    <ListButton
+      text={text}
+      onPress={() => {
+        if (navMethod === 'push') {
+          (navigation as any).push(toScreen, toScreenParams);
+        } else {
+          (navigation.navigate as any)(toScreen, toScreenParams);
+        }
+      }}
+      style={StyleSheet.flatten([style, styles.listLink])}
+      iconName="chevron-right"
+    />
+  );
 }
 
 const styles = StyleSheet.create({

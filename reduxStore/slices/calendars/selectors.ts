@@ -8,19 +8,15 @@ export const selectCalendarState = (
 
 export const selectListEnforcedDate = createSelector(
   selectCalendarState,
-  (calendar: CalendarState | undefined) =>
-    calendar?.ui?.listEnforcedDate
+  (calendar: CalendarState | undefined) => calendar?.ui?.listEnforcedDate
 );
 
 export const selectMonthEnforcedDate = createSelector(
   selectCalendarState,
-  (calendar: CalendarState | undefined) =>
-    calendar?.ui?.monthEnforcedDate
+  (calendar: CalendarState | undefined) => calendar?.ui?.monthEnforcedDate
 );
 
 export const selectEnforcedDate = createSelector(
   selectCalendarState,
-  (calendar: CalendarState | undefined) =>
-    calendar?.ui?.enforcedDate
+  (calendar: CalendarState | undefined) => calendar?.ui?.enforcedDate
 );
-

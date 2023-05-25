@@ -7,32 +7,38 @@ export type CalendarAction = ActionType<typeof actions>;
 const INITIAL_CALENDAR_STATE: CalendarState = {
   data: {},
   ui: {
-    listEnforcedDate: "",
-    monthEnforcedDate: "",
-    enforcedDate: ""
+    listEnforcedDate: '',
+    monthEnforcedDate: '',
+    enforcedDate: ''
   }
 };
 
 const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
-  .handleAction(actions.setListEnforcedDate, (state: CalendarState, { payload }) => {
-    return {
-      ...state,
-      ui: {
-        ...state.ui,
-        listEnforcedDate: payload.date,
-        enforcedDate: payload.date,
-      }
-    };
-  })
-  .handleAction(actions.setMonthEnforcedDate, (state: CalendarState, { payload }) => {
-    return {
-      ...state,
-      ui: {
-        ...state.ui,
-        monthEnforcedDate: payload.date,
-        enforcedDate: payload.date
-      }
-    };
-  });
+  .handleAction(
+    actions.setListEnforcedDate,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          listEnforcedDate: payload.date,
+          enforcedDate: payload.date
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setMonthEnforcedDate,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          monthEnforcedDate: payload.date,
+          enforcedDate: payload.date
+        }
+      };
+    }
+  );
 
 export { calendarReducer };

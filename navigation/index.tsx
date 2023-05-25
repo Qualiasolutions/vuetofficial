@@ -34,8 +34,10 @@ interface NavigationProps {
 const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
-  const { data: userFullDetails, isLoading: isLoadingUserDetails } = getUserFullDetails();
-  const { isLoading: isLoadingUserInvites, data: invitesForUser } = useActiveInvitesForUser(true)
+  const { data: userFullDetails, isLoading: isLoadingUserDetails } =
+    getUserFullDetails();
+  const { isLoading: isLoadingUserInvites, data: invitesForUser } =
+    useActiveInvitesForUser(true);
 
   // Force fetch of categories on app load
   useGetAllCategoriesQuery();
@@ -45,7 +47,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   let navigatorComponent = <FullPageSpinner />;
 
-  const isLoading = isLoadingUserDetails || isLoadingUserInvites
+  const isLoading = isLoadingUserDetails || isLoadingUserInvites;
 
   if (!isLoading) {
     if (!(jwtAccessToken && jwtRefreshToken)) {

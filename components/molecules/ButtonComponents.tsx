@@ -18,7 +18,8 @@ export function Button(props: {
     <Pressable
       style={({ pressed }) => [
         {
-          backgroundColor: (disabled || pressed) ? disabledBackgroundColor : backgroundColor,
+          backgroundColor:
+            disabled || pressed ? disabledBackgroundColor : backgroundColor,
           color
         },
         styles.button,
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     textAlign: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   linkButton: {
     textAlign: 'center',

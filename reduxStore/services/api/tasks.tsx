@@ -11,7 +11,7 @@ const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllScheduledTasks: builder.query<
       ScheduledTaskResponseType[],
-      { start_datetime: string; end_datetime: string; }
+      { start_datetime: string; end_datetime: string }
     >({
       query: ({ start_datetime, end_datetime }) => ({
         url: `core/scheduled_task/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
@@ -21,7 +21,7 @@ const extendedApi = vuetApi.injectEndpoints({
             return responseJson;
           } else {
             // Just return the error data
-            return await response.json();
+            return response.json();
           }
         }
       }),
@@ -36,7 +36,7 @@ const extendedApi = vuetApi.injectEndpoints({
             return normalizeData(responseJson);
           } else {
             // Just return the error data
-            return await response.json();
+            return response.json();
           }
         }
       }),

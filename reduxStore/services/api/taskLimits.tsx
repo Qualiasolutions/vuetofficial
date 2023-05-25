@@ -12,7 +12,7 @@ const extendedApi = vuetApi.injectEndpoints({
             return normalizeData(responseJson);
           } else {
             // Just return the error data
-            return await response.json();
+            return response.json();
           }
         }
       }),
@@ -55,7 +55,7 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['TaskLimit']
-    }),
+    })
   }),
   overrideExisting: true
 });

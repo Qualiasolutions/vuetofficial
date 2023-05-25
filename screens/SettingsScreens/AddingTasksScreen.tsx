@@ -1,3 +1,3 @@
 export default function AddingTasksScreen() {
-  return null
+  return null;
 }

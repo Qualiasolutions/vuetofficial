@@ -8,7 +8,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { UnauthorisedTabParamList } from 'types/base';
 import {
   useCreateAccountMutation,
-  useCreatePhoneValidationMutation,
+  useCreatePhoneValidationMutation
 } from 'reduxStore/services/api/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Constants from 'expo-constants';
@@ -63,7 +63,7 @@ const CreatePasswordScreen = ({
   const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
+    <ErrorBox errorText={errorMessage} />
   ) : null;
 
   return (

@@ -30,11 +30,16 @@ export default function UserWithColor({
           )}
         </AlmostWhiteView>
       ) : null}
-      <TransparentView style={{ justifyContent: "center" }}>
+      <TransparentView style={{ justifyContent: 'center' }}>
         <AlmostBlackText text={name} style={styles.nameText} />
-        {memberColour && <View
-          style={[styles.memberColour, { backgroundColor: `#${memberColour}` }]}
-        />}
+        {memberColour && (
+          <View
+            style={[
+              styles.memberColour,
+              { backgroundColor: `#${memberColour}` }
+            ]}
+          />
+        )}
       </TransparentView>
     </TransparentView>
   );

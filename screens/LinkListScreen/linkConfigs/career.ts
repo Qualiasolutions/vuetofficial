@@ -1,4 +1,4 @@
-import { LinkListLink } from "components/lists/LinkList";
+import { LinkListLink } from 'components/lists/LinkList';
 
 export default [
   {

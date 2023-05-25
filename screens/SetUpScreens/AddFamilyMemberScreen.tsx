@@ -45,7 +45,7 @@ const AddFamilyMemberScreen = ({
   const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
+    <ErrorBox errorText={errorMessage} />
   ) : null;
 
   return (

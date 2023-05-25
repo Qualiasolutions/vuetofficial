@@ -24,7 +24,6 @@ export function ErrorBox(
     'errorText'
   );
 
-
   const styles = StyleSheet.create({
     errorBox: {
       paddingVertical: 10,

@@ -48,7 +48,7 @@ export const vuetApi = createApi({
             return normalizeData(responseJson);
           } else {
             // Just return the error data
-            return await response.json();
+            return response.json();
           }
         }
       }),

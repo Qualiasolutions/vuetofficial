@@ -17,10 +17,7 @@ import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/tas
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import {
-  PrimaryText,
-  BlackText
-} from 'components/molecules/TextComponents';
+import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
@@ -43,7 +40,7 @@ export type MinimalScheduledTask = {
   entities: number[];
   resourcetype: string;
   recurrence?: any;
-}
+};
 
 type PropTypes = {
   task: MinimalScheduledTask;
@@ -54,21 +51,27 @@ function Task({ task }: PropTypes) {
     // Return a unique selector instance for this page so that
     // the filtered results are correctly memoized
     return createSelector(
-      (allScheduledTasksResult: { data: ScheduledTaskResponseType[] }) => allScheduledTasksResult.data,
-      (allScheduledTasksResult: any, task: { id: number, recurrence_index?: number }) => [task.id, task?.recurrence_index],
-      (data, taskData) => data?.filter(scheduledTask => (
-        (scheduledTask.id === task.id)
-        && (scheduledTask.recurrence_index === task.recurrence_index)
-      ))[0]?.is_complete || false
-    )
-  }, [])
+      (allScheduledTasksResult: { data: ScheduledTaskResponseType[] }) =>
+        allScheduledTasksResult.data,
+      (
+        allScheduledTasksResult: any,
+        task: { id: number; recurrence_index?: number }
+      ) => [task.id, task?.recurrence_index],
+      (data, taskData) =>
+        data?.filter(
+          (scheduledTask) =>
+            scheduledTask.id === task.id &&
+            scheduledTask.recurrence_index === task.recurrence_index
+        )[0]?.is_complete || false
+    );
+  }, []);
 
   const { data: userDetails } = getUserFullDetails();
 
   const { isComplete } = useGetAllScheduledTasksQuery(
     {
-      start_datetime: "2020-01-01T00:00:00Z",
-      end_datetime: "2030-01-01T00:00:00Z",
+      start_datetime: '2020-01-01T00:00:00Z',
+      end_datetime: '2030-01-01T00:00:00Z'
     },
     {
       skip: !!userDetails?.id,
@@ -76,7 +79,7 @@ function Task({ task }: PropTypes) {
         isComplete: selectIsComplete(result, task)
       })
     }
-  )
+  );
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
@@ -109,7 +112,6 @@ function Task({ task }: PropTypes) {
 
   const { t } = useTranslation();
 
-
   if (isLoading || !allEntities) {
     return null;
   }
@@ -130,7 +132,7 @@ function Task({ task }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const entities = task.entities.map(entityId => allEntities.byId[entityId]);
+  const entities = task.entities.map((entityId) => allEntities.byId[entityId]);
 
   const leftInfo = (
     <TransparentView style={styles.leftInfo}>
@@ -165,15 +167,11 @@ function Task({ task }: PropTypes) {
     ) : null;
 
   return (
-    <TransparentView style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}>
-      <TransparentView
-        style={[
-          styles.containerWrapper,
-        ]}
-      >
-        <TransparentView
-          style={styles.container}
-        >
+    <TransparentView
+      style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}
+    >
+      <TransparentView style={[styles.containerWrapper]}>
+        <TransparentView style={styles.container}>
           {leftInfo}
           <TransparentView style={styles.titleContainer}>
             <BlackText
@@ -186,37 +184,46 @@ function Task({ task }: PropTypes) {
               ]}
               bold={true}
             />
-            {
-              ['FixedTask', 'FlexibleTask'].includes(task.resourcetype)
-              && <Pressable
+            {['FixedTask', 'FlexibleTask'].includes(task.resourcetype) && (
+              <Pressable
                 onPress={() =>
                   (navigation.navigate as any)('EditTask', { taskId: task.id })
                 }
               >
                 <PrimaryText text={t('components.calendar.task.viewOrEdit')} />
               </Pressable>
-            }
+            )}
           </TransparentView>
         </TransparentView>
-        {userDetails?.is_premium && <Checkbox
-          disabled={isComplete}
-          checked={isComplete}
-          smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
-          color={isCompleteTextColor}
-          onValueChange={async () => {
-            if (taskTypesRequiringForm.includes(task.resourcetype)) {
-              return setShowTaskCompletionForm(true);
-            }
-            await triggerCreateCompletionForm({
-              resourcetype: `${task.resourcetype}CompletionForm`,
-              recurrence_index: task.recurrence_index,
-              task: task.id
-            });
-          }}
-        />}
+        {userDetails?.is_premium && (
+          <Checkbox
+            disabled={isComplete}
+            checked={isComplete}
+            smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
+            color={isCompleteTextColor}
+            onValueChange={async () => {
+              if (taskTypesRequiringForm.includes(task.resourcetype)) {
+                return setShowTaskCompletionForm(true);
+              }
+              await triggerCreateCompletionForm({
+                resourcetype: `${task.resourcetype}CompletionForm`,
+                recurrence_index: task.recurrence_index,
+                task: task.id
+              });
+            }}
+          />
+        )}
       </TransparentView>
-      <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <TransparentView style={{ flexDirection: 'row', width: '50%', flex: 0 }}>
+      <TransparentView
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end'
+        }}
+      >
+        <TransparentView
+          style={{ flexDirection: 'row', width: '50%', flex: 0 }}
+        >
           <EntityTags entities={entities} />
         </TransparentView>
         {memberColour}
@@ -238,7 +245,7 @@ const styles = StyleSheet.create({
   },
   leftInfo: {
     width: '20%',
-    marginRight: 5,
+    marginRight: 5
   },
   containerWrapper: {
     flex: 1,
@@ -251,7 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%',
+    width: '100%'
   },
   buttonTextStyle: {
     color: '#fff',
@@ -266,5 +273,4 @@ const styles = StyleSheet.create({
   }
 });
 
-
-export default Task
+export default Task;

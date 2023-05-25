@@ -1,9 +1,15 @@
 import { StyleSheet, SectionList, ViewToken } from 'react-native';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 
 import {
   getCurrentDateString,
-  getDateStringFromDateObject,
+  getDateStringFromDateObject
 } from 'utils/datesAndTimes';
 
 import { ParsedPeriod } from 'types/periods';
@@ -32,25 +38,29 @@ type AllDateTasks = {
   [key: string]: SingleDateTasks;
 };
 
-type ItemType = "TASK" | "PERIOD"
-type ItemData = (ParsedPeriod | MinimalScheduledTask) & { type: ItemType }
-const isTask = (item: ItemData): item is MinimalScheduledTask & { type: "TASK" } => {
-  return item.type === "TASK"
-}
-const isPeriod = (item: ItemData): item is ParsedPeriod & { type: "PERIOD" } => {
-  return item.type === "PERIOD"
-}
+type ItemType = 'TASK' | 'PERIOD';
+type ItemData = (ParsedPeriod | MinimalScheduledTask) & { type: ItemType };
+const isTask = (
+  item: ItemData
+): item is MinimalScheduledTask & { type: 'TASK' } => {
+  return item.type === 'TASK';
+};
+const isPeriod = (
+  item: ItemData
+): item is ParsedPeriod & { type: 'PERIOD' } => {
+  return item.type === 'PERIOD';
+};
 const ListItem = React.memo(({ data }: { data: ItemData }) => {
   if (isTask(data)) {
-    return <Task task={data} />
+    return <Task task={data} />;
   }
   if (isPeriod(data)) {
-    return <OneDayPeriod period={data} />
+    return <OneDayPeriod period={data} />;
   }
-  return null
-})
+  return null;
+});
 
-const SECTION_HEADER_HEIGHT = 40
+const SECTION_HEADER_HEIGHT = 40;
 
 function Calendar({
   tasks,
@@ -66,39 +76,43 @@ function Calendar({
   const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
-  const monthEnforcedDate = useSelector(selectMonthEnforcedDate)
-  const sectionListRef = useRef<any>(null)
+  const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
+  const sectionListRef = useRef<any>(null);
 
   const currentDate = useMemo(() => {
-    return new Date(getCurrentDateString())
-  }, [])
+    return new Date(getCurrentDateString());
+  }, []);
 
-  const [firstDate, setFirstDate] = useState<Date>(currentDate)
+  const [firstDate, setFirstDate] = useState<Date>(currentDate);
 
   const updateDate = (newDate: string) => {
     if (onChangeFirstDate && newDate) {
-      onChangeFirstDate(newDate)
+      onChangeFirstDate(newDate);
     }
-  }
+  };
 
   useEffect(() => {
-    const newTasksPerDate = formatTasksAndPeriods(tasks, periods, alwaysIncludeCurrentDate)
+    const newTasksPerDate = formatTasksAndPeriods(
+      tasks,
+      periods,
+      alwaysIncludeCurrentDate
+    );
     setTasksPerDate(newTasksPerDate);
-  }, [
-    tasks,
-    periods,
-    alwaysIncludeCurrentDate
-  ]);
+  }, [tasks, periods, alwaysIncludeCurrentDate]);
 
   useEffect(() => {
-    if (monthEnforcedDate && sectionListRef?.current && (Object.keys(tasksPerDate).length > 0)) {
-      const newDate = new Date(monthEnforcedDate)
-      if (firstDate && (firstDate < newDate)) {
-        let sectionIndex = -1
+    if (
+      monthEnforcedDate &&
+      sectionListRef?.current &&
+      Object.keys(tasksPerDate).length > 0
+    ) {
+      const newDate = new Date(monthEnforcedDate);
+      if (firstDate && firstDate < newDate) {
+        let sectionIndex = -1;
         for (const date in tasksPerDate) {
-          const dateObj = new Date(date)
-          if ((dateObj < newDate) && (firstDate < dateObj)) {
-            sectionIndex += 1
+          const dateObj = new Date(date);
+          if (dateObj < newDate && firstDate < dateObj) {
+            sectionIndex += 1;
           }
         }
 
@@ -108,28 +122,28 @@ function Calendar({
             sectionListRef.current.scrollToLocation({
               sectionIndex,
               itemIndex: 0
-            })
+            });
           } catch (err) {
-            console.error(err)
+            console.error(err);
           }
         }
-        return
+        return;
       }
 
       // Otherwise scroll to the start and set
       // the first date to be the new date
-      setPastMonthsToShow(0)
-      setFirstDate(newDate)
+      setPastMonthsToShow(0);
+      setFirstDate(newDate);
       try {
         sectionListRef.current.scrollToLocation({
           sectionIndex: 0,
           itemIndex: 0
-        })
+        });
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
     }
-  }, [monthEnforcedDate])
+  }, [monthEnforcedDate]);
 
   const datesToShow = Object.keys(tasksPerDate).sort();
 
@@ -141,7 +155,7 @@ function Calendar({
         </TransparentView>
       );
     }
-    return (pastMonthsToShow < 24) ? (
+    return pastMonthsToShow < 24 ? (
       <TransparentView style={styles.loadMoreButtonWrapper}>
         <LinkButton
           title={t('common.loadOlder')}
@@ -167,18 +181,24 @@ function Calendar({
     const past: { title: string; key: string; data: ItemData[] }[] = [];
 
     for (const date of datesToShow) {
-      const sectionsArray = new Date(date) < firstDate
-        ? past
-        : future;
+      const sectionsArray = new Date(date) < firstDate ? past : future;
 
-      const dayJsDate = dayjs(date)
-      const dayName = `${dayJsDate.format('dd')} ${dayJsDate.format('DD')} ${dayJsDate.format('MMM')}`;
+      const dayJsDate = dayjs(date);
+      const dayName = `${dayJsDate.format('dd')} ${dayJsDate.format(
+        'DD'
+      )} ${dayJsDate.format('MMM')}`;
       sectionsArray.push({
         title: dayName,
         key: dayName,
         data: [
-          ...(tasksPerDate[date].tasks.map(task => ({ ...task, type: ("TASK" as ItemType) }))),
-          ...(tasksPerDate[date].periods.map(period => ({ ...period, type: ("PERIOD" as ItemType) }))),
+          ...tasksPerDate[date].tasks.map((task) => ({
+            ...task,
+            type: 'TASK' as ItemType
+          })),
+          ...tasksPerDate[date].periods.map((period) => ({
+            ...period,
+            type: 'PERIOD' as ItemType
+          }))
         ]
       });
     }
@@ -186,40 +206,47 @@ function Calendar({
   }, [datesToShow, firstDate]);
 
   const shownSections = [
-    ...pastSections.slice(pastSections.length - (pastMonthsToShow * 30)),
+    ...pastSections.slice(pastSections.length - pastMonthsToShow * 30),
     ...futureSections
   ];
 
   const renderItem = useCallback(({ item }: { item: ItemData }) => {
-    return <TransparentView style={{ paddingHorizontal: 20 }}>
-      <ListItem data={item} />
-    </TransparentView>
-  }, [])
-  const onViewableItemsChanged = useCallback((items: { viewableItems: ViewToken[] }) => {
-    if (onChangeFirstDate) {
-      if (items.viewableItems[0]?.section?.data?.[0]?.start_datetime) {
-        const newDate = getDateStringFromDateObject(new Date(items.viewableItems[0]?.section?.data?.[0]?.start_datetime))
-        updateDate(newDate)
+    return (
+      <TransparentView style={{ paddingHorizontal: 20 }}>
+        <ListItem data={item} />
+      </TransparentView>
+    );
+  }, []);
+  const onViewableItemsChanged = useCallback(
+    (items: { viewableItems: ViewToken[] }) => {
+      if (onChangeFirstDate) {
+        if (items.viewableItems[0]?.section?.data?.[0]?.start_datetime) {
+          const newDate = getDateStringFromDateObject(
+            new Date(items.viewableItems[0]?.section?.data?.[0]?.start_datetime)
+          );
+          updateDate(newDate);
+        }
       }
-    }
-  }, [])
+    },
+    []
+  );
 
   const keyExtractor = useCallback((item: ItemData) => {
     if (isTask(item)) {
-      return (`${item.id}_${item.resourcetype}`)
+      return `${item.id}_${item.resourcetype}`;
     }
     if (isPeriod(item)) {
-      return (`${item.id}_${item.resourcetype}`)
+      return `${item.id}_${item.resourcetype}`;
     }
-    return ""
-  }, [])
+    return '';
+  }, []);
 
   const itemsLayout = useMemo(() => {
     if (!shownSections) return [];
     const layouts: any[] = [];
     let index = 0;
     let offset = 0;
-    shownSections.forEach(section => {
+    shownSections.forEach((section) => {
       // Section header
       const TOTAL_HEADER_HEIGHT = SECTION_HEADER_HEIGHT;
       layouts[index] = { length: TOTAL_HEADER_HEIGHT, offset, index };
@@ -237,7 +264,7 @@ function Calendar({
         layouts[index] = {
           length: MATCH_HEIGHT,
           offset,
-          index,
+          index
         };
         index++;
         offset += MATCH_HEIGHT;
@@ -255,7 +282,9 @@ function Calendar({
       sections={shownSections}
       renderSectionHeader={({ section }) => {
         return (
-          <AlmostWhiteView style={[styles.sectionHeader, { height: SECTION_HEADER_HEIGHT }]}>
+          <AlmostWhiteView
+            style={[styles.sectionHeader, { height: SECTION_HEADER_HEIGHT }]}
+          >
             <Text style={styles.sectionHeaderText}>{section.title}</Text>
           </AlmostWhiteView>
         );
@@ -268,7 +297,9 @@ function Calendar({
       contentContainerStyle={{ paddingBottom: 150 }}
       ListHeaderComponent={<ListHeaderComponent />}
       onViewableItemsChanged={onViewableItemsChanged}
-      getItemLayout={(d, index) => itemsLayout[index] ?? { length: 0, offset: 0, index }}
+      getItemLayout={(d, index) =>
+        itemsLayout[index] ?? { length: 0, offset: 0, index }
+      }
       keyExtractor={keyExtractor}
       ref={sectionListRef}
       windowSize={31}

@@ -17,7 +17,7 @@ import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const FamilyRequestScreen = () => {
-  const { data: userFullDetails } = getUserFullDetails()
+  const { data: userFullDetails } = getUserFullDetails();
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
   const [updateUserInvite, userInviteResult] = useUpdateUserInviteMutation();
@@ -26,7 +26,8 @@ const FamilyRequestScreen = () => {
 
   const { t } = useTranslation();
 
-  const { data: invitesForUser, isLoading: isLoadingUserInvites } = useActiveInvitesForUser(true)
+  const { data: invitesForUser, isLoading: isLoadingUserInvites } =
+    useActiveInvitesForUser(true);
 
   if (!(invitesForUser && userFullDetails)) {
     return null;

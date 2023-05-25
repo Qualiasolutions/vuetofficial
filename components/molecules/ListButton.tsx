@@ -9,7 +9,6 @@ import { Feather } from '@expo/vector-icons';
 import { elevation } from 'styles/elevation';
 import { useThemeColor } from 'components/Themed';
 
-
 type ListButtonProps = {
   text: string;
   onPress?: () => void;
@@ -23,19 +22,19 @@ export default function ListButton({
   style = {},
   iconName
 }: ListButtonProps) {
-  const whiteColor = useThemeColor({}, "white")
-  const almostWhiteColor = useThemeColor({}, "almostWhite")
+  const whiteColor = useThemeColor({}, 'white');
+  const almostWhiteColor = useThemeColor({}, 'almostWhite');
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => ([
+      style={({ pressed }) => [
         styles.listEntry,
         style,
         elevation.elevated,
         {
           backgroundColor: pressed ? almostWhiteColor : whiteColor
         }
-      ])}
+      ]}
     >
       <BlackText text={text} style={styles.listEntryText} />
       {iconName && <Feather name={iconName} size={25} />}
@@ -48,9 +47,9 @@ const styles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   listEntryText: {
     fontSize: 18
-  },
+  }
 });

@@ -58,17 +58,17 @@ const LoginScreen = ({
         dispatch(setUsername(usernameToUse));
       } else {
         Toast.show({
-          type: "error",
+          type: 'error',
           text1: t('screens.logIn.failedLogin')
-        })
+        });
         setSubmitting(false);
       }
     } catch (err) {
       console.log(err);
       Toast.show({
-        type: "error",
+        type: 'error',
         text1: t('screens.logIn.failedLogin')
-      })
+      });
       setSubmitting(false);
     }
   };

@@ -28,7 +28,7 @@ export default function EditAccountDetailsScreen() {
     for (fieldName in formFields) {
       if (fieldName === 'profile_image') {
         formFields.profile_image.initialValue =
-          userDetails['presigned_profile_image_url'] || '';
+          userDetails.presigned_profile_image_url || '';
       } else if (fieldName in userDetails) {
         formFields[fieldName].initialValue = userDetails[fieldName] || '';
       }
@@ -46,9 +46,9 @@ export default function EditAccountDetailsScreen() {
             extraFields={{ userId: userDetails.id }}
             onSubmitSuccess={() => {
               Toast.show({
-                type: "success",
+                type: 'success',
                 text1: t('screens.myAccount.updateSuccess')
-              })
+              });
             }}
             formDataType="form"
           />

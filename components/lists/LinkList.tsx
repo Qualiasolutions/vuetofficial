@@ -17,9 +17,9 @@ export type LinkListLink = {
 };
 
 type Props = {
-  links: LinkListLink[],
+  links: LinkListLink[];
   linkStyle?: ViewStyle;
-}
+};
 
 export default function LinkList({ links, linkStyle }: Props) {
   const { t } = useTranslation();
@@ -32,9 +32,9 @@ export default function LinkList({ links, linkStyle }: Props) {
         navMethod={(link.navMethod || 'push') as 'navigate' | 'push'}
         toScreen={
           link.toScreen as
-          | keyof EntityTabParamList
-          | keyof RootTabParamList
-          | keyof SettingsTabParamList
+            | keyof EntityTabParamList
+            | keyof RootTabParamList
+            | keyof SettingsTabParamList
         }
         toScreenParams={link.toScreenParams}
         style={linkStyle || {}}

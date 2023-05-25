@@ -1,11 +1,15 @@
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useThemeColor } from "components/Themed";
-import { Pressable, StyleSheet } from "react-native";
-import { EntityTabParamList, RootTabParamList, SettingsTabParamList } from "types/base";
-import { EntityResponseType } from "types/entities";
-import { BlackText } from "./TextComponents";
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useThemeColor } from 'components/Themed';
+import { Pressable, StyleSheet } from 'react-native';
+import {
+  EntityTabParamList,
+  RootTabParamList,
+  SettingsTabParamList
+} from 'types/base';
+import { EntityResponseType } from 'types/entities';
+import { BlackText } from './TextComponents';
 
 export default function EntityTag({ entity }: { entity: EntityResponseType }) {
   const navigation = useNavigation<
@@ -15,19 +19,23 @@ export default function EntityTag({ entity }: { entity: EntityResponseType }) {
   >();
   const greyColor = useThemeColor({}, 'grey');
 
-  return <Pressable
-    onPress={() => {
-      (navigation.navigate as any)('EntityNavigator', {
-        screen: 'EntityScreen',
-        initial: false,
-        params: { entityId: entity.id }
-      })
-    }}
-  >
-    <BlackText text={entity.name} style={[styles.tag, { backgroundColor: greyColor }]} />
-  </Pressable>
+  return (
+    <Pressable
+      onPress={() => {
+        (navigation.navigate as any)('EntityNavigator', {
+          screen: 'EntityScreen',
+          initial: false,
+          params: { entityId: entity.id }
+        });
+      }}
+    >
+      <BlackText
+        text={entity.name}
+        style={[styles.tag, { backgroundColor: greyColor }]}
+      />
+    </Pressable>
+  );
 }
-
 
 const styles = StyleSheet.create({
   tag: {
@@ -38,4 +46,4 @@ const styles = StyleSheet.create({
     height: 16,
     marginRight: 2
   }
-})
+});

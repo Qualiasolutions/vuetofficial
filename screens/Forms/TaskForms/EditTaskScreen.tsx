@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentPaddedView,
-  TransparentView,
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
@@ -33,7 +33,6 @@ import { TaskResponseType } from 'types/tasks';
 import { deepCopy } from 'utils/copy';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-
 
 export default function EditTaskScreen({
   route,
@@ -64,7 +63,7 @@ export default function EditTaskScreen({
     useState<FieldValueTypes>({});
   const [taskBottomFieldValues, setTaskBottomFieldValues] =
     useState<FieldValueTypes>({});
-  const [resetState, setResetState] = useState<() => void>(() => () => { });
+  const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = taskTopFieldTypes();
   const taskMiddleFields = taskMiddleFieldTypes(true);
@@ -72,7 +71,7 @@ export default function EditTaskScreen({
 
   useEffect(() => {
     if (allTasks && userDetails) {
-      const oldTask = allTasks.byId[route.params.taskId]
+      const oldTask = allTasks.byId[route.params.taskId];
       const newTaskToEdit = {
         ...oldTask,
         tags: {
@@ -136,24 +135,20 @@ export default function EditTaskScreen({
       }
     }
     return true;
-  }, [
-    taskTopFieldValues,
-    taskMiddleFields,
-    taskBottomFieldValues
-  ]);
+  }, [taskTopFieldValues, taskMiddleFields, taskBottomFieldValues]);
 
   useEffect(() => {
     if (updateTaskResult.isSuccess) {
       Toast.show({
         type: 'success',
         text1: t('screens.editTask.updateSuccess')
-      })
+      });
       resetState();
     } else if (updateTaskResult.isError) {
       Toast.show({
         type: 'error',
         text1: t('common.errors.generic')
-      })
+      });
     }
   }, [updateTaskResult]);
 
@@ -164,7 +159,7 @@ export default function EditTaskScreen({
       Toast.show({
         type: 'error',
         text1: t('common.errors.generic')
-      })
+      });
     }
   }, [deleteTaskResult]);
 
@@ -191,7 +186,7 @@ export default function EditTaskScreen({
         ...parsedMiddleFieldValues,
         ...parsedBottomFieldValues,
         resourcetype: 'FixedTask' as 'FixedTask' | 'FlexibleTask', // TODO
-        id: taskToEdit.id,
+        id: taskToEdit.id
       };
 
       if (Object.keys(body as any).includes('recurrence')) {

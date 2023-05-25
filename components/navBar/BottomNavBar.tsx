@@ -67,8 +67,8 @@ export default function BottomNavBar({
 
   const holidayEntities = allEntities
     ? Object.values(allEntities.byId).filter(
-      (ent) => ent.resourcetype === 'Holiday'
-    )
+        (ent) => ent.resourcetype === 'Holiday'
+      )
     : [];
 
   useEffect(() => {
@@ -176,21 +176,16 @@ export default function BottomNavBar({
             route.name === 'EntityNavigator'
               ? 'Categories'
               : route.name === 'SettingsNavigator'
-                ? 'Settings'
-                : '';
+              ? 'Settings'
+              : '';
           return (
             <Pressable
               key={index}
               onPress={() => {
                 if (forcedScreen) {
-                  navigation.navigate(
-                    route.name,
-                    { screen: forcedScreen }
-                  );
+                  navigation.navigate(route.name, { screen: forcedScreen });
                 } else {
-                  navigation.navigate(
-                    route.name,
-                  );
+                  navigation.navigate(route.name);
                 }
               }}
             >

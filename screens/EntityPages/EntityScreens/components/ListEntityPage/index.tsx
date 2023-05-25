@@ -91,7 +91,7 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     .sort((a, b) => a.id - b.id);
 
   const listEntryComponents = sortedListEntries.map((listEntry) => (
-    <ListEntry listEntry={listEntry} key={listEntry.id}></ListEntry>
+    <ListEntry listEntry={listEntry} key={listEntry.id} />
   ));
 
   const createEntry = () => {

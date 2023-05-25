@@ -5,9 +5,9 @@ dayjs.extend(utc);
 
 const getDateStringFromDateObject = (
   date: Date,
-  utc: boolean = false
+  useUtc: boolean = false
 ): string => {
-  const dayjsFunction = utc ? dayjs.utc : dayjs;
+  const dayjsFunction = useUtc ? dayjs.utc : dayjs;
   return dayjsFunction(date).format('YYYY-MM-DD');
 };
 
@@ -21,9 +21,9 @@ const getDateWithoutTimezone = (date: string): Date => {
 
 const getLongDateFromDateObject = (
   date: Date,
-  utc: boolean = false
+  useUtc: boolean = false
 ): string => {
-  if (utc) {
+  if (useUtc) {
     return dayjs.utc(date).format('MMM DD, YYYY');
   }
   return dayjs(date).format('MMM DD, YYYY');
@@ -32,19 +32,19 @@ const getLongDateFromDateObject = (
 const getDatesPeriodString = (
   startDate: Date,
   endDate: Date,
-  utc: boolean = false
+  useUtc: boolean = false
 ): string => {
   const sameYear = startDate.getFullYear() === endDate.getFullYear();
   const sameDate =
-    getLongDateFromDateObject(startDate, utc) ===
-    getLongDateFromDateObject(endDate, utc);
+    getLongDateFromDateObject(startDate, useUtc) ===
+    getLongDateFromDateObject(endDate, useUtc);
 
   if (sameDate) {
-    return getLongDateFromDateObject(startDate, utc);
+    return getLongDateFromDateObject(startDate, useUtc);
   }
 
   if (sameYear) {
-    if (utc) {
+    if (useUtc) {
       return `${dayjs.utc(startDate).format('MMM DD')} - ${dayjs
         .utc(endDate)
         .format('MMM DD YYYY')}`;
@@ -57,8 +57,8 @@ const getDatesPeriodString = (
 
   return `${getLongDateFromDateObject(
     startDate,
-    utc
-  )} - ${getLongDateFromDateObject(endDate, utc)}`;
+    useUtc
+  )} - ${getLongDateFromDateObject(endDate, useUtc)}`;
 };
 
 type UTCValues = {
@@ -98,10 +98,10 @@ const getUTCValuesFromDateTimeString = (datetime: string): UTCValues => {
 const getDatesBetween = (
   start: string | Date,
   end: string | Date,
-  utc: boolean = false
+  useUtc: boolean = false
 ): Date[] => {
   const datesArray = [];
-  const dayjsFunction = utc ? dayjs.utc : dayjs;
+  const dayjsFunction = useUtc ? dayjs.utc : dayjs;
   for (
     let dt = dayjsFunction(start).toDate();
     dt <= dayjsFunction(end).toDate();
@@ -115,10 +115,10 @@ const getDatesBetween = (
 const getDateStringsBetween = (
   start: string | Date,
   end: string | Date,
-  utc: boolean = false
+  useUtc: boolean = false
 ): string[] => {
-  const datesArray = getDatesBetween(start, end, utc);
-  return datesArray.map((date) => getDateStringFromDateObject(date, utc));
+  const datesArray = getDatesBetween(start, end, useUtc);
+  return datesArray.map((date) => getDateStringFromDateObject(date, useUtc));
 };
 
 function getNextDate(startDate: Date): Date {
@@ -161,9 +161,8 @@ function getDaysToAge(startDate: Date): {
   };
 }
 
-
 function getCurrentDateString() {
-  return getDateStringFromDateObject(new Date())
+  return getDateStringFromDateObject(new Date());
 }
 
 export {

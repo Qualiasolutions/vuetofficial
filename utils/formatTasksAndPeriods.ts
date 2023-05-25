@@ -1,18 +1,24 @@
-import { MinimalScheduledTask } from "components/calendars/TaskCalendar/components/Task";
-import { ParsedPeriod } from "types/periods";
-import { getDateStringFromDateObject, getDateStringsBetween } from "./datesAndTimes";
+import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
+import { ParsedPeriod } from 'types/periods';
+import {
+  getDateStringFromDateObject,
+  getDateStringsBetween
+} from './datesAndTimes';
 
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
   periods: ParsedPeriod[];
 };
 
-
 type AllDateTasks = {
   [key: string]: SingleDateTasks;
 };
 
-export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], periods: ParsedPeriod[], alwaysIncludeCurrentDate?: boolean) {
+export default function formatTasksAndPeriods(
+  tasks: MinimalScheduledTask[],
+  periods: ParsedPeriod[],
+  alwaysIncludeCurrentDate?: boolean
+) {
   const newTasksPerDate: AllDateTasks = {};
   for (const task of tasks) {
     const taskDates = getDateStringsBetween(
@@ -26,7 +32,7 @@ export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], per
       } else {
         newTasksPerDate[taskDate] = {
           tasks: [task],
-          periods: [],
+          periods: []
         };
       }
     }
@@ -45,7 +51,7 @@ export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], per
       } else {
         newTasksPerDate[periodDate] = {
           tasks: [],
-          periods: [parsedPeriod],
+          periods: [parsedPeriod]
         };
       }
     }
@@ -57,10 +63,10 @@ export default function formatTasksAndPeriods(tasks: MinimalScheduledTask[], per
     if (!(currentDateString in newTasksPerDate)) {
       newTasksPerDate[currentDateString] = {
         tasks: [],
-        periods: [],
+        periods: []
       };
     }
   }
 
-  return newTasksPerDate
-};
+  return newTasksPerDate;
+}

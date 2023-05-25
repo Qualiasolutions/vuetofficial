@@ -8,32 +8,40 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function MyAccountScreen() {
   const { t } = useTranslation();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   return (
     <TransparentFullPageScrollView>
       <TransparentPaddedView>
         <TransparentPaddedView>
           <Button
             title="Account Details"
-            onPress={() => { (navigation.navigate as any)('EditAccountDetails') }}
+            onPress={() => {
+              (navigation.navigate as any)('EditAccountDetails');
+            }}
           />
         </TransparentPaddedView>
         <TransparentPaddedView>
           <Button
             title="Account Type"
-            onPress={() => { (navigation.navigate as any)('EditAccountType') }}
+            onPress={() => {
+              (navigation.navigate as any)('EditAccountType');
+            }}
           />
         </TransparentPaddedView>
         <TransparentPaddedView>
           <Button
             title="Phone Number"
-            onPress={() => { (navigation.navigate as any)('EditPhoneNumber') }}
+            onPress={() => {
+              (navigation.navigate as any)('EditPhoneNumber');
+            }}
           />
         </TransparentPaddedView>
         <TransparentPaddedView>
           <Button
             title="Security"
-            onPress={() => { (navigation.navigate as any)('EditSecurity') }}
+            onPress={() => {
+              (navigation.navigate as any)('EditSecurity');
+            }}
           />
         </TransparentPaddedView>
       </TransparentPaddedView>

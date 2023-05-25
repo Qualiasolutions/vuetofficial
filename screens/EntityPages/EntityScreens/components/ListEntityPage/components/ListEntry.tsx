@@ -154,7 +154,7 @@ export default function ListEntry({
             width: 35
           }}
         >
-          <Image source={trashImage} style={{ margin: 'auto' }}></Image>
+          <Image source={trashImage} style={{ margin: 'auto' }} />
         </TransparentView>
       </TouchableHighlight>
     );

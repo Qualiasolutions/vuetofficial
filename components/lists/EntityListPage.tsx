@@ -106,7 +106,6 @@ export default function EntityListPage({
       return [previousEntityData, datetimeFilteredEntityData, futureEntityData];
     }, [orderedEntityData, monthsBack]);
 
-
   if (isLoading || !filteredEntityData) {
     return <FullPageSpinner />;
   }
@@ -151,7 +150,7 @@ export default function EntityListPage({
 
   const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
     ? monthsBack < 24 &&
-    previousEntityData.length > 0 && (
+      previousEntityData.length > 0 && (
       <Pressable
         onPress={() => setMonthsBack(monthsBack + 6)}
         style={styles.showOlderWrapper}
@@ -166,10 +165,10 @@ export default function EntityListPage({
 
   const showFutureButton =
     entityDatetimeSettings?.monthsAhead &&
-      entityDatetimeSettings?.monthsAheadPerLoad
+    entityDatetimeSettings?.monthsAheadPerLoad
       ? (!entityDatetimeSettings.maxMonthsAhead ||
-        monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
-      futureEntityData.length > 0 && (
+          monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
+        futureEntityData.length > 0 && (
         <Pressable
           onPress={() =>
             setMonthsAhead(

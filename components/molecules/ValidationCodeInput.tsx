@@ -24,8 +24,13 @@ type ValidationCodeInputProps = {
   phoneNumber: string;
   onSuccess: () => void;
   onError: (err: any) => void;
-}
-export default function ValidationCodeInput({ validationId, phoneNumber, onSuccess, onError }: ValidationCodeInputProps) {
+};
+export default function ValidationCodeInput({
+  validationId,
+  phoneNumber,
+  onSuccess,
+  onError
+}: ValidationCodeInputProps) {
   const [validationCode, onChangeValidationCode] = React.useState<string>('');
   const ref = useBlurOnFulfill({ value: validationCode, cellCount: 6 });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -33,73 +38,74 @@ export default function ValidationCodeInput({ validationId, phoneNumber, onSucce
     setValue: onChangeValidationCode
   });
   const [updatePhoneValidation, result] = useUpdatePhoneValidationMutation();
-  const [createPhoneValidation, createPhoneValidationResult] = useCreatePhoneValidationMutation();
+  const [createPhoneValidation, createPhoneValidationResult] =
+    useCreatePhoneValidationMutation();
 
   const greyColor = useThemeColor({}, 'grey');
   const whiteColor = useThemeColor({}, 'white');
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (result.isSuccess) {
-      onSuccess()
+      onSuccess();
     } else {
       if (result.error) {
-        onError(result.error)
+        onError(result.error);
       }
     }
   }, [result]);
 
-  return <TransparentContainerView>
-    <Text>
-      {t("screens.validatePhone.enterCode")}
-    </Text>
-    <CodeField
-      ref={ref}
-      {...props}
-      value={validationCode}
-      onChangeText={(code) => {
-        onChangeValidationCode(code);
-      }}
-      cellCount={6}
-      keyboardType="number-pad"
-      textContentType="oneTimeCode"
-      renderCell={({ index, symbol, isFocused }) => (
-        <Text
-          key={index}
-          style={[
-            styles.cell,
-            { borderColor: greyColor, backgroundColor: whiteColor },
-            isFocused && { borderColor: greyColor }
-          ]}
-          onLayout={getCellOnLayoutHandler(index)}
-        >
-          {symbol || (isFocused ? <Cursor /> : null)}
-        </Text>
-      )}
-      autoFocus
-    />
-    <Button
-      title={t('common.verify')}
-      onPress={() => {
-        updatePhoneValidation({
-          code: validationCode,
-          id: validationId
-        });
-      }}
-      style={styles.confirmButton}
-    />
-    <Text>{t('screens.validatePhone.didntGetCode')}</Text>
-    <Pressable
-      onPress={() => {
-        createPhoneValidation({
-          phone_number: phoneNumber
-        });
-      }}
-    >
-      <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
-    </Pressable>
-  </TransparentContainerView>
+  return (
+    <TransparentContainerView>
+      <Text>{t('screens.validatePhone.enterCode')}</Text>
+      <CodeField
+        ref={ref}
+        {...props}
+        value={validationCode}
+        onChangeText={(code) => {
+          onChangeValidationCode(code);
+        }}
+        cellCount={6}
+        keyboardType="number-pad"
+        textContentType="oneTimeCode"
+        renderCell={({ index, symbol, isFocused }) => (
+          <Text
+            key={index}
+            style={[
+              styles.cell,
+              { borderColor: greyColor, backgroundColor: whiteColor },
+              isFocused && { borderColor: greyColor }
+            ]}
+            onLayout={getCellOnLayoutHandler(index)}
+          >
+            {symbol || (isFocused ? <Cursor /> : null)}
+          </Text>
+        )}
+        autoFocus
+      />
+      <Button
+        title={t('common.verify')}
+        onPress={() => {
+          updatePhoneValidation({
+            code: validationCode,
+            id: validationId
+          });
+        }}
+        style={styles.confirmButton}
+      />
+      <Text>{t('screens.validatePhone.didntGetCode')}</Text>
+      <Pressable
+        onPress={() => {
+          createPhoneValidation({
+            phone_number: phoneNumber
+          });
+        }}
+      >
+        <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
+      </Pressable>
+    </TransparentContainerView>
+  );
 }
 
 const styles = StyleSheet.create({

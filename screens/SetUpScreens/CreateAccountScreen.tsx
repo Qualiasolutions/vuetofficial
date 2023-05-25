@@ -90,7 +90,7 @@ const CreateAccountScreen = ({
   const { t } = useTranslation();
 
   const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
+    <ErrorBox errorText={errorMessage} />
   ) : null;
 
   if (!userFullDetails) {
@@ -106,8 +106,7 @@ const CreateAccountScreen = ({
     return null;
   }
 
-
-  const hasAllRequired = firstName && lastName && dateOfBirth && memberColour
+  const hasAllRequired = firstName && lastName && dateOfBirth && memberColour;
 
   return (
     <AlmostWhiteContainerView>

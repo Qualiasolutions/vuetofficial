@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import { Recurrence } from 'types/tasks';
-import { FlatFormFieldTypes, MultiRecurrenceSelectorField } from '../formFieldTypes';
+import {
+  FlatFormFieldTypes,
+  MultiRecurrenceSelectorField
+} from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
 
 const parseFormValues = (
@@ -35,30 +38,36 @@ const parseFormValues = (
       }
     }
     if (['multiRecurrenceSelector'].includes(fields[field]?.type)) {
-      const f = fields[field] as MultiRecurrenceSelectorField
-      const value = parsedFormValues[field] as Recurrence[]
+      const f = fields[field] as MultiRecurrenceSelectorField;
+      const value = parsedFormValues[field] as Recurrence[];
       if (f.reverse) {
-        const lastTime = new Date(parsedFormValues[f.firstOccurrenceField])
-        parsedFormValues[field] = value ? value.map(recurrence => {
-          const earliest = recurrence.latest_occurrence ? new Date(recurrence.latest_occurrence) : null
-          if (earliest) {
-            earliest.setHours(0)
-            earliest.setMinutes(0)
-            earliest.setSeconds(0)
-            earliest.setMilliseconds(0)
-          }
+        const lastTime = new Date(parsedFormValues[f.firstOccurrenceField]);
+        parsedFormValues[field] = value
+          ? value.map((recurrence) => {
+            const earliest = recurrence.latest_occurrence
+              ? new Date(recurrence.latest_occurrence)
+              : null;
+            if (earliest) {
+              earliest.setHours(0);
+              earliest.setMinutes(0);
+              earliest.setSeconds(0);
+              earliest.setMilliseconds(0);
+            }
 
-          return {
-            ...recurrence,
-            "recurrence_type": recurrence.recurrence,
-            "earliest_timedelta": earliest ? ((lastTime.getTime() - earliest.getTime()) / 1000) : null
-          }
-        }) : []
+            return {
+              ...recurrence,
+              recurrence_type: recurrence.recurrence,
+              earliest_timedelta: earliest
+                ? (lastTime.getTime() - earliest.getTime()) / 1000
+                : null
+            };
+          })
+          : [];
       }
     }
 
     if (['tagSelector'].includes(fields[field]?.type)) {
-      parsedFormValues.entities = parsedFormValues[field].entities
+      parsedFormValues.entities = parsedFormValues[field].entities;
     }
   }
 

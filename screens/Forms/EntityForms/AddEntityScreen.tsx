@@ -54,7 +54,7 @@ export default function AddEntityScreen({
             selectEntityType(entityType);
           }}
           style={{ backgroundColor: fieldColor }}
-        ></DropDown>
+        />
       </TransparentView>
     ) : null;
 

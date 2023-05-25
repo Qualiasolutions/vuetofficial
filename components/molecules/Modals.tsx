@@ -38,7 +38,7 @@ export function Modal(props: ModalProps) {
     >
       <TransparentContainerView>
         <Pressable style={styles.opaqueBackground} onPress={onRequestClose}>
-          <View style={styles.opaqueBackground}></View>
+          <View style={styles.opaqueBackground} />
         </Pressable>
         <WhiteBox style={boxStyle}>{children}</WhiteBox>
       </TransparentContainerView>
@@ -74,10 +74,14 @@ export function YesNoModal(props: YesNoModalProps) {
       <TransparentView style={[{ borderColor }, styles.yesNoButtons]}>
         <Pressable
           onPress={onYes}
-          style={({ pressed }) => [{
-            borderColor,
-            backgroundColor: pressed ? borderColor : ""
-          }, styles.yesNoButton, styles.yesButton]}
+          style={({ pressed }) => [
+            {
+              borderColor,
+              backgroundColor: pressed ? borderColor : ''
+            },
+            styles.yesNoButton,
+            styles.yesButton
+          ]}
         >
           <TransparentView>
             <AlmostBlackText text={t('common.yes')} />
@@ -85,10 +89,13 @@ export function YesNoModal(props: YesNoModalProps) {
         </Pressable>
         <Pressable
           onPress={onNo}
-          style={({ pressed }) => [{
-            borderColor,
-            backgroundColor: pressed ? borderColor : ""
-          }, styles.yesNoButton]}
+          style={({ pressed }) => [
+            {
+              borderColor,
+              backgroundColor: pressed ? borderColor : ''
+            },
+            styles.yesNoButton
+          ]}
         >
           <TransparentView>
             <AlmostBlackText text={t('common.no')} />
@@ -122,7 +129,7 @@ export function ListingModal(props: ListingModalProps) {
     sectionSettings,
     data = {},
     itemToName = (item) => item.name,
-    onClose = () => { },
+    onClose = () => {},
     onSelect,
     ListItemComponent = DefaultListItemComponent
   } = props;
@@ -266,7 +273,7 @@ const styles = StyleSheet.create({
   },
   yesNoBoxStyle: {
     padding: 0,
-    overflow: "hidden"
+    overflow: 'hidden'
   },
   yesNoButtons: {
     width: '100%',
@@ -298,7 +305,7 @@ const listingModalStyles = StyleSheet.create({
   listItem: {
     paddingBottom: 10,
     marginBottom: 10,
-    borderBottomColor: Colors['light'].disabledGrey,
+    borderBottomColor: Colors.light.disabledGrey,
     borderBottomWidth: 1
   },
   sectionHeader: {

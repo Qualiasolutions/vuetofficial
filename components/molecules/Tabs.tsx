@@ -17,13 +17,15 @@ export default function Tabs({ tabs }: TabsProps) {
 
   const components = tabs.map((tab, i) => {
     const Component = tab.component;
-    return <TransparentView
-      key={i}
-      style={selectedTabIndex === i ? {} : { height: 0 }}
-    >
-      <Component />
-    </TransparentView>
-  })
+    return (
+      <TransparentView
+        key={i}
+        style={selectedTabIndex === i ? {} : { height: 0 }}
+      >
+        <Component />
+      </TransparentView>
+    );
+  });
 
   const styles = style();
   return (

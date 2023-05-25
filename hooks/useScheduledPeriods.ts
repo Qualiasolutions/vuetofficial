@@ -30,17 +30,17 @@ export default function useScheduledPeriods(
         end_datetime: (end_datetime || latestPeriod?.toISOString()) as string
       },
       {
-        skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod),
+        skip: skip || !(userDetails?.id && earliestPeriod && latestPeriod)
       }
     );
 
   return allPeriods
     ? {
-      periods: allPeriods,
-      isLoading: isLoadingPeriods || isLoadingUserDetails
-    }
+        periods: allPeriods,
+        isLoading: isLoadingPeriods || isLoadingUserDetails
+      }
     : {
-      periods: [],
-      isLoading: isLoadingPeriods || isLoadingUserDetails
-    };
+        periods: [],
+        isLoading: isLoadingPeriods || isLoadingUserDetails
+      };
 }

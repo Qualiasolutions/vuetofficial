@@ -41,7 +41,7 @@ export function ColorPicker({
           height ? { height: height } : null,
           width ? { width: width } : null
         ]}
-      ></View>
+      />
     </Pressable>
   );
 }

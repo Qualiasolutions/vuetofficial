@@ -16,7 +16,7 @@ import {
 import {
   useDeleteUserInviteMutation,
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
+  useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import {
@@ -40,7 +40,7 @@ const FamilySettingsScreen = ({
   const [userInviteToDelete, setUserInviteToDelete] =
     useState<UserInviteResponse | null>(null);
 
-  const { data: userInvites } = useActiveInvitesForUser(false)
+  const { data: userInvites } = useActiveInvitesForUser(false);
 
   const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
   const [deleteUserInvite, deleteUserInviteResult] =
@@ -79,7 +79,11 @@ const FamilySettingsScreen = ({
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
       <UserWithColor
-        name={isPending ? `${user.phone_number} (${t("common.pending")})` : `${user.first_name} ${user.last_name}`}
+        name={
+          isPending
+            ? `${user.phone_number} (${t('common.pending')})`
+            : `${user.first_name} ${user.last_name}`
+        }
         memberColour={user.member_colour || 'efefef'}
         userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
       />
@@ -117,7 +121,7 @@ const FamilySettingsScreen = ({
         title="Before you proceed"
         question={`Are you sure you want to remove ${userToDelete?.first_name} ${userToDelete?.last_name} from the family?`}
         visible={!!userToDelete}
-        onYes={() => { }}
+        onYes={() => {}}
         onNo={() => {
           setUserToDelete(null);
         }}

@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { TransparentContainerView, TransparentView } from 'components/molecules/ViewComponents';
+import {
+  TransparentContainerView,
+  TransparentView
+} from 'components/molecules/ViewComponents';
 import {
   familyMemberForm,
   FamilyMemberFormFieldTypes
@@ -34,7 +37,7 @@ const CreateUserInviteScreen = ({
   const isFamilyRequest = route.params?.familyRequest;
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
-  const [phoneNumber, setPhoneNumber] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState('');
   const {
     data: userFullDetails,
     isLoading,
@@ -43,13 +46,13 @@ const CreateUserInviteScreen = ({
     skip: !userDetails?.user_id
   });
 
-  const [createUserInvite, createUserInviteResult] = useCreateUserInviteMutation()
-
+  const [createUserInvite, createUserInviteResult] =
+    useCreateUserInviteMutation();
 
   const { t } = useTranslation();
 
   if (!userFullDetails) {
-    return <FullPageSpinner />
+    return <FullPageSpinner />;
   }
 
   return (
@@ -61,15 +64,15 @@ const CreateUserInviteScreen = ({
           containerStyle={{ marginBottom: 30 }}
         />
         <Button
-          title={t("common.invite")}
+          title={t('common.invite')}
           disabled={!(phoneNumber.length > 10)}
           onPress={async () => {
             try {
               await createUserInvite({
                 invitee: userFullDetails.id,
                 family: isFamilyRequest ? userFullDetails.family.id : null,
-                phone_number: phoneNumber,
-              }).unwrap()
+                phone_number: phoneNumber
+              }).unwrap();
               Toast.show({
                 type: 'success',
                 text1: t('screens.createUserInvite.success')
@@ -80,23 +83,29 @@ const CreateUserInviteScreen = ({
                 navigation.navigate('FriendSettings');
               }
             } catch (err) {
-              console.log(err)
+              console.log(err);
               if (isInvalidPhoneNumberError(err)) {
                 Toast.show({
                   type: 'error',
                   text1: t('common.errors.invalidPhone')
                 });
-              } else if (isFieldErrorCodeError("phone_number", "already_has_family")(err)) {
+              } else if (
+                isFieldErrorCodeError('phone_number', 'already_has_family')(err)
+              ) {
                 Toast.show({
                   type: 'error',
                   text1: t('screens.createUserInvite.errors.alreadyHasFamily')
                 });
-              } else if (isFieldErrorCodeError("phone_number", "already_in_family")(err)) {
+              } else if (
+                isFieldErrorCodeError('phone_number', 'already_in_family')(err)
+              ) {
                 Toast.show({
                   type: 'error',
                   text1: t('screens.createUserInvite.errors.alreadyInFamily')
                 });
-              } else if (isFieldErrorCodeError("phone_number", "already_invited")(err)) {
+              } else if (
+                isFieldErrorCodeError('phone_number', 'already_invited')(err)
+              ) {
                 Toast.show({
                   type: 'error',
                   text1: t('screens.createUserInvite.errors.alreadyInvited')

@@ -90,7 +90,7 @@ export default function AddTaskScreen({
     {}
   );
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
-  const [resetState, setResetState] = useState<() => void>(() => () => { });
+  const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = taskTopFieldTypes();
   const taskMiddleFields = taskMiddleFieldTypes();
@@ -102,20 +102,20 @@ export default function AddTaskScreen({
       const initialTopFields = createInitialObject(taskTopFields, userDetails);
       setTaskTopFieldValues(initialTopFields);
 
-      const currentTime = new Date()
-      const defaultStartTime = new Date(currentTime)
-      defaultStartTime.setMinutes(0)
-      defaultStartTime.setSeconds(0)
-      defaultStartTime.setMilliseconds(0)
-      defaultStartTime.setHours(defaultStartTime.getHours() + 1)
+      const currentTime = new Date();
+      const defaultStartTime = new Date(currentTime);
+      defaultStartTime.setMinutes(0);
+      defaultStartTime.setSeconds(0);
+      defaultStartTime.setMilliseconds(0);
+      defaultStartTime.setHours(defaultStartTime.getHours() + 1);
 
-      const defaultEndTime = new Date(defaultStartTime)
+      const defaultEndTime = new Date(defaultStartTime);
 
-      if (formType === "TASK") {
-        defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15)
+      if (formType === 'TASK') {
+        defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15);
       }
-      if (formType === "APPOINTMENT") {
-        defaultEndTime.setHours(defaultStartTime.getHours() + 1)
+      if (formType === 'APPOINTMENT') {
+        defaultEndTime.setHours(defaultStartTime.getHours() + 1);
       }
 
       const initialMiddleFields = createInitialObject(
@@ -124,7 +124,7 @@ export default function AddTaskScreen({
         {
           start_datetime: defaultStartTime,
           end_datetime: defaultEndTime,
-          recurrence: null,
+          recurrence: null
         }
       );
       setTaskMiddleFieldValues(initialMiddleFields);
@@ -155,21 +155,13 @@ export default function AddTaskScreen({
 
   const hasRequired = useMemo(() => {
     if (formType === 'DUE_DATE') {
-      return hasAllRequired(
-        periodFieldValues,
-        periodFields
-      )
+      return hasAllRequired(periodFieldValues, periodFields);
     } else {
-      return (hasAllRequired(
-        taskTopFieldValues,
-        taskTopFields
-      ) && hasAllRequired(
-        taskMiddleFieldValues,
-        taskMiddleFields
-      ) && hasAllRequired(
-        taskBottomFieldValues,
-        taskBottomFields
-      ))
+      return (
+        hasAllRequired(taskTopFieldValues, taskTopFields) &&
+        hasAllRequired(taskMiddleFieldValues, taskMiddleFields) &&
+        hasAllRequired(taskBottomFieldValues, taskBottomFields)
+      );
     }
   }, [
     taskTopFieldValues,
@@ -181,15 +173,15 @@ export default function AddTaskScreen({
   useEffect(() => {
     if (createTaskResult.isSuccess) {
       Toast.show({
-        type: "success",
+        type: 'success',
         text1: t('screens.addTask.createSuccess')
-      })
+      });
       resetState();
     } else if (createTaskResult.isError) {
       Toast.show({
-        type: "error",
+        type: 'error',
         text1: t('common.errors.generic')
-      })
+      });
       console.log(createTaskResult.error);
     }
   }, [createTaskResult]);
@@ -197,15 +189,15 @@ export default function AddTaskScreen({
   useEffect(() => {
     if (createPeriodResult.isSuccess) {
       Toast.show({
-        type: "success",
+        type: 'success',
         text1: t('screens.addTask.createSuccess')
-      })
+      });
       resetState();
     } else if (createPeriodResult.isError) {
       Toast.show({
-        type: "error",
+        type: 'error',
         text1: t('common.errors.generic')
-      })
+      });
       console.log(createPeriodResult.error);
     }
   }, [createPeriodResult]);
@@ -219,7 +211,7 @@ export default function AddTaskScreen({
       const parsedFieldValues = {
         ...parsedPeriodFieldValues,
         end_date: parsedPeriodFieldValues.start_date,
-        resourcetype: 'FixedPeriod',
+        resourcetype: 'FixedPeriod'
       };
 
       createPeriod(parsedFieldValues);
@@ -242,7 +234,7 @@ export default function AddTaskScreen({
         ...parsedMiddleFieldValues,
         ...parsedBottomFieldValues,
         type: formType,
-        resourcetype: 'FixedTask',
+        resourcetype: 'FixedTask'
       };
 
       createTask(parsedFieldValues);

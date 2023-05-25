@@ -12,9 +12,7 @@ import {
   TransparentView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import {
-  useDeleteUserInviteMutation,
-} from 'reduxStore/services/api/user';
+import { useDeleteUserInviteMutation } from 'reduxStore/services/api/user';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
@@ -79,7 +77,7 @@ const FriendSettingsScreen = ({
     return (
       <TransparentView style={styles.listElement} key={user.id}>
         <UserWithColor
-          name={`${nameToShow}${isPending ? ` (${t("common.pending")})` : ''}`}
+          name={`${nameToShow}${isPending ? ` (${t('common.pending')})` : ''}`}
           memberColour={user.member_colour || 'efefef'}
           userImage={
             isUserResponse(user) ? user.presigned_profile_image_url : ''

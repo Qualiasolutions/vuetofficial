@@ -1,18 +1,27 @@
 import { vuetApi, normalizeData } from './api';
-import { AllFamilyCategoryViewPermission, AllPreferredDays, FamilyCategoryViewPermission, PreferredDays } from 'types/settings';
+import {
+  AllFamilyCategoryViewPermission,
+  AllPreferredDays,
+  FamilyCategoryViewPermission,
+  PreferredDays
+} from 'types/settings';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllFamilyCategoryViewPermissions: builder.query<AllFamilyCategoryViewPermission, void>({
+    getAllFamilyCategoryViewPermissions: builder.query<
+      AllFamilyCategoryViewPermission,
+      void
+    >({
       query: () => ({
         url: 'core/family-category-view-permissions/',
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: FamilyCategoryViewPermission[] = await response.json();
+            const responseJson: FamilyCategoryViewPermission[] =
+              await response.json();
             return normalizeData(responseJson);
           } else {
             // Just return the error data
-            return await response.json();
+            return response.json();
           }
         }
       }),
@@ -20,7 +29,8 @@ const extendedApi = vuetApi.injectEndpoints({
     }),
     updateFamilyCategoryViewPermission: builder.mutation<
       FamilyCategoryViewPermission,
-      Partial<FamilyCategoryViewPermission> & Pick<FamilyCategoryViewPermission, 'id'>
+      Partial<FamilyCategoryViewPermission> &
+        Pick<FamilyCategoryViewPermission, 'id'>
     >({
       query: (body) => {
         return {
@@ -66,7 +76,7 @@ const extendedApi = vuetApi.injectEndpoints({
             return normalizeData(responseJson);
           } else {
             // Just return the error data
-            return await response.json();
+            return response.json();
           }
         }
       }),
@@ -109,7 +119,7 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['PreferredDays']
-    }),
+    })
   }),
   overrideExisting: true
 });

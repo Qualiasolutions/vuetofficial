@@ -31,7 +31,7 @@ export function SettingsNavigator() {
     <SettingsStack.Navigator
       initialRouteName="Settings"
       screenOptions={{
-        header: BackOnlyHeader,
+        header: BackOnlyHeader
       }}
     >
       <SettingsStack.Screen

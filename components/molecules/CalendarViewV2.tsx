@@ -12,40 +12,45 @@ import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export type CalendarViewProps = {
-  tasks: MinimalScheduledTask[],
-  periods: ParsedPeriod[],
+  tasks: MinimalScheduledTask[];
+  periods: ParsedPeriod[];
   onChangeDate?: (date: string) => void;
 };
 
-export default function CalendarView({ onChangeDate, tasks, periods }: CalendarViewProps) {
-  const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(null)
+export default function CalendarView({
+  onChangeDate,
+  tasks,
+  periods
+}: CalendarViewProps) {
+  const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(
+    null
+  );
   const styles = style();
-  const listEnforcedDate = useSelector(selectListEnforcedDate)
-  const whiteColor = useThemeColor({}, "white")
-  const almostWhiteColor = useThemeColor({}, "almostWhite")
-  const currentDayColor = useThemeColor({}, 'lightYellow')
+  const listEnforcedDate = useSelector(selectListEnforcedDate);
+  const whiteColor = useThemeColor({}, 'white');
+  const almostWhiteColor = useThemeColor({}, 'almostWhite');
+  const currentDayColor = useThemeColor({}, 'lightYellow');
 
   const updateDate = (newDate: string) => {
-    setForcedInitialDate(newDate)
+    setForcedInitialDate(newDate);
     if (onChangeDate) {
       // Put this in a timeout so that we don't have
       // to wait for updates
       setTimeout(() => {
-        onChangeDate(newDate)
-      }, 1)
+        onChangeDate(newDate);
+      }, 1);
     }
-  }
+  };
 
   useEffect(() => {
-    setForcedInitialDate(null)
-  }, [listEnforcedDate])
+    setForcedInitialDate(null);
+  }, [listEnforcedDate]);
 
   const formattedTasks = useMemo(() => {
-    return formatTasksAndPeriods(tasks, periods)
-  }, [tasks, periods])
+    return formatTasksAndPeriods(tasks, periods);
+  }, [tasks, periods]);
 
-
-  const currentDate = forcedInitialDate || listEnforcedDate || undefined
+  const currentDate = forcedInitialDate || listEnforcedDate || undefined;
 
   return (
     <WhiteFullPageScrollView style={styles.container}>
@@ -55,15 +60,15 @@ export default function CalendarView({ onChangeDate, tasks, periods }: CalendarV
         horizontal={true}
         style={{ height: 1000 }}
         onPressArrowLeft={(cb, date) => {
-          cb()
+          cb();
           if (date) {
-            updateDate(date.addMonths(-1).toString('yyyy-MM-dd'))
+            updateDate(date.addMonths(-1).toString('yyyy-MM-dd'));
           }
         }}
         onPressArrowRight={(cb, date) => {
-          cb()
+          cb();
           if (date) {
-            updateDate(date.addMonths(1).toString('yyyy-MM-dd'))
+            updateDate(date.addMonths(1).toString('yyyy-MM-dd'));
           }
         }}
         initialDate={currentDate}
@@ -72,38 +77,40 @@ export default function CalendarView({ onChangeDate, tasks, periods }: CalendarV
             return (
               <Pressable
                 onPress={() => {
-                  updateDate(date.dateString)
-                  setForcedInitialDate(date.dateString)
+                  updateDate(date.dateString);
+                  setForcedInitialDate(date.dateString);
                 }}
                 style={[
                   styles.dayComponent,
                   {
-                    backgroundColor: (
-                      (currentDate && (parseInt(currentDate.split("-")[1]) === date.month))
-                        ? (parseInt(currentDate.split("-")[2]) === date.day)
+                    backgroundColor:
+                      currentDate &&
+                      parseInt(currentDate.split('-')[1]) === date.month
+                        ? parseInt(currentDate.split('-')[2]) === date.day
                           ? currentDayColor
                           : whiteColor
                         : almostWhiteColor
-                    )
                   }
                 ]}
               >
                 <ScrollView>
                   <TransparentView style={{ height: '100%' }}>
-                    <Text
-                      style={[
-                        styles.date,
-                        { color: 'black' }
-                      ]}
-                    >
+                    <Text style={[styles.date, { color: 'black' }]}>
                       {date.day}
                     </Text>
-                    {
-                      formattedTasks[date.dateString]?.tasks?.map(task => <Text key={`${task.id}_${task.recurrence_index}`} style={styles.taskText}>{task.title}</Text>)
-                    }
-                    {
-                      formattedTasks[date.dateString]?.periods?.map(period => <Text key={period.id} style={styles.taskText}>{period.title}</Text>)
-                    }
+                    {formattedTasks[date.dateString]?.tasks?.map((task) => (
+                      <Text
+                        key={`${task.id}_${task.recurrence_index}`}
+                        style={styles.taskText}
+                      >
+                        {task.title}
+                      </Text>
+                    ))}
+                    {formattedTasks[date.dateString]?.periods?.map((period) => (
+                      <Text key={period.id} style={styles.taskText}>
+                        {period.title}
+                      </Text>
+                    ))}
                   </TransparentView>
                 </ScrollView>
               </Pressable>
@@ -126,7 +133,7 @@ function style() {
       borderColor: useThemeColor({}, 'almostBlack'),
       margin: 0,
       paddingVertical: 1,
-      paddingHorizontal: 2,
+      paddingHorizontal: 2
     },
     date: { fontSize: 10, textAlign: 'left' },
     taskText: { fontSize: 8, marginBottom: 1 }

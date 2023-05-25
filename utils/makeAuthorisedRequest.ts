@@ -26,7 +26,7 @@ const makeAuthorisedRequest = async <ResponseBodyType>(
   method: MethodType = 'GET',
   extraHeaders: object = {}
 ): Promise<ResponseType<ResponseBodyType>> => {
-  return await fetch(url, {
+  return fetch(url, {
     method,
     headers: {
       Accept: 'application/json',

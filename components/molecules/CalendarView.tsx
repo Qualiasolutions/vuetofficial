@@ -29,25 +29,27 @@ export type CalendarViewProps = {
   onChangeDate?: (date: string) => void;
 };
 
-export default function CalendarView({ dates, onChangeDate }: CalendarViewProps) {
+export default function CalendarView({
+  dates,
+  onChangeDate
+}: CalendarViewProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = style();
-  const { periods: allPeriods } =
-    useScheduledPeriods();
+  const { periods: allPeriods } = useScheduledPeriods();
   const navigation = useNavigation();
-  const listEnforcedDate = useSelector(selectListEnforcedDate)
+  const listEnforcedDate = useSelector(selectListEnforcedDate);
 
   const updateDate = (newDate: string) => {
     if (onChangeDate) {
       // Put this in a timeout so that we don't have
       // to wait for updates
       setTimeout(() => {
-        onChangeDate(newDate)
-      }, 1)
+        onChangeDate(newDate);
+      }, 1);
     }
-  }
+  };
 
   const datesCopy = { ...dates };
   if (selectedDay) {
@@ -106,18 +108,18 @@ export default function CalendarView({ dates, onChangeDate }: CalendarViewProps)
         horizontal={true}
         onDayPress={(day) => {
           setSelectedDay(day);
-          updateDate(day.dateString)
+          updateDate(day.dateString);
         }}
         onPressArrowLeft={(cb, date) => {
-          cb()
+          cb();
           if (date) {
-            updateDate(date.addMonths(-1).toString('yyyy-MM-dd'))
+            updateDate(date.addMonths(-1).toString('yyyy-MM-dd'));
           }
         }}
         onPressArrowRight={(cb, date) => {
-          cb()
+          cb();
           if (date) {
-            updateDate(date.addMonths(1).toString('yyyy-MM-dd'))
+            updateDate(date.addMonths(1).toString('yyyy-MM-dd'));
           }
         }}
         initialDate={listEnforcedDate || undefined}
@@ -135,7 +137,7 @@ export default function CalendarView({ dates, onChangeDate }: CalendarViewProps)
 
             const text =
               periodStartUtcValues.day === periodEndUtcValues.day &&
-                periodStartUtcValues.monthShortName ===
+              periodStartUtcValues.monthShortName ===
                 periodEndUtcValues.monthShortName
                 ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
                 : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;

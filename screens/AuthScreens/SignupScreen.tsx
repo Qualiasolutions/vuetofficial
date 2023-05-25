@@ -57,7 +57,7 @@ const SignupScreen = ({
   }, [result]);
 
   const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage}></ErrorBox>
+    <ErrorBox errorText={errorMessage} />
   ) : null;
 
   return (

@@ -10,8 +10,8 @@ import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/componen
 export default function TaskCompletionForm({
   task,
   title = '',
-  onSubmitSuccess = () => { },
-  onRequestClose = () => { }
+  onSubmitSuccess = () => {},
+  onRequestClose = () => {}
 }: {
   task: MinimalScheduledTask;
   title?: string;
@@ -34,7 +34,7 @@ export default function TaskCompletionForm({
   const permittedTaskForms = ['BookMOTTask'];
   if (task.resourcetype && permittedTaskForms.includes(task.resourcetype)) {
     return (
-      <Modal onRequestClose={onRequestClose || (() => { })}>
+      <Modal onRequestClose={onRequestClose || (() => {})}>
         <View>
           {title ? <Text>{title}</Text> : null}
           {createSuccessful ? (
@@ -55,7 +55,7 @@ export default function TaskCompletionForm({
             onValueChange={() => setCreateSuccessful(false)}
             clearOnSubmit={true}
             submitText="Mark complete"
-          // inlineFields={true}
+            // inlineFields={true}
           />
         </View>
       </Modal>

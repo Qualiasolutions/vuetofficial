@@ -1,3 +1,3 @@
 export default function CategoryPreferencesScreen() {
-  return null
+  return null;
 }

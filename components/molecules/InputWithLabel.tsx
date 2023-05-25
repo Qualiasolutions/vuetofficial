@@ -1,8 +1,8 @@
-import { Text } from "components/Themed";
-import { ReactNode } from "react";
+import { Text } from 'components/Themed';
+import { ReactNode } from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
-import { AlmostBlackText } from "./TextComponents";
-import { TransparentView } from "./ViewComponents";
+import { AlmostBlackText } from './TextComponents';
+import { TransparentView } from './ViewComponents';
 
 export default function InputWithLabel({
   label,
@@ -19,22 +19,22 @@ export default function InputWithLabel({
   labelStyle?: ViewStyle;
   labelWrapperStyle?: ViewStyle;
 }) {
-  return <TransparentView>
-    {error ? <Text>{error}</Text> : null}
-    <TransparentView
-      style={inlineFields ? styles.inlineInputPair : {}}
-    >
-      <TransparentView style={[styles.inputLabelWrapper, labelWrapperStyle || {}]}>
-        <AlmostBlackText
-          text={label}
-          style={[styles.inputLabel, labelStyle || {}]}
-        />
-      </TransparentView>
-      <TransparentView style={{ flex: 1 }}>
-        {children}
+  return (
+    <TransparentView>
+      {error ? <Text>{error}</Text> : null}
+      <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+        <TransparentView
+          style={[styles.inputLabelWrapper, labelWrapperStyle || {}]}
+        >
+          <AlmostBlackText
+            text={label}
+            style={[styles.inputLabel, labelStyle || {}]}
+          />
+        </TransparentView>
+        <TransparentView style={{ flex: 1 }}>{children}</TransparentView>
       </TransparentView>
     </TransparentView>
-  </TransparentView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -54,6 +54,6 @@ const styles = StyleSheet.create({
   },
   inputLabelWrapper: {
     alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-  },
-})
+    justifyContent: 'flex-start'
+  }
+});

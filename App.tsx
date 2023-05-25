@@ -60,7 +60,7 @@ export default function App() {
               <Navigation colorScheme={colorScheme} />
             </GestureHandlerRootView>
             <StatusBar translucent={true} />
-            <Toast position='bottom' />
+            <Toast position="bottom" />
           </SafeAreaProvider>
         </PersistGate>
       </Provider>

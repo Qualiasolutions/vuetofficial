@@ -80,22 +80,25 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
 };
 
 export type RecurrenceSelectorField = BaseField<'recurrenceSelector', any> & {
-  firstOccurrenceField: string
-  reverse?: boolean
-}
+  firstOccurrenceField: string;
+  reverse?: boolean;
+};
 
-export type MultiRecurrenceSelectorField = BaseField<'multiRecurrenceSelector', any> & {
+export type MultiRecurrenceSelectorField = BaseField<
+  'multiRecurrenceSelector',
+  any
+> & {
   firstOccurrenceField: string;
   reverse?: boolean;
   max?: number;
-}
+};
 
-export type TagSelectorField = BaseField<'tagSelector', any>
+export type TagSelectorField = BaseField<'tagSelector', any>;
 
 export type CalculatedDurationField = BaseField<'calculatedDuration', any> & {
   startFieldName: string;
   endFieldName: string;
-}
+};
 
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;

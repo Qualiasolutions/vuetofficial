@@ -13,7 +13,7 @@ export default function ColourBar({
       <TransparentView
         key={i}
         style={[styles.colourBar, { backgroundColor: `#${colour}` }, style]}
-      ></TransparentView>
+      />
     );
   });
 
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row-reverse',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   colourBar: {
     width: 30,

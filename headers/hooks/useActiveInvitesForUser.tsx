@@ -1,22 +1,23 @@
-import getUserFullDetails from "hooks/useGetUserDetails";
-import { useSelector } from "react-redux";
-import { useGetUserInvitesQuery } from "reduxStore/services/api/user";
-import { selectAccessToken } from "reduxStore/slices/auth/selectors";
+import getUserFullDetails from 'hooks/useGetUserDetails';
+import { useSelector } from 'react-redux';
+import { useGetUserInvitesQuery } from 'reduxStore/services/api/user';
+import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 
 export default function useActiveInvitesForUser(ownInvites: boolean) {
   const jwtAccessToken = useSelector(selectAccessToken);
-  const { data: userFullDetails, isLoading: isLoadingUserFullDetails } = getUserFullDetails()
+  const { data: userFullDetails, isLoading: isLoadingUserFullDetails } =
+    getUserFullDetails();
 
   const { data: userInvites, isLoading: isLoadingUserInvites } =
     useGetUserInvitesQuery(userFullDetails?.family?.id || -1, {
-      skip: (!jwtAccessToken || !userFullDetails?.family?.id)
+      skip: !jwtAccessToken || !userFullDetails?.family?.id
     });
 
   if (!jwtAccessToken) {
     return {
       data: [],
       isLoading: false
-    }
+    };
   }
 
   const isLoading =
@@ -26,36 +27,30 @@ export default function useActiveInvitesForUser(ownInvites: boolean) {
     return {
       data: [],
       isLoading: true
-    }
+    };
   }
 
   const invitesForUser = userInvites.filter(
     (invite) =>
       // If ownInvites then only want invites for user
-      (
-        !ownInvites || (invite.phone_number === userFullDetails?.phone_number)
-      ) &&
+      (!ownInvites || invite.phone_number === userFullDetails?.phone_number) &&
       // Don't want rejected invites
       !invite.rejected &&
       // Don't want accepted invites
       !invite.accepted &&
       // If ownInvites then don't want invites for own family
-      (
-        !ownInvites || (userFullDetails?.family?.id !== invite.family)
-      ) &&
-      (
-        // Don't want friend invites for already-added friends
-        !(
-          !invite.family &&
-          userFullDetails?.friends
-            ?.map((user) => user.id)
-            .includes(invite.invitee.id)
-        )
+      (!ownInvites || userFullDetails?.family?.id !== invite.family) &&
+      // Don't want friend invites for already-added friends
+      !(
+        !invite.family &&
+        userFullDetails?.friends
+          ?.map((user) => user.id)
+          .includes(invite.invitee.id)
       )
   );
 
   return {
     isLoading: false,
     data: invitesForUser
-  }
-} 
+  };
+}
