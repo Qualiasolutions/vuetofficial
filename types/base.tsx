@@ -64,6 +64,8 @@ export type SettingsTabParamList = {
   WhatMyFamilySees: undefined;
   AddingTasks: undefined;
   DayPreferences: undefined;
+  BlockedDayPreferences: undefined;
+  PreferredDayPreferences: undefined;
   CategoryPreferences: undefined;
   TaskLimits: undefined;
   FlexibleTaskPreferences: undefined;

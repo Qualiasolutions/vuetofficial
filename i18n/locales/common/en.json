@@ -22,6 +22,8 @@
     "whatMyFamilySees": "What My Family Sees",
     "addingTasks": "Adding Tasks",
     "dayPreferences": "Blocked and Preferred Days",
+    "blockedDayPreferences": "Blocked Days",
+    "preferredDayPreferences": "Preferred Days",
     "categoryPreferences": "Category Preferences",
     "taskLimits": "Task Limits",
     "flexibleTaskPreferences": "Flexible Tasks"

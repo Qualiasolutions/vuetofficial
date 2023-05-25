@@ -18,6 +18,8 @@ import DayPreferencesScreen from 'screens/SettingsScreens/DayPreferencesScreen';
 import CategoryPreferencesScreen from 'screens/SettingsScreens/CategoryPreferencesScreen';
 import TaskLimitsScreen from 'screens/SettingsScreens/TaskLimitsScreen';
 import FlexibleTaskPreferencesScreen from 'screens/SettingsScreens/FlexibleTaskPreferencesScreen';
+import BlockedDayPreferencesScreen from 'screens/SettingsScreens/BlockedDayPreferencesScreen';
+import PreferredDayPreferencesScreen from 'screens/SettingsScreens/PreferredDayPreferencesScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
 
@@ -86,6 +88,22 @@ export function SettingsNavigator() {
         component={DayPreferencesScreen}
         options={{
           title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="BlockedDayPreferences"
+        component={BlockedDayPreferencesScreen}
+        options={{
+          title: t('pageTitles.blockedDayPreferences'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="PreferredDayPreferences"
+        component={PreferredDayPreferencesScreen}
+        options={{
+          title: t('pageTitles.preferredDayPreferences'),
           headerTintColor
         }}
       />

@@ -119,7 +119,6 @@ const EditTaskLimitModal = ({ categoryId, interval, visible, onRequestClose }: E
   const [taskLimitToUpdate, setTaskLimitToUpdate] = useState<number | null>(null)
 
   useEffect(() => {
-    console.log("EFFECT")
     if (taskLimits) {
       const taskLimitToEdit = Object.values(taskLimits.byId).find(taskLimit => (
         (taskLimit.category === categoryId)
@@ -151,11 +150,6 @@ const EditTaskLimitModal = ({ categoryId, interval, visible, onRequestClose }: E
       title={t("common.update")}
       onPress={() => {
         if (!taskLimitToUpdate) {
-          console.log({
-            interval,
-            category: categoryId,
-            ...newLimits
-          })
           createTaskLimit({
             interval,
             category: categoryId,
@@ -309,7 +303,7 @@ export default function TaskLimitsScreen() {
   const headerHeight = 60
 
   return <TransparentPaddedView style={{ flex: 1 }}>
-    <Table borderStyle={{ borderWidth: 1 }} >
+    <Table borderStyle={{ borderWidth: 1 }}>
       <Row
         data={["", "Daily", "Monthly"]}
         style={{ width: '100%', height: headerHeight }}
