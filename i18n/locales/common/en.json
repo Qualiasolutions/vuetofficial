@@ -336,6 +336,9 @@
     "friendSettings": {
       "friends": "Friends"
     },
+    "taskLimits": {
+      "noLimits": "No task limits have currently been set"
+    },
     "addTask": {
       "title": "Add Task",
       "createSuccess": "Successfully created new task",

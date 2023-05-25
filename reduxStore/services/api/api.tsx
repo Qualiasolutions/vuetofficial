@@ -23,6 +23,7 @@ export const vuetApi = createApi({
   tagTypes: [
     'Entity',
     'Task',
+    'TaskLimit',
     'Period',
     'TaskCompletionForm',
     'Category',
