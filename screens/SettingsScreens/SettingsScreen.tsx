@@ -17,17 +17,25 @@ const SettingsScreen = ({
     <TransparentFullPageScrollView contentContainerStyle={styles.container}>
       <TransparentView>
         <Button
-          title="FAMILY SETTINGS"
+          title={t("pageTitles.familySettings")}
           onPress={() => {
             navigation.navigate('FamilySettings');
           }}
-          style={styles.familySettingsButton}
+          style={styles.button}
         />
         <Button
-          title="FRIEND SETTINGS"
+          title={t("pageTitles.friendSettings")}
           onPress={() => {
             navigation.navigate('FriendSettings');
           }}
+          style={styles.button}
+        />
+        <Button
+          title={t("pageTitles.personalAssistant")}
+          onPress={() => {
+            navigation.navigate('PersonalAssistant');
+          }}
+          style={styles.button}
         />
       </TransparentView>
     </TransparentFullPageScrollView>
@@ -39,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  familySettingsButton: {
+  button: {
     marginBottom: 10
   }
 });

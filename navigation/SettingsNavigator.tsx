@@ -11,6 +11,13 @@ import EditFamilyMemberScreen from 'screens/SettingsScreens/Forms/EditFamilyMemb
 import EditFamilyInviteScreen from 'screens/SettingsScreens/Forms/EditFamilyInviteScreen';
 import FriendSettingsScreen from 'screens/SettingsScreens/FriendsSettingsScreen';
 import BackOnlyHeader from 'headers/BackOnlyHeader';
+import PersonalAssistantScreen from 'screens/SettingsScreens/PersonalAssistantScreen';
+import WhatMyFamilySeesScreen from 'screens/SettingsScreens/WhatMyFamilySeesScreen';
+import AddingTasksScreen from 'screens/SettingsScreens/AddingTasksScreen';
+import DayPreferencesScreen from 'screens/SettingsScreens/DayPreferencesScreen';
+import CategoryPreferencesScreen from 'screens/SettingsScreens/CategoryPreferencesScreen';
+import TaskLimitsScreen from 'screens/SettingsScreens/TaskLimitsScreen';
+import FlexibleTaskPreferencesScreen from 'screens/SettingsScreens/FlexibleTaskPreferencesScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
 
@@ -47,6 +54,62 @@ export function SettingsNavigator() {
         component={FriendSettingsScreen}
         options={{
           title: t('pageTitles.friendSettings'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="PersonalAssistant"
+        component={PersonalAssistantScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="WhatMyFamilySees"
+        component={WhatMyFamilySeesScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="AddingTasks"
+        component={AddingTasksScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="DayPreferences"
+        component={DayPreferencesScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="CategoryPreferences"
+        component={CategoryPreferencesScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="TaskLimits"
+        component={TaskLimitsScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="FlexibleTaskPreferences"
+        component={FlexibleTaskPreferencesScreen}
+        options={{
+          title: t('pageTitles.personalAssistant'),
           headerTintColor
         }}
       />

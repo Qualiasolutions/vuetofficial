@@ -60,6 +60,13 @@ export type SettingsTabParamList = {
   Settings: undefined;
   FamilySettings: undefined;
   FriendSettings: undefined;
+  PersonalAssistant: undefined;
+  WhatMyFamilySees: undefined;
+  AddingTasks: undefined;
+  DayPreferences: undefined;
+  CategoryPreferences: undefined;
+  TaskLimits: undefined;
+  FlexibleTaskPreferences: undefined;
   CreateUserInvite: { familyRequest: boolean };
   EditFamilyMember: { id: number | string };
   EditFamilyInvite: { id: number | string };

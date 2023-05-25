@@ -12,12 +12,19 @@
     "entity": "View Entity",
     "calendar": "My Dates",
     "oops": "Oops!",
+    "personalAssistant": "Personal assistant",
     "familySettings": "Family settings",
     "friendSettings": "Friend settings",
     "addFamilyMember": "Add family member",
     "addFriend": "Add to Vuet circle",
     "editFamilyMember": "Edit {{fullName}}",
-    "createTask": "Add"
+    "createTask": "Add",
+    "whatMyFamilySees": "What My Family Sees",
+    "addingTasks": "Adding Tasks",
+    "dayPreferences": "Blocked and Preferred Days",
+    "categoryPreferences": "Category Preferences",
+    "taskLimits": "Task Limits",
+    "flexibleTaskPreferences": "Flexible Tasks"
   },
   "categories": {
     "FAMILY": "Family",
