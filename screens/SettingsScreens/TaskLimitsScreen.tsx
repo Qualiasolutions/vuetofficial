@@ -1,16 +1,48 @@
 import { useTranslation } from "react-i18next"
-import { useGetAllTaskLimitsQuery } from "reduxStore/services/api/taskLimits"
+import { useCreateTaskLimitMutation, useGetAllTaskLimitsQuery, useUpdateTaskLimitMutation } from "reduxStore/services/api/taskLimits"
 import { TransparentPaddedView, TransparentView } from "components/molecules/ViewComponents";
 import { FullPageSpinner } from "components/molecules/Spinners";
 import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
 import { useGetAllCategoriesQuery } from "reduxStore/services/api/api";
 import { Pressable, StyleSheet } from "react-native";
 import { Modal } from "components/molecules/Modals";
-import { TaskLimitInterval, TaskLimitLimitFields, TaskLimitResponseType } from "types/taskLimits";
-import { Text } from "components/Themed";
+import { TaskLimitInterval, TaskLimitLimitFields } from "types/taskLimits";
+import { Text, TextInput } from "components/Themed";
 import { useEffect, useState } from "react";
+import DropDownPicker from "react-native-dropdown-picker";
+import { Button } from "components/molecules/ButtonComponents";
+import getUserFullDetails from "hooks/useGetUserDetails";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 
+type LimitType = 'TASKS' | 'MINUTES'
+
+const TypePicker = ({ value, onChange }: { value: LimitType; onChange: (int: LimitType) => void }) => {
+  const [open, setOpen] = useState(false)
+
+  return <DropDownPicker
+    value={value}
+    items={[
+      {
+        value: "TASKS",
+        label: "tasks"
+      },
+      {
+        value: "MINUTES",
+        label: "minutes"
+      },
+    ]}
+    multiple={false}
+    setValue={(item) => {
+      if (item(null)) {
+        onChange(item(null))
+      }
+    }}
+    open={open}
+    setOpen={setOpen}
+    listMode="MODAL"
+  />
+}
 const EditTaskLimitForm = ({
   value,
   onChange
@@ -18,8 +50,44 @@ const EditTaskLimitForm = ({
   value: TaskLimitLimitFields,
   onChange: (val: TaskLimitLimitFields) => void
 }) => {
-  return <TransparentView>
-    <Text>EDITTTTTT</Text>
+  return <TransparentView style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
+    <TransparentView style={{ width: '50%', marginRight: 10 }}>
+      <TextInput
+        value={`${value.tasks_limit || value.minutes_limit || ""}`}
+        keyboardType="numeric"
+        onChangeText={(limitValue) => {
+          if (value.tasks_limit) {
+            onChange({
+              tasks_limit: parseInt(limitValue),
+              minutes_limit: null
+            })
+          } else {
+            onChange({
+              minutes_limit: parseInt(limitValue),
+              tasks_limit: null
+            })
+          }
+        }}
+      />
+    </TransparentView>
+    <TransparentView style={{ width: '50%' }}>
+      <TypePicker
+        value={value.tasks_limit ? 'TASKS' : 'MINUTES'}
+        onChange={(limitType) => {
+          if (limitType === "TASKS") {
+            onChange({
+              tasks_limit: value.tasks_limit || value.minutes_limit,
+              minutes_limit: null
+            })
+          } else {
+            onChange({
+              minutes_limit: value.tasks_limit || value.minutes_limit,
+              tasks_limit: null
+            })
+          }
+        }}
+      />
+    </TransparentView>
   </TransparentView>
 }
 
@@ -35,12 +103,23 @@ const EditTaskLimitModal = ({ categoryId, interval, visible, onRequestClose }: E
     isLoading: isLoadingTaskLimits
   } = useGetAllTaskLimitsQuery()
 
-  const [newLimits, setNewLimits] = useState<TaskLimitLimitFields>({
+  const { t } = useTranslation()
+
+  const [updateTaskLimit, updateTaskLimitResult] = useUpdateTaskLimitMutation()
+  const [createTaskLimit, createTaskLimitResult] = useCreateTaskLimitMutation()
+  const { data: userDetails } = getUserFullDetails();
+
+  const defaultLimits = {
     minutes_limit: 120,
     tasks_limit: null
+  }
+  const [newLimits, setNewLimits] = useState<TaskLimitLimitFields>({
+    ...defaultLimits
   })
+  const [taskLimitToUpdate, setTaskLimitToUpdate] = useState<number | null>(null)
 
   useEffect(() => {
+    console.log("EFFECT")
     if (taskLimits) {
       const taskLimitToEdit = Object.values(taskLimits.byId).find(taskLimit => (
         (taskLimit.category === categoryId)
@@ -50,11 +129,15 @@ const EditTaskLimitModal = ({ categoryId, interval, visible, onRequestClose }: E
         setNewLimits({
           ...taskLimitToEdit
         })
+        setTaskLimitToUpdate(taskLimitToEdit.id)
+      } else {
+        setTaskLimitToUpdate(null)
+        setNewLimits({ ...defaultLimits })
       }
     }
-  })
+  }, [categoryId, interval, taskLimits])
 
-  const isLoading = isLoadingTaskLimits || !taskLimits
+  const isLoading = isLoadingTaskLimits || !taskLimits || !userDetails
   if (isLoading) {
     return null
   }
@@ -63,6 +146,45 @@ const EditTaskLimitModal = ({ categoryId, interval, visible, onRequestClose }: E
     <EditTaskLimitForm
       value={newLimits}
       onChange={setNewLimits}
+    />
+    <Button
+      title={t("common.update")}
+      onPress={() => {
+        if (!taskLimitToUpdate) {
+          console.log({
+            interval,
+            category: categoryId,
+            ...newLimits
+          })
+          createTaskLimit({
+            interval,
+            category: categoryId,
+            user: userDetails.id,
+            ...newLimits
+          }).unwrap().then(() => {
+            onRequestClose()
+          }).catch(err => {
+            Toast.show({
+              type: "error",
+              text1: t("common.errors.generic")
+            })
+          })
+        } else {
+          updateTaskLimit({
+            id: taskLimitToUpdate,
+            interval,
+            category: categoryId,
+            ...newLimits
+          }).unwrap().then(() => {
+            onRequestClose()
+          }).catch(err => {
+            Toast.show({
+              type: "error",
+              text1: t("common.errors.generic")
+            })
+          })
+        }
+      }}
     />
   </Modal>
 }
@@ -137,21 +259,21 @@ export default function TaskLimitsScreen() {
     if (!categoryDayLimit) {
       dailyLimitCells[id] = <DailyPressable
         categoryId={id}
-        text={t("common.none")}
+        text="-"
       />
     }
 
     if (categoryDayLimit?.minutes_limit) {
       dailyLimitCells[id] = <DailyPressable
         categoryId={id}
-        text={`${categoryDayLimit?.minutes_limit} ${t("common.minutes")}`}
+        text={`${categoryDayLimit.minutes_limit} ${t("common.minutes")}`}
       />
     }
 
     if (categoryDayLimit?.tasks_limit) {
       dailyLimitCells[id] = <DailyPressable
         categoryId={id}
-        text={`${categoryDayLimit?.minutes_limit} ${t("common.tasks")}`}
+        text={`${categoryDayLimit.tasks_limit} ${t("common.tasks")}`}
       />
     }
 
@@ -164,21 +286,21 @@ export default function TaskLimitsScreen() {
     if (!categoryMonthLimit) {
       monthlyLimitCells[id] = <MonthlyPressable
         categoryId={id}
-        text={t("common.none")}
+        text="-"
       />
     }
 
     if (categoryMonthLimit?.minutes_limit) {
       monthlyLimitCells[id] = <MonthlyPressable
         categoryId={id}
-        text={`${categoryMonthLimit?.minutes_limit} ${t("common.minutes")}`}
+        text={`${categoryMonthLimit.minutes_limit} ${t("common.minutes")}`}
       />
     }
 
     if (categoryMonthLimit?.tasks_limit) {
       monthlyLimitCells[id] = <MonthlyPressable
         categoryId={id}
-        text={`${categoryMonthLimit?.minutes_limit} ${t("common.tasks")}`}
+        text={`${categoryMonthLimit.tasks_limit} ${t("common.tasks")}`}
       />
     }
   }
@@ -193,7 +315,6 @@ export default function TaskLimitsScreen() {
         style={{ width: '100%', height: headerHeight }}
         textStyle={StyleSheet.flatten([styles.tableText, styles.tableHeaderText])}
       />
-      {/* <TransparentFullPageScrollView> */}
       <TableWrapper style={{ flexDirection: 'row' }}>
         <Col
           heightArr={categoryIds.map(id => rowHeight)}

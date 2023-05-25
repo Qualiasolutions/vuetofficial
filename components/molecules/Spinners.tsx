@@ -1,7 +1,7 @@
 import { useThemeColor } from 'components/Themed';
 import { ColorName } from 'constants/Colors';
 import { ActivityIndicator, ViewStyle } from 'react-native';
-import { TransparentPaddedView, WhiteContainerView } from './ViewComponents';
+import { TransparentContainerView, TransparentPaddedView } from './ViewComponents';
 
 export type SpinnerProps = {
   spinnerColor?: ColorName;
@@ -23,8 +23,8 @@ export function FullPageSpinner({
   style = {}
 }: SpinnerProps) {
   return (
-    <WhiteContainerView style={style}>
+    <TransparentContainerView style={style}>
       <ActivityIndicator color={useThemeColor({}, spinnerColor)} size="large" />
-    </WhiteContainerView>
+    </TransparentContainerView>
   );
 }

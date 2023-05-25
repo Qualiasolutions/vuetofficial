@@ -7,6 +7,7 @@ export interface TaskLimitLimitFields {
 export type TaskLimitResponseType = TaskLimitLimitFields & {
   id: number;
   category: number;
+  user: number;
   interval: TaskLimitInterval;
 }
 
