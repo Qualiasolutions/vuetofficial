@@ -1,5 +1,5 @@
 import { vuetApi, normalizeData } from './api';
-import { AllFamilyCategoryViewPermission, FamilyCategoryViewPermission } from 'types/settings';
+import { AllFamilyCategoryViewPermission, AllPreferredDays, FamilyCategoryViewPermission, PreferredDays } from 'types/settings';
 
 const extendedApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -56,6 +56,60 @@ const extendedApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['FamilyCategoryViewPermission']
     }),
+
+    getAllPreferredDays: builder.query<AllPreferredDays, void>({
+      query: () => ({
+        url: 'core/preferred-days/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PreferredDays[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return await response.json();
+          }
+        }
+      }),
+      providesTags: ['PreferredDays']
+    }),
+    updatePreferredDays: builder.mutation<
+      PreferredDays,
+      Partial<PreferredDays> & Pick<PreferredDays, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/preferred-days/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['PreferredDays']
+    }),
+    createPreferredDays: builder.mutation<
+      PreferredDays,
+      Omit<PreferredDays, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/preferred-days/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['PreferredDays']
+    }),
+    deletePreferredDays: builder.mutation<
+      PreferredDays,
+      Pick<PreferredDays, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/preferred-days/${body.id}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['PreferredDays']
+    }),
   }),
   overrideExisting: true
 });
@@ -68,5 +122,9 @@ export const {
   useGetAllFamilyCategoryViewPermissionsQuery,
   useUpdateFamilyCategoryViewPermissionMutation,
   useDeleteFamilyCategoryViewPermissionMutation,
-  useCreateFamilyCategoryViewPermissionMutation
+  useCreateFamilyCategoryViewPermissionMutation,
+  useGetAllPreferredDaysQuery,
+  useUpdatePreferredDaysMutation,
+  useCreatePreferredDaysMutation,
+  useDeletePreferredDaysMutation
 } = extendedApi;
