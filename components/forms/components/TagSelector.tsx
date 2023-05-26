@@ -6,8 +6,19 @@ import { Text } from 'components/Themed';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
+import {
+  useGetAllEntitiesQuery,
+  useGetMemberEntitiesQuery
+} from 'reduxStore/services/api/entities';
 import { EntityResponseType } from 'types/entities';
+
+const styles = StyleSheet.create({
+  membersItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }
+});
 
 export function ModalListing({
   item
@@ -37,24 +48,35 @@ export default function TagSelector({ value, onChange }: Props) {
   const { data: userDetails, isLoading: isLoadingUserDetails } =
     getUserFullDetails();
 
-  const {
-    data: allEntities,
-    isLoading: isLoadingEntities,
-    error
-  } = useGetMemberEntitiesQuery(userDetails?.id || -1, {
-    skip: !userDetails?.id
-  });
+  const { data: memberEntities, isLoading: isLoadingMemberEntities } =
+    useGetMemberEntitiesQuery(userDetails?.id || -1, {
+      skip: !userDetails?.id
+    });
+
+  const { data: allEntities, isLoading: isLoadingAllEntities } =
+    useGetAllEntitiesQuery(userDetails?.id || -1, {
+      skip: !userDetails?.id
+    });
 
   const preparedData = {
-    entities: allEntities
-      ? Object.values(allEntities.byId).map((entity: EntityResponseType) => ({
-          ...entity,
-          selected: value.entities.includes(entity.id)
-        }))
+    entities: memberEntities
+      ? Object.values(memberEntities.byId).map(
+          (entity: EntityResponseType) => ({
+            ...entity,
+            selected: value.entities.includes(entity.id)
+          })
+        )
       : []
   };
 
-  if (isLoadingUserDetails || isLoadingEntities || !allEntities) {
+  const isLoading =
+    isLoadingUserDetails ||
+    isLoadingMemberEntities ||
+    isLoadingAllEntities ||
+    !allEntities ||
+    !memberEntities;
+
+  if (isLoading) {
     return <PaddedSpinner />;
   }
 
@@ -93,11 +115,3 @@ export default function TagSelector({ value, onChange }: Props) {
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  membersItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  }
-});

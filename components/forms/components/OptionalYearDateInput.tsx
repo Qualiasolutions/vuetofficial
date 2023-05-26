@@ -12,6 +12,28 @@ dayjs.extend(customParseFormat);
 
 const DEFAULT_YEAR = 1000; // A leapyear to allow Feb 29th
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  textInputWrapper: {
+    flexDirection: 'row',
+    flex: 1
+  },
+  textInput: {
+    marginRight: 10,
+    flex: 1,
+    maxWidth: 60
+  },
+  yearTextInput: {
+    flex: 2,
+    maxWidth: 80
+  },
+  ageText: {
+    fontSize: 16
+  }
+});
+
 export type OptionalYearDateInputProps = {
   value?: Date;
   knownYear?: boolean;
@@ -119,25 +141,3 @@ export function OptionalYearDateInput({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  textInputWrapper: {
-    flexDirection: 'row',
-    flex: 1
-  },
-  textInput: {
-    marginRight: 10,
-    flex: 1,
-    maxWidth: 60
-  },
-  yearTextInput: {
-    flex: 2,
-    maxWidth: 80
-  },
-  ageText: {
-    fontSize: 16
-  }
-});

@@ -6,6 +6,22 @@ import Checkbox from 'components/molecules/Checkbox';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
 
+const styles = StyleSheet.create({
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  memberContainer: {
+    marginTop: 10
+  },
+  checkbox: {
+    marginRight: 10
+  },
+  selectAllText: {
+    fontSize: 18
+  }
+});
+
 export default function FamilySelector({
   data,
   values,
@@ -74,19 +90,3 @@ export default function FamilySelector({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  memberContainer: {
-    marginTop: 10
-  },
-  checkbox: {
-    marginRight: 10
-  },
-  selectAllText: {
-    fontSize: 18
-  }
-});

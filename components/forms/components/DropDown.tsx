@@ -8,7 +8,7 @@ const otherKey = '%%%%%%OTHER%%%%%%';
 export default function DropDown({
   value = '',
   items = [],
-  setFormValues = (item: string) => {},
+  setFormValues = () => {},
   dropdownPlaceholder = 'Select',
   listMode = 'SCROLLVIEW',
   style = {},

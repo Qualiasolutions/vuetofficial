@@ -12,6 +12,39 @@ import { parsePresignedUrl } from 'utils/urls';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Image } from 'components/molecules/ImageComponents';
 
+const styles = StyleSheet.create({
+  container: {
+    height: 120,
+    width: 120,
+    borderRadius: 60,
+    borderWidth: 1,
+    shadowColor: '#333333',
+    shadowOffset: {
+      width: 0,
+      height: 0
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden'
+  },
+  placeholderImage: {
+    width: 40,
+    height: 40
+  },
+  selectedImage: {
+    width: '100%',
+    height: '100%',
+    flex: 1
+  },
+  fullWidth: {
+    borderRadius: 0,
+    height: 160,
+    width: '100%'
+  }
+});
+
 export type CustomFile = {
   height: number;
   width: number;
@@ -156,10 +189,10 @@ export function SmallImagePicker(
   const { style, ...otherProps } = props;
   const backgroundColor = useThemeColor({}, 'transparent');
 
-  const PressableComponent = (props: {
+  const PressableComponent = (pressableProps: {
     onPress: (event: GestureResponderEvent) => void;
   }) => (
-    <Pressable onPress={props.onPress} style={style}>
+    <Pressable onPress={pressableProps.onPress} style={style}>
       <Image source={require('assets/images/icons/small-camera.png')} />
     </Pressable>
   );
@@ -171,36 +204,3 @@ export function SmallImagePicker(
     ...otherProps
   });
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: 120,
-    width: 120,
-    borderRadius: 60,
-    borderWidth: 1,
-    shadowColor: '#333333',
-    shadowOffset: {
-      width: 0,
-      height: 0
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden'
-  },
-  placeholderImage: {
-    width: 40,
-    height: 40
-  },
-  selectedImage: {
-    width: '100%',
-    height: '100%',
-    flex: 1
-  },
-  fullWidth: {
-    borderRadius: 0,
-    height: 160,
-    width: '100%'
-  }
-});

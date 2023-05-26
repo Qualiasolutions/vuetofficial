@@ -9,6 +9,25 @@ const CHECKBOX_HEIGHT = 23;
 const CHECKBOX_WIDTH = 23;
 const CHECKBOX_RADIUS = 2;
 
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: 'row',
+    marginVertical: 5
+  },
+  checkbox: {
+    height: CHECKBOX_HEIGHT,
+    width: CHECKBOX_WIDTH,
+    borderRadius: CHECKBOX_RADIUS,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10
+  },
+  check: {
+    height: 17,
+    width: 13
+  }
+});
+
 type CheckboxProps = {
   checked?: boolean;
   style?: ViewStyle;
@@ -84,22 +103,3 @@ export default function Checkbox({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flexDirection: 'row',
-    marginVertical: 5
-  },
-  checkbox: {
-    height: CHECKBOX_HEIGHT,
-    width: CHECKBOX_WIDTH,
-    borderRadius: CHECKBOX_RADIUS,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10
-  },
-  check: {
-    height: 17,
-    width: 13
-  }
-});

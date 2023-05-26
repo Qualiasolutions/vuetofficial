@@ -24,7 +24,7 @@ export default function MultipleRecurrenceSelector({
       return value;
     }
     return [...(value || []), null];
-  }, [value]);
+  }, [value, max]);
 
   const existingRecurrences = recurrences.map((recurrence, i) => (
     <RecurrenceSelector

@@ -9,6 +9,29 @@ import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
 import { useTranslation } from 'react-i18next';
 
+const styles = StyleSheet.create({
+  addMemberButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 22
+  },
+  addIcon: {
+    height: 27,
+    width: 27,
+    marginRight: 12
+  },
+  membersItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  memberColour: {
+    height: 9,
+    width: 78,
+    marginTop: 5
+  }
+});
+
 export function ModalListing({
   item
 }: {
@@ -131,26 +154,3 @@ export default function MemberSelector({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  addMemberButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 22
-  },
-  addIcon: {
-    height: 27,
-    width: 27,
-    marginRight: 12
-  },
-  membersItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  memberColour: {
-    height: 9,
-    width: 78,
-    marginTop: 5
-  }
-});
