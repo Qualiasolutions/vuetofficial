@@ -149,7 +149,7 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
     if (error) {
       return () => null;
     }
-    if (!allScheduledTasks || !allScheduledPeriods) {
+    if (!filteredTasks || !filteredAllPeriods) {
       return () => null;
     }
 

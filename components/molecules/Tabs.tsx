@@ -3,6 +3,44 @@ import { Text, useThemeColor } from 'components/Themed';
 import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { TransparentView, WhiteView } from './ViewComponents';
 
+function useStyle() {
+  return StyleSheet.create({
+    container: {
+      height: '100%'
+    },
+    tabsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center'
+    },
+    tabs: {
+      borderRadius: 20,
+      overflow: 'hidden',
+      margin: 20
+    },
+    tabContainer: {
+      backgroundColor: useThemeColor({}, 'almostWhite')
+    },
+    unSelectedTab: {
+      backgroundColor: useThemeColor({}, 'almostWhite'),
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 20,
+      width: 90,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    selectedTab: {
+      backgroundColor: useThemeColor({}, 'white'),
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 20,
+      width: 90,
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+  });
+}
+
 type Tab = {
   title: string;
   component: () => JSX.Element | null;
@@ -14,6 +52,7 @@ type TabsProps = {
 
 export default function Tabs({ tabs }: TabsProps) {
   const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
+  const styles = useStyle();
 
   const components = tabs.map((tab, i) => {
     const Component = tab.component;
@@ -27,9 +66,8 @@ export default function Tabs({ tabs }: TabsProps) {
     );
   });
 
-  const styles = style();
   return (
-    <WhiteView>
+    <WhiteView style={styles.container}>
       <TransparentView
         style={[
           styles.tabsContainer,
@@ -65,39 +103,4 @@ export default function Tabs({ tabs }: TabsProps) {
       {components}
     </WhiteView>
   );
-}
-
-function style() {
-  return StyleSheet.create({
-    tabsContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center'
-    },
-    tabs: {
-      borderRadius: 20,
-      overflow: 'hidden',
-      margin: 20
-    },
-    tabContainer: {
-      backgroundColor: useThemeColor({}, 'almostWhite')
-    },
-    unSelectedTab: {
-      backgroundColor: useThemeColor({}, 'almostWhite'),
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      borderRadius: 20,
-      width: 90,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    selectedTab: {
-      backgroundColor: useThemeColor({}, 'white'),
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      borderRadius: 20,
-      width: 90,
-      justifyContent: 'center',
-      alignItems: 'center'
-    }
-  });
 }
