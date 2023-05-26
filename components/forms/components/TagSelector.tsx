@@ -48,9 +48,9 @@ export default function TagSelector({ value, onChange }: Props) {
   const preparedData = {
     entities: allEntities
       ? Object.values(allEntities.byId).map((entity: EntityResponseType) => ({
-        ...entity,
-        selected: value.entities.includes(entity.id)
-      }))
+          ...entity,
+          selected: value.entities.includes(entity.id)
+        }))
       : []
   };
 

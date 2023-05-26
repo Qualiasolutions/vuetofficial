@@ -2,7 +2,9 @@ import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/componen
 import { ParsedPeriod } from 'types/periods';
 import {
   getDateStringFromDateObject,
-  getDateStringsBetween
+  getDateStringsBetween,
+  getEndOfDay,
+  getStartOfDay
 } from './datesAndTimes';
 
 type SingleDateTasks = {
@@ -26,16 +28,29 @@ export default function formatTasksAndPeriods(
       task.end_datetime
     );
 
-    for (const taskDate of taskDates) {
+    const isMultiDay = taskDates.length > 1;
+
+    taskDates.forEach((taskDate, i) => {
+      const taskToPush = {
+        ...task,
+        end_datetime:
+          isMultiDay && i !== taskDates.length - 1
+            ? getEndOfDay(task.end_datetime)
+            : task.end_datetime,
+        start_datetime:
+          isMultiDay && i !== 0
+            ? getStartOfDay(task.start_datetime)
+            : task.start_datetime
+      };
       if (newTasksPerDate[taskDate]) {
-        newTasksPerDate[taskDate].tasks.push(task);
+        newTasksPerDate[taskDate].tasks.push(taskToPush);
       } else {
         newTasksPerDate[taskDate] = {
-          tasks: [task],
+          tasks: [taskToPush],
           periods: []
         };
       }
-    }
+    });
   }
 
   for (const parsedPeriod of periods) {

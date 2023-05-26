@@ -8,4 +8,14 @@ export const setMonthEnforcedDate = createAction(
   '@calendars/setMonthEnforcedDate'
 )<{ date: string }>();
 
+export const setFilteredUsers = createAction('@calendars/setFilteredUsers')<{
+  users: number[];
+}>();
+
+export const setFilteredEntities = createAction(
+  '@calendars/setFilteredEntities'
+)<{
+  entities: number[];
+}>();
+
 export const deselectTasks = createAction('@calendars/deselectTasks')();

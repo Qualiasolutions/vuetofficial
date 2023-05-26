@@ -79,8 +79,8 @@ const createInitialObject = (
 
       case 'tagSelector':
         initialObj[key] = formFields[key].initialValue || {
-        entities: []
-      };
+          entities: []
+        };
         continue;
 
       case 'multiRecurrenceSelector':
@@ -89,13 +89,13 @@ const createInitialObject = (
         if (f.initialValue) {
           if (f.reverse) {
             const taskStartTime = new Date(
-            formFields[f.firstOccurrenceField].initialValue
-          );
+              formFields[f.firstOccurrenceField].initialValue
+            );
             const timeDelta = f.initialValue.earliest_timedelta;
 
             let latestOccurrence: null | Date = null;
             if (timeDelta) {
-              const latestOccurrence = new Date(taskStartTime);
+              latestOccurrence = new Date(taskStartTime);
               const [days, time] = timeDelta.split(' ');
               latestOccurrence.setDate(latestOccurrence.getDate() - days);
             }

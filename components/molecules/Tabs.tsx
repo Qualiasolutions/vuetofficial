@@ -3,13 +3,13 @@ import { Text, useThemeColor } from 'components/Themed';
 import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { TransparentView, WhiteView } from './ViewComponents';
 
-type tab = {
+type Tab = {
   title: string;
   component: () => JSX.Element | null;
 };
 
 type TabsProps = {
-  tabs: Array<tab>;
+  tabs: Array<Tab>;
 };
 
 export default function Tabs({ tabs }: TabsProps) {

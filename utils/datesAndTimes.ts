@@ -165,6 +165,44 @@ function getCurrentDateString() {
   return getDateStringFromDateObject(new Date());
 }
 
+const getOffsetMonthStartDateString = (
+  date: Date,
+  offset: number
+): {
+  date: Date;
+  dateString: string;
+} => {
+  const dateCopy = new Date(date.getTime());
+  dateCopy.setHours(0);
+  dateCopy.setMinutes(0);
+  dateCopy.setSeconds(0);
+  dateCopy.setMilliseconds(0);
+  dateCopy.setDate(1);
+  dateCopy.setMonth(dateCopy.getMonth() + offset);
+  return {
+    date: dateCopy,
+    dateString: dayjs.utc(dateCopy).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+  };
+};
+
+const getEndOfDay = (datetime: Date) => {
+  const endOfDay = new Date(datetime);
+  endOfDay.setHours(23);
+  endOfDay.setMinutes(59);
+  endOfDay.setSeconds(59);
+  endOfDay.setMilliseconds(0);
+  return endOfDay;
+};
+
+const getStartOfDay = (datetime: Date) => {
+  const startOfDay = new Date(datetime);
+  startOfDay.setHours(0);
+  startOfDay.setMinutes(0);
+  startOfDay.setSeconds(0);
+  startOfDay.setMilliseconds(0);
+  return startOfDay;
+};
+
 export {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
@@ -177,5 +215,8 @@ export {
   getDatesBetween,
   getDateStringsBetween,
   getDaysToAge,
-  getNextDate
+  getNextDate,
+  getOffsetMonthStartDateString,
+  getEndOfDay,
+  getStartOfDay
 };

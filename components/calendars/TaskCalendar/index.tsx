@@ -4,18 +4,13 @@
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
 import GenericError from 'components/molecules/GenericError';
-import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import {
-  TransparentView,
-  WhiteContainerView,
-  WhitePaddedView
-} from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
@@ -24,24 +19,16 @@ import { ParsedPeriod, PeriodResponse } from 'types/periods';
 import { useTranslation } from 'react-i18next';
 import CalendarView from 'components/molecules/CalendarViewV2';
 import Tabs from 'components/molecules/Tabs';
-import { useThemeColor, View } from 'components/Themed';
 import {
   getDateStringFromDateObject,
-  getDateWithoutTimezone,
-  getUTCValuesFromDateString
+  getDateWithoutTimezone
 } from 'utils/datesAndTimes';
-import { useNavigation } from '@react-navigation/native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Image } from 'components/molecules/ImageComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
-import { parsePresignedUrl } from 'utils/urls';
-import { elevation } from 'styles/elevation';
 import {
   setListEnforcedDate,
   setMonthEnforcedDate
 } from 'reduxStore/slices/calendars/actions';
-import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { MinimalScheduledTask } from './components/Task';
+import MonthSelector from './components/MonthSelector';
 
 dayjs.extend(utc);
 
@@ -76,107 +63,12 @@ const getOffsetMonthStartDateString = (
   };
 };
 
-const MonthSelector = ({
-  onValueChange,
-  fullPage
-}: {
-  onValueChange: (date: Date) => void;
-  fullPage: boolean;
-}) => {
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const enforcedDate = useSelector(selectEnforcedDate);
-  const navigation = useNavigation();
-  const { data: userDetails } = getUserFullDetails();
-  const whiteColor = useThemeColor({}, 'white');
-
-  const now = dayjs(new Date());
-  const { monthName, year } = enforcedDate
-    ? getUTCValuesFromDateString(enforcedDate)
-    : { monthName: now.format('MMM'), year: now.format('YYYY') };
-
-  if (!userDetails) {
-    return null;
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    width: '100%'
   }
-
-  const imageSource = userDetails.presigned_profile_image_url
-    ? { uri: parsePresignedUrl(userDetails.presigned_profile_image_url) }
-    : require('assets/images/icons/camera.png');
-
-  return (
-    <WhitePaddedView
-      style={[
-        {
-          paddingVertical: 20,
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        },
-        elevation.elevated
-      ]}
-    >
-      {fullPage ? (
-        <Pressable
-          onPress={() => (navigation as any).openDrawer()}
-          style={[
-            {
-              height: 60,
-              width: 60,
-              marginLeft: 40,
-              borderRadius: 30,
-              justifyContent: 'center',
-              alignItems: 'center',
-              overflow: 'hidden',
-              backgroundColor: whiteColor
-            },
-            elevation.elevated
-          ]}
-        >
-          <Image
-            source={imageSource}
-            style={[
-              {
-                height: '100%',
-                width: '100%',
-                backgroundColor: whiteColor
-              },
-              !userDetails.presigned_profile_image_url && {
-                height: 30,
-                width: 30
-              }
-            ]}
-          />
-        </Pressable>
-      ) : (
-        <View style={{ width: '20%' }} />
-      )}
-      <Pressable
-        onPress={() => {
-          setIsDatePickerVisible(true);
-        }}
-        style={{ flexDirection: 'row', alignItems: 'center' }}
-      >
-        <AlmostBlackText
-          text={`${monthName} ${year}`}
-          style={{ fontWeight: 'bold', fontSize: 20, marginRight: 10 }}
-        />
-        <AlmostBlackText text="▼" />
-      </Pressable>
-      <View style={{ width: '20%' }} />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode={'date'}
-        date={enforcedDate ? new Date(enforcedDate) : undefined}
-        onConfirm={(newValue) => {
-          setIsDatePickerVisible(false);
-          onValueChange(newValue);
-        }}
-        onCancel={() => {
-          setIsDatePickerVisible(false);
-        }}
-      />
-    </WhitePaddedView>
-  );
-};
+});
 
 type CalendarProps = {
   taskFilters: ((task: MinimalScheduledTask) => boolean)[];
@@ -187,7 +79,6 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
-  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const currentDate = new Date();
@@ -254,22 +145,11 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
     }
   }, [JSON.stringify(parsedPeriods), periodFilters]);
 
-  const noTasks = useMemo(() => {
-    return (
-      filteredAllPeriods &&
-      filteredAllPeriods.length === 0 &&
-      filteredTasks.length === 0
-    );
-  }, [JSON.stringify(filteredTasks), JSON.stringify(filteredAllPeriods)]);
-
   const listView = useMemo(() => {
     if (error) {
       return () => null;
     }
     if (!allScheduledTasks || !allScheduledPeriods) {
-      return () => null;
-    }
-    if (noTasks) {
       return () => null;
     }
 
@@ -292,9 +172,6 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
       return () => null;
     }
     if (!allScheduledTasks || !allScheduledPeriods) {
-      return () => null;
-    }
-    if (noTasks) {
       return () => null;
     }
 
@@ -336,15 +213,6 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
     }
   ];
 
-  const noTasksContent = (
-    <WhiteContainerView>
-      <AlmostBlackText
-        text={t('components.calendar.noTasks')}
-        style={{ fontSize: 20 }}
-      />
-    </WhiteContainerView>
-  );
-
   return (
     <TransparentView style={styles.container}>
       <MonthSelector
@@ -357,16 +225,9 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
         }}
         fullPage={fullPage}
       />
-      {noTasks ? noTasksContent : <Tabs tabs={tabs} />}
+      <Tabs tabs={tabs} />
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    width: '100%'
-  }
-});
 
 export default Calendar;

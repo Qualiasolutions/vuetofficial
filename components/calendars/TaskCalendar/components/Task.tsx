@@ -26,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import { createSelector } from '@reduxjs/toolkit';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import EntityTag from 'components/molecules/EntityTag';
 import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
 

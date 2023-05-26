@@ -20,3 +20,13 @@ export const selectEnforcedDate = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.ui?.enforcedDate
 );
+
+export const selectFilteredUsers = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.data?.filteredUsers
+);
+
+export const selectFilteredEntities = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.data?.filteredEntities
+);

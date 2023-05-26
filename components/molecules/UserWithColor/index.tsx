@@ -7,6 +7,34 @@ import {
 import { Image, StyleSheet, View } from 'react-native';
 import { parsePresignedUrl } from 'utils/urls';
 
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row'
+  },
+  memberColour: {
+    height: 9,
+    width: 78
+  },
+  profileImageWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%'
+  },
+  placeholderImage: {
+    width: '60%',
+    height: '60%'
+  },
+  nameText: { fontSize: 16 }
+});
+
 export default function UserWithColor({
   name = '',
   memberColour = '',
@@ -44,31 +72,3 @@ export default function UserWithColor({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row'
-  },
-  memberColour: {
-    height: 9,
-    width: 78
-  },
-  profileImageWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%'
-  },
-  placeholderImage: {
-    width: '60%',
-    height: '60%'
-  },
-  nameText: { fontSize: 16 }
-});

@@ -198,9 +198,14 @@
     "HealthBeauty": "Health / Beauty",
     "Finance": "Finance"
   },
+  "filters": {
+    "userFilters": "User filters",
+    "entityFilters": "Entity filters"
+  },
   "common": {
     "confirm": "Confirm",
     "clear": "Clear",
+    "apply": "Apply",
     "frequency": "Frequency",
     "timePeriod": "Time period",
     "none": "None",
@@ -418,7 +423,7 @@
       },
       "showOlderEvents": "Show older events",
       "showNewerEvents": "Show more",
-      "noTasks": "Currently no tasks or deadlines have been added."
+      "noTasks": "No tasks or deadlines to show - you may need to add tasks or adjust your filter settings"
     },
     "logOutModal": {
       "logOut": "Log Out",

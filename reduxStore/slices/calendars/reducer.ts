@@ -5,7 +5,10 @@ import * as actions from './actions';
 export type CalendarAction = ActionType<typeof actions>;
 
 const INITIAL_CALENDAR_STATE: CalendarState = {
-  data: {},
+  data: {
+    filteredUsers: [],
+    filteredEntities: []
+  },
   ui: {
     listEnforcedDate: '',
     monthEnforcedDate: '',
@@ -36,6 +39,30 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
           ...state.ui,
           monthEnforcedDate: payload.date,
           enforcedDate: payload.date
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setFilteredUsers,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          filteredUsers: payload.users
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setFilteredEntities,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          filteredEntities: payload.entities
         }
       };
     }

@@ -5,6 +5,22 @@ import { useThemeColor } from 'components/Themed';
 import { Pressable, StyleSheet } from 'react-native';
 import { Image } from 'components/molecules/ImageComponents';
 
+const styles = StyleSheet.create({
+  wrapper: {
+    alignItems: 'center'
+  },
+  editImage: {
+    height: 27,
+    width: 31
+  },
+  pressable: {
+    padding: 10,
+    borderRadius: 10,
+    flex: 0,
+    width: 'auto'
+  }
+});
+
 const EditPressable: React.ElementType = ({ route, navigation }) => {
   const backgroundColor = useThemeColor({}, 'lightPrimary');
   return (
@@ -47,19 +63,3 @@ export const headerRightMapping = {
     [key: string]: React.ElementType | undefined;
   };
 };
-
-const styles = StyleSheet.create({
-  wrapper: {
-    alignItems: 'center'
-  },
-  editImage: {
-    height: 27,
-    width: 31
-  },
-  pressable: {
-    padding: 10,
-    borderRadius: 10,
-    flex: 0,
-    width: 'auto'
-  }
-});

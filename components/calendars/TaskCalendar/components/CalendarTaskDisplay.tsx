@@ -17,17 +17,29 @@ import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
+  TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import { LinkButton } from 'components/molecules/ButtonComponents';
-import { PaddedSpinner } from 'components/molecules/Spinners';
-import { t } from 'i18next';
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import Task, { MinimalScheduledTask } from './Task';
 import OneDayPeriod from './OneDayPeriod';
 import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
 import { ITEM_HEIGHT } from './shared';
+import ListHeaderComponent from './ListHeaderComponent';
+import { useTranslation } from 'react-i18next';
+
+const styles = StyleSheet.create({
+  sectionHeader: {
+    justifyContent: 'center',
+    paddingLeft: 18,
+    borderTopWidth: 2,
+    borderBottomWidth: 2
+  },
+  sectionHeaderText: {
+    fontSize: 18
+  }
+});
 
 type SingleDateTasks = {
   tasks: MinimalScheduledTask[];
@@ -78,6 +90,7 @@ function Calendar({
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
   const sectionListRef = useRef<any>(null);
+  const { t } = useTranslation();
 
   const currentDate = useMemo(() => {
     return new Date(getCurrentDateString());
@@ -91,11 +104,13 @@ function Calendar({
     }
   };
 
+  const noTasks = tasks.length === 0 && periods.length === 0;
+
   useEffect(() => {
     const newTasksPerDate = formatTasksAndPeriods(
       tasks,
       periods,
-      alwaysIncludeCurrentDate
+      alwaysIncludeCurrentDate && !noTasks
     );
     setTasksPerDate(newTasksPerDate);
   }, [tasks, periods, alwaysIncludeCurrentDate]);
@@ -147,35 +162,6 @@ function Calendar({
 
   const datesToShow = Object.keys(tasksPerDate).sort();
 
-  const ListHeaderComponent = () => {
-    if (rerenderingList) {
-      return (
-        <TransparentView style={styles.loadMoreButtonWrapper}>
-          <PaddedSpinner spinnerColor="buttonDefault" />
-        </TransparentView>
-      );
-    }
-    return pastMonthsToShow < 24 ? (
-      <TransparentView style={styles.loadMoreButtonWrapper}>
-        <LinkButton
-          title={t('common.loadOlder')}
-          onPress={() => {
-            // Suuuuuuuper hacky way to make the button
-            // a little bit more responsive to clicks
-            setRerenderingList(true);
-            setTimeout(() => {
-              setPastMonthsToShow(pastMonthsToShow + 3);
-            }, 300);
-            setTimeout(() => {
-              setRerenderingList(false);
-            }, 2000);
-          }}
-          style={styles.loadMoreButton}
-        />
-      </TransparentView>
-    ) : null;
-  };
-
   const [futureSections, pastSections] = useMemo(() => {
     const future: { title: string; key: string; data: ItemData[] }[] = [];
     const past: { title: string; key: string; data: ItemData[] }[] = [];
@@ -205,10 +191,12 @@ function Calendar({
     return [future, past];
   }, [datesToShow, firstDate]);
 
-  const shownSections = [
-    ...pastSections.slice(pastSections.length - pastMonthsToShow * 30),
-    ...futureSections
-  ];
+  const shownSections = useMemo(() => {
+    return [
+      ...pastSections.slice(pastSections.length - pastMonthsToShow * 30),
+      ...futureSections
+    ];
+  }, [futureSections, pastSections, pastMonthsToShow]);
 
   const renderItem = useCallback(({ item }: { item: ItemData }) => {
     return (
@@ -278,62 +266,59 @@ function Calendar({
   }, [shownSections]);
 
   return (
-    <SectionList
-      sections={shownSections}
-      renderSectionHeader={({ section }) => {
-        return (
-          <AlmostWhiteView
-            style={[styles.sectionHeader, { height: SECTION_HEADER_HEIGHT }]}
-          >
-            <Text style={styles.sectionHeaderText}>{section.title}</Text>
-          </AlmostWhiteView>
-        );
-      }}
-      refreshing={false}
-      onRefresh={() => {
-        setPastMonthsToShow(0);
-      }}
-      renderItem={renderItem}
-      contentContainerStyle={{ paddingBottom: 150 }}
-      ListHeaderComponent={<ListHeaderComponent />}
-      onViewableItemsChanged={onViewableItemsChanged}
-      getItemLayout={(d, index) =>
-        itemsLayout[index] ?? { length: 0, offset: 0, index }
-      }
-      keyExtractor={keyExtractor}
-      ref={sectionListRef}
-      windowSize={31}
-    />
+    <>
+      <SectionList
+        sections={shownSections}
+        renderSectionHeader={({ section }) => {
+          return (
+            <AlmostWhiteView
+              style={[styles.sectionHeader, { height: SECTION_HEADER_HEIGHT }]}
+            >
+              <Text style={styles.sectionHeaderText}>{section.title}</Text>
+            </AlmostWhiteView>
+          );
+        }}
+        refreshing={false}
+        onRefresh={() => {
+          setPastMonthsToShow(0);
+        }}
+        renderItem={renderItem}
+        contentContainerStyle={noTasks ? {} : { paddingBottom: 150 }}
+        ListHeaderComponent={
+          <ListHeaderComponent
+            loading={rerenderingList}
+            showLoadMore={
+              pastMonthsToShow < 24 &&
+              pastSections.length > shownSections.length - futureSections.length
+            }
+            onLoadMore={() => {
+              // Suuuuuuuper hacky way to make the button
+              // a little bit more responsive to clicks
+              setRerenderingList(true);
+              setTimeout(() => {
+                setPastMonthsToShow(pastMonthsToShow + 3);
+              }, 300);
+              setTimeout(() => {
+                setRerenderingList(false);
+              }, 2000);
+            }}
+          />
+        }
+        onViewableItemsChanged={onViewableItemsChanged}
+        getItemLayout={(d, index) =>
+          itemsLayout[index] ?? { length: 0, offset: 0, index }
+        }
+        keyExtractor={keyExtractor}
+        ref={sectionListRef}
+        windowSize={31}
+      />
+      {noTasks && (
+        <TransparentPaddedView>
+          <Text>{t('components.calendar.noTasks')}</Text>
+        </TransparentPaddedView>
+      )}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  spinnerWrapper: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  sectionHeader: {
-    justifyContent: 'center',
-    paddingLeft: 18,
-    borderTopWidth: 2,
-    borderBottomWidth: 2
-  },
-  sectionHeaderText: {
-    fontSize: 18
-  },
-  loadMoreButtonWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    height: 60,
-    alignItems: 'center'
-  },
-  loadMoreButton: {
-    flex: 1,
-    maxWidth: 200
-  }
-});
 
 export default Calendar;
