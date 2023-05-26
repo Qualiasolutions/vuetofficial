@@ -11,6 +11,7 @@ import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   quickNavButton: {
@@ -81,10 +82,12 @@ export default function CategoryListScreen({ route }: CategoryListScreenProps) {
   }
 
   return (
-    <TransparentView>
-      <LinkList links={linkConfig[categoryData.name]} />
-      <CategoryPreferences categoryId={route.params.categoryId} />
-      <QuickNav categoryId={route.params.categoryId} />
-    </TransparentView>
+    <TransparentFullPageScrollView>
+      <TransparentView style={{ paddingBottom: 100 }}>
+        <LinkList links={linkConfig[categoryData.name]} />
+        <CategoryPreferences categoryId={route.params.categoryId} />
+        <QuickNav categoryId={route.params.categoryId} />
+      </TransparentView>
+    </TransparentFullPageScrollView>
   );
 }
