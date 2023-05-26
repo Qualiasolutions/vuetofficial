@@ -89,6 +89,7 @@ export default function WhatMyFamilySeesScreen() {
         <TransparentView style={{ marginTop: 20 }}>
           {allCategories.ids.map((id) => (
             <CategoryToggle
+              key={id}
               category={allCategories.byId[id]}
               checked={!!permissionIds[id]}
               onChange={async (value) => {
