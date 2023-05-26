@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -19,14 +19,29 @@ import {
   AlmostWhiteContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+
+const styles = StyleSheet.create({
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%'
+  },
+  inputLabel: {
+    fontSize: 12,
+    textAlign: 'left'
+  },
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  }
+});
 
 const SignupScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'>) => {
   const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const [createPhoneValidation, result] = useCreatePhoneValidationMutation();
 
@@ -46,25 +61,29 @@ const SignupScreen = ({
             'phone_number_used'
           )(result.error)
         ) {
-          setErrorMessage(t('screens.signUp.phoneUsedError'));
+          Toast.show({
+            type: 'error',
+            text1: t('common.errors.phoneUsedError')
+          });
         } else if (isInvalidPhoneNumberError(result.error)) {
-          setErrorMessage(t('common.errors.invalidPhone'));
+          Toast.show({
+            type: 'error',
+            text1: t('common.errors.invalidPhone')
+          });
         } else {
-          setErrorMessage(t('common.errors.generic'));
+          Toast.show({
+            type: 'error',
+            text1: t('common.errors.generic')
+          });
         }
       }
     }
-  }, [result]);
-
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage} />
-  ) : null;
+  }, [result, navigation, t]);
 
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.signUp.welcome')} />
       <PageSubtitle text={t('screens.signUp.usePhoneNumber')} />
-      {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
@@ -94,21 +113,5 @@ const SignupScreen = ({
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%'
-  },
-  inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
-  },
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  }
-});
 
 export default SignupScreen;

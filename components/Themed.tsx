@@ -7,14 +7,11 @@ import {
   Text as DefaultText,
   View as DefaultView,
   TextInput as DefaultTextInput,
-  Pressable,
-  StyleSheet,
-  GestureResponderEvent
+  StyleSheet
 } from 'react-native';
 
 import Colors, { ColorName } from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import { BlackText } from './molecules/TextComponents';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },

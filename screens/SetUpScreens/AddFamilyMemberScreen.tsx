@@ -25,6 +25,13 @@ import {
 } from 'screens/SettingsScreens/Forms/familyMemberFormFieldTypes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 40,
+    paddingTop: 100
+  }
+});
+
 const AddFamilyMemberScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamilyMember'>) => {
@@ -74,12 +81,5 @@ const AddFamilyMemberScreen = ({
     </TransparentFullPageScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 40,
-    paddingTop: 100
-  }
-});
 
 export default AddFamilyMemberScreen;

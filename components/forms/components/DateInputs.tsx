@@ -2,6 +2,30 @@ import DateField from 'react-native-datefield';
 import { useThemeColor } from 'components/Themed';
 import { StyleSheet } from 'react-native';
 
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
+  },
+  textInput: {
+    borderWidth: 1,
+    width: 80,
+    padding: 3,
+    borderRadius: 10,
+    height: 40,
+    marginVertical: 5,
+    paddingVertical: 5,
+    marginRight: 10,
+    paddingHorizontal: 15,
+    fontFamily: 'Poppins'
+  },
+  yearInput: {
+    flex: 1,
+    marginRight: 0
+  }
+});
+
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
@@ -92,27 +116,3 @@ export function AlmostWhiteDateInput(props: DateFieldProps) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start'
-  },
-  textInput: {
-    borderWidth: 1,
-    width: 80,
-    padding: 3,
-    borderRadius: 10,
-    height: 40,
-    marginVertical: 5,
-    paddingVertical: 5,
-    marginRight: 10,
-    paddingHorizontal: 15,
-    fontFamily: 'Poppins'
-  },
-  yearInput: {
-    flex: 1,
-    marginRight: 0
-  }
-});

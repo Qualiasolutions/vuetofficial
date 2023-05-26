@@ -19,6 +19,24 @@ import {
 import { PrimaryText } from './TextComponents';
 import { TransparentContainerView } from './ViewComponents';
 
+const styles = StyleSheet.create({
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  },
+  cell: {
+    width: 52,
+    borderRadius: 10,
+    height: 72,
+    lineHeight: 68,
+    fontSize: 30,
+    borderWidth: 1,
+    margin: 4,
+    textAlign: 'center',
+    overflow: 'hidden'
+  }
+});
+
 type ValidationCodeInputProps = {
   validationId: number;
   phoneNumber: string;
@@ -54,7 +72,7 @@ export default function ValidationCodeInput({
         onError(result.error);
       }
     }
-  }, [result]);
+  }, [result, onError, onSuccess]);
 
   return (
     <TransparentContainerView>
@@ -107,21 +125,3 @@ export default function ValidationCodeInput({
     </TransparentContainerView>
   );
 }
-
-const styles = StyleSheet.create({
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  },
-  cell: {
-    width: 52,
-    borderRadius: 10,
-    height: 72,
-    lineHeight: 68,
-    fontSize: 30,
-    borderWidth: 1,
-    margin: 4,
-    textAlign: 'center',
-    overflow: 'hidden'
-  }
-});

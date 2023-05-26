@@ -6,10 +6,7 @@ import { TextInput } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
-import {
-  useCreateAccountMutation,
-  useCreatePhoneValidationMutation
-} from 'reduxStore/services/api/signup';
+import { useCreateAccountMutation } from 'reduxStore/services/api/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Constants from 'expo-constants';
 import { useDispatch } from 'react-redux';
@@ -28,8 +25,25 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const ENV = Constants.manifest?.extra?.processEnv;
+
+const styles = StyleSheet.create({
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%'
+  },
+  inputLabel: {
+    fontSize: 12,
+    textAlign: 'left'
+  },
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  }
+});
 
 const CreatePasswordScreen = ({
   navigation,
@@ -38,9 +52,8 @@ const CreatePasswordScreen = ({
   const [password, onChangePassword] = React.useState<string>('');
   const [passwordConfirm, onChangePasswordConfirm] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const { t } = useTranslation();
 
-  const [createPhoneValidation, createValidationResult] =
-    useCreatePhoneValidationMutation();
   const [createAccount, createAccountResult] = useCreateAccountMutation();
 
   const dispatch = useDispatch();
@@ -55,12 +68,13 @@ const CreatePasswordScreen = ({
       dispatch(setUsername(phone_number));
     } else {
       if (createAccountResult.error) {
-        setErrorMessage(t('common.errors.generic'));
+        Toast.show({
+          type: 'error',
+          text1: t('common.errors.generic')
+        });
       }
     }
-  }, [createAccountResult]);
-
-  const { t } = useTranslation();
+  }, [createAccountResult, dispatch, t]);
 
   const errorContent = errorMessage ? (
     <ErrorBox errorText={errorMessage} />
@@ -78,6 +92,7 @@ const CreatePasswordScreen = ({
         />
       </TransparentView>
       <TextInput
+        accessibilityLabel="password-input"
         value={password}
         onChangeText={(text) => onChangePassword(text)}
         secureTextEntry={true}
@@ -89,6 +104,7 @@ const CreatePasswordScreen = ({
         />
       </TransparentView>
       <TextInput
+        accessibilityLabel="password-input-confirmation"
         value={passwordConfirm}
         onChangeText={(text) => onChangePasswordConfirm(text)}
         secureTextEntry={true}
@@ -104,7 +120,10 @@ const CreatePasswordScreen = ({
               })
             );
           } else if (password !== passwordConfirm) {
-            setErrorMessage(t('screens.createPassword.passwordsDontMatch'));
+            Toast.show({
+              type: 'error',
+              text1: t('common.errors.passwordsDontMatch')
+            });
           } else {
             createAccount({
               password,
@@ -118,21 +137,5 @@ const CreatePasswordScreen = ({
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%'
-  },
-  inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
-  },
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  }
-});
 
 export default CreatePasswordScreen;

@@ -20,7 +20,6 @@ import {
   TransparentView,
   WhiteBox
 } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
 import {
   useFormUpdateUserDetailsMutation,
   useGetUserDetailsQuery,
@@ -32,6 +31,31 @@ import { WhiteDateInput } from 'components/forms/components/DateInputs';
 import { ColorPicker } from 'components/forms/components/ColorPickers';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import dayjs from 'dayjs';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+
+const styles = StyleSheet.create({
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%'
+  },
+  inputLabel: {
+    fontSize: 12,
+    textAlign: 'left'
+  },
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  },
+  memberColorBox: {
+    width: '100%',
+    marginTop: 15,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }
+});
 
 const CreateAccountScreen = ({
   navigation
@@ -47,9 +71,9 @@ const CreateAccountScreen = ({
 
   const [firstName, onChangeFirstName] = React.useState<string>('');
   const [lastName, onChangeLastName] = React.useState<string>('');
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [dateOfBirth, setDateOfBirth] = React.useState<Date | null>(null);
   const [memberColour, setMemberColour] = React.useState<string>('');
+  const { t } = useTranslation();
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
   const [formUpdateUserDetails, formUpdateResult] =
@@ -67,16 +91,6 @@ const CreateAccountScreen = ({
   };
 
   useEffect(() => {
-    if (result.isSuccess) {
-      navigation.push('AddFamily');
-    } else {
-      if (result.error) {
-        setErrorMessage(t('common.errors.generic'));
-      }
-    }
-  }, [result]);
-
-  useEffect(() => {
     if (
       userFullDetails?.member_colour &&
       userFullDetails?.first_name &&
@@ -85,13 +99,7 @@ const CreateAccountScreen = ({
     ) {
       navigation.push('AddFamily');
     }
-  }, [userDetails, userFullDetails]);
-
-  const { t } = useTranslation();
-
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage} />
-  ) : null;
+  }, [userDetails, userFullDetails, navigation]);
 
   if (!userFullDetails) {
     return null;
@@ -119,7 +127,6 @@ const CreateAccountScreen = ({
         defaultImageUrl={userFullDetails?.presigned_profile_image_url}
         displayInternalImage={false}
       />
-      {errorContent}
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
@@ -129,6 +136,7 @@ const CreateAccountScreen = ({
       <TextInput
         value={firstName}
         onChangeText={(text) => onChangeFirstName(text)}
+        accessibilityLabel="first-name-input"
       />
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
@@ -139,6 +147,7 @@ const CreateAccountScreen = ({
       <TextInput
         value={lastName}
         onChangeText={(text) => onChangeLastName(text)}
+        accessibilityLabel="last-name-input"
       />
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
@@ -153,7 +162,10 @@ const CreateAccountScreen = ({
           setDateOfBirth(newValue);
         }}
         handleErrors={() => {
-          setErrorMessage(t('screens.createAccount.invalidDateMessage'));
+          Toast.show({
+            type: 'error',
+            text1: t('screens.createAccount.invalidDateMessage')
+          });
         }}
       />
       <WhiteBox style={styles.memberColorBox} elevated={false}>
@@ -171,19 +183,22 @@ const CreateAccountScreen = ({
       <Button
         title={t('common.next')}
         disabled={!hasAllRequired}
-        onPress={() => {
-          if (hasAllRequired) {
-            if (userDetails?.user_id) {
-              updateUserDetails({
+        onPress={async () => {
+          if (userDetails?.user_id) {
+            try {
+              await updateUserDetails({
                 user_id: userDetails?.user_id,
                 first_name: firstName,
                 last_name: lastName,
                 dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
                 member_colour: memberColour
+              }).unwrap();
+            } catch (e) {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
               });
             }
-          } else {
-            setErrorMessage(t('screens.createAccount.allFieldsRequiredError'));
           }
         }}
         style={styles.confirmButton}
@@ -191,29 +206,5 @@ const CreateAccountScreen = ({
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%'
-  },
-  inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
-  },
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  },
-  memberColorBox: {
-    width: '100%',
-    marginTop: 15,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  }
-});
 
 export default CreateAccountScreen;

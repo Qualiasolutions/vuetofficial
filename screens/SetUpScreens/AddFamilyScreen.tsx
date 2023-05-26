@@ -16,10 +16,8 @@ import {
 } from 'components/molecules/TextComponents';
 import {
   AlmostWhiteContainerView,
-  TransparentView,
-  WhiteBox
+  TransparentView
 } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
@@ -44,8 +42,6 @@ const AddFamilyScreen = ({
       skip: !userDetails?.user_id
     }
   );
-
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const { data: userInvites } = useGetUserInvitesQuery(
     userFullDetails?.family?.id || -1
@@ -74,10 +70,6 @@ const AddFamilyScreen = ({
   };
 
   const { t } = useTranslation();
-
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage} />
-  ) : null;
 
   const addedMembersContent =
     familyInvites && familyInvites.length > 0 ? (

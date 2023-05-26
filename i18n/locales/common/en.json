@@ -239,7 +239,10 @@
     "pending": "pending",
     "errors": {
       "generic": "Oops, something went wrong. Please try again later.",
-      "invalidPhone": "That doesn't seem to be a valid phone number."
+      "invalidPhone": "That doesn't seem to be a valid phone number.",
+      "phoneUsedError": "An account already exists for that phone number.",
+      "passwordsDontMatch": "Those passwords don't match",
+      "invalidCodeError": "That code is incorrect"
     }
   },
   "misc": {
@@ -269,14 +272,12 @@
       "phoneNumber": "Phone number",
       "alreadyHaveAccount": "Already have an account?",
       "logIn": "Log in",
-      "phoneUsedError": "An account already exists for that phone number.",
       "phoneInvalidError": "That doesn't seem to be a valid phone number."
     },
     "validatePhone": {
       "title": "Verification code",
       "enterCode": "Please enter the 6-digit code we've sent to your mobile number",
       "didntGetCode": "Didn't get the code?",
-      "invalidCodeError": "That code is incorrect",
       "resend": "Resend"
     },
     "createPassword": {
@@ -285,7 +286,6 @@
       "password": "Password",
       "confirmPassword": "Confirm password",
       "passwordTooShort": "Your password must be at least {{minimumLength}} letters long",
-      "passwordsDontMatch": "Those passwords don't match",
       "passwordError": "Hmm, something went wrong - make sure your password is secure (at least 8 letters and not too common) and that your passwords match"
     },
     "createAccount": {
@@ -296,7 +296,6 @@
       "dob": "Date of Birth",
       "memberColour": "Member colour",
       "invalidDateMessage": "Invalid date detected - please enter a date in the past",
-      "allFieldsRequiredError": "All fields on this page must be completed"
     },
     "addFamily": {
       "title": "Add family members",
@@ -313,14 +312,13 @@
       "phoneNumber": "Phone number",
       "add": "Add",
       "invalidDateMessage": "Invalid date detected - please enter a date in the past",
-      "allFieldsRequiredError": "All fields on this page must be completed"
     },
     "createUserInvite": {
       "success": "Successfully invited user",
       "errors": {
         "alreadyHasFamily": "This user is already a member of a family",
         "alreadyInFamily": "This user has already been added to your family",
-        "alreadyInvited": "This user has already been invited to your family" 
+        "alreadyInvited": "This user has already been invited to your family"
       }
     },
     "welcomeToVuet": {
@@ -383,7 +381,6 @@
     "editPhoneNumber": {
       "currentPhone": "Current phone number associated to this account:",
       "enterNew": "To update the phone number associated to this account, please enter your new number below:",
-      "invalidPhone": "That doesn't seem to be a valid phone number.",
       "takenPhone": "That phone number is already in use.",
       "updateSuccess": "Successfully updated phone number."
     },
