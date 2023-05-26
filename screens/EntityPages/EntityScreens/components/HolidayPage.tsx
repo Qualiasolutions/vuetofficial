@@ -138,7 +138,7 @@ export default function HolidayScreen({ entityId }: { entityId: number }) {
       name: itemName,
       parent: entityId
     });
-  }, [useCreateEntityMutation, setAddNewModal, itemName]);
+  }, [setAddNewModal, trigger, itemName, entityId]);
 
   const closeAddNewModal = useCallback(() => {
     setAddNewModal(false);

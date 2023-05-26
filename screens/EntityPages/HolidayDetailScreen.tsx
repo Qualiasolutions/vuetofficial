@@ -1,5 +1,4 @@
 import ListLinkWithCheckbox from 'components/molecules/ListLinkWithCheckbox';
-import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetHolidaysQuery } from 'reduxStore/services/api/holidays';
 import { Holiday } from 'reduxStore/services/api/types';
@@ -17,7 +16,6 @@ import { HolidayResponseType } from 'types/entities';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   getDatesPeriodString,
-  getLongDateFromDateObject,
   getUTCValuesFromDateString
 } from 'utils/datesAndTimes';
 import { Pressable, SectionList, StyleSheet } from 'react-native';

@@ -8,10 +8,15 @@ import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import ListButton from 'components/molecules/ListButton';
 import { StyleSheet } from 'react-native';
-import { categoryToIdMapping } from 'utils/categories';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
+
+const styles = StyleSheet.create({
+  quickNavButton: {
+    marginTop: 10
+  }
+});
 
 type CategoryListScreenProps = EntityTabScreenProps<'CategoryList'>;
 
@@ -83,9 +88,3 @@ export default function CategoryListScreen({ route }: CategoryListScreenProps) {
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  quickNavButton: {
-    marginTop: 10
-  }
-});

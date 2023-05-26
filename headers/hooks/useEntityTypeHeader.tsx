@@ -16,9 +16,9 @@ export default function useEntityTypeHeader(entityTypeName: string) {
 
   useLayoutEffect(() => {
     if (entityTypeName) {
-      const HeaderRightComponent = Object.keys(headerRightMapping).includes(
-        entityTypeName
-      )
+      const HeaderRightComponent = Object.keys(
+        headerRightMapping.entityTypes
+      ).includes(entityTypeName)
         ? headerRightMapping.entityTypes[entityTypeName]
         : headerRightMapping.entityTypes.default;
 
@@ -54,5 +54,5 @@ export default function useEntityTypeHeader(entityTypeName: string) {
 
       navigation.setOptions(options);
     }
-  }, [entityTypeName]);
+  }, [navigation, route, t, entityTypeName]);
 }
