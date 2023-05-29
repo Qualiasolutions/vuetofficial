@@ -372,6 +372,9 @@
     "whatMyFamilySees": {
       "blurb": "Family members will see all tasks, due date and appointments to which they have been assigned. You can share other appointments using the settings below."
     },
+    "blockedDayPreferences": {
+      "blurb": "When selected, tasks for a specific category will not be placed on the relevant days. E.g. if Pets / Trips is ticked then tasks from the Pets category will not be scheduled during trips."
+    },
     "addTask": {
       "title": "Add Task",
       "createSuccess": "Successfully created new task",
