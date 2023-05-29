@@ -131,7 +131,7 @@ function Task({ task }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const entities = task.entities.map((entityId) => allEntities.byId[entityId]);
+  const entities = task.entities.map((entityId) => allEntities.byId[entityId]).filter(ent => !!ent);;
 
   const leftInfo = (
     <TransparentView style={styles.leftInfo}>
