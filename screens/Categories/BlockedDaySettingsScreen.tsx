@@ -33,7 +33,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: 200
   },
-  checkbox: { marginLeft: 10 }
+  checkbox: { marginLeft: 10 },
+  noOptionsText: {
+    padding: 20
+  }
 });
 
 const BlockTypeSelector = ({ type }: { type: BlockedCategoryType }) => {
@@ -127,6 +130,7 @@ export default function BlockedDaysSettingsScreen({
   route,
   navigation
 }: BlockedDaysSettingsScreenProps) {
+  const { t } = useTranslation()
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
 
@@ -141,7 +145,9 @@ export default function BlockedDaysSettingsScreen({
   }
 
   if (!TYPE_MAPPINGS[categoryData.name]) {
-    return null;
+    return <Text style={styles.noOptionsText}>
+      {t("screens.blockedDayPreferences.noOptionsBlurb")}
+    </Text>;
   } else {
     const selectors = TYPE_MAPPINGS[categoryData.name].map((typeName) => (
       <BlockTypeSelector type={typeName} key={typeName} />
