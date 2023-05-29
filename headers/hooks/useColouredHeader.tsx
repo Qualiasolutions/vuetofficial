@@ -17,7 +17,7 @@ export default function useColouredHeader(
   useLayoutEffect(() => {
     const options: Partial<NativeStackNavigationOptions> = {
       title,
-      headerTintColor: tintColor,
+      headerTintColor: tintColor || '#ffffff',
       headerShown: true,
       header: (props: NativeStackHeaderProps) => <HeaderComponent {...props} />
     };

@@ -23,6 +23,9 @@ type AllCategories = {
   byId: {
     [id: number]: Category;
   };
+  byName: {
+    [name: string]: Category;
+  };
 };
 
 type Country = {

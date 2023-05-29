@@ -4,13 +4,20 @@ import customFetchBase from './customFetchBase';
 import { AllCategories } from './types';
 import { Category } from 'types/categories';
 
-export const normalizeData = (data: { id: number }[]) => {
+export const normalizeData = (data: { id: number; name: string }[]) => {
   return {
     ids: data.map(({ id }) => id),
     byId: data.reduce(
       (prev, next) => ({
         ...prev,
         [next.id]: next
+      }),
+      {}
+    ),
+    byName: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.name]: next
       }),
       {}
     )

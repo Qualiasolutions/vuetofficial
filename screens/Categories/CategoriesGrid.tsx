@@ -1,5 +1,10 @@
 import React from 'react';
-import { ImageBackground, Pressable, StyleSheet } from 'react-native';
+import {
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  ImageSourcePropType
+} from 'react-native';
 
 import { Text, useThemeColor, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';
@@ -13,8 +18,17 @@ import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
 
-const categoriesImages = {
-  FAMILY: require('assets/images/categories/family.png'),
+type CategoryGroupName =
+  | 'PETS'
+  | 'SOCIAL_INTERESTS'
+  | 'EDUCATION_CAREER'
+  | 'TRAVEL'
+  | 'HEALTH_BEAUTY'
+  | 'HOME_GARDEN'
+  | 'FINANCE'
+  | 'TRANSPORT';
+
+const categoriesImages: { [key in CategoryGroupName]: ImageSourcePropType } = {
   PETS: require('assets/images/categories/pets.png'),
   SOCIAL_INTERESTS: require('assets/images/categories/social.png'),
   EDUCATION_CAREER: require('assets/images/categories/education.png'),
@@ -26,75 +40,6 @@ const categoriesImages = {
 };
 
 type CategoriesTypes = EntityTabScreenProps<'Categories'>;
-
-export default function CategoriesGrid({ navigation }: CategoriesTypes) {
-  const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
-  const { t } = useTranslation();
-
-  const whiteColor = useThemeColor({}, 'white');
-  const overlayColor = useThemeColor({}, 'overlay');
-  const blackColor = useThemeColor({}, 'black');
-
-  if (isLoading || !allCategories) {
-    return <FullPageSpinner />;
-  }
-
-  if (error) {
-    return <GenericError />;
-  }
-
-  const categoriesContent = Object.values(allCategories.byId).map(
-    (category: CategoryType) => {
-      const textColor = category.is_enabled ? whiteColor : blackColor;
-      const isEnabled = category.is_enabled;
-
-      const isPremiumTag = category.is_premium ? (
-        <View style={styles.premiumTag}>
-          <Text style={styles.premiumTagText}>Premium</Text>
-        </View>
-      ) : null;
-
-      return (
-        <Pressable
-          onPress={() => {
-            navigation.navigate('CategoryList', {
-              categoryId: category.id
-            });
-          }}
-          disabled={!isEnabled}
-          key={category.id}
-        >
-          <ImageBackground
-            source={categoriesImages[category.name]}
-            style={styles.gridSquare}
-            resizeMode="cover"
-          >
-            <View
-              style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
-            >
-              <BlackText
-                style={[styles.gridText, { color: textColor }]}
-                text={t(`categories.${category.name}`)}
-                bold={true}
-              />
-              {isPremiumTag}
-            </View>
-          </ImageBackground>
-        </Pressable>
-      );
-    }
-  );
-
-  const categoriesPage = (
-    <View style={styles.gridContainer}>{categoriesContent}</View>
-  );
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.container}>{categoriesPage}</View>
-    </SafeAreaView>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -147,3 +92,96 @@ const styles = StyleSheet.create({
     padding: 10
   }
 });
+
+export default function CategoriesGrid({ navigation }: CategoriesTypes) {
+  const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
+  const { t } = useTranslation();
+
+  const whiteColor = useThemeColor({}, 'white');
+  const overlayColor = useThemeColor({}, 'overlay');
+
+  if (isLoading || !allCategories) {
+    return <FullPageSpinner />;
+  }
+
+  const CATEGORY_GROUPS: { [key in CategoryGroupName]: CategoryType[] } = {
+    PETS: [allCategories.byName.PETS],
+    SOCIAL_INTERESTS: [allCategories.byName.SOCIAL_INTERESTS],
+    EDUCATION_CAREER: [
+      allCategories.byName.EDUCATION,
+      allCategories.byName.CAREER
+    ],
+    TRAVEL: [allCategories.byName.TRAVEL],
+    HEALTH_BEAUTY: [allCategories.byName.HEALTH_BEAUTY],
+    HOME_GARDEN: [
+      allCategories.byName.HOME,
+      allCategories.byName.GARDEN,
+      allCategories.byName.FOOD,
+      allCategories.byName.LAUNDRY
+    ],
+    FINANCE: [allCategories.byName.FINANCE],
+    TRANSPORT: [allCategories.byName.TRANSPORT]
+  };
+
+  if (error) {
+    return <GenericError />;
+  }
+
+  const categoriesContent = Object.entries(CATEGORY_GROUPS).map(
+    ([categoryGroupName, categoryGroup]) => {
+      const textColor = whiteColor;
+
+      const isPremiumTag = categoryGroup
+        .map((cat) => cat.is_premium)
+        .some((isPrem) => isPrem) ? (
+        <View style={styles.premiumTag}>
+          <Text style={styles.premiumTagText}>Premium</Text>
+        </View>
+      ) : null;
+
+      return (
+        <Pressable
+          onPress={() => {
+            if (categoryGroup.length === 1) {
+              navigation.navigate('CategoryList', {
+                categoryId: categoryGroup[0].id
+              });
+            } else {
+              navigation.navigate('SubCategoryList', {
+                categoryIds: categoryGroup.map((cat) => cat.id)
+              });
+            }
+          }}
+          key={categoryGroupName}
+        >
+          <ImageBackground
+            source={categoriesImages[categoryGroupName as CategoryGroupName]}
+            style={styles.gridSquare}
+            resizeMode="cover"
+          >
+            <View
+              style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
+            >
+              <BlackText
+                style={[styles.gridText, { color: textColor }]}
+                text={t(`categories.${categoryGroupName}`)}
+                bold={true}
+              />
+              {isPremiumTag}
+            </View>
+          </ImageBackground>
+        </Pressable>
+      );
+    }
+  );
+
+  const categoriesPage = (
+    <View style={styles.gridContainer}>{categoriesContent}</View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>{categoriesPage}</View>
+    </SafeAreaView>
+  );
+}

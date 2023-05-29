@@ -93,18 +93,53 @@ export default {
       }
     }
   ],
-  EDUCATION_CAREER: [
+  EDUCATION: [
     {
-      name: 'educationCareer.education',
-      toScreen: 'LinkList',
+      name: 'education.schools',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: { listName: 'education' }
+      toScreenParams: {
+        entityTypes: ['School'],
+        entityTypeName: 'schools'
+      }
     },
     {
-      name: 'educationCareer.career',
-      toScreen: 'LinkList',
+      name: 'education.academicPlans',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreenParams: { listName: 'career' }
+      toScreenParams: {
+        entityTypes: ['AcademicPlan'],
+        entityTypeName: 'academic-plans'
+      }
+    },
+    {
+      name: 'education.extracurricularPlans',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['ExtracurricularPlan'],
+        entityTypeName: 'extracurricular-plans'
+      }
+    }
+  ],
+  CAREER: [
+    {
+      name: 'career.daysOff',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['DaysOff'],
+        entityTypeName: 'days-off'
+      }
+    },
+    {
+      name: 'career.careerGoal',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['CareerGoal'],
+        entityTypeName: 'career-goals'
+      }
     }
   ],
   TRAVEL: [
@@ -165,7 +200,7 @@ export default {
       }
     }
   ],
-  HOME_GARDEN: [
+  HOME: [
     {
       name: 'homeGarden.myHome',
       toScreen: 'EntityList',
@@ -173,24 +208,6 @@ export default {
       toScreenParams: {
         entityTypes: ['Home'],
         entityTypeName: 'homes'
-      }
-    },
-    {
-      name: 'homeGarden.food',
-      toScreen: 'EntityList',
-      navMethod: 'push',
-      toScreenParams: {
-        entityTypes: ['Food'],
-        entityTypeName: 'food'
-      }
-    },
-    {
-      name: 'homeGarden.clothing',
-      toScreen: 'EntityList',
-      navMethod: 'push',
-      toScreenParams: {
-        entityTypes: ['Clothing'],
-        entityTypeName: 'clothing'
       }
     }
   ],

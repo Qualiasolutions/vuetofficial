@@ -13,16 +13,24 @@ import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { Pressable, StyleSheet } from 'react-native';
 import { Modal } from 'components/molecules/Modals';
-import { TaskLimitInterval, TaskLimitLimitFields } from 'types/taskLimits';
-import { Text, TextInput } from 'components/Themed';
+import { Text } from 'components/Themed';
 import { useEffect, useState } from 'react';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { Button } from 'components/molecules/ButtonComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { PreferredDays, PreferredDaysDays } from 'types/settings';
+import { PreferredDaysDays } from 'types/settings';
 import { capitalize } from 'lodash';
 import Checkbox from 'components/molecules/Checkbox';
+
+const styles = StyleSheet.create({
+  tableText: {
+    textAlign: 'center',
+    margin: 4
+  },
+  tableHeaderText: {
+    fontWeight: 'bold'
+  }
+});
 
 type DayType =
   | 'monday'
@@ -116,7 +124,7 @@ const EditPreferredDaysModal = ({
         }}
       >
         {DAYS.map((day) => (
-          <TransparentView style={{ marginHorizontal: 10 }}>
+          <TransparentView style={{ marginHorizontal: 10 }} key={day}>
             <Text>{capitalize(day).slice(0, 2)}</Text>
             <Checkbox
               checked={newPreferences[day]}
@@ -179,8 +187,6 @@ export default function PreferredDayPreferencesScreen() {
 
   const { data: allPreferredDays, isLoading: isLoadingPreferredDays } =
     useGetAllPreferredDaysQuery();
-
-  const { t } = useTranslation();
 
   const [categoryToEdit, setCategoryToEdit] = useState<null | number>(null);
 
@@ -268,13 +274,3 @@ export default function PreferredDayPreferencesScreen() {
     </TransparentPaddedView>
   );
 }
-
-const styles = StyleSheet.create({
-  tableText: {
-    textAlign: 'center',
-    margin: 4
-  },
-  tableHeaderText: {
-    fontWeight: 'bold'
-  }
-});

@@ -17,7 +17,7 @@ export const headerWithBackgroundColor = (
           style={[
             styles.overlay,
             {
-              backgroundColor,
+              backgroundColor: backgroundColor || '#444444',
               borderBottomWidth: 4,
               borderBottomColor: borderColor
             }

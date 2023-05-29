@@ -33,13 +33,25 @@
     "PETS": "Pets",
     "SOCIAL_INTERESTS": "Social & Interests",
     "EDUCATION_CAREER": "Education & Career",
+    "EDUCATION": "Education",
+    "CAREER": "Career",
     "TRAVEL": "Travel",
     "HEALTH_BEAUTY": "Health & Beauty",
     "HOME_GARDEN": "Home, Food & Laundry",
+    "HOME": "Home",
+    "GARDEN": "Garden",
+    "FOOD": "Food",
+    "LAUNDRY": "Laundry",
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
   },
   "linkTitles": {
+    "EDUCATION": "Education",
+    "CAREER": "Career",
+    "HOME": "Home",
+    "GARDEN": "Garden",
+    "FOOD": "Food",
+    "LAUNDRY": "Laundry",
     "generic": {
       "calendar": "Calendar",
       "lists": "Lists"
@@ -155,7 +167,13 @@
     "HEALTH_BEAUTY": "Health & Beauty",
     "HOME_GARDEN": "Home, Food & Laundry",
     "FINANCE": "Finance",
-    "TRANSPORT": "Transport"
+    "TRANSPORT": "Transport",
+    "HOME": "Home",
+    "GARDEN": "Garden",
+    "FOOD": "Food",
+    "LAUNDRY": "Laundry",
+    "EDUCATION": "Education",
+    "CAREER": "Career"
   },
   "addEntityHeaders": {
     "Car": "Vehicle",
