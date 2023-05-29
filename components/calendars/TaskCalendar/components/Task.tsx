@@ -29,6 +29,46 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
 
+const styles = StyleSheet.create({
+  titleContainer: {
+    flex: 1,
+    justifyContent: 'flex-start'
+  },
+  title: {
+    fontSize: 14,
+    textAlign: 'left',
+    wrap: 'nowrap'
+  },
+  leftInfo: {
+    width: '20%',
+    marginRight: 5
+  },
+  containerWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%'
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%'
+  },
+  buttonTextStyle: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 12
+  },
+  memberColor: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    marginTop: 13
+  }
+});
+
 export type MinimalScheduledTask = {
   id: number;
   start_datetime: Date;
@@ -54,8 +94,8 @@ function Task({ task }: PropTypes) {
         allScheduledTasksResult.data,
       (
         allScheduledTasksResult: any,
-        task: { id: number; recurrence_index?: number }
-      ) => [task.id, task?.recurrence_index],
+        tsk: { id: number; recurrence_index?: number }
+      ) => [tsk.id, tsk?.recurrence_index],
       (data, taskData) =>
         data?.filter(
           (scheduledTask) =>
@@ -63,7 +103,7 @@ function Task({ task }: PropTypes) {
             scheduledTask.recurrence_index === task.recurrence_index
         )[0]?.is_complete || false
     );
-  }, []);
+  }, [task.id, task.recurrence_index]);
 
   const { data: userDetails } = getUserFullDetails();
 
@@ -104,9 +144,6 @@ function Task({ task }: PropTypes) {
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.id || -1);
 
-  const [triggerUpdateTask, updateTaskResult] = useUpdateTaskMutation();
-
-  const greyColor = useThemeColor({}, 'grey');
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
 
   const { t } = useTranslation();
@@ -131,7 +168,9 @@ function Task({ task }: PropTypes) {
     ...(friendMembersList || [])
   ];
 
-  const entities = task.entities.map((entityId) => allEntities.byId[entityId]).filter(ent => !!ent);;
+  const entities = task.entities
+    .map((entityId) => allEntities.byId[entityId])
+    .filter((ent) => !!ent);
 
   const leftInfo = (
     <TransparentView style={styles.leftInfo}>
@@ -231,45 +270,5 @@ function Task({ task }: PropTypes) {
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flex: 1,
-    justifyContent: 'flex-start'
-  },
-  title: {
-    fontSize: 14,
-    textAlign: 'left',
-    wrap: 'nowrap'
-  },
-  leftInfo: {
-    width: '20%',
-    marginRight: 5
-  },
-  containerWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%'
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%'
-  },
-  buttonTextStyle: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 12
-  },
-  memberColor: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    marginTop: 13
-  }
-});
 
 export default Task;

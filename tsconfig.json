@@ -6,5 +6,10 @@
     "baseUrl": ".",
     "outDir": "./build"
   },
-  "exclude": ["node_modules", "public", "build", "tests"]
+  "exclude": [
+    "node_modules",
+    "public",
+    "build",
+    "tests"
+  ]
 }

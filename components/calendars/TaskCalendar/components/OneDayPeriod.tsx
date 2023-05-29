@@ -10,9 +10,36 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import ColourBar from 'components/molecules/ColourBar';
 import { ParsedPeriod } from 'types/periods';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import EntityTag from 'components/molecules/EntityTag';
 import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderRadius: 10,
+    overflow: 'hidden'
+  },
+  titleContainer: {
+    flex: 1
+  },
+  title: {
+    fontSize: 14,
+    textAlign: 'left'
+  },
+  containerWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%'
+  },
+  memberColor: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    marginTop: 13
+  }
+});
 
 type PropTypes = { period: ParsedPeriod };
 
@@ -32,8 +59,6 @@ export default function OneDayPeriod({ period }: PropTypes) {
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.id || -1);
-
-  const greyColor = useThemeColor({}, 'grey');
 
   if (isLoading || !allEntities) {
     return null;
@@ -85,7 +110,9 @@ export default function OneDayPeriod({ period }: PropTypes) {
           alignItems: 'flex-end'
         }}
       >
-        <TransparentView style={{ flexDirection: 'row' }}>
+        <TransparentView
+          style={{ flexDirection: 'row', width: '50%', flex: 0 }}
+        >
           <EntityTags entities={entities} />
         </TransparentView>
         {memberColour}
@@ -93,43 +120,3 @@ export default function OneDayPeriod({ period }: PropTypes) {
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderRadius: 10,
-    overflow: 'hidden'
-  },
-  titleContainer: {
-    flex: 1
-  },
-  title: {
-    fontSize: 14,
-    textAlign: 'left'
-  },
-  leftInfo: {
-    width: '20%',
-    marginRight: 0,
-    marginLeft: 0
-  },
-  containerWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%'
-  },
-  touchableContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%'
-  },
-  memberColor: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    marginTop: 13
-  }
-});
