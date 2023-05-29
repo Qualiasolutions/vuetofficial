@@ -28,6 +28,14 @@
     "taskLimits": "Task Limits",
     "flexibleTaskPreferences": "Flexible Tasks"
   },
+  "blockedCategories": {
+    "birthdays": "Don't schedule tasks from the following categories on my birthday",
+    "family-birthdays": "Don't schedule tasks from the following categories on family members' birthdays",
+    "national-holidays": "Don't schedule tasks from the following categories on holidays that I celebrate",
+    "trips": "Don't schedule tasks from the following categories when I have trips scheduled",
+    "term-time": "Don't schedule tasks from the following categories during term time, Monday to Friday",
+    "days-off": "Don't schedule tasks from the following categories during days off"
+  },
   "categories": {
     "FAMILY": "Family",
     "PETS": "Pets",

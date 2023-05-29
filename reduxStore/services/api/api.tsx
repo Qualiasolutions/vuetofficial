@@ -4,7 +4,20 @@ import customFetchBase from './customFetchBase';
 import { AllCategories } from './types';
 import { Category } from 'types/categories';
 
-export const normalizeData = (data: { id: number; name: string }[]) => {
+export const normalizeData = (data: { id: number }[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    )
+  };
+};
+
+const normalizeCategoryData = (data: { id: number; name: string }[]) => {
   return {
     ids: data.map(({ id }) => id),
     byId: data.reduce(
@@ -42,7 +55,8 @@ export const vuetApi = createApi({
     'Holiday',
     'Friendships',
     'FamilyCategoryViewPermission',
-    'PreferredDays'
+    'PreferredDays',
+    'BlockedCategories'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
@@ -52,7 +66,7 @@ export const vuetApi = createApi({
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: Category[] = await response.json();
-            return normalizeData(responseJson);
+            return normalizeCategoryData(responseJson);
           } else {
             // Just return the error data
             return response.json();

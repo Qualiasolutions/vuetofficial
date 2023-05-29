@@ -1,7 +1,10 @@
 import { vuetApi, normalizeData } from './api';
 import {
+  AllBlockedCategories,
   AllFamilyCategoryViewPermission,
   AllPreferredDays,
+  BlockedCategories,
+  BlockedCategoryType,
   FamilyCategoryViewPermission,
   PreferredDays
 } from 'types/settings';
@@ -119,6 +122,45 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['PreferredDays']
+    }),
+    getBlockedCategories: builder.query<
+      AllBlockedCategories,
+      BlockedCategoryType
+    >({
+      query: (type) => ({
+        url: `core/blocked-days/${type}/`,
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: BlockedCategories[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['BlockedCategories']
+    }),
+    deleteBlockedCategory: builder.mutation<
+      BlockedCategories,
+      { type: BlockedCategoryType } & Pick<BlockedCategories, 'id'>
+    >({
+      query: ({ type, id }) => ({
+        url: `core/blocked-days/${type}/${id}/`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['BlockedCategories']
+    }),
+    createBlockedCategory: builder.mutation<
+      BlockedCategories,
+      { type: BlockedCategoryType } & Omit<BlockedCategories, 'id'>
+    >({
+      query: (body) => ({
+        url: `core/blocked-days/${body.type}/`,
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['BlockedCategories']
     })
   }),
   overrideExisting: true
@@ -136,5 +178,8 @@ export const {
   useGetAllPreferredDaysQuery,
   useUpdatePreferredDaysMutation,
   useCreatePreferredDaysMutation,
-  useDeletePreferredDaysMutation
+  useDeletePreferredDaysMutation,
+  useGetBlockedCategoriesQuery,
+  useDeleteBlockedCategoryMutation,
+  useCreateBlockedCategoryMutation
 } = extendedApi;

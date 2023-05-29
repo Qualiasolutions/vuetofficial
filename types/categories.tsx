@@ -2,10 +2,14 @@ type CategoryName =
   | 'FAMILY'
   | 'PETS'
   | 'SOCIAL_INTERESTS'
-  | 'EDUCATION_CAREER'
+  | 'EDUCATION'
+  | 'CAREER'
   | 'TRAVEL'
   | 'HEALTH_BEAUTY'
-  | 'HOME_GARDEN'
+  | 'HOME'
+  | 'GARDEN'
+  | 'FOOD'
+  | 'LAUNDRY'
   | 'FINANCE'
   | 'TRANSPORT';
 

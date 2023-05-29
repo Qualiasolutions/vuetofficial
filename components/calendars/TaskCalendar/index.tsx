@@ -154,7 +154,7 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
     }
 
     return () => (
-      <TransparentView style={{ marginBottom: 200 }}>
+      <TransparentView style={{ marginBottom: 150 }}>
         <CalendarTaskDisplay
           tasks={filteredTasks}
           periods={filteredAllPeriods}

@@ -283,7 +283,7 @@ function Calendar({
           setPastMonthsToShow(0);
         }}
         renderItem={renderItem}
-        contentContainerStyle={noTasks ? {} : { paddingBottom: 150 }}
+        contentContainerStyle={noTasks ? {} : { paddingBottom: 100 }}
         ListHeaderComponent={
           <ListHeaderComponent
             loading={rerenderingList}

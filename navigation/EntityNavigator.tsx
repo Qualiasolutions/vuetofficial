@@ -20,6 +20,7 @@ import EntityTypesCalendarScreen from 'screens/EntityPages/EntityTypesCalendarSc
 import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesPeriodsScreen';
 import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
 import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
+import BlockedDaysSettingsScreen from 'screens/Categories/BlockedDaySettingsScreen';
 
 const EntityStack = createNativeStackNavigator<EntityTabParamList>();
 
@@ -64,6 +65,13 @@ export function EntityNavigator() {
       <EntityStack.Screen
         name="SubCategoryList"
         component={SubCategoryListScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <EntityStack.Screen
+        name="BlockedDaysSettings"
+        component={BlockedDaysSettingsScreen}
         options={{
           headerShown: true
         }}

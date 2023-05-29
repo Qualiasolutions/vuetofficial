@@ -95,6 +95,7 @@ export type EntityTabParamList = {
   CategoryPreferences: { categoryId: number };
   CategoryList: { categoryId: number };
   SubCategoryList: { categoryIds: number[] };
+  BlockedDaysSettings: { categoryId: number };
   EntityList: {
     entityTypes: EntityTypeName[];
     entityTypeName: string;
