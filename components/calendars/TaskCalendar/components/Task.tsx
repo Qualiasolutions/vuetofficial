@@ -11,12 +11,9 @@ import {
 } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
-import { useUpdateTaskMutation } from 'reduxStore/services/api/tasks';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import GenericError from 'components/molecules/GenericError';
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
@@ -138,12 +135,6 @@ function Task({ task }: PropTypes) {
     skip: !userDetails?.id
   });
 
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingFullDetails,
-    error: fullDetailsError
-  } = useGetUserFullDetailsQuery(userDetails?.id || -1);
-
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
 
   const { t } = useTranslation();
@@ -152,38 +143,38 @@ function Task({ task }: PropTypes) {
     return null;
   }
 
-  if (error) {
-    return <GenericError />;
-  }
 
-  const familyMembersList = userFullDetails?.family?.users?.filter(
-    (item: any) => task.members.includes(item.id)
-  );
-  const friendMembersList = userFullDetails?.friends?.filter((item: any) =>
-    task.members.includes(item.id)
-  );
+  const membersList = useMemo(() => {
+    const familyMembersList = userDetails?.family?.users?.filter(
+      (item: any) => task.members.includes(item.id)
+    );
+    const friendMembersList = userDetails?.friends?.filter((item: any) =>
+      task.members.includes(item.id)
+    );
+    return [
+      ...(familyMembersList || []),
+      ...(friendMembersList || [])
+    ];
+  }, [userDetails])
 
-  const membersList = [
-    ...(familyMembersList || []),
-    ...(friendMembersList || [])
-  ];
+  const entities = useMemo(() => {
+    return task.entities
+      .map((entityId) => allEntities.byId[entityId])
+      .filter((ent) => !!ent);
+  }, [task.entities])
 
-  const entities = task.entities
-    .map((entityId) => allEntities.byId[entityId])
-    .filter((ent) => !!ent);
-
-  const leftInfo = (
+  const leftInfo = useMemo(() => (
     <TransparentView style={styles.leftInfo}>
-      <Text style={isComplete && { color: isCompleteTextColor }}>
+      <Text>
         {getTimeStringFromDateObject(task.start_datetime)}
       </Text>
-      <Text style={isComplete && { color: isCompleteTextColor }}>
+      <Text>
         {getTimeStringFromDateObject(task.end_datetime)}
       </Text>
     </TransparentView>
-  );
+  ), [task.start_datetime, task.end_datetime]);
 
-  const memberColour = (
+  const memberColour = useMemo(() => (
     <TransparentView pointerEvents="none" style={styles.memberColor}>
       <ColourBar
         colourHexcodes={
@@ -191,18 +182,7 @@ function Task({ task }: PropTypes) {
         }
       />
     </TransparentView>
-  );
-
-  const taskTypesRequiringForm = ['BookMOTTask'];
-  const taskCompletionForm =
-    taskTypesRequiringForm.includes(task.resourcetype) && showTaskForm ? (
-      <TaskCompletionForm
-        task={task}
-        title={'Please provide some details regarding your MOT appointment'}
-        onSubmitSuccess={() => setShowTaskCompletionForm(false)}
-        onRequestClose={() => setShowTaskCompletionForm(false)}
-      />
-    ) : null;
+  ), [membersList]);
 
   return (
     <TransparentView
@@ -237,12 +217,8 @@ function Task({ task }: PropTypes) {
           <Checkbox
             disabled={isComplete}
             checked={isComplete}
-            smoothChecking={!taskTypesRequiringForm.includes(task.resourcetype)}
             color={isCompleteTextColor}
             onValueChange={async () => {
-              if (taskTypesRequiringForm.includes(task.resourcetype)) {
-                return setShowTaskCompletionForm(true);
-              }
               await triggerCreateCompletionForm({
                 resourcetype: `${task.resourcetype}CompletionForm`,
                 recurrence_index: task.recurrence_index,
@@ -266,7 +242,6 @@ function Task({ task }: PropTypes) {
         </TransparentView>
         {memberColour}
       </TransparentView>
-      {taskCompletionForm}
     </TransparentView>
   );
 }
