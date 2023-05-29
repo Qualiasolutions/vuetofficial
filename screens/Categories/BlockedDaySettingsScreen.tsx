@@ -69,7 +69,7 @@ const BlockTypeSelector = ({ type }: { type: BlockedCategoryType }) => {
   return (
     <TransparentPaddedView>
       <Text style={styles.checkboxListHeader}>
-        {t(`blockedCategories.${type}`)}:
+        {t(`blockedCategories.instructions.${type}`)}:
       </Text>
       <TransparentView style={styles.checkboxListContainer}>
         {allCategories.ids.map((catId) => {

@@ -105,12 +105,12 @@ export default function BlockedDayPreferencesScreen() {
             <Row
               data={[
                 '',
-                'Birthdays',
-                'Family Birthdays',
-                'Holidays You Celebrate',
-                'Trips',
-                'Days Off',
-                'Term Time'
+                t(`blockedCategories.names.birthdays`),
+                t(`blockedCategories.names.family-birthdays`),
+                t(`blockedCategories.names.national-holidays`),
+                t(`blockedCategories.names.trips`),
+                t(`blockedCategories.names.days-off`),
+                t(`blockedCategories.names.term-time`)
               ]}
               style={StyleSheet.flatten([styles.row, { height: headerHeight }])}
               textStyle={StyleSheet.flatten([

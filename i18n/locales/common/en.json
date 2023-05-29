@@ -29,12 +29,22 @@
     "flexibleTaskPreferences": "Flexible Tasks"
   },
   "blockedCategories": {
-    "birthdays": "Don't schedule tasks from the following categories on my birthday",
-    "family-birthdays": "Don't schedule tasks from the following categories on family members' birthdays",
-    "national-holidays": "Don't schedule tasks from the following categories on holidays that I celebrate",
-    "trips": "Don't schedule tasks from the following categories when I have trips scheduled",
-    "term-time": "Don't schedule tasks from the following categories during term time, Monday to Friday",
-    "days-off": "Don't schedule tasks from the following categories during days off"
+    "instructions": {
+      "birthdays": "Don't schedule tasks from the following categories on my birthday",
+      "family-birthdays": "Don't schedule tasks from the following categories on family members' birthdays",
+      "national-holidays": "Don't schedule tasks from the following categories on holidays that I celebrate",
+      "trips": "Don't schedule tasks from the following categories when I have trips scheduled",
+      "term-time": "Don't schedule tasks from the following categories during term time, Monday to Friday",
+      "days-off": "Don't schedule tasks from the following categories during days off"
+    },
+    "names": {
+      "birthdays": "My Birthday",
+      "family-birthdays": "Family Members' Birthdays",
+      "national-holidays": "Holidays That I Celebrate",
+      "trips": "Trips",
+      "term-time": "Term Time",
+      "days-off": "Days Off"
+    }
   },
   "categories": {
     "FAMILY": "Family",
