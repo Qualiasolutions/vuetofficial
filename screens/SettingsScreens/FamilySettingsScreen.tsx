@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { SettingsTabParamList } from 'types/base';
@@ -13,12 +12,7 @@ import {
   TransparentView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import {
-  useDeleteUserInviteMutation,
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useDeleteUserInviteMutation } from 'reduxStore/services/api/user';
 import {
   FullWidthImagePicker,
   PickedFile
@@ -30,6 +24,61 @@ import { YesNoModal } from 'components/molecules/Modals';
 import UserWithColor from 'components/molecules/UserWithColor';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+
+const styles = StyleSheet.create({
+  familyHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20
+  },
+  familyHeaderText: { fontSize: 22 },
+  scrollContainer: {
+    height: '100%'
+  },
+  colourBar: {
+    width: 70,
+    height: 6
+  },
+  listContainer: {
+    width: '100%',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    justifyContent: 'flex-start'
+  },
+  listHeader: {
+    borderBottomWidth: 1,
+    marginBottom: 10
+  },
+  headerText: {},
+  listElement: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 10
+  },
+  listElementText: {
+    fontSize: 18
+  },
+  listLeft: {
+    maxWidth: '80%'
+  },
+  listRight: {
+    flexDirection: 'row'
+  },
+  editIcon: {
+    width: 20,
+    height: 20,
+    margin: 5
+  },
+  plusIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 10
+  }
+});
 
 const FamilySettingsScreen = ({
   navigation
@@ -90,7 +139,7 @@ const FamilySettingsScreen = ({
       <TransparentView style={styles.listRight}>
         <Pressable
           onPress={() => {
-            const isUserInvite = (user: any): user is UserInviteResponse =>
+            const isUserInvite = (usr: any): usr is UserInviteResponse =>
               isPending;
             if (isUserInvite(user)) {
               setUserInviteToDelete(user);
@@ -173,60 +222,5 @@ const FamilySettingsScreen = ({
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  familyHeader: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20
-  },
-  familyHeaderText: { fontSize: 22 },
-  scrollContainer: {
-    height: '100%'
-  },
-  colourBar: {
-    width: 70,
-    height: 6
-  },
-  listContainer: {
-    width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    justifyContent: 'flex-start'
-  },
-  listHeader: {
-    borderBottomWidth: 1,
-    marginBottom: 10
-  },
-  headerText: {},
-  listElement: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 10
-  },
-  listElementText: {
-    fontSize: 18
-  },
-  listLeft: {
-    maxWidth: '80%'
-  },
-  listRight: {
-    flexDirection: 'row'
-  },
-  editIcon: {
-    width: 20,
-    height: 20,
-    margin: 5
-  },
-  plusIcon: {
-    width: 30,
-    height: 30,
-    marginLeft: 10
-  }
-});
 
 export default FamilySettingsScreen;

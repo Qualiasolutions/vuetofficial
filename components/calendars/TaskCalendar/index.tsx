@@ -16,7 +16,6 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { ParsedPeriod, PeriodResponse } from 'types/periods';
-import { useTranslation } from 'react-i18next';
 import CalendarView from 'components/molecules/CalendarViewV2';
 import Tabs from 'components/molecules/Tabs';
 import {
@@ -81,8 +80,6 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
 
   const dispatch = useDispatch();
 
-  const currentDate = new Date();
-
   const { periods: allScheduledPeriods, isLoading: isLoadingPeriods } =
     useScheduledPeriods();
 
@@ -94,9 +91,8 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
     isFetching: isFetchingScheduledTasks
   } = useGetAllScheduledTasksQuery(
     {
-      start_datetime: getOffsetMonthStartDateString(currentDate, -24)
-        .dateString,
-      end_datetime: getOffsetMonthStartDateString(currentDate, 24).dateString
+      start_datetime: '2020-01-01T00:00:00Z',
+      end_datetime: '2030-01-01T00:00:00Z'
     },
     { skip: !userDetails?.user_id }
   );

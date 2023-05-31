@@ -32,6 +32,32 @@ import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
 
+const styles = StyleSheet.create({
+  listEntry: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%'
+  },
+  listEntryText: {},
+  newItemInputWrapper: {
+    padding: 10,
+    marginBottom: 100,
+    height: 75,
+    flexDirection: 'row',
+    width: '100%'
+  },
+  newItemInput: {
+    height: '100%',
+    flexGrow: 1,
+    width: '50%'
+  },
+  submitButton: {
+    height: '100%',
+    marginLeft: 10,
+    width: 130
+  }
+});
+
 export default function ListScreen({ entityId }: { entityId: number }) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
@@ -62,9 +88,7 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     return null;
   }
 
-  const memberIds = Array(
-    ...new Set([...entityData.members, entityData.owner])
-  );
+  const memberIds = Array(...new Set(entityData.members));
   const members: UserResponse[] = [];
 
   if (userFullDetails) {
@@ -75,12 +99,12 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     });
   }
 
-  const onMemberListUpdate = (members: UserResponse[]) => {
-    const memberIds = members.map((x) => x.id);
+  const onMemberListUpdate = (mbrs: UserResponse[]) => {
+    const mbrIds = mbrs.map((x) => x.id);
     updateEntity({
       id: entityId,
       resourcetype: entityData.resourcetype,
-      members: memberIds
+      members: mbrIds
     })
       .unwrap()
       .then((res: any) => console.log(res)); //this won't work if there are no members assigned to the entity!!!!
@@ -130,29 +154,3 @@ export default function ListScreen({ entityId }: { entityId: number }) {
     </WhiteFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  listEntry: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%'
-  },
-  listEntryText: {},
-  newItemInputWrapper: {
-    padding: 10,
-    marginBottom: 100,
-    height: 75,
-    flexDirection: 'row',
-    width: '100%'
-  },
-  newItemInput: {
-    height: '100%',
-    flexGrow: 1,
-    width: '50%'
-  },
-  submitButton: {
-    height: '100%',
-    marginLeft: 10,
-    width: 130
-  }
-});

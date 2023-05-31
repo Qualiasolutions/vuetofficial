@@ -1,11 +1,12 @@
-type RecurrenceType = "DAILY" |
-  "WEEKLY" |
-  "WEEKDAILY" |
-  "MONTHLY" |
-  "MONTH_WEEKLY" |
-  "MONTHLY_LAST_WEEK" |
-  "YEARLY" |
-  "YEAR_MONTH_WEEKLY"
+type RecurrenceType =
+  | 'DAILY'
+  | 'WEEKLY'
+  | 'WEEKDAILY'
+  | 'MONTHLY'
+  | 'MONTH_WEEKLY'
+  | 'MONTHLY_LAST_WEEK'
+  | 'YEARLY'
+  | 'YEAR_MONTH_WEEKLY';
 
 interface Recurrence {
   earliest_occurrence: string;
@@ -56,9 +57,19 @@ interface FlexibleTaskParsedType extends BaseTaskType {
   resourcetype: 'FlexibleTask';
 }
 
-interface ScheduledTaskResponseType extends BaseTaskType {
+type AlertName = 'FIXED_TASK_CONFLICT' | 'NO_PLACEMENT' | 'UNPREFERRED_DAY';
+interface ScheduledTaskResponseType {
+  id: number;
+  is_complete: boolean;
+  members: number[];
+  entities: number[];
   start_datetime: string;
   end_datetime: string;
+  recurrence: number | null;
+  recurrence_index?: number | null;
+  title: string;
+  resourcetype: 'FixedTask' | 'FlexibleTask';
+  alert: AlertName[];
 }
 
 interface ScheduledTaskParsedType extends BaseTaskType {
@@ -77,7 +88,7 @@ type CreateTaskRequest = {
   start_datetime?: string;
   end_datetime?: string;
   resourcetype: string;
-}
+};
 
 const isFixedTaskResponseType = (task: any): task is FixedTaskResponseType =>
   task.resourcetype === 'FixedTask';

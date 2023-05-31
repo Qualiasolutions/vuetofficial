@@ -50,13 +50,11 @@ type SelectedHoliday = {
   country_code: string;
   start_date: string;
   end_date: string;
-  owner: number;
   name: number;
 };
 
 type HolidayList = {
   id: number;
-  owner: number;
   country_codes: string[];
   holiday_ids: string[];
 };

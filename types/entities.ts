@@ -29,7 +29,6 @@ export type EntityTypeName =
 export interface BaseEntityType {
   id: number;
   name: string;
-  owner: number;
   category: number;
   resourcetype: EntityTypeName;
   child_entities: number[];

@@ -10,7 +10,6 @@ import {
   SettingsTabParamList
 } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -40,6 +39,10 @@ const styles = StyleSheet.create({
     width: '20%',
     marginRight: 5
   },
+  outerContainer: {
+    borderBottomWidth: 1,
+    paddingVertical: 5
+  },
   containerWrapper: {
     flex: 1,
     flexDirection: 'row',
@@ -63,7 +66,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
     marginTop: 13
-  }
+  },
+  bottomWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end'
+  },
+  tagsWrapper: { flexDirection: 'row', width: '50%', flex: 0 }
 });
 
 export type MinimalScheduledTask = {
@@ -110,7 +119,7 @@ function Task({ task }: PropTypes) {
       end_datetime: '2030-01-01T00:00:00Z'
     },
     {
-      skip: !!userDetails?.id,
+      skip: !userDetails?.id,
       selectFromResult: (result: any) => ({
         isComplete: selectIsComplete(result, task)
       })
@@ -139,55 +148,54 @@ function Task({ task }: PropTypes) {
 
   const { t } = useTranslation();
 
-  if (isLoading || !allEntities) {
-    return null;
-  }
-
-
   const membersList = useMemo(() => {
-    const familyMembersList = userDetails?.family?.users?.filter(
-      (item: any) => task.members.includes(item.id)
+    const familyMembersList = userDetails?.family?.users?.filter((item: any) =>
+      task.members.includes(item.id)
     );
     const friendMembersList = userDetails?.friends?.filter((item: any) =>
       task.members.includes(item.id)
     );
-    return [
-      ...(familyMembersList || []),
-      ...(friendMembersList || [])
-    ];
-  }, [userDetails])
+    return [...(familyMembersList || []), ...(friendMembersList || [])];
+  }, [userDetails, task.members]);
 
   const entities = useMemo(() => {
+    if (!allEntities) {
+      return [];
+    }
     return task.entities
       .map((entityId) => allEntities.byId[entityId])
       .filter((ent) => !!ent);
-  }, [task.entities])
+  }, [task.entities, allEntities]);
 
-  const leftInfo = useMemo(() => (
-    <TransparentView style={styles.leftInfo}>
-      <Text>
-        {getTimeStringFromDateObject(task.start_datetime)}
-      </Text>
-      <Text>
-        {getTimeStringFromDateObject(task.end_datetime)}
-      </Text>
-    </TransparentView>
-  ), [task.start_datetime, task.end_datetime]);
+  const leftInfo = useMemo(
+    () => (
+      <TransparentView style={styles.leftInfo}>
+        <Text>{getTimeStringFromDateObject(task.start_datetime)}</Text>
+        <Text>{getTimeStringFromDateObject(task.end_datetime)}</Text>
+      </TransparentView>
+    ),
+    [task.start_datetime, task.end_datetime]
+  );
 
-  const memberColour = useMemo(() => (
-    <TransparentView pointerEvents="none" style={styles.memberColor}>
-      <ColourBar
-        colourHexcodes={
-          membersList?.map(({ member_colour }) => member_colour) || []
-        }
-      />
-    </TransparentView>
-  ), [membersList]);
+  const memberColour = useMemo(
+    () => (
+      <TransparentView pointerEvents="none" style={styles.memberColor}>
+        <ColourBar
+          colourHexcodes={
+            membersList?.map(({ member_colour }) => member_colour) || []
+          }
+        />
+      </TransparentView>
+    ),
+    [membersList]
+  );
+
+  if (isLoading || !allEntities) {
+    return null;
+  }
 
   return (
-    <TransparentView
-      style={{ borderBottomWidth: 1, paddingVertical: 5, height: ITEM_HEIGHT }}
-    >
+    <TransparentView style={[styles.outerContainer, { height: ITEM_HEIGHT }]}>
       <TransparentView style={[styles.containerWrapper]}>
         <TransparentView style={styles.container}>
           {leftInfo}
@@ -228,16 +236,8 @@ function Task({ task }: PropTypes) {
           />
         )}
       </TransparentView>
-      <TransparentView
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end'
-        }}
-      >
-        <TransparentView
-          style={{ flexDirection: 'row', width: '50%', flex: 0 }}
-        >
+      <TransparentView style={styles.bottomWrapper}>
+        <TransparentView style={styles.tagsWrapper}>
           <EntityTags entities={entities} />
         </TransparentView>
         {memberColour}

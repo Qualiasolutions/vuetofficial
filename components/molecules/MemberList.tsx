@@ -71,7 +71,7 @@ export default function MemberList({
         })
       )
     };
-  }, [selectedMembers]);
+  }, [selectedMembers, userFullDetails.family.users, t]);
 
   return (
     <View style={styles.container}>
