@@ -133,10 +133,12 @@ const tasksApi = vuetApi.injectEndpoints({
                     draft.byTaskId[patch.id][parseInt(recurrenceIndex)] = {
                       ...scheduledTask,
                       ...patch,
-                      start_datetime:
-                        patch.start_datetime || scheduledTask.start_datetime,
-                      end_datetime:
-                        patch.end_datetime || scheduledTask.end_datetime,
+                      start_datetime: scheduledTask.recurrence
+                        ? scheduledTask.start_datetime
+                        : patch.start_datetime || scheduledTask.start_datetime,
+                      end_datetime: scheduledTask.recurrence
+                        ? scheduledTask.end_datetime
+                        : patch.end_datetime || scheduledTask.end_datetime,
                       recurrence: scheduledTask.recurrence
                     };
                   }
