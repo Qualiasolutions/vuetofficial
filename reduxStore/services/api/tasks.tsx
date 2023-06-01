@@ -17,7 +17,7 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
         ...prev,
         [next.id]: {
           ...prev[next.id],
-          [next.recurrence_index || -1]: next
+          [next.recurrence_index === null ? -1 : next.recurrence_index]: next
         }
       }),
       {}
@@ -55,7 +55,7 @@ const tasksApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['Task']
     }),
-    getAllTasks: builder.query<AllTasks, number>({
+    getAllTasks: builder.query<AllTasks, void>({
       query: () => ({
         url: 'core/task/',
         responseHandler: async (response) => {
@@ -85,7 +85,7 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Task'],
+      // invalidatesTags: ['Task'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -125,23 +125,22 @@ const tasksApi = vuetApi.injectEndpoints({
                 'getAllScheduledTasks',
                 originalArgs,
                 (draft) => {
-                  for (const recurrenceIndex of Object.keys(
-                    draft.byTaskId[patch.id]
-                  )) {
-                    const scheduledTask =
-                      draft.byTaskId[patch.id][parseInt(recurrenceIndex)];
-                    draft.byTaskId[patch.id][parseInt(recurrenceIndex)] = {
-                      ...scheduledTask,
-                      ...patch,
-                      start_datetime: scheduledTask.recurrence
-                        ? scheduledTask.start_datetime
-                        : patch.start_datetime || scheduledTask.start_datetime,
-                      end_datetime: scheduledTask.recurrence
-                        ? scheduledTask.end_datetime
-                        : patch.end_datetime || scheduledTask.end_datetime,
-                      recurrence: scheduledTask.recurrence
-                    };
-                  }
+                  // If the task is recurrent then don't update
+                  // it's start and end times (they can't change)
+                  if (!draft.byTaskId[patch.id][-1]) return;
+
+                  // Otherwise it is a single occurrence and we
+                  // may want to update the start and end times
+                  const scheduledTask = draft.byTaskId[patch.id][-1];
+                  draft.byTaskId[patch.id][-1] = {
+                    ...scheduledTask,
+                    start_datetime: scheduledTask.recurrence
+                      ? scheduledTask.start_datetime
+                      : patch.start_datetime || scheduledTask.start_datetime,
+                    end_datetime: scheduledTask.recurrence
+                      ? scheduledTask.end_datetime
+                      : patch.end_datetime || scheduledTask.end_datetime
+                  };
                 }
               )
             );

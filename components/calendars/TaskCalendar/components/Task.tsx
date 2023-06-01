@@ -24,7 +24,8 @@ import EntityTags from 'components/molecules/EntityTags';
 import { useSelector } from 'react-redux';
 import {
   selectIsComplete,
-  selectScheduledTask
+  selectScheduledTask,
+  selectTask
 } from 'reduxStore/slices/calendars/selectors';
 import dayjs from 'dayjs';
 
@@ -89,9 +90,11 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
   const isComplete = useSelector(
     selectIsComplete({ id, recurrenceIndex: recurrence_index })
   );
-  const task = useSelector(
+  const task = useSelector(selectTask(id));
+  const scheduledTask = useSelector(
     selectScheduledTask({ id, recurrenceIndex: recurrence_index })
   );
+
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<EntityTabParamList>
@@ -135,9 +138,9 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
       .filter((ent) => !!ent);
   }, [task, allEntities]);
 
-  const startTime = new Date(task?.start_datetime || '');
+  const startTime = new Date(scheduledTask?.start_datetime || '');
   const startDate = dayjs(startTime).format('YYYY-MM-DD');
-  const endTime = new Date(task?.end_datetime || '');
+  const endTime = new Date(scheduledTask?.end_datetime || '');
   const endDate = dayjs(endTime).format('YYYY-MM-DD');
   const multiDay = startDate !== endDate;
 
@@ -148,20 +151,24 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
 
   const leftInfo = useMemo(
     () =>
-      task ? (
+      scheduledTask ? (
         <TransparentView style={styles.leftInfo}>
           {(isFirstDay || !multiDay) && (
             <Text>
               {`${
                 isFirstDay ? `${t('common.from')} ` : ''
-              }${getTimeStringFromDateObject(new Date(task.start_datetime))}`}
+              }${getTimeStringFromDateObject(
+                new Date(scheduledTask.start_datetime)
+              )}`}
             </Text>
           )}
           {(isLastDay || !multiDay) && (
             <Text>
               {`${
                 isLastDay ? `${t('common.until')} ` : ''
-              }${getTimeStringFromDateObject(new Date(task.end_datetime))}`}
+              }${getTimeStringFromDateObject(
+                new Date(scheduledTask.end_datetime)
+              )}`}
             </Text>
           )}
           {multiDay && !isFirstDay && !isLastDay && (
@@ -169,7 +176,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
           )}
         </TransparentView>
       ) : null,
-    [task]
+    [scheduledTask]
   );
 
   const memberColour = useMemo(
@@ -189,7 +196,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     if (isLoading || !allEntities) {
       return null;
     }
-    if (!task) {
+    if (!scheduledTask || !task) {
       return (
         <TransparentView
           style={[styles.outerContainer, { height: ITEM_HEIGHT }]}
@@ -236,7 +243,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
               onValueChange={async () => {
                 await triggerCreateCompletionForm({
                   resourcetype: `${task.resourcetype}CompletionForm`,
-                  recurrence_index: task.recurrence_index,
+                  recurrence_index: scheduledTask.recurrence_index,
                   task: task.id
                 });
               }}
@@ -252,6 +259,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
       </TransparentView>
     );
   }, [
+    scheduledTask,
     task,
     isComplete,
     allEntities,

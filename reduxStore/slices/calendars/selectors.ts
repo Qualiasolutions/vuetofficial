@@ -107,3 +107,11 @@ export const selectScheduledTask = ({
       ];
     }
   );
+
+export const selectTask = (id: number) =>
+  createSelector(
+    tasksApi.endpoints.getAllTasks.select(null as any),
+    (tasks) => {
+      return tasks.data?.byId[id];
+    }
+  );

@@ -86,7 +86,7 @@ export function BottomTabNavigator() {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
-  useGetAllTasksQuery(userDetails?.user_id || -1, {
+  useGetAllTasksQuery(null as any, {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
