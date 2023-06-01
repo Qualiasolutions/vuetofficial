@@ -1,14 +1,14 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { Text, useThemeColor } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
-  periodFieldTypes,
-  taskBottomFieldTypes,
-  taskMiddleFieldTypes,
-  taskTopFieldTypes
+  usePeriodFieldTypes,
+  useTaskBottomFieldTypes,
+  useTaskMiddleFieldTypes,
+  useTaskTopFieldTypes
 } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -55,6 +55,23 @@ const formTypes = [
 ];
 type AddTaskFormType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
 
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 100
+  },
+  typeSelector: {
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    marginBottom: 20
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    width: '100%',
+    zIndex: -1,
+    justifyContent: 'center'
+  }
+});
+
 export default function AddTaskScreen({
   route
 }: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
@@ -92,10 +109,10 @@ export default function AddTaskScreen({
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const taskTopFields = taskTopFieldTypes();
-  const taskMiddleFields = taskMiddleFieldTypes();
-  const taskBottomFields = taskBottomFieldTypes();
-  const periodFields = periodFieldTypes();
+  const taskTopFields = useTaskTopFieldTypes();
+  const taskMiddleFields = useTaskMiddleFieldTypes();
+  const taskBottomFields = useTaskBottomFieldTypes();
+  const periodFields = usePeriodFieldTypes();
 
   useEffect(() => {
     if (userDetails) {
@@ -184,7 +201,7 @@ export default function AddTaskScreen({
       });
       console.log(createTaskResult.error);
     }
-  }, [createTaskResult]);
+  }, [createTaskResult, resetState, t]);
 
   useEffect(() => {
     if (createPeriodResult.isSuccess) {
@@ -200,7 +217,7 @@ export default function AddTaskScreen({
       });
       console.log(createPeriodResult.error);
     }
-  }, [createPeriodResult]);
+  }, [createPeriodResult, resetState, t]);
 
   const submitForm = () => {
     if (formType === 'DUE_DATE') {
@@ -328,20 +345,3 @@ export default function AddTaskScreen({
     </TransparentFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 100
-  },
-  typeSelector: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-    marginBottom: 20
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    width: '100%',
-    zIndex: -1,
-    justifyContent: 'center'
-  }
-});

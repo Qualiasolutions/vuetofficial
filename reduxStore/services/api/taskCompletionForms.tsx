@@ -3,12 +3,71 @@ import tasksApi from './tasks';
 
 type TaskCompletionFormCreateRequest = {
   resourcetype: string;
-  recurrence_index?: number | null;
+  recurrence_index: number | null;
   task: number;
 };
 
-const extendedApi = vuetApi.injectEndpoints({
+type TaskCompletionForm = {
+  recurrence_index: number | null;
+  task: number;
+  resourcetype: string;
+  id: number;
+};
+
+export type AllTaskCompletionForms = {
+  ids: number[];
+  byId: {
+    [key: number]: TaskCompletionForm;
+  };
+  byTaskId: {
+    [key: number]: {
+      [key: number]: TaskCompletionForm;
+    };
+  };
+};
+
+const normalizeCompletionForms = (
+  data: { id: number; task: number; recurrence_index: number | null }[]
+) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce<{ [key: number]: {} }>(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byTaskId: data.reduce<{ [key: number]: {} }>(
+      (prev, next) => ({
+        ...prev,
+        [next.task]: {
+          ...prev[next.task],
+          [next.recurrence_index || -1]: next
+        }
+      }),
+      {}
+    )
+  };
+};
+
+const taskCompletionFormsApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
+    getTaskCompletionForms: builder.query<AllTaskCompletionForms, void>({
+      query: () => ({
+        url: 'core/task_completion_form/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: TaskCompletionForm[] = await response.json();
+            return normalizeCompletionForms(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['TaskCompletionForm']
+    }),
     createTaskCompletionForm: builder.mutation<
       object,
       TaskCompletionFormCreateRequest
@@ -20,7 +79,7 @@ const extendedApi = vuetApi.injectEndpoints({
           body
         };
       },
-      // invalidatesTags: ['TaskCompletionForm', 'Task'],
+      invalidatesTags: ['TaskCompletionForm'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -29,31 +88,29 @@ const extendedApi = vuetApi.injectEndpoints({
         for (const {
           endpointName,
           originalArgs
-        } of tasksApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Task' }
+        } of taskCompletionFormsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'TaskCompletionForm' }
         ])) {
-          if (endpointName !== 'getAllScheduledTasks') continue;
+          if (endpointName !== 'getTaskCompletionForms') continue;
           const patchResult = dispatch(
-            tasksApi.util.updateQueryData(
-              'getAllScheduledTasks',
+            taskCompletionFormsApi.util.updateQueryData(
+              'getTaskCompletionForms',
               originalArgs,
               (draft) => {
-                let tasksToUpdate = draft.filter(
-                  (task) => task.id === patch.task
-                );
-                if (
-                  patch.recurrence_index !== null &&
-                  patch.recurrence_index !== undefined
-                ) {
-                  tasksToUpdate = tasksToUpdate.filter(
-                    (task) =>
-                      task.recurrence &&
-                      task.recurrence_index === patch.recurrence_index
-                  );
+                const mockId = Math.round(Math.random() * 1e10);
+                const mockEntry = {
+                  ...patch,
+                  id: mockId
+                };
+                draft.ids.push(mockId);
+                draft.byId[mockId] = mockEntry;
+
+                if (!draft.byTaskId[patch.task]) {
+                  draft.byTaskId[patch.task] = {};
                 }
-                for (const task of tasksToUpdate) {
-                  Object.assign(task, { is_complete: true });
-                }
+                draft.byTaskId[patch.task][
+                  patch.recurrence_index === null ? -1 : patch.recurrence_index
+                ] = mockEntry;
               }
             )
           );
@@ -72,6 +129,11 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
+export default taskCompletionFormsApi;
+
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useCreateTaskCompletionFormMutation } = extendedApi;
+export const {
+  useCreateTaskCompletionFormMutation,
+  useGetTaskCompletionFormsQuery
+} = taskCompletionFormsApi;

@@ -18,5 +18,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 1, // Means warning
     'prettier/prettier': 2, // Means error
     "react/react-in-jsx-scope": "off",
+    "react-hooks/exhaustive-deps": 1,
+    "radix": "off"
   }
 };

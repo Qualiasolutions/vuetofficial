@@ -24,7 +24,6 @@ import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import Task, { MinimalScheduledTask } from './Task';
 import OneDayPeriod from './OneDayPeriod';
-import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
 import { ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
@@ -41,15 +40,6 @@ const styles = StyleSheet.create({
   }
 });
 
-type SingleDateTasks = {
-  tasks: MinimalScheduledTask[];
-  periods: ParsedPeriod[];
-};
-
-type AllDateTasks = {
-  [key: string]: SingleDateTasks;
-};
-
 type ItemType = 'TASK' | 'PERIOD';
 type ItemData = (ParsedPeriod | MinimalScheduledTask) & { type: ItemType };
 const isTask = (
@@ -62,30 +52,30 @@ const isPeriod = (
 ): item is ParsedPeriod & { type: 'PERIOD' } => {
   return item.type === 'PERIOD';
 };
-const ListItem = React.memo(({ data }: { data: ItemData }) => {
-  if (isTask(data)) {
-    return <Task task={data} />;
+const ListItem = React.memo(
+  ({ data, date }: { data: ItemData; date: string }) => {
+    if (isTask(data)) {
+      return <Task task={data} date={date} />;
+    }
+    if (isPeriod(data)) {
+      return <OneDayPeriod period={data} />;
+    }
+    return null;
   }
-  if (isPeriod(data)) {
-    return <OneDayPeriod period={data} />;
-  }
-  return null;
-});
+);
 
 const SECTION_HEADER_HEIGHT = 40;
 
 function Calendar({
   tasks,
   periods,
-  onChangeFirstDate,
-  alwaysIncludeCurrentDate = false
+  onChangeFirstDate
 }: {
-  tasks: MinimalScheduledTask[];
+  tasks: { [date: string]: MinimalScheduledTask[] };
   periods: ParsedPeriod[];
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
 }) {
-  const [tasksPerDate, setTasksPerDate] = React.useState<AllDateTasks>({});
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
@@ -98,33 +88,23 @@ function Calendar({
 
   const [firstDate, setFirstDate] = useState<Date>(currentDate);
 
-  const updateDate = (newDate: string) => {
-    if (onChangeFirstDate && newDate) {
-      onChangeFirstDate(newDate);
-    }
-  };
+  const updateDate = useCallback(
+    (newDate: string) => {
+      if (onChangeFirstDate && newDate) {
+        onChangeFirstDate(newDate);
+      }
+    },
+    [onChangeFirstDate]
+  );
 
-  const noTasks = tasks.length === 0 && periods.length === 0;
-
-  useEffect(() => {
-    const newTasksPerDate = formatTasksAndPeriods(
-      tasks,
-      periods,
-      alwaysIncludeCurrentDate && !noTasks
-    );
-    setTasksPerDate(newTasksPerDate);
-  }, [tasks, periods, alwaysIncludeCurrentDate]);
+  const noTasks = Object.keys(tasks).length === 0 && periods.length === 0;
 
   useEffect(() => {
-    if (
-      monthEnforcedDate &&
-      sectionListRef?.current &&
-      Object.keys(tasksPerDate).length > 0
-    ) {
+    if (monthEnforcedDate && sectionListRef?.current) {
       const newDate = new Date(monthEnforcedDate);
       if (firstDate && firstDate < newDate) {
         let sectionIndex = -1;
-        for (const date in tasksPerDate) {
+        for (const date of Object.keys(tasks)) {
           const dateObj = new Date(date);
           if (dateObj < newDate && firstDate < dateObj) {
             sectionIndex += 1;
@@ -160,9 +140,8 @@ function Calendar({
     }
   }, [monthEnforcedDate]);
 
-  const datesToShow = Object.keys(tasksPerDate).sort();
-
   const [futureSections, pastSections] = useMemo(() => {
+    const datesToShow = Object.keys(tasks);
     const future: { title: string; key: string; data: ItemData[] }[] = [];
     const past: { title: string; key: string; data: ItemData[] }[] = [];
 
@@ -175,21 +154,21 @@ function Calendar({
       )} ${dayJsDate.format('MMM')}`;
       sectionsArray.push({
         title: dayName,
-        key: dayName,
+        key: dayJsDate.format('YYYY-MM-DD'),
         data: [
-          ...tasksPerDate[date].tasks.map((task) => ({
+          ...tasks[date].map((task) => ({
             ...task,
             type: 'TASK' as ItemType
-          })),
-          ...tasksPerDate[date].periods.map((period) => ({
-            ...period,
-            type: 'PERIOD' as ItemType
           }))
+          // ...allScheduledTasks.byDate[date].periods.map((period) => ({
+          //   ...period,
+          //   type: 'PERIOD' as ItemType
+          // }))
         ]
       });
     }
     return [future, past];
-  }, [datesToShow, firstDate]);
+  }, [firstDate, tasks]);
 
   const shownSections = useMemo(() => {
     return [
@@ -198,33 +177,37 @@ function Calendar({
     ];
   }, [futureSections, pastSections, pastMonthsToShow]);
 
-  const renderItem = useCallback(({ item }: { item: ItemData }) => {
-    return (
-      <TransparentView style={{ paddingHorizontal: 20 }}>
-        <ListItem data={item} />
-      </TransparentView>
-    );
-  }, []);
+  const HORIZONTAL_PADDING = 20;
+  const renderItem = useCallback(
+    ({ section, item }: { item: ItemData; section: { key: string } }) => {
+      return (
+        <TransparentView style={{ paddingHorizontal: HORIZONTAL_PADDING }}>
+          <ListItem data={item} date={section.key} />
+        </TransparentView>
+      );
+    },
+    []
+  );
   const onViewableItemsChanged = useCallback(
     (items: { viewableItems: ViewToken[] }) => {
       if (onChangeFirstDate) {
-        if (items.viewableItems[0]?.section?.data?.[0]?.start_datetime) {
+        if (items.viewableItems[0]?.section?.key) {
           const newDate = getDateStringFromDateObject(
-            new Date(items.viewableItems[0]?.section?.data?.[0]?.start_datetime)
+            new Date(items.viewableItems[0]?.section?.key)
           );
           updateDate(newDate);
         }
       }
     },
-    []
+    [onChangeFirstDate, updateDate]
   );
 
   const keyExtractor = useCallback((item: ItemData) => {
     if (isTask(item)) {
-      return `${item.id}_${item.resourcetype}`;
+      return `${item.id}_${item.recurrence_index}`;
     }
     if (isPeriod(item)) {
-      return `${item.id}_${item.resourcetype}`;
+      return `${item.id}`;
     }
     return '';
   }, []);
@@ -242,7 +225,7 @@ function Calendar({
       offset += TOTAL_HEADER_HEIGHT;
 
       // Section items
-      section.data.forEach((_match, i) => {
+      section.data.forEach(() => {
         /* -----------------------
          * We need to remove the last ItemSeparator from our calculations otherwise
          * we might offset our layout a little. As per the documentation, a ItemSeparatorComponent is
@@ -265,6 +248,7 @@ function Calendar({
     return layouts;
   }, [shownSections]);
 
+  const PADDING_BOTTOM = 100;
   return (
     <>
       <SectionList
@@ -283,7 +267,7 @@ function Calendar({
           setPastMonthsToShow(0);
         }}
         renderItem={renderItem}
-        contentContainerStyle={noTasks ? {} : { paddingBottom: 100 }}
+        contentContainerStyle={noTasks ? {} : { paddingBottom: PADDING_BOTTOM }}
         ListHeaderComponent={
           <ListHeaderComponent
             loading={rerenderingList}

@@ -3,7 +3,6 @@
 */
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
-import GenericError from 'components/molecules/GenericError';
 import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,8 +25,9 @@ import {
   setListEnforcedDate,
   setMonthEnforcedDate
 } from 'reduxStore/slices/calendars/actions';
-import { MinimalScheduledTask } from './components/Task';
 import MonthSelector from './components/MonthSelector';
+import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
+import { selectFilteredScheduledTaskIdsByDate } from 'reduxStore/slices/calendars/selectors';
 
 dayjs.extend(utc);
 
@@ -42,26 +42,6 @@ const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
   return parsedPeriod;
 };
 
-const getOffsetMonthStartDateString = (
-  date: Date,
-  offset: number
-): {
-  date: Date;
-  dateString: string;
-} => {
-  const dateCopy = new Date(date.getTime());
-  dateCopy.setHours(0);
-  dateCopy.setMinutes(0);
-  dateCopy.setSeconds(0);
-  dateCopy.setMilliseconds(0);
-  dateCopy.setDate(1);
-  dateCopy.setMonth(dateCopy.getMonth() + offset);
-  return {
-    date: dateCopy,
-    dateString: dayjs.utc(dateCopy).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
-  };
-};
-
 const styles = StyleSheet.create({
   container: {
     height: '100%',
@@ -70,64 +50,35 @@ const styles = StyleSheet.create({
 });
 
 type CalendarProps = {
-  taskFilters: ((task: MinimalScheduledTask) => boolean)[];
   periodFilters: ((period: ParsedPeriod) => boolean)[];
   fullPage: boolean;
 };
-function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
+function Calendar({ periodFilters, fullPage }: CalendarProps) {
+  // Force fetch the completion forms initially
+  const { isLoading: isLoadingTaskCompletionForms } =
+    useGetTaskCompletionFormsQuery();
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
-
+  // Force fetch the scheduled tasks initially
+  const { isLoading: isLoadingScheduledTasks } = useGetAllScheduledTasksQuery(
+    null as any,
+    {
+      skip: !userDetails?.user_id
+    }
+  );
   const dispatch = useDispatch();
 
   const { periods: allScheduledPeriods, isLoading: isLoadingPeriods } =
     useScheduledPeriods();
 
-  // Load all scheduled tasks
-  const {
-    data: allScheduledTasks,
-    error,
-    isLoading: isLoadingScheduledTasks,
-    isFetching: isFetchingScheduledTasks
-  } = useGetAllScheduledTasksQuery(
-    {
-      start_datetime: '2020-01-01T00:00:00Z',
-      end_datetime: '2030-01-01T00:00:00Z'
-    },
-    { skip: !userDetails?.user_id }
-  );
-
-  const minimalScheduledTasks = useMemo(() => {
-    return allScheduledTasks?.map((task) => ({
-      id: task.id,
-      start_datetime: new Date(task.start_datetime),
-      end_datetime: new Date(task.end_datetime),
-      title: task.title,
-      members: task.members,
-      recurrence_index: task.recurrence_index,
-      recurrence: task.recurrence,
-      entities: task.entities,
-      resourcetype: task.resourcetype
-    }));
-  }, [allScheduledTasks]);
-
   const parsedPeriods = useMemo(() => {
     if (!allScheduledPeriods) {
       return [];
     }
-    return allScheduledPeriods.map((period) => parsePeriodResponse(period));
+    return allScheduledPeriods.map(parsePeriodResponse);
   }, [allScheduledPeriods]);
 
-  const filteredTasks = useMemo<MinimalScheduledTask[]>(() => {
-    if (!minimalScheduledTasks) {
-      return [];
-    }
-    let filtered: MinimalScheduledTask[] = minimalScheduledTasks;
-    for (const taskFilter of taskFilters) {
-      filtered = filtered.filter(taskFilter);
-    }
-    return filtered;
-  }, [JSON.stringify(minimalScheduledTasks), taskFilters]);
+  const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
 
   const filteredAllPeriods = useMemo<ParsedPeriod[]>(() => {
     if (!parsedPeriods) {
@@ -139,18 +90,16 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
       }
       return filtered;
     }
-  }, [JSON.stringify(parsedPeriods), periodFilters]);
+  }, [parsedPeriods, periodFilters]);
 
+  const MARGIN_BOTTOM = 150;
   const listView = useMemo(() => {
-    if (error) {
-      return () => null;
-    }
     if (!filteredTasks || !filteredAllPeriods) {
       return () => null;
     }
 
     return () => (
-      <TransparentView style={{ marginBottom: 150 }}>
+      <TransparentView style={{ marginBottom: MARGIN_BOTTOM }}>
         <CalendarTaskDisplay
           tasks={filteredTasks}
           periods={filteredAllPeriods}
@@ -161,13 +110,10 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
         />
       </TransparentView>
     );
-  }, [JSON.stringify(filteredTasks), JSON.stringify(filteredAllPeriods)]);
+  }, [JSON.stringify(filteredTasks), filteredAllPeriods, dispatch]);
 
   const calendarView = useMemo(() => {
-    if (error) {
-      return () => null;
-    }
-    if (!allScheduledTasks || !allScheduledPeriods) {
+    if (!allScheduledPeriods) {
       return () => null;
     }
 
@@ -180,21 +126,11 @@ function Calendar({ taskFilters, periodFilters, fullPage }: CalendarProps) {
         }}
       />
     );
-  }, [JSON.stringify(filteredTasks), JSON.stringify(filteredAllPeriods)]);
+  }, [allScheduledPeriods, dispatch, filteredTasks, filteredAllPeriods]);
 
-  if (error) {
-    return <GenericError />;
-  }
-
-  const isLoading = isLoadingScheduledTasks || isLoadingPeriods;
-  if (
-    // If we include this then every time we poll for changes
-    // we get a loading spinner - try and figure out how to
-    // resolve this
-    isLoading ||
-    !allScheduledTasks ||
-    !allScheduledPeriods
-  ) {
+  const isLoading =
+    isLoadingScheduledTasks || isLoadingPeriods || isLoadingTaskCompletionForms;
+  if (isLoading || !allScheduledPeriods) {
     return <FullPageSpinner />;
   }
 

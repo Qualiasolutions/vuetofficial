@@ -4,15 +4,9 @@ import {
   FormFieldTypes
 } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export const taskTopFieldTypes = (): FlatFormFieldTypes => {
+export const useTaskTopFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -39,7 +33,7 @@ export const taskTopFieldTypes = (): FlatFormFieldTypes => {
   };
 };
 
-export const periodFieldTypes = (): FlatFormFieldTypes => {
+export const usePeriodFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -97,7 +91,7 @@ export const periodFieldTypes = (): FlatFormFieldTypes => {
   };
 };
 
-export const taskMiddleFieldTypes = (
+export const useTaskMiddleFieldTypes = (
   disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -148,7 +142,7 @@ export const taskMiddleFieldTypes = (
   };
 };
 
-export const taskBottomFieldTypes = (): FlatFormFieldTypes => {
+export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   return {

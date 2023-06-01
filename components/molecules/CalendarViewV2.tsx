@@ -1,20 +1,57 @@
 import { Text, useThemeColor } from 'components/Themed';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { useSelector } from 'react-redux';
-import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import {
+  selectListEnforcedDate,
+  selectScheduledTask
+} from 'reduxStore/slices/calendars/selectors';
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 import { ParsedPeriod } from 'types/periods';
-import formatTasksAndPeriods from 'utils/formatTasksAndPeriods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export type CalendarViewProps = {
-  tasks: MinimalScheduledTask[];
+  tasks: { [date: string]: MinimalScheduledTask[] };
   periods: ParsedPeriod[];
   onChangeDate?: (date: string) => void;
+};
+
+function useStyle() {
+  return StyleSheet.create({
+    container: { height: '100%', marginBottom: 50 },
+    dayComponent: {
+      width: 58,
+      height: 70,
+      borderWidth: 0.2,
+      borderColor: useThemeColor({}, 'almostBlack'),
+      margin: 0,
+      paddingVertical: 1,
+      paddingHorizontal: 2
+    },
+    dayComponentInnerContainer: {
+      height: '100%'
+    },
+    date: { fontSize: 10, textAlign: 'left' },
+    taskText: { fontSize: 8, marginBottom: 1 }
+  });
+}
+
+const ListedTask = ({
+  id,
+  recurrenceIndex
+}: {
+  id: number;
+  recurrenceIndex: number | null;
+}) => {
+  const task = useSelector(selectScheduledTask({ id, recurrenceIndex }));
+  const styles = useStyle();
+  if (!task) {
+    return null;
+  }
+  return <Text style={styles.taskText}>{task.title}</Text>;
 };
 
 export default function CalendarView({
@@ -25,7 +62,7 @@ export default function CalendarView({
   const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(
     null
   );
-  const styles = style();
+  const styles = useStyle();
   const listEnforcedDate = useSelector(selectListEnforcedDate);
   const whiteColor = useThemeColor({}, 'white');
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -46,10 +83,6 @@ export default function CalendarView({
     setForcedInitialDate(null);
   }, [listEnforcedDate]);
 
-  const formattedTasks = useMemo(() => {
-    return formatTasksAndPeriods(tasks, periods);
-  }, [tasks, periods]);
-
   const currentDate = forcedInitialDate || listEnforcedDate || undefined;
 
   return (
@@ -58,7 +91,7 @@ export default function CalendarView({
         minDate={'2012-05-10'}
         pagingEnabled={true}
         horizontal={true}
-        style={{ height: 1000 }}
+        style={{ height: 830 }}
         onPressArrowLeft={(cb, date) => {
           cb();
           if (date) {
@@ -94,23 +127,16 @@ export default function CalendarView({
                 ]}
               >
                 <ScrollView>
-                  <TransparentView style={{ height: '100%' }}>
-                    <Text style={[styles.date, { color: 'black' }]}>
-                      {date.day}
-                    </Text>
-                    {formattedTasks[date.dateString]?.tasks?.map((task) => (
-                      <Text
-                        key={`${task.id}_${task.recurrence_index}`}
-                        style={styles.taskText}
-                      >
-                        {task.title}
-                      </Text>
-                    ))}
-                    {formattedTasks[date.dateString]?.periods?.map((period) => (
-                      <Text key={period.id} style={styles.taskText}>
-                        {period.title}
-                      </Text>
-                    ))}
+                  <TransparentView style={styles.dayComponentInnerContainer}>
+                    <Text style={[styles.date]}>{date.day}</Text>
+                    {tasks[date.dateString] &&
+                      tasks[date.dateString].map((task) => (
+                        <ListedTask
+                          id={task.id}
+                          recurrenceIndex={task.recurrence_index}
+                          key={`${task.id}_${task.recurrence_index}`}
+                        />
+                      ))}
                   </TransparentView>
                 </ScrollView>
               </Pressable>
@@ -121,21 +147,4 @@ export default function CalendarView({
       />
     </WhiteFullPageScrollView>
   );
-}
-
-function style() {
-  return StyleSheet.create({
-    container: { height: '100%', marginBottom: 100 },
-    dayComponent: {
-      width: 58,
-      height: 70,
-      borderWidth: 0.2,
-      borderColor: useThemeColor({}, 'almostBlack'),
-      margin: 0,
-      paddingVertical: 1,
-      paddingHorizontal: 2
-    },
-    date: { fontSize: 10, textAlign: 'left' },
-    taskText: { fontSize: 8, marginBottom: 1 }
-  });
 }

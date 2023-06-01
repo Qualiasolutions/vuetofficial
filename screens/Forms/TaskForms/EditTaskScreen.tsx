@@ -5,9 +5,9 @@ import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
-  taskBottomFieldTypes,
-  taskMiddleFieldTypes,
-  taskTopFieldTypes
+  useTaskBottomFieldTypes,
+  useTaskMiddleFieldTypes,
+  useTaskTopFieldTypes
 } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -29,10 +29,25 @@ import {
 } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { TaskResponseType } from 'types/tasks';
-import { deepCopy } from 'utils/copy';
+import { FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 100
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    width: '100%',
+    zIndex: -1,
+    justifyContent: 'center'
+  },
+  bottomButton: {
+    flex: 1,
+    margin: 5
+  }
+});
 
 export default function EditTaskScreen({
   route,
@@ -55,7 +70,9 @@ export default function EditTaskScreen({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [taskToEdit, setTaskToEdit] = useState<TaskResponseType | null>(null);
+  const [taskToEdit, setTaskToEdit] = useState<FixedTaskResponseType | null>(
+    null
+  );
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
     {}
   );
@@ -65,9 +82,11 @@ export default function EditTaskScreen({
     useState<FieldValueTypes>({});
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const taskTopFields = taskTopFieldTypes();
-  const taskMiddleFields = taskMiddleFieldTypes(true);
-  const taskBottomFields = taskBottomFieldTypes();
+  const taskTopFields = useTaskTopFieldTypes();
+  const taskMiddleFields = useTaskMiddleFieldTypes(
+    !!(taskToEdit && taskToEdit.recurrence)
+  );
+  const taskBottomFields = useTaskBottomFieldTypes();
 
   useEffect(() => {
     if (allTasks && userDetails) {
@@ -135,7 +154,14 @@ export default function EditTaskScreen({
       }
     }
     return true;
-  }, [taskTopFieldValues, taskMiddleFields, taskBottomFieldValues]);
+  }, [
+    taskBottomFields,
+    taskBottomFieldValues,
+    taskMiddleFields,
+    taskMiddleFieldValues,
+    taskTopFields,
+    taskTopFieldValues
+  ]);
 
   useEffect(() => {
     if (updateTaskResult.isSuccess) {
@@ -150,7 +176,7 @@ export default function EditTaskScreen({
         text1: t('common.errors.generic')
       });
     }
-  }, [updateTaskResult]);
+  }, [updateTaskResult, resetState, t]);
 
   useEffect(() => {
     if (deleteTaskResult.isSuccess) {
@@ -161,7 +187,7 @@ export default function EditTaskScreen({
         text1: t('common.errors.generic')
       });
     }
-  }, [deleteTaskResult]);
+  }, [deleteTaskResult, navigation, t]);
 
   const submitUpdateForm = () => {
     if (taskToEdit) {
@@ -185,7 +211,7 @@ export default function EditTaskScreen({
         ...parsedTopFieldValues,
         ...parsedMiddleFieldValues,
         ...parsedBottomFieldValues,
-        resourcetype: 'FixedTask' as 'FixedTask' | 'FlexibleTask', // TODO
+        resourcetype: 'FixedTask' as 'FixedTask',
         id: taskToEdit.id
       };
 
@@ -267,19 +293,3 @@ export default function EditTaskScreen({
     </TransparentFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 100
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    width: '100%',
-    zIndex: -1,
-    justifyContent: 'center'
-  },
-  bottomButton: {
-    flex: 1,
-    margin: 5
-  }
-});

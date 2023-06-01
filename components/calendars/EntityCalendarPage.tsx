@@ -8,15 +8,10 @@ import { ParsedPeriod } from 'types/periods';
 import { MinimalScheduledTask } from './TaskCalendar/components/Task';
 
 function EntityCalendarPage({ entityIds }: { entityIds: number[] }) {
-  const entityFilter = (scheduledItem: MinimalScheduledTask | ParsedPeriod) =>
-    scheduledItem.entities.some((entity) => entityIds.includes(entity));
-  return (
-    <Calendar
-      taskFilters={[entityFilter]}
-      periodFilters={[entityFilter]}
-      fullPage={false}
-    />
-  );
+  // TODO
+  // const entityFilter = (scheduledItem: MinimalScheduledTask | ParsedPeriod) =>
+  //   scheduledItem.entities.some((entity) => entityIds.includes(entity));
+  return <Calendar periodFilters={[]} fullPage={false} />;
 }
 
 export default EntityCalendarPage;

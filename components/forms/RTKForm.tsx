@@ -37,6 +37,22 @@ declare type UseMutationResult<T> = {
   reset: () => void; // A method to manually unsubscribe from the mutation call and reset the result to the uninitialized state
 };
 
+const styles = StyleSheet.create({
+  bottomButtons: {
+    flexDirection: 'row',
+    width: '100%',
+    paddingHorizontal: 50,
+    zIndex: -1,
+    justifyContent: 'center'
+  },
+  button: {
+    width: '50%'
+  },
+  deleteButton: {
+    marginLeft: 10
+  }
+});
+
 export default function Form({
   fields,
   formType = 'CREATE',
@@ -296,19 +312,3 @@ export default function Form({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  bottomButtons: {
-    flexDirection: 'row',
-    width: '100%',
-    paddingHorizontal: 50,
-    zIndex: -1,
-    justifyContent: 'center'
-  },
-  button: {
-    width: '50%'
-  },
-  deleteButton: {
-    marginLeft: 10
-  }
-});

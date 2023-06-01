@@ -1,24 +1,52 @@
 import { AllTasks } from './types';
 import { vuetApi, normalizeData } from './api';
 import {
-  TaskParsedType,
-  TaskResponseType,
   ScheduledTaskResponseType,
-  CreateTaskRequest
+  CreateTaskRequest,
+  FixedTaskResponseType,
+  FixedTaskParsedType
 } from 'types/tasks';
+import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 
-const extendedApi = vuetApi.injectEndpoints({
+const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
+  return {
+    ordered: data.map(({ id, recurrence_index }) => ({ id, recurrence_index })),
+    byDate: formatTasksPerDate(data),
+    byTaskId: data.reduce<{ [key: number]: {} }>(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: {
+          ...prev[next.id],
+          [next.recurrence_index || -1]: next
+        }
+      }),
+      {}
+    )
+  };
+};
+
+type AllScheduledTasks = {
+  ordered: { id: number; recurrence_index: number | null }[];
+  byDate: {
+    [date: string]: { id: number; recurrence_index: number | null }[];
+  };
+  byTaskId: {
+    [key: number]: {
+      [key: number]: ScheduledTaskResponseType;
+    };
+  };
+};
+
+const tasksApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllScheduledTasks: builder.query<
-      ScheduledTaskResponseType[],
-      { start_datetime: string; end_datetime: string }
-    >({
-      query: ({ start_datetime, end_datetime }) => ({
-        url: `core/scheduled_task/?earliest_datetime=${start_datetime}&latest_datetime=${end_datetime}`,
+    getAllScheduledTasks: builder.query<AllScheduledTasks, void>({
+      query: () => ({
+        url: `core/scheduled_task/?earliest_datetime=2020-01-01T00:00:00Z&latest_datetime=2030-01-01T00:00:00Z`,
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: TaskResponseType[] = await response.json();
-            return responseJson;
+            const responseJson: ScheduledTaskResponseType[] =
+              await response.json();
+            return normalizeScheduledTaskData(responseJson);
           } else {
             // Just return the error data
             return response.json();
@@ -32,7 +60,7 @@ const extendedApi = vuetApi.injectEndpoints({
         url: 'core/task/',
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: TaskResponseType[] = await response.json();
+            const responseJson: FixedTaskResponseType[] = await response.json();
             return normalizeData(responseJson);
           } else {
             // Just return the error data
@@ -43,8 +71,12 @@ const extendedApi = vuetApi.injectEndpoints({
       providesTags: ['Task']
     }),
     updateTask: builder.mutation<
-      TaskResponseType,
-      Partial<TaskParsedType> & Pick<TaskParsedType, 'id'>
+      FixedTaskResponseType,
+      Partial<FixedTaskParsedType> &
+        Pick<FixedTaskParsedType, 'id'> & {
+          start_datetime?: string;
+          end_datetime?: string;
+        }
     >({
       query: (body) => {
         return {
@@ -53,9 +85,77 @@ const extendedApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Task']
+      invalidatesTags: ['Task'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
+            continue;
+          if (endpointName === 'getAllTasks') {
+            const patchResult = dispatch(
+              tasksApi.util.updateQueryData(
+                'getAllTasks',
+                originalArgs,
+                (draft) => {
+                  draft.byId[patch.id] = {
+                    ...draft.byId[patch.id],
+                    ...patch,
+                    start_datetime:
+                      patch.start_datetime ||
+                      draft.byId[patch.id].start_datetime,
+                    end_datetime:
+                      patch.end_datetime || draft.byId[patch.id].end_datetime
+                  };
+                }
+              )
+            );
+            patchResults.push(patchResult);
+          }
+          if (endpointName === 'getAllScheduledTasks') {
+            const patchResult = dispatch(
+              tasksApi.util.updateQueryData(
+                'getAllScheduledTasks',
+                originalArgs,
+                (draft) => {
+                  for (const recurrenceIndex of Object.keys(
+                    draft.byTaskId[patch.id]
+                  )) {
+                    const scheduledTask =
+                      draft.byTaskId[patch.id][parseInt(recurrenceIndex)];
+                    draft.byTaskId[patch.id][parseInt(recurrenceIndex)] = {
+                      ...scheduledTask,
+                      ...patch,
+                      start_datetime:
+                        patch.start_datetime || scheduledTask.start_datetime,
+                      end_datetime:
+                        patch.end_datetime || scheduledTask.end_datetime,
+                      recurrence: scheduledTask.recurrence
+                    };
+                  }
+                }
+              )
+            );
+            patchResults.push(patchResult);
+          }
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     }),
-    createTask: builder.mutation<TaskResponseType, CreateTaskRequest>({
+    createTask: builder.mutation<FixedTaskResponseType, CreateTaskRequest>({
       query: (body) => {
         return {
           url: 'core/task/',
@@ -66,8 +166,8 @@ const extendedApi = vuetApi.injectEndpoints({
       invalidatesTags: ['Task']
     }),
     deleteTask: builder.mutation<
-      TaskResponseType,
-      Pick<TaskResponseType, 'id'>
+      FixedTaskResponseType,
+      Pick<FixedTaskResponseType, 'id'>
     >({
       query: (body) => {
         return {
@@ -81,7 +181,7 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
-export default extendedApi;
+export default tasksApi;
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -91,4 +191,4 @@ export const {
   useUpdateTaskMutation,
   useDeleteTaskMutation,
   useCreateTaskMutation
-} = extendedApi;
+} = tasksApi;

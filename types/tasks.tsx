@@ -66,7 +66,7 @@ interface ScheduledTaskResponseType {
   start_datetime: string;
   end_datetime: string;
   recurrence: number | null;
-  recurrence_index?: number | null;
+  recurrence_index: number | null;
   title: string;
   resourcetype: 'FixedTask' | 'FlexibleTask';
   alert: AlertName[];
@@ -78,10 +78,6 @@ interface ScheduledTaskParsedType extends BaseTaskType {
   recurrence_index?: number;
 }
 
-type TaskResponseType =
-  | FixedTaskResponseType
-  | FlexibleTaskResponseType
-  | ScheduledTaskResponseType;
 type TaskParsedType = FixedTaskParsedType | FlexibleTaskParsedType;
 
 type CreateTaskRequest = {
@@ -89,16 +85,6 @@ type CreateTaskRequest = {
   end_datetime?: string;
   resourcetype: string;
 };
-
-const isFixedTaskResponseType = (task: any): task is FixedTaskResponseType =>
-  task.resourcetype === 'FixedTask';
-const isFlexibleTaskResponseType = (
-  task: any
-): task is FlexibleTaskResponseType => task.resourcetype === 'FlexibleTask';
-const isFixedTaskParsedType = (task: any): task is FixedTaskParsedType =>
-  task.resourcetype === 'FixedTask';
-const isFlexibleTaskParsedType = (task: any): task is FlexibleTaskParsedType =>
-  task.resourcetype === 'FlexibleTask';
 
 export {
   RecurrenceType,
@@ -108,13 +94,8 @@ export {
   FixedTaskParsedType,
   FlexibleTaskResponseType,
   FlexibleTaskParsedType,
-  TaskResponseType,
   TaskParsedType,
   CreateTaskRequest,
   ScheduledTaskResponseType,
-  ScheduledTaskParsedType,
-  isFixedTaskResponseType,
-  isFlexibleTaskResponseType,
-  isFixedTaskParsedType,
-  isFlexibleTaskParsedType
+  ScheduledTaskParsedType
 };
