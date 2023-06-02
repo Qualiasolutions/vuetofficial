@@ -1,6 +1,6 @@
 import { UseTranslationResponse } from 'react-i18next';
 import { ListModeType } from 'react-native-dropdown-picker';
-import { UserFullResponse, UserResponse } from 'types/users';
+import { UserResponse } from 'types/users';
 
 export type PermittedTypes =
   | 'string'
@@ -8,6 +8,7 @@ export type PermittedTypes =
   | 'OptionalYearDate'
   | 'DateTime'
   | 'radio'
+  | 'checkbox'
   | 'colour'
   | 'phoneNumber'
   | 'addMembers'
@@ -18,6 +19,7 @@ export type PermittedTypes =
   | 'multiRecurrenceSelector'
   | 'tagSelector'
   | 'calculatedDuration'
+  | 'duration'
   | 'dropDownWithOther'
   | 'timezone'
   | 'Image';
@@ -31,6 +33,7 @@ export type BaseField<TypeName extends PermittedTypes, ValueType> = {
   initialValue?: ValueType;
   disabled?: boolean;
   disableUpdate?: boolean;
+  shownFields?: { [fieldName: string]: any };
 };
 
 export type StringField = BaseField<'string', string> & {
@@ -52,6 +55,7 @@ export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
   valueToDisplay: Function;
 };
+export type CheckboxField = BaseField<'checkbox', any>;
 export type AddMembersField = BaseField<'addMembers', any> & {
   permittedValues: {
     friends: UserResponse[];
@@ -100,6 +104,8 @@ export type CalculatedDurationField = BaseField<'calculatedDuration', any> & {
   endFieldName: string;
 };
 
+export type DurationField = BaseField<'duration', any>;
+
 // TODO - make these more specific (match regex?)
 export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
@@ -122,6 +128,7 @@ export type Field =
   | OptionalYearDate
   | DateTimeField
   | RadioField
+  | CheckboxField
   | ColourField
   | PhoneNumberField
   | AddMembersField
@@ -133,6 +140,7 @@ export type Field =
   | MultiRecurrenceSelectorField
   | TagSelectorField
   | CalculatedDurationField
+  | DurationField
   | ImageField
   | TimezoneField;
 

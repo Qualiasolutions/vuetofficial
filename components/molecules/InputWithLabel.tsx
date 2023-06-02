@@ -4,6 +4,27 @@ import { StyleSheet, ViewStyle } from 'react-native';
 import { AlmostBlackText } from './TextComponents';
 import { TransparentView } from './ViewComponents';
 
+const styles = StyleSheet.create({
+  inputLabel: {
+    fontSize: 14,
+    textAlign: 'left',
+    marginVertical: 14,
+    marginRight: 10,
+    flexShrink: 1,
+    width: '100%'
+  },
+  inlineInputPair: {
+    flexDirection: 'row',
+    width: '100%',
+    marginTop: 10,
+    alignItems: 'center'
+  },
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
+  }
+});
+
 export default function InputWithLabel({
   label,
   children,
@@ -36,24 +57,3 @@ export default function InputWithLabel({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  inputLabel: {
-    fontSize: 14,
-    textAlign: 'left',
-    marginVertical: 14,
-    marginRight: 10,
-    flexShrink: 1,
-    width: '100%'
-  },
-  inlineInputPair: {
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: 10,
-    alignItems: 'center'
-  },
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start'
-  }
-});

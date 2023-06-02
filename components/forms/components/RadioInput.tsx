@@ -2,11 +2,6 @@ import Checkbox from 'components/molecules/Checkbox';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
-import RadioForm, {
-  RadioButton,
-  RadioButtonInput,
-  RadioButtonLabel
-} from 'react-native-simple-radio-button';
 
 export type RadioObjectValueType = {
   id: number | string;
@@ -15,6 +10,11 @@ export type RadioPermittedValues = {
   value: RadioObjectValueType;
   label: string;
 }[];
+
+const styles = StyleSheet.create({
+  label: { marginRight: 10 },
+  wrapper: { flexDirection: 'row' }
+});
 
 export default function RadioInput({
   value,
@@ -47,8 +47,3 @@ export default function RadioInput({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  label: { marginRight: 10 },
-  wrapper: { flexDirection: 'row' }
-});

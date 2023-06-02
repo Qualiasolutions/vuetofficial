@@ -13,7 +13,10 @@
       "contact_name": "Name",
       "contact_email": "Email",
       "contact_number": "Contact no.",
-      "notes": "Notes"
+      "notes": "Notes",
+      "is_flexible": "Flexible",
+      "earliest_action_date": "Earliest occurrence",
+      "due_date": "Due date"
     },
     "fixedTask": {
       "start_datetime": "Start Datetime",

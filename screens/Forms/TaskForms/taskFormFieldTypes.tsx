@@ -1,10 +1,12 @@
 import {
+  DropDownField,
   Field,
   FlatFormFieldTypes,
   FormFieldTypes
 } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
+import { useMemo } from 'react';
 
 export const useTaskTopFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -14,23 +16,25 @@ export const useTaskTopFieldTypes = (): FlatFormFieldTypes => {
     error: fullDetailsError
   } = useGetUserDetails();
 
-  return {
-    title: {
-      type: 'string',
-      required: true,
-      displayName: t('tasks.task.title')
-    },
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        required: true,
+        displayName: t('tasks.task.title')
       },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('tasks.task.members')
-    }
-  };
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members')
+      }
+    };
+  }, [t, userFullDetails]);
 };
 
 export const usePeriodFieldTypes = (): FlatFormFieldTypes => {
@@ -41,54 +45,58 @@ export const usePeriodFieldTypes = (): FlatFormFieldTypes => {
     error: fullDetailsError
   } = useGetUserDetails();
 
-  const reminderDropDownField = {
-    type: 'dropDown',
-    permittedValues: [
-      {
-        label: '1 day before',
-        value: '1 day, 0:00:00'
-      },
-      {
-        label: '1 week before',
-        value: '7 days, 0:00:00'
-      },
-      {
-        label: '2 weeks before',
-        value: '14 days, 0:00:00'
-      },
-      {
-        label: '4 weeks before',
-        value: '28 days, 0:00:00'
-      }
-    ],
-    required: false,
-    displayName: t('entities.entity.reminder'),
-    listMode: 'MODAL'
-  } as Field;
+  const reminderDropDownField = useMemo<DropDownField>(() => {
+    return {
+      type: 'dropDown',
+      permittedValues: [
+        {
+          label: '1 day before',
+          value: '1 day, 0:00:00'
+        },
+        {
+          label: '1 week before',
+          value: '7 days, 0:00:00'
+        },
+        {
+          label: '2 weeks before',
+          value: '14 days, 0:00:00'
+        },
+        {
+          label: '4 weeks before',
+          value: '28 days, 0:00:00'
+        }
+      ],
+      required: false,
+      displayName: t('entities.entity.reminder'),
+      listMode: 'MODAL'
+    };
+  }, [t]);
 
-  return {
-    title: {
-      type: 'string',
-      required: true,
-      displayName: t('tasks.task.title')
-    },
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        required: true,
+        displayName: t('tasks.task.title')
       },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('tasks.task.members')
-    },
-    start_date: {
-      type: 'Date',
-      required: true,
-      displayName: t('tasks.due_date.date')
-    },
-    reminder_timedelta: reminderDropDownField
-  };
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members')
+      },
+      start_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.due_date.date')
+      },
+      reminder_timedelta: reminderDropDownField
+    };
+  }, [userFullDetails, t, reminderDropDownField]);
 };
 
 export const useTaskMiddleFieldTypes = (
@@ -96,80 +104,125 @@ export const useTaskMiddleFieldTypes = (
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
-  return {
-    start_datetime: {
-      type: 'DateTime',
-      required: true,
-      displayName: t('tasks.task.start_datetime'),
-      disabled: disabledRecurrenceFields,
-      associatedEndTimeField: 'end_datetime'
-    },
-    end_datetime: {
-      type: 'DateTime',
-      required: true,
-      displayName: t('tasks.task.end_datetime'),
-      disabled: disabledRecurrenceFields,
-      associatedStartTimeField: 'start_datetime'
-    },
-    duration_minutes: {
-      type: 'calculatedDuration',
-      displayName: t('tasks.task.duration_minutes'),
-      disabled: true,
-      required: false,
-      startFieldName: 'start_datetime',
-      endFieldName: 'end_datetime'
-    },
-    recurrence: {
-      type: 'recurrenceSelector',
-      required: false,
-      firstOccurrenceField: 'start_datetime',
-      displayName: t('tasks.task.recurrence'),
-      disabled: disabledRecurrenceFields
-    },
-    reminders: {
-      type: 'multiRecurrenceSelector',
-      required: false,
-      reverse: true,
-      firstOccurrenceField: 'start_datetime',
-      displayName: t('tasks.task.reminders'),
-      // disabled: disabledRecurrenceFields,
-      max: 3
-    },
-    tags: {
-      type: 'tagSelector',
-      required: true
-    }
-  };
+  return useMemo(() => {
+    return {
+      is_flexible: {
+        type: 'checkbox',
+        required: false,
+        displayName: t('tasks.task.is_flexible')
+      },
+      start_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('tasks.task.start_datetime'),
+        disabled: disabledRecurrenceFields,
+        associatedEndTimeField: 'end_datetime',
+        shownFields: {
+          is_flexible: false
+        }
+      },
+      end_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('tasks.task.end_datetime'),
+        disabled: disabledRecurrenceFields,
+        associatedStartTimeField: 'start_datetime',
+        shownFields: {
+          is_flexible: false
+        }
+      },
+      duration_minutes_calculated: {
+        type: 'calculatedDuration',
+        displayName: t('tasks.task.duration_minutes'),
+        disabled: true,
+        required: false,
+        startFieldName: 'start_datetime',
+        endFieldName: 'end_datetime',
+        shownFields: {
+          is_flexible: false
+        }
+      },
+      earliest_action_date: {
+        type: 'Date',
+        displayName: t('tasks.task.earliest_action_date'),
+        required: true,
+        shownFields: {
+          is_flexible: true
+        }
+      },
+      due_date: {
+        type: 'Date',
+        displayName: t('tasks.task.due_date'),
+        required: true,
+        shownFields: {
+          is_flexible: true
+        }
+      },
+      duration_minutes: {
+        type: 'duration',
+        displayName: t('tasks.task.duration_minutes'),
+        disabled: true,
+        required: true,
+        shownFields: {
+          is_flexible: true
+        }
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: false,
+        firstOccurrenceField: 'start_datetime',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields,
+        shownFields: {
+          is_flexible: false
+        }
+      },
+      reminders: {
+        type: 'multiRecurrenceSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'start_datetime',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      tags: {
+        type: 'tagSelector',
+        required: true
+      }
+    };
+  }, [t, disabledRecurrenceFields]);
 };
 
 export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
-  return {
-    location: {
-      type: 'string',
-      required: false,
-      displayName: t('tasks.task.location')
-    },
-    contact_name: {
-      type: 'string',
-      required: false,
-      displayName: t('tasks.task.contact_name')
-    },
-    contact_email: {
-      type: 'string',
-      required: false,
-      displayName: t('tasks.task.contact_email')
-    },
-    contact_number: {
-      type: 'phoneNumber',
-      required: false,
-      displayName: t('tasks.task.contact_number')
-    },
-    notes: {
-      type: 'TextArea',
-      required: false,
-      displayName: t('tasks.task.notes')
-    }
-  };
+  return useMemo(() => {
+    return {
+      location: {
+        type: 'string',
+        required: false,
+        displayName: t('tasks.task.location')
+      },
+      contact_name: {
+        type: 'string',
+        required: false,
+        displayName: t('tasks.task.contact_name')
+      },
+      contact_email: {
+        type: 'string',
+        required: false,
+        displayName: t('tasks.task.contact_email')
+      },
+      contact_number: {
+        type: 'phoneNumber',
+        required: false,
+        displayName: t('tasks.task.contact_number')
+      },
+      notes: {
+        type: 'TextArea',
+        required: false,
+        displayName: t('tasks.task.notes')
+      }
+    };
+  }, [t]);
 };

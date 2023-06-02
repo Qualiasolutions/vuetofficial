@@ -4,7 +4,8 @@ import {
   ScheduledTaskResponseType,
   CreateTaskRequest,
   FixedTaskResponseType,
-  FixedTaskParsedType
+  FixedTaskParsedType,
+  CreateFlexibleFixedTaskRequest
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 
@@ -166,6 +167,19 @@ const tasksApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Task']
     }),
+    createFlexibleFixedTask: builder.mutation<
+      FixedTaskResponseType,
+      CreateFlexibleFixedTaskRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'core/flexible-fixed-task/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['Task']
+    }),
     deleteTask: builder.mutation<
       FixedTaskResponseType,
       Pick<FixedTaskResponseType, 'id'>
@@ -191,5 +205,6 @@ export const {
   useGetAllScheduledTasksQuery,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
-  useCreateTaskMutation
+  useCreateTaskMutation,
+  useCreateFlexibleFixedTaskMutation
 } = tasksApi;

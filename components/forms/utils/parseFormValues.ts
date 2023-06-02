@@ -44,24 +44,24 @@ const parseFormValues = (
         const lastTime = new Date(parsedFormValues[f.firstOccurrenceField]);
         parsedFormValues[field] = value
           ? value.map((recurrence) => {
-            const earliest = recurrence.latest_occurrence
-              ? new Date(recurrence.latest_occurrence)
-              : null;
-            if (earliest) {
-              earliest.setHours(0);
-              earliest.setMinutes(0);
-              earliest.setSeconds(0);
-              earliest.setMilliseconds(0);
-            }
+              const earliest = recurrence.latest_occurrence
+                ? new Date(recurrence.latest_occurrence)
+                : null;
+              if (earliest) {
+                earliest.setHours(0);
+                earliest.setMinutes(0);
+                earliest.setSeconds(0);
+                earliest.setMilliseconds(0);
+              }
 
-            return {
-              ...recurrence,
-              recurrence_type: recurrence.recurrence,
-              earliest_timedelta: earliest
-                ? (lastTime.getTime() - earliest.getTime()) / 1000
-                : null
-            };
-          })
+              return {
+                ...recurrence,
+                recurrence_type: recurrence.recurrence,
+                earliest_timedelta: earliest
+                  ? (lastTime.getTime() - earliest.getTime()) / 1000
+                  : null
+              };
+            })
           : [];
       }
     }

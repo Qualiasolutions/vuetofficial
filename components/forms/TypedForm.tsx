@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { Text, TextInput } from 'components/Themed';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
@@ -10,12 +10,11 @@ import {
   DateTimeField,
   DropDownField,
   DropDownWithOtherField,
+  DurationField,
   FormFieldTypes,
   hasListMode,
   hasPlaceholder,
-  ImageField,
   MultiRecurrenceSelectorField,
-  TagSelectorField,
   OptionalYearDate,
   RadioField,
   RecurrenceSelectorField,
@@ -43,10 +42,13 @@ import { useTranslation } from 'react-i18next';
 import TimezoneSelect from './components/TimezoneSelect';
 import { elevation } from '../../styles/elevation';
 import RecurrenceSelector from './components/RecurrenceSelector';
-import Duration from './components/Duration';
+import CalculatedDuration from './components/CalculatedDuration';
 import InputWithLabel from 'components/molecules/InputWithLabel';
 import MultipleRecurrenceSelector from './components/MultipleRecurrenceSelector';
 import TagSelector from './components/TagSelector';
+import Checkbox from 'components/molecules/Checkbox';
+import Duration from './components/Duration';
+import isFieldShown from './utils/isFieldShown';
 
 const parseFieldName = (name: string) => {
   return name
@@ -55,13 +57,61 @@ const parseFieldName = (name: string) => {
     .join(' ');
 };
 
+const styles = StyleSheet.create({
+  inlineDateInput: {
+    flexShrink: 1,
+    width: '100%'
+  },
+  colourBox: {
+    width: '100%',
+    marginTop: 15,
+    marginBottom: 15,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  calendarIcon: {
+    position: 'absolute',
+    right: 20,
+    bottom: 12,
+    color: 'grey'
+  },
+  textInput: {
+    height: 44,
+    flexShrink: 1,
+    minWidth: 100
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top'
+  },
+  textAreaCount: { textAlign: 'right' },
+  addFamilyMembers: {
+    marginTop: 20
+  },
+  fieldSection: {
+    marginBottom: 50,
+    paddingTop: 20,
+    paddingBottom: 40,
+    paddingHorizontal: 30
+  },
+  flex: {
+    flex: 1
+  },
+  inputLabel: {
+    minWidth: 110
+  },
+  fullWidth: { width: '100%' }
+});
+
 export default function TypedForm({
   fields,
   formValues,
   formType = 'CREATE',
   inlineFields = false,
   fieldColor = '#ffffff',
-  onFormValuesChange = (formValues: FieldValueTypes) => {},
+  onFormValuesChange = () => {},
   style = {}
 }: {
   fields: FormFieldTypes;
@@ -89,44 +139,74 @@ export default function TypedForm({
     { backgroundColor: fieldColor }
   ]);
 
-  const produceLabelFromFieldName = (fieldName: string, style?: ViewStyle) => {
-    const displayName =
-      flatFields &&
-      flatFields[fieldName] &&
-      Object.keys(flatFields[fieldName]).includes('displayName')
-        ? flatFields[fieldName].displayName
-        : parseFieldName(fieldName);
+  const produceLabelFromFieldName = useCallback(
+    (fieldName: string) => {
+      const displayName =
+        flatFields &&
+        flatFields[fieldName] &&
+        Object.keys(flatFields[fieldName]).includes('displayName')
+          ? flatFields[fieldName].displayName
+          : parseFieldName(fieldName);
 
-    const asterisk =
-      displayName && flatFields && flatFields[fieldName]?.required ? '*' : '';
-    return `${displayName}${asterisk}`;
-  };
+      const asterisk =
+        displayName && flatFields && flatFields[fieldName]?.required ? '*' : '';
+      return `${displayName}${asterisk}`;
+    },
+    [flatFields]
+  );
 
-  const InputPair = useMemo(
-    () =>
-      ({
-        field,
-        children,
-        labelStyle
-      }: {
-        field: string;
-        children: ReactNode;
-        labelStyle?: ViewStyle;
-      }) => {
-        return (
-          <InputWithLabel
-            key={field}
-            error={formErrors[field] || ''}
-            label={produceLabelFromFieldName(field)}
-            inlineFields={inlineFields}
-            labelStyle={labelStyle}
-            labelWrapperStyle={{ minWidth: 110 }}
-          >
-            {children}
-          </InputWithLabel>
-        );
-      },
-    [JSON.stringify(fields)]
+  const InputPair = useCallback(
+    ({
+      field,
+      children,
+      labelStyle
+    }: {
+      field: string;
+      children: ReactNode;
+      labelStyle?: ViewStyle;
+    }) => {
+      return (
+        <InputWithLabel
+          key={field}
+          error={formErrors[field] || ''}
+          label={produceLabelFromFieldName(field)}
+          inlineFields={inlineFields}
+          labelStyle={labelStyle}
+          labelWrapperStyle={styles.inputLabel}
+        >
+          {children}
+        </InputWithLabel>
+      );
+    },
+    [formErrors, inlineFields, produceLabelFromFieldName]
+  );
+
+  const ValueDependentInputPair = useCallback(
+    ({
+      field,
+      children,
+      labelStyle
+    }: {
+      field: string;
+      children: ReactNode;
+      labelStyle?: ViewStyle;
+    }) => {
+      /*
+        Some fields depend on the values of other fields - we use
+        this component to rerender components when the field values
+        change. It can cause problems for some component types so
+        is not used for text fields, some tag selectors etc
+      */
+      const fieldObj = flatFields[field];
+      if (!isFieldShown(fieldObj, formValues)) {
+        return null;
+      }
+
+      return (
+        <InputPair field={field} children={children} labelStyle={labelStyle} />
+      );
+    },
+    [InputPair, formValues, flatFields]
   );
 
   const formFields = fieldSections.map((section, i) => {
@@ -171,7 +251,7 @@ export default function TypedForm({
                 placeholder={
                   inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')
                 }
-                containerStyle={{ width: '100%' }}
+                containerStyle={styles.fullWidth}
               />
             </InputPair>
           );
@@ -214,7 +294,7 @@ export default function TypedForm({
             }
           }
           return (
-            <InputPair field={field} key={field}>
+            <ValueDependentInputPair field={field} key={field}>
               <DateTimeTextInput
                 value={formValues[field]}
                 maximumDate={limitValues.maximum}
@@ -231,13 +311,13 @@ export default function TypedForm({
                 textInputStyle={textInputStyle}
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
-            </InputPair>
+            </ValueDependentInputPair>
           );
         }
         case 'DateTime': {
           const f = flatFields[field] as DateTimeField;
           return (
-            <InputPair field={field} key={field}>
+            <ValueDependentInputPair field={field} key={field}>
               <DateTimeTextInput
                 value={formValues[field]}
                 onValueChange={(newValue: Date) => {
@@ -322,20 +402,18 @@ export default function TypedForm({
                 }
               />
               <Feather name="calendar" size={20} style={styles.calendarIcon} />
-            </InputPair>
+            </ValueDependentInputPair>
           );
         }
         case 'radio': {
           const f = flatFields[field] as RadioField;
-          const permittedValueObjects = f.permittedValues.map(
-            (value: any, i: number) => ({
-              label: f.valueToDisplay(value),
-              value
-            })
-          );
+          const permittedValueObjects = f.permittedValues.map((value: any) => ({
+            label: f.valueToDisplay(value),
+            value
+          }));
 
           return (
-            <InputPair field={field} key={field}>
+            <ValueDependentInputPair field={field} key={field}>
               <RadioInput
                 value={formValues[field]}
                 permittedValues={permittedValueObjects}
@@ -347,7 +425,25 @@ export default function TypedForm({
                   setFormErrors({ ...formErrors, [field]: '' });
                 }}
               />
-            </InputPair>
+            </ValueDependentInputPair>
+          );
+        }
+        case 'checkbox': {
+          return (
+            <ValueDependentInputPair field={field} key={field}>
+              <Checkbox
+                smoothChecking={false}
+                checked={formValues[field]}
+                onValueChange={async (value: any) => {
+                  console.log('value change');
+                  console.log(value);
+                  onFormValuesChange({
+                    ...formValues,
+                    [field]: !value
+                  });
+                }}
+              />
+            </ValueDependentInputPair>
           );
         }
         case 'colour':
@@ -388,7 +484,7 @@ export default function TypedForm({
         case 'TextArea':
           return (
             <InputPair field={field} key={field}>
-              <TransparentView style={{ flex: 1 }}>
+              <TransparentView style={styles.flex}>
                 <TextInput
                   value={formValues[field]}
                   onChangeText={(newValue) => {
@@ -397,17 +493,18 @@ export default function TypedForm({
                       [field]: newValue
                     });
                   }}
-                  style={{
-                    height: 100,
-                    textAlignVertical: 'top',
-                    backgroundColor: fieldColor
-                  }}
+                  style={[
+                    styles.textArea,
+                    {
+                      backgroundColor: fieldColor
+                    }
+                  ]}
                   multiline={true}
                   maxLength={150}
                 />
                 <AlmostBlackText
                   text={`${formValues[field]?.length || 0}/150`}
-                  style={{ textAlign: 'right' }}
+                  style={styles.textAreaCount}
                 />
               </TransparentView>
             </InputPair>
@@ -447,7 +544,7 @@ export default function TypedForm({
                 }
                 listMode={(hasListMode(f) && f.listMode) || undefined}
                 style={textInputStyle}
-                containerStyle={{ flex: 1 }}
+                containerStyle={styles.flex}
                 disabled={
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }
@@ -474,7 +571,7 @@ export default function TypedForm({
                 }
                 listMode={(hasListMode(f) && f.listMode) || undefined}
                 style={textInputStyle}
-                containerStyle={{ flex: 1 }}
+                containerStyle={styles.flex}
                 disabled={
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }
@@ -483,7 +580,6 @@ export default function TypedForm({
           );
         }
         case 'Image': {
-          const f = flatFields[field] as ImageField;
           return (
             <InputPair field={field} key={field}>
               <WhiteImagePicker
@@ -518,7 +614,7 @@ export default function TypedForm({
                 }}
                 listMode={f.listMode || 'MODAL'}
                 style={textInputStyle}
-                containerStyle={{ flex: 1 }}
+                containerStyle={styles.flex}
                 disabled={
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }
@@ -531,6 +627,10 @@ export default function TypedForm({
           const firstOccurrence: Date = formValues[f.firstOccurrenceField];
 
           if (!firstOccurrence) {
+            return null;
+          }
+
+          if (!isFieldShown(f, formValues)) {
             return null;
           }
 
@@ -582,7 +682,6 @@ export default function TypedForm({
           );
         }
         case 'tagSelector': {
-          const f = flatFields[field] as TagSelectorField;
           return (
             <InputPair field={field} key={field}>
               <TransparentView>
@@ -609,12 +708,33 @@ export default function TypedForm({
           }
 
           return (
-            <InputPair field={field} key={field}>
-              <Duration
+            <ValueDependentInputPair field={field} key={field}>
+              <CalculatedDuration
                 startDatetime={startDatetime}
                 endDatetime={endDatetime}
                 textInputStyle={{
                   backgroundColor: fieldColor
+                }}
+              />
+            </ValueDependentInputPair>
+          );
+        }
+        case 'duration': {
+          const f = flatFields[field] as DurationField;
+          if (!isFieldShown(f, formValues)) {
+            return null;
+          }
+
+          return (
+            <InputPair field={field} key={field}>
+              <Duration
+                value={formValues[field]}
+                textInputStyle={textInputStyle}
+                onChange={(value) => {
+                  onFormValuesChange({
+                    ...formValues,
+                    [field]: value
+                  });
                 }}
               />
             </InputPair>
@@ -635,39 +755,3 @@ export default function TypedForm({
     </TransparentView>
   );
 }
-
-const styles = StyleSheet.create({
-  inlineDateInput: {
-    flexShrink: 1,
-    width: '100%'
-  },
-  colourBox: {
-    width: '100%',
-    marginTop: 15,
-    marginBottom: 15,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  calendarIcon: {
-    position: 'absolute',
-    right: 20,
-    bottom: 12,
-    color: 'grey'
-  },
-  textInput: {
-    height: 44,
-    flexShrink: 1,
-    minWidth: 100
-  },
-  addFamilyMembers: {
-    marginTop: 20
-  },
-  fieldSection: {
-    marginBottom: 50,
-    paddingTop: 20,
-    paddingBottom: 40,
-    paddingHorizontal: 30
-  }
-});

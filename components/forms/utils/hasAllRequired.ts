@@ -1,6 +1,7 @@
 import { Recurrence } from 'types/tasks';
 import { FlatFormFieldTypes } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
+import isFieldShown from './isFieldShown';
 
 const hasAllRequired = (
   formValues: FieldValueTypes,
@@ -8,11 +9,17 @@ const hasAllRequired = (
 ) => {
   const parsedFormValues = { ...formValues };
   for (const field in parsedFormValues) {
-    if (!fields[field].required) {
+    const f = fields[field];
+
+    if (!f.required) {
       continue;
     }
 
-    if (['multiRecurrenceSelector'].includes(fields[field]?.type)) {
+    if (!isFieldShown(f, formValues)) {
+      continue;
+    }
+
+    if (['multiRecurrenceSelector'].includes(f?.type)) {
       const value = parsedFormValues[field] as Recurrence[];
       if (value && value.filter((v) => v).length > 0) {
         continue;
@@ -20,7 +27,7 @@ const hasAllRequired = (
       return false;
     }
 
-    if (['addMembers'].includes(fields[field]?.type)) {
+    if (['addMembers'].includes(f?.type)) {
       const value = parsedFormValues[field];
       if (value && value.length > 0) {
         continue;
@@ -28,7 +35,7 @@ const hasAllRequired = (
       return false;
     }
 
-    if (['tagSelector'].includes(fields[field]?.type)) {
+    if (['tagSelector'].includes(f?.type)) {
       const value = parsedFormValues[field];
       if (value && value.entities && value.entities.length > 0) {
         continue;

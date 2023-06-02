@@ -86,6 +86,17 @@ type CreateTaskRequest = {
   resourcetype: string;
 };
 
+type CreateFlexibleFixedTaskRequest = {
+  title: string;
+  members: number[];
+  earliest_action_date: string;
+  due_date: string;
+  duration_minutes: number;
+  entities: number[];
+  location?: string;
+  reminders?: Reminder[];
+};
+
 export {
   RecurrenceType,
   Recurrence,
@@ -96,6 +107,7 @@ export {
   FlexibleTaskParsedType,
   TaskParsedType,
   CreateTaskRequest,
+  CreateFlexibleFixedTaskRequest,
   ScheduledTaskResponseType,
   ScheduledTaskParsedType
 };

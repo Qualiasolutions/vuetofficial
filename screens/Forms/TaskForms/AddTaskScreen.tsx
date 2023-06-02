@@ -1,6 +1,3 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootTabParamList } from 'types/base';
-
 import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
@@ -24,7 +21,10 @@ import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
-import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
+import {
+  useCreateFlexibleFixedTaskMutation,
+  useCreateTaskMutation
+} from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import RadioInput from 'components/forms/components/RadioInput';
 import useGetUserDetails from 'hooks/useGetUserDetails';
@@ -69,20 +69,23 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: -1,
     justifyContent: 'center'
-  }
+  },
+  spinner: { marginTop: 20 }
 });
 
-export default function AddTaskScreen({
-  route
-}: NativeStackScreenProps<RootTabParamList, 'AddTask'>) {
+export default function AddTaskScreen() {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
   const [formType, setFormType] = useState<AddTaskFormType>('TASK');
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
+  const [createFlexibleTask, createFlexibleTaskResult] =
+    useCreateFlexibleFixedTaskMutation();
   const [createPeriod, createPeriodResult] = useCreatePeriodMutation();
   const isSubmitting =
-    createTaskResult.isLoading || createPeriodResult.isLoading;
+    createTaskResult.isLoading ||
+    createFlexibleTaskResult.isLoading ||
+    createPeriodResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
   const headerBackgroundColor = useThemeColor({}, 'secondary');
@@ -168,7 +171,14 @@ export default function AddTaskScreen({
 
       setLoadedFields(true);
     }
-  }, [userDetails, formType]);
+  }, [
+    userDetails,
+    formType,
+    periodFields,
+    taskTopFields,
+    taskMiddleFields,
+    taskBottomFields
+  ]);
 
   const hasRequired = useMemo(() => {
     if (formType === 'DUE_DATE') {
@@ -182,10 +192,31 @@ export default function AddTaskScreen({
     }
   }, [
     taskTopFieldValues,
-    taskMiddleFields,
+    taskMiddleFieldValues,
     taskBottomFieldValues,
-    periodFieldValues
+    periodFields,
+    taskTopFields,
+    taskMiddleFields,
+    taskBottomFields,
+    periodFieldValues,
+    formType
   ]);
+
+  useEffect(() => {
+    if (createFlexibleTaskResult.isSuccess) {
+      Toast.show({
+        type: 'success',
+        text1: t('screens.addTask.createSuccess')
+      });
+      resetState();
+    } else if (createFlexibleTaskResult.isError) {
+      Toast.show({
+        type: 'error',
+        text1: t('common.errors.generic')
+      });
+      console.error(createFlexibleTaskResult.error);
+    }
+  }, [createFlexibleTaskResult, resetState, t]);
 
   useEffect(() => {
     if (createTaskResult.isSuccess) {
@@ -199,7 +230,7 @@ export default function AddTaskScreen({
         type: 'error',
         text1: t('common.errors.generic')
       });
-      console.log(createTaskResult.error);
+      console.error(createTaskResult.error);
     }
   }, [createTaskResult, resetState, t]);
 
@@ -215,7 +246,6 @@ export default function AddTaskScreen({
         type: 'error',
         text1: t('common.errors.generic')
       });
-      console.log(createPeriodResult.error);
     }
   }, [createPeriodResult, resetState, t]);
 
@@ -246,7 +276,7 @@ export default function AddTaskScreen({
         taskBottomFields
       );
 
-      const parsedFieldValues = {
+      const parsedFieldValues: any = {
         ...parsedTopFieldValues,
         ...parsedMiddleFieldValues,
         ...parsedBottomFieldValues,
@@ -254,7 +284,13 @@ export default function AddTaskScreen({
         resourcetype: 'FixedTask'
       };
 
-      createTask(parsedFieldValues);
+      console.log(parsedFieldValues);
+
+      if (parsedFieldValues.is_flexible) {
+        createFlexibleTask(parsedFieldValues);
+      } else {
+        createTask(parsedFieldValues);
+      }
     }
   };
 
@@ -326,10 +362,7 @@ export default function AddTaskScreen({
         )}
 
         {isSubmitting ? (
-          <PaddedSpinner
-            spinnerColor="buttonDefault"
-            style={{ marginTop: 20 }}
-          />
+          <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
         ) : (
           <TransparentPaddedView style={styles.bottomButtons}>
             <Button

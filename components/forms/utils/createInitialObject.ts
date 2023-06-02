@@ -83,6 +83,10 @@ const createInitialObject = (
         };
         continue;
 
+      case 'checkbox':
+        initialObj[key] = formFields[key].initialValue || false;
+        continue;
+
       case 'multiRecurrenceSelector':
         const f = formFields[key] as MultiRecurrenceSelectorField;
 
@@ -108,8 +112,8 @@ const createInitialObject = (
 
             initialObj[key] = initialValue;
           }
-          continue;
         }
+        continue;
 
       default:
         initialObj[key] = formFields[key].initialValue || null;
