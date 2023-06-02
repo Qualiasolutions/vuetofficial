@@ -1,69 +1,69 @@
-import { anniversaryForm } from './anniversary';
-import { birthdayForm } from './birthday';
+import { useAnniversaryForm } from './anniversary';
+import { useBirthdayForm } from './birthday';
 import { useCarForm } from './car';
 import { useBoatForm } from './boat';
-import { publicTransportForm } from './public-transport';
-import { eventForm } from './event';
-import { hobbyForm } from './hobby';
-import { listForm } from './list';
-import { tripForm } from './trip';
-import { tripActivityForm } from './trip-activity';
-import { petForm } from './pet';
-import { daysOffForm } from './days-off';
-import { academicPlanForm } from './academic-plan';
-import { extracurricularPlanForm } from './extracurricular-plan';
-import { careerGoalForm } from './career-goals';
-import { homeForm } from './home';
-import { socialMediaForm } from './social-media';
-import { socialPlanForm } from './social-plan';
-import { holidayForm } from './holiday';
-import { schoolForm } from './school';
-import { schoolBreakForm } from './school-break';
-import { flightForm } from './flight';
-import { trainBusFerryForm } from './train-bus-ferry';
-import { driveTimeForm } from './drive-time';
-import { rentalCarForm } from './rental-car';
-import { taxiTransferForm } from './taxi-transfer';
-import { hotelForm } from './hotel';
-import { stayWithFriendForm } from './stay-with-friend';
-import { healthBeautyForm } from './health-beauty';
-import { financeForm } from './finance';
-import { foodForm } from './food';
-import { clothingForm } from './clothing';
+import { usePublicTransportForm } from './public-transport';
+import { useEventForm } from './event';
+import { useHobbyForm } from './hobby';
+import { useListForm } from './list';
+import { useTripForm } from './trip';
+import { useTripActivityForm } from './trip-activity';
+import { usePetForm } from './pet';
+import { useDaysOffForm } from './days-off';
+import { useAcademicPlanForm } from './academic-plan';
+import { useExtracurricularPlanForm } from './extracurricular-plan';
+import { useCareerGoalForm } from './career-goals';
+import { useHomeForm } from './home';
+import { useSocialMediaForm } from './social-media';
+import { useSocialPlanForm } from './social-plan';
+import { useHolidayForm } from './holiday';
+import { useSchoolForm } from './school';
+import { useSchoolBreakForm } from './school-break';
+import { useFlightForm } from './flight';
+import { useTrainBusFerryForm } from './train-bus-ferry';
+import { useDriveTimeForm } from './drive-time';
+import { useRentalCarForm } from './rental-car';
+import { useTaxiTransferForm } from './taxi-transfer';
+import { useHotelForm } from './hotel';
+import { useStayWithFriendForm } from './stay-with-friend';
+import { useHealthBeautyForm } from './health-beauty';
+import { useFinanceForm } from './finance';
+import { useFoodForm } from './food';
+import { useClothingForm } from './clothing';
 
-export default () => {
+export default (isEdit: boolean) => {
   return {
-    Car: useCarForm(),
+    Car: useCarForm(isEdit),
     Boat: useBoatForm(),
-    PublicTransport: publicTransportForm(),
-    Birthday: birthdayForm(),
-    Anniversary: anniversaryForm(),
-    Event: eventForm(),
-    Hobby: hobbyForm(),
-    List: listForm(),
-    Trip: tripForm(),
-    TripActivity: tripActivityForm(),
-    Pet: petForm(),
-    DaysOff: daysOffForm(),
-    AcademicPlan: academicPlanForm(),
-    ExtracurricularPlan: extracurricularPlanForm(),
-    CareerGoal: careerGoalForm(),
-    Home: homeForm(),
-    Food: foodForm(),
-    Clothing: clothingForm(),
-    SocialMedia: socialMediaForm(),
-    SocialPlan: socialPlanForm(),
-    Holiday: holidayForm(),
-    School: schoolForm(),
-    SchoolBreak: schoolBreakForm(),
-    Flight: flightForm(),
-    TrainBusFerry: trainBusFerryForm(),
-    RentalCar: rentalCarForm(),
-    TaxiOrTransfer: taxiTransferForm(),
-    DriveTime: driveTimeForm(),
-    HotelOrRental: hotelForm(),
-    StayWithFriend: stayWithFriendForm(),
-    HealthBeauty: healthBeautyForm(),
-    Finance: financeForm()
+    PublicTransport: usePublicTransportForm(),
+    Birthday: useBirthdayForm(),
+    Anniversary: useAnniversaryForm(),
+    Event: useEventForm(),
+    Hobby: useHobbyForm(),
+    List: useListForm(),
+    Trip: useTripForm(),
+    TripActivity: useTripActivityForm(),
+    Pet: usePetForm(),
+    DaysOff: useDaysOffForm(),
+    AcademicPlan: useAcademicPlanForm(),
+    ExtracurricularPlan: useExtracurricularPlanForm(),
+    CareerGoal: useCareerGoalForm(),
+    Home: useHomeForm(),
+    Food: useFoodForm(),
+    Clothing: useClothingForm(),
+    SocialMedia: useSocialMediaForm(),
+    SocialPlan: useSocialPlanForm(),
+    Holiday: useHolidayForm(),
+    School: useSchoolForm(),
+    SchoolBreak: useSchoolBreakForm(),
+    Flight: useFlightForm(),
+    TrainBusFerry: useTrainBusFerryForm(),
+    RentalCar: useRentalCarForm(),
+    TaxiOrTransfer: useTaxiTransferForm(),
+    DriveTime: useDriveTimeForm(),
+    HotelOrRental: useHotelForm(),
+    StayWithFriend: useStayWithFriendForm(),
+    HealthBeauty: useHealthBeautyForm(),
+    Finance: useFinanceForm()
   };
 };

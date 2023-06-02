@@ -12,6 +12,12 @@ import EditEntityForm from 'components/forms/EditEntityForm';
 import { StyleSheet } from 'react-native';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 
+const styles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 100
+  }
+});
+
 export default function EditEntityScreen({
   navigation,
   route
@@ -40,9 +46,3 @@ export default function EditEntityScreen({
   }
   return null;
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 100
-  }
-});

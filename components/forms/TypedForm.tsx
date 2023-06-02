@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactNode, useCallback, useMemo } from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { Text, TextInput } from 'components/Themed';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
@@ -126,9 +126,11 @@ export default function TypedForm({
 
   const fieldSections = Array.isArray(fields) ? fields : [fields];
 
-  const flatFields = Array.isArray(fields)
-    ? fields.reduce((a, b) => ({ ...a, ...b }))
-    : fields;
+  const flatFields = useMemo(() => {
+    return Array.isArray(fields)
+      ? fields.reduce((a, b) => ({ ...a, ...b }))
+      : fields;
+  }, [fields]);
 
   const [formErrors, setFormErrors] = React.useState<FieldErrorTypes>(
     createNullStringObject(flatFields)
@@ -139,8 +141,8 @@ export default function TypedForm({
     { backgroundColor: fieldColor }
   ]);
 
-  const produceLabelFromFieldName = useCallback(
-    (fieldName: string) => {
+  const produceLabelFromFieldName = useMemo(() => {
+    return (fieldName: string) => {
       const displayName =
         flatFields &&
         flatFields[fieldName] &&
@@ -151,9 +153,8 @@ export default function TypedForm({
       const asterisk =
         displayName && flatFields && flatFields[fieldName]?.required ? '*' : '';
       return `${displayName}${asterisk}`;
-    },
-    [flatFields]
-  );
+    };
+  }, [flatFields]);
 
   const InputPair = useCallback(
     ({
@@ -165,6 +166,11 @@ export default function TypedForm({
       children: ReactNode;
       labelStyle?: ViewStyle;
     }) => {
+      const fieldObj = flatFields[field];
+      if (!isFieldShown(fieldObj)) {
+        return null;
+      }
+
       return (
         <InputWithLabel
           key={field}
@@ -178,7 +184,7 @@ export default function TypedForm({
         </InputWithLabel>
       );
     },
-    [formErrors, inlineFields, produceLabelFromFieldName]
+    [formErrors, inlineFields, produceLabelFromFieldName, flatFields]
   );
 
   const ValueDependentInputPair = useCallback(

@@ -1,8 +1,6 @@
 import {
   DropDownField,
-  Field,
-  FlatFormFieldTypes,
-  FormFieldTypes
+  FlatFormFieldTypes
 } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';

@@ -1,51 +1,34 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
-import {
-  useGetUserFullDetailsQuery,
-  useGetUserDetailsQuery
-} from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import getUserFullDetails from 'hooks/useGetUserDetails';
+import { useMemo } from 'react';
 
-export const publicTransportForm = (): FormFieldTypes => {
-  const username = useSelector(selectUsername);
-  const {
-    data: userDetails,
-    isLoading: isLoadingUserDetails,
-    error: userDetailsError
-  } = useGetUserDetailsQuery(username);
-
-  const { t } = useTranslation('modelFields');
-
-  if (isLoadingUserDetails || userDetailsError || !userDetails) {
-    return {};
-  }
-
+export const usePublicTransportForm = (): FormFieldTypes => {
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
-  } = useGetUserFullDetailsQuery(userDetails.user_id);
+  } = getUserFullDetails();
 
-  if (isLoadingFullDetails || fullDetailsError || !userFullDetails) {
-    return {};
-  }
+  const { t } = useTranslation('modelFields');
 
-  return {
-    name: {
-      type: 'string',
-      required: true,
-      displayName: t('entities.entity.name')
-    },
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
+  return useMemo(() => {
+    return {
+      name: {
+        type: 'string',
+        required: true,
+        displayName: t('entities.entity.name')
       },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
-    }
-  };
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('entities.entity.members')
+      }
+    };
+  }, [t, userFullDetails]);
 };

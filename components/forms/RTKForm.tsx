@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { Text } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 import { FormFieldTypes } from './formFieldTypes';
 import {
@@ -15,6 +14,9 @@ import createInitialObject from './utils/createInitialObject';
 import { FieldValueTypes } from './types';
 import parseFormValues from './utils/parseFormValues';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { useTranslation } from 'react-i18next';
+import hasAllRequired from './utils/hasAllRequired';
 
 type FormType = 'UPDATE' | 'CREATE';
 export type FormDataType = 'json' | 'form';
@@ -50,7 +52,8 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     marginLeft: 10
-  }
+  },
+  spinner: { marginTop: 20 }
 });
 
 export default function Form({
@@ -89,19 +92,21 @@ export default function Form({
   formDataType?: FormDataType;
 }) {
   const { data: userDetails } = getUserFullDetails();
+  const { t } = useTranslation();
 
-  const flatFields = Array.isArray(fields)
-    ? fields.reduce((a, b) => ({ ...a, ...b }))
-    : fields;
+  const flatFields = useMemo(() => {
+    return Array.isArray(fields)
+      ? fields.reduce((a, b) => ({ ...a, ...b }))
+      : fields;
+  }, [fields]);
 
   const initialFormValues = useMemo(() => {
     return userDetails ? createInitialObject(flatFields, userDetails) : {};
-  }, [userDetails, flatFields]);
+  }, [flatFields, userDetails]);
 
   const [formValues, setFormValues] =
     React.useState<FieldValueTypes>(initialFormValues);
   const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
-  const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   const resetState = useCallback(() => {
@@ -111,7 +116,6 @@ export default function Form({
   useEffect(() => {
     if (userDetails && fields) {
       // TODO - THIS IS TRIGGERING ONCE AFTER UPDATING - FIGURE OUT WHY
-      console.log('RESET STATE');
       resetState();
     }
   }, [fields, userDetails, resetState]);
@@ -134,85 +138,11 @@ export default function Form({
     .map((methodTrigger) => methodTrigger.result)
     .some((result) => result.isLoading);
 
-  useEffect(() => {
-    const res = methodHookTriggers.POST?.result;
-    if (res?.isSuccess) {
-      setSubmitError('');
-      onSubmitSuccess();
-      if (clearOnSubmit) {
-        resetState();
-      }
-    } else if (res?.isError) {
-      setSubmitError('An unexpected error occurred');
-      onSubmitFailure(res.error);
-      console.log(res.error);
-    }
-  }, [
-    methodHookTriggers.POST?.result,
-    clearOnSubmit,
-    onSubmitFailure,
-    onSubmitSuccess,
-    resetState
-  ]);
-
-  useEffect(() => {
-    const res = methodHookTriggers.PATCH?.result;
-    if (res?.isSuccess) {
-      setSubmitError('');
-      onSubmitSuccess();
-      if (clearOnSubmit) {
-        resetState();
-      }
-    } else if (res?.isError) {
-      setSubmitError('An unexpected error occurred');
-      onSubmitFailure(res.error);
-      console.log(res.error);
-    }
-  }, [
-    methodHookTriggers.PATCH?.result,
-    clearOnSubmit,
-    onSubmitFailure,
-    onSubmitSuccess,
-    resetState
-  ]);
-
-  useEffect(() => {
-    const res = methodHookTriggers.DELETE?.result;
-    if (res?.isSuccess) {
-      setSubmitError('');
-      onDeleteSuccess();
-    } else if (res?.isError) {
-      setSubmitError('An unexpected error occurred');
-      onDeleteFailure(res.error);
-    }
-  }, [methodHookTriggers.DELETE?.result, onDeleteFailure, onDeleteSuccess]);
-
-  const hasAllRequired = useMemo(() => {
-    for (const fieldName in flatFields) {
-      if (flatFields[fieldName].required) {
-        if (
-          ['addMembers', 'addFamilyMembers'].includes(
-            flatFields[fieldName].type
-          )
-        ) {
-          if (!formValues[fieldName] || formValues[fieldName].length === 0) {
-            return false;
-          }
-        } else if (flatFields[fieldName].type === 'dropDown') {
-          // Need to allow true-false option
-          if (formValues[fieldName] === '') {
-            return false;
-          }
-        } else if (!formValues[fieldName]) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+  const hasRequired = useMemo(() => {
+    return hasAllRequired(formValues, flatFields);
   }, [formValues, flatFields]);
 
-  const submitForm = () => {
+  const submitForm = useCallback(() => {
     setSubmittingForm(true);
 
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
@@ -235,9 +165,18 @@ export default function Form({
         })
         .then(() => {
           setSubmittingForm(false);
+          onSubmitSuccess();
+          if (clearOnSubmit) {
+            resetState();
+          }
         })
         .catch(() => {
+          Toast.show({
+            type: 'error',
+            text1: t('common.errors.generic')
+          });
           setSubmittingForm(false);
+          onSubmitFailure();
         });
     } else if (formDataType === 'form') {
       const data = new FormData();
@@ -265,17 +204,50 @@ export default function Form({
         })
         .then(() => {
           setSubmittingForm(false);
+          onSubmitSuccess();
+          if (clearOnSubmit) {
+            resetState();
+          }
         })
         .catch(() => {
+          Toast.show({
+            type: 'error',
+            text1: t('common.errors.generic')
+          });
           setSubmittingForm(false);
+          onSubmitFailure();
         });
     }
-  };
+  }, [
+    clearOnSubmit,
+    derivedFieldsFunction,
+    extraFields,
+    flatFields,
+    formDataType,
+    formType,
+    formValues,
+    methodHookTriggers,
+    onSubmitFailure,
+    onSubmitSuccess,
+    resetState,
+    t
+  ]);
 
   const makeDeleteRequest = () => {
     setSubmittingForm(true);
-    methodHookTriggers.DELETE.trigger(extraFields);
-    setSubmittingForm(false);
+    methodHookTriggers.DELETE.trigger(extraFields)
+      .then(() => {
+        onDeleteSuccess();
+        setSubmittingForm(false);
+      })
+      .catch((err) => {
+        Toast.show({
+          type: 'error',
+          text1: t('common.errors.generic')
+        });
+        onDeleteFailure(err);
+        setSubmittingForm(false);
+      });
   };
 
   return (
@@ -290,7 +262,6 @@ export default function Form({
         }}
       />
       <TransparentView>
-        {submitError ? <Text>{submitError}</Text> : null}
         <TypedForm
           fields={fields}
           formValues={formValues}
@@ -304,7 +275,7 @@ export default function Form({
         />
       </TransparentView>
       {isSubmitting ? (
-        <PaddedSpinner spinnerColor="buttonDefault" style={{ marginTop: 20 }} />
+        <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
       ) : (
         <TransparentView style={styles.bottomButtons}>
           <Button
@@ -317,7 +288,7 @@ export default function Form({
             onPress={() => {
               submitForm();
             }}
-            disabled={submittingForm || !hasAllRequired}
+            disabled={submittingForm || !hasRequired}
             style={styles.button}
           />
           {formType === 'UPDATE' && methodHookTriggers.DELETE ? (

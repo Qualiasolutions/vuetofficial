@@ -35,17 +35,17 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
-  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms();
+  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms(true);
 
   const entityToEdit = allEntities?.byId ? allEntities.byId[entityId] : null;
 
-  const fieldColor = entityToEdit
-    ? useThemeColor(
-      {},
-      fieldColorMapping[entityToEdit.resourcetype] ||
+  const fieldColor = useThemeColor(
+    {},
+    entityToEdit
+      ? fieldColorMapping[entityToEdit.resourcetype] ||
           fieldColorMapping.default
-    )
-    : '';
+      : fieldColorMapping.default
+  );
 
   if (isLoading || !entityToEdit || !allEntities || !entityId) {
     return <FullPageSpinner />;
@@ -64,7 +64,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     ((dataTypeMapping[entityToEdit?.resourcetype] ||
       dataTypeMapping.default) as FormDataType);
 
-  const onDeleteSuccess = (res: CarResponseType) => {
+  const onDeleteSuccess = () => {
     Toast.show({
       type: 'success',
       text1: 'Succesfully deleted entity'

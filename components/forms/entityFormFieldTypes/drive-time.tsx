@@ -1,8 +1,9 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const driveTimeForm = (): FormFieldTypes => {
+export const useDriveTimeForm = (): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
@@ -10,46 +11,48 @@ export const driveTimeForm = (): FormFieldTypes => {
     error: fullDetailsError
   } = getUserFullDetails();
 
-  return {
-    start_location: {
-      type: 'string',
-      required: false,
-      displayName: t('entities.mode-of-transport.start_location')
-    },
-    end_location: {
-      type: 'string',
-      required: false,
-      displayName: t('entities.mode-of-transport.end_location')
-    },
-    start_datetime: {
-      type: 'DateTime',
-      required: true,
-      displayName: t('entities.mode-of-transport.start_datetime')
-    },
-    start_timezone: {
-      type: 'timezone',
-      required: true,
-      displayName: t('entities.mode-of-transport.start_timezone')
-    },
-    end_datetime: {
-      type: 'DateTime',
-      required: true,
-      displayName: t('entities.mode-of-transport.end_datetime')
-    },
-    end_timezone: {
-      type: 'timezone',
-      required: true,
-      displayName: t('entities.mode-of-transport.end_timezone')
-    },
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
+  return useMemo(() => {
+    return {
+      start_location: {
+        type: 'string',
+        required: false,
+        displayName: t('entities.mode-of-transport.start_location')
       },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
-    }
-  };
+      end_location: {
+        type: 'string',
+        required: false,
+        displayName: t('entities.mode-of-transport.end_location')
+      },
+      start_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('entities.mode-of-transport.start_datetime')
+      },
+      start_timezone: {
+        type: 'timezone',
+        required: true,
+        displayName: t('entities.mode-of-transport.start_timezone')
+      },
+      end_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('entities.mode-of-transport.end_datetime')
+      },
+      end_timezone: {
+        type: 'timezone',
+        required: true,
+        displayName: t('entities.mode-of-transport.end_timezone')
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('entities.entity.members')
+      }
+    };
+  }, [t, userFullDetails]);
 };

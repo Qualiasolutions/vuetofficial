@@ -20,6 +20,7 @@ import { fieldColorMapping } from './utils/fieldColorMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
 import { FormFieldTypes } from './formFieldTypes';
 import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType | null) => any;
@@ -38,7 +39,8 @@ export default function AddEntityForm({
   entityType: EntityTypeName;
   parentId?: number;
 }) {
-  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms();
+  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } =
+    forms(false);
   const navigation = useNavigation();
 
   const { t } = useTranslation();
@@ -103,6 +105,10 @@ export default function AddEntityForm({
           extraFields={extraFields}
           derivedFieldsFunction={derivedFieldsMapping[entityType]}
           onSubmitSuccess={() => {
+            Toast.show({
+              type: 'success',
+              text1: t('screens.addEntity.createSuccess', { entityType })
+            });
             navigation.goBack();
           }}
           clearOnSubmit={true}

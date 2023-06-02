@@ -44,7 +44,7 @@
       "make": "Make",
       "model": "Model",
       "registration": "Registration",
-      "MOT_due_date": "MOT Due",
+      "mot_due_date": "MOT Due",
       "insurance_due_date": "Insurance Due",
       "tax_due_date": "Tax Due",
       "warranty_due_date": "Warranty Due",

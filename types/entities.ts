@@ -40,7 +40,7 @@ export interface CarResponseType extends BaseEntityType {
   make: string;
   model: string;
   registration: string;
-  MOT_due_date: string | null;
+  mot_due_date: string | null;
   insurance_due_date: string | null;
   service_due_date: string | null;
 }
@@ -50,7 +50,7 @@ export interface CarParsedType extends BaseEntityType {
   make: string;
   model: string;
   registration: string;
-  MOT_due_date: Date | null;
+  mot_due_date: Date | null;
   insurance_due_date: Date | null;
   service_due_date: Date | null;
 }
