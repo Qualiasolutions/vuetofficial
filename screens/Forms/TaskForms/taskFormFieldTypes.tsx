@@ -100,6 +100,7 @@ export const usePeriodFieldTypes = (): FlatFormFieldTypes => {
 };
 
 export const useTaskMiddleFieldTypes = (
+  disableFlexible: boolean = false,
   disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
@@ -109,7 +110,8 @@ export const useTaskMiddleFieldTypes = (
       is_flexible: {
         type: 'checkbox',
         required: false,
-        displayName: t('tasks.task.is_flexible')
+        displayName: t('tasks.task.is_flexible'),
+        hidden: disableFlexible
       },
       start_datetime: {
         type: 'DateTime',

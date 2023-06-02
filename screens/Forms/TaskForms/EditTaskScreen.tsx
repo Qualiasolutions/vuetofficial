@@ -64,7 +64,7 @@ export default function EditTaskScreen({
     isLoading,
     data: allTasks,
     error
-  } = useGetAllTasksQuery(userDetails?.id || -1, {
+  } = useGetAllTasksQuery(null as any, {
     skip: !userDetails?.id
   });
 
@@ -84,6 +84,7 @@ export default function EditTaskScreen({
 
   const taskTopFields = useTaskTopFieldTypes();
   const taskMiddleFields = useTaskMiddleFieldTypes(
+    true,
     !!(taskToEdit && taskToEdit.recurrence)
   );
   const taskBottomFields = useTaskBottomFieldTypes();
