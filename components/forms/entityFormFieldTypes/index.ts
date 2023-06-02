@@ -1,7 +1,7 @@
 import { anniversaryForm } from './anniversary';
 import { birthdayForm } from './birthday';
-import { carForm } from './car';
-import { boatForm } from './boat';
+import { useCarForm } from './car';
+import { useBoatForm } from './boat';
 import { publicTransportForm } from './public-transport';
 import { eventForm } from './event';
 import { hobbyForm } from './hobby';
@@ -33,8 +33,8 @@ import { clothingForm } from './clothing';
 
 export default () => {
   return {
-    Car: carForm(),
-    Boat: boatForm(),
+    Car: useCarForm(),
+    Boat: useBoatForm(),
     PublicTransport: publicTransportForm(),
     Birthday: birthdayForm(),
     Anniversary: anniversaryForm(),

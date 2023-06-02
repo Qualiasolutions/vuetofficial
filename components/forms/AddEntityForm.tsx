@@ -52,12 +52,10 @@ export default function AddEntityForm({
     error
   } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
 
-  const fieldColor =
-    entityType &&
-    useThemeColor(
-      {},
-      fieldColorMapping[entityType] || fieldColorMapping.default
-    );
+  const fieldColor = useThemeColor(
+    {},
+    fieldColorMapping[entityType] || fieldColorMapping.default
+  );
 
   const dataType =
     entityType &&

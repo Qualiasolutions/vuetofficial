@@ -2,7 +2,7 @@ import { Field, FormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 
-export const carForm = (): FormFieldTypes => {
+export const useCarForm = (isEdit: boolean): FormFieldTypes => {
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
@@ -36,7 +36,8 @@ export const carForm = (): FormFieldTypes => {
     ],
     required: false,
     displayName: t('entities.entity.reminder'),
-    listMode: 'MODAL'
+    listMode: 'MODAL',
+    hidden: isEdit
   } as Field;
 
   const dueDateMembershipField = {
@@ -47,7 +48,8 @@ export const carForm = (): FormFieldTypes => {
       friends: userFullDetails?.friends || []
     },
     valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-    displayName: t('entities.entity.taskMembers')
+    displayName: t('entities.entity.taskMembers'),
+    hidden: isEdit
   } as Field;
 
   return [
@@ -83,13 +85,24 @@ export const carForm = (): FormFieldTypes => {
         type: 'Date',
         required: false,
         displayName: t('entities.car.date_registered')
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('entities.entity.members')
       }
     },
     {
       MOT_due_date: {
         type: 'Date',
         required: false,
-        displayName: t('entities.car.MOT_due_date')
+        displayName: t('entities.car.MOT_due_date'),
+        hidden: isEdit
       },
       mot_reminder_timedelta: reminderDropDownField,
       mot_due_date_members: dueDateMembershipField
@@ -98,7 +111,8 @@ export const carForm = (): FormFieldTypes => {
       tax_due_date: {
         type: 'Date',
         required: false,
-        displayName: t('entities.car.tax_due_date')
+        displayName: t('entities.car.tax_due_date'),
+        hidden: isEdit
       },
       tax_reminder_timedelta: reminderDropDownField,
       tax_due_date_members: dueDateMembershipField
@@ -107,7 +121,8 @@ export const carForm = (): FormFieldTypes => {
       service_due_date: {
         type: 'Date',
         required: false,
-        displayName: t('entities.car.service_due_date')
+        displayName: t('entities.car.service_due_date'),
+        hidden: isEdit
       },
       service_reminder_timedelta: reminderDropDownField,
       service_due_date_members: dueDateMembershipField
@@ -116,7 +131,8 @@ export const carForm = (): FormFieldTypes => {
       insurance_due_date: {
         type: 'Date',
         required: false,
-        displayName: t('entities.car.insurance_due_date')
+        displayName: t('entities.car.insurance_due_date'),
+        hidden: isEdit
       },
       insurance_reminder_timedelta: reminderDropDownField,
       insurance_due_date_members: dueDateMembershipField
@@ -125,7 +141,8 @@ export const carForm = (): FormFieldTypes => {
       warranty_due_date: {
         type: 'Date',
         required: false,
-        displayName: t('entities.car.warranty_due_date')
+        displayName: t('entities.car.warranty_due_date'),
+        hidden: isEdit
       },
       warranty_reminder_timedelta: reminderDropDownField,
       warranty_due_date_members: dueDateMembershipField
@@ -146,16 +163,6 @@ export const carForm = (): FormFieldTypes => {
         required: true,
         displayName: t('entities.car.vehicle_type'),
         listMode: 'MODAL'
-      },
-      members: {
-        type: 'addMembers',
-        required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
-        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-        displayName: t('entities.entity.members')
       }
     }
   ];

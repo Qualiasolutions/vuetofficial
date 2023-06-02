@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
@@ -94,9 +94,9 @@ export default function Form({
     ? fields.reduce((a, b) => ({ ...a, ...b }))
     : fields;
 
-  const initialFormValues = userDetails
-    ? createInitialObject(flatFields, userDetails)
-    : {};
+  const initialFormValues = useMemo(() => {
+    return userDetails ? createInitialObject(flatFields, userDetails) : {};
+  }, [userDetails, flatFields]);
 
   const [formValues, setFormValues] =
     React.useState<FieldValueTypes>(initialFormValues);
@@ -104,9 +104,9 @@ export default function Form({
   const [submitError, setSubmitError] = React.useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setFormValues(initialFormValues);
-  };
+  }, [initialFormValues]);
 
   useEffect(() => {
     if (userDetails && fields) {
@@ -114,7 +114,7 @@ export default function Form({
       console.log('RESET STATE');
       resetState();
     }
-  }, [fields, userDetails]);
+  }, [fields, userDetails, resetState]);
 
   const methodHookTriggers: {
     [key: string]: {
@@ -134,35 +134,58 @@ export default function Form({
     .map((methodTrigger) => methodTrigger.result)
     .some((result) => result.isLoading);
 
-  for (const method in methodHookTriggers) {
-    if (['POST', 'PATCH'].includes(method)) {
-      useEffect(() => {
-        const res = methodHookTriggers[method].result;
-        if (res.isSuccess) {
-          setSubmitError('');
-          onSubmitSuccess();
-          if (clearOnSubmit) {
-            resetState();
-          }
-        } else if (res.isError) {
-          setSubmitError('An unexpected error occurred');
-          onSubmitFailure(res.error);
-          console.log(res.error);
-        }
-      }, [methodHookTriggers[method].result]);
-    } else if (method === 'DELETE') {
-      useEffect(() => {
-        const res = methodHookTriggers[method].result;
-        if (res.isSuccess) {
-          setSubmitError('');
-          onDeleteSuccess();
-        } else if (res.isError) {
-          setSubmitError('An unexpected error occurred');
-          onDeleteFailure(res.error);
-        }
-      }, [methodHookTriggers[method].result]);
+  useEffect(() => {
+    const res = methodHookTriggers.POST?.result;
+    if (res?.isSuccess) {
+      setSubmitError('');
+      onSubmitSuccess();
+      if (clearOnSubmit) {
+        resetState();
+      }
+    } else if (res?.isError) {
+      setSubmitError('An unexpected error occurred');
+      onSubmitFailure(res.error);
+      console.log(res.error);
     }
-  }
+  }, [
+    methodHookTriggers.POST?.result,
+    clearOnSubmit,
+    onSubmitFailure,
+    onSubmitSuccess,
+    resetState
+  ]);
+
+  useEffect(() => {
+    const res = methodHookTriggers.PATCH?.result;
+    if (res?.isSuccess) {
+      setSubmitError('');
+      onSubmitSuccess();
+      if (clearOnSubmit) {
+        resetState();
+      }
+    } else if (res?.isError) {
+      setSubmitError('An unexpected error occurred');
+      onSubmitFailure(res.error);
+      console.log(res.error);
+    }
+  }, [
+    methodHookTriggers.PATCH?.result,
+    clearOnSubmit,
+    onSubmitFailure,
+    onSubmitSuccess,
+    resetState
+  ]);
+
+  useEffect(() => {
+    const res = methodHookTriggers.DELETE?.result;
+    if (res?.isSuccess) {
+      setSubmitError('');
+      onDeleteSuccess();
+    } else if (res?.isError) {
+      setSubmitError('An unexpected error occurred');
+      onDeleteFailure(res.error);
+    }
+  }, [methodHookTriggers.DELETE?.result, onDeleteFailure, onDeleteSuccess]);
 
   const hasAllRequired = useMemo(() => {
     for (const fieldName in flatFields) {
@@ -187,7 +210,7 @@ export default function Form({
     }
 
     return true;
-  }, [formValues]);
+  }, [formValues, flatFields]);
 
   const submitForm = () => {
     setSubmittingForm(true);
