@@ -58,7 +58,7 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
   );
 
   return useMemo<FlatFormFieldTypes[]>(() => {
-    const fields = [
+    const fields: FlatFormFieldTypes[] = [
       {
         image: {
           type: 'Image',
@@ -123,7 +123,7 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
       }
     ];
 
-    const createFields = [
+    const createFields: FlatFormFieldTypes[] = [
       {
         mot_due_date: {
           type: 'Date',

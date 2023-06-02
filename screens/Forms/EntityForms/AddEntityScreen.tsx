@@ -4,12 +4,23 @@ import { EntityTabParamList } from 'types/base';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { EntityTypeName } from 'types/entities';
 import DropDown from 'components/forms/components/DropDown';
 import { fieldColorMapping } from 'components/forms/utils/fieldColorMapping';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import useAddEntityHeader from 'headers/hooks/useAddEntityHeader';
+
+const styles = StyleSheet.create({
+  entityTypeSelectorWrapper: {
+    marginTop: 20,
+    width: 200,
+    alignSelf: 'center'
+  },
+  formContainer: {
+    marginBottom: 100
+  }
+});
 
 export default function AddEntityScreen({
   route,
@@ -29,10 +40,12 @@ export default function AddEntityScreen({
   const [selectedEntityType, selectEntityType] = useState<EntityTypeName>(
     entityTypes[0]
   );
-
-  const fieldColor =
-    selectedEntityType &&
-    useThemeColor({}, fieldColorMapping[selectedEntityType]);
+  const fieldColor = useThemeColor(
+    {},
+    selectedEntityType
+      ? fieldColorMapping[selectedEntityType]
+      : fieldColorMapping.default
+  );
 
   useAddEntityHeader(selectedEntityType);
 
@@ -70,14 +83,3 @@ export default function AddEntityScreen({
     </TransparentFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  entityTypeSelectorWrapper: {
-    marginTop: 20,
-    width: 200,
-    alignSelf: 'center'
-  },
-  formContainer: {
-    marginBottom: 100
-  }
-});
