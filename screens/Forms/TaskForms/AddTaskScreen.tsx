@@ -32,6 +32,7 @@ import useColouredHeader from 'headers/hooks/useColouredHeader';
 import { useCreatePeriodMutation } from 'reduxStore/services/api/period';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
+import dayjs from 'dayjs';
 
 const formTypes = [
   {
@@ -138,13 +139,22 @@ export default function AddTaskScreen() {
         defaultEndTime.setHours(defaultStartTime.getHours() + 1);
       }
 
+      const defaultDuration = 15;
+      const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      const defaultDueDate = dayjs(nextWeek).format('YYYY-MM-DD');
+
       const initialMiddleFields = createInitialObject(
         taskMiddleFields,
         userDetails,
         {
           start_datetime: defaultStartTime,
           end_datetime: defaultEndTime,
-          recurrence: null
+          duration_minutes: defaultDuration,
+          recurrence: null,
+          earliest_action_date: defaultEarliestActionDate,
+          due_date: defaultDueDate
         }
       );
       setTaskMiddleFieldValues(initialMiddleFields);
@@ -203,38 +213,6 @@ export default function AddTaskScreen() {
   ]);
 
   useEffect(() => {
-    if (createFlexibleTaskResult.isSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-    } else if (createFlexibleTaskResult.isError) {
-      Toast.show({
-        type: 'error',
-        text1: t('common.errors.generic')
-      });
-      console.error(createFlexibleTaskResult.error);
-    }
-  }, [createFlexibleTaskResult, resetState, t]);
-
-  useEffect(() => {
-    if (createTaskResult.isSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-    } else if (createTaskResult.isError) {
-      Toast.show({
-        type: 'error',
-        text1: t('common.errors.generic')
-      });
-      console.error(createTaskResult.error);
-    }
-  }, [createTaskResult, resetState, t]);
-
-  useEffect(() => {
     if (createPeriodResult.isSuccess) {
       Toast.show({
         type: 'success',
@@ -249,7 +227,7 @@ export default function AddTaskScreen() {
     }
   }, [createPeriodResult, resetState, t]);
 
-  const submitForm = () => {
+  const submitForm = async () => {
     if (formType === 'DUE_DATE') {
       const parsedPeriodFieldValues = parseFormValues(
         periodFieldValues,
@@ -284,12 +262,22 @@ export default function AddTaskScreen() {
         resourcetype: 'FixedTask'
       };
 
-      console.log(parsedFieldValues);
-
-      if (parsedFieldValues.is_flexible) {
-        createFlexibleTask(parsedFieldValues);
-      } else {
-        createTask(parsedFieldValues);
+      try {
+        if (parsedFieldValues.is_flexible) {
+          await createFlexibleTask(parsedFieldValues).unwrap();
+        } else {
+          await createTask(parsedFieldValues).unwrap();
+        }
+        Toast.show({
+          type: 'success',
+          text1: t('screens.addTask.createSuccess')
+        });
+        resetState();
+      } catch (err) {
+        Toast.show({
+          type: 'error',
+          text1: t('common.errors.generic')
+        });
       }
     }
   };

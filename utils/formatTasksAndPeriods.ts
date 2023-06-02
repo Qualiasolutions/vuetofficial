@@ -1,25 +1,13 @@
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
-import { ParsedPeriod } from 'types/periods';
 import { ScheduledTaskResponseType } from 'types/tasks';
-import {
-  getDateStringFromDateObject,
-  getDateStringsBetween,
-  getEndOfDay,
-  getStartOfDay
-} from './datesAndTimes';
-
-type SingleDateTasks = {
-  tasks: MinimalScheduledTask[];
-  periods: ParsedPeriod[];
-};
-
-type AllDateTasks = {
-  [key: string]: SingleDateTasks;
-};
+import { getDateStringsBetween } from './datesAndTimes';
 
 export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
   const newTasksPerDate: {
-    [key: string]: MinimalScheduledTask[];
+    [key: string]: (MinimalScheduledTask & {
+      start_datetime: string;
+      end_datetime: string;
+    })[];
   } = {};
   for (const task of tasks) {
     const taskDates = getDateStringsBetween(
@@ -30,10 +18,20 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
     taskDates.forEach((taskDate) => {
       const taskToPush = {
         id: task.id,
-        recurrence_index: task.recurrence_index
+        recurrence_index: task.recurrence_index,
+        start_datetime: task.start_datetime,
+        end_datetime: task.end_datetime
       };
       if (newTasksPerDate[taskDate]) {
-        newTasksPerDate[taskDate].push(taskToPush);
+        let spliceIndex = 0;
+        for (const insertedTask of newTasksPerDate[taskDate]) {
+          if (insertedTask.start_datetime < taskToPush.start_datetime) {
+            spliceIndex += 1;
+          } else {
+            break;
+          }
+        }
+        newTasksPerDate[taskDate].splice(spliceIndex, 0, taskToPush);
       } else {
         newTasksPerDate[taskDate] = [taskToPush];
       }

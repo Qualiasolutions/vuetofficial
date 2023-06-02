@@ -69,7 +69,9 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
               task.members.some((member) => users?.includes(member)))
         ) || [];
 
-    return formatTasksPerDate(filteredTasks);
+    const formatted = formatTasksPerDate(filteredTasks);
+
+    return formatted;
   }
 );
 

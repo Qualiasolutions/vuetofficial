@@ -435,8 +435,6 @@ export default function TypedForm({
                 smoothChecking={false}
                 checked={formValues[field]}
                 onValueChange={async (value: any) => {
-                  console.log('value change');
-                  console.log(value);
                   onFormValuesChange({
                     ...formValues,
                     [field]: !value

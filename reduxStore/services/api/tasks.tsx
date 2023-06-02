@@ -178,7 +178,64 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Task']
+      // invalidatesTags: ['Task'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        try {
+          const { data: newTask } = await queryFulfilled;
+          for (const {
+            endpointName,
+            originalArgs
+          } of tasksApi.util.selectInvalidatedBy(getState(), [
+            { type: 'Task' }
+          ])) {
+            if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
+              continue;
+            if (endpointName === 'getAllTasks') {
+              dispatch(
+                tasksApi.util.updateQueryData(
+                  'getAllTasks',
+                  originalArgs,
+                  (draft) => {
+                    draft.ids.push(newTask.id);
+                    draft.byId[newTask.id] = {
+                      ...newTask,
+                      resourcetype: 'FixedTask'
+                    };
+                  }
+                )
+              );
+            }
+            if (endpointName === 'getAllScheduledTasks') {
+              dispatch(
+                tasksApi.util.updateQueryData(
+                  'getAllScheduledTasks',
+                  originalArgs,
+                  (draft) => {
+                    draft.byTaskId[newTask.id] = {
+                      '-1': {
+                        ...newTask,
+                        recurrence: null, // Flexible tasks never recurrent
+                        recurrence_index: null, // Flexible tasks never recurrent
+                        alert: [], // Assume no alert - this will update when data is refetched
+                        resourcetype: 'FixedTask'
+                      }
+                    };
+                    draft.ordered.push({
+                      id: newTask.id,
+                      recurrence_index: null
+                    });
+                  }
+                )
+              );
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
     }),
     deleteTask: builder.mutation<
       FixedTaskResponseType,
