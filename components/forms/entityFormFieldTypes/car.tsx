@@ -16,7 +16,7 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
   const reminderDropDownField = useMemo(
-    () =>
+    () => (dueDateFieldName: string) =>
       ({
         type: 'dropDown',
         permittedValues: [
@@ -37,13 +37,16 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
         displayName: t('entities.entity.reminder'),
         listMode: 'MODAL',
         hidden: isEdit,
-        initialValue: 'MONTHLY'
+        initialValue: 'MONTHLY',
+        shownFields: {
+          [dueDateFieldName]: true
+        }
       } as Field),
     [t, isEdit]
   );
 
   const dueDateMembershipField = useMemo(
-    () =>
+    () => (dueDateFieldName: string) =>
       ({
         type: 'addMembers',
         required: true,
@@ -54,7 +57,10 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('entities.entity.taskMembers'),
         hidden: isEdit,
-        initialValue: []
+        initialValue: [],
+        shownFields: {
+          [dueDateFieldName]: true
+        }
       } as Field),
     [t, isEdit, userFullDetails]
   );
@@ -120,7 +126,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
           ],
           required: true,
           displayName: t('entities.car.vehicle_type'),
-          listMode: 'MODAL'
+          listMode: 'MODAL',
+          initialValue: 'CAR'
         }
       }
     ];
@@ -133,8 +140,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
           displayName: t('entities.car.mot_due_date'),
           hidden: isEdit
         },
-        mot_reminder_interval: reminderDropDownField,
-        mot_due_date_members: dueDateMembershipField
+        mot_reminder_interval: reminderDropDownField('mot_due_date'),
+        mot_due_date_members: dueDateMembershipField('mot_due_date')
       },
       {
         tax_due_date: {
@@ -143,8 +150,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
           displayName: t('entities.car.tax_due_date'),
           hidden: isEdit
         },
-        tax_reminder_interval: reminderDropDownField,
-        tax_due_date_members: dueDateMembershipField
+        tax_reminder_interval: reminderDropDownField('tax_due_date'),
+        tax_due_date_members: dueDateMembershipField('tax_due_date')
       },
       {
         service_due_date: {
@@ -153,8 +160,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
           displayName: t('entities.car.service_due_date'),
           hidden: isEdit
         },
-        service_reminder_interval: reminderDropDownField,
-        service_due_date_members: dueDateMembershipField
+        service_reminder_interval: reminderDropDownField('service_due_date'),
+        service_due_date_members: dueDateMembershipField('service_due_date')
       },
       {
         insurance_due_date: {
@@ -163,8 +170,9 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
           displayName: t('entities.car.insurance_due_date'),
           hidden: isEdit
         },
-        insurance_reminder_interval: reminderDropDownField,
-        insurance_due_date_members: dueDateMembershipField
+        insurance_reminder_interval:
+          reminderDropDownField('insurance_due_date'),
+        insurance_due_date_members: dueDateMembershipField('insurance_due_date')
       },
       {
         warranty_due_date: {
@@ -173,8 +181,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
           displayName: t('entities.car.warranty_due_date'),
           hidden: isEdit
         },
-        warranty_reminder_interval: reminderDropDownField,
-        warranty_due_date_members: dueDateMembershipField
+        warranty_reminder_interval: reminderDropDownField('warranty_due_date'),
+        warranty_due_date_members: dueDateMembershipField('warranty_due_date')
       }
     ];
 

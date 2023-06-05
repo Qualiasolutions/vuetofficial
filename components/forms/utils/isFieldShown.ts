@@ -10,7 +10,9 @@ export default function isFieldShown(
   if (field.shownFields && formValues) {
     if (field.shownFields) {
       for (const dependentField in field.shownFields) {
-        if (!formValues[dependentField] === field.shownFields[dependentField]) {
+        if (
+          !(!!formValues[dependentField] === field.shownFields[dependentField])
+        ) {
           return false;
         }
       }

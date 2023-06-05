@@ -470,6 +470,11 @@ export default function TypedForm({
           );
         case 'addMembers': {
           const f = flatFields[field] as AddMembersField;
+
+          if (!isFieldShown(f, formValues)) {
+            return null;
+          }
+
           return (
             <InputPair field={field} key={field}>
               <MemberSelector
@@ -532,6 +537,11 @@ export default function TypedForm({
         }
         case 'dropDown': {
           const f = flatFields[field] as DropDownField;
+
+          if (!isFieldShown(f, formValues)) {
+            return null;
+          }
+
           return (
             <InputPair field={field} key={field}>
               <DropDown
@@ -662,6 +672,10 @@ export default function TypedForm({
           const firstOccurrence: Date = formValues[f.firstOccurrenceField];
 
           if (!firstOccurrence) {
+            return null;
+          }
+
+          if (!isFieldShown(f, formValues)) {
             return null;
           }
 
