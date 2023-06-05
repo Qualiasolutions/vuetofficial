@@ -1,5 +1,5 @@
 import {
-  myAccountForm,
+  useMyAccountForm,
   MyAccountFormFieldTypes
 } from './myAccountFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
@@ -14,10 +14,16 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
+const styles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 20
+  }
+});
+
 export default function EditAccountDetailsScreen() {
   const { data: userDetails } = getUserFullDetails();
   const { t } = useTranslation();
-  const formFields = deepCopy<MyAccountFormFieldTypes>(myAccountForm());
+  const formFields = deepCopy<MyAccountFormFieldTypes>(useMyAccountForm());
 
   if (!userDetails) {
     return <FullPageSpinner />;
@@ -59,9 +65,3 @@ export default function EditAccountDetailsScreen() {
 
   return <FullPageSpinner />;
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 20
-  }
-});

@@ -1,25 +1,22 @@
-import {
-  DropDownField,
-  FlatFormFieldTypes
-} from 'components/forms/formFieldTypes';
+import { FlatFormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 
-export const useTaskTopFieldTypes = (): FlatFormFieldTypes => {
+export const useTaskTopFieldTypes = (
+  isEdit: boolean = false,
+  taskHiddenTag: string = ''
+): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingFullDetails,
-    error: fullDetailsError
-  } = useGetUserDetails();
+  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
       title: {
         type: 'string',
         required: true,
-        displayName: t('tasks.task.title')
+        displayName: t('tasks.task.title'),
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
       },
       members: {
         type: 'addMembers',
@@ -32,23 +29,23 @@ export const useTaskTopFieldTypes = (): FlatFormFieldTypes => {
         displayName: t('tasks.task.members')
       }
     };
-  }, [t, userFullDetails]);
+  }, [t, userFullDetails, isEdit, taskHiddenTag]);
 };
 
-export const useDueDateFieldTypes = (): FlatFormFieldTypes => {
+export const useDueDateFieldTypes = (
+  isEdit: boolean = false,
+  taskHiddenTag: string = ''
+): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const {
-    data: userFullDetails,
-    isLoading: isLoadingFullDetails,
-    error: fullDetailsError
-  } = useGetUserDetails();
+  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
       title: {
         type: 'string',
         required: true,
-        displayName: t('tasks.task.title')
+        displayName: t('tasks.task.title'),
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
       },
       members: {
         type: 'addMembers',
@@ -83,7 +80,7 @@ export const useDueDateFieldTypes = (): FlatFormFieldTypes => {
         required: true
       }
     };
-  }, [userFullDetails, t]);
+  }, [userFullDetails, t, isEdit, taskHiddenTag]);
 };
 
 export const useTaskMiddleFieldTypes = (
@@ -179,7 +176,7 @@ export const useTaskMiddleFieldTypes = (
         required: true
       }
     };
-  }, [t, disabledRecurrenceFields]);
+  }, [t, disabledRecurrenceFields, disableFlexible]);
 };
 
 export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {

@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
 import { EntireState } from 'reduxStore/types';
+import { ScheduledTaskResponseType } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import { CalendarState } from './types';
 
@@ -41,6 +42,12 @@ export const selectScheduledTaskIdsByDate = createSelector(
   }
 );
 
+const isTask = (
+  item: ScheduledTaskResponseType | undefined
+): item is ScheduledTaskResponseType => {
+  return !!item;
+};
+
 export const selectFilteredScheduledTaskIdsByDate = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(null as any),
   selectFilteredEntities,
@@ -58,9 +65,9 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
               recurrence_index === null ? -1 : recurrence_index
             ]
         )
+        .filter(isTask)
         .filter(
           (task) =>
-            task &&
             (!entities ||
               entities.length === 0 ||
               task.entities.some((ent) => entities?.includes(ent))) &&

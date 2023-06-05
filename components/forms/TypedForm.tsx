@@ -236,6 +236,7 @@ export default function TypedForm({
                 autoCapitalize={
                   f.transform === 'uppercase' ? 'characters' : 'sentences'
                 }
+                editable={!f.disabled}
               />
             </InputPair>
           );

@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
   bottomButton: {
     flex: 1,
     margin: 5
-  }
+  },
+  spinner: { marginTop: 20 }
 });
 
 export default function EditTaskScreen({
@@ -62,11 +63,7 @@ export default function EditTaskScreen({
   const isSubmitting = updateTaskResult.isLoading || deleteTaskResult.isLoading;
 
   const { data: userDetails } = useGetUserDetails();
-  const {
-    isLoading,
-    data: allTasks,
-    error
-  } = useGetAllTasksQuery(null as any, {
+  const { data: allTasks } = useGetAllTasksQuery(null as any, {
     skip: !userDetails?.id
   });
 
@@ -88,13 +85,13 @@ export default function EditTaskScreen({
   );
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const taskTopFields = useTaskTopFieldTypes();
+  const taskTopFields = useTaskTopFieldTypes(true, taskToEdit?.hidden_tag);
   const taskMiddleFields = useTaskMiddleFieldTypes(
     true,
     !!(taskToEdit && taskToEdit.recurrence)
   );
   const taskBottomFields = useTaskBottomFieldTypes();
-  const dueDateFields = useDueDateFieldTypes();
+  const dueDateFields = useDueDateFieldTypes(true, taskToEdit?.hidden_tag);
 
   useEffect(() => {
     if (allTasks && userDetails) {
@@ -311,10 +308,7 @@ export default function EditTaskScreen({
       <TransparentView style={styles.container}>
         {formFields}
         {isSubmitting ? (
-          <PaddedSpinner
-            spinnerColor="buttonDefault"
-            style={{ marginTop: 20 }}
-          />
+          <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
         ) : (
           <TransparentPaddedView style={styles.bottomButtons}>
             <Button

@@ -29,6 +29,7 @@ interface BaseTaskType {
   polymorphic_ctype: number;
   resourcetype: string;
   title: string;
+  hidden_tag: string;
   members: number[];
   recurrence?: Recurrence | null;
   recurrence_index?: number;
