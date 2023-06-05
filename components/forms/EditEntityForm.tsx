@@ -1,7 +1,7 @@
 import { useThemeColor } from 'components/Themed';
 import { FormFieldTypes, ImageField } from 'components/forms/formFieldTypes';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
-import { CarResponseType, EntityTypeName } from 'types/entities';
+import { EntityTypeName } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useNavigation } from '@react-navigation/native';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';

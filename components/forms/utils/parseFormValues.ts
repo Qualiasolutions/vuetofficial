@@ -74,4 +74,24 @@ const parseFormValues = (
   return parsedFormValues;
 };
 
+export const parseFormDataFormValues = (
+  formValues: FieldValueTypes,
+  fields: FlatFormFieldTypes
+) => {
+  const parsedFormValues = parseFormValues(formValues, fields);
+  const data = new FormData();
+  for (const [fieldName, fieldValue] of Object.entries(parsedFormValues)) {
+    if (typeof fieldValue === 'object' && fieldValue.length !== undefined) {
+      // If the value is an array then it must be treated as such
+      for (const val of fieldValue) {
+        data.append(fieldName, val);
+      }
+    } else {
+      data.append(fieldName, fieldValue as any);
+    }
+  }
+
+  return data;
+};
+
 export default parseFormValues;

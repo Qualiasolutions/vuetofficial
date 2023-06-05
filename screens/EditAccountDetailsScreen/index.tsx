@@ -12,6 +12,7 @@ import TypedForm from 'components/forms/TypedForm';
 import { Button } from 'components/molecules/ButtonComponents';
 import { useFormUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import { elevation } from 'styles/elevation';
+import { parseFormDataFormValues } from 'components/forms/utils/parseFormValues';
 
 const styles = StyleSheet.create({
   formContainer: {
@@ -36,7 +37,7 @@ export default function EditAccountDetailsScreen() {
   const { t } = useTranslation();
   const formFieldsTemplate = useMyAccountForm();
   const [newValues, setNewValues] = useState<null | MyAccountFormFields>(null);
-  const [updateUserDetails, _] = useFormUpdateUserDetailsMutation();
+  const [updateUserDetails] = useFormUpdateUserDetailsMutation();
 
   useEffect(() => {
     if (userDetails) {
@@ -73,8 +74,12 @@ export default function EditAccountDetailsScreen() {
           <Button
             onPress={async () => {
               try {
+                const parsedFormValues = parseFormDataFormValues(
+                  newValues,
+                  formFieldsTemplate
+                );
                 await updateUserDetails({
-                  ...newValues,
+                  formData: parsedFormValues,
                   userId: userDetails.id
                 }).unwrap();
                 Toast.show({
