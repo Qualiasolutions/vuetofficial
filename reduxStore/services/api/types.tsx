@@ -1,13 +1,12 @@
-import { FixedTaskResponseType } from 'types/tasks';
+import { DueDateResponseType, FixedTaskResponseType } from 'types/tasks';
 import { EntityResponseType } from 'types/entities';
-import { FamilyResponse } from 'types/families';
 import { Category } from 'types/categories';
 import { PeriodResponse } from 'types/periods';
 
 type AllTasks = {
   ids: number[];
   byId: {
-    [id: number]: FixedTaskResponseType;
+    [id: number]: FixedTaskResponseType | DueDateResponseType;
   };
 };
 

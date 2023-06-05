@@ -5,15 +5,19 @@ import { getDateStringsBetween } from './datesAndTimes';
 export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
   const newTasksPerDate: {
     [key: string]: (MinimalScheduledTask & {
-      start_datetime: string;
-      end_datetime: string;
+      start_datetime?: string;
+      end_datetime?: string;
+      date?: string;
+      duration?: number;
     })[];
   } = {};
   for (const task of tasks) {
-    const taskDates = getDateStringsBetween(
-      task.start_datetime,
-      task.end_datetime
-    );
+    const taskDates =
+      task.start_datetime && task.end_datetime
+        ? getDateStringsBetween(task.start_datetime, task.end_datetime)
+        : task.date
+        ? [task.date]
+        : [];
 
     taskDates.forEach((taskDate) => {
       const taskToPush = {
@@ -25,7 +29,13 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
       if (newTasksPerDate[taskDate]) {
         let spliceIndex = 0;
         for (const insertedTask of newTasksPerDate[taskDate]) {
-          if (insertedTask.start_datetime < taskToPush.start_datetime) {
+          if (!taskToPush.start_datetime) {
+            break;
+          }
+          if (
+            !insertedTask.start_datetime ||
+            insertedTask.start_datetime < taskToPush.start_datetime
+          ) {
             spliceIndex += 1;
           } else {
             break;

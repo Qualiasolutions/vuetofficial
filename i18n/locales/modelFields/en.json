@@ -4,7 +4,7 @@
       "title": "Name of Task",
       "location": "Location",
       "members": "Doer(s)",
-      "duration_minutes": "Duration of task",
+      "duration_minutes": "Duration",
       "recurrence": "Recurrence",
       "reminders": "Reminders",
       "start_datetime": "Starts",

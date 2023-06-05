@@ -2,10 +2,12 @@ import { AllTasks } from './types';
 import { vuetApi, normalizeData } from './api';
 import {
   ScheduledTaskResponseType,
-  CreateTaskRequest,
   FixedTaskResponseType,
   FixedTaskParsedType,
-  CreateFlexibleFixedTaskRequest
+  CreateFlexibleFixedTaskRequest,
+  CreateFixedTaskRequest,
+  CreateDueDateRequest,
+  DueDateResponseType
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 
@@ -61,7 +63,10 @@ const tasksApi = vuetApi.injectEndpoints({
         url: 'core/task/',
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: FixedTaskResponseType[] = await response.json();
+            const responseJson: (
+              | FixedTaskResponseType
+              | DueDateResponseType
+            )[] = await response.json();
             return normalizeData(responseJson);
           } else {
             // Just return the error data
@@ -72,8 +77,8 @@ const tasksApi = vuetApi.injectEndpoints({
       providesTags: ['Task']
     }),
     updateTask: builder.mutation<
-      FixedTaskResponseType,
-      Partial<FixedTaskParsedType> &
+      FixedTaskResponseType | DueDateResponseType,
+      Partial<FixedTaskParsedType | DueDateResponseType> &
         Pick<FixedTaskParsedType, 'id'> & {
           start_datetime?: string;
           end_datetime?: string;
@@ -157,7 +162,10 @@ const tasksApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    createTask: builder.mutation<FixedTaskResponseType, CreateTaskRequest>({
+    createTask: builder.mutation<
+      FixedTaskResponseType | DueDateResponseType,
+      CreateFixedTaskRequest | CreateDueDateRequest
+    >({
       query: (body) => {
         return {
           url: 'core/task/',
@@ -189,7 +197,7 @@ const tasksApi = vuetApi.injectEndpoints({
                     draft.ids.push(newTask.id);
                     draft.byId[newTask.id] = {
                       ...newTask,
-                      resourcetype: 'FixedTask'
+                      resourcetype: patch.resourcetype
                     };
                   }
                 )
@@ -211,7 +219,7 @@ const tasksApi = vuetApi.injectEndpoints({
                           recurrence: null, // Flexible tasks never recurrent
                           recurrence_index: null, // Flexible tasks never recurrent
                           alert: [], // Assume no alert - this will update when data is refetched
-                          resourcetype: 'FixedTask'
+                          resourcetype: patch.resourcetype
                         }
                       };
                       draft.ordered.push({

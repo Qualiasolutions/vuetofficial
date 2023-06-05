@@ -28,6 +28,7 @@ import {
   selectTask
 } from 'reduxStore/slices/calendars/selectors';
 import dayjs from 'dayjs';
+import { ScheduledTaskResponseType } from 'types/tasks';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -84,6 +85,83 @@ type PropTypes = {
   date: string;
 };
 
+const TimeText = ({
+  scheduledTask,
+  date
+}: {
+  scheduledTask: ScheduledTaskResponseType;
+  date: string;
+}) => {
+  const { t } = useTranslation();
+
+  let textContent = null;
+  if (scheduledTask.date && scheduledTask.duration) {
+    textContent = (
+      <Text>
+        {`${scheduledTask.duration} ${t('common.mins')}, ${t(
+          'common.anyTime'
+        )}`}
+      </Text>
+    );
+  } else if (scheduledTask.start_datetime && scheduledTask.end_datetime) {
+    const startTime = new Date(scheduledTask?.start_datetime || '');
+    const startDate = dayjs(startTime).format('YYYY-MM-DD');
+    const endTime = new Date(scheduledTask?.end_datetime || '');
+    const endDate = dayjs(endTime).format('YYYY-MM-DD');
+    const multiDay = startDate !== endDate;
+
+    const currentDate = dayjs(date).format('YYYY-MM-DD');
+
+    const isFirstDay = multiDay && currentDate === startDate;
+    const isLastDay = multiDay && currentDate === endDate;
+
+    if (!multiDay) {
+      textContent = (
+        <>
+          <Text>
+            {`${getTimeStringFromDateObject(
+              new Date(scheduledTask.start_datetime)
+            )}`}
+          </Text>
+          <Text>
+            {`${getTimeStringFromDateObject(
+              new Date(scheduledTask.end_datetime)
+            )}`}
+          </Text>
+        </>
+      );
+    } else {
+      if (isFirstDay) {
+        textContent = (
+          <Text>
+            {`${
+              isFirstDay ? `${t('common.from')} ` : ''
+            }${getTimeStringFromDateObject(
+              new Date(scheduledTask.start_datetime)
+            )}`}
+          </Text>
+        );
+      } else if (isLastDay) {
+        textContent = (
+          <Text>
+            {`${
+              isLastDay ? `${t('common.until')} ` : ''
+            }${getTimeStringFromDateObject(
+              new Date(scheduledTask.end_datetime)
+            )}`}
+          </Text>
+        );
+      } else {
+        textContent = <Text>{t('common.allDay')}</Text>;
+      }
+    }
+  }
+
+  return (
+    <TransparentView style={styles.leftInfo}>{textContent}</TransparentView>
+  );
+};
+
 function Task({ task: { id, recurrence_index }, date }: PropTypes) {
   const { data: userDetails } = getUserFullDetails();
 
@@ -138,47 +216,6 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
       .filter((ent) => !!ent);
   }, [task, allEntities]);
 
-  const startTime = new Date(scheduledTask?.start_datetime || '');
-  const startDate = dayjs(startTime).format('YYYY-MM-DD');
-  const endTime = new Date(scheduledTask?.end_datetime || '');
-  const endDate = dayjs(endTime).format('YYYY-MM-DD');
-  const multiDay = startDate !== endDate;
-
-  const currentDate = dayjs(date).format('YYYY-MM-DD');
-
-  const isFirstDay = multiDay && currentDate === startDate;
-  const isLastDay = multiDay && currentDate === endDate;
-
-  const leftInfo = useMemo(
-    () =>
-      scheduledTask ? (
-        <TransparentView style={styles.leftInfo}>
-          {(isFirstDay || !multiDay) && (
-            <Text>
-              {`${
-                isFirstDay ? `${t('common.from')} ` : ''
-              }${getTimeStringFromDateObject(
-                new Date(scheduledTask.start_datetime)
-              )}`}
-            </Text>
-          )}
-          {(isLastDay || !multiDay) && (
-            <Text>
-              {`${
-                isLastDay ? `${t('common.until')} ` : ''
-              }${getTimeStringFromDateObject(
-                new Date(scheduledTask.end_datetime)
-              )}`}
-            </Text>
-          )}
-          {multiDay && !isFirstDay && !isLastDay && (
-            <Text>{t('common.allDay')}</Text>
-          )}
-        </TransparentView>
-      ) : null,
-    [scheduledTask]
-  );
-
   const memberColour = useMemo(
     () => (
       <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -208,7 +245,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
       <TransparentView style={[styles.outerContainer, { height: ITEM_HEIGHT }]}>
         <TransparentView style={[styles.containerWrapper]}>
           <TransparentView style={styles.container}>
-            {leftInfo}
+            <TimeText scheduledTask={scheduledTask} date={date} />
             <TransparentView style={styles.titleContainer}>
               <BlackText
                 text={task.title}
@@ -220,7 +257,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
                 ]}
                 bold={true}
               />
-              {['FixedTask', 'FlexibleTask'].includes(task.resourcetype) && (
+              {['FixedTask', 'DueDate'].includes(task.resourcetype) && (
                 <Pressable
                   onPress={() =>
                     (navigation.navigate as any)('EditTask', {
@@ -242,7 +279,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
               color={isCompleteTextColor}
               onValueChange={async () => {
                 await triggerCreateCompletionForm({
-                  resourcetype: `${task.resourcetype}CompletionForm`,
+                  resourcetype: `TaskCompletionForm`,
                   recurrence_index: scheduledTask.recurrence_index,
                   task: task.id
                 });
@@ -261,12 +298,12 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
   }, [
     scheduledTask,
     task,
+    date,
     isComplete,
     allEntities,
     entities,
     isCompleteTextColor,
     isLoading,
-    leftInfo,
     memberColour,
     navigation.navigate,
     t,

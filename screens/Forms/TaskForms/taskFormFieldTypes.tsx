@@ -35,40 +35,13 @@ export const useTaskTopFieldTypes = (): FlatFormFieldTypes => {
   }, [t, userFullDetails]);
 };
 
-export const usePeriodFieldTypes = (): FlatFormFieldTypes => {
+export const useDueDateFieldTypes = (): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserDetails();
-
-  const reminderDropDownField = useMemo<DropDownField>(() => {
-    return {
-      type: 'dropDown',
-      permittedValues: [
-        {
-          label: '1 day before',
-          value: '1 day, 0:00:00'
-        },
-        {
-          label: '1 week before',
-          value: '7 days, 0:00:00'
-        },
-        {
-          label: '2 weeks before',
-          value: '14 days, 0:00:00'
-        },
-        {
-          label: '4 weeks before',
-          value: '28 days, 0:00:00'
-        }
-      ],
-      required: false,
-      displayName: t('entities.entity.reminder'),
-      listMode: 'MODAL'
-    };
-  }, [t]);
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -87,14 +60,30 @@ export const usePeriodFieldTypes = (): FlatFormFieldTypes => {
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members')
       },
-      start_date: {
+      date: {
         type: 'Date',
         required: true,
         displayName: t('tasks.due_date.date')
       },
-      reminder_timedelta: reminderDropDownField
+      duration: {
+        type: 'duration',
+        required: true,
+        displayName: t('tasks.task.duration_minutes')
+      },
+      reminders: {
+        type: 'multiRecurrenceSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      tags: {
+        type: 'tagSelector',
+        required: true
+      }
     };
-  }, [userFullDetails, t, reminderDropDownField]);
+  }, [userFullDetails, t]);
 };
 
 export const useTaskMiddleFieldTypes = (

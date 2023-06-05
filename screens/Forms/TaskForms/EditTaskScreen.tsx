@@ -5,6 +5,7 @@ import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
+  useDueDateFieldTypes,
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes
@@ -29,9 +30,10 @@ import {
 } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { FixedTaskResponseType } from 'types/tasks';
+import { DueDateResponseType, FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import hasAllRequired from 'components/forms/utils/hasAllRequired';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,9 +72,9 @@ export default function EditTaskScreen({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [taskToEdit, setTaskToEdit] = useState<FixedTaskResponseType | null>(
-    null
-  );
+  const [taskToEdit, setTaskToEdit] = useState<
+    FixedTaskResponseType | DueDateResponseType | null
+  >(null);
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
     {}
   );
@@ -80,6 +82,10 @@ export default function EditTaskScreen({
     useState<FieldValueTypes>({});
   const [taskBottomFieldValues, setTaskBottomFieldValues] =
     useState<FieldValueTypes>({});
+
+  const [dueDateFieldValues, setDueDateFieldValues] = useState<FieldValueTypes>(
+    {}
+  );
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = useTaskTopFieldTypes();
@@ -88,6 +94,7 @@ export default function EditTaskScreen({
     !!(taskToEdit && taskToEdit.recurrence)
   );
   const taskBottomFields = useTaskBottomFieldTypes();
+  const dueDateFields = useDueDateFieldTypes();
 
   useEffect(() => {
     if (allTasks && userDetails) {
@@ -122,46 +129,53 @@ export default function EditTaskScreen({
         );
         setTaskBottomFieldValues(initialBottomFields);
 
+        const initialDueDateFields = createInitialObject(
+          dueDateFields,
+          userDetails,
+          newTaskToEdit
+        );
+        setDueDateFieldValues(initialDueDateFields);
+
         setResetState(() => () => {
           setTaskTopFieldValues(initialTopFields);
           setTaskMiddleFieldValues(initialMiddleFields);
           setTaskBottomFieldValues(initialBottomFields);
+          setDueDateFieldValues(initialDueDateFields);
         });
       }
     }
-  }, [allTasks, userDetails, route.params.taskId]);
+  }, [
+    allTasks,
+    userDetails,
+    route.params.taskId,
+    taskBottomFields,
+    taskMiddleFields,
+    taskTopFields,
+    dueDateFields
+  ]);
 
   useEntityHeader(0, false, t('pageTitles.editTask'));
 
-  const hasAllRequired = useMemo(() => {
-    for (const fieldName in taskTopFields) {
-      if (taskTopFields[fieldName].required && !taskTopFieldValues[fieldName]) {
-        return false;
-      }
+  const hasRequired = useMemo(() => {
+    if (taskToEdit?.resourcetype === 'FixedTask') {
+      return (
+        hasAllRequired(taskTopFieldValues, taskTopFields) &&
+        hasAllRequired(taskMiddleFieldValues, taskMiddleFields) &&
+        hasAllRequired(taskBottomFieldValues, taskBottomFields)
+      );
+    } else {
+      return hasAllRequired(dueDateFieldValues, dueDateFields);
     }
-    const middleFields = taskMiddleFields;
-    const middleFieldValues = taskMiddleFieldValues;
-    for (const fieldName in middleFields) {
-      if (middleFields[fieldName].required && !middleFieldValues[fieldName]) {
-        return false;
-      }
-    }
-    for (const fieldName in taskBottomFields) {
-      if (
-        taskBottomFields[fieldName].required &&
-        !taskBottomFieldValues[fieldName]
-      ) {
-        return false;
-      }
-    }
-    return true;
   }, [
-    taskBottomFields,
-    taskBottomFieldValues,
-    taskMiddleFields,
+    taskTopFieldValues,
     taskMiddleFieldValues,
+    taskBottomFieldValues,
     taskTopFields,
-    taskTopFieldValues
+    taskMiddleFields,
+    taskBottomFields,
+    taskToEdit,
+    dueDateFields,
+    dueDateFieldValues
   ]);
 
   useEffect(() => {
@@ -192,35 +206,48 @@ export default function EditTaskScreen({
 
   const submitUpdateForm = () => {
     if (taskToEdit) {
-      const middleFieldValues = taskMiddleFieldValues;
-      const middleFields = taskMiddleFields;
+      if (taskToEdit.resourcetype === 'FixedTask') {
+        const parsedTopFieldValues = parseFormValues(
+          taskTopFieldValues,
+          taskTopFields
+        );
+        const parsedMiddleFieldValues = parseFormValues(
+          taskMiddleFieldValues,
+          taskMiddleFields
+        );
+        const parsedBottomFieldValues = parseFormValues(
+          taskBottomFieldValues,
+          taskBottomFields
+        );
+        const body = {
+          ...parsedTopFieldValues,
+          ...parsedMiddleFieldValues,
+          ...parsedBottomFieldValues,
+          resourcetype: 'FixedTask' as 'FixedTask',
+          id: taskToEdit.id
+        };
+        if (Object.keys(body as any).includes('recurrence')) {
+          delete (body as any).recurrence;
+        }
 
-      const parsedTopFieldValues = parseFormValues(
-        taskTopFieldValues,
-        taskTopFields
-      );
-      const parsedMiddleFieldValues = parseFormValues(
-        middleFieldValues,
-        middleFields
-      );
-      const parsedBottomFieldValues = parseFormValues(
-        taskBottomFieldValues,
-        taskBottomFields
-      );
+        updateTask(body);
+      } else {
+        const parsedDueDateFieldValues = parseFormValues(
+          dueDateFieldValues,
+          dueDateFields
+        );
 
-      const body = {
-        ...parsedTopFieldValues,
-        ...parsedMiddleFieldValues,
-        ...parsedBottomFieldValues,
-        resourcetype: 'FixedTask' as 'FixedTask',
-        id: taskToEdit.id
-      };
+        const body = {
+          ...parsedDueDateFieldValues,
+          resourcetype: 'DueDate' as 'DueDate',
+          id: taskToEdit.id
+        };
+        if (Object.keys(body as any).includes('recurrence')) {
+          delete (body as any).recurrence;
+        }
 
-      if (Object.keys(body as any).includes('recurrence')) {
-        delete (body as any).recurrence;
+        updateTask(body);
       }
-
-      updateTask(body);
     }
   };
 
@@ -228,9 +255,9 @@ export default function EditTaskScreen({
     return <FullPageSpinner />;
   }
 
-  return (
-    <TransparentFullPageScrollView>
-      <TransparentView style={styles.container}>
+  const formFields =
+    taskToEdit.resourcetype === 'FixedTask' ? (
+      <>
         <TransparentView>
           <TypedForm
             fields={taskTopFields}
@@ -264,7 +291,25 @@ export default function EditTaskScreen({
             fieldColor={fieldColor}
           />
         </TransparentView>
+      </>
+    ) : (
+      <TransparentView>
+        <TypedForm
+          fields={dueDateFields}
+          formValues={dueDateFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setDueDateFieldValues(values);
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+        />
+      </TransparentView>
+    );
 
+  return (
+    <TransparentFullPageScrollView>
+      <TransparentView style={styles.container}>
+        {formFields}
         {isSubmitting ? (
           <PaddedSpinner
             spinnerColor="buttonDefault"
@@ -277,7 +322,7 @@ export default function EditTaskScreen({
               onPress={() => {
                 submitUpdateForm();
               }}
-              disabled={!hasAllRequired}
+              disabled={!hasRequired}
               style={styles.bottomButton}
             />
             <Button
@@ -285,7 +330,7 @@ export default function EditTaskScreen({
               onPress={() => {
                 deleteTask(taskToEdit);
               }}
-              disabled={!hasAllRequired}
+              disabled={!hasRequired}
               style={styles.bottomButton}
             />
           </TransparentPaddedView>

@@ -2,7 +2,7 @@ import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
-  usePeriodFieldTypes,
+  useDueDateFieldTypes,
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes
@@ -29,7 +29,6 @@ import parseFormValues from 'components/forms/utils/parseFormValues';
 import RadioInput from 'components/forms/components/RadioInput';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
-import { useCreatePeriodMutation } from 'reduxStore/services/api/period';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import dayjs from 'dayjs';
@@ -82,11 +81,9 @@ export default function AddTaskScreen() {
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createFlexibleTask, createFlexibleTaskResult] =
     useCreateFlexibleFixedTaskMutation();
-  const [createPeriod, createPeriodResult] = useCreatePeriodMutation();
+
   const isSubmitting =
-    createTaskResult.isLoading ||
-    createFlexibleTaskResult.isLoading ||
-    createPeriodResult.isLoading;
+    createTaskResult.isLoading || createFlexibleTaskResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
   const headerBackgroundColor = useThemeColor({}, 'secondary');
@@ -107,7 +104,7 @@ export default function AddTaskScreen() {
     useState<FieldValueTypes>({});
   const [taskBottomFieldValues, setTaskBottomFieldValues] =
     useState<FieldValueTypes>({});
-  const [periodFieldValues, setPeriodFieldValues] = useState<FieldValueTypes>(
+  const [dueDateFieldValues, setDueDateFieldValues] = useState<FieldValueTypes>(
     {}
   );
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
@@ -116,7 +113,7 @@ export default function AddTaskScreen() {
   const taskTopFields = useTaskTopFieldTypes();
   const taskMiddleFields = useTaskMiddleFieldTypes();
   const taskBottomFields = useTaskBottomFieldTypes();
-  const periodFields = usePeriodFieldTypes();
+  const dueDateFields = useDueDateFieldTypes();
 
   useEffect(() => {
     if (userDetails) {
@@ -165,15 +162,15 @@ export default function AddTaskScreen() {
       );
       setTaskBottomFieldValues(initialBottomFields);
 
-      const initialPeriodFields = createInitialObject(
-        periodFields,
+      const initialDueDateFields = createInitialObject(
+        dueDateFields,
         userDetails,
         { reminder_timedelta: '14 days, 0:00:00' }
       );
-      setPeriodFieldValues(initialPeriodFields);
+      setDueDateFieldValues(initialDueDateFields);
 
       setResetState(() => () => {
-        setPeriodFieldValues(initialPeriodFields);
+        setDueDateFieldValues(initialDueDateFields);
         setTaskTopFieldValues(initialTopFields);
         setTaskMiddleFieldValues(initialMiddleFields);
         setTaskBottomFieldValues(initialBottomFields);
@@ -184,7 +181,7 @@ export default function AddTaskScreen() {
   }, [
     userDetails,
     formType,
-    periodFields,
+    dueDateFields,
     taskTopFields,
     taskMiddleFields,
     taskBottomFields
@@ -192,7 +189,7 @@ export default function AddTaskScreen() {
 
   const hasRequired = useMemo(() => {
     if (formType === 'DUE_DATE') {
-      return hasAllRequired(periodFieldValues, periodFields);
+      return hasAllRequired(dueDateFieldValues, dueDateFields);
     } else {
       return (
         hasAllRequired(taskTopFieldValues, taskTopFields) &&
@@ -204,42 +201,38 @@ export default function AddTaskScreen() {
     taskTopFieldValues,
     taskMiddleFieldValues,
     taskBottomFieldValues,
-    periodFields,
+    dueDateFields,
     taskTopFields,
     taskMiddleFields,
     taskBottomFields,
-    periodFieldValues,
+    dueDateFieldValues,
     formType
   ]);
 
-  useEffect(() => {
-    if (createPeriodResult.isSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-    } else if (createPeriodResult.isError) {
-      Toast.show({
-        type: 'error',
-        text1: t('common.errors.generic')
-      });
-    }
-  }, [createPeriodResult, resetState, t]);
-
   const submitForm = async () => {
     if (formType === 'DUE_DATE') {
-      const parsedPeriodFieldValues = parseFormValues(
-        periodFieldValues,
-        periodFields
+      const parsedDueDateFieldValues = parseFormValues(
+        dueDateFieldValues,
+        dueDateFields
       );
-      const parsedFieldValues = {
-        ...parsedPeriodFieldValues,
-        end_date: parsedPeriodFieldValues.start_date,
-        resourcetype: 'FixedPeriod'
+      const parsedFieldValues: any = {
+        ...parsedDueDateFieldValues,
+        end_date: parsedDueDateFieldValues.start_date,
+        resourcetype: 'DueDate'
       };
 
-      createPeriod(parsedFieldValues);
+      try {
+        await createTask(parsedFieldValues).unwrap();
+        Toast.show({
+          type: 'success',
+          text1: t('screens.addTask.createSuccess')
+        });
+      } catch (err) {
+        Toast.show({
+          type: 'error',
+          text1: t('common.errors.generic')
+        });
+      }
     } else {
       const parsedTopFieldValues = parseFormValues(
         taskTopFieldValues,
@@ -302,10 +295,10 @@ export default function AddTaskScreen() {
           </WhiteView>
           {formType === 'DUE_DATE' ? (
             <TypedForm
-              fields={periodFields}
-              formValues={periodFieldValues}
+              fields={dueDateFields}
+              formValues={dueDateFieldValues}
               onFormValuesChange={(values: FieldValueTypes) => {
-                setPeriodFieldValues(values);
+                setDueDateFieldValues(values);
               }}
               inlineFields={true}
               fieldColor={fieldColor}
