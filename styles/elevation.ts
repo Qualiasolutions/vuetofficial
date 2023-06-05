@@ -7,5 +7,12 @@ export const elevation = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { height: 2, width: 2 },
     elevation: 3
+  },
+  unelevated: {
+    shadowColor: '#000',
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    shadowOffset: { height: 0, width: 0 },
+    elevation: 0
   }
 });

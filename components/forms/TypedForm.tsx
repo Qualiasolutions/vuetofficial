@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15,
     paddingHorizontal: 20,
+    paddingVertical: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
@@ -112,7 +113,8 @@ export default function TypedForm({
   inlineFields = false,
   fieldColor = '#ffffff',
   onFormValuesChange = () => {},
-  style = {}
+  style = {},
+  sectionStyle = {}
 }: {
   fields: FormFieldTypes;
   formValues: FieldValueTypes;
@@ -121,6 +123,7 @@ export default function TypedForm({
   fieldColor?: string;
   onFormValuesChange?: Function;
   style?: ViewStyle;
+  sectionStyle?: ViewStyle;
 }) {
   const { t } = useTranslation();
 
@@ -160,11 +163,13 @@ export default function TypedForm({
     ({
       field,
       children,
-      labelStyle
+      labelStyle,
+      inlineFieldsOverride
     }: {
       field: string;
       children: ReactNode;
       labelStyle?: ViewStyle;
+      inlineFieldsOverride?: boolean;
     }) => {
       const fieldObj = flatFields[field];
       if (!isFieldShown(fieldObj)) {
@@ -176,7 +181,11 @@ export default function TypedForm({
           key={field}
           error={formErrors[field] || ''}
           label={produceLabelFromFieldName(field)}
-          inlineFields={inlineFields}
+          inlineFields={
+            inlineFieldsOverride === undefined
+              ? inlineFields
+              : inlineFieldsOverride
+          }
           labelStyle={labelStyle}
           labelWrapperStyle={styles.inputLabel}
         >
@@ -451,11 +460,11 @@ export default function TypedForm({
             </ValueDependentInputPair>
           );
         }
-        case 'colour':
+        case 'colour': {
           return (
             <WhiteBox key={field} style={styles.colourBox} elevated={false}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <InputPair field={field} key={field}>
+              <InputPair field={field} key={field} inlineFieldsOverride={true}>
                 <ColorPicker
                   value={formValues[field]}
                   onValueChange={(value: string) => {
@@ -469,6 +478,7 @@ export default function TypedForm({
               </InputPair>
             </WhiteBox>
           );
+        }
         case 'addMembers': {
           const f = flatFields[field] as AddMembersField;
 
@@ -762,7 +772,10 @@ export default function TypedForm({
       }
     });
     return (
-      <WhiteView style={[styles.fieldSection, elevation.elevated]} key={i}>
+      <WhiteView
+        style={[styles.fieldSection, elevation.elevated, sectionStyle]}
+        key={i}
+      >
         {sectionFields}
       </WhiteView>
     );

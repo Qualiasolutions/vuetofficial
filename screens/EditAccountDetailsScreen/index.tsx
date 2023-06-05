@@ -1,10 +1,4 @@
-import {
-  useMyAccountForm,
-  MyAccountFormFieldTypes
-} from './myAccountFormFieldTypes';
-import RTKForm from 'components/forms/RTKForm';
-import { deepCopy } from 'utils/copy';
-import { useFormUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
+import { useMyAccountForm } from './myAccountFormFieldTypes';
 import { useTranslation } from 'react-i18next';
 
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -13,59 +7,90 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
+import TypedForm from 'components/forms/TypedForm';
+import { Button } from 'components/molecules/ButtonComponents';
+import { useFormUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
+import { elevation } from 'styles/elevation';
 
 const styles = StyleSheet.create({
   formContainer: {
     marginBottom: 20
+  },
+  buttonWrapper: {
+    flex: 1,
+    alignItems: 'center'
   }
 });
+
+type MyAccountFormFields = {
+  profile_image: string;
+  first_name: string;
+  last_name: string;
+  dob: Date;
+  member_colour: string;
+};
 
 export default function EditAccountDetailsScreen() {
   const { data: userDetails } = getUserFullDetails();
   const { t } = useTranslation();
   const formFieldsTemplate = useMyAccountForm();
+  const [newValues, setNewValues] = useState<null | MyAccountFormFields>(null);
+  const [updateUserDetails, _] = useFormUpdateUserDetailsMutation();
 
-  const formFields = useMemo(() => {
-    const fields = deepCopy(formFieldsTemplate);
-
+  useEffect(() => {
     if (userDetails) {
-      let fieldName: keyof typeof fields;
-      for (fieldName in fields) {
-        if (fieldName === 'profile_image') {
-          fields.profile_image.initialValue =
-            userDetails.presigned_profile_image_url || '';
-        } else if (fieldName in userDetails) {
-          fields[fieldName].initialValue = userDetails[fieldName] || '';
-        }
-      }
+      setNewValues({
+        profile_image: userDetails.presigned_profile_image_url || '',
+        first_name: userDetails.first_name,
+        last_name: userDetails.last_name,
+        dob: new Date(`${userDetails.dob}T12:00:00`),
+        member_colour: userDetails?.member_colour
+      });
     }
+  }, [userDetails]);
 
-    return fields;
-  }, [formFieldsTemplate, userDetails]);
-
-  if (!userDetails) {
+  if (!userDetails || !newValues) {
     return <FullPageSpinner />;
   }
 
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.formContainer}>
-        <RTKForm
-          fields={formFields}
-          methodHooks={{
-            PATCH: useFormUpdateUserDetailsMutation
+        <TypedForm
+          fields={formFieldsTemplate}
+          formValues={newValues}
+          onFormValuesChange={(values: MyAccountFormFields) => {
+            setNewValues(values);
           }}
-          formType="UPDATE"
-          extraFields={{ userId: userDetails.id }}
-          onSubmitSuccess={() => {
-            Toast.show({
-              type: 'success',
-              text1: t('screens.myAccount.updateSuccess')
-            });
-          }}
-          formDataType="json"
+          inlineFields={false}
+          sectionStyle={StyleSheet.flatten([
+            { backgroundColor: 'transparent', marginBottom: 0 },
+            elevation.unelevated
+          ])}
         />
+        <TransparentView style={styles.buttonWrapper}>
+          <Button
+            onPress={async () => {
+              try {
+                await updateUserDetails({
+                  ...newValues,
+                  userId: userDetails.id
+                }).unwrap();
+                Toast.show({
+                  type: 'success',
+                  text1: t('screens.myAccount.updateSuccess')
+                });
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+            title={t('common.update')}
+          />
+        </TransparentView>
       </TransparentView>
     </TransparentFullPageScrollView>
   );

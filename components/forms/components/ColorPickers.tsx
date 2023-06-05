@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+
+const styles = StyleSheet.create({
+  colorView: {
+    width: 100,
+    height: 15
+  }
+});
 
 const generateRandomColor = () => {
   const parts = [];
@@ -21,22 +28,25 @@ export function ColorPicker({
   height?: number;
   width?: number;
 }) {
-  const [color, setColor] = useState<string>(value || generateRandomColor());
-
   useEffect(() => {
-    if (!color) {
-      setColor(generateRandomColor());
+    if (!value) {
+      const newColor = generateRandomColor();
+      onValueChange(newColor);
     }
-    onValueChange(color);
-  }, [color]);
+  }, [value, onValueChange]);
 
   return (
-    <Pressable onPress={() => setColor(generateRandomColor)}>
+    <Pressable
+      onPress={() => {
+        const newColor = generateRandomColor();
+        onValueChange(newColor);
+      }}
+    >
       <View
         style={[
           styles.colorView,
           {
-            backgroundColor: `#${color}`
+            backgroundColor: `#${value}`
           },
           height ? { height: height } : null,
           width ? { width: width } : null
@@ -45,10 +55,3 @@ export function ColorPicker({
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  colorView: {
-    width: 100,
-    height: 15
-  }
-});
