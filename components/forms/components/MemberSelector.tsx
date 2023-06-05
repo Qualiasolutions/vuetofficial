@@ -141,7 +141,7 @@ export default function MemberSelector({
           source={require('assets/images/icons/plus.png')}
           style={styles.addIcon}
         />
-        <PrimaryText text="Add new member" />
+        <PrimaryText text={t('components.memberSelector.changeMembers')} />
       </Pressable>
       <ListingModal
         visible={showMembersList}

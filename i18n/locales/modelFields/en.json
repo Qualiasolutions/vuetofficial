@@ -3,7 +3,7 @@
     "task": {
       "title": "Name of Task",
       "location": "Location",
-      "members": "Doers",
+      "members": "Doer(s)",
       "duration_minutes": "Duration of task",
       "recurrence": "Recurrence",
       "reminders": "Reminders",
@@ -34,7 +34,7 @@
       "name": "Name",
       "owner": "Owner",
       "members": "Members",
-      "taskMembers": "Doers",
+      "taskMembers": "Doer(s)",
       "description": "Description",
       "image": "Image",
       "notes": "Notes",

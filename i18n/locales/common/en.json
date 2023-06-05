@@ -455,7 +455,8 @@
     },
     "memberSelector": {
       "family": "Family",
-      "friends": "My Vuet Circle"
+      "friends": "My Vuet Circle",
+      "changeMembers": "Change member(s)"
     },
     "calendar": {
       "task": {

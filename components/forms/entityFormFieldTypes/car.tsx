@@ -36,7 +36,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
         required: false,
         displayName: t('entities.entity.reminder'),
         listMode: 'MODAL',
-        hidden: isEdit
+        hidden: isEdit,
+        initialValue: 'MONTHLY'
       } as Field),
     [t, isEdit]
   );
@@ -52,7 +53,8 @@ export const useCarForm = (isEdit: boolean): FormFieldTypes => {
         },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('entities.entity.taskMembers'),
-        hidden: isEdit
+        hidden: isEdit,
+        initialValue: []
       } as Field),
     [t, isEdit, userFullDetails]
   );
