@@ -50,7 +50,7 @@ export default function OneDayPeriod({ period }: PropTypes) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
 

@@ -44,7 +44,7 @@ export default function HolidayScreen({ entityId }: { entityId: number }) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.user_id
   });
   const entityData = allEntities?.byId[entityId];

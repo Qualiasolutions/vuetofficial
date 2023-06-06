@@ -23,7 +23,7 @@ export default function useEntityHeader(
     data: allEntities,
     isLoading: isLoadingEntities,
     error: entitiesError
-  } = useGetAllEntitiesQuery(userDetails?.id || -1);
+  } = useGetAllEntitiesQuery();
 
   const entity = allEntities?.byId[entityId];
 

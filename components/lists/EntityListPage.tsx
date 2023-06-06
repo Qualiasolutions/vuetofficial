@@ -19,6 +19,32 @@ import { entityOrderings } from './utils/entityOrderings';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { datetimeSettingsMapping } from './utils/datetimeSettingsMapping';
 
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 100
+  },
+  noEntitiesText: {
+    fontSize: 20,
+    padding: 20
+  },
+  sectionTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 27,
+    fontWeight: '700'
+  },
+  showOlderWrapper: {
+    padding: 20,
+    paddingBottom: 0
+  },
+  showOlderText: {
+    fontSize: 20
+  },
+  showNewerText: {
+    fontSize: 20
+  }
+});
+
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
     <ListLink
@@ -48,7 +74,7 @@ export default function EntityListPage({
     isLoading,
     isFetching,
     error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.user_id
   });
   const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
@@ -85,15 +111,15 @@ export default function EntityListPage({
 
       const previousEntityData = entityDatetimeSettings?.hidePrevious
         ? orderedEntityData.filter(
-          (entity) =>
-            new Date(entity[entityDatetimeSettings.endField]) < earliestDate
-        )
+            (entity) =>
+              new Date(entity[entityDatetimeSettings.endField]) < earliestDate
+          )
         : [];
       const futureEntityData = entityDatetimeSettings?.monthsAhead
         ? orderedEntityData.filter(
-          (entity) =>
-            new Date(entity[entityDatetimeSettings.startField]) > latestDate
-        )
+            (entity) =>
+              new Date(entity[entityDatetimeSettings.startField]) > latestDate
+          )
         : [];
 
       const datetimeFilteredEntityData = orderedEntityData.filter((entity) => {
@@ -151,16 +177,16 @@ export default function EntityListPage({
   const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
     ? monthsBack < 24 &&
       previousEntityData.length > 0 && (
-      <Pressable
-        onPress={() => setMonthsBack(monthsBack + 6)}
-        style={styles.showOlderWrapper}
-      >
-        <AlmostBlackText
-          text={t('components.calendar.showOlderEvents')}
-          style={styles.showOlderText}
-        />
-      </Pressable>
-    )
+        <Pressable
+          onPress={() => setMonthsBack(monthsBack + 6)}
+          style={styles.showOlderWrapper}
+        >
+          <AlmostBlackText
+            text={t('components.calendar.showOlderEvents')}
+            style={styles.showOlderText}
+          />
+        </Pressable>
+      )
     : null;
 
   const showFutureButton =
@@ -169,20 +195,20 @@ export default function EntityListPage({
       ? (!entityDatetimeSettings.maxMonthsAhead ||
           monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
         futureEntityData.length > 0 && (
-        <Pressable
-          onPress={() =>
-            setMonthsAhead(
-              monthsAhead + (entityDatetimeSettings?.monthsAheadPerLoad || 0)
-            )
-          }
-          style={styles.showOlderWrapper}
-        >
-          <AlmostBlackText
-            text={t('components.calendar.showNewerEvents')}
-            style={styles.showNewerText}
-          />
-        </Pressable>
-      )
+          <Pressable
+            onPress={() =>
+              setMonthsAhead(
+                monthsAhead + (entityDatetimeSettings?.monthsAheadPerLoad || 0)
+              )
+            }
+            style={styles.showOlderWrapper}
+          >
+            <AlmostBlackText
+              text={t('components.calendar.showNewerEvents')}
+              style={styles.showNewerText}
+            />
+          </Pressable>
+        )
       : null;
 
   if (listLinks.length === 0) {
@@ -213,29 +239,3 @@ export default function EntityListPage({
     </WhiteFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 100
-  },
-  noEntitiesText: {
-    fontSize: 20,
-    padding: 20
-  },
-  sectionTitle: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 27,
-    fontWeight: '700'
-  },
-  showOlderWrapper: {
-    padding: 20,
-    paddingBottom: 0
-  },
-  showOlderText: {
-    fontSize: 20
-  },
-  showNewerText: {
-    fontSize: 20
-  }
-});

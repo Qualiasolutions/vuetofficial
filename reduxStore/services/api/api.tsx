@@ -56,7 +56,8 @@ export const vuetApi = createApi({
     'Friendships',
     'FamilyCategoryViewPermission',
     'PreferredDays',
-    'BlockedCategories'
+    'BlockedCategories',
+    'Reference'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({

@@ -1,11 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import GenericError from 'components/molecules/GenericError';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { EntityTabParamList } from 'types/base';
+import { ContentTabParamList } from 'types/base';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import ListEntityPage from './components/ListEntityPage';
 import BirthdayPage from './components/BirthdayPage';
 import HobbyPage from './components/HobbyPage';
@@ -13,12 +9,12 @@ import SchoolPage from './components/SchoolPage';
 import TripPage from './components/TripPage';
 import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
-import EntityCalendarPage from '../../../components/calendars/EntityCalendarPage';
 import useEntityHeader from '../../../headers/hooks/useEntityHeader';
-import { PaddedSpinner } from 'components/molecules/Spinners';
+import EntityNavigator from 'navigation/EntityNavigator';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 
 const DefaultEntityPage = ({ entityId }: { entityId: number }) => {
-  return <EntityCalendarPage entityIds={[entityId]} />;
+  return <EntityNavigator entityId={entityId} />;
 };
 
 const resourceTypeToComponent = {
@@ -38,42 +34,21 @@ const resourceTypeToComponent = {
 export default function EntityScreen({
   navigation,
   route
-}: NativeStackScreenProps<EntityTabParamList, 'EntityScreen'>) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const {
-    data: allEntities,
-    isLoading: isLoadingEntities,
-    isFetching: isFetchingEntities,
-    error: entitiesError
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
-
+}: NativeStackScreenProps<ContentTabParamList, 'EntityScreen'>) {
   const entityIdRaw = route.params.entityId;
   const entityId =
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
-  const entity = allEntities?.byId[entityId];
+  const entity = useSelector(selectEntityById(entityId));
 
   useEntityHeader(entityId);
-
   useEffect(() => {
-    if (allEntities && !entity) {
+    if (!entity) {
       navigation.goBack();
     }
-  }, [entity]);
-
-  if (
-    isLoadingEntities ||
-    (isFetchingEntities && entity?.resourcetype !== 'List')
-  ) {
-    return <PaddedSpinner />;
-  }
+  }, [entity, navigation]);
 
   if (!entity) {
     return null;
-  }
-
-  if (entitiesError) {
-    return <GenericError />;
   }
 
   const Screen: React.ElementType | undefined =

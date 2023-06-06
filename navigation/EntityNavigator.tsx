@@ -1,165 +1,29 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import EntityCalendarPage from 'components/calendars/EntityCalendarPage';
+import ReferencesList from 'components/organisms/ReferencesList';
+import { useMemo } from 'react';
+import { EntityTabParamList } from 'types/base';
 
-import { EntityTabParamList } from '../types/base';
+const TopTabs = createMaterialTopTabNavigator<EntityTabParamList>();
 
-import CategoriesGrid from 'screens/Categories/CategoriesGrid';
-import EntityListScreen from 'screens/EntityPages/EntityListScreen';
-import CategoryListScreen from 'screens/Categories/CategoryListScreen';
-import EntityScreen from 'screens/EntityPages/EntityScreens/EntityScreen';
-import ChildEntitiesScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesScreen';
-import LinkListScreen from 'screens/LinkListScreen';
-import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
-import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
-import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
-import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
-import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesCalendarScreen';
-import EntityPeriodsScreen from 'screens/EntityPages/EntityPeriodsScreen';
-import CategoryCalendarScreen from 'screens/EntityPages/CategoryCalendarScreen';
-import EntityTypesCalendarScreen from 'screens/EntityPages/EntityTypesCalendarScreen';
-import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesPeriodsScreen';
-import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
-import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
-import BlockedDaysSettingsScreen from 'screens/Categories/BlockedDaySettingsScreen';
+export default function EntityNavigator({ entityId }: { entityId: number }) {
+  const homeComponent = useMemo(() => {
+    return () => null;
+  }, [entityId]);
 
-const EntityStack = createNativeStackNavigator<EntityTabParamList>();
+  const calendarComponent = useMemo(() => {
+    return () => <EntityCalendarPage entityIds={[entityId]} />;
+  }, [entityId]);
 
-export function EntityNavigator() {
+  const referencesComponent = useMemo(() => {
+    return () => <ReferencesList entities={[entityId]} />;
+  }, [entityId]);
+
   return (
-    <EntityStack.Navigator
-      initialRouteName="Categories"
-      screenOptions={{
-        headerTitleStyle: {
-          fontFamily: 'Poppins-Bold'
-        }
-      }}
-    >
-      <EntityStack.Screen
-        name="Categories"
-        component={CategoriesGrid}
-        options={{ headerShown: false }}
-      />
-      <EntityStack.Screen
-        name="EntityList"
-        component={EntityListScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-
-      <EntityStack.Screen
-        name="HolidayList"
-        component={HolidayListScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-
-      <EntityStack.Screen
-        name="CategoryList"
-        component={CategoryListScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="SubCategoryList"
-        component={SubCategoryListScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="BlockedDaysSettings"
-        component={BlockedDaysSettingsScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="CategoryPreferences"
-        component={CategoryPreferencesScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="EntityScreen"
-        component={EntityScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <EntityStack.Screen
-        name="EntityPeriods"
-        component={EntityPeriodsScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="ChildEntitiesScreen"
-        component={ChildEntitiesScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="ChildEntitiesCalendarScreen"
-        component={ChildEntitiesCalendarScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="ChildEntitiesPeriodsScreen"
-        component={ChildEntitiesPeriodsScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="CategoryCalendarScreen"
-        component={CategoryCalendarScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="EntityTypesCalendarScreen"
-        component={EntityTypesCalendarScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="LinkList"
-        component={LinkListScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="HolidayDetail"
-        component={HolidayDetailScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <EntityStack.Screen
-        name="EditEntity"
-        component={EditEntityScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <EntityStack.Screen
-        name="AddEntity"
-        component={AddEntityScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-    </EntityStack.Navigator>
+    <TopTabs.Navigator initialRouteName="Home">
+      <TopTabs.Screen name="Home" component={homeComponent} />
+      <TopTabs.Screen name="Calendar" component={calendarComponent} />
+      <TopTabs.Screen name="References" component={referencesComponent} />
+    </TopTabs.Navigator>
   );
 }

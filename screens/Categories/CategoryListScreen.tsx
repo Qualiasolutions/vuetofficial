@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EntityTabParamList, EntityTabScreenProps } from 'types/base';
+import { ContentTabParamList, ContentTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import linkConfig from './subCategories';
@@ -19,14 +19,14 @@ const styles = StyleSheet.create({
   }
 });
 
-type CategoryListScreenProps = EntityTabScreenProps<'CategoryList'>;
+type CategoryListScreenProps = ContentTabScreenProps<'CategoryList'>;
 
 const CategoryPreferences = ({ categoryId }: { categoryId: number }) => {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
   const categoryData = allCategories?.byId[categoryId];
 
   const { t } = useTranslation();
-  const navigation = useNavigation<StackNavigationProp<EntityTabParamList>>();
+  const navigation = useNavigation<StackNavigationProp<ContentTabParamList>>();
 
   return (
     <TransparentView>

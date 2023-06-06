@@ -48,11 +48,7 @@ export default function AddEntityForm({
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
 
   const fieldColor = useThemeColor(
     {},

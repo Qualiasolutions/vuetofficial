@@ -29,6 +29,15 @@ export type CalendarViewProps = {
   onChangeDate?: (date: string) => void;
 };
 
+function useStyle() {
+  return StyleSheet.create({
+    container: { marginBottom: 0 },
+    periodList: { paddingBottom: 250 },
+    periodListElement: { margin: 10 },
+    periodListTitleText: { fontSize: 18 }
+  });
+}
+
 export default function CalendarView({
   dates,
   onChangeDate
@@ -36,7 +45,7 @@ export default function CalendarView({
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
-  const styles = style();
+  const styles = useStyle();
   const { periods: allPeriods } = useScheduledPeriods();
   const navigation = useNavigation();
   const listEnforcedDate = useSelector(selectListEnforcedDate);
@@ -146,7 +155,7 @@ export default function CalendarView({
                 style={styles.periodListElement}
                 key={period.id}
                 onPress={() => {
-                  (navigation.navigate as any)('EntityNavigator', {
+                  (navigation.navigate as any)('ContentNavigator', {
                     screen: 'EntityScreen',
                     initial: false,
                     params: { entityId: period.entity }
@@ -165,13 +174,4 @@ export default function CalendarView({
       )}
     </WhiteFullPageScrollView>
   );
-}
-
-function style() {
-  return StyleSheet.create({
-    container: { marginBottom: 0 },
-    periodList: { paddingBottom: 250 },
-    periodListElement: { margin: 10 },
-    periodListTitleText: { fontSize: 18 }
-  });
 }

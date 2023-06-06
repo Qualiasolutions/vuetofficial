@@ -6,9 +6,9 @@ import {
 } from 'types/entities';
 import { vuetApi, normalizeData } from './api';
 
-const extendedApi = vuetApi.injectEndpoints({
+const entitiesApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllEntities: builder.query<AllEntities, number>({
+    getAllEntities: builder.query<AllEntities, void>({
       query: () => ({
         url: 'core/readonly/entity/',
         responseHandler: async (response) => {
@@ -132,7 +132,7 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
-export default extendedApi;
+export default entitiesApi;
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -146,4 +146,4 @@ export const {
   useFormUpdateEntityMutation,
   useBulkCreateEntitiesMutation,
   useBulkDeleteEntitiesMutation
-} = extendedApi;
+} = entitiesApi;

@@ -4,10 +4,10 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 import { useTranslation } from 'react-i18next';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 
 type CategoryPreferencesScreenProps =
-  EntityTabScreenProps<'CategoryPreferences'>;
+  ContentTabScreenProps<'CategoryPreferences'>;
 
 const styles = {
   container: {

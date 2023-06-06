@@ -39,7 +39,7 @@ export default function HolidayListScreen({
     skip: !userDetails?.id
   });
 
-  const { data: allEntities } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
   const selectedHolidays = (allEntities &&

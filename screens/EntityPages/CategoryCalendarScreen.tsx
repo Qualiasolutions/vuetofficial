@@ -5,11 +5,11 @@ import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 import EntityCalendarPage from '../../components/calendars/EntityCalendarPage';
 
 type CategoryCalendarScreenProps =
-  EntityTabScreenProps<'CategoryCalendarScreen'>;
+  ContentTabScreenProps<'CategoryCalendarScreen'>;
 
 export default function CategoryCalendarScreen({
   route,
@@ -18,12 +18,9 @@ export default function CategoryCalendarScreen({
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: allCategories } = useGetAllCategoriesQuery();
-  const { data: allEntities, isLoading } = useGetAllEntitiesQuery(
-    userDetails?.user_id || -1,
-    {
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: allEntities, isLoading } = useGetAllEntitiesQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
 
   useEntityTypeHeader(allCategories?.byId[route.params.categoryId].name || '');
 

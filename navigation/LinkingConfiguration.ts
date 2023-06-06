@@ -25,8 +25,8 @@ const linking: LinkingOptions<TabParamList> = {
           CreateUserInvite: 'create-user-invite'
         }
       },
-      EntityNavigator: {
-        path: 'entities',
+      ContentNavigator: {
+        path: 'content',
         screens: {
           Categories: 'categories-grid',
           CategoryList: 'category-list',
@@ -38,6 +38,14 @@ const linking: LinkingOptions<TabParamList> = {
           ChildEntitiesCalendarScreen: 'child-entities-calendar-screen',
           HolidayList: 'holiday-list',
           HolidayDetail: 'holiday-detail'
+        }
+      },
+      EntityNavigator: {
+        path: 'entity',
+        screens: {
+          Home: 'home',
+          Calendar: 'calendar',
+          References: 'references'
         }
       },
       AddTask: 'add-task',

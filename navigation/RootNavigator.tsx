@@ -26,7 +26,7 @@ import {
   PrimaryText
 } from 'components/molecules/TextComponents';
 import setupPushNotifications from 'hooks/setupPushNotifications';
-import { EntityNavigator } from './EntityNavigator';
+import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
 import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
@@ -90,7 +90,7 @@ export function BottomTabNavigator() {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
-  useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+  useGetAllEntitiesQuery(null as any, {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
@@ -133,8 +133,8 @@ export function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="EntityNavigator"
-        component={EntityNavigator}
+        name="ContentNavigator"
+        component={ContentNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

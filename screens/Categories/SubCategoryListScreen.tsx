@@ -5,7 +5,7 @@ import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
 import { useTranslation } from 'react-i18next';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 
 // EDUCATION_CAREER: [
 //   {
@@ -22,7 +22,7 @@ import { EntityTabScreenProps } from 'types/base';
 //   }
 // ],
 
-type SubCategoryListScreenProps = EntityTabScreenProps<'SubCategoryList'>;
+type SubCategoryListScreenProps = ContentTabScreenProps<'SubCategoryList'>;
 
 export default function SubCategoryListScreen({
   navigation,

@@ -21,93 +21,7 @@ export type TaskData = {
   date: string;
 }[];
 
-export type PeriodsProps = {
-  periods: {
-    title: string;
-    key: string;
-    data: TaskData;
-  }[];
-};
-export default function Periods({ periods }: PeriodsProps) {
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  const { data: allPeriods } = useGetAllPeriodsQuery('');
-  const [monthsBack, setMonthsBack] = useState(0);
-
-  const earliestDate = useMemo(() => {
-    const earliest = new Date();
-    earliest.setDate(0);
-    earliest.setMonth(earliest.getMonth() - monthsBack);
-    return earliest;
-  }, [monthsBack]);
-
-  const filteredPeriods = useMemo(() => {
-    for (const period of periods) {
-      if (getDateWithoutTimezone(period.data[0].date) < earliestDate) {
-        continue;
-      }
-      return periods.slice(periods.indexOf(period));
-    }
-    return [];
-  }, [periods, earliestDate]);
-
-  const styles = style();
-
-  if (!allPeriods) {
-    return <PaddedSpinner style={{ height: '100%', paddingTop: 100 }} />;
-  }
-
-  return (
-    <WhiteView style={{ height: '100%' }}>
-      {monthsBack < 24 && (
-        <Pressable
-          onPress={() => setMonthsBack(monthsBack + 6)}
-          style={styles.showOlderWrapper}
-        >
-          <AlmostBlackText
-            text={t('components.calendar.showOlderEvents')}
-            style={styles.showOlderText}
-          />
-        </Pressable>
-      )}
-      <SectionList
-        sections={filteredPeriods}
-        renderSectionHeader={({ section }) => (
-          <TransparentView style={styles.sectionHeader}>
-            <Text>{section.title}</Text>
-          </TransparentView>
-        )}
-        renderItem={({ item }) => (
-          <Pressable
-            style={styles.sectionItem}
-            onPress={() => {
-              (navigation.navigate as any)('EntityNavigator', {
-                screen: 'EntityScreen',
-                initial: false,
-                params: { entityId: allPeriods.byId[item.key].entity }
-              });
-            }}
-          >
-            <TransparentView style={styles.calendarContainer}>
-              <Feather name="calendar" color={'#fff'} size={15} />
-            </TransparentView>
-
-            <TransparentView>
-              <PrimaryText text={item.title} />
-              <BlackText text={item.message} />
-            </TransparentView>
-          </Pressable>
-        )}
-        ItemSeparatorComponent={() => (
-          <TransparentView style={styles.divider} />
-        )}
-        contentContainerStyle={{ paddingBottom: 400 }}
-      />
-    </WhiteView>
-  );
-}
-
-function style() {
+function useStyle() {
   return StyleSheet.create({
     sectionHeader: {
       backgroundColor: useThemeColor({}, 'almostWhite'),
@@ -140,4 +54,90 @@ function style() {
       fontSize: 16
     }
   });
+}
+
+export type PeriodsProps = {
+  periods: {
+    title: string;
+    key: string;
+    data: TaskData;
+  }[];
+};
+export default function Periods({ periods }: PeriodsProps) {
+  const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { data: allPeriods } = useGetAllPeriodsQuery('');
+  const [monthsBack, setMonthsBack] = useState(0);
+
+  const earliestDate = useMemo(() => {
+    const earliest = new Date();
+    earliest.setDate(0);
+    earliest.setMonth(earliest.getMonth() - monthsBack);
+    return earliest;
+  }, [monthsBack]);
+
+  const filteredPeriods = useMemo(() => {
+    for (const period of periods) {
+      if (getDateWithoutTimezone(period.data[0].date) < earliestDate) {
+        continue;
+      }
+      return periods.slice(periods.indexOf(period));
+    }
+    return [];
+  }, [periods, earliestDate]);
+
+  const styles = useStyle();
+
+  if (!allPeriods) {
+    return <PaddedSpinner style={{ height: '100%', paddingTop: 100 }} />;
+  }
+
+  return (
+    <WhiteView style={{ height: '100%' }}>
+      {monthsBack < 24 && (
+        <Pressable
+          onPress={() => setMonthsBack(monthsBack + 6)}
+          style={styles.showOlderWrapper}
+        >
+          <AlmostBlackText
+            text={t('components.calendar.showOlderEvents')}
+            style={styles.showOlderText}
+          />
+        </Pressable>
+      )}
+      <SectionList
+        sections={filteredPeriods}
+        renderSectionHeader={({ section }) => (
+          <TransparentView style={styles.sectionHeader}>
+            <Text>{section.title}</Text>
+          </TransparentView>
+        )}
+        renderItem={({ item }) => (
+          <Pressable
+            style={styles.sectionItem}
+            onPress={() => {
+              (navigation.navigate as any)('ContentNavigator', {
+                screen: 'EntityScreen',
+                initial: false,
+                params: { entityId: allPeriods.byId[item.key].entity }
+              });
+            }}
+          >
+            <TransparentView style={styles.calendarContainer}>
+              <Feather name="calendar" color={'#fff'} size={15} />
+            </TransparentView>
+
+            <TransparentView>
+              <PrimaryText text={item.title} />
+              <BlackText text={item.message} />
+            </TransparentView>
+          </Pressable>
+        )}
+        ItemSeparatorComponent={() => (
+          <TransparentView style={styles.divider} />
+        )}
+        contentContainerStyle={{ paddingBottom: 400 }}
+      />
+    </WhiteView>
+  );
 }

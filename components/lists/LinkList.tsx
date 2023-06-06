@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  EntityTabParamList,
+  ContentTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
@@ -32,7 +32,7 @@ export default function LinkList({ links, linkStyle }: Props) {
         navMethod={(link.navMethod || 'push') as 'navigate' | 'push'}
         toScreen={
           link.toScreen as
-            | keyof EntityTabParamList
+            | keyof ContentTabParamList
             | keyof RootTabParamList
             | keyof SettingsTabParamList
         }

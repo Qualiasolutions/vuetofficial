@@ -4,7 +4,7 @@ import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import React, { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
-  EntityTabParamList,
+  ContentTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
@@ -175,7 +175,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
 
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
-    | StackNavigationProp<EntityTabParamList>
+    | StackNavigationProp<ContentTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
 
@@ -186,7 +186,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
 

@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { EntityTabParamList } from 'types/base';
+import { ContentTabParamList } from 'types/base';
 
 import { useState } from 'react';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 export default function EditEntityScreen({
   navigation,
   route
-}: NativeStackScreenProps<EntityTabParamList, 'EditEntity'>) {
+}: NativeStackScreenProps<ContentTabParamList, 'EditEntity'>) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViewStyle, StyleSheet } from 'react-native';
 import {
-  EntityTabParamList,
+  ContentTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
@@ -16,7 +16,7 @@ type ListLinkProps = {
   text: string;
   toScreen:
     | keyof RootTabParamList
-    | keyof EntityTabParamList
+    | keyof ContentTabParamList
     | keyof SettingsTabParamList;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
@@ -32,7 +32,7 @@ export default function ListLink({
 }: ListLinkProps) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
-    | StackNavigationProp<EntityTabParamList>
+    | StackNavigationProp<ContentTabParamList>
     | StackNavigationProp<SettingsTabParamList>
   >();
   return (

@@ -4,7 +4,7 @@ import { useGetHolidaysQuery } from 'reduxStore/services/api/holidays';
 import { Holiday } from 'reduxStore/services/api/types';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { EntityTabParamList } from 'types/base';
+import { ContentTabParamList } from 'types/base';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import {
@@ -23,7 +23,7 @@ import { Pressable, SectionList, StyleSheet } from 'react-native';
 export default function HolidayDetailScreen({
   navigation,
   route
-}: NativeStackScreenProps<EntityTabParamList, 'HolidayDetail'>) {
+}: NativeStackScreenProps<ContentTabParamList, 'HolidayDetail'>) {
   const { countrycodes } = route?.params;
   let params = '';
 
@@ -45,7 +45,7 @@ export default function HolidayDetailScreen({
   const [monthsAhead, setMonthsAhead] = useState(12);
 
   const { data: userDetails } = useGetUserDetails();
-  const { data: allEntities } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
 

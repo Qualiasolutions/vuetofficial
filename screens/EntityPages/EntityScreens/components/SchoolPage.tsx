@@ -7,6 +7,18 @@ import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 
+const useStyle = function () {
+  return StyleSheet.create({
+    container: {
+      paddingTop: 10
+    },
+    name: {
+      fontSize: 26,
+      textAlign: 'center'
+    }
+  });
+};
+
 export default function SchoolScreen({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
 
@@ -15,12 +27,12 @@ export default function SchoolScreen({ entityId }: { entityId: number }) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
   const entityData = allEntities?.byId[entityId];
 
-  const styles = style();
+  const styles = useStyle();
 
   if (!entityData) {
     return <FullPageSpinner />;
@@ -50,15 +62,3 @@ export default function SchoolScreen({ entityId }: { entityId: number }) {
     </WhiteFullPageScrollView>
   );
 }
-
-const style = function () {
-  return StyleSheet.create({
-    container: {
-      paddingTop: 10
-    },
-    name: {
-      fontSize: 26,
-      textAlign: 'center'
-    }
-  });
-};

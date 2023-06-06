@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 import EntityCalendarPage from '../../components/calendars/EntityCalendarPage';
 
 type EntityTypesCalendarScreenProps =
-  EntityTabScreenProps<'EntityTypesCalendarScreen'>;
+  ContentTabScreenProps<'EntityTypesCalendarScreen'>;
 
 export default function EntityTypesCalendarScreen({
   route,
@@ -16,12 +16,9 @@ export default function EntityTypesCalendarScreen({
 }: EntityTypesCalendarScreenProps) {
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: allEntities, isLoading } = useGetAllEntitiesQuery(
-    userDetails?.user_id || -1,
-    {
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: allEntities, isLoading } = useGetAllEntitiesQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
 
   if (isLoading || !allEntities) {
     return <FullPageSpinner />;

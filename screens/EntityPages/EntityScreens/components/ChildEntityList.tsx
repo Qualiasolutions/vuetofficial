@@ -44,7 +44,7 @@ export default function ChildEntityList({
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.user_id
   });
   const entityData = allEntities?.byId[entityId];
@@ -116,8 +116,8 @@ export default function ChildEntityList({
         text={t('misc.currentlyNoEntities', {
           entityType: entityTypes
             ? entityTypes
-              .map((entityType) => t(`entityTypes.${entityType}`))
-              .join(' or ')
+                .map((entityType) => t(`entityTypes.${entityType}`))
+                .join(' or ')
             : ''
         })}
         style={styles.noEntitiesText}

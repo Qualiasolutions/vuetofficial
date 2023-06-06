@@ -10,7 +10,7 @@ import { Text, useThemeColor, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,7 @@ const categoriesImages: { [key in CategoryGroupName]: ImageSourcePropType } = {
   TRANSPORT: require('assets/images/categories/transport.png')
 };
 
-type CategoriesTypes = EntityTabScreenProps<'Categories'>;
+type CategoriesTypes = ContentTabScreenProps<'Categories'>;
 
 const styles = StyleSheet.create({
   container: {

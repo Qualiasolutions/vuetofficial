@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { EntityTabParamList } from 'types/base';
+import { ContentTabParamList } from 'types/base';
 import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import useEntityHeader from '../../../headers/hooks/useEntityHeader';
@@ -11,14 +11,14 @@ import { EntityResponseType } from 'types/entities';
 export default function ChildEntitiesScreen({
   navigation,
   route
-}: NativeStackScreenProps<EntityTabParamList, 'ChildEntitiesScreen'>) {
+}: NativeStackScreenProps<ContentTabParamList, 'ChildEntitiesScreen'>) {
   const { data: userDetails } = useGetUserDetails();
 
   const {
     data: allEntities,
     isLoading: isLoadingEntities,
     error: entitiesError
-  } = useGetAllEntitiesQuery(userDetails?.id || -1);
+  } = useGetAllEntitiesQuery();
 
   const entityIdRaw = route.params.entityId;
   const entityId =

@@ -54,7 +54,7 @@ export default function TagSelector({ value, onChange }: Props) {
     });
 
   const { data: allEntities, isLoading: isLoadingAllEntities } =
-    useGetAllEntitiesQuery(userDetails?.id || -1, {
+    useGetAllEntitiesQuery(null as any, {
       skip: !userDetails?.id
     });
 

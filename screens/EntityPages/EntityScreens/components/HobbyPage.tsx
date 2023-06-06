@@ -19,7 +19,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
     data: allEntities,
     isLoading: isLoadingEntities,
     error: entitiesError
-  } = useGetAllEntitiesQuery(userDetails?.id || -1, {
+  } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
 

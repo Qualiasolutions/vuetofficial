@@ -1,9 +1,9 @@
 import React from 'react';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 import EntityListPage from '../../components/lists/EntityListPage';
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 
-type EntityListScreenProps = EntityTabScreenProps<'EntityList'>;
+type EntityListScreenProps = ContentTabScreenProps<'EntityList'>;
 
 export default function EntityListScreen({ route }: EntityListScreenProps) {
   useEntityTypeHeader(route.params.entityTypeName);

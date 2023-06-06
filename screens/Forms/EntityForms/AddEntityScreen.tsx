@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { EntityTabParamList } from 'types/base';
+import { ContentTabParamList } from 'types/base';
 import AddEntityForm from 'components/forms/AddEntityForm';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 export default function AddEntityScreen({
   route,
   navigation
-}: NativeStackScreenProps<EntityTabParamList, 'AddEntity'>) {
+}: NativeStackScreenProps<ContentTabParamList, 'AddEntity'>) {
   const parentId = route.params.parentId;
   const rawEntityTypes = route.params.entityTypes;
   const parsedParentId = parentId

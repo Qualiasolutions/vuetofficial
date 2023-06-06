@@ -29,11 +29,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const navigation = useNavigation();
 
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
 
   const entityForms: { [key in EntityTypeName]?: FormFieldTypes } = forms(true);
 

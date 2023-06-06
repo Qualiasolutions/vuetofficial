@@ -77,6 +77,16 @@ export type SettingsTabParamList = {
 export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
   NativeStackScreenProps<SettingsTabParamList, Screen>;
 
+// Settings Stack
+export type EntityTabParamList = {
+  Calendar: undefined;
+  References: undefined;
+  Home: undefined;
+};
+
+export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
+  NativeStackScreenProps<EntityTabParamList, Screen>;
+
 // MyAccount Stack
 export type MyAccountTabParamList = {
   MyAccount: undefined;
@@ -89,8 +99,8 @@ export type MyAccountTabScreenProps<
   Screen extends keyof MyAccountTabParamList
 > = NativeStackScreenProps<MyAccountTabParamList, Screen>;
 
-// Entities Stack
-export type EntityTabParamList = {
+// Content Stack
+export type ContentTabParamList = {
   Categories: { initial: boolean; screen: string };
   CategoryPreferences: { categoryId: number };
   CategoryList: { categoryId: number };
@@ -146,8 +156,8 @@ export type SideNavigatorTabParamList = {
   Contact: undefined;
 };
 
-export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
-  NativeStackScreenProps<EntityTabParamList, Screen>;
+export type ContentTabScreenProps<Screen extends keyof ContentTabParamList> =
+  NativeStackScreenProps<ContentTabParamList, Screen>;
 
 // Root Stack
 export type RootStackParamList = {
@@ -157,7 +167,7 @@ export type RootStackParamList = {
 export type RootTabParamList = {
   Home: undefined;
   SettingsNavigator: undefined;
-  EntityNavigator: undefined;
+  ContentNavigator: undefined;
   SideNavigator: undefined;
   AddTask: { entityId: number | string };
   PlusButton: undefined;
@@ -179,9 +189,10 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   >;
 
 export type TabParamList = RootTabParamList &
-  EntityTabParamList &
+  ContentTabParamList &
   UnauthorisedTabParamList &
   SetupTabParamList &
   FamilyRequestTabParamList &
   SettingsTabParamList &
-  MyAccountTabParamList;
+  MyAccountTabParamList &
+  EntityTabParamList;

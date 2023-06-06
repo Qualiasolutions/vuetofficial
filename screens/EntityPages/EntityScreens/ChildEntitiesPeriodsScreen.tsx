@@ -8,7 +8,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GenericError from 'components/molecules/GenericError';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { EntityTabParamList } from 'types/base';
+import { ContentTabParamList } from 'types/base';
 import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { PaddedSpinner } from 'components/molecules/Spinners';
@@ -18,14 +18,14 @@ import EntityPeriodsPage from '../../../components/calendars/EntityPeriodsPage';
 export default function ChildEntitiesPeriodsScreen({
   navigation,
   route
-}: NativeStackScreenProps<EntityTabParamList, 'ChildEntitiesPeriodsScreen'>) {
+}: NativeStackScreenProps<ContentTabParamList, 'ChildEntitiesPeriodsScreen'>) {
   const { data: userDetails } = useGetUserDetails();
 
   const {
     data: allEntities,
     isLoading: isLoadingEntities,
     error: entitiesError
-  } = useGetAllEntitiesQuery(userDetails?.id || -1);
+  } = useGetAllEntitiesQuery();
 
   const entityIdRaw = route.params.entityId;
   const entityId =

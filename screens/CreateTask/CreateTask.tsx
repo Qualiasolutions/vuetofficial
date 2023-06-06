@@ -33,7 +33,7 @@ export default function CreateTask({
   const username = useSelector(selectUsername);
   const { data: userDetails } = useGetUserDetailsQuery(username);
   const { data: Categories, isLoading, error } = useGetAllCategoriesQuery();
-  const { data: Entities } = useGetAllEntitiesQuery(userDetails?.user_id || -1);
+  const { data: Entities } = useGetAllEntitiesQuery();
 
   useEffect(() => {
     navigation.addListener('focus', () => {

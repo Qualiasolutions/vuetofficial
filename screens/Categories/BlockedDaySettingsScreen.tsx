@@ -17,11 +17,11 @@ import {
   useDeleteBlockedCategoryMutation,
   useGetBlockedCategoriesQuery
 } from 'reduxStore/services/api/settings';
-import { EntityTabScreenProps } from 'types/base';
+import { ContentTabScreenProps } from 'types/base';
 import { BlockedCategoryType } from 'types/settings';
 
 type BlockedDaysSettingsScreenProps =
-  EntityTabScreenProps<'BlockedDaysSettings'>;
+  ContentTabScreenProps<'BlockedDaysSettings'>;
 
 const styles = StyleSheet.create({
   checkboxListContainer: { marginBottom: 30 },
