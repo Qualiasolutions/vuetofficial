@@ -1,6 +1,20 @@
 import { useThemeColor } from 'components/Themed';
-import { GestureResponderEvent, Pressable, StyleSheet } from 'react-native';
+import { GestureResponderEvent, StyleSheet } from 'react-native';
+import SafePressable from './SafePressable';
 import { BlackText } from './TextComponents';
+
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: 10,
+    padding: 15,
+    textAlign: 'center',
+    alignItems: 'center'
+  },
+  linkButton: {
+    textAlign: 'center',
+    alignItems: 'center'
+  }
+});
 
 export function Button(props: {
   onPress: (event: GestureResponderEvent) => void;
@@ -15,7 +29,7 @@ export function Button(props: {
   const color = useThemeColor({}, 'text');
 
   return (
-    <Pressable
+    <SafePressable
       style={({ pressed }) => [
         {
           backgroundColor:
@@ -29,7 +43,7 @@ export function Button(props: {
       {...otherProps}
     >
       <BlackText style={[{ color: textColor }]} text={title} bold={true} />
-    </Pressable>
+    </SafePressable>
   );
 }
 
@@ -43,25 +57,12 @@ export function LinkButton(props: {
   const textColor = useThemeColor({}, 'secondary');
 
   return (
-    <Pressable
+    <SafePressable
       style={[styles.linkButton, style]}
       disabled={disabled}
       {...otherProps}
     >
       <BlackText style={[{ color: textColor }]} text={title} bold={true} />
-    </Pressable>
+    </SafePressable>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 10,
-    padding: 15,
-    textAlign: 'center',
-    alignItems: 'center'
-  },
-  linkButton: {
-    textAlign: 'center',
-    alignItems: 'center'
-  }
-});

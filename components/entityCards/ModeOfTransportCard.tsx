@@ -8,6 +8,7 @@ import {
 import { EntityResponseType } from 'types/entities';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function ModeOfTransportCard({
   entity
@@ -18,7 +19,7 @@ export default function ModeOfTransportCard({
   const blackColor = useThemeColor({}, 'black');
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation as any).push('EditEntity', { entityId: entity.id });
       }}
@@ -29,7 +30,7 @@ export default function ModeOfTransportCard({
           text={`${entity.start_location} -> ${entity.end_location}`}
         />
       </WhiteView>
-    </Pressable>
+    </SafePressable>
   );
 }
 

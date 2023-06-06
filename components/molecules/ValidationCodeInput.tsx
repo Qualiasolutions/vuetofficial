@@ -18,6 +18,7 @@ import {
 } from 'react-native-confirmation-code-field';
 import { PrimaryText } from './TextComponents';
 import { TransparentContainerView } from './ViewComponents';
+import SafePressable from './SafePressable';
 
 const styles = StyleSheet.create({
   confirmButton: {
@@ -113,7 +114,7 @@ export default function ValidationCodeInput({
         style={styles.confirmButton}
       />
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
-      <Pressable
+      <SafePressable
         onPress={() => {
           createPhoneValidation({
             phone_number: phoneNumber
@@ -121,7 +122,7 @@ export default function ValidationCodeInput({
         }}
       >
         <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
-      </Pressable>
+      </SafePressable>
     </TransparentContainerView>
   );
 }

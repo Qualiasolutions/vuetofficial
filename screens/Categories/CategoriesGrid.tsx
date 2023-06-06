@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
+import SafePressable from 'components/molecules/SafePressable';
 
 type CategoryGroupName =
   | 'PETS'
@@ -140,7 +141,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       ) : null;
 
       return (
-        <Pressable
+        <SafePressable
           onPress={() => {
             if (categoryGroup.length === 1) {
               navigation.navigate('CategoryList', {
@@ -170,7 +171,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
               {isPremiumTag}
             </View>
           </ImageBackground>
-        </Pressable>
+        </SafePressable>
       );
     }
   );

@@ -10,6 +10,7 @@ import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
 import { parsePresignedUrl } from 'utils/urls';
 import { Feather } from '@expo/vector-icons';
+import SafePressable from 'components/molecules/SafePressable';
 
 type Props = {
   entity: EntityResponseType;
@@ -58,7 +59,7 @@ export default function EntityWithDateAndImageCard({
   const imageSource = parsePresignedUrl(entity.presigned_image_url);
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation as any).push('EntityScreen', { entityId: entity.id });
       }}
@@ -93,6 +94,6 @@ export default function EntityWithDateAndImageCard({
           />
         </TransparentView>
       </WhiteBox>
-    </Pressable>
+    </SafePressable>
   );
 }

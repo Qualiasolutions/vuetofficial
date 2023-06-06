@@ -31,6 +31,7 @@ import {
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import SafePressable from 'components/molecules/SafePressable';
 
 const LoginScreen = ({
   navigation
@@ -115,13 +116,13 @@ const LoginScreen = ({
         />
       )}
       <Text>{t('screens.logIn.dontHaveAccount')}</Text>
-      <Pressable
+      <SafePressable
         onPress={() => {
           navigation.navigate('Signup');
         }}
       >
         <PrimaryText text={t('screens.logIn.signUp')} bold={true} />
-      </Pressable>
+      </SafePressable>
     </AlmostWhiteContainerView>
   );
 };

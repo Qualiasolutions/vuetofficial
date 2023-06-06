@@ -12,6 +12,7 @@ import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/componen
 import { ParsedPeriod } from 'types/periods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
+import SafePressable from './SafePressable';
 
 export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };
@@ -108,7 +109,7 @@ export default function CalendarView({
         dayComponent={({ date }) => {
           if (date) {
             return (
-              <Pressable
+              <SafePressable
                 onPress={() => {
                   updateDate(date.dateString);
                   setForcedInitialDate(date.dateString);
@@ -139,7 +140,7 @@ export default function CalendarView({
                       ))}
                   </TransparentView>
                 </ScrollView>
-              </Pressable>
+              </SafePressable>
             );
           }
           return null;

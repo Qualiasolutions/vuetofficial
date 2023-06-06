@@ -12,7 +12,6 @@ import {
   getDateStringFromDateObject
 } from 'utils/datesAndTimes';
 
-import { ParsedPeriod } from 'types/periods';
 import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
@@ -23,7 +22,6 @@ import {
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import Task, { MinimalScheduledTask } from './Task';
-import OneDayPeriod from './OneDayPeriod';
 import { ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
@@ -40,25 +38,18 @@ const styles = StyleSheet.create({
   }
 });
 
-type ItemType = 'TASK' | 'PERIOD';
-type ItemData = (ParsedPeriod | MinimalScheduledTask) & { type: ItemType };
+type ItemType = 'TASK';
+type ItemData = MinimalScheduledTask & { type: ItemType };
 const isTask = (
   item: ItemData
 ): item is MinimalScheduledTask & { type: 'TASK' } => {
   return item.type === 'TASK';
 };
-const isPeriod = (
-  item: ItemData
-): item is ParsedPeriod & { type: 'PERIOD' } => {
-  return item.type === 'PERIOD';
-};
+
 const ListItem = React.memo(
   ({ data, date }: { data: ItemData; date: string }) => {
     if (isTask(data)) {
       return <Task task={data} date={date} />;
-    }
-    if (isPeriod(data)) {
-      return <OneDayPeriod period={data} />;
     }
     return null;
   }
@@ -68,11 +59,9 @@ const SECTION_HEADER_HEIGHT = 40;
 
 function Calendar({
   tasks,
-  periods,
   onChangeFirstDate
 }: {
   tasks: { [date: string]: MinimalScheduledTask[] };
-  periods: ParsedPeriod[];
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
 }) {
@@ -97,7 +86,7 @@ function Calendar({
     [onChangeFirstDate]
   );
 
-  const noTasks = Object.keys(tasks).length === 0 && periods.length === 0;
+  const noTasks = Object.keys(tasks).length === 0;
 
   useEffect(() => {
     if (monthEnforcedDate && sectionListRef?.current) {
@@ -160,10 +149,6 @@ function Calendar({
             ...task,
             type: 'TASK' as ItemType
           }))
-          // ...allScheduledTasks.byDate[date].periods.map((period) => ({
-          //   ...period,
-          //   type: 'PERIOD' as ItemType
-          // }))
         ]
       });
     }
@@ -205,9 +190,6 @@ function Calendar({
   const keyExtractor = useCallback((item: ItemData) => {
     if (isTask(item)) {
       return `${item.id}_${item.recurrence_index}`;
-    }
-    if (isPeriod(item)) {
-      return `${item.id}`;
     }
     return '';
   }, []);
@@ -253,6 +235,8 @@ function Calendar({
     <>
       <SectionList
         sections={shownSections}
+        initialNumToRender={10}
+        removeClippedSubviews={true}
         renderSectionHeader={({ section }) => {
           return (
             <AlmostWhiteView

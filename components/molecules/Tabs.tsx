@@ -1,7 +1,8 @@
 import React from 'react';
 import { Text, useThemeColor } from 'components/Themed';
-import { FlatList, Pressable, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { TransparentView, WhiteView } from './ViewComponents';
+import SafePressable from './SafePressable';
 
 function useStyle() {
   return StyleSheet.create({
@@ -80,7 +81,7 @@ export default function Tabs({ tabs }: TabsProps) {
             keyExtractor={(item, index) => `${index}`}
             renderItem={({ item, index }) => {
               return (
-                <Pressable
+                <SafePressable
                   onPress={() => setSelectedTabIndex(index)}
                   style={styles.tabContainer}
                 >
@@ -93,7 +94,7 @@ export default function Tabs({ tabs }: TabsProps) {
                   >
                     <Text>{item.title}</Text>
                   </TransparentView>
-                </Pressable>
+                </SafePressable>
               );
             }}
             horizontal

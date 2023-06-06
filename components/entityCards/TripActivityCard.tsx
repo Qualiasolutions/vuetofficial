@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import {
   AlmostBlackText,
@@ -9,33 +9,7 @@ import { EntityResponseType } from 'types/entities';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { getLongDateFromDateObject } from 'utils/datesAndTimes';
-
-export default function TripActivityCard({
-  entity
-}: {
-  entity: EntityResponseType;
-}) {
-  const navigation = useNavigation();
-  const blackColor = useThemeColor({}, 'black');
-
-  const startDateString = getLongDateFromDateObject(
-    new Date(entity?.start_datetime),
-    false
-  );
-
-  return (
-    <Pressable
-      onPress={() => {
-        (navigation as any).push('EditEntity', { entityId: entity.id });
-      }}
-    >
-      <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
-        <BlackText text={`${entity.name}`} style={styles.listEntryText} />
-        <AlmostBlackText text={`${startDateString}`} />
-      </WhiteView>
-    </Pressable>
-  );
-}
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -54,3 +28,30 @@ const styles = StyleSheet.create({
     fontSize: 20
   }
 });
+
+export default function TripActivityCard({
+  entity
+}: {
+  entity: EntityResponseType;
+}) {
+  const navigation = useNavigation();
+  const blackColor = useThemeColor({}, 'black');
+
+  const startDateString = getLongDateFromDateObject(
+    new Date(entity?.start_datetime),
+    false
+  );
+
+  return (
+    <SafePressable
+      onPress={() => {
+        (navigation as any).push('EditEntity', { entityId: entity.id });
+      }}
+    >
+      <WhiteView style={[styles.listEntry, { borderColor: blackColor }]}>
+        <BlackText text={`${entity.name}`} style={styles.listEntryText} />
+        <AlmostBlackText text={`${startDateString}`} />
+      </WhiteView>
+    </SafePressable>
+  );
+}

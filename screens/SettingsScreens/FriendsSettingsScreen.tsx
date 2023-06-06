@@ -24,6 +24,7 @@ import {
 } from 'reduxStore/services/api/friendships';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import SafePressable from 'components/molecules/SafePressable';
 
 const FriendSettingsScreen = ({
   navigation
@@ -84,7 +85,7 @@ const FriendSettingsScreen = ({
           }
         />
         <TransparentView style={styles.listRight}>
-          <Pressable
+          <SafePressable
             onPress={() => {
               const isUserInvite = (user: any): user is UserInviteResponse =>
                 isPending;
@@ -99,7 +100,7 @@ const FriendSettingsScreen = ({
               style={styles.editIcon}
               source={require('../../assets/images/icons/remove-circle.png')}
             />
-          </Pressable>
+          </SafePressable>
         </TransparentView>
       </TransparentView>
     );
@@ -152,7 +153,7 @@ const FriendSettingsScreen = ({
           style={styles.friendsHeaderText}
           text={t('screens.friendSettings.friends')}
         />
-        <Pressable
+        <SafePressable
           onPress={() => {
             navigation.navigate('CreateUserInvite', {
               familyRequest: false
@@ -163,7 +164,7 @@ const FriendSettingsScreen = ({
             source={require('assets/images/icons/plus.png')}
             style={styles.plusIcon}
           />
-        </Pressable>
+        </SafePressable>
       </AlmostWhiteView>
       <WhiteView style={styles.listContainer}>
         {friendsList}

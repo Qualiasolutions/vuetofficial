@@ -1,10 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
+import entitiesApi from 'reduxStore/services/api/entities';
 import { EntireState } from 'reduxStore/types';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import { CalendarState } from './types';
+import { EntityTypeName } from 'types/entities';
 
 export const selectCalendarState = (
   state: EntireState
@@ -81,6 +83,110 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
     return formatted;
   }
 );
+
+export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    (scheduledTasks) => {
+      if (!scheduledTasks.data) {
+        return {};
+      }
+
+      const filteredTasks =
+        scheduledTasks.data.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              scheduledTasks.data?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !entities ||
+              entities.length === 0 ||
+              task.entities.some((ent) => entities?.includes(ent))
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    (scheduledTasks, allEntities) => {
+      const entitiesData = allEntities.data;
+      const taskData = scheduledTasks.data;
+      if (!taskData || !entitiesData) {
+        return {};
+      }
+
+      const filteredTasks =
+        taskData.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              taskData?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !categories ||
+              categories.length === 0 ||
+              task.entities.some((ent) =>
+                categories.some(
+                  (cat) => entitiesData.byId[ent].category === cat
+                )
+              )
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectScheduledTaskIdsByEntityTypes = (
+  entityTypes: EntityTypeName[]
+) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    (scheduledTasks, allEntities) => {
+      const entitiesData = allEntities.data;
+      const taskData = scheduledTasks.data;
+      if (!taskData || !entitiesData) {
+        return {};
+      }
+
+      const filteredTasks =
+        taskData.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              taskData?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !entityTypes ||
+              entityTypes.length === 0 ||
+              task.entities.some((ent) =>
+                entityTypes.includes(entitiesData.byId[ent].resourcetype)
+              )
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
 
 export const selectIsComplete = ({
   id,

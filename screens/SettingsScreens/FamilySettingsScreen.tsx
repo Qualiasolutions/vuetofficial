@@ -137,7 +137,7 @@ const FamilySettingsScreen = ({
         userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
       />
       <TransparentView style={styles.listRight}>
-        <Pressable
+        <SafePressable
           onPress={() => {
             const isUserInvite = (usr: any): usr is UserInviteResponse =>
               isPending;
@@ -152,7 +152,7 @@ const FamilySettingsScreen = ({
             style={styles.editIcon}
             source={require('../../assets/images/icons/remove-circle.png')}
           />
-        </Pressable>
+        </SafePressable>
       </TransparentView>
     </TransparentView>
   );
@@ -202,7 +202,7 @@ const FamilySettingsScreen = ({
           style={styles.familyHeaderText}
           text={t('screens.familySettings.familyMembers')}
         />
-        <Pressable
+        <SafePressable
           onPress={() => {
             navigation.navigate('CreateUserInvite', {
               familyRequest: true
@@ -213,7 +213,7 @@ const FamilySettingsScreen = ({
             source={require('assets/images/icons/plus.png')}
             style={styles.plusIcon}
           />
-        </Pressable>
+        </SafePressable>
       </AlmostWhiteView>
       <WhiteView style={styles.listContainer}>
         {familyMemberList}

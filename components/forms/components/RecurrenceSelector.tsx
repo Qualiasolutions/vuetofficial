@@ -1,5 +1,6 @@
 import InputWithLabel from 'components/molecules/InputWithLabel';
 import { Modal } from 'components/molecules/Modals';
+import SafePressable from 'components/molecules/SafePressable';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import {
   TransparentView,
@@ -32,16 +33,16 @@ const recurrenceToName = (
   const untilString = latestOccurrenceString
     ? reverse
       ? `${t(
-        'components.recurrenceSelector.from'
-      ).toLowerCase()} ${latestOccurrenceString}`
+          'components.recurrenceSelector.from'
+        ).toLowerCase()} ${latestOccurrenceString}`
       : `${t(
-        'components.recurrenceSelector.until'
-      ).toLowerCase()} ${latestOccurrenceString}`
+          'components.recurrenceSelector.until'
+        ).toLowerCase()} ${latestOccurrenceString}`
     : reverse
-      ? `${t('components.recurrenceSelector.from').toLowerCase()} ${t(
+    ? `${t('components.recurrenceSelector.from').toLowerCase()} ${t(
         'components.recurrenceSelector.now'
       ).toLowerCase()}`
-      : t('components.recurrenceSelector.forever').toLowerCase();
+    : t('components.recurrenceSelector.forever').toLowerCase();
 
   if (['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'WEEKDAILY'].includes(type)) {
     const typeMap: { [key in RecurrenceType]: string } = {
@@ -366,13 +367,13 @@ const RecurrenceForm = ({
           {valueString || t('common.none')}
         </Text>
         {valueString && (
-          <Pressable
+          <SafePressable
             onPress={() => {
               onChange(null);
             }}
           >
             <PrimaryText text={t('common.clear')} />
-          </Pressable>
+          </SafePressable>
         )}
       </TransparentView>
     </TransparentView>
@@ -401,7 +402,7 @@ export default function RecurrenceSelector({
 
   return (
     <TransparentView>
-      <Pressable
+      <SafePressable
         onPress={() => {
           if (!disabled) {
             setEditing(true);
@@ -409,7 +410,7 @@ export default function RecurrenceSelector({
         }}
       >
         <Text>{valueString}</Text>
-      </Pressable>
+      </SafePressable>
       <Modal
         visible={editing}
         onRequestClose={() => setEditing(false)}

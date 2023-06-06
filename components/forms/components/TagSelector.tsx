@@ -1,5 +1,6 @@
 import Checkbox from 'components/molecules/Checkbox';
 import { ListingModal } from 'components/molecules/Modals';
+import SafePressable from 'components/molecules/SafePressable';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
@@ -82,7 +83,7 @@ export default function TagSelector({ value, onChange }: Props) {
 
   return (
     <TransparentView>
-      <Pressable onPress={() => setOpen(true)}>
+      <SafePressable onPress={() => setOpen(true)}>
         {value.entities.length > 0 ? (
           value.entities.map((entityId) => (
             <Text key={entityId}>{allEntities.byId[entityId].name}</Text>
@@ -90,7 +91,7 @@ export default function TagSelector({ value, onChange }: Props) {
         ) : (
           <Text>ADD ENTITIES</Text>
         )}
-      </Pressable>
+      </SafePressable>
       <ListingModal
         visible={open}
         data={preparedData}

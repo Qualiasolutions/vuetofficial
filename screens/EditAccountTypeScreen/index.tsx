@@ -1,4 +1,5 @@
 import { Button } from 'components/molecules/ButtonComponents';
+import SafePressable from 'components/molecules/SafePressable';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   PageSubtitle,
@@ -35,7 +36,7 @@ export function EditAccountTypeScreen() {
           />
           <PageSubtitle text={`${t('screens.editAccountType.renewsOn')} xxx`} />
           <PageSubtitle text="..." />
-          <Pressable
+          <SafePressable
             onPress={() => {
               updateUserDetails({
                 user_id: userDetails.id,
@@ -44,7 +45,7 @@ export function EditAccountTypeScreen() {
             }}
           >
             <PrimaryText text={t('screens.editAccountType.changePlan')} />
-          </Pressable>
+          </SafePressable>
         </TransparentView>
       ) : (
         <TransparentView>

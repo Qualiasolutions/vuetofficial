@@ -4,6 +4,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
 import { Pressable, StyleSheet } from 'react-native';
 import { Image } from 'components/molecules/ImageComponents';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -25,7 +26,7 @@ const EditPressable: React.ElementType = ({ route, navigation }) => {
   const backgroundColor = useThemeColor({}, 'lightPrimary');
   return (
     <TransparentView style={styles.wrapper}>
-      <Pressable
+      <SafePressable
         onPress={() =>
           navigation.navigate('EditEntity', { entityId: route.params.entityId })
         }
@@ -35,7 +36,7 @@ const EditPressable: React.ElementType = ({ route, navigation }) => {
           source={require('assets/images/edit.png')}
           style={styles.editImage}
         />
-      </Pressable>
+      </SafePressable>
     </TransparentView>
   );
 };
@@ -48,9 +49,9 @@ export const headerRightMapping = {
     holidays: ({ route, navigation }) => {
       const { t } = useTranslation();
       return (
-        <Pressable onPress={() => navigation.navigate('HolidayList')}>
+        <SafePressable onPress={() => navigation.navigate('HolidayList')}>
           <WhiteText text={t('misc.editCountryList')} />
-        </Pressable>
+        </SafePressable>
       );
     },
     default: () => null

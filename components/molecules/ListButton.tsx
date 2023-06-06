@@ -1,13 +1,22 @@
 import React from 'react';
-import { Pressable, StyleSheet, ViewStyle } from 'react-native';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { BlackText } from 'components/molecules/TextComponents';
 import { Feather } from '@expo/vector-icons';
 import { elevation } from 'styles/elevation';
 import { useThemeColor } from 'components/Themed';
+import SafePressable from './SafePressable';
+
+const styles = StyleSheet.create({
+  listEntry: {
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  listEntryText: {
+    fontSize: 18
+  }
+});
 
 type ListButtonProps = {
   text: string;
@@ -25,7 +34,7 @@ export default function ListButton({
   const whiteColor = useThemeColor({}, 'white');
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
   return (
-    <Pressable
+    <SafePressable
       onPress={onPress}
       style={({ pressed }) => [
         styles.listEntry,
@@ -38,18 +47,6 @@ export default function ListButton({
     >
       <BlackText text={text} style={styles.listEntryText} />
       {iconName && <Feather name={iconName} size={25} />}
-    </Pressable>
+    </SafePressable>
   );
 }
-
-const styles = StyleSheet.create({
-  listEntry: {
-    padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  listEntryText: {
-    fontSize: 18
-  }
-});

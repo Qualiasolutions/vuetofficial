@@ -3,7 +3,7 @@ import {
   LightBlackText
 } from 'components/molecules/TextComponents';
 import { WhiteBox } from 'components/molecules/ViewComponents';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   getDateWithoutTimezone,
   getLongDateFromDateObject
@@ -11,6 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function SchoolBreakCard({
   entity
@@ -38,7 +39,7 @@ export default function SchoolBreakCard({
   );
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation as any).push('EditEntity', { entityId: entity.id });
       }}
@@ -52,6 +53,6 @@ export default function SchoolBreakCard({
           }`}
         />
       </WhiteBox>
-    </Pressable>
+    </SafePressable>
   );
 }

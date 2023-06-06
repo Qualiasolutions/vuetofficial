@@ -25,6 +25,7 @@ import { Modal } from 'components/molecules/Modals';
 import { useCallback, useState } from 'react';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function EventScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
@@ -138,13 +139,13 @@ export default function EventScreen({ entityId }: { entityId: number }) {
             onChangeText={setItemName}
             placeholder={t('common.addTitle')}
           />
-          <Pressable
+          <SafePressable
             disabled={itemName == ''}
             onPress={onAddNew}
             style={styles.addNewButton}
           >
             <WhiteText text={t('common.save')} />
-          </Pressable>
+          </SafePressable>
         </TransparentView>
       </Modal>
     </WhiteFullPageScrollView>

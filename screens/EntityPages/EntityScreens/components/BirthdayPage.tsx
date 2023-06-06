@@ -148,13 +148,13 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
             onChangeText={setItemName}
             placeholder={t('common.addTitle')}
           />
-          <Pressable
+          <SafePressable
             disabled={itemName == ''}
             onPress={onAddNew}
             style={styles.addNewButton}
           >
             <WhiteText text={t('common.save')} />
-          </Pressable>
+          </SafePressable>
         </TransparentView>
       </Modal>
     </WhiteFullPageScrollView>

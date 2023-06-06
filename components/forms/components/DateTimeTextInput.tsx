@@ -1,3 +1,4 @@
+import SafePressable from 'components/molecules/SafePressable';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { TextInput, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
@@ -33,7 +34,7 @@ export default function DateTimeTextInput({
 
   return (
     <TransparentView style={containerStyle}>
-      <Pressable
+      <SafePressable
         onPress={() => {
           if (!disabled) setIsDatePickerVisible(true);
         }}
@@ -54,7 +55,7 @@ export default function DateTimeTextInput({
             placeholder={placeholder || (Date ? 'DD/MM/YYYY' : '')}
           />
         </TransparentView>
-      </Pressable>
+      </SafePressable>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode={Date ? 'date' : 'datetime'}

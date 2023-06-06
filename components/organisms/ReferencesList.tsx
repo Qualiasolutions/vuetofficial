@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   useCreateReferenceMutation,
   useGetAllReferencesQuery
@@ -103,7 +104,7 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
   }
 
   const refViews = references
-    .sort((a, b) => a.id > b.id)
+    .sort((a, b) => (a.id > b.id ? 1 : -1))
     .map((ref) => (
       <ReferenceItem name={ref.name} value={ref.value} key={ref.id} />
     ));
@@ -117,16 +118,29 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
   );
 };
 
-export default function ReferencesList({ entities }: { entities?: number[] }) {
+export default function ReferencesList({
+  entities,
+  categories
+}: {
+  entities?: number[];
+  categories?: number[];
+}) {
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
   const { data: allReferences, isLoading: isLoadingReferences } =
     useGetAllReferencesQuery();
 
-  if (isLoadingReferences || !allReferences) {
+  if (isLoadingReferences || !allReferences || !allEntities) {
     return <PaddedSpinner />;
   }
 
-  const entitiesToShow: number[] =
+  let entitiesToShow: number[] =
     entities || Object.keys(allReferences.byEntity).map((id) => parseInt(id));
+
+  if (categories) {
+    entitiesToShow = entitiesToShow.filter((ent) =>
+      categories.includes(allEntities.byId[ent].category)
+    );
+  }
 
   const entityViews = entitiesToShow.map((entityId) => (
     <EntityReferences entityId={entityId} key={entityId} />

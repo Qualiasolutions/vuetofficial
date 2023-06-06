@@ -3,11 +3,12 @@ import {
   LightBlackText
 } from 'components/molecules/TextComponents';
 import { WhiteBox } from 'components/molecules/ViewComponents';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function AnniversaryCard({
   entity
@@ -31,7 +32,7 @@ export default function AnniversaryCard({
   const navigation = useNavigation();
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation as any).push('EntityScreen', { entityId: entity.id });
       }}
@@ -43,6 +44,6 @@ export default function AnniversaryCard({
           text={`${entity.known_year ? `${age} on ` : ''}${monthName} ${date}`}
         />
       </WhiteBox>
-    </Pressable>
+    </SafePressable>
   );
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ViewStyle } from 'react-native';
 import { Pressable, StyleSheet } from 'react-native';
 import { Image } from '../ImageComponents';
+import SafePressable from '../SafePressable';
 import { AlmostBlackText } from '../TextComponents';
 import { TransparentView } from '../ViewComponents';
 const CHECKBOX_HEIGHT = 23;
@@ -83,7 +84,7 @@ export default function Checkbox({
 
   return (
     <TransparentView style={styles.wrapper}>
-      <Pressable
+      <SafePressable
         onPress={onPress}
         disabled={disabled}
         style={[styles.checkbox, { backgroundColor }, style]}
@@ -94,11 +95,11 @@ export default function Checkbox({
             style={styles.check}
           />
         )}
-      </Pressable>
+      </SafePressable>
       {label && (
-        <Pressable onPress={onPress} disabled={disabled}>
+        <SafePressable onPress={onPress} disabled={disabled}>
           <AlmostBlackText text={label} />
-        </Pressable>
+        </SafePressable>
       )}
     </TransparentView>
   );

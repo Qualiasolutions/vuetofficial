@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +29,21 @@ import {
   WhiteImagePicker
 } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
+import SafePressable from 'components/molecules/SafePressable';
+
+const styles = StyleSheet.create({
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  },
+  imagePicker: {
+    marginBottom: 30
+  },
+  addedMembers: {
+    width: '100%',
+    marginTop: 30
+  }
+});
 
 const AddFamilyScreen = ({
   navigation
@@ -102,7 +117,7 @@ const AddFamilyScreen = ({
         }}
         style={styles.confirmButton}
       />
-      <Pressable
+      <SafePressable
         onPress={() => {
           navigation.push('WelcomeToVuet');
         }}
@@ -114,23 +129,9 @@ const AddFamilyScreen = ({
           }}
           style={styles.confirmButton}
         />
-      </Pressable>
+      </SafePressable>
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  },
-  imagePicker: {
-    marginBottom: 30
-  },
-  addedMembers: {
-    width: '100%',
-    marginTop: 30
-  }
-});
 
 export default AddFamilyScreen;

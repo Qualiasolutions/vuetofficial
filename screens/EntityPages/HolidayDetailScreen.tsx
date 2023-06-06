@@ -19,6 +19,7 @@ import {
   getUTCValuesFromDateString
 } from 'utils/datesAndTimes';
 import { Pressable, SectionList, StyleSheet } from 'react-native';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function HolidayDetailScreen({
   navigation,
@@ -228,7 +229,7 @@ export default function HolidayDetailScreen({
       }}
       ListFooterComponent={
         monthsAhead < 36 ? (
-          <Pressable
+          <SafePressable
             onPress={() => setMonthsAhead(monthsAhead + 12)}
             style={styles.loadMoreButton}
           >
@@ -236,7 +237,7 @@ export default function HolidayDetailScreen({
               text={'See more'}
               style={styles.loadMoreButtonText}
             />
-          </Pressable>
+          </SafePressable>
         ) : null
       }
     />

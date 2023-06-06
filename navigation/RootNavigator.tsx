@@ -18,7 +18,10 @@ import {
   useGetUserFullDetailsQuery,
   useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import {
+  useGetAllScheduledTasksQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { ConditionallyTintedImage } from 'components/molecules/ImageComponents';
 import {
@@ -100,6 +103,9 @@ export function BottomTabNavigator() {
   });
   useGetUserInvitesQuery(userDetails?.user_id || -1, {
     refetchOnMountOrArgChange: true,
+    skip: !userDetails?.user_id
+  });
+  useGetAllScheduledTasksQuery(null as any, {
     skip: !userDetails?.user_id
   });
 

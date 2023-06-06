@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { WhiteView } from 'components/molecules/ViewComponents';
 import {
   AlmostBlackText,
@@ -9,6 +9,7 @@ import { EntityResponseType } from 'types/entities';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import { getLongDateFromDateObject } from 'utils/datesAndTimes';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function ModeOfAccommodationCard({
   entity
@@ -28,7 +29,7 @@ export default function ModeOfAccommodationCard({
   );
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation as any).push('EditEntity', { entityId: entity.id });
       }}
@@ -37,7 +38,7 @@ export default function ModeOfAccommodationCard({
         <BlackText text={`${entity.name}`} style={styles.listEntryText} />
         <AlmostBlackText text={`${startDateString} -> ${endDateString}`} />
       </WhiteView>
-    </Pressable>
+    </SafePressable>
   );
 }
 

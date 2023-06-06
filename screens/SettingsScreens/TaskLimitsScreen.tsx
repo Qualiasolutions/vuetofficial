@@ -20,6 +20,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Button } from 'components/molecules/ButtonComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import SafePressable from 'components/molecules/SafePressable';
 
 type LimitType = 'TASKS' | 'MINUTES';
 
@@ -242,7 +243,7 @@ export default function TaskLimitsScreen() {
     interval: TaskLimitInterval;
   }) => {
     return (
-      <Pressable
+      <SafePressable
         onPress={() =>
           setTaskLimitToEdit({
             categoryId,
@@ -251,7 +252,7 @@ export default function TaskLimitsScreen() {
         }
       >
         <Text style={styles.tableText}>{text}</Text>
-      </Pressable>
+      </SafePressable>
     );
   };
 

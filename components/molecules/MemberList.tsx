@@ -6,6 +6,7 @@ import { View, StyleSheet, Pressable, Image } from 'react-native';
 import { UserFullResponse, UserResponse } from 'types/users';
 import MemberCircle from './MemberCircle';
 import { ListingModal } from './Modals';
+import SafePressable from './SafePressable';
 
 export default function MemberList({
   userFullDetails,
@@ -75,7 +76,7 @@ export default function MemberList({
 
   return (
     <View style={styles.container}>
-      <Pressable
+      <SafePressable
         onPress={() => {
           setshowmodal(true);
         }}
@@ -85,7 +86,7 @@ export default function MemberList({
           source={require('assets/images/icons/plus.png')}
           style={styles.addIcon}
         />
-      </Pressable>
+      </SafePressable>
       {members.map((member) => {
         return <MemberCircle key={member.id} member={member} />;
       })}

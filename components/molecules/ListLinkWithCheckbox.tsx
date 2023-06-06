@@ -1,15 +1,11 @@
 import React from 'react';
-import { Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import {
   ContentTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
-import {
-  TransparentView,
-  WhiteBox,
-  WhiteView
-} from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import {
   AlmostBlackText,
   BlackText
@@ -20,6 +16,24 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import Layout from 'constants/Layout';
 import Checkbox from './Checkbox';
 import { Feather } from '@expo/vector-icons';
+import SafePressable from './SafePressable';
+
+const styles = StyleSheet.create({
+  listEntry: {
+    width: Layout.window.width,
+    paddingHorizontal: 24,
+    paddingVertical: 21,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1
+  },
+  listEntryText: {
+    fontSize: 18,
+    marginLeft: 23
+  },
+  row: { flexDirection: 'row', alignItems: 'center' }
+});
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -60,7 +74,7 @@ export default function ListLinkWithCheckbox({
   >();
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         if (!disabled) {
           if (onPressContainer) {
@@ -90,23 +104,6 @@ export default function ListLinkWithCheckbox({
 
         {showArrow && <Feather name="chevron-right" size={30} />}
       </TransparentView>
-    </Pressable>
+    </SafePressable>
   );
 }
-
-const styles = StyleSheet.create({
-  listEntry: {
-    width: Layout.window.width,
-    paddingHorizontal: 24,
-    paddingVertical: 21,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 1
-  },
-  listEntryText: {
-    fontSize: 18,
-    marginLeft: 23
-  },
-  row: { flexDirection: 'row', alignItems: 'center' }
-});

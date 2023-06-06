@@ -9,6 +9,7 @@ import {
   SettingsTabParamList
 } from 'types/base';
 import { EntityResponseType } from 'types/entities';
+import SafePressable from './SafePressable';
 import { BlackText } from './TextComponents';
 
 const styles = StyleSheet.create({
@@ -31,7 +32,7 @@ export default function EntityTag({ entity }: { entity: EntityResponseType }) {
   const greyColor = useThemeColor({}, 'grey');
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation.navigate as any)('ContentNavigator', {
           screen: 'EntityScreen',
@@ -44,6 +45,6 @@ export default function EntityTag({ entity }: { entity: EntityResponseType }) {
         text={entity.name}
         style={[styles.tag, { backgroundColor: greyColor }]}
       />
-    </Pressable>
+    </SafePressable>
   );
 }

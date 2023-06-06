@@ -13,34 +13,18 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
-import useScheduledPeriods from 'hooks/useScheduledPeriods';
-import { ParsedPeriod, PeriodResponse } from 'types/periods';
 import CalendarView from 'components/molecules/CalendarViewV2';
 import Tabs from 'components/molecules/Tabs';
-import {
-  getDateStringFromDateObject,
-  getDateWithoutTimezone
-} from 'utils/datesAndTimes';
+import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 import {
   setListEnforcedDate,
   setMonthEnforcedDate
 } from 'reduxStore/slices/calendars/actions';
 import MonthSelector from './components/MonthSelector';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
-import { selectFilteredScheduledTaskIdsByDate } from 'reduxStore/slices/calendars/selectors';
+import { MinimalScheduledTask } from './components/Task';
 
 dayjs.extend(utc);
-
-const parsePeriodResponse = (res: PeriodResponse): ParsedPeriod => {
-  const parsedPeriod = {
-    ...res,
-    end_date: getDateWithoutTimezone(res.end_date),
-    start_date: getDateWithoutTimezone(res.start_date)
-  };
-  delete parsedPeriod.reminders;
-
-  return parsedPeriod;
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -50,51 +34,25 @@ const styles = StyleSheet.create({
 });
 
 type CalendarProps = {
-  periodFilters: ((period: ParsedPeriod) => boolean)[];
   fullPage: boolean;
+  filteredTasks: {
+    [key: string]: (MinimalScheduledTask & {
+      start_datetime?: string | undefined;
+      end_datetime?: string | undefined;
+      date?: string | undefined;
+      duration?: number | undefined;
+    })[];
+  };
 };
-function Calendar({ periodFilters, fullPage }: CalendarProps) {
+function Calendar({ fullPage, filteredTasks }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery();
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  // Force fetch the scheduled tasks initially
-  const { isLoading: isLoadingScheduledTasks } = useGetAllScheduledTasksQuery(
-    null as any,
-    {
-      skip: !userDetails?.user_id
-    }
-  );
   const dispatch = useDispatch();
-
-  const { periods: allScheduledPeriods, isLoading: isLoadingPeriods } =
-    useScheduledPeriods();
-
-  const parsedPeriods = useMemo(() => {
-    if (!allScheduledPeriods) {
-      return [];
-    }
-    return allScheduledPeriods.map(parsePeriodResponse);
-  }, [allScheduledPeriods]);
-
-  const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
-
-  const filteredAllPeriods = useMemo<ParsedPeriod[]>(() => {
-    if (!parsedPeriods) {
-      return [];
-    } else {
-      let filtered = parsedPeriods;
-      for (const periodFilter of periodFilters) {
-        filtered = filtered.filter(periodFilter);
-      }
-      return filtered;
-    }
-  }, [parsedPeriods, periodFilters]);
 
   const MARGIN_BOTTOM = 150;
   const listView = useMemo(() => {
-    if (!filteredTasks || !filteredAllPeriods) {
+    if (!filteredTasks) {
       return () => null;
     }
 
@@ -102,7 +60,6 @@ function Calendar({ periodFilters, fullPage }: CalendarProps) {
       <TransparentView style={{ marginBottom: MARGIN_BOTTOM }}>
         <CalendarTaskDisplay
           tasks={filteredTasks}
-          periods={filteredAllPeriods}
           alwaysIncludeCurrentDate={true}
           onChangeFirstDate={(date) => {
             dispatch(setListEnforcedDate({ date }));
@@ -110,27 +67,22 @@ function Calendar({ periodFilters, fullPage }: CalendarProps) {
         />
       </TransparentView>
     );
-  }, [JSON.stringify(filteredTasks), filteredAllPeriods, dispatch]);
+  }, [JSON.stringify(filteredTasks), dispatch]);
 
   const calendarView = useMemo(() => {
-    if (!allScheduledPeriods) {
-      return () => null;
-    }
-
     return () => (
       <CalendarView
         tasks={filteredTasks}
-        periods={filteredAllPeriods}
+        periods={[]}
         onChangeDate={(date) => {
           dispatch(setMonthEnforcedDate({ date }));
         }}
       />
     );
-  }, [allScheduledPeriods, dispatch, filteredTasks, filteredAllPeriods]);
+  }, [dispatch, filteredTasks]);
 
-  const isLoading =
-    isLoadingScheduledTasks || isLoadingPeriods || isLoadingTaskCompletionForms;
-  if (isLoading || !allScheduledPeriods) {
+  const isLoading = isLoadingTaskCompletionForms;
+  if (isLoading) {
     return <FullPageSpinner />;
   }
 

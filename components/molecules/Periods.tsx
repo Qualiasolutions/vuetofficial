@@ -13,6 +13,7 @@ import { useGetAllPeriodsQuery } from 'reduxStore/services/api/period';
 import { FullPageSpinner, PaddedSpinner } from './Spinners';
 import { getDateWithoutTimezone } from 'utils/datesAndTimes';
 import { useTranslation } from 'react-i18next';
+import SafePressable from './SafePressable';
 
 export type TaskData = {
   title: string;
@@ -95,7 +96,7 @@ export default function Periods({ periods }: PeriodsProps) {
   return (
     <WhiteView style={{ height: '100%' }}>
       {monthsBack < 24 && (
-        <Pressable
+        <SafePressable
           onPress={() => setMonthsBack(monthsBack + 6)}
           style={styles.showOlderWrapper}
         >
@@ -103,7 +104,7 @@ export default function Periods({ periods }: PeriodsProps) {
             text={t('components.calendar.showOlderEvents')}
             style={styles.showOlderText}
           />
-        </Pressable>
+        </SafePressable>
       )}
       <SectionList
         sections={filteredPeriods}
@@ -113,7 +114,7 @@ export default function Periods({ periods }: PeriodsProps) {
           </TransparentView>
         )}
         renderItem={({ item }) => (
-          <Pressable
+          <SafePressable
             style={styles.sectionItem}
             onPress={() => {
               (navigation.navigate as any)('ContentNavigator', {
@@ -131,7 +132,7 @@ export default function Periods({ periods }: PeriodsProps) {
               <PrimaryText text={item.title} />
               <BlackText text={item.message} />
             </TransparentView>
-          </Pressable>
+          </SafePressable>
         )}
         ItemSeparatorComponent={() => (
           <TransparentView style={styles.divider} />

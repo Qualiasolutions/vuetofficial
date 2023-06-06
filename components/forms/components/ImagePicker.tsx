@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { parsePresignedUrl } from 'utils/urls';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Image } from 'components/molecules/ImageComponents';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   container: {
@@ -139,7 +140,7 @@ export function ImagePicker({
   }
 
   return (
-    <Pressable onPress={chooseImage}>
+    <SafePressable onPress={chooseImage}>
       <TransparentView
         style={[{ backgroundColor, borderColor }, styles.container, style]}
       >
@@ -153,7 +154,7 @@ export function ImagePicker({
           resizeMode="cover"
         />
       </TransparentView>
-    </Pressable>
+    </SafePressable>
   );
 }
 
@@ -192,9 +193,9 @@ export function SmallImagePicker(
   const PressableComponent = (pressableProps: {
     onPress: (event: GestureResponderEvent) => void;
   }) => (
-    <Pressable onPress={pressableProps.onPress} style={style}>
+    <SafePressable onPress={pressableProps.onPress} style={style}>
       <Image source={require('assets/images/icons/small-camera.png')} />
-    </Pressable>
+    </SafePressable>
   );
 
   return ImagePicker({

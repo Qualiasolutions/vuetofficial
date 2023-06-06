@@ -18,6 +18,7 @@ import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { datetimeSettingsMapping } from './utils/datetimeSettingsMapping';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   container: {
@@ -109,27 +110,27 @@ export default function EntityListPage({
       const latestDate = new Date();
       latestDate.setMonth(latestDate.getMonth() + monthsAhead);
 
-      const previousEntityData = entityDatetimeSettings?.hidePrevious
+      const prev = entityDatetimeSettings?.hidePrevious
         ? orderedEntityData.filter(
             (entity) =>
               new Date(entity[entityDatetimeSettings.endField]) < earliestDate
           )
         : [];
-      const futureEntityData = entityDatetimeSettings?.monthsAhead
+      const future = entityDatetimeSettings?.monthsAhead
         ? orderedEntityData.filter(
             (entity) =>
               new Date(entity[entityDatetimeSettings.startField]) > latestDate
           )
         : [];
 
-      const datetimeFilteredEntityData = orderedEntityData.filter((entity) => {
+      const datetimeFiltered = orderedEntityData.filter((entity) => {
         return ![
-          ...previousEntityData.map((ent) => ent.id),
-          ...futureEntityData.map((ent) => ent.id)
+          ...prev.map((ent) => ent.id),
+          ...future.map((ent) => ent.id)
         ].includes(entity.id);
       });
 
-      return [previousEntityData, datetimeFilteredEntityData, futureEntityData];
+      return [prev, datetimeFiltered, future];
     }, [orderedEntityData, monthsBack]);
 
   if (isLoading || !filteredEntityData) {
@@ -177,7 +178,7 @@ export default function EntityListPage({
   const showPreviousButton = entityDatetimeSettings?.allowShowPrevious
     ? monthsBack < 24 &&
       previousEntityData.length > 0 && (
-        <Pressable
+        <SafePressable
           onPress={() => setMonthsBack(monthsBack + 6)}
           style={styles.showOlderWrapper}
         >
@@ -185,7 +186,7 @@ export default function EntityListPage({
             text={t('components.calendar.showOlderEvents')}
             style={styles.showOlderText}
           />
-        </Pressable>
+        </SafePressable>
       )
     : null;
 
@@ -195,7 +196,7 @@ export default function EntityListPage({
       ? (!entityDatetimeSettings.maxMonthsAhead ||
           monthsAhead < entityDatetimeSettings!.maxMonthsAhead) &&
         futureEntityData.length > 0 && (
-          <Pressable
+          <SafePressable
             onPress={() =>
               setMonthsAhead(
                 monthsAhead + (entityDatetimeSettings?.monthsAheadPerLoad || 0)
@@ -207,7 +208,7 @@ export default function EntityListPage({
               text={t('components.calendar.showNewerEvents')}
               style={styles.showNewerText}
             />
-          </Pressable>
+          </SafePressable>
         )
       : null;
 

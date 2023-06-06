@@ -11,7 +11,7 @@ function EntityCalendarPage({ entityIds }: { entityIds: number[] }) {
   // TODO
   // const entityFilter = (scheduledItem: MinimalScheduledTask | ParsedPeriod) =>
   //   scheduledItem.entities.some((entity) => entityIds.includes(entity));
-  return <Calendar periodFilters={[]} fullPage={false} />;
+  return <Calendar fullPage={false} />;
 }
 
 export default EntityCalendarPage;

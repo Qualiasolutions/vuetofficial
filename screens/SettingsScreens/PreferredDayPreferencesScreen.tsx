@@ -21,6 +21,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { PreferredDaysDays } from 'types/settings';
 import { capitalize } from 'lodash';
 import Checkbox from 'components/molecules/Checkbox';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   tableText: {
@@ -210,9 +211,9 @@ export default function PreferredDayPreferencesScreen() {
     text: string;
   }) => {
     return (
-      <Pressable onPress={() => setCategoryToEdit(categoryId)}>
+      <SafePressable onPress={() => setCategoryToEdit(categoryId)}>
         <Text style={styles.tableText}>{text}</Text>
-      </Pressable>
+      </SafePressable>
     );
   };
 

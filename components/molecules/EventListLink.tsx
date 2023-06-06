@@ -15,6 +15,7 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useTranslation } from 'react-i18next';
+import SafePressable from './SafePressable';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -123,12 +124,12 @@ export default function EventListLink({
 
   const renderRightActions = useCallback(() => {
     return (
-      <Pressable
+      <SafePressable
         onPress={() => onSelect && onSelect(selected)}
         style={styles.hideTab}
       >
         <WhiteText text={t('common.hide')} />
-      </Pressable>
+      </SafePressable>
     );
   }, [selected, onSelect]);
 
@@ -141,7 +142,7 @@ export default function EventListLink({
       renderRightActions={renderRightActions}
       containerStyle={{ overflow: 'visible' }}
     >
-      <Pressable
+      <SafePressable
         onPress={() => {
           if (onPressContainer) {
             return onPressContainer();
@@ -154,7 +155,7 @@ export default function EventListLink({
             styles.listEntry,
             style,
             selected && { backgroundColor: greyColor },
-            !selected && subType != 'add' && { opacity: 0.3 }
+            !selected && subType !== 'add' && { opacity: 0.3 }
           ]}
         >
           <TransparentView style={styles.row}>
@@ -162,14 +163,14 @@ export default function EventListLink({
             <BlackText text={text} style={styles.listEntryText} />
           </TransparentView>
 
-          {subType != 'add' && (
+          {subType !== 'add' && (
             <Feather
               name={!selected ? 'eye-off' : 'chevron-right'}
               size={!selected ? 25 : 30}
             />
           )}
         </WhiteBox>
-      </Pressable>
+      </SafePressable>
     </Wrapper>
   );
 }

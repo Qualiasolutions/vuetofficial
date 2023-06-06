@@ -1,3 +1,4 @@
+import SafePressable from 'components/molecules/SafePressable';
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -36,7 +37,7 @@ export function ColorPicker({
   }, [value, onValueChange]);
 
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         const newColor = generateRandomColor();
         onValueChange(newColor);
@@ -52,6 +53,6 @@ export function ColorPicker({
           width ? { width: width } : null
         ]}
       />
-    </Pressable>
+    </SafePressable>
   );
 }

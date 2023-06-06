@@ -103,13 +103,13 @@ const SignupScreen = ({
         style={styles.confirmButton}
       />
       <Text>{t('screens.signUp.alreadyHaveAccount')}</Text>
-      <Pressable
+      <SafePressable
         onPress={() => {
           navigation.navigate('Login');
         }}
       >
         <PrimaryText text={t('screens.signUp.logIn')} bold={true} />
-      </Pressable>
+      </SafePressable>
     </AlmostWhiteContainerView>
   );
 };

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import {
   GestureResponderEvent,
   Modal as DefaultModal,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -20,234 +19,8 @@ import {
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Colors from '../../constants/Colors';
 import Search from './Search';
-import { UserResponse } from 'types/users';
 import { Feather } from '@expo/vector-icons';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
-export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
-
-export function Modal(props: ModalProps) {
-  const { children, boxStyle, onRequestClose, ...otherProps } = props;
-
-  return (
-    <DefaultModal
-      animationType="fade"
-      transparent={true}
-      onRequestClose={onRequestClose}
-      {...otherProps}
-    >
-      <TransparentContainerView>
-        <Pressable style={styles.opaqueBackground} onPress={onRequestClose}>
-          <View style={styles.opaqueBackground} />
-        </Pressable>
-        <WhiteBox style={boxStyle}>{children}</WhiteBox>
-      </TransparentContainerView>
-    </DefaultModal>
-  );
-}
-
-type YesNoModalProps = ModalProps & {
-  title?: string;
-  question: string;
-  onYes: (event: GestureResponderEvent) => void;
-  onNo: (event: GestureResponderEvent) => void;
-};
-
-export function YesNoModal(props: YesNoModalProps) {
-  const borderColor = useThemeColor({}, 'grey');
-  const { t } = useTranslation();
-
-  const { title, question, onYes, onNo, boxStyle, ...otherProps } = props;
-  const titleView = title ? (
-    <PrimaryText text={title} style={[styles.text, styles.yesNoTitle]} />
-  ) : null;
-
-  return (
-    <Modal
-      boxStyle={StyleSheet.flatten([styles.yesNoBoxStyle, boxStyle])}
-      {...otherProps}
-    >
-      <TransparentView style={styles.textWrapper}>
-        {titleView}
-        <AlmostBlackText style={styles.text} text={question} />
-      </TransparentView>
-      <TransparentView style={[{ borderColor }, styles.yesNoButtons]}>
-        <Pressable
-          onPress={onYes}
-          style={({ pressed }) => [
-            {
-              borderColor,
-              backgroundColor: pressed ? borderColor : ''
-            },
-            styles.yesNoButton,
-            styles.yesButton
-          ]}
-        >
-          <TransparentView>
-            <AlmostBlackText text={t('common.yes')} />
-          </TransparentView>
-        </Pressable>
-        <Pressable
-          onPress={onNo}
-          style={({ pressed }) => [
-            {
-              borderColor,
-              backgroundColor: pressed ? borderColor : ''
-            },
-            styles.yesNoButton
-          ]}
-        >
-          <TransparentView>
-            <AlmostBlackText text={t('common.no')} />
-          </TransparentView>
-        </Pressable>
-      </TransparentView>
-    </Modal>
-  );
-}
-
-function DefaultListItemComponent({
-  item,
-  itemToName
-}: {
-  item: any;
-  itemToName: (item: any) => string;
-}) {
-  return (
-    <TransparentView>
-      <TransparentView style={{ paddingVertical: 6 }}>
-        <Text> {itemToName(item)} </Text>
-      </TransparentView>
-    </TransparentView>
-  );
-}
-
-export function ListingModal(props: ListingModalProps) {
-  const bottomSheetRef = useRef<RBSheet>(null);
-  const {
-    visible,
-    sectionSettings,
-    data = {},
-    itemToName = (item) => item.name,
-    onClose = () => {},
-    onSelect,
-    ListItemComponent = DefaultListItemComponent
-  } = props;
-
-  const initialMinimisedSettings = useMemo<{ [key: string]: boolean }>(() => {
-    const settings: { [key: string]: boolean } = {};
-    for (const sectionName in sectionSettings) {
-      settings[sectionName] =
-        sectionSettings[sectionName].minimisable &&
-        !sectionSettings[sectionName].initOpen;
-    }
-    return settings;
-  }, [sectionSettings]);
-  const [minimisedSettings, setMinimisedSettings] = useState<{
-    [key: string]: boolean;
-  }>(initialMinimisedSettings);
-
-  useEffect(() => {
-    if (visible) bottomSheetRef?.current?.open();
-    else bottomSheetRef?.current?.close();
-  }, [visible]);
-
-  const sections = Object.keys(data).map((sectionName) => {
-    if (data[sectionName].length === 0) return null;
-    const sectionHeader =
-      sectionSettings && sectionSettings[sectionName] ? (
-        <Pressable
-          onPress={() => {
-            if (sectionSettings && sectionSettings[sectionName].minimisable) {
-              setMinimisedSettings({
-                ...minimisedSettings,
-                [sectionName]: !minimisedSettings[sectionName]
-              });
-            }
-          }}
-        >
-          <TransparentView style={listingModalStyles.sectionHeader}>
-            <AlmostBlackText
-              text={sectionName}
-              style={listingModalStyles.sectionHeaderText}
-            />
-            {sectionSettings && sectionSettings[sectionName].minimisable ? (
-              minimisedSettings[sectionName] ? (
-                <Feather
-                  name="chevron-down"
-                  size={25}
-                  style={listingModalStyles.sectionHeaderFeather}
-                />
-              ) : (
-                <Feather
-                  name="chevron-up"
-                  size={25}
-                  style={listingModalStyles.sectionHeaderFeather}
-                />
-              )
-            ) : null}
-          </TransparentView>
-        </Pressable>
-      ) : null;
-    const memberRows = data[sectionName].map((item, index) => {
-      return (
-        <Pressable
-          style={listingModalStyles.listItem}
-          key={item.id}
-          onPress={() => onSelect(item)}
-        >
-          <ListItemComponent item={item} itemToName={itemToName} />
-        </Pressable>
-      );
-    });
-    return (
-      <TransparentView key={sectionName} style={listingModalStyles.section}>
-        {sectionHeader}
-        {minimisedSettings[sectionName] ? null : memberRows}
-      </TransparentView>
-    );
-  });
-
-  return (
-    <RBSheet
-      ref={bottomSheetRef}
-      height={600}
-      onClose={onClose}
-      customStyles={{
-        container: {
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20
-        }
-      }}
-      dragFromTopOnly={true}
-      closeOnDragDown={true}
-    >
-      <ScrollView>
-        <WhiteView style={listingModalStyles.bottomContainer}>
-          {/* <Search /> */}
-          <SafeAreaView>{sections}</SafeAreaView>
-        </WhiteView>
-      </ScrollView>
-    </RBSheet>
-  );
-}
-
-type ListingModalSectionSettings = {
-  minimisable: boolean;
-  initOpen?: boolean;
-};
-
-type ListingModalProps = {
-  visible: boolean;
-  data: {
-    [key: string]: any[];
-  };
-  sectionSettings?: { [key: string]: ListingModalSectionSettings };
-  itemToName?: (item: any) => string;
-  onClose?: () => void;
-  onSelect: (item: any) => void;
-  ListItemComponent?: React.ElementType;
-};
+import SafePressable from './SafePressable';
 
 const styles = StyleSheet.create({
   opaqueBackground: {
@@ -323,3 +96,228 @@ const listingModalStyles = StyleSheet.create({
     marginBottom: 10
   }
 });
+
+export type ModalProps = DefaultModal['props'] & { boxStyle?: ViewStyle };
+
+export function Modal(props: ModalProps) {
+  const { children, boxStyle, onRequestClose, ...otherProps } = props;
+
+  return (
+    <DefaultModal
+      animationType="fade"
+      transparent={true}
+      onRequestClose={onRequestClose}
+      {...otherProps}
+    >
+      <TransparentContainerView>
+        <SafePressable style={styles.opaqueBackground} onPress={onRequestClose}>
+          <View style={styles.opaqueBackground} />
+        </SafePressable>
+        <WhiteBox style={boxStyle}>{children}</WhiteBox>
+      </TransparentContainerView>
+    </DefaultModal>
+  );
+}
+
+type YesNoModalProps = ModalProps & {
+  title?: string;
+  question: string;
+  onYes: (event: GestureResponderEvent) => void;
+  onNo: (event: GestureResponderEvent) => void;
+};
+
+export function YesNoModal(props: YesNoModalProps) {
+  const borderColor = useThemeColor({}, 'grey');
+  const { t } = useTranslation();
+
+  const { title, question, onYes, onNo, boxStyle, ...otherProps } = props;
+  const titleView = title ? (
+    <PrimaryText text={title} style={[styles.text, styles.yesNoTitle]} />
+  ) : null;
+
+  return (
+    <Modal
+      boxStyle={StyleSheet.flatten([styles.yesNoBoxStyle, boxStyle])}
+      {...otherProps}
+    >
+      <TransparentView style={styles.textWrapper}>
+        {titleView}
+        <AlmostBlackText style={styles.text} text={question} />
+      </TransparentView>
+      <TransparentView style={[{ borderColor }, styles.yesNoButtons]}>
+        <SafePressable
+          onPress={onYes}
+          style={({ pressed }) => [
+            {
+              borderColor,
+              backgroundColor: pressed ? borderColor : ''
+            },
+            styles.yesNoButton,
+            styles.yesButton
+          ]}
+        >
+          <TransparentView>
+            <AlmostBlackText text={t('common.yes')} />
+          </TransparentView>
+        </SafePressable>
+        <SafePressable
+          onPress={onNo}
+          style={({ pressed }) => [
+            {
+              borderColor,
+              backgroundColor: pressed ? borderColor : ''
+            },
+            styles.yesNoButton
+          ]}
+        >
+          <TransparentView>
+            <AlmostBlackText text={t('common.no')} />
+          </TransparentView>
+        </SafePressable>
+      </TransparentView>
+    </Modal>
+  );
+}
+
+function DefaultListItemComponent({
+  item,
+  itemToName
+}: {
+  item: any;
+  itemToName: (item: any) => string;
+}) {
+  return (
+    <TransparentView>
+      <TransparentView style={{ paddingVertical: 6 }}>
+        <Text> {itemToName(item)} </Text>
+      </TransparentView>
+    </TransparentView>
+  );
+}
+
+export function ListingModal(props: ListingModalProps) {
+  const bottomSheetRef = useRef<RBSheet>(null);
+  const {
+    visible,
+    sectionSettings,
+    data = {},
+    itemToName = (item) => item.name,
+    onClose = () => {},
+    onSelect,
+    ListItemComponent = DefaultListItemComponent
+  } = props;
+
+  const initialMinimisedSettings = useMemo<{ [key: string]: boolean }>(() => {
+    const settings: { [key: string]: boolean } = {};
+    for (const sectionName in sectionSettings) {
+      settings[sectionName] =
+        sectionSettings[sectionName].minimisable &&
+        !sectionSettings[sectionName].initOpen;
+    }
+    return settings;
+  }, [sectionSettings]);
+  const [minimisedSettings, setMinimisedSettings] = useState<{
+    [key: string]: boolean;
+  }>(initialMinimisedSettings);
+
+  useEffect(() => {
+    if (visible) bottomSheetRef?.current?.open();
+    else bottomSheetRef?.current?.close();
+  }, [visible]);
+
+  const sections = Object.keys(data).map((sectionName) => {
+    if (data[sectionName].length === 0) return null;
+    const sectionHeader =
+      sectionSettings && sectionSettings[sectionName] ? (
+        <SafePressable
+          onPress={() => {
+            if (sectionSettings && sectionSettings[sectionName].minimisable) {
+              setMinimisedSettings({
+                ...minimisedSettings,
+                [sectionName]: !minimisedSettings[sectionName]
+              });
+            }
+          }}
+        >
+          <TransparentView style={listingModalStyles.sectionHeader}>
+            <AlmostBlackText
+              text={sectionName}
+              style={listingModalStyles.sectionHeaderText}
+            />
+            {sectionSettings && sectionSettings[sectionName].minimisable ? (
+              minimisedSettings[sectionName] ? (
+                <Feather
+                  name="chevron-down"
+                  size={25}
+                  style={listingModalStyles.sectionHeaderFeather}
+                />
+              ) : (
+                <Feather
+                  name="chevron-up"
+                  size={25}
+                  style={listingModalStyles.sectionHeaderFeather}
+                />
+              )
+            ) : null}
+          </TransparentView>
+        </SafePressable>
+      ) : null;
+    const memberRows = data[sectionName].map((item, index) => {
+      return (
+        <SafePressable
+          style={listingModalStyles.listItem}
+          key={item.id}
+          onPress={() => onSelect(item)}
+        >
+          <ListItemComponent item={item} itemToName={itemToName} />
+        </SafePressable>
+      );
+    });
+    return (
+      <TransparentView key={sectionName} style={listingModalStyles.section}>
+        {sectionHeader}
+        {minimisedSettings[sectionName] ? null : memberRows}
+      </TransparentView>
+    );
+  });
+
+  return (
+    <RBSheet
+      ref={bottomSheetRef}
+      height={600}
+      onClose={onClose}
+      customStyles={{
+        container: {
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20
+        }
+      }}
+      dragFromTopOnly={true}
+      closeOnDragDown={true}
+    >
+      <ScrollView>
+        <WhiteView style={listingModalStyles.bottomContainer}>
+          {/* <Search /> */}
+          <SafeAreaView>{sections}</SafeAreaView>
+        </WhiteView>
+      </ScrollView>
+    </RBSheet>
+  );
+}
+
+type ListingModalSectionSettings = {
+  minimisable: boolean;
+  initOpen?: boolean;
+};
+
+type ListingModalProps = {
+  visible: boolean;
+  data: {
+    [key: string]: any[];
+  };
+  sectionSettings?: { [key: string]: ListingModalSectionSettings };
+  itemToName?: (item: any) => string;
+  onClose?: () => void;
+  onSelect: (item: any) => void;
+  ListItemComponent?: React.ElementType;
+};

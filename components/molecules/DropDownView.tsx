@@ -1,9 +1,23 @@
 import React from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import { Feather } from '@expo/vector-icons';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { t } from 'i18next';
 import Colors from '../../constants/Colors';
+import SafePressable from './SafePressable';
+
+export const styles = StyleSheet.create({
+  dropDownView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.light.offWhite,
+    paddingHorizontal: 15,
+    height: 40,
+    width: 242,
+    borderRadius: 6
+  }
+});
 
 const DropDown = ({
   value = t('common.pleaseSelect'),
@@ -11,7 +25,7 @@ const DropDown = ({
   disabled = false
 }) => {
   return (
-    <Pressable
+    <SafePressable
       disabled={disabled}
       onPress={onPress}
       style={styles.dropDownView}
@@ -30,21 +44,8 @@ const DropDown = ({
         size={20}
         color={useThemeColor({}, 'lightBlack')}
       />
-    </Pressable>
+    </SafePressable>
   );
 };
 
 export default DropDown;
-
-export const styles = StyleSheet.create({
-  dropDownView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.light.offWhite,
-    paddingHorizontal: 15,
-    height: 40,
-    width: 242,
-    borderRadius: 6
-  }
-});

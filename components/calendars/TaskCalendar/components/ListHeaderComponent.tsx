@@ -3,13 +3,14 @@ import TagSelector from 'components/forms/components/TagSelector';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { Modal } from 'components/molecules/Modals';
+import SafePressable from 'components/molecules/SafePressable';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setFilteredEntities,
@@ -135,7 +136,7 @@ const FiltersModal = ({
       boxStyle={styles.modal}
     >
       <TransparentView>
-        <Pressable
+        <SafePressable
           onPress={() =>
             setShownFilters(shownFilters === 'USERS' ? '' : 'USERS')
           }
@@ -151,12 +152,12 @@ const FiltersModal = ({
             name={shownFilters === 'USERS' ? 'chevron-up' : 'chevron-down'}
             size={25}
           />
-        </Pressable>
+        </SafePressable>
         {shownFilters === 'USERS' && <UserFilterSelector />}
       </TransparentView>
       <TransparentView>
-        <Pressable onPress={() => setShownFilters('ENTITIES')}>
-          <Pressable
+        <SafePressable onPress={() => setShownFilters('ENTITIES')}>
+          <SafePressable
             onPress={() =>
               setShownFilters(shownFilters === 'ENTITIES' ? '' : 'ENTITIES')
             }
@@ -172,8 +173,8 @@ const FiltersModal = ({
               name={shownFilters === 'ENTITIES' ? 'chevron-up' : 'chevron-down'}
               size={25}
             />
-          </Pressable>
-        </Pressable>
+          </SafePressable>
+        </SafePressable>
         {shownFilters === 'ENTITIES' && <EntityFilterSelector />}
       </TransparentView>
     </Modal>
@@ -208,13 +209,13 @@ export default function ListHeaderComponent({
           style={styles.loadMoreButton}
         />
       )}
-      <Pressable
+      <SafePressable
         onPress={() => {
           setFiltersModalOpen(true);
         }}
       >
         <Image source={require('assets/images/icons/filter.png')} />
-      </Pressable>
+      </SafePressable>
       <FiltersModal
         visible={filtersModalOpen}
         onRequestClose={() => setFiltersModalOpen(false)}

@@ -8,6 +8,7 @@ import { UserFullResponse, UserResponse } from 'types/users';
 import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
 import { useTranslation } from 'react-i18next';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   addMemberButton: {
@@ -133,7 +134,7 @@ export default function MemberSelector({
   return (
     <TransparentView>
       {selectedMembersList()}
-      <Pressable
+      <SafePressable
         onPress={() => setShowMembersList(true)}
         style={styles.addMemberButton}
       >
@@ -142,7 +143,7 @@ export default function MemberSelector({
           style={styles.addIcon}
         />
         <PrimaryText text={t('components.memberSelector.changeMembers')} />
-      </Pressable>
+      </SafePressable>
       <ListingModal
         visible={showMembersList}
         onClose={onCloseMembersList}

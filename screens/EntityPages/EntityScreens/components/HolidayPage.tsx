@@ -30,6 +30,7 @@ import { Modal } from 'components/molecules/Modals';
 import { TextInput, useThemeColor } from 'components/Themed';
 import Layout from 'constants/Layout';
 import { Ionicons } from '@expo/vector-icons';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function HolidayScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
@@ -169,13 +170,13 @@ export default function HolidayScreen({ entityId }: { entityId: number }) {
             onChangeText={setItemName}
             placeholder={t('common.addTitle')}
           />
-          <Pressable
+          <SafePressable
             disabled={itemName == ''}
             onPress={onAddNew}
             style={styles.addNewButton}
           >
             <WhiteText text={t('common.save')} />
-          </Pressable>
+          </SafePressable>
         </TransparentView>
       </Modal>
     </WhiteFullPageScrollView>

@@ -1,29 +1,34 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Calendar from 'components/calendars/TaskCalendar';
+import CategoryHome from 'components/organisms/CategoryHome';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectScheduledTaskIdsByEntityIds } from 'reduxStore/slices/calendars/selectors';
-import { EntityTabParamList } from 'types/base';
+import { selectScheduledTaskIdsByCategories } from 'reduxStore/slices/calendars/selectors';
+import { CategoryTabParamList } from 'types/base';
 
-const TopTabs = createMaterialTopTabNavigator<EntityTabParamList>();
+const TopTabs = createMaterialTopTabNavigator<CategoryTabParamList>();
 
-export default function EntityNavigator({ entityId }: { entityId: number }) {
+export default function CategoryNavigator({
+  categoryId
+}: {
+  categoryId: number;
+}) {
   const filteredTasks = useSelector(
-    selectScheduledTaskIdsByEntityIds([entityId])
+    selectScheduledTaskIdsByCategories([categoryId])
   );
 
   const homeComponent = useMemo(() => {
-    return () => null;
-  }, [entityId]);
+    return () => <CategoryHome categoryId={categoryId} />;
+  }, [categoryId]);
 
   const calendarComponent = useMemo(() => {
     return () => <Calendar fullPage={false} filteredTasks={filteredTasks} />;
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {
-    return () => <ReferencesList entities={[entityId]} />;
-  }, [entityId]);
+    return () => <ReferencesList categories={[categoryId]} />;
+  }, [categoryId]);
 
   return (
     <TopTabs.Navigator initialRouteName="Home">

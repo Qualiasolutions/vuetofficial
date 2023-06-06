@@ -12,7 +12,7 @@ export default function PetCard({ entity }: { entity: EntityResponseType }) {
   const greyColor = useThemeColor({}, 'grey');
   const navigation = useNavigation();
   return (
-    <Pressable
+    <SafePressable
       onPress={() => {
         (navigation as any).push('EditEntity', { entityId: entity.id });
       }}
@@ -21,7 +21,7 @@ export default function PetCard({ entity }: { entity: EntityResponseType }) {
         <Feather name="image" size={25} color={greyColor} />
         <BlackText text={`${entity.name}`} style={styles.listEntryText} />
       </WhiteView>
-    </Pressable>
+    </SafePressable>
   );
 }
 

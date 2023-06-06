@@ -14,6 +14,7 @@ import { EntityTypeName } from 'types/entities';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import SafePressable from 'components/molecules/SafePressable';
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
@@ -231,7 +232,7 @@ export default function BottomNavBar({
               ? 'Settings'
               : '';
           return (
-            <Pressable
+            <SafePressable
               key={index}
               onPress={() => {
                 if (forcedScreen) {
@@ -242,7 +243,7 @@ export default function BottomNavBar({
               }}
             >
               {options.tabBarIcon({ focused: isFocused, color: '', size: 0 })}
-            </Pressable>
+            </SafePressable>
           );
         }
       })}

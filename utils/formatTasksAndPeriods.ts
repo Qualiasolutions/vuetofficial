@@ -1,15 +1,16 @@
-import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import { getDateStringsBetween } from './datesAndTimes';
 
 export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
   const newTasksPerDate: {
-    [key: string]: (MinimalScheduledTask & {
+    [key: string]: {
+      id: number;
+      recurrence_index: number | null;
       start_datetime?: string;
       end_datetime?: string;
       date?: string;
       duration?: number;
-    })[];
+    }[];
   } = {};
   for (const task of tasks) {
     const taskDates =

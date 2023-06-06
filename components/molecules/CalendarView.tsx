@@ -1,6 +1,6 @@
 import { useThemeColor, View } from 'components/Themed';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { useMemo, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import {
   getDateWithoutTimezone,
@@ -12,6 +12,7 @@ import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import SafePressable from './SafePressable';
 
 export type CalendarViewProps = {
   dates: {
@@ -151,7 +152,7 @@ export default function CalendarView({
                 ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
                 : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
             return (
-              <Pressable
+              <SafePressable
                 style={styles.periodListElement}
                 key={period.id}
                 onPress={() => {
@@ -167,7 +168,7 @@ export default function CalendarView({
                   style={styles.periodListTitleText}
                 />
                 <AlmostBlackText text={text} />
-              </Pressable>
+              </SafePressable>
             );
           })}
         </View>

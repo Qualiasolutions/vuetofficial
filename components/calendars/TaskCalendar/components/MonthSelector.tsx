@@ -3,7 +3,7 @@
 */
 
 import React, { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { WhitePaddedView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
@@ -17,6 +17,7 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { elevation } from 'styles/elevation';
 import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   container: {
@@ -81,7 +82,7 @@ export default function MonthSelector({
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
       {fullPage ? (
-        <Pressable
+        <SafePressable
           onPress={() => (navigation as any).openDrawer()}
           style={[
             styles.drawerPressable,
@@ -102,11 +103,11 @@ export default function MonthSelector({
               }
             ]}
           />
-        </Pressable>
+        </SafePressable>
       ) : (
         <View style={styles.drawerSpace} />
       )}
-      <Pressable
+      <SafePressable
         onPress={() => {
           setIsDatePickerVisible(true);
         }}
@@ -117,7 +118,7 @@ export default function MonthSelector({
           style={styles.monthText}
         />
         <AlmostBlackText text="▼" />
-      </Pressable>
+      </SafePressable>
       <View style={styles.endSpace} />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}

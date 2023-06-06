@@ -77,7 +77,7 @@ export type SettingsTabParamList = {
 export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
   NativeStackScreenProps<SettingsTabParamList, Screen>;
 
-// Settings Stack
+// Entity Stack
 export type EntityTabParamList = {
   Calendar: undefined;
   References: undefined;
@@ -86,6 +86,16 @@ export type EntityTabParamList = {
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
   NativeStackScreenProps<EntityTabParamList, Screen>;
+
+// Category Stack
+export type CategoryTabParamList = {
+  Calendar: undefined;
+  References: undefined;
+  Home: undefined;
+};
+
+export type CategoryTabScreenProps<Screen extends keyof CategoryTabParamList> =
+  NativeStackScreenProps<CategoryTabParamList, Screen>;
 
 // MyAccount Stack
 export type MyAccountTabParamList = {
@@ -195,4 +205,5 @@ export type TabParamList = RootTabParamList &
   FamilyRequestTabParamList &
   SettingsTabParamList &
   MyAccountTabParamList &
-  EntityTabParamList;
+  EntityTabParamList &
+  CategoryTabParamList;

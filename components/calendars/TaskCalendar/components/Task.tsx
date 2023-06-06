@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import React, { useMemo } from 'react';
@@ -29,6 +29,7 @@ import {
 } from 'reduxStore/slices/calendars/selectors';
 import dayjs from 'dayjs';
 import { ScheduledTaskResponseType } from 'types/tasks';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -258,7 +259,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
                 bold={true}
               />
               {['FixedTask', 'DueDate'].includes(task.resourcetype) && (
-                <Pressable
+                <SafePressable
                   onPress={() =>
                     (navigation.navigate as any)('EditTask', {
                       taskId: task.id
@@ -268,7 +269,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
                   <PrimaryText
                     text={t('components.calendar.task.viewOrEdit')}
                   />
-                </Pressable>
+                </SafePressable>
               )}
             </TransparentView>
           </TransparentView>

@@ -19,6 +19,7 @@ import { parsePresignedUrl } from 'utils/urls';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { useThemeColor } from 'components/Themed';
+import SafePressable from 'components/molecules/SafePressable';
 
 export default function ListEntry({
   listEntry
@@ -174,9 +175,11 @@ export default function ListEntry({
         <>
           <TransparentView style={styles.content}>
             <TransparentView style={styles.titleWrapper}>
-              <Pressable onPress={() => updateSelected(!listEntry.selected)}>
+              <SafePressable
+                onPress={() => updateSelected(!listEntry.selected)}
+              >
                 <Checkbox checked={listEntry.selected} />
-              </Pressable>
+              </SafePressable>
               <AlmostBlackText text={listEntry.title} style={styles.title} />
             </TransparentView>
             {imageSource ? (
