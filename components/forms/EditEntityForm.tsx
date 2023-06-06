@@ -4,7 +4,6 @@ import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { EntityTypeName } from 'types/entities';
 import { deepCopy } from 'utils/copy';
 import { useNavigation } from '@react-navigation/native';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 
 import {
   useDeleteEntityMutation,
@@ -13,8 +12,6 @@ import {
   useFormUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
 import GenericError from 'components/molecules/GenericError';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import forms from './entityFormFieldTypes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
@@ -25,8 +22,6 @@ import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const navigation = useNavigation();
 
   const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();

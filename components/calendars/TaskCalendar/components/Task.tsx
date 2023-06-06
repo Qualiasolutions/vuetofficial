@@ -11,14 +11,12 @@ import {
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
-import getUserFullDetails from 'hooks/useGetUserDetails';
 import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
 import { useSelector } from 'react-redux';
@@ -30,6 +28,10 @@ import {
 import dayjs from 'dayjs';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import SafePressable from 'components/molecules/SafePressable';
+import {
+  selectCurrentUserId,
+  selectUserFromId
+} from 'reduxStore/slices/users/selectors';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -164,12 +166,11 @@ const TimeText = ({
 };
 
 function Task({ task: { id, recurrence_index }, date }: PropTypes) {
-  const { data: userDetails } = getUserFullDetails();
-
   const isComplete = useSelector(
     selectIsComplete({ id, recurrenceIndex: recurrence_index })
   );
   const task = useSelector(selectTask(id));
+
   const scheduledTask = useSelector(
     selectScheduledTask({ id, recurrenceIndex: recurrence_index })
   );
@@ -180,20 +181,12 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     | StackNavigationProp<SettingsTabParamList>
   >();
 
+  const currentUserId = useSelector(selectCurrentUserId);
+  const userDetails = useSelector(selectUserFromId(currentUserId || -1));
+  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
+  const { t } = useTranslation();
   const [triggerCreateCompletionForm, createCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
-
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.id
-  });
-
-  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
-
-  const { t } = useTranslation();
 
   const membersList = useMemo(() => {
     if (!task) {
@@ -208,15 +201,6 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     return [...(familyMembersList || []), ...(friendMembersList || [])];
   }, [userDetails, task]);
 
-  const entities = useMemo(() => {
-    if (!allEntities || !task) {
-      return [];
-    }
-    return task.entities
-      .map((entityId) => allEntities.byId[entityId])
-      .filter((ent) => !!ent);
-  }, [task, allEntities]);
-
   const memberColour = useMemo(
     () => (
       <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -229,11 +213,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     ),
     [membersList]
   );
-
   const fullContent = useMemo(() => {
-    if (isLoading || !allEntities) {
-      return null;
-    }
     if (!scheduledTask || !task) {
       return (
         <TransparentView
@@ -290,7 +270,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
         </TransparentView>
         <TransparentView style={styles.bottomWrapper}>
           <TransparentView style={styles.tagsWrapper}>
-            <EntityTags entities={entities} />
+            <EntityTags entities={task.entities} />
           </TransparentView>
           {memberColour}
         </TransparentView>
@@ -301,10 +281,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     task,
     date,
     isComplete,
-    allEntities,
-    entities,
     isCompleteTextColor,
-    isLoading,
     memberColour,
     navigation.navigate,
     t,

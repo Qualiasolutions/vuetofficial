@@ -1,24 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function TripPage({ entityId }: { entityId: number }) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.user_id
-  });
+  } = useGetAllEntitiesQuery(null as any);
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();
 

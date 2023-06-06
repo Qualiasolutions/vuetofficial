@@ -2,7 +2,6 @@ import React from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { SetupTabParamList } from 'types/base';
@@ -10,12 +9,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PageTitle } from 'components/molecules/TextComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
-import {
-  useCreateUserInviteMutation,
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useCreateUserInviteMutation } from 'reduxStore/services/api/user';
 import RTKForm from 'components/forms/RTKForm';
 
 import { deepCopy } from 'utils/copy';
@@ -24,6 +18,7 @@ import {
   FamilyMemberFormFieldTypes
 } from 'screens/SettingsScreens/Forms/familyMemberFormFieldTypes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   container: {
@@ -35,15 +30,7 @@ const styles = StyleSheet.create({
 const AddFamilyMemberScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamilyMember'>) => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 

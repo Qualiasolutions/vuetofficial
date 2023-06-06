@@ -1,9 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import AddEntityForm from 'components/forms/AddEntityForm';
@@ -15,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { datetimeSettingsMapping } from 'components/lists/utils/datetimeSettingsMapping';
 import { entityOrderings } from 'components/lists/utils/entityOrderings';
 import { sectionNameMapping } from 'components/lists/utils/sectionNameMapping';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -37,15 +35,14 @@ export default function ChildEntityList({
   showCreateForm: boolean;
 }) {
   const { t } = useTranslation();
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userDetails } = getUserFullDetails();
   const [monthsBack, setMonthsBack] = useState(0);
   const {
     data: allEntities,
     isLoading,
     error
   } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.user_id
+    skip: !userDetails?.id
   });
   const entityData = allEntities?.byId[entityId];
 

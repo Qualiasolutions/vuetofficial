@@ -1,9 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import ListLink from 'components/molecules/ListLink';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import linkMapping from 'components/entityCards';
@@ -13,7 +10,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { sectionNameMapping } from './utils/sectionNameMapping';
 import { entityOrderings } from './utils/entityOrderings';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
@@ -68,16 +65,12 @@ export default function EntityListPage({
   entityTypeName,
   entityFilters
 }: EntityListPageProps) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
     data: allEntities,
     isLoading,
     isFetching,
     error
-  } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.user_id
-  });
+  } = useGetAllEntitiesQuery(null as any);
   const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
     entityTypes.includes(entity.resourcetype)
   );

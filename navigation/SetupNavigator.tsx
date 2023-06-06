@@ -6,24 +6,13 @@ import CreateAccountScreen from 'screens/SetUpScreens/CreateAccountScreen';
 import AddFamilyScreen from 'screens/SetUpScreens/AddFamilyScreen';
 import WelcomeToVuetScreen from 'screens/SetUpScreens/WelcomeToVuetScreen';
 import AddFamilyMemberScreen from 'screens/SetUpScreens/AddFamilyMemberScreen';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
+
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
 export function SetupNavigator() {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   let initialRouteName = 'CreateAccount' as keyof SetupTabParamList;
 

@@ -2,13 +2,14 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useThemeColor } from 'components/Themed';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   ContentTabParamList,
   RootTabParamList,
   SettingsTabParamList
 } from 'types/base';
-import { EntityResponseType } from 'types/entities';
 import SafePressable from './SafePressable';
 import { BlackText } from './TextComponents';
 
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function EntityTag({ entity }: { entity: EntityResponseType }) {
+export default function EntityTag({ entity }: { entity: number }) {
   const navigation = useNavigation<
     | BottomTabNavigationProp<RootTabParamList>
     | StackNavigationProp<ContentTabParamList>
@@ -31,18 +32,24 @@ export default function EntityTag({ entity }: { entity: EntityResponseType }) {
   >();
   const greyColor = useThemeColor({}, 'grey');
 
+  const entityObj = useSelector(selectEntityById(entity));
+
+  if (!entityObj) {
+    return null;
+  }
+
   return (
     <SafePressable
       onPress={() => {
         (navigation.navigate as any)('ContentNavigator', {
           screen: 'EntityScreen',
           initial: false,
-          params: { entityId: entity.id }
+          params: { entityId: entity }
         });
       }}
     >
       <BlackText
-        text={entity.name}
+        text={entityObj.name}
         style={[styles.tag, { backgroundColor: greyColor }]}
       />
     </SafePressable>

@@ -141,12 +141,6 @@ export type ContentTabParamList = {
     entityTypes: EntityTypeName[];
     includeParentTasks?: boolean;
   };
-  EntityTypesCalendarScreen: {
-    entityTypes: EntityTypeName[];
-  };
-  CategoryCalendarScreen: {
-    categoryId: number;
-  };
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };

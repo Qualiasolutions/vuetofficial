@@ -5,23 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  TransparentContainerView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
-import {
-  familyMemberForm,
-  FamilyMemberFormFieldTypes
-} from './familyMemberFormFieldTypes';
+import { TransparentContainerView } from 'components/molecules/ViewComponents';
 
-import {
-  useCreateUserInviteMutation,
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
-import { deepCopy } from 'utils/copy';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useCreateUserInviteMutation } from 'reduxStore/services/api/user';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { friendForm, FriendFormFieldTypes } from './friendFormFieldTypes';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
@@ -29,22 +15,15 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const CreateUserInviteScreen = ({
   navigation,
   route
 }: NativeStackScreenProps<SettingsTabParamList, 'CreateUserInvite'>) => {
   const isFamilyRequest = route.params?.familyRequest;
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const [phoneNumber, setPhoneNumber] = useState('');
-  const {
-    data: userFullDetails,
-    isLoading,
-    error
-  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
-  });
+  const { data: userFullDetails, isLoading, error } = getUserFullDetails();
 
   const [createUserInvite, createUserInviteResult] =
     useCreateUserInviteMutation();

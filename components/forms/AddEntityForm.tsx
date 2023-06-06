@@ -8,10 +8,7 @@ import {
   useFormCreateEntityMutation,
   useGetAllEntitiesQuery
 } from 'reduxStore/services/api/entities';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -44,9 +41,6 @@ export default function AddEntityForm({
   const navigation = useNavigation();
 
   const { t } = useTranslation();
-
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
 
   const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
 

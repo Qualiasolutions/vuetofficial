@@ -7,15 +7,8 @@ import LinkingConfiguration from './LinkingConfiguration';
 import { useSelector } from 'react-redux';
 import {
   selectAccessToken,
-  selectRefreshToken,
-  selectUsername
+  selectRefreshToken
 } from 'reduxStore/slices/auth/selectors';
-
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
-  useGetUserInvitesQuery
-} from 'reduxStore/services/api/user';
 
 import { UnauthorisedNavigator } from './UnauthorisedNavigator';
 import { SetupNavigator } from './SetupNavigator';

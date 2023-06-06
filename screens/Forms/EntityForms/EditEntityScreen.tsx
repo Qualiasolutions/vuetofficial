@@ -1,11 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ContentTabParamList } from 'types/base';
-
-import { useState } from 'react';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import EditEntityForm from 'components/forms/EditEntityForm';
@@ -22,11 +16,6 @@ export default function EditEntityScreen({
   navigation,
   route
 }: NativeStackScreenProps<ContentTabParamList, 'EditEntity'>) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-
-  const [entityType, setEntityType] = useState<string>('');
-
   useEntityHeader(route.params.entityId as number, false);
 
   const entityIdRaw = route.params.entityId;

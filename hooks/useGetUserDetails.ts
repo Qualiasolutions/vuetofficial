@@ -6,12 +6,11 @@ import {
 import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export default function getUserFullDetails() {
-  const username = useSelector(selectUsername);
   const {
     data: userDetails,
     isLoading: isLoadingUserDetails,
     error: userDetailsError
-  } = useGetUserDetailsQuery(username);
+  } = useGetUserDetailsQuery();
 
   const {
     data: userFullDetails,

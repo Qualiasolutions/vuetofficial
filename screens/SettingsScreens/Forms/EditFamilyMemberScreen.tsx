@@ -7,37 +7,23 @@ import {
 } from './familyMemberFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
 import { deepCopy } from 'utils/copy';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
-  useUpdateUserDetailsMutation
-} from 'reduxStore/services/api/user';
+import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
 import GenericError from 'components/molecules/GenericError';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useLayoutEffect } from 'react';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 export default function EditFamilyMemberScreen({
   route,
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
-
-  const {
-    data: userFullDetails,
-    isLoading,
-    error
-  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
-  });
+  const { data: userFullDetails, isLoading, error } = getUserFullDetails();
 
   const familyMemberIdRaw = route.params.id;
   const familyMemberId =

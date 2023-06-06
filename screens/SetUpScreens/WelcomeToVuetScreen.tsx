@@ -2,43 +2,22 @@ import React, { useEffect } from 'react';
 
 import { Image, StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { SetupTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {
-  PageTitle,
-  PageSubtitle,
-  AlmostBlackText
-} from 'components/molecules/TextComponents';
-import {
-  AlmostWhiteContainerView,
-  TransparentView,
-  WhiteBox
-} from 'components/molecules/ViewComponents';
+import { PageTitle, PageSubtitle } from 'components/molecules/TextComponents';
+import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
-  useUpdateUserDetailsMutation
-} from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const WelcomeToVuetScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
 
@@ -73,9 +52,9 @@ const WelcomeToVuetScreen = ({
       <Button
         title={t('common.continue')}
         onPress={() => {
-          if (userDetails?.user_id) {
+          if (userFullDetails?.id) {
             updateUserDetails({
-              user_id: userDetails?.user_id,
+              user_id: userFullDetails?.id,
               has_done_setup: true
             });
           }

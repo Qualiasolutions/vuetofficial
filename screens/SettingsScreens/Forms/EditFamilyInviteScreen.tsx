@@ -8,35 +8,24 @@ import {
 import RTKForm from 'components/forms/RTKForm';
 import { deepCopy } from 'utils/copy';
 import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
   useGetUserInvitesQuery,
   useUpdateUserInviteMutation
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
 import GenericError from 'components/molecules/GenericError';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { useEffect } from 'react';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 export default function EditEntityScreen({
   route,
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const { t } = useTranslation();
 
-  const {
-    data: userFullDetails,
-    isLoading,
-    error
-  } = useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
-  });
+  const { data: userFullDetails, isLoading, error } = getUserFullDetails();
 
   const { data: allUserInvites } = useGetUserInvitesQuery(
     userFullDetails?.family?.id || -1,

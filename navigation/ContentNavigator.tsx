@@ -15,8 +15,6 @@ import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesCalendarScreen';
 import EntityPeriodsScreen from 'screens/EntityPages/EntityPeriodsScreen';
-import CategoryCalendarScreen from 'screens/EntityPages/CategoryCalendarScreen';
-import EntityTypesCalendarScreen from 'screens/EntityPages/EntityTypesCalendarScreen';
 import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesPeriodsScreen';
 import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
 import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
@@ -114,20 +112,6 @@ export function ContentNavigator() {
       <ContentStack.Screen
         name="ChildEntitiesPeriodsScreen"
         component={ChildEntitiesPeriodsScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="CategoryCalendarScreen"
-        component={CategoryCalendarScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="EntityTypesCalendarScreen"
-        component={EntityTypesCalendarScreen}
         options={{
           headerShown: true
         }}

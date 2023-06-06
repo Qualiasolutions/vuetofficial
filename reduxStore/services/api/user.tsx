@@ -12,7 +12,7 @@ import {
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
-const extendedApi = vuetApi.injectEndpoints({
+const userApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserFullDetails: builder.query<UserFullResponse, number>({
       query: (user_id) => ({
@@ -20,7 +20,7 @@ const extendedApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['User']
     }),
-    getUserDetails: builder.query<AuthDetails, string>({
+    getUserDetails: builder.query<AuthDetails, void>({
       query: () => ({
         url: 'auth/details/'
       }),
@@ -109,4 +109,6 @@ export const {
   useCreateUserInviteMutation,
   useUpdateUserInviteMutation,
   useDeleteUserInviteMutation
-} = extendedApi;
+} = userApi;
+
+export default userApi;

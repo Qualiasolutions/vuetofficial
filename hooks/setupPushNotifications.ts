@@ -7,10 +7,9 @@ import {
   useGetPushTokensQuery,
   useUpdatePushTokenMutation
 } from 'reduxStore/services/api/notifications';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useDispatch } from 'react-redux';
 import { setPushToken } from 'reduxStore/slices/notifications/actions';
+import getUserFullDetails from './useGetUserDetails';
 
 const getPushToken = async (): Promise<string | undefined> => {
   if (Device.isDevice && Platform.OS !== 'web') {
@@ -32,16 +31,13 @@ const getPushToken = async (): Promise<string | undefined> => {
   }
 };
 
-export default function setupPushNotifications() {
+export default function useSetupPushNotifications() {
   const [isSetupComplete, setSetupComplete] = useState<boolean>(false);
   const [createPushToken, result] = useCreatePushTokenMutation();
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username, {
-    skip: !username
-  });
+  const { data: userDetails } = getUserFullDetails();
   const { data: pushTokens, isLoading: isLoadingPushTokens } =
-    useGetPushTokensQuery(userDetails?.user_id || -1, {
-      skip: !userDetails?.user_id
+    useGetPushTokensQuery(userDetails?.id || -1, {
+      skip: !userDetails?.id
     });
   const [updatePushToken, updatePushTokenResult] = useUpdatePushTokenMutation();
   const dispatch = useDispatch();
@@ -93,7 +89,7 @@ export default function setupPushNotifications() {
 
     // Set up notifications if a user is logged in and we
     // have loaded the push tokens from the server
-    if (username && !isLoadingPushTokens && pushTokens) {
+    if (!isLoadingPushTokens && pushTokens) {
       setUp();
     }
   }, [isLoadingPushTokens]);

@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
-  TransparentContainerView,
   TransparentView,
-  WhiteBox,
-  WhiteContainerView,
   WhiteView
 } from 'components/molecules/ViewComponents';
-import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
 import {
   useGetAllEntitiesQuery,
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
+
 import { TextInput } from 'components/Themed';
 import {
   useCreateListEntryMutation,
@@ -31,6 +22,7 @@ import MemberList from 'components/molecules/MemberList';
 import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -59,22 +51,12 @@ const styles = StyleSheet.create({
 });
 
 export default function ListScreen({ entityId }: { entityId: number }) {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userFullDetails } = getUserFullDetails();
   const {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.user_id
-  });
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
+  } = useGetAllEntitiesQuery(null as any);
 
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();

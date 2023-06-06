@@ -5,10 +5,7 @@
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
 import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
-import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useDispatch } from 'react-redux';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';

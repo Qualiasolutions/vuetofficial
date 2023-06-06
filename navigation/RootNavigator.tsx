@@ -28,7 +28,7 @@ import {
   AlmostBlackText,
   PrimaryText
 } from 'components/molecules/TextComponents';
-import setupPushNotifications from 'hooks/setupPushNotifications';
+import useSetupPushNotifications from 'hooks/setupPushNotifications';
 import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
@@ -81,9 +81,7 @@ const BarIcon = ({
 
 export function BottomTabNavigator() {
   const { t } = useTranslation();
-
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userDetails } = useGetUserDetailsQuery();
 
   useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
     refetchOnMountOrArgChange: true,
@@ -109,7 +107,7 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
 
-  setupPushNotifications();
+  useSetupPushNotifications();
 
   return (
     <BottomTab.Navigator

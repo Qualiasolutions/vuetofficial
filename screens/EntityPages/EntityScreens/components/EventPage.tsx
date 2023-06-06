@@ -3,15 +3,12 @@ import {
   useGetAllEntitiesQuery,
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import {
   TransparentContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   AlmostBlackText,
   BlackText,
@@ -35,15 +32,11 @@ export default function EventScreen({ entityId }: { entityId: number }) {
 
   const { t } = useTranslation();
 
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
   const {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.user_id
-  });
+  } = useGetAllEntitiesQuery(null as any);
   const entityData = allEntities?.byId[entityId];
 
   const styles = style();

@@ -5,15 +5,12 @@ import {
   useGetAllEntitiesQuery,
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
-import { useGetUserDetailsQuery } from 'reduxStore/services/api/user';
 import {
   TransparentContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
 import {
   AlmostBlackText,
@@ -26,6 +23,43 @@ import { Modal } from 'components/molecules/Modals';
 import { TextInput, useThemeColor } from 'components/Themed';
 import Layout from 'constants/Layout';
 import { Ionicons } from '@expo/vector-icons';
+import getUserFullDetails from 'hooks/useGetUserDetails';
+import SafePressable from 'components/molecules/SafePressable';
+
+const useStyle = function () {
+  return StyleSheet.create({
+    container: {},
+    detailsContainer: {
+      alignItems: 'center',
+      marginBottom: 20
+    },
+    name: {
+      fontSize: 26
+    },
+    birthDetail: {
+      fontSize: 24
+    },
+    addNewContainer: {
+      height: 198,
+      width: Layout.window.width - 120,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    addNewHeader: {
+      fontSize: 18
+    },
+    addNewButton: {
+      backgroundColor: useThemeColor({}, 'buttonDefault'),
+      height: 37,
+      width: 152,
+      borderRadius: 10,
+      marginTop: 26,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    input: { width: '100%', flex: 0 }
+  });
+};
 
 export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
@@ -34,14 +68,14 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
   const [itemName, setItemName] = useState('');
 
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
+  const { data: userDetails } = getUserFullDetails();
+
   const {
     data: allEntities,
     isLoading,
     error
   } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.user_id
+    skip: !userDetails?.id
   });
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();
@@ -49,7 +83,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   const startDate = getDateWithoutTimezone(entityData?.start_date);
   const { age, monthName, date, year } = getDaysToAge(startDate);
 
-  const styles = style();
+  const styles = useStyle();
 
   const birthdayDetails = (
     <TransparentView style={styles.detailsContainer}>
@@ -160,38 +194,3 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     </WhiteFullPageScrollView>
   );
 }
-
-const style = function () {
-  return StyleSheet.create({
-    container: {},
-    detailsContainer: {
-      alignItems: 'center',
-      marginBottom: 20
-    },
-    name: {
-      fontSize: 26
-    },
-    birthDetail: {
-      fontSize: 24
-    },
-    addNewContainer: {
-      height: 198,
-      width: Layout.window.width - 120,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    addNewHeader: {
-      fontSize: 18
-    },
-    addNewButton: {
-      backgroundColor: useThemeColor({}, 'buttonDefault'),
-      height: 37,
-      width: 152,
-      borderRadius: 10,
-      marginTop: 26,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    input: { width: '100%', flex: 0 }
-  });
-};

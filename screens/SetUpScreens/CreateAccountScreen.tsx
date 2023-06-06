@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { TextInput } from 'components/Themed';
@@ -22,16 +21,14 @@ import {
 } from 'components/molecules/ViewComponents';
 import {
   useFormUpdateUserDetailsMutation,
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
   useUpdateUserDetailsMutation
 } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import { WhiteDateInput } from 'components/forms/components/DateInputs';
 import { ColorPicker } from 'components/forms/components/ColorPickers';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import dayjs from 'dayjs';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -60,14 +57,7 @@ const styles = StyleSheet.create({
 const CreateAccountScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'CreateAccount'>) => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   const [firstName, onChangeFirstName] = React.useState<string>('');
   const [lastName, onChangeLastName] = React.useState<string>('');
@@ -99,7 +89,7 @@ const CreateAccountScreen = ({
     ) {
       navigation.push('AddFamily');
     }
-  }, [userDetails, userFullDetails, navigation]);
+  }, [userFullDetails, navigation]);
 
   if (!userFullDetails) {
     return null;
@@ -184,10 +174,10 @@ const CreateAccountScreen = ({
         title={t('common.next')}
         disabled={!hasAllRequired}
         onPress={async () => {
-          if (userDetails?.user_id) {
+          if (userFullDetails?.id) {
             try {
               await updateUserDetails({
-                user_id: userDetails?.user_id,
+                user_id: userFullDetails?.id,
                 first_name: firstName,
                 last_name: lastName,
                 dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),

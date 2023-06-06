@@ -2,7 +2,6 @@ import React from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/molecules/ButtonComponents';
@@ -18,18 +17,14 @@ import {
   AlmostWhiteContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
-  useGetUserInvitesQuery
-} from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
+import { useGetUserInvitesQuery } from 'reduxStore/services/api/user';
 import {
   PickedFile,
   WhiteImagePicker
 } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import SafePressable from 'components/molecules/SafePressable';
+import getUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   confirmButton: {
@@ -48,15 +43,7 @@ const styles = StyleSheet.create({
 const AddFamilyScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
-  const username = useSelector(selectUsername);
-  const { data: userDetails } = useGetUserDetailsQuery(username);
-  const { data: userFullDetails } = useGetUserFullDetailsQuery(
-    userDetails?.user_id || -1,
-    {
-      // refetchOnMountOrArgChange: true,
-      skip: !userDetails?.user_id
-    }
-  );
+  const { data: userFullDetails } = getUserFullDetails();
 
   const { data: userInvites } = useGetUserInvitesQuery(
     userFullDetails?.family?.id || -1
