@@ -102,9 +102,11 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
     return null;
   }
 
-  const refViews = references.map((ref) => (
-    <ReferenceItem name={ref.name} value={ref.value} key={ref.id} />
-  ));
+  const refViews = references
+    .sort((a, b) => a.id > b.id)
+    .map((ref) => (
+      <ReferenceItem name={ref.name} value={ref.value} key={ref.id} />
+    ));
 
   return (
     <TransparentView style={entityRefStyles.container}>

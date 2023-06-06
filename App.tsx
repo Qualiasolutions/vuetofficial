@@ -21,6 +21,7 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import './i18n/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
+import { enableFreeze } from 'react-native-screens';
 
 const persistConfig = {
   key: 'root',
@@ -44,6 +45,8 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 setupListeners(store.dispatch);
+
+enableFreeze();
 
 export default function App() {
   const loadedCachedResources = useCachedResources();
