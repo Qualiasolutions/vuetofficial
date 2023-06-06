@@ -4,10 +4,7 @@ import EntityListPage from 'components/lists/EntityListPage';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  selectScheduledTaskIdsByEntityIds,
-  selectScheduledTaskIdsByEntityTypes
-} from 'reduxStore/slices/calendars/selectors';
+import { selectScheduledTaskIdsByEntityTypes } from 'reduxStore/slices/calendars/selectors';
 import { EntityTabParamList } from 'types/base';
 import { EntityTypeName } from 'types/entities';
 
@@ -34,7 +31,13 @@ export default function EntityTypeNavigator({
   }, [entityTypes, entityTypeName]);
 
   const calendarComponent = useMemo(() => {
-    return () => <Calendar fullPage={false} filteredTasks={filteredTasks} />;
+    return () => (
+      <Calendar
+        fullPage={false}
+        showFilters={false}
+        filteredTasks={filteredTasks}
+      />
+    );
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {

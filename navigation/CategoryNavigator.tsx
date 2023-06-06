@@ -23,7 +23,13 @@ export default function CategoryNavigator({
   }, [categoryId]);
 
   const calendarComponent = useMemo(() => {
-    return () => <Calendar fullPage={false} filteredTasks={filteredTasks} />;
+    return () => (
+      <Calendar
+        fullPage={false}
+        showFilters={false}
+        filteredTasks={filteredTasks}
+      />
+    );
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {

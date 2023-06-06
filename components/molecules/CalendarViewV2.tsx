@@ -22,7 +22,7 @@ export type CalendarViewProps = {
 
 function useStyle() {
   return StyleSheet.create({
-    container: { height: '100%', marginBottom: 50 },
+    container: { height: '100%', marginBottom: 0 },
     dayComponent: {
       width: 58,
       height: 70,

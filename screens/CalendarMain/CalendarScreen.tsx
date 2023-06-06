@@ -23,7 +23,11 @@ export default function CalendarScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Calendar fullPage={true} filteredTasks={filteredTasks} />
+      <Calendar
+        fullPage={true}
+        filteredTasks={filteredTasks}
+        showFilters={true}
+      />
     </SafeAreaView>
   );
 }

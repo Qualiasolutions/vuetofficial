@@ -59,11 +59,13 @@ const SECTION_HEADER_HEIGHT = 40;
 
 function Calendar({
   tasks,
-  onChangeFirstDate
+  onChangeFirstDate,
+  showFilters
 }: {
   tasks: { [date: string]: MinimalScheduledTask[] };
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
+  showFilters?: boolean;
 }) {
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
@@ -259,6 +261,7 @@ function Calendar({
               pastMonthsToShow < 24 &&
               pastSections.length > shownSections.length - futureSections.length
             }
+            showFilters={showFilters}
             onLoadMore={() => {
               // Suuuuuuuper hacky way to make the button
               // a little bit more responsive to clicks

@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
 
 type CalendarProps = {
   fullPage: boolean;
+  showFilters?: boolean;
   filteredTasks: {
     [key: string]: (MinimalScheduledTask & {
       start_datetime?: string | undefined;
@@ -41,7 +42,7 @@ type CalendarProps = {
     })[];
   };
 };
-function Calendar({ fullPage, filteredTasks }: CalendarProps) {
+function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery();
@@ -61,6 +62,7 @@ function Calendar({ fullPage, filteredTasks }: CalendarProps) {
           onChangeFirstDate={(date) => {
             dispatch(setListEnforcedDate({ date }));
           }}
+          showFilters={showFilters}
         />
       </TransparentView>
     );

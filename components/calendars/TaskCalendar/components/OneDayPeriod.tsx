@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { useThemeColor } from 'components/Themed';
 import React from 'react';
 import { useGetUserFullDetailsQuery } from 'reduxStore/services/api/user';
 

@@ -184,10 +184,12 @@ const FiltersModal = ({
 export default function ListHeaderComponent({
   loading,
   showLoadMore,
+  showFilters,
   onLoadMore
 }: {
   loading: boolean;
   showLoadMore: boolean;
+  showFilters: boolean;
   onLoadMore: () => void;
 }) {
   const { t } = useTranslation();
@@ -209,13 +211,15 @@ export default function ListHeaderComponent({
           style={styles.loadMoreButton}
         />
       )}
-      <SafePressable
-        onPress={() => {
-          setFiltersModalOpen(true);
-        }}
-      >
-        <Image source={require('assets/images/icons/filter.png')} />
-      </SafePressable>
+      {showFilters && (
+        <SafePressable
+          onPress={() => {
+            setFiltersModalOpen(true);
+          }}
+        >
+          <Image source={require('assets/images/icons/filter.png')} />
+        </SafePressable>
+      )}
       <FiltersModal
         visible={filtersModalOpen}
         onRequestClose={() => setFiltersModalOpen(false)}
