@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
@@ -19,6 +21,10 @@ import {
   selectAlertsByTaskId
 } from 'reduxStore/slices/alerts/selectors';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectCurrentUserId,
+  selectFamilyMemberFromId
+} from 'reduxStore/slices/users/selectors';
 
 const alertEntryStyles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center' },
@@ -26,6 +32,10 @@ const alertEntryStyles = StyleSheet.create({
 });
 const AlertEntry = ({ alertId }: { alertId: number }) => {
   const alert = useSelector(selectAlertById(alertId));
+  const currentUserId = useSelector(selectCurrentUserId);
+  const user = useSelector(
+    selectFamilyMemberFromId(currentUserId || -1, alert?.user || -1)
+  );
   const { t } = useTranslation();
   const [deleteAlert] = useDeleteAlertMutation();
 
@@ -35,7 +45,14 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
 
   return (
     <TransparentView style={alertEntryStyles.container}>
-      <Text>{alert.type}</Text>
+      <TransparentView>
+        <Text>
+          {alert.type} for{' '}
+          {currentUserId === user?.id
+            ? 'you'
+            : `${user?.first_name} ${user?.last_name}`}
+        </Text>
+      </TransparentView>
       <Pressable
         onPress={async () => {
           try {
@@ -48,7 +65,9 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
           }
         }}
       >
-        <Text style={alertEntryStyles.ignoreButtonText}>X</Text>
+        {currentUserId === user?.id && (
+          <Text style={alertEntryStyles.ignoreButtonText}>X</Text>
+        )}
       </Pressable>
     </TransparentView>
   );
@@ -60,6 +79,7 @@ const taskAlertStyles = StyleSheet.create({
 const TaskAlerts = ({ taskId }: { taskId: number }) => {
   const task = useSelector(selectTaskById(taskId));
   const alerts = useSelector(selectAlertsByTaskId(taskId));
+  const navigation = useNavigation();
 
   if (!task || alerts.length === 0) {
     return null;
@@ -70,13 +90,16 @@ const TaskAlerts = ({ taskId }: { taskId: number }) => {
   ));
 
   return (
-    <WhiteBox style={taskAlertStyles.card}>
+    <ElevatedPressableBox
+      style={taskAlertStyles.card}
+      onPress={() => (navigation.navigate as any)('EditTask', { taskId })}
+    >
       <Text>{task.title}</Text>
       <Text>
         {task.start_datetime} - {task.end_datetime}
       </Text>
       {alertList}
-    </WhiteBox>
+    </ElevatedPressableBox>
   );
 };
 export default function AlertsList() {

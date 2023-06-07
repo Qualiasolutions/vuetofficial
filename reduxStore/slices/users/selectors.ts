@@ -13,3 +13,16 @@ export const selectUserFromId = (userId: number) =>
       return user.data;
     }
   );
+
+export const selectFamilyMemberFromId = (
+  userId: number,
+  familyMemberId: number
+) =>
+  createSelector(
+    userApi.endpoints.getUserFullDetails.select(userId),
+    (user) => {
+      return user.data?.family.users.find(
+        (familyMember) => familyMember.id === familyMemberId
+      );
+    }
+  );
