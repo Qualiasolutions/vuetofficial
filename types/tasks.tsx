@@ -36,6 +36,7 @@ interface BaseTaskType {
   recurrence?: Recurrence | null;
   recurrence_index?: number;
   reminders: Reminder[];
+  created_at: string;
   date?: string;
   duration?: string;
   start_datetime?: string;

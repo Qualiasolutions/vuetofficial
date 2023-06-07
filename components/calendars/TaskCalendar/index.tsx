@@ -21,6 +21,7 @@ import MonthSelector from './components/MonthSelector';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 import { MinimalScheduledTask } from './components/Task';
 import AlertsList from 'components/organisms/AlertsList';
+import NewItemsList from 'components/organisms/NewItemsList';
 
 dayjs.extend(utc);
 
@@ -102,7 +103,7 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
     },
     {
       title: 'New',
-      component: () => null
+      component: NewItemsList
     }
   ];
 

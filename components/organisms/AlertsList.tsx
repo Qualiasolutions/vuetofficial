@@ -18,7 +18,7 @@ import {
   selectAlertById,
   selectAlertsByTaskId
 } from 'reduxStore/slices/alerts/selectors';
-import { selectTaskById } from 'reduxStore/slices/calendars/selectors';
+import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 
 const alertEntryStyles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center' },

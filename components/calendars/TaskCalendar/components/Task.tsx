@@ -22,8 +22,7 @@ import EntityTags from 'components/molecules/EntityTags';
 import { useSelector } from 'react-redux';
 import {
   selectIsComplete,
-  selectScheduledTask,
-  selectTaskById
+  selectScheduledTask
 } from 'reduxStore/slices/calendars/selectors';
 import dayjs from 'dayjs';
 import { ScheduledTaskResponseType } from 'types/tasks';
@@ -32,6 +31,7 @@ import {
   selectCurrentUserId,
   selectUserFromId
 } from 'reduxStore/slices/users/selectors';
+import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 
 const styles = StyleSheet.create({
   titleContainer: {

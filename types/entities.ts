@@ -30,6 +30,7 @@ export interface BaseEntityType {
   id: number;
   name: string;
   category: number;
+  created_at: string;
   resourcetype: EntityTypeName;
   child_entities: number[];
   [key: string]: any;
