@@ -17,9 +17,11 @@ export default function EntityTypeNavigator({
   entityTypes: EntityTypeName[];
   entityTypeName: string;
 }) {
-  const filteredTasks = useSelector(
-    selectScheduledTaskIdsByEntityTypes(entityTypes)
+  const taskSelector = useMemo(
+    () => selectScheduledTaskIdsByEntityTypes(entityTypes),
+    [entityTypes]
   );
+  const filteredTasks = useSelector(taskSelector);
 
   const homeComponent = useMemo(() => {
     return () => (

@@ -14,9 +14,11 @@ export default function CategoryNavigator({
 }: {
   categoryId: number;
 }) {
-  const filteredTasks = useSelector(
-    selectScheduledTaskIdsByCategories([categoryId])
+  const taskSelector = useMemo(
+    () => selectScheduledTaskIdsByCategories([categoryId]),
+    [categoryId]
   );
+  const filteredTasks = useSelector(taskSelector);
 
   const homeComponent = useMemo(() => {
     return () => <CategoryHome categoryId={categoryId} />;

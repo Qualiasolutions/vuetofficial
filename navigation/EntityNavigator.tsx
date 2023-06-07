@@ -9,9 +9,11 @@ import { EntityTabParamList } from 'types/base';
 const TopTabs = createMaterialTopTabNavigator<EntityTabParamList>();
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
-  const filteredTasks = useSelector(
-    selectScheduledTaskIdsByEntityIds([entityId])
+  const taskSelector = useMemo(
+    () => selectScheduledTaskIdsByEntityIds([entityId]),
+    [entityId]
   );
+  const filteredTasks = useSelector(taskSelector);
 
   const homeComponent = useMemo(() => {
     return () => null;

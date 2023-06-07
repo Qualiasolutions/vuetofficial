@@ -239,7 +239,7 @@ function Calendar({
         sections={shownSections}
         initialNumToRender={10}
         removeClippedSubviews={true}
-        scrollEventThrottle={100}
+        scrollEventThrottle={1000}
         renderSectionHeader={({ section }) => {
           return (
             <AlmostWhiteView
@@ -262,7 +262,7 @@ function Calendar({
               pastMonthsToShow < 24 &&
               pastSections.length > shownSections.length - futureSections.length
             }
-            showFilters={showFilters}
+            showFilters={!!showFilters}
             onLoadMore={() => {
               // Suuuuuuuper hacky way to make the button
               // a little bit more responsive to clicks

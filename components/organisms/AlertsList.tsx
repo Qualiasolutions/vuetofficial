@@ -102,6 +102,11 @@ const TaskAlerts = ({ taskId }: { taskId: number }) => {
     </ElevatedPressableBox>
   );
 };
+
+const listStyles = StyleSheet.create({
+  container: { paddingBottom: 300 }
+});
+
 export default function AlertsList() {
   const { t } = useTranslation();
   const { data: allAlerts, isLoading: isLoadingAlerts } =
@@ -129,7 +134,7 @@ export default function AlertsList() {
 
   return (
     <TransparentFullPageScrollView>
-      <TransparentPaddedView>
+      <TransparentPaddedView style={listStyles.container}>
         <Text>ALERTS</Text>
         {taskAlerts}
       </TransparentPaddedView>
