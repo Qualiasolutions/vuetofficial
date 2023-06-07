@@ -87,7 +87,7 @@ export default function Tabs({ tabs }: TabsProps) {
                 >
                   <TransparentView
                     style={
-                      selectedTabIndex == index
+                      selectedTabIndex === index
                         ? styles.selectedTab
                         : styles.unSelectedTab
                     }

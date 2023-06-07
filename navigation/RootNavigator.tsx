@@ -34,6 +34,7 @@ import BottomNavBar from 'components/navBar/BottomNavBar';
 import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
 import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
 import ChatScreen from 'screens/ChatScreen';
+import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 
 const styles = StyleSheet.create({
   icon: {
@@ -104,6 +105,9 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
   useGetAllScheduledTasksQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetAllAlertsQuery(null as any, {
     skip: !userDetails?.user_id
   });
 

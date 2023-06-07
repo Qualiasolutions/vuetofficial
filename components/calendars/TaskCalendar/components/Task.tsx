@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import {
   selectIsComplete,
   selectScheduledTask,
-  selectTask
+  selectTaskById
 } from 'reduxStore/slices/calendars/selectors';
 import dayjs from 'dayjs';
 import { ScheduledTaskResponseType } from 'types/tasks';
@@ -169,7 +169,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
   const isComplete = useSelector(
     selectIsComplete({ id, recurrenceIndex: recurrence_index })
   );
-  const task = useSelector(selectTask(id));
+  const task = useSelector(selectTaskById(id));
 
   const scheduledTask = useSelector(
     selectScheduledTask({ id, recurrenceIndex: recurrence_index })

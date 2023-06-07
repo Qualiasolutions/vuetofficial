@@ -41,6 +41,7 @@ const normalizeCategoryData = (data: { id: number; name: string }[]) => {
 export const vuetApi = createApi({
   reducerPath: 'vuetApi',
   tagTypes: [
+    'Alert',
     'Entity',
     'Task',
     'TaskLimit',

@@ -1,3 +1,5 @@
+import { AlertName } from './alerts';
+
 type RecurrenceType =
   | 'DAILY'
   | 'WEEKLY'
@@ -59,8 +61,6 @@ interface FlexibleTaskParsedType extends BaseTaskType {
   due_date: Date;
   resourcetype: 'FlexibleTask';
 }
-
-type AlertName = 'FIXED_TASK_CONFLICT' | 'NO_PLACEMENT' | 'UNPREFERRED_DAY';
 
 interface ScheduledTaskResponseType {
   id: number;
