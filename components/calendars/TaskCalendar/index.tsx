@@ -3,7 +3,7 @@
 */
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -50,6 +50,8 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
     useGetTaskCompletionFormsQuery();
   const dispatch = useDispatch();
 
+  const [responsiveCalendar, setResponsiveCalendar] = useState(false);
+
   const MARGIN_BOTTOM = 150;
   const listView = useMemo(() => {
     if (!filteredTasks) {
@@ -78,9 +80,10 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
         onChangeDate={(date) => {
           dispatch(setMonthEnforcedDate({ date }));
         }}
+        hidden={!responsiveCalendar}
       />
     );
-  }, [dispatch, filteredTasks]);
+  }, [dispatch, filteredTasks, responsiveCalendar]);
 
   const isLoading = isLoadingTaskCompletionForms;
   if (isLoading) {
@@ -94,7 +97,7 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
     },
     {
       title: 'Month',
-      // component: () => {}
+      // component: () => null
       component: calendarView
     },
     {
@@ -106,6 +109,7 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
       component: NewItemsList
     }
   ];
+  const calendarIndex = 1;
 
   return (
     <TransparentView style={styles.container}>
@@ -119,7 +123,16 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
         }}
         fullPage={fullPage}
       />
-      <Tabs tabs={tabs} />
+      <Tabs
+        tabs={tabs}
+        onChangeIndex={(index) => {
+          if (index === calendarIndex) {
+            setResponsiveCalendar(true);
+          } else {
+            setResponsiveCalendar(false);
+          }
+        }}
+      />
     </TransparentView>
   );
 }

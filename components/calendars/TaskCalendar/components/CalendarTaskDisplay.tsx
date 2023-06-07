@@ -239,6 +239,7 @@ function Calendar({
         sections={shownSections}
         initialNumToRender={10}
         removeClippedSubviews={true}
+        scrollEventThrottle={100}
         renderSectionHeader={({ section }) => {
           return (
             <AlmostWhiteView

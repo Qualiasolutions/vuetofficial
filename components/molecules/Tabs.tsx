@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentClass, useEffect } from 'react';
 import { Text, useThemeColor } from 'components/Themed';
 import { FlatList, StyleSheet } from 'react-native';
 import { TransparentView, WhiteView } from './ViewComponents';
@@ -47,25 +47,41 @@ type Tab = {
   component: () => JSX.Element | null;
 };
 
+const Page = React.memo(
+  ({
+    Component,
+    selected
+  }: {
+    Component: () => JSX.Element | null;
+    selected: boolean;
+  }) => {
+    return (
+      <TransparentView style={selected ? {} : { height: 0 }}>
+        <Component />
+      </TransparentView>
+    );
+  }
+);
+
 type TabsProps = {
   tabs: Array<Tab>;
+  onChangeIndex?: (index: number) => void;
 };
 
-export default function Tabs({ tabs }: TabsProps) {
+export default function Tabs({ tabs, onChangeIndex }: TabsProps) {
   const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
   const styles = useStyle();
 
   const components = tabs.map((tab, i) => {
     const Component = tab.component;
-    return (
-      <TransparentView
-        key={i}
-        style={selectedTabIndex === i ? {} : { height: 0 }}
-      >
-        <Component />
-      </TransparentView>
-    );
+    return <Page Component={Component} selected={selectedTabIndex === i} />;
   });
+
+  useEffect(() => {
+    if (onChangeIndex) {
+      onChangeIndex(selectedTabIndex);
+    }
+  }, [selectedTabIndex]);
 
   return (
     <WhiteView style={styles.container}>

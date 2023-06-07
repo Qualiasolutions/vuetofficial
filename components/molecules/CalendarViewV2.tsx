@@ -18,6 +18,7 @@ export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };
   periods: ParsedPeriod[];
   onChangeDate?: (date: string) => void;
+  hidden?: boolean;
 };
 
 function useStyle() {
@@ -55,11 +56,11 @@ const ListedTask = ({
   return <Text style={styles.taskText}>{task.title}</Text>;
 };
 
-export default function CalendarView({
+const CalendarContent = ({
   onChangeDate,
   tasks,
   periods
-}: CalendarViewProps) {
+}: CalendarViewProps) => {
   const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(
     null
   );
@@ -147,5 +148,23 @@ export default function CalendarView({
         }}
       />
     </WhiteFullPageScrollView>
+  );
+};
+
+export default function CalendarView({
+  onChangeDate,
+  tasks,
+  periods,
+  hidden
+}: CalendarViewProps) {
+  if (hidden) {
+    return null;
+  }
+  return (
+    <CalendarContent
+      onChangeDate={onChangeDate}
+      tasks={tasks}
+      periods={periods}
+    />
   );
 }
