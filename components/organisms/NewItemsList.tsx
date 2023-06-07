@@ -1,8 +1,9 @@
+import { useNavigation } from '@react-navigation/native';
+import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentPaddedView,
-  TransparentView,
-  WhiteBox
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import { StyleSheet } from 'react-native';
@@ -16,31 +17,52 @@ import {
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
 
+const cardStyles = StyleSheet.create({
+  card: { marginBottom: 5 }
+});
 const NewEntityCard = ({ entityId }: { entityId: number }) => {
   const entity = useSelector(selectEntityById(entityId));
+  const navigation = useNavigation();
 
   if (!entity) {
     return null;
   }
   return (
-    <WhiteBox>
+    <ElevatedPressableBox
+      style={cardStyles.card}
+      onPress={() => {
+        (navigation.navigate as any)('ContentNavigator', {
+          screen: 'EntityScreen',
+          initial: false,
+          params: { entityId }
+        });
+      }}
+    >
       <Text>{entity.name}</Text>
-      <Text>Created on {new String(new Date(entity.created_at))}</Text>
-    </WhiteBox>
+      <Text>Created on {String(new Date(entity.created_at))}</Text>
+    </ElevatedPressableBox>
   );
 };
 
 const NewTaskCard = ({ taskId }: { taskId: number }) => {
   const task = useSelector(selectTaskById(taskId));
+  const navigation = useNavigation();
 
   if (!task) {
     return null;
   }
   return (
-    <WhiteBox>
+    <ElevatedPressableBox
+      style={cardStyles.card}
+      onPress={() => {
+        (navigation.navigate as any)('EditTask', {
+          taskId: task.id
+        });
+      }}
+    >
       <Text>{task.title}</Text>
-      <Text>Created on {new String(new Date(task.created_at))}</Text>
-    </WhiteBox>
+      <Text>Created on {String(new Date(task.created_at))}</Text>
+    </ElevatedPressableBox>
   );
 };
 
