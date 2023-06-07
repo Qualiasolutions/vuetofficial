@@ -39,7 +39,7 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
       <Pressable
         onPress={async () => {
           try {
-            await deleteAlert({ id: alertId }).unwrap();
+            await deleteAlert({ id: alertId, task: alert.task }).unwrap();
           } catch (err) {
             Toast.show({
               type: 'error',
@@ -61,7 +61,7 @@ const TaskAlerts = ({ taskId }: { taskId: number }) => {
   const task = useSelector(selectTaskById(taskId));
   const alerts = useSelector(selectAlertsByTaskId(taskId));
 
-  if (!task) {
+  if (!task || alerts.length === 0) {
     return null;
   }
 
@@ -80,6 +80,7 @@ const TaskAlerts = ({ taskId }: { taskId: number }) => {
   );
 };
 export default function AlertsList() {
+  const { t } = useTranslation();
   const { data: allAlerts, isLoading: isLoadingAlerts } =
     useGetAllAlertsQuery();
 
@@ -92,10 +93,16 @@ export default function AlertsList() {
   );
 
   if (alertedTasks.length === 0) {
-    return <Text>NO ALERTS</Text>;
+    return (
+      <TransparentPaddedView>
+        <Text>{t('components.alertsList.noAlerts')}</Text>
+      </TransparentPaddedView>
+    );
   }
 
-  const taskAlerts = alertedTasks.map((task) => <TaskAlerts taskId={task} />);
+  const taskAlerts = alertedTasks.map((task) => (
+    <TaskAlerts taskId={task} key={task} />
+  ));
 
   return (
     <TransparentFullPageScrollView>

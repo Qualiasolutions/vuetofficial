@@ -91,7 +91,8 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      // invalidatesTags: ['Task'],
+      // invalidatesTags: ['Task', 'Alert'],
+      invalidatesTags: ['Alert'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -173,13 +174,14 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Task'],
+      invalidatesTags: ['Task', 'Alert'], // We leave task invalidation because recurrence requires this
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
       ) {
         try {
           const { data: newTask } = await queryFulfilled;
+
           for (const {
             endpointName,
             originalArgs
@@ -248,13 +250,15 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      // invalidatesTags: ['Task'],
+      // invalidatesTags: ['Task', 'Alert'],
+      invalidatesTags: ['Alert'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
       ) {
         try {
           const { data: newTask } = await queryFulfilled;
+
           for (const {
             endpointName,
             originalArgs
@@ -317,7 +321,7 @@ const tasksApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Task']
+      invalidatesTags: ['Task', 'Alert']
     })
   }),
   overrideExisting: true

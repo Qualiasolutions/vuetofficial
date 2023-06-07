@@ -452,6 +452,9 @@
     }
   },
   "components": {
+    "alertsList": {
+      "noAlerts": "You currently have no task conflict alerts"
+    },
     "genericError": {
       "message": "An unexpected error occurred"
     },

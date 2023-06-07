@@ -43,14 +43,49 @@ const alertsApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['Alert']
     }),
-    deleteAlert: builder.mutation<void, Pick<Alert, 'id'>>({
+    deleteAlert: builder.mutation<void, Pick<Alert, 'id' | 'task'>>({
       query: (body) => {
         return {
           url: `core/alert/${body.id}/`,
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Alert']
+      invalidatesTags: ['Alert'],
+      async onQueryStarted(
+        { id: idToDelete, task },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of alertsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Alert' }
+        ])) {
+          if (endpointName !== 'getAllAlerts') continue;
+          const patchResult = dispatch(
+            alertsApi.util.updateQueryData(
+              'getAllAlerts',
+              originalArgs,
+              (draft) => {
+                draft.ids = draft.ids.filter((id) => id !== idToDelete);
+                draft.byTask[task] = draft.byTask[task].filter(
+                  (id) => id !== idToDelete
+                );
+                delete draft.byId[idToDelete];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
