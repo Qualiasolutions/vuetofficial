@@ -135,8 +135,6 @@ export default function ValidationCodeInput({
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
       <SafePressable
         onPress={() => {
-          console.log('RESEND');
-          console.log(phoneNumber);
           if (isEmail) {
             createEmailValidation({
               email: phoneNumber

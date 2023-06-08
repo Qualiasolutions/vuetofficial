@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
 const CreatePasswordScreen = ({
   route
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'CreatePassword'>) => {
-  console.log('CreatePasswordScreen');
   const [password, onChangePassword] = React.useState<string>('');
   const [passwordConfirm, onChangePasswordConfirm] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');

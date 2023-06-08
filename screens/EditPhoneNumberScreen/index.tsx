@@ -6,7 +6,7 @@ import {
 import { Text, TextInput } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import getUserFullDetails from 'hooks/useGetUserDetails';
-import { FullPageSpinner } from 'components/molecules/Spinners';
+import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { useMemo, useState } from 'react';
 import { Button } from 'components/molecules/ButtonComponents';
@@ -47,9 +47,11 @@ export function EditPhoneNumberScreen() {
   const [switchingToPhone, setSwitchingToPhone] = useState(false);
   const [validationId, setValidationId] = useState<number | null>(null);
   const [updateUserDetails] = useUpdateUserDetailsMutation();
-  const [createPhoneValidation] = useCreatePhoneValidationMutation();
+  const [createPhoneValidation, phoneValidationResult] =
+    useCreatePhoneValidationMutation();
 
-  const [createEmailValidation] = useCreateEmailValidationMutation();
+  const [createEmailValidation, emailValidationResult] =
+    useCreateEmailValidationMutation();
 
   const isEmail = useMemo(() => {
     return userDetails && !userDetails.phone_number && !!userDetails.email;
@@ -174,48 +176,52 @@ export function EditPhoneNumberScreen() {
             />
           </SafePressable>
         )}
-        <Button
-          title={t('common.update')}
-          onPress={async () => {
-            await createValidation()
-              .then((res) => {
-                setValidationId(res.id);
-              })
-              .catch((err) => {
-                if (isInvalidPhoneNumberError(err)) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.editPhoneNumber.invalidPhone')
-                  });
-                } else if (isInvalidEmailError(err)) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.editPhoneNumber.invalidEmail')
-                  });
-                } else if (isTakenPhoneNumberError(err)) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.editPhoneNumber.takenPhone')
-                  });
-                } else if (isTakenEmailError(err)) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.editPhoneNumber.takenEmail')
-                  });
-                } else {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.generic')
-                  });
-                }
-              });
-          }}
-          disabled={
-            (savingEmail && !EmailValidator.validate(newEmail)) ||
-            (!savingEmail && newPhone.length < 9)
-          }
-          style={styles.submitButton}
-        />
+        {phoneValidationResult.isLoading || emailValidationResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <Button
+            title={t('common.update')}
+            onPress={async () => {
+              await createValidation()
+                .then((res) => {
+                  setValidationId(res.id);
+                })
+                .catch((err) => {
+                  if (isInvalidPhoneNumberError(err)) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('screens.editPhoneNumber.invalidPhone')
+                    });
+                  } else if (isInvalidEmailError(err)) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('screens.editPhoneNumber.invalidEmail')
+                    });
+                  } else if (isTakenPhoneNumberError(err)) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('screens.editPhoneNumber.takenPhone')
+                    });
+                  } else if (isTakenEmailError(err)) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('screens.editPhoneNumber.takenEmail')
+                    });
+                  } else {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('common.errors.generic')
+                    });
+                  }
+                });
+            }}
+            disabled={
+              (savingEmail && !EmailValidator.validate(newEmail)) ||
+              (!savingEmail && newPhone.length < 9)
+            }
+            style={styles.submitButton}
+          />
+        )}
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
   );
