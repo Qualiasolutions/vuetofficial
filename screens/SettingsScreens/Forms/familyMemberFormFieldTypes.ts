@@ -5,6 +5,7 @@ import {
   PhoneNumberField,
   StringField
 } from 'components/forms/formFieldTypes';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export type FamilyMemberFormFieldTypes = {
@@ -15,34 +16,37 @@ export type FamilyMemberFormFieldTypes = {
   phone_number: PhoneNumberField;
 };
 
-export const familyMemberForm = (): FamilyMemberFormFieldTypes => {
+export const useFamilyMemberForm = (): FamilyMemberFormFieldTypes => {
   const { t } = useTranslation('modelFields');
 
-  return {
-    first_name: {
-      type: 'string',
-      required: true,
-      displayName: t('familyMember.first_name')
-    },
-    last_name: {
-      type: 'string',
-      required: true,
-      displayName: t('familyMember.last_name')
-    },
-    dob: {
-      type: 'Date',
-      required: true,
-      displayName: t('familyMember.dob')
-    },
-    member_colour: {
-      type: 'colour',
-      required: true,
-      displayName: t('familyMember.member_colour')
-    },
-    phone_number: {
-      type: 'phoneNumber',
-      required: true,
-      displayName: t('familyMember.phone_number')
-    }
-  };
+  return useMemo(
+    () => ({
+      first_name: {
+        type: 'string',
+        required: true,
+        displayName: t('familyMember.first_name')
+      },
+      last_name: {
+        type: 'string',
+        required: true,
+        displayName: t('familyMember.last_name')
+      },
+      dob: {
+        type: 'Date',
+        required: true,
+        displayName: t('familyMember.dob')
+      },
+      member_colour: {
+        type: 'colour',
+        required: true,
+        displayName: t('familyMember.member_colour')
+      },
+      phone_number: {
+        type: 'phoneNumber',
+        required: true,
+        displayName: t('familyMember.phone_number')
+      }
+    }),
+    [t]
+  );
 };

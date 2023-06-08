@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SettingsTabParamList } from 'types/base';
 
 import {
-  familyMemberForm,
+  useFamilyMemberForm,
   FamilyMemberFormFieldTypes
 } from './familyMemberFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
@@ -17,6 +17,12 @@ import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+
+const styles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 100
+  }
+});
 
 export default function EditFamilyMemberScreen({
   route,
@@ -44,7 +50,9 @@ export default function EditFamilyMemberScreen({
     });
   }, [userFullDetails]);
 
-  const formFields = deepCopy<FamilyMemberFormFieldTypes>(familyMemberForm());
+  const formFields = deepCopy<FamilyMemberFormFieldTypes>(
+    useFamilyMemberForm()
+  );
 
   if (isLoading || !userFullDetails || !route.params.id) {
     return null;
@@ -83,9 +91,3 @@ export default function EditFamilyMemberScreen({
 
   return <FullPageSpinner />;
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 100
-  }
-});

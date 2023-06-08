@@ -14,7 +14,7 @@ import RTKForm from 'components/forms/RTKForm';
 
 import { deepCopy } from 'utils/copy';
 import {
-  familyMemberForm,
+  useFamilyMemberForm,
   FamilyMemberFormFieldTypes
 } from 'screens/SettingsScreens/Forms/familyMemberFormFieldTypes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -34,7 +34,7 @@ const AddFamilyMemberScreen = ({
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const formFields = deepCopy<FamilyMemberFormFieldTypes>(familyMemberForm());
+  const formFields = deepCopy<FamilyMemberFormFieldTypes>(useFamilyMemberForm());
 
   const { t } = useTranslation();
 

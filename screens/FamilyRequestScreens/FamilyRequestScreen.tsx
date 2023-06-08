@@ -19,10 +19,9 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 const FamilyRequestScreen = () => {
   const { data: userFullDetails } = getUserFullDetails();
 
-  const [updateUserDetails, result] = useUpdateUserDetailsMutation();
-  const [updateUserInvite, userInviteResult] = useUpdateUserInviteMutation();
-  const [createFriendship, createFriendshipResult] =
-    useCreateFriendshipMutation();
+  const [updateUserDetails] = useUpdateUserDetailsMutation();
+  const [updateUserInvite] = useUpdateUserInviteMutation();
+  const [createFriendship] = useCreateFriendshipMutation();
 
   const { t } = useTranslation();
 
@@ -49,11 +48,11 @@ const FamilyRequestScreen = () => {
         text={
           firstInviteForUser?.family
             ? t('screens.familyRequest.familySubtitle', {
-              name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
-            })
+                name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+              })
             : t('screens.familyRequest.friendSubtitle', {
-              name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
-            })
+                name: `${firstInviteForUser?.invitee.first_name} ${firstInviteForUser?.invitee.last_name}`
+              })
         }
       />
       <Button

@@ -14,6 +14,18 @@ import { ErrorBox } from 'components/molecules/Errors';
 import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 
+const styles = StyleSheet.create({
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  },
+  tickIcon: {
+    height: 50,
+    width: 50,
+    marginBottom: 40
+  }
+});
+
 const WelcomeToVuetScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
@@ -64,17 +76,5 @@ const WelcomeToVuetScreen = ({
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  },
-  tickIcon: {
-    height: 50,
-    width: 50,
-    marginBottom: 40
-  }
-});
 
 export default WelcomeToVuetScreen;

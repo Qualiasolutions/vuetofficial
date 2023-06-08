@@ -18,8 +18,7 @@ import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 export function EditAccountTypeScreen() {
   const { t } = useTranslation();
   const { data: userDetails } = getUserFullDetails();
-  const [updateUserDetails, updateUserDetailsResult] =
-    useUpdateUserDetailsMutation();
+  const [updateUserDetails] = useUpdateUserDetailsMutation();
 
   if (!userDetails) {
     return <FullPageSpinner />;

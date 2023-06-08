@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
@@ -19,10 +19,7 @@ import {
   useClearByFocusCell
 } from 'react-native-confirmation-code-field';
 import { PrimaryText } from './TextComponents';
-import {
-  TransparentContainerView,
-  TransparentPaddedView
-} from './ViewComponents';
+import { TransparentPaddedView } from './ViewComponents';
 import SafePressable from './SafePressable';
 
 const styles = StyleSheet.create({
@@ -66,39 +63,15 @@ export default function ValidationCodeInput({
     value: validationCode,
     setValue: onChangeValidationCode
   });
-  const [updatePhoneValidation, phoneValidationResult] =
-    useUpdatePhoneValidationMutation();
-  const [updateEmailValidation, emailValidationResult] =
-    useUpdateEmailValidationMutation();
-  const [createPhoneValidation, createPhoneValidationResult] =
-    useCreatePhoneValidationMutation();
-  const [createEmailValidation, createEmailValidationResult] =
-    useCreateEmailValidationMutation();
+  const [updatePhoneValidation] = useUpdatePhoneValidationMutation();
+  const [updateEmailValidation] = useUpdateEmailValidationMutation();
+  const [createPhoneValidation] = useCreatePhoneValidationMutation();
+  const [createEmailValidation] = useCreateEmailValidationMutation();
 
   const greyColor = useThemeColor({}, 'grey');
   const whiteColor = useThemeColor({}, 'white');
 
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (phoneValidationResult.isSuccess) {
-      onSuccess();
-    } else {
-      if (phoneValidationResult.error) {
-        onError(phoneValidationResult.error);
-      }
-    }
-  }, [phoneValidationResult, onError, onSuccess]);
-
-  useEffect(() => {
-    if (emailValidationResult.isSuccess) {
-      onSuccess();
-    } else {
-      if (emailValidationResult.error) {
-        onError(emailValidationResult.error);
-      }
-    }
-  }, [emailValidationResult, onError, onSuccess]);
 
   return (
     <TransparentPaddedView style={styles.container}>
@@ -134,17 +107,27 @@ export default function ValidationCodeInput({
       />
       <Button
         title={t('common.verify')}
-        onPress={() => {
+        onPress={async () => {
           if (isEmail) {
-            updateEmailValidation({
-              code: validationCode,
-              id: validationId
-            });
+            try {
+              await updateEmailValidation({
+                code: validationCode,
+                id: validationId
+              }).unwrap();
+              onSuccess();
+            } catch (err) {
+              onError(err);
+            }
           } else {
-            updatePhoneValidation({
-              code: validationCode,
-              id: validationId
-            });
+            try {
+              await updatePhoneValidation({
+                code: validationCode,
+                id: validationId
+              }).unwrap();
+              onSuccess();
+            } catch (err) {
+              onError(err);
+            }
           }
         }}
         style={styles.confirmButton}
@@ -152,6 +135,8 @@ export default function ValidationCodeInput({
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
       <SafePressable
         onPress={() => {
+          console.log('RESEND');
+          console.log(phoneNumber);
           if (isEmail) {
             createEmailValidation({
               email: phoneNumber

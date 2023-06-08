@@ -96,6 +96,19 @@ export function isTakenPhoneNumberError(
   );
 }
 
+export function isTakenEmailError(
+  error: unknown
+): error is { data: { email: { code: 'email_used' } } } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'data' in error &&
+    typeof ((error as any).data as any) === 'object' &&
+    typeof ((error as any).data as any).email === 'object' &&
+    (((error as any).data as any).email as any).code === 'email_used'
+  );
+}
+
 /*
 This helper function produces type-checking functions which return true if the
 fieldName field has an error of code errorCode. i.e. if the error returned is

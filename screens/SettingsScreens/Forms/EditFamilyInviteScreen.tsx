@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SettingsTabParamList } from 'types/base';
 
 import {
-  familyMemberForm,
+  useFamilyMemberForm,
   FamilyMemberFormFieldTypes
 } from './familyMemberFormFieldTypes';
 import RTKForm from 'components/forms/RTKForm';
@@ -53,7 +53,9 @@ export default function EditEntityScreen({
     });
   }, [userFullDetails]);
 
-  const formFields = deepCopy<FamilyMemberFormFieldTypes>(familyMemberForm());
+  const formFields = deepCopy<FamilyMemberFormFieldTypes>(
+    useFamilyMemberForm()
+  );
 
   if (isLoading || !userFullDetails || !route.params.id) {
     return null;

@@ -30,6 +30,7 @@
     "@types/react-native-simple-radio-button": "^2.7.2",
     "async-mutex": "^0.3.2",
     "dayjs": "^1.11.3",
+    "email-validator": "^2.0.4",
     "expo": "^47.0.0",
     "expo-asset": "~8.6.2",
     "expo-checkbox": "~2.2.2",

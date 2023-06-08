@@ -14,7 +14,7 @@ export default function MyAccountScreen() {
       <TransparentPaddedView>
         <TransparentPaddedView>
           <Button
-            title="Account Details"
+            title={t('screens.myAccount.accountDetails')}
             onPress={() => {
               (navigation.navigate as any)('EditAccountDetails');
             }}
@@ -22,7 +22,7 @@ export default function MyAccountScreen() {
         </TransparentPaddedView>
         <TransparentPaddedView>
           <Button
-            title="Account Type"
+            title={t('screens.myAccount.accountType')}
             onPress={() => {
               (navigation.navigate as any)('EditAccountType');
             }}
@@ -30,7 +30,7 @@ export default function MyAccountScreen() {
         </TransparentPaddedView>
         <TransparentPaddedView>
           <Button
-            title="Phone Number"
+            title={t('screens.myAccount.phoneNumber')}
             onPress={() => {
               (navigation.navigate as any)('EditPhoneNumber');
             }}
@@ -38,7 +38,7 @@ export default function MyAccountScreen() {
         </TransparentPaddedView>
         <TransparentPaddedView>
           <Button
-            title="Security"
+            title={t('screens.myAccount.security')}
             onPress={() => {
               (navigation.navigate as any)('EditSecurity');
             }}

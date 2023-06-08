@@ -65,9 +65,8 @@ const CreateAccountScreen = ({
   const [memberColour, setMemberColour] = React.useState<string>('');
   const { t } = useTranslation();
 
-  const [updateUserDetails, result] = useUpdateUserDetailsMutation();
-  const [formUpdateUserDetails, formUpdateResult] =
-    useFormUpdateUserDetailsMutation();
+  const [updateUserDetails] = useUpdateUserDetailsMutation();
+  const [formUpdateUserDetails] = useFormUpdateUserDetailsMutation();
 
   const uploadProfileImage = (image: File) => {
     if (userFullDetails) {

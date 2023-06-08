@@ -9,7 +9,7 @@ import { TransparentContainerView } from 'components/molecules/ViewComponents';
 
 import { useCreateUserInviteMutation } from 'reduxStore/services/api/user';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { friendForm, FriendFormFieldTypes } from './friendFormFieldTypes';
+import { useFriendForm, FriendFormFieldTypes } from './friendFormFieldTypes';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { Button } from 'components/molecules/ButtonComponents';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
