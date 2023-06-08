@@ -62,16 +62,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     width: '100%'
   },
-  colourBox: {
-    width: '100%',
-    marginTop: 15,
-    marginBottom: 15,
-    paddingHorizontal: 20,
-    paddingVertical: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
   calendarIcon: {
     position: 'absolute',
     right: 20,
@@ -94,7 +84,7 @@ const styles = StyleSheet.create({
   fieldSection: {
     marginBottom: 50,
     paddingTop: 20,
-    paddingBottom: 40,
+    paddingBottom: 20,
     paddingHorizontal: 30
   },
   flex: {
@@ -103,7 +93,14 @@ const styles = StyleSheet.create({
   inputLabel: {
     minWidth: 110
   },
-  fullWidth: { width: '100%' }
+  inputPair: {
+    marginBottom: 15
+  },
+  fullWidth: { width: '100%' },
+  colourBarContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  }
 });
 
 export default function TypedForm({
@@ -164,12 +161,14 @@ export default function TypedForm({
       field,
       children,
       labelStyle,
-      inlineFieldsOverride
+      inlineFieldsOverride,
+      containerStyle
     }: {
       field: string;
       children: ReactNode;
       labelStyle?: ViewStyle;
       inlineFieldsOverride?: boolean;
+      containerStyle?: ViewStyle;
     }) => {
       const fieldObj = flatFields[field];
       if (!isFieldShown(fieldObj)) {
@@ -188,6 +187,7 @@ export default function TypedForm({
           }
           labelStyle={labelStyle}
           labelWrapperStyle={styles.inputLabel}
+          style={containerStyle}
         >
           {children}
         </InputWithLabel>
@@ -218,7 +218,12 @@ export default function TypedForm({
       }
 
       return (
-        <InputPair field={field} children={children} labelStyle={labelStyle} />
+        <InputPair
+          field={field}
+          children={children}
+          labelStyle={labelStyle}
+          containerStyle={styles.inputPair}
+        />
       );
     },
     [InputPair, formValues, flatFields]
@@ -232,7 +237,11 @@ export default function TypedForm({
         case 'string': {
           const f = flatFields[field] as StringField;
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <TextInput
                 value={formValues[field]}
                 onChangeText={(newValue) => {
@@ -252,7 +261,11 @@ export default function TypedForm({
         }
         case 'phoneNumber':
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <PhoneNumberInput
                 defaultValue={formValues[field]}
                 onChangeFormattedText={(newValue) => {
@@ -274,7 +287,11 @@ export default function TypedForm({
         case 'OptionalYearDate': {
           const f = flatFields[field];
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <OptionalYearDateInput
                 value={formValues[field]}
                 onValueChange={(newValue: Date, knownYear: boolean) => {
@@ -462,19 +479,26 @@ export default function TypedForm({
         }
         case 'colour': {
           return (
-            <WhiteBox key={field} style={styles.colourBox} elevated={false}>
+            <WhiteBox key={field} elevated={false}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <InputPair field={field} key={field} inlineFieldsOverride={true}>
-                <ColorPicker
-                  value={formValues[field]}
-                  onValueChange={(value: string) => {
-                    onFormValuesChange({
-                      ...formValues,
-                      [field]: value
-                    });
-                    setFormErrors({ ...formErrors, [field]: '' });
-                  }}
-                />
+              <InputPair
+                field={field}
+                key={field}
+                inlineFieldsOverride={true}
+                containerStyle={styles.inputPair}
+              >
+                <TransparentView style={styles.colourBarContainer}>
+                  <ColorPicker
+                    value={formValues[field]}
+                    onValueChange={(value: string) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: value
+                      });
+                      setFormErrors({ ...formErrors, [field]: '' });
+                    }}
+                  />
+                </TransparentView>
               </InputPair>
             </WhiteBox>
           );
@@ -487,7 +511,11 @@ export default function TypedForm({
           }
 
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <MemberSelector
                 data={f.permittedValues}
                 values={formValues[field] || []}
@@ -503,7 +531,11 @@ export default function TypedForm({
         }
         case 'TextArea':
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <TransparentView style={styles.flex}>
                 <TextInput
                   value={formValues[field]}
@@ -532,7 +564,11 @@ export default function TypedForm({
         case 'addFamilyMembers': {
           const f = flatFields[field] as AddFamilyMembersField;
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <FamilySelector
                 data={f.permittedValues}
                 values={formValues[field] || []}
@@ -554,7 +590,11 @@ export default function TypedForm({
           }
 
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <DropDown
                 value={formValues[field]}
                 items={f.permittedValues}
@@ -580,7 +620,11 @@ export default function TypedForm({
         case 'dropDownWithOther': {
           const f = flatFields[field] as DropDownWithOtherField;
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <DropDown
                 value={formValues[field]}
                 items={f.permittedValues}
@@ -606,7 +650,11 @@ export default function TypedForm({
         }
         case 'Image': {
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <WhiteImagePicker
                 onImageSelect={(image) => {
                   onFormValuesChange({
@@ -628,7 +676,11 @@ export default function TypedForm({
         case 'timezone': {
           const f = flatFields[field] as TimezoneField;
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <TimezoneSelect
                 value={formValues[field]}
                 onSelectTimezone={(value) => {
@@ -660,7 +712,11 @@ export default function TypedForm({
           }
 
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <TransparentView>
                 <RecurrenceSelector
                   value={formValues[field]}
@@ -691,7 +747,11 @@ export default function TypedForm({
           }
 
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <TransparentView>
                 <MultipleRecurrenceSelector
                   value={formValues[field]}
@@ -712,7 +772,11 @@ export default function TypedForm({
         }
         case 'tagSelector': {
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <TransparentView>
                 <TagSelector
                   value={formValues[field]}
@@ -755,7 +819,11 @@ export default function TypedForm({
           }
 
           return (
-            <InputPair field={field} key={field}>
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
               <Duration
                 value={formValues[field]}
                 textInputStyle={textInputStyle}

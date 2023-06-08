@@ -42,6 +42,8 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   const isLoading = isLoadingUserDetails || isLoadingUserInvites;
 
+  console.log('NAVIGATION');
+
   if (!isLoading) {
     if (!(jwtAccessToken && jwtRefreshToken)) {
       navigatorComponent = <UnauthorisedNavigator />;

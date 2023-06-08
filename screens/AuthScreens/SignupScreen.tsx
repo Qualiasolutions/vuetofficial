@@ -29,6 +29,7 @@ import {
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -105,74 +106,78 @@ const SignupScreen = ({
           />
         </SafePressable>
       </TransparentView>
-      <Button
-        title={t('common.confirm')}
-        onPress={async () => {
-          if (usingEmail) {
-            try {
-              const res = await createEmailValidation({
-                email: email
-              }).unwrap();
-              navigation.navigate('ValidatePhone', {
-                validationId: res.id,
-                phoneNumber: res.email,
-                isEmail: true
-              });
-            } catch (error) {
-              console.log(error);
-              if (isFieldErrorCodeError('email', 'email_used')(error)) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.emailUsedError')
+      {phoneValidationResult.isLoading || emailValidationResult.isLoading ? (
+        <PaddedSpinner />
+      ) : (
+        <Button
+          title={t('common.confirm')}
+          onPress={async () => {
+            if (usingEmail) {
+              try {
+                const res = await createEmailValidation({
+                  email: email
+                }).unwrap();
+                navigation.navigate('ValidatePhone', {
+                  validationId: res.id,
+                  phoneNumber: res.email,
+                  isEmail: true
                 });
-              } else if (isInvalidEmailError(error)) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.invalidEmail')
+              } catch (error) {
+                console.log(error);
+                if (isFieldErrorCodeError('email', 'email_used')(error)) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.emailUsedError')
+                  });
+                } else if (isInvalidEmailError(error)) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.invalidEmail')
+                  });
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }
+            } else {
+              try {
+                const res = await createPhoneValidation({
+                  phone_number: phoneNumber
+                }).unwrap();
+                navigation.navigate('ValidatePhone', {
+                  validationId: res.id,
+                  phoneNumber: res.phone_number
                 });
-              } else {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
+              } catch (error) {
+                if (
+                  isFieldErrorCodeError(
+                    'phone_number',
+                    'phone_number_used'
+                  )(error)
+                ) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.phoneUsedError')
+                  });
+                } else if (isInvalidPhoneNumberError(error)) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.invalidPhone')
+                  });
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
               }
             }
-          } else {
-            try {
-              const res = await createPhoneValidation({
-                phone_number: phoneNumber
-              }).unwrap();
-              navigation.navigate('ValidatePhone', {
-                validationId: res.id,
-                phoneNumber: res.phone_number
-              });
-            } catch (error) {
-              if (
-                isFieldErrorCodeError(
-                  'phone_number',
-                  'phone_number_used'
-                )(error)
-              ) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.phoneUsedError')
-                });
-              } else if (isInvalidPhoneNumberError(error)) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.invalidPhone')
-                });
-              } else {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
-              }
-            }
-          }
-        }}
-        style={styles.confirmButton}
-      />
+          }}
+          style={styles.confirmButton}
+        />
+      )}
       <Text>{t('screens.signUp.alreadyHaveAccount')}</Text>
       <SafePressable
         onPress={() => {

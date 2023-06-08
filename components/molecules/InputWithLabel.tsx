@@ -7,21 +7,18 @@ import { TransparentView } from './ViewComponents';
 const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
-    textAlign: 'left',
-    marginVertical: 14,
     marginRight: 10,
-    flexShrink: 1,
-    width: '100%'
+    flexShrink: 1
   },
   inlineInputPair: {
     flexDirection: 'row',
     width: '100%',
-    marginTop: 10,
-    alignItems: 'center'
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start'
+  inlineChildrenWrapper: {
+    flex: 1
   }
 });
 
@@ -31,7 +28,8 @@ export default function InputWithLabel({
   error,
   inlineFields,
   labelStyle,
-  labelWrapperStyle
+  labelWrapperStyle,
+  style
 }: {
   label: string;
   children: ReactNode;
@@ -39,20 +37,23 @@ export default function InputWithLabel({
   inlineFields?: boolean;
   labelStyle?: ViewStyle;
   labelWrapperStyle?: ViewStyle;
+  style?: ViewStyle;
 }) {
   return (
-    <TransparentView>
+    <TransparentView style={style || {}}>
       {error ? <Text>{error}</Text> : null}
       <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
-        <TransparentView
-          style={[styles.inputLabelWrapper, labelWrapperStyle || {}]}
-        >
+        <TransparentView style={[labelWrapperStyle || {}]}>
           <AlmostBlackText
             text={label}
             style={[styles.inputLabel, labelStyle || {}]}
           />
         </TransparentView>
-        <TransparentView style={{ flex: 1 }}>{children}</TransparentView>
+        <TransparentView
+          style={inlineFields ? styles.inlineChildrenWrapper : {}}
+        >
+          {children}
+        </TransparentView>
       </TransparentView>
     </TransparentView>
   );

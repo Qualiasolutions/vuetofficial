@@ -11,7 +11,6 @@ import dayjs from 'dayjs';
 import { t } from 'i18next';
 import ordinal from 'ordinal';
 import { useState } from 'react';
-import { Pressable } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Recurrence, RecurrenceType } from 'types/tasks';
 import { getUTCValuesFromDateTimeString } from 'utils/datesAndTimes';
