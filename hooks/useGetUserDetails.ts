@@ -1,9 +1,7 @@
-import { useSelector } from 'react-redux';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 
 export default function getUserFullDetails() {
   const {

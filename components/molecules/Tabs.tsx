@@ -74,7 +74,9 @@ export default function Tabs({ tabs, onChangeIndex }: TabsProps) {
 
   const components = tabs.map((tab, i) => {
     const Component = tab.component;
-    return <Page Component={Component} selected={selectedTabIndex === i} />;
+    return (
+      <Page key={i} Component={Component} selected={selectedTabIndex === i} />
+    );
   });
 
   useEffect(() => {

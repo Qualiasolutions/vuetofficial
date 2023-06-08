@@ -19,7 +19,12 @@ type RefreshResponse = {
 
 type BlacklistResponse = { success: boolean };
 
-const getTokenAsync = async (phoneNumber: string, password: string) => {
+const getTokenAsync = async (
+  username: string,
+  password: string,
+  isEmail: boolean
+) => {
+  const usernameField = isEmail ? 'email' : 'phone_number';
   const loginResponse: LoginResponse = await fetch(
     `http://${vuetApiUrl}/auth/token/`,
     {
@@ -29,12 +34,15 @@ const getTokenAsync = async (phoneNumber: string, password: string) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        phone_number: phoneNumber,
+        [usernameField]: username,
         password
       })
     }
   )
-    .then((response) => response.json())
+    .then((response) => {
+      const resJson = response.json();
+      return resJson;
+    })
     .catch((err) => {
       console.log(err);
     });

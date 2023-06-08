@@ -8,8 +8,7 @@ import { Mutex } from 'async-mutex';
 import {
   logOut,
   setAccessToken,
-  setRefreshToken,
-  setUsername
+  setRefreshToken
 } from 'reduxStore/slices/auth/actions';
 import Constants from 'expo-constants';
 import { EntireState } from 'reduxStore/types';

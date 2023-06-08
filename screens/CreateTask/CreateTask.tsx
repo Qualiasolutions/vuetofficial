@@ -7,8 +7,6 @@ import {
 import { styles } from './style';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import { useSelector } from 'react-redux';
-import { selectUsername } from 'reduxStore/slices/auth/selectors';
 import DropDown from 'components/molecules/DropDownView';
 import { t } from 'i18next';
 import { Text } from 'components/Themed';
@@ -29,7 +27,6 @@ export default function CreateTask({
   const [selectedCategory, setSelectedCategory] = useState<Category | null>();
   const [selectedEntity, setSelectedEntity] =
     useState<EntityParsedType | null>();
-  const username = useSelector(selectUsername);
   const { data: Categories, isLoading, error } = useGetAllCategoriesQuery();
   const { data: Entities } = useGetAllEntitiesQuery();
 

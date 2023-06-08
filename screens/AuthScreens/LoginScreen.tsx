@@ -1,14 +1,13 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import {
   setAccessToken,
-  setRefreshToken,
-  setUsername
+  setRefreshToken
 } from 'reduxStore/slices/auth/actions';
 
 import { Text, TextInput } from 'components/Themed';
@@ -33,12 +32,35 @@ import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
 
+const styles = StyleSheet.create({
+  inputLabelWrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%'
+  },
+  inputLabel: {
+    fontSize: 12,
+    textAlign: 'left'
+  },
+  confirmButton: {
+    marginTop: 30,
+    marginBottom: 15
+  },
+  otherOptsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%'
+  },
+  usernameInput: { marginBottom: 10, width: '100%' }
+});
+
 const LoginScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'>) => {
   const [username, onChangeUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [submitting, setSubmitting] = React.useState<boolean>(false);
+  const [usingEmail, setUsingEmail] = React.useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -46,17 +68,15 @@ const LoginScreen = ({
 
   const setTokenAsync = async (
     usernameToUse: string,
-    passwordToUse: string
+    passwordToUse: string,
+    isEmail: boolean
   ) => {
     try {
-      const { access, refresh } = await getTokenAsync(
-        usernameToUse,
-        passwordToUse
-      );
+      const res = await getTokenAsync(usernameToUse, passwordToUse, isEmail);
+      const { access, refresh } = res;
       if (access) {
         dispatch(setAccessToken(access));
         dispatch(setRefreshToken(refresh));
-        dispatch(setUsername(usernameToUse));
       } else {
         Toast.show({
           type: 'error',
@@ -77,18 +97,38 @@ const LoginScreen = ({
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.logIn.welcomeBack')} />
-      <PageSubtitle text={t('screens.logIn.enterNumber')} />
+      <PageSubtitle
+        text={
+          usingEmail
+            ? t('screens.logIn.enterEmail')
+            : t('screens.logIn.enterNumber')
+        }
+      />
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
-          text={t('screens.logIn.phoneNumber')}
+          text={
+            usingEmail
+              ? t('screens.logIn.emailAddress')
+              : t('screens.logIn.phoneNumber')
+          }
         />
       </TransparentView>
-      <PhoneNumberInput
-        onChangeFormattedText={(username) => {
-          onChangeUsername(username);
-        }}
-      />
+      <TransparentView style={styles.usernameInput}>
+        {usingEmail ? (
+          <TextInput
+            onChangeText={(newUsername) => {
+              onChangeUsername(newUsername);
+            }}
+          />
+        ) : (
+          <PhoneNumberInput
+            onChangeFormattedText={(newUsername) => {
+              onChangeUsername(newUsername);
+            }}
+          />
+        )}
+      </TransparentView>
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
@@ -100,7 +140,16 @@ const LoginScreen = ({
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
       />
-      <TransparentView style={styles.forgotPasswordWrapper}>
+      <TransparentView style={styles.otherOptsWrapper}>
+        <SafePressable onPress={() => setUsingEmail(!usingEmail)}>
+          <PrimaryText
+            text={
+              usingEmail
+                ? t('screens.logIn.usePhone')
+                : t('screens.logIn.useEmail')
+            }
+          />
+        </SafePressable>
         <PrimaryText text={t('screens.logIn.forgotPassword')} bold={true} />
       </TransparentView>
       {submitting ? (
@@ -110,7 +159,7 @@ const LoginScreen = ({
           title={t('common.confirm')}
           onPress={() => {
             setSubmitting(true);
-            setTokenAsync(username, password);
+            setTokenAsync(username, password, usingEmail);
           }}
           style={styles.confirmButton}
         />
@@ -126,26 +175,5 @@ const LoginScreen = ({
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%'
-  },
-  inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
-  },
-  confirmButton: {
-    marginTop: 30,
-    marginBottom: 15
-  },
-  forgotPasswordWrapper: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    width: '100%'
-  }
-});
 
 export default LoginScreen;

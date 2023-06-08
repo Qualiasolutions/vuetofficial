@@ -1,6 +1,6 @@
 import SafePressable from 'components/molecules/SafePressable';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 const styles = StyleSheet.create({
   colorView: {

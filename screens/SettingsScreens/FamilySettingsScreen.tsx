@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
 
@@ -24,6 +24,7 @@ import { YesNoModal } from 'components/molecules/Modals';
 import UserWithColor from 'components/molecules/UserWithColor';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   familyHeader: {

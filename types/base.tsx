@@ -25,9 +25,11 @@ export type UnauthorisedTabParamList = {
   ValidatePhone: {
     phoneNumber: string;
     validationId: number;
+    isEmail?: boolean;
   };
   CreatePassword: {
     phoneNumber: string;
+    isEmail?: boolean;
   };
 };
 

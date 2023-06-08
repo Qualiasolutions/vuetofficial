@@ -1,9 +1,12 @@
 import { vuetApi } from './api';
 import {
+  CreateEmailValidationRequest,
   CreatePhoneValidationRequest,
+  EmailValidationResponse,
   PhoneValidationResponse,
   RegisterAccountRequest,
   RegisterAccountResponse,
+  UpdateEmailValidationRequest,
   UpdatePhoneValidationRequest
 } from 'types/signup';
 
@@ -33,6 +36,30 @@ const extendedApi = vuetApi.injectEndpoints({
         };
       }
     }),
+    updateEmailValidation: builder.mutation<
+      EmailValidationResponse,
+      UpdateEmailValidationRequest
+    >({
+      query: (body) => {
+        return {
+          url: `auth/email-validation/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      }
+    }),
+    createEmailValidation: builder.mutation<
+      EmailValidationResponse,
+      CreateEmailValidationRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'auth/email-validation/',
+          method: 'POST',
+          body
+        };
+      }
+    }),
     createAccount: builder.mutation<
       RegisterAccountResponse,
       RegisterAccountRequest
@@ -54,5 +81,7 @@ const extendedApi = vuetApi.injectEndpoints({
 export const {
   useUpdatePhoneValidationMutation,
   useCreatePhoneValidationMutation,
+  useUpdateEmailValidationMutation,
+  useCreateEmailValidationMutation,
   useCreateAccountMutation
 } = extendedApi;

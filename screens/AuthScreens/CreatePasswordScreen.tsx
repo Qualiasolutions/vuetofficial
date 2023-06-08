@@ -12,8 +12,7 @@ import Constants from 'expo-constants';
 import { useDispatch } from 'react-redux';
 import {
   setAccessToken,
-  setRefreshToken,
-  setUsername
+  setRefreshToken
 } from 'reduxStore/slices/auth/actions';
 import {
   PageTitle,
@@ -26,6 +25,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { RegisterAccountRequest } from 'types/signup';
 
 const ENV = Constants.manifest?.extra?.processEnv;
 
@@ -46,9 +46,9 @@ const styles = StyleSheet.create({
 });
 
 const CreatePasswordScreen = ({
-  navigation,
   route
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'CreatePassword'>) => {
+  console.log('CreatePasswordScreen');
   const [password, onChangePassword] = React.useState<string>('');
   const [passwordConfirm, onChangePasswordConfirm] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
@@ -58,14 +58,15 @@ const CreatePasswordScreen = ({
 
   const dispatch = useDispatch();
 
+  const { isEmail, phoneNumber } = route.params;
+
   useEffect(() => {
     if (createAccountResult.isSuccess) {
-      const { access_token, refresh_token, phone_number } =
+      const { access_token: accessToken, refresh_token: refreshToken } =
         createAccountResult.data;
 
-      dispatch(setAccessToken(access_token));
-      dispatch(setRefreshToken(refresh_token));
-      dispatch(setUsername(phone_number));
+      dispatch(setAccessToken(accessToken));
+      dispatch(setRefreshToken(refreshToken));
     } else {
       if (createAccountResult.error) {
         Toast.show({
@@ -125,11 +126,16 @@ const CreatePasswordScreen = ({
               text1: t('common.errors.passwordsDontMatch')
             });
           } else {
-            createAccount({
+            const req: RegisterAccountRequest = {
               password,
-              password2: passwordConfirm,
-              phone_number: route.params.phoneNumber
-            });
+              password2: passwordConfirm
+            };
+            if (isEmail) {
+              req.email = phoneNumber;
+            } else {
+              req.phone_number = phoneNumber;
+            }
+            createAccount(req);
           }
         }}
         style={styles.confirmButton}

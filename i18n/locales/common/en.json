@@ -281,7 +281,9 @@
     "errors": {
       "generic": "Oops, something went wrong. Please try again later.",
       "invalidPhone": "That doesn't seem to be a valid phone number.",
+      "invalidEmail": "That doesn't seem to be a valid email address.",
       "phoneUsedError": "An account already exists for that phone number.",
+      "emailUsedError": "An account already exists for that email address.",
       "passwordsDontMatch": "Those passwords don't match",
       "invalidCodeError": "That code is incorrect"
     }
@@ -301,7 +303,11 @@
       "password": "Password",
       "welcomeBack": "Welcome back!",
       "enterNumber": "Please enter your phone number to log in",
+      "enterEmail": "Please enter your email to log in",
       "phoneNumber": "Phone number",
+      "emailAddress": "Email address",
+      "usePhone": "Use phone",
+      "useEmail": "Use email",
       "forgotPassword": "Forgot password",
       "dontHaveAccount": "Don't have an account?",
       "signUp": "Sign up",
@@ -310,7 +316,9 @@
     "signUp": {
       "welcome": "Welcome",
       "usePhoneNumber": "Use your phone number to create an account",
+      "useEmail": "Use your email to create an account - note this option is not recommended. Please use your phone number to create an account if possible.",
       "phoneNumber": "Phone number",
+      "emailAddress": "Email address",
       "alreadyHaveAccount": "Already have an account?",
       "logIn": "Log in",
       "phoneInvalidError": "That doesn't seem to be a valid phone number."
@@ -318,6 +326,7 @@
     "validatePhone": {
       "title": "Verification code",
       "enterCode": "Please enter the 6-digit code we've sent to your mobile number",
+      "enterEmailCode": "Please enter the 6-digit code we've sent to your email address",
       "didntGetCode": "Didn't get the code?",
       "resend": "Resend"
     },

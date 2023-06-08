@@ -16,10 +16,27 @@ export type PhoneValidationResponse = {
   created_at: string;
 };
 
+export type CreateEmailValidationRequest = {
+  email: string;
+};
+
+export type UpdateEmailValidationRequest = {
+  id: number;
+  code: string;
+};
+
+export type EmailValidationResponse = {
+  id: number;
+  email: string;
+  validated: boolean;
+  created_at: string;
+};
+
 export type RegisterAccountRequest = {
   password: string;
   password2: string;
-  phone_number: string;
+  phone_number?: string;
+  email?: string;
 };
 
 export type RegisterAccountResponse = {
@@ -28,9 +45,30 @@ export type RegisterAccountResponse = {
   refresh_token: string;
 };
 
-export function isInvalidPhoneNumberError(
-  error: unknown
-): error is { data: { phone_number: ['Enter a valid phone number.' | 'The phone number entered is not valid.'] } } {
+export function isInvalidEmailError(error: unknown): error is {
+  data: {
+    email_address: string[];
+  };
+} {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'data' in error &&
+    typeof ((error as any).data as any) === 'object' &&
+    typeof ((error as any).data as any).email === 'object' &&
+    ['Enter a valid email address.'].includes(
+      (((error as any).data as any).email as any)['0']
+    )
+  );
+}
+
+export function isInvalidPhoneNumberError(error: unknown): error is {
+  data: {
+    phone_number: [
+      'Enter a valid phone number.' | 'The phone number entered is not valid.'
+    ];
+  };
+} {
   return (
     typeof error === 'object' &&
     error !== null &&
@@ -40,21 +78,21 @@ export function isInvalidPhoneNumberError(
     [
       'Enter a valid phone number.',
       'The phone number entered is not valid.'
-    ]
-      .includes((((error as any).data as any).phone_number as any)['0'])
+    ].includes((((error as any).data as any).phone_number as any)['0'])
   );
 }
 
 export function isTakenPhoneNumberError(
   error: unknown
-): error is { data: { phone_number: { code: "phone_number_used" } } } {
+): error is { data: { phone_number: { code: 'phone_number_used' } } } {
   return (
     typeof error === 'object' &&
     error !== null &&
     'data' in error &&
     typeof ((error as any).data as any) === 'object' &&
     typeof ((error as any).data as any).phone_number === 'object' &&
-    ((((error as any).data as any).phone_number as any).code === "phone_number_used")
+    (((error as any).data as any).phone_number as any).code ===
+      'phone_number_used'
   );
 }
 

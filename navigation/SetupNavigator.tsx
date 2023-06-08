@@ -12,7 +12,9 @@ import getUserFullDetails from 'hooks/useGetUserDetails';
 const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
 export function SetupNavigator() {
+  console.log('SetupNavigator');
   const { data: userFullDetails } = getUserFullDetails();
+  console.log(userFullDetails);
 
   let initialRouteName = 'CreateAccount' as keyof SetupTabParamList;
 

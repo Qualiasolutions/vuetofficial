@@ -1,13 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text } from 'components/Themed';
+import { Text, TextInput } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
-import { useCreatePhoneValidationMutation } from 'reduxStore/services/api/signup';
-import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
+import {
+  useCreateEmailValidationMutation,
+  useCreatePhoneValidationMutation
+} from 'reduxStore/services/api/signup';
+import {
+  isFieldErrorCodeError,
+  isInvalidPhoneNumberError,
+  isInvalidEmailError
+} from 'types/signup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   PageTitle,
@@ -21,6 +28,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -35,70 +43,133 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
+  },
+  extraOpts: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '100%'
   }
 });
 
 const SignupScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'>) => {
+  const [usingEmail, setUsingEmail] = useState(false);
   const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
+  const [email, onChangeEmail] = React.useState<string>('');
 
-  const [createPhoneValidation, result] = useCreatePhoneValidationMutation();
+  const [createPhoneValidation, phoneValidationResult] =
+    useCreatePhoneValidationMutation();
+  const [createEmailValidation, emailValidationResult] =
+    useCreateEmailValidationMutation();
 
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (result.isSuccess) {
-      navigation.navigate('ValidatePhone', {
-        validationId: result.data.id,
-        phoneNumber: result.data.phone_number
-      });
-    } else {
-      if (result.error) {
-        if (
-          isFieldErrorCodeError(
-            'phone_number',
-            'phone_number_used'
-          )(result.error)
-        ) {
-          Toast.show({
-            type: 'error',
-            text1: t('common.errors.phoneUsedError')
-          });
-        } else if (isInvalidPhoneNumberError(result.error)) {
-          Toast.show({
-            type: 'error',
-            text1: t('common.errors.invalidPhone')
-          });
-        } else {
-          Toast.show({
-            type: 'error',
-            text1: t('common.errors.generic')
-          });
-        }
-      }
-    }
-  }, [result, navigation, t]);
 
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.signUp.welcome')} />
-      <PageSubtitle text={t('screens.signUp.usePhoneNumber')} />
+      <PageSubtitle
+        text={
+          usingEmail
+            ? t('screens.signUp.useEmail')
+            : t('screens.signUp.usePhoneNumber')
+        }
+      />
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
           style={styles.inputLabel}
-          text={t('screens.signUp.phoneNumber')}
+          text={
+            usingEmail
+              ? t('screens.signUp.emailAddress')
+              : t('screens.signUp.phoneNumber')
+          }
         />
       </TransparentView>
-      <PhoneNumberInput
-        onChangeFormattedText={(text) => {
-          onChangePhoneNumber(text);
-        }}
-      />
+      {usingEmail ? (
+        <TextInput onChangeText={onChangeEmail} />
+      ) : (
+        <PhoneNumberInput
+          onChangeFormattedText={(text) => {
+            onChangePhoneNumber(text);
+          }}
+        />
+      )}
+      <TransparentView style={styles.extraOpts}>
+        <SafePressable onPress={() => setUsingEmail(!usingEmail)}>
+          <PrimaryText
+            text={
+              usingEmail
+                ? t('screens.logIn.usePhone')
+                : t('screens.logIn.useEmail')
+            }
+          />
+        </SafePressable>
+      </TransparentView>
       <Button
         title={t('common.confirm')}
-        onPress={() => {
-          createPhoneValidation({ phone_number: phoneNumber });
+        onPress={async () => {
+          if (usingEmail) {
+            try {
+              const res = await createEmailValidation({
+                email: email
+              }).unwrap();
+              navigation.navigate('ValidatePhone', {
+                validationId: res.id,
+                phoneNumber: res.email,
+                isEmail: true
+              });
+            } catch (error) {
+              console.log(error);
+              if (isFieldErrorCodeError('email', 'email_used')(error)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.emailUsedError')
+                });
+              } else if (isInvalidEmailError(error)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.invalidEmail')
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }
+          } else {
+            try {
+              const res = await createPhoneValidation({
+                phone_number: phoneNumber
+              }).unwrap();
+              navigation.navigate('ValidatePhone', {
+                validationId: res.id,
+                phoneNumber: res.phone_number
+              });
+            } catch (error) {
+              if (
+                isFieldErrorCodeError(
+                  'phone_number',
+                  'phone_number_used'
+                )(error)
+              ) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.phoneUsedError')
+                });
+              } else if (isInvalidPhoneNumberError(error)) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.invalidPhone')
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }
+          }
         }}
         style={styles.confirmButton}
       />

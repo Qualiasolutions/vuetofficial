@@ -8,7 +8,6 @@ import { createAction } from 'typesafe-actions';
 
 const setAccessToken = createAction(SET_ACCESS_TOKEN)<string>();
 const setRefreshToken = createAction(SET_REFRESH_TOKEN)<string>();
-const setUsername = createAction(SET_USERNAME)<string>();
 const logOut = createAction(LOGOUT)<void>();
 
-export { setAccessToken, setRefreshToken, setUsername, logOut };
+export { setAccessToken, setRefreshToken, logOut };

@@ -25,13 +25,6 @@ const authReducer = createReducer(INITIAL_AUTH_STATE)
       jwtRefreshToken: action.payload
     })
   )
-  .handleAction(
-    actions.setUsername,
-    (state: AuthState, action: { payload: string }) => ({
-      ...state,
-      username: action.payload
-    })
-  )
   .handleAction(actions.logOut, (state: AuthState) => ({
     ...state,
     username: '',

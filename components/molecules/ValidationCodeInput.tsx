@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
 import { Text, useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
+  useCreateEmailValidationMutation,
   useCreatePhoneValidationMutation,
+  useUpdateEmailValidationMutation,
   useUpdatePhoneValidationMutation
 } from 'reduxStore/services/api/signup';
 
@@ -17,10 +19,16 @@ import {
   useClearByFocusCell
 } from 'react-native-confirmation-code-field';
 import { PrimaryText } from './TextComponents';
-import { TransparentContainerView } from './ViewComponents';
+import {
+  TransparentContainerView,
+  TransparentPaddedView
+} from './ViewComponents';
 import SafePressable from './SafePressable';
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center'
+  },
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
@@ -41,12 +49,14 @@ const styles = StyleSheet.create({
 type ValidationCodeInputProps = {
   validationId: number;
   phoneNumber: string;
+  isEmail?: boolean;
   onSuccess: () => void;
   onError: (err: any) => void;
 };
 export default function ValidationCodeInput({
   validationId,
   phoneNumber,
+  isEmail,
   onSuccess,
   onError
 }: ValidationCodeInputProps) {
@@ -56,9 +66,14 @@ export default function ValidationCodeInput({
     value: validationCode,
     setValue: onChangeValidationCode
   });
-  const [updatePhoneValidation, result] = useUpdatePhoneValidationMutation();
+  const [updatePhoneValidation, phoneValidationResult] =
+    useUpdatePhoneValidationMutation();
+  const [updateEmailValidation, emailValidationResult] =
+    useUpdateEmailValidationMutation();
   const [createPhoneValidation, createPhoneValidationResult] =
     useCreatePhoneValidationMutation();
+  const [createEmailValidation, createEmailValidationResult] =
+    useCreateEmailValidationMutation();
 
   const greyColor = useThemeColor({}, 'grey');
   const whiteColor = useThemeColor({}, 'white');
@@ -66,18 +81,32 @@ export default function ValidationCodeInput({
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (result.isSuccess) {
+    if (phoneValidationResult.isSuccess) {
       onSuccess();
     } else {
-      if (result.error) {
-        onError(result.error);
+      if (phoneValidationResult.error) {
+        onError(phoneValidationResult.error);
       }
     }
-  }, [result, onError, onSuccess]);
+  }, [phoneValidationResult, onError, onSuccess]);
+
+  useEffect(() => {
+    if (emailValidationResult.isSuccess) {
+      onSuccess();
+    } else {
+      if (emailValidationResult.error) {
+        onError(emailValidationResult.error);
+      }
+    }
+  }, [emailValidationResult, onError, onSuccess]);
 
   return (
-    <TransparentContainerView>
-      <Text>{t('screens.validatePhone.enterCode')}</Text>
+    <TransparentPaddedView style={styles.container}>
+      <Text>
+        {isEmail
+          ? t('screens.validatePhone.enterEmailCode')
+          : t('screens.validatePhone.enterCode')}
+      </Text>
       <CodeField
         ref={ref}
         {...props}
@@ -106,23 +135,36 @@ export default function ValidationCodeInput({
       <Button
         title={t('common.verify')}
         onPress={() => {
-          updatePhoneValidation({
-            code: validationCode,
-            id: validationId
-          });
+          if (isEmail) {
+            updateEmailValidation({
+              code: validationCode,
+              id: validationId
+            });
+          } else {
+            updatePhoneValidation({
+              code: validationCode,
+              id: validationId
+            });
+          }
         }}
         style={styles.confirmButton}
       />
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
       <SafePressable
         onPress={() => {
-          createPhoneValidation({
-            phone_number: phoneNumber
-          });
+          if (isEmail) {
+            createEmailValidation({
+              email: phoneNumber
+            });
+          } else {
+            createPhoneValidation({
+              phone_number: phoneNumber
+            });
+          }
         }}
       >
         <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
       </SafePressable>
-    </TransparentContainerView>
+    </TransparentPaddedView>
   );
 }

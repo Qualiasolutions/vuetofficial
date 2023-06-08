@@ -15,16 +15,19 @@ const ValidatePhoneScreen = ({
   route
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'ValidatePhone'>) => {
   const { t } = useTranslation();
+  const { validationId, phoneNumber, isEmail } = route?.params;
 
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.validatePhone.title')} />
       <ValidationCodeInput
-        validationId={route?.params?.validationId}
-        phoneNumber={route?.params?.phoneNumber}
+        validationId={validationId}
+        phoneNumber={phoneNumber}
+        isEmail={isEmail}
         onSuccess={() => {
           navigation.navigate('CreatePassword', {
-            phoneNumber: route.params.phoneNumber
+            phoneNumber: phoneNumber,
+            isEmail
           });
         }}
         onError={(err) => {
