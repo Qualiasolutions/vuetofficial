@@ -166,11 +166,10 @@ const TimeText = ({
 };
 
 function Task({ task: { id, recurrence_index }, date }: PropTypes) {
-  const isComplete = useSelector(
+  const { isComplete, isIgnored } = useSelector(
     selectIsComplete({ id, recurrenceIndex: recurrence_index })
   );
   const task = useSelector(selectTaskById(id));
-
   const scheduledTask = useSelector(
     selectScheduledTask({ id, recurrenceIndex: recurrence_index })
   );
@@ -184,6 +183,8 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
   const currentUserId = useSelector(selectCurrentUserId);
   const userDetails = useSelector(selectUserFromId(currentUserId || -1));
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
+  const isCompleteBoxColor = useThemeColor({}, 'primary');
+  const isIgnoredBoxColor = useThemeColor({}, 'black');
   const { t } = useTranslation();
   const [triggerCreateCompletionForm, createCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
@@ -257,10 +258,10 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
             <Checkbox
               disabled={isComplete}
               checked={isComplete}
-              color={isCompleteTextColor}
+              color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
               onValueChange={async () => {
                 await triggerCreateCompletionForm({
-                  resourcetype: `TaskCompletionForm`,
+                  resourcetype: 'TaskCompletionForm',
                   recurrence_index: scheduledTask.recurrence_index,
                   task: task.id
                 });

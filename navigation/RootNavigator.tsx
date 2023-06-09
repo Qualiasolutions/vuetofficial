@@ -32,6 +32,7 @@ import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
 import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
 import ChatScreen from 'screens/ChatScreen';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
+import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 
 const styles = StyleSheet.create({
   icon: {
@@ -105,6 +106,9 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
   useGetAllAlertsQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetTaskCompletionFormsQuery(null as any, {
     skip: !userDetails?.user_id
   });
 

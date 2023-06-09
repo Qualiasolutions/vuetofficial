@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
+import { Button } from 'components/molecules/ButtonComponents';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   TransparentPaddedView,
-  TransparentView,
-  WhiteBox
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
@@ -16,11 +16,16 @@ import {
   useDeleteAlertMutation,
   useGetAllAlertsQuery
 } from 'reduxStore/services/api/alerts';
+import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 import {
   selectAlertById,
   selectAlertsByTaskId
 } from 'reduxStore/slices/alerts/selectors';
-import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import { selectScheduledTask } from 'reduxStore/slices/calendars/selectors';
+import {
+  selectOverdueTasks,
+  selectTaskById
+} from 'reduxStore/slices/tasks/selectors';
 import {
   selectCurrentUserId,
   selectFamilyMemberFromId
@@ -103,6 +108,88 @@ const TaskAlerts = ({ taskId }: { taskId: number }) => {
   );
 };
 
+const overdueTaskStyles = StyleSheet.create({
+  buttons: {
+    flexDirection: 'row'
+  },
+  button: {
+    margin: 10
+  }
+});
+const OverdueTask = ({
+  task,
+  recurrenceIndex
+}: {
+  task: number;
+  recurrenceIndex: number;
+}) => {
+  const taskObj = useSelector(
+    selectScheduledTask({ id: task, recurrenceIndex })
+  );
+  const navigation = useNavigation();
+  const { t } = useTranslation();
+
+  const [triggerCreateCompletionForm, createCompletionFormResult] =
+    useCreateTaskCompletionFormMutation();
+
+  if (!taskObj) {
+    return null;
+  }
+
+  return (
+    <ElevatedPressableBox
+      style={taskAlertStyles.card}
+      onPress={() => (navigation.navigate as any)('EditTask', { taskId: task })}
+    >
+      <Text>{taskObj.title}</Text>
+      <Text>
+        {taskObj.date || `${taskObj.start_datetime} - ${taskObj.end_datetime}`}
+      </Text>
+      <TransparentView style={overdueTaskStyles.buttons}>
+        <Button
+          title={t('common.markDone')}
+          onPress={async () => {
+            try {
+              await triggerCreateCompletionForm({
+                resourcetype: 'TaskCompletionForm',
+                recurrence_index: recurrenceIndex,
+                task
+              }).unwrap();
+            } catch (err) {
+              console.error(err);
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }}
+          style={overdueTaskStyles.button}
+        />
+        <Button
+          title={t('common.ignore')}
+          onPress={async () => {
+            try {
+              await triggerCreateCompletionForm({
+                resourcetype: 'TaskCompletionForm',
+                recurrence_index: recurrenceIndex,
+                ignore: true,
+                task
+              }).unwrap();
+            } catch (err) {
+              console.error(err);
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }}
+          style={overdueTaskStyles.button}
+        />
+      </TransparentView>
+    </ElevatedPressableBox>
+  );
+};
+
 const listStyles = StyleSheet.create({
   container: { paddingBottom: 300 }
 });
@@ -111,6 +198,8 @@ export default function AlertsList() {
   const { t } = useTranslation();
   const { data: allAlerts, isLoading: isLoadingAlerts } =
     useGetAllAlertsQuery();
+
+  const overdueTasks = useSelector(selectOverdueTasks);
 
   if (isLoadingAlerts || !allAlerts) {
     return <FullPageSpinner />;
@@ -128,6 +217,17 @@ export default function AlertsList() {
     );
   }
 
+  const overdueTaskViews = overdueTasks.map((scheduledTask) => (
+    <OverdueTask
+      task={scheduledTask.id}
+      recurrenceIndex={
+        scheduledTask.recurrence_index === null
+          ? -1
+          : scheduledTask.recurrence_index
+      }
+    />
+  ));
+
   const taskAlerts = alertedTasks.map((task) => (
     <TaskAlerts taskId={task} key={task} />
   ));
@@ -137,6 +237,8 @@ export default function AlertsList() {
       <TransparentPaddedView style={listStyles.container}>
         <Text>ALERTS</Text>
         {taskAlerts}
+        <Text>OVERDUE TASKS</Text>
+        {overdueTaskViews}
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
   );

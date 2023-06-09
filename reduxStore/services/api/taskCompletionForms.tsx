@@ -1,10 +1,10 @@
 import { vuetApi } from './api';
-import tasksApi from './tasks';
 
 type TaskCompletionFormCreateRequest = {
   resourcetype: string;
   recurrence_index: number | null;
   task: number;
+  ignore?: boolean;
 };
 
 type TaskCompletionForm = {
@@ -12,6 +12,7 @@ type TaskCompletionForm = {
   task: number;
   resourcetype: string;
   id: number;
+  ignore: boolean;
 };
 
 export type AllTaskCompletionForms = {
@@ -43,7 +44,7 @@ const normalizeCompletionForms = (
         ...prev,
         [next.task]: {
           ...prev[next.task],
-          [next.recurrence_index || -1]: next
+          [next.recurrence_index === null ? -1 : next.recurrence_index]: next
         }
       }),
       {}

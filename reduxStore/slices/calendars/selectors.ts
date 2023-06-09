@@ -196,14 +196,17 @@ export const selectIsComplete = ({
   recurrenceIndex: number | null;
 }) =>
   createSelector(
-    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
     (taskCompletionForms) => {
-      return !!(
+      const completionForm =
         taskCompletionForms.data?.byTaskId[id] &&
         taskCompletionForms.data?.byTaskId[id][
           recurrenceIndex === null ? -1 : recurrenceIndex
-        ]
-      );
+        ];
+      return {
+        isComplete: !!completionForm,
+        isIgnored: !!(completionForm && completionForm.ignore)
+      };
     }
   );
 
