@@ -22,6 +22,7 @@ import './i18n/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { enableFreeze } from 'react-native-screens';
+import { StyleSheet } from 'react-native';
 
 const persistConfig = {
   key: 'root',
@@ -48,6 +49,10 @@ setupListeners(store.dispatch);
 
 enableFreeze();
 
+const styles = StyleSheet.create({
+  root: { width: '100%', height: '100%' }
+});
+
 export default function App() {
   const loadedCachedResources = useCachedResources();
   const colorScheme = useColorScheme();
@@ -59,7 +64,7 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={<Splash />} persistor={persistor}>
           <SafeAreaProvider>
-            <GestureHandlerRootView style={{ width: '100%', height: '100%' }}>
+            <GestureHandlerRootView style={styles.root}>
               <Navigation colorScheme={colorScheme} />
             </GestureHandlerRootView>
             <StatusBar translucent={true} />

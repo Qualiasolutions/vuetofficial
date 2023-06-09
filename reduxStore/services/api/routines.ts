@@ -1,58 +1,36 @@
-import { vuetApi } from './api';
-import { AllReferences, Reference } from 'types/references';
+import { normalizeData, vuetApi } from './api';
 import { getCurrentDateString } from 'utils/datesAndTimes';
+import { AllRoutines, Routine } from 'types/routines';
 
-const normalizeReferenceData = (data: { id: number; entities: number[] }[]) => {
-  return {
-    ids: data.map(({ id }) => id),
-    byId: data.reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.id]: next
-      }),
-      {}
-    ),
-    byEntity: data.reduce<{ [key: number]: number[] }>((prev, next) => {
-      const newVal: { [key: number]: number[] } = { ...prev };
-      for (const entity of next.entities) {
-        newVal[entity] = newVal[entity]
-          ? [...newVal[entity], next.id]
-          : [next.id];
-      }
-      return newVal;
-    }, {})
-  };
-};
-
-const referencesApi = vuetApi.injectEndpoints({
+const routinesApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllReferences: builder.query<AllReferences, void>({
+    getAllRoutines: builder.query<AllRoutines, void>({
       query: () => ({
-        url: 'core/reference/',
+        url: 'core/routine/',
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson = await response.json();
-            return normalizeReferenceData(responseJson);
+            return normalizeData(responseJson);
           } else {
             // Just return the error data
             return response.json();
           }
         }
       }),
-      providesTags: ['Reference']
+      providesTags: ['Routine']
     }),
-    updateReference: builder.mutation<
-      Reference,
-      Partial<Reference> & Pick<Reference, 'id'>
+    updateRoutine: builder.mutation<
+      Routine,
+      Partial<Routine> & Pick<Routine, 'id'>
     >({
       query: (body) => {
         return {
-          url: `core/reference/${body.id}/`,
+          url: `core/routine/${body.id}/`,
           method: 'PATCH',
           body
         };
       },
-      invalidatesTags: ['Reference'],
+      invalidatesTags: ['Routine'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -61,14 +39,14 @@ const referencesApi = vuetApi.injectEndpoints({
         for (const {
           endpointName,
           originalArgs
-        } of referencesApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Reference' }
+        } of routinesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Routine' }
         ])) {
-          if (!['getAllReferences'].includes(endpointName)) continue;
-          if (endpointName === 'getAllReferences') {
+          if (!['getAllRoutines'].includes(endpointName)) continue;
+          if (endpointName === 'getAllRoutines') {
             const patchResult = dispatch(
-              referencesApi.util.updateQueryData(
-                'getAllReferences',
+              routinesApi.util.updateQueryData(
+                'getAllRoutines',
                 originalArgs,
                 (draft) => {
                   draft.byId[patch.id] = {
@@ -90,18 +68,18 @@ const referencesApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    createReference: builder.mutation<
-      Reference,
-      Omit<Reference, 'id' | 'created_at'>
+    createRoutine: builder.mutation<
+      Routine,
+      Omit<Routine, 'id' | 'created_at'>
     >({
       query: (body) => {
         return {
-          url: 'core/reference/',
+          url: 'core/routine/',
           method: 'POST',
           body
         };
       },
-      invalidatesTags: ['Reference'],
+      invalidatesTags: ['Routine'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -110,13 +88,13 @@ const referencesApi = vuetApi.injectEndpoints({
         for (const {
           endpointName,
           originalArgs
-        } of referencesApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Reference' }
+        } of routinesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Routine' }
         ])) {
-          if (endpointName !== 'getAllReferences') continue;
+          if (endpointName !== 'getAllRoutines') continue;
           const patchResult = dispatch(
-            referencesApi.util.updateQueryData(
-              'getAllReferences',
+            routinesApi.util.updateQueryData(
+              'getAllRoutines',
               originalArgs,
               (draft) => {
                 const mockId = 1e10 + Math.round(Math.random() * 1e10);
@@ -127,13 +105,6 @@ const referencesApi = vuetApi.injectEndpoints({
                 };
                 draft.ids.push(mockId);
                 draft.byId[mockId] = mockEntry;
-
-                for (const entityId of patch.entities) {
-                  if (!draft.byEntity[entityId]) {
-                    draft.byEntity[entityId] = [];
-                  }
-                  draft.byEntity[entityId].push(mockId);
-                }
               }
             )
           );
@@ -148,14 +119,14 @@ const referencesApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    deleteReference: builder.mutation<void, Pick<Reference, 'id'>>({
+    deleteRoutine: builder.mutation<void, Pick<Routine, 'id'>>({
       query: (body) => {
         return {
-          url: `core/reference/${body.id}/`,
+          url: `core/routine/${body.id}/`,
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Reference'],
+      invalidatesTags: ['Routine'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -164,13 +135,13 @@ const referencesApi = vuetApi.injectEndpoints({
         for (const {
           endpointName,
           originalArgs
-        } of referencesApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Reference' }
+        } of routinesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Routine' }
         ])) {
-          if (endpointName !== 'getAllReferences') continue;
+          if (endpointName !== 'getAllRoutines') continue;
           const patchResult = dispatch(
-            referencesApi.util.updateQueryData(
-              'getAllReferences',
+            routinesApi.util.updateQueryData(
+              'getAllRoutines',
               originalArgs,
               (draft) => {
                 draft.ids = draft.ids.filter((id) => id !== patch.id);
@@ -193,13 +164,13 @@ const referencesApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
-export default referencesApi;
+export default routinesApi;
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
-  useGetAllReferencesQuery,
-  useCreateReferenceMutation,
-  useUpdateReferenceMutation,
-  useDeleteReferenceMutation
-} = referencesApi;
+  useGetAllRoutinesQuery,
+  useCreateRoutineMutation,
+  useUpdateRoutineMutation,
+  useDeleteRoutineMutation
+} = routinesApi;

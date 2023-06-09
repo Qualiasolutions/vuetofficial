@@ -20,6 +20,7 @@ import TaskLimitsScreen from 'screens/SettingsScreens/TaskLimitsScreen';
 import FlexibleTaskPreferencesScreen from 'screens/SettingsScreens/FlexibleTaskPreferencesScreen';
 import BlockedDayPreferencesScreen from 'screens/SettingsScreens/BlockedDayPreferencesScreen';
 import PreferredDayPreferencesScreen from 'screens/SettingsScreens/PreferredDayPreferencesScreen';
+import RoutinesScreen from 'screens/SettingsScreens/RoutinesScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
 
@@ -150,6 +151,14 @@ export function SettingsNavigator() {
       <SettingsStack.Screen
         name="EditFamilyInvite"
         component={EditFamilyInviteScreen}
+        options={{
+          title: '',
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="Routines"
+        component={RoutinesScreen}
         options={{
           title: '',
           headerTintColor

@@ -33,6 +33,7 @@ import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
 import ChatScreen from 'screens/ChatScreen';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
+import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 
 const styles = StyleSheet.create({
   icon: {
@@ -111,6 +112,9 @@ export function BottomTabNavigator() {
   useGetTaskCompletionFormsQuery(null as any, {
     skip: !userDetails?.user_id
   });
+  useGetAllRoutinesQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
 
   useSetupPushNotifications();
 
@@ -187,7 +191,7 @@ export function BottomTabNavigator() {
         name="NotFound"
         component={NotFoundScreen}
         options={{
-          tabBarButton: (props) => null,
+          tabBarButton: () => null,
           title: t('pageTitles.oops')
         }}
       />
@@ -195,7 +199,7 @@ export function BottomTabNavigator() {
         name="EditTask"
         component={EditTaskScreen}
         options={{
-          tabBarButton: (props) => null,
+          tabBarButton: () => null,
           title: t('pageTitles.editTask')
         }}
       />
@@ -203,7 +207,7 @@ export function BottomTabNavigator() {
         name="AddTask"
         component={AddTaskScreen}
         options={{
-          tabBarButton: (props) => null,
+          tabBarButton: () => null,
           title: 'Add Task'
         }}
       />

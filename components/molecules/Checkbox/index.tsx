@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
 type CheckboxProps = {
   checked?: boolean;
   style?: ViewStyle;
+  wrapperStyle?: ViewStyle;
   disabled?: boolean;
   smoothChecking?: boolean;
   color?: string;
@@ -42,6 +43,7 @@ type CheckboxProps = {
 export default function Checkbox({
   checked = false,
   style = {},
+  wrapperStyle = {},
   disabled = false,
   smoothChecking = true,
   color,
@@ -83,7 +85,7 @@ export default function Checkbox({
   };
 
   return (
-    <TransparentView style={styles.wrapper}>
+    <TransparentView style={[styles.wrapper, wrapperStyle]}>
       <SafePressable
         onPress={onPress}
         disabled={disabled}

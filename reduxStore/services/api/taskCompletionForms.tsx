@@ -101,6 +101,7 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
                 const mockId = 1e10 + Math.round(Math.random() * 1e10);
                 const mockEntry = {
                   ...patch,
+                  ignore: !!patch.ignore,
                   id: mockId
                 };
                 draft.ids.push(mockId);

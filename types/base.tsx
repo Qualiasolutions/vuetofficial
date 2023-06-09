@@ -71,6 +71,7 @@ export type SettingsTabParamList = {
   CategoryPreferences: undefined;
   TaskLimits: undefined;
   FlexibleTaskPreferences: undefined;
+  Routines: undefined;
   CreateUserInvite: { familyRequest: boolean };
   EditFamilyMember: { id: number | string };
   EditFamilyInvite: { id: number | string };

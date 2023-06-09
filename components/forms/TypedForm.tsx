@@ -339,7 +339,7 @@ export default function TypedForm({
                   });
                   setFormErrors({ ...formErrors, [field]: '' });
                 }}
-                Date
+                mode="date"
                 containerStyle={styles.inlineDateInput}
                 textInputStyle={textInputStyle}
               />
@@ -430,6 +430,7 @@ export default function TypedForm({
                 }}
                 containerStyle={styles.inlineDateInput}
                 textInputStyle={textInputStyle}
+                mode="datetime"
                 disabled={
                   f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                 }

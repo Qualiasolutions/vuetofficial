@@ -8,6 +8,16 @@ import { SettingsTabParamList } from 'types/base';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  button: {
+    marginBottom: 10
+  }
+});
+
 const SettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'Settings'>) => {
@@ -37,19 +47,16 @@ const SettingsScreen = ({
           }}
           style={styles.button}
         />
+        <Button
+          title={t('pageTitles.routines')}
+          onPress={() => {
+            navigation.navigate('Routines');
+          }}
+          style={styles.button}
+        />
       </TransparentView>
     </TransparentFullPageScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  button: {
-    marginBottom: 10
-  }
-});
 
 export default SettingsScreen;

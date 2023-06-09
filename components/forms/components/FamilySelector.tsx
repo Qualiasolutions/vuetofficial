@@ -1,7 +1,7 @@
 import { TransparentView } from 'components/molecules/ViewComponents';
 import UserWithColor from 'components/molecules/UserWithColor';
 import { StyleSheet } from 'react-native';
-import { UserFullResponse } from 'types/users';
+import { UserResponse } from 'types/users';
 import Checkbox from 'components/molecules/Checkbox';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { useTranslation } from 'react-i18next';
@@ -19,21 +19,30 @@ const styles = StyleSheet.create({
   },
   selectAllText: {
     fontSize: 18
+  },
+  inlineMembersList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  inlineMember: {
+    marginRight: 20
   }
 });
 
 export default function FamilySelector({
   data,
   values,
-  onValueChange
+  onValueChange,
+  inline = false
 }: {
-  data: UserFullResponse[];
+  data: UserResponse[];
   values: number[];
   onValueChange: (val: number[]) => void;
+  inline?: boolean;
 }) {
   const { t } = useTranslation();
 
-  const onSelectMember = (member: UserFullResponse) => {
+  const onSelectMember = (member: UserResponse) => {
     if (values.includes(member.id)) {
       onValueChange([...values.filter((i) => member.id != i)]);
     } else {
@@ -65,7 +74,11 @@ export default function FamilySelector({
     return data.map((member: any) => (
       <TransparentView
         key={member.id}
-        style={[styles.rowContainer, styles.memberContainer]}
+        style={[
+          styles.rowContainer,
+          styles.memberContainer,
+          inline ? styles.inlineMember : {}
+        ]}
       >
         <Checkbox
           checked={values && values.includes(member.id)}
@@ -86,7 +99,9 @@ export default function FamilySelector({
   return (
     <TransparentView>
       {selectAllButton}
-      {membersList()}
+      <TransparentView style={inline ? styles.inlineMembersList : {}}>
+        {membersList()}
+      </TransparentView>
     </TransparentView>
   );
 }

@@ -102,10 +102,12 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
     },
     {
       title: 'Alerts',
+      // component: () => null
       component: AlertsList
     },
     {
       title: 'New',
+      // component: () => null
       component: NewItemsList
     }
   ];

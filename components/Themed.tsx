@@ -13,6 +13,22 @@ import {
 import Colors, { ColorName } from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: 'Poppins'
+  },
+  textInput: {
+    borderRadius: 10,
+    height: 40,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    width: '100%',
+    borderColor: '#D8D8D8',
+    fontFamily: 'Poppins'
+  }
+});
+
 export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: ColorName
@@ -77,19 +93,3 @@ export function TextInput(props: TextInputProps) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontFamily: 'Poppins'
-  },
-  textInput: {
-    borderRadius: 10,
-    height: 40,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    borderWidth: 1,
-    width: '100%',
-    borderColor: '#D8D8D8',
-    fontFamily: 'Poppins'
-  }
-});

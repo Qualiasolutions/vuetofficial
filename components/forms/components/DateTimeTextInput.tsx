@@ -11,7 +11,7 @@ export default function DateTimeTextInput({
   textInputStyle,
   containerStyle,
   onValueChange,
-  Date = false,
+  mode = 'datetime',
   disabled = false,
   maximumDate,
   minimumDate,
@@ -21,7 +21,7 @@ export default function DateTimeTextInput({
   textInputStyle?: ViewStyle;
   containerStyle?: ViewStyle;
   onValueChange: Function;
-  Date?: boolean;
+  mode?: 'date' | 'datetime' | 'time';
   disabled?: boolean;
   maximumDate?: Date;
   minimumDate?: Date;
@@ -32,6 +32,13 @@ export default function DateTimeTextInput({
 
   const disabledTextColor = useThemeColor({}, 'disabledGrey');
 
+  const shownValue =
+    mode === 'date'
+      ? dayjs(value).format('DD/MM/YYYY')
+      : mode === 'datetime'
+      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+      : dayjs(value).format('HH:mm:ss');
+
   return (
     <TransparentView style={containerStyle}>
       <SafePressable
@@ -41,24 +48,18 @@ export default function DateTimeTextInput({
       >
         <TransparentView pointerEvents="none">
           <TextInput
-            value={
-              value
-                ? Date
-                  ? dayjs(value).format('DD/MM/YYYY')
-                  : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-                : ''
-            }
+            value={shownValue}
             style={[
               textInputStyle || {},
               disabled ? { color: disabledTextColor } : {}
             ]}
-            placeholder={placeholder || (Date ? 'DD/MM/YYYY' : '')}
+            placeholder={placeholder || (mode === 'date' ? 'DD/MM/YYYY' : '')}
           />
         </TransparentView>
       </SafePressable>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode={Date ? 'date' : 'datetime'}
+        mode={mode}
         date={value || undefined}
         onConfirm={(newValue) => {
           setIsDatePickerVisible(false);
@@ -72,7 +73,7 @@ export default function DateTimeTextInput({
         }}
         onCancel={() => {
           setIsDatePickerVisible(false);
-          onValueChange(null);
+          // onValueChange(null);
         }}
         disabled={disabled}
         maximumDate={maximumDate}

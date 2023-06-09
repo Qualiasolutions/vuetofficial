@@ -34,8 +34,7 @@ const FamilyRequestScreen = () => {
 
   const { t } = useTranslation();
 
-  const { data: invitesForUser, isLoading: isLoadingUserInvites } =
-    useActiveInvitesForUser(true);
+  const { data: invitesForUser } = useActiveInvitesForUser(true);
 
   if (!(invitesForUser && userFullDetails)) {
     return null;
@@ -64,7 +63,7 @@ const FamilyRequestScreen = () => {
               })
         }
       />
-      {updateUserDetailsResult.isLoading || updateUserInvite.isLoading ? (
+      {updateUserDetailsResult.isLoading || updateUserInviteResult.isLoading ? (
         <PaddedSpinner />
       ) : (
         <>

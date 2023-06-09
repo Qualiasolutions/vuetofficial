@@ -26,7 +26,8 @@
     "preferredDayPreferences": "Preferred Days",
     "categoryPreferences": "Category Preferences",
     "taskLimits": "Task Limits",
-    "flexibleTaskPreferences": "Flexible Tasks"
+    "flexibleTaskPreferences": "Flexible Tasks",
+    "routines": "Routines"
   },
   "blockedCategories": {
     "instructions": {
@@ -239,6 +240,9 @@
     "entityFilters": "Entity filters"
   },
   "common": {
+    "start": "Start",
+    "end": "End",
+    "members": "Members",
     "confirm": "Confirm",
     "clear": "Clear",
     "until": "Until",
@@ -269,6 +273,8 @@
     "yes": "Yes",
     "no": "No",
     "update": "Update",
+    "create": "Create",
+    "delete": "Delete",
     "search": "Type any keyword to search",
     "category": "Category",
     "thing": "Thing",

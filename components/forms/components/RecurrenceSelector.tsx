@@ -345,7 +345,7 @@ const RecurrenceForm = ({
               });
             }
           }}
-          Date={true}
+          mode="date"
           placeholder={
             reverse
               ? t('components.recurrenceSelector.now')

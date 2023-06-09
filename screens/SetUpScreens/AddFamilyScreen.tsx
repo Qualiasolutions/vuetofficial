@@ -49,15 +49,25 @@ const AddFamilyScreen = ({
   );
 
   const familyPhoneNumbers =
-    userFullDetails?.family.users.map((user) => user.phone_number) || [];
+    userFullDetails?.family.users
+      .map((user) => user.phone_number)
+      .filter((phone) => phone) || [];
+
+  const familyEmails =
+    userFullDetails?.family.users
+      .map((user) => user.email)
+      .filter((email) => email) || [];
 
   const familyInvites = userInvites?.filter(
     (invite) =>
       invite.family === userFullDetails?.family.id &&
-      !familyPhoneNumbers.includes(invite.phone_number)
+      !(
+        invite.phone_number && familyPhoneNumbers.includes(invite.phone_number)
+      ) &&
+      !(invite.email && familyEmails.includes(invite.email))
   );
 
-  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
+  const [updateFamilyDetails] = useUpdateFamilyDetailsMutation();
 
   const uploadProfileImage = (image: PickedFile) => {
     if (userFullDetails) {
