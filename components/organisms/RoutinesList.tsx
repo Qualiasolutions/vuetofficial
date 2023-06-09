@@ -178,7 +178,7 @@ const RoutineCard = ({ id }: { id?: number }) => {
             <DateTimeTextInput
               value={dayjs(`2000-01-01T${newStartTime}`).toDate()}
               onValueChange={(newValue: Date) => {
-                setNewStartTime(dayjs(newValue).format('HH:mm:ss'));
+                setNewStartTime(dayjs(newValue).format('HH:mm'));
               }}
               mode="time"
             />
@@ -188,7 +188,7 @@ const RoutineCard = ({ id }: { id?: number }) => {
             <DateTimeTextInput
               value={dayjs(`2000-01-01T${newEndTime}`).toDate()}
               onValueChange={(newValue: Date) => {
-                const newEndTimeToSet = dayjs(newValue).format('HH:mm:ss');
+                const newEndTimeToSet = dayjs(newValue).format('HH:mm');
                 if (newEndTimeToSet > newStartTime) {
                   setNewEndTime(newEndTimeToSet);
                 }

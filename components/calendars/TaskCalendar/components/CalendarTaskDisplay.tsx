@@ -25,6 +25,14 @@ import Task, { MinimalScheduledTask } from './Task';
 import { ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
+import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
+import { DayType } from 'types/datesAndTimes';
+import {
+  useGetAllScheduledTasksQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
+import Routine from './Routine';
+import { selectTasksInDailyRoutines } from 'reduxStore/slices/tasks/selectors';
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -38,7 +46,7 @@ const styles = StyleSheet.create({
   }
 });
 
-type ItemType = 'TASK';
+type ItemType = 'TASK' | 'ROUTINE';
 type ItemData = MinimalScheduledTask & { type: ItemType };
 const isTask = (
   item: ItemData
@@ -46,10 +54,19 @@ const isTask = (
   return item.type === 'TASK';
 };
 
+const isRoutine = (
+  item: ItemData
+): item is MinimalScheduledTask & { type: 'ROUTINE' } => {
+  return item.type === 'ROUTINE';
+};
+
 const ListItem = React.memo(
   ({ data, date }: { data: ItemData; date: string }) => {
     if (isTask(data)) {
       return <Task task={data} date={date} />;
+    }
+    if (isRoutine(data)) {
+      return <Routine id={data.id} date={date} />;
     }
     return null;
   }
@@ -70,8 +87,11 @@ function Calendar({
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
+  const tasksPerRoutine = useSelector(selectTasksInDailyRoutines);
   const sectionListRef = useRef<any>(null);
   const { t } = useTranslation();
+  const { data: allRoutines } = useGetAllRoutinesQuery(null as any);
+  const { data: allScheduledTasks } = useGetAllScheduledTasksQuery(null as any);
 
   const currentDate = useMemo(() => {
     return new Date(getCurrentDateString());
@@ -133,6 +153,11 @@ function Calendar({
 
   const [futureSections, pastSections] = useMemo(() => {
     const datesToShow = Object.keys(tasks);
+
+    if (!allRoutines) {
+      return [[], []];
+    }
+
     const future: { title: string; key: string; data: ItemData[] }[] = [];
     const past: { title: string; key: string; data: ItemData[] }[] = [];
 
@@ -143,11 +168,22 @@ function Calendar({
       const dayName = `${dayJsDate.format('dd')} ${dayJsDate.format(
         'DD'
       )} ${dayJsDate.format('MMM')}`;
+
+      const dailyTasksPerRoutine = tasksPerRoutine[date];
+      const routineIdsToShow = Object.keys(dailyTasksPerRoutine)
+        .map((id) => parseInt(id))
+        .filter((id) => id !== -1);
+
       sectionsArray.push({
         title: dayName,
         key: dayJsDate.format('YYYY-MM-DD'),
         data: [
-          ...tasks[date].map((task) => ({
+          ...routineIdsToShow.map((id) => ({
+            id: id,
+            recurrence_index: null,
+            type: 'ROUTINE' as ItemType
+          })),
+          ...dailyTasksPerRoutine[-1].map((task) => ({
             ...task,
             type: 'TASK' as ItemType
           }))
@@ -155,7 +191,7 @@ function Calendar({
       });
     }
     return [future, past];
-  }, [firstDate, tasks]);
+  }, [firstDate, tasks, allRoutines, tasksPerRoutine]);
 
   const shownSections = useMemo(() => {
     return [
@@ -190,10 +226,7 @@ function Calendar({
   );
 
   const keyExtractor = useCallback((item: ItemData) => {
-    if (isTask(item)) {
-      return `${item.id}_${item.recurrence_index}`;
-    }
-    return '';
+    return `${item.id}_${item.recurrence_index}_${item.type}`;
   }, []);
 
   const itemsLayout = useMemo(() => {

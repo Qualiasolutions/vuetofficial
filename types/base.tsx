@@ -187,6 +187,10 @@ export type RootTabParamList = {
   };
   Calendar: {};
   Chat: undefined;
+  RoutineTasks: {
+    id: number;
+    date: string;
+  };
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

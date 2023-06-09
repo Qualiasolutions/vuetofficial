@@ -34,6 +34,7 @@ import ChatScreen from 'screens/ChatScreen';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
+import RoutineTasksScreen from 'screens/RoutineTasksScreen';
 
 const styles = StyleSheet.create({
   icon: {
@@ -209,6 +210,14 @@ export function BottomTabNavigator() {
         options={{
           tabBarButton: () => null,
           title: 'Add Task'
+        }}
+      />
+      <BottomTab.Screen
+        name="RoutineTasks"
+        component={RoutineTasksScreen}
+        options={{
+          tabBarButton: () => null,
+          title: 'Routine'
         }}
       />
     </BottomTab.Navigator>

@@ -119,7 +119,9 @@ const tasksApi = vuetApi.injectEndpoints({
                       patch.start_datetime ||
                       draft.byId[patch.id].start_datetime,
                     end_datetime:
-                      patch.end_datetime || draft.byId[patch.id].end_datetime
+                      patch.end_datetime || draft.byId[patch.id].end_datetime,
+                    date: patch.date || draft.byId[patch.id].date,
+                    duration: patch.duration || draft.byId[patch.id].duration
                   };
                 }
               )
@@ -133,7 +135,7 @@ const tasksApi = vuetApi.injectEndpoints({
                 originalArgs,
                 (draft) => {
                   // If the task is recurrent then don't update
-                  // it's start and end times (they can't change)
+                  // its start and end times (they can't change)
                   if (!draft.byTaskId[patch.id][-1]) return;
 
                   // Otherwise it is a single occurrence and we
@@ -141,12 +143,12 @@ const tasksApi = vuetApi.injectEndpoints({
                   const scheduledTask = draft.byTaskId[patch.id][-1];
                   draft.byTaskId[patch.id][-1] = {
                     ...scheduledTask,
-                    start_datetime: scheduledTask.recurrence
-                      ? scheduledTask.start_datetime
-                      : patch.start_datetime || scheduledTask.start_datetime,
-                    end_datetime: scheduledTask.recurrence
-                      ? scheduledTask.end_datetime
-                      : patch.end_datetime || scheduledTask.end_datetime
+                    start_datetime:
+                      patch.start_datetime || scheduledTask.start_datetime,
+                    end_datetime:
+                      patch.end_datetime || scheduledTask.end_datetime,
+                    date: patch.date || scheduledTask.date,
+                    duration: patch.duration || scheduledTask.duration
                   };
                 }
               )

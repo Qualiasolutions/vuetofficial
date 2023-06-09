@@ -170,6 +170,8 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     selectIsComplete({ id, recurrenceIndex: recurrence_index })
   );
   const task = useSelector(selectTaskById(id));
+
+  // console.log(`RENDER ${task?.title}`);
   const scheduledTask = useSelector(
     selectScheduledTask({ id, recurrenceIndex: recurrence_index })
   );
@@ -287,7 +289,10 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     navigation.navigate,
     t,
     triggerCreateCompletionForm,
-    userDetails?.is_premium
+    userDetails?.is_premium,
+    isCompleteBoxColor,
+    isIgnored,
+    isIgnoredBoxColor
   ]);
 
   return fullContent;

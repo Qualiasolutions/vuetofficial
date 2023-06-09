@@ -22,6 +22,7 @@ import { PreferredDaysDays } from 'types/settings';
 import { capitalize } from 'lodash';
 import Checkbox from 'components/molecules/Checkbox';
 import SafePressable from 'components/molecules/SafePressable';
+import { DayType } from 'types/datesAndTimes';
 
 const styles = StyleSheet.create({
   tableText: {
@@ -32,15 +33,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
-
-type DayType =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday';
 
 const DAYS: DayType[] = [
   'monday',

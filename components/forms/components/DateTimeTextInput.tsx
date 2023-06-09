@@ -36,8 +36,8 @@ export default function DateTimeTextInput({
     mode === 'date'
       ? dayjs(value).format('DD/MM/YYYY')
       : mode === 'datetime'
-      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-      : dayjs(value).format('HH:mm:ss');
+      ? dayjs(value).format('YYYY-MM-DD HH:mm')
+      : dayjs(value).format('HH:mm');
 
   return (
     <TransparentView style={containerStyle}>
