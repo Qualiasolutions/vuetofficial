@@ -219,6 +219,7 @@ export default function AlertsList() {
 
   const overdueTaskViews = overdueTasks.map((scheduledTask) => (
     <OverdueTask
+      key={`${scheduledTask.id}_${scheduledTask.recurrence_index}`}
       task={scheduledTask.id}
       recurrenceIndex={
         scheduledTask.recurrence_index === null
