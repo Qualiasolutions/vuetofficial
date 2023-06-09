@@ -170,9 +170,25 @@ function Calendar({
       )} ${dayJsDate.format('MMM')}`;
 
       const dailyTasksPerRoutine = tasksPerRoutine[date];
+
+      // We want to only show the filtered tasks
+      const permittedTasksOnDate = tasks[date];
+
       const routineIdsToShow = Object.keys(dailyTasksPerRoutine)
-        .map((id) => parseInt(id))
-        .filter((id) => id !== -1);
+        .map((routineId) => parseInt(routineId))
+        .filter(
+          (routineId) =>
+            routineId !== -1 &&
+            permittedTasksOnDate.some(({ id: taskId }) =>
+              dailyTasksPerRoutine[routineId]
+                .map((tsk) => tsk.id)
+                .includes(taskId)
+            )
+        );
+
+      const tasksToShow = dailyTasksPerRoutine[-1].filter(({ id: taskId }) =>
+        permittedTasksOnDate.map((tsk) => tsk.id).includes(taskId)
+      );
 
       sectionsArray.push({
         title: dayName,
@@ -183,7 +199,7 @@ function Calendar({
             recurrence_index: null,
             type: 'ROUTINE' as ItemType
           })),
-          ...dailyTasksPerRoutine[-1].map((task) => ({
+          ...tasksToShow.map((task) => ({
             ...task,
             type: 'TASK' as ItemType
           }))
