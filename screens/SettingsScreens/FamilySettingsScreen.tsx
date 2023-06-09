@@ -25,6 +25,7 @@ import UserWithColor from 'components/molecules/UserWithColor';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const styles = StyleSheet.create({
   familyHeader: {
@@ -112,12 +113,22 @@ const FamilySettingsScreen = ({
   };
 
   const familyPhoneNumbers =
-    userFullDetails?.family.users.map((user) => user.phone_number) || [];
+    userFullDetails?.family.users
+      .map((user) => user.phone_number)
+      .filter((num) => !!num) || [];
+  const familyEmails =
+    userFullDetails?.family.users
+      .map((user) => user.email)
+      .filter((email) => !!email) || [];
 
   const familyInvites = userInvites?.filter(
     (invite) =>
       invite.family === userFullDetails?.family.id &&
-      !familyPhoneNumbers.includes(invite.phone_number)
+      !(
+        invite?.phone_number &&
+        familyPhoneNumbers.includes(invite?.phone_number)
+      ) &&
+      !(invite?.email && familyEmails.includes(invite?.email))
   );
 
   const isUserResponse = (x: any): x is UserResponse =>
@@ -131,7 +142,7 @@ const FamilySettingsScreen = ({
       <UserWithColor
         name={
           isPending
-            ? `${user.phone_number} (${t('common.pending')})`
+            ? `${user.phone_number || user.email} (${t('common.pending')})`
             : `${user.first_name} ${user.last_name}`
         }
         memberColour={user.member_colour || 'efefef'}
@@ -171,14 +182,22 @@ const FamilySettingsScreen = ({
         title="Before you proceed"
         question={`Are you sure you want to remove ${userToDelete?.first_name} ${userToDelete?.last_name} from the family?`}
         visible={!!userToDelete}
-        onYes={() => {}}
+        onYes={() => {
+          setUserToDelete(null);
+          Toast.show({
+            type: 'error',
+            text1: 'Action not currently supported'
+          });
+        }}
         onNo={() => {
           setUserToDelete(null);
         }}
       />
       <YesNoModal
         title="Before you proceed"
-        question={`Are you sure you want to remove ${userInviteToDelete?.first_name} ${userInviteToDelete?.last_name} from the family?`}
+        question={`Are you sure you want to cancel the invite for ${
+          userInviteToDelete?.phone_number || userInviteToDelete?.email
+        }?`}
         visible={!!userInviteToDelete}
         onYes={() => {
           if (userInviteToDelete) {

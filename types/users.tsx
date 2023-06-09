@@ -11,7 +11,8 @@ export type CreateUserInviteRequest = {
   invitee: number;
   first_name?: string;
   last_name?: string;
-  phone_number: string;
+  phone_number?: string;
+  email?: string;
   dob?: string;
   member_colour?: string;
 };
@@ -38,7 +39,8 @@ export type UserInviteResponse = {
   };
   first_name: string;
   last_name: string;
-  phone_number: string;
+  phone_number: string | null;
+  email: string | null;
   dob: string;
   member_colour: string;
   accepted: boolean;

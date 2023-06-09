@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 const LoginScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Login'>) => {
-  const [username, onChangeUsername] = React.useState<string>('');
+  const [username, setUsername] = React.useState<string>('');
   const [password, onChangePassword] = React.useState<string>('');
   const [submitting, setSubmitting] = React.useState<boolean>(false);
   const [usingEmail, setUsingEmail] = React.useState<boolean>(false);
@@ -117,14 +117,15 @@ const LoginScreen = ({
       <TransparentView style={styles.usernameInput}>
         {usingEmail ? (
           <TextInput
+            value={username}
             onChangeText={(newUsername) => {
-              onChangeUsername(newUsername);
+              setUsername(newUsername);
             }}
           />
         ) : (
           <PhoneNumberInput
             onChangeFormattedText={(newUsername) => {
-              onChangeUsername(newUsername);
+              setUsername(newUsername);
             }}
           />
         )}
@@ -141,7 +142,12 @@ const LoginScreen = ({
         onChangeText={(text) => onChangePassword(text)}
       />
       <TransparentView style={styles.otherOptsWrapper}>
-        <SafePressable onPress={() => setUsingEmail(!usingEmail)}>
+        <SafePressable
+          onPress={() => {
+            setUsingEmail(!usingEmail);
+            setUsername('');
+          }}
+        >
           <PrimaryText
             text={
               usingEmail

@@ -15,12 +15,21 @@ import {
 import { useCreateFriendshipMutation } from 'reduxStore/services/api/friendships';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import getUserFullDetails from 'hooks/useGetUserDetails';
+import { PaddedSpinner } from 'components/molecules/Spinners';
+
+const styles = StyleSheet.create({
+  confirmButton: {
+    marginTop: 20
+  }
+});
 
 const FamilyRequestScreen = () => {
   const { data: userFullDetails } = getUserFullDetails();
 
-  const [updateUserDetails] = useUpdateUserDetailsMutation();
-  const [updateUserInvite] = useUpdateUserInviteMutation();
+  const [updateUserDetails, updateUserDetailsResult] =
+    useUpdateUserDetailsMutation();
+  const [updateUserInvite, updateUserInviteResult] =
+    useUpdateUserInviteMutation();
   const [createFriendship] = useCreateFriendshipMutation();
 
   const { t } = useTranslation();
@@ -55,50 +64,47 @@ const FamilyRequestScreen = () => {
               })
         }
       />
-      <Button
-        title={t('common.accept')}
-        onPress={() => {
-          if (userFullDetails) {
-            if (firstInviteForUser) {
-              if (firstInviteForUser.family) {
-                updateUserDetails({
-                  // If the user has already done setup then don't overwrite their details
-                  ...(userFullDetails.has_done_setup ? {} : firstInviteForUser),
-                  user_id: userFullDetails.id,
-                  family: firstInviteForUser?.family,
-                  has_done_setup: true
-                });
-              } else {
-                createFriendship({
-                  friend: userFullDetails.id,
-                  creator: firstInviteForUser.invitee.id
+      {updateUserDetailsResult.isLoading || updateUserInvite.isLoading ? (
+        <PaddedSpinner />
+      ) : (
+        <>
+          <Button
+            title={t('common.accept')}
+            onPress={() => {
+              if (userFullDetails) {
+                if (firstInviteForUser) {
+                  if (firstInviteForUser.family) {
+                    updateUserDetails({
+                      user_id: userFullDetails.id,
+                      family: firstInviteForUser?.family
+                    });
+                  } else {
+                    createFriendship({
+                      friend: userFullDetails.id,
+                      creator: firstInviteForUser.invitee.id
+                    });
+                  }
+                }
+              }
+            }}
+            style={styles.confirmButton}
+          />
+          <Button
+            title={t('common.reject')}
+            onPress={() => {
+              if (invitesForUser) {
+                updateUserInvite({
+                  id: invitesForUser[0].id,
+                  rejected: true
                 });
               }
-            }
-          }
-        }}
-        style={styles.confirmButton}
-      />
-      <Button
-        title={t('common.reject')}
-        onPress={() => {
-          if (invitesForUser) {
-            updateUserInvite({
-              id: invitesForUser[0].id,
-              rejected: true
-            });
-          }
-        }}
-        style={styles.confirmButton}
-      />
+            }}
+            style={styles.confirmButton}
+          />
+        </>
+      )}
     </AlmostWhiteContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  confirmButton: {
-    marginTop: 20
-  }
-});
 
 export default FamilyRequestScreen;
