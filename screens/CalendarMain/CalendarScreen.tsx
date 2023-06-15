@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 
 export default function CalendarScreen() {
   const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
-  const { isLoading } = useGetAllScheduledTasksQuery();
+  const { isLoading } = useGetAllScheduledTasksQuery(null as any);
 
   if (isLoading) {
     return <FullPageSpinner />;

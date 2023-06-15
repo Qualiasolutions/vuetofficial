@@ -11,6 +11,24 @@ import { useThemeColor } from 'components/Themed';
 import { getLongDateFromDateObject } from 'utils/datesAndTimes';
 import SafePressable from 'components/molecules/SafePressable';
 
+const styles = StyleSheet.create({
+  listEntry: {
+    padding: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 5,
+    marginBottom: 5
+  },
+  listEntryText: {
+    fontSize: 20
+  }
+});
+
 export default function ModeOfAccommodationCard({
   entity
 }: {
@@ -41,21 +59,3 @@ export default function ModeOfAccommodationCard({
     </SafePressable>
   );
 }
-
-const styles = StyleSheet.create({
-  listEntry: {
-    padding: 20,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 5,
-    marginBottom: 5
-  },
-  listEntryText: {
-    fontSize: 20
-  }
-});

@@ -52,8 +52,10 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery(null as any);
-  const { isLoading: isLoadingScheduledTasks } = useGetAllScheduledTasksQuery();
-  const { isLoading: isLoadingTasks } = useGetAllTasksQuery();
+  const { isLoading: isLoadingScheduledTasks } = useGetAllScheduledTasksQuery(
+    null as any
+  );
+  const { isLoading: isLoadingTasks } = useGetAllTasksQuery(null as any);
   const dispatch = useDispatch();
 
   const [responsiveCalendar, setResponsiveCalendar] = useState(false);

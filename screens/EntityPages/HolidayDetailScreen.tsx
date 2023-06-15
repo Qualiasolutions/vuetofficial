@@ -18,8 +18,23 @@ import {
   getDatesPeriodString,
   getUTCValuesFromDateString
 } from 'utils/datesAndTimes';
-import { Pressable, SectionList, StyleSheet } from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
 import SafePressable from 'components/molecules/SafePressable';
+
+const styles = StyleSheet.create({
+  loadMoreButton: {
+    padding: 20
+  },
+  loadMoreButtonText: {
+    fontSize: 20
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 20
+  }
+});
 
 export default function HolidayDetailScreen({
   navigation,
@@ -243,18 +258,3 @@ export default function HolidayDetailScreen({
 
   return <WhiteView style={{ flex: 1 }}>{sectionList}</WhiteView>;
 }
-
-const styles = StyleSheet.create({
-  loadMoreButton: {
-    padding: 20
-  },
-  loadMoreButtonText: {
-    fontSize: 20
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 20
-  }
-});

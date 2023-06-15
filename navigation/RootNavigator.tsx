@@ -88,23 +88,8 @@ export function BottomTabNavigator() {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
-  useGetAllTasksQuery(null as any, {
-    refetchOnMountOrArgChange: true,
-    skip: !userDetails?.user_id
-  });
-  useGetAllEntitiesQuery(null as any, {
-    refetchOnMountOrArgChange: true,
-    skip: !userDetails?.user_id
-  });
-  useGetAllFriendshipsQuery(userDetails?.user_id || -1, {
-    refetchOnMountOrArgChange: true,
-    skip: !userDetails?.user_id
-  });
   useGetUserInvitesQuery(userDetails?.user_id || -1, {
     refetchOnMountOrArgChange: true,
-    skip: !userDetails?.user_id
-  });
-  useGetAllScheduledTasksQuery(null as any, {
     skip: !userDetails?.user_id
   });
   useGetAllAlertsQuery(null as any, {

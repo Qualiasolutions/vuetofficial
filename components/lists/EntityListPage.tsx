@@ -68,8 +68,7 @@ export default function EntityListPage({
   const {
     data: allEntities,
     isLoading,
-    isFetching,
-    error
+    isFetching
   } = useGetAllEntitiesQuery(null as any);
   const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
     entityTypes.includes(entity.resourcetype)
@@ -78,6 +77,7 @@ export default function EntityListPage({
   const [monthsBack, setMonthsBack] = useState(0);
 
   let filteredEntityData = entityData;
+
   if (entityFilters) {
     for (const entityFilter of entityFilters) {
       filteredEntityData = filteredEntityData.filter(entityFilter);

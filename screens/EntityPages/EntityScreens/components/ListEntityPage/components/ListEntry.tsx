@@ -3,7 +3,7 @@ import {
   SmallImagePicker
 } from 'components/forms/components/ImagePicker';
 import React, { useState } from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ListEntryResponse } from 'types/lists';
 import Checkbox from 'components/molecules/Checkbox';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
@@ -99,10 +99,10 @@ export default function ListEntry({
     });
   };
 
-  const updateNoteInDb = (note: string) => {
+  const updateNoteInDb = (nt: string) => {
     updateListEntry({
       id: listEntry.id,
-      notes: note
+      notes: nt
     });
   };
 
@@ -190,7 +190,7 @@ export default function ListEntry({
             <TextInput
               style={styles.input}
               placeholder="Notes"
-              onChangeText={(note) => updateNote(note)}
+              onChangeText={(nt) => updateNote(nt)}
               defaultValue={listEntry.notes}
               multiline
             />

@@ -98,7 +98,45 @@ const entitiesApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of entitiesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Entity' }
+        ])) {
+          if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
+            continue;
+          const mockId = 1e10 + Math.round(Math.random() * 1e10);
+          const mockEntry = {
+            ...patch,
+            id: mockId
+          } as EntityResponseType;
+          const patchResult = dispatch(
+            entitiesApi.util.updateQueryData(
+              endpointName as 'getAllEntities' | 'getMemberEntities',
+              originalArgs,
+              (draft) => {
+                draft.ids.push(mockId);
+                draft.byId[mockId] = mockEntry;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     }),
     formCreateEntity: builder.mutation<
       EntityResponseType,
@@ -112,7 +150,51 @@ const entitiesApi = vuetApi.injectEndpoints({
         },
         body: payload.formData
       }),
-      invalidatesTags: ['Entity', 'Task']
+      invalidatesTags: ['Entity', 'Task'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        const mockId = 1e10 + Math.round(Math.random() * 1e10);
+        const mockEntry: { [key: string]: any } = {
+          id: mockId
+        };
+        if (patch.formData) {
+          for (const [key, value] of (patch.formData as any)._parts) {
+            mockEntry[key] = value;
+          }
+        }
+
+        for (const {
+          endpointName,
+          originalArgs
+        } of entitiesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Entity' }
+        ])) {
+          if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
+            continue;
+
+          const patchResult = dispatch(
+            entitiesApi.util.updateQueryData(
+              endpointName as 'getAllEntities' | 'getMemberEntities',
+              originalArgs,
+              (draft) => {
+                draft.ids.push(mockId);
+                draft.byId[mockId] = mockEntry as EntityResponseType;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     }),
     formUpdateEntity: builder.mutation<
       EntityResponseType,
