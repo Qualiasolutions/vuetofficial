@@ -22,7 +22,7 @@ import MemberList from 'components/molecules/MemberList';
 import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 });
 
 export default function ListScreen({ entityId }: { entityId: number }) {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
   const {
     data: allEntities,
     isLoading,

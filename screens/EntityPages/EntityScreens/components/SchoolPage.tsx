@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ListLink from 'components/molecules/ListLink';
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const useStyle = function () {
   return StyleSheet.create({
@@ -22,7 +22,7 @@ const useStyle = function () {
 export default function SchoolScreen({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
 
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const {
     data: allEntities,
     isLoading,

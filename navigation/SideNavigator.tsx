@@ -25,7 +25,7 @@ import {
 } from 'reduxStore/services/api/notifications';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectRefreshToken } from 'reduxStore/slices/auth/selectors';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { selectPushToken } from 'reduxStore/slices/notifications/selectors';
 import { blacklistTokenAsync } from 'utils/authRequests';
 import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
@@ -62,7 +62,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   const dispatch = useDispatch();
   const [loggingOut, setLoggingOut] = useState(false);
   const jwtRefreshToken = useSelector(selectRefreshToken);
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const devicePushToken = useSelector(selectPushToken);
   const { data: pushTokens, isLoading: isLoadingPushTokens } =
     useGetPushTokensQuery(userDetails?.id || -1, {

@@ -1,6 +1,7 @@
 {
   "pageTitles": {
-    "home": "Today",
+    "home": "Home",
+    "references": "References",
     "categories": "Categories",
     "messages": "Messages",
     "settings": "Settings",
@@ -10,7 +11,7 @@
     "addEntity": "Add Entity",
     "editEntity": "Edit Entity",
     "entity": "View Entity",
-    "calendar": "My Dates",
+    "calendar": "Calendar",
     "oops": "Oops!",
     "personalAssistant": "Personal assistant",
     "familySettings": "Family settings",

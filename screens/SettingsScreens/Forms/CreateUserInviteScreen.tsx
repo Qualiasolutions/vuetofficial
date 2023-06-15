@@ -17,7 +17,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { StyleSheet } from 'react-native';
 import SafePressable from 'components/molecules/SafePressable';
 import { PrimaryText } from 'components/molecules/TextComponents';
@@ -42,7 +42,7 @@ const CreateUserInviteScreen = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [usingEmail, setUsingEmail] = useState(false);
-  const { data: userFullDetails, isLoading } = getUserFullDetails();
+  const { data: userFullDetails, isLoading } = useGetUserFullDetails();
 
   const [createUserInvite, createUserInviteResult] =
     useCreateUserInviteMutation();

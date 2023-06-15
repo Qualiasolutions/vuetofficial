@@ -28,7 +28,7 @@ import { ColorPicker } from 'components/forms/components/ColorPickers';
 import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import dayjs from 'dayjs';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 const CreateAccountScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'CreateAccount'>) => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [firstName, onChangeFirstName] = React.useState<string>('');
   const [lastName, onChangeLastName] = React.useState<string>('');

@@ -14,7 +14,7 @@ import {
 } from 'reduxStore/services/api/user';
 import { useCreateFriendshipMutation } from 'reduxStore/services/api/friendships';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const styles = StyleSheet.create({
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 });
 
 const FamilyRequestScreen = () => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [updateUserDetails, updateUserDetailsResult] =
     useUpdateUserDetailsMutation();

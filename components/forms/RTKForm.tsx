@@ -13,7 +13,7 @@ import { PaddedSpinner } from 'components/molecules/Spinners';
 import createInitialObject from './utils/createInitialObject';
 import { FieldValueTypes } from './types';
 import parseFormValues from './utils/parseFormValues';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useTranslation } from 'react-i18next';
 import hasAllRequired from './utils/hasAllRequired';
@@ -91,7 +91,7 @@ export default function Form({
   fieldColor?: string;
   formDataType?: FormDataType;
 }) {
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const { t } = useTranslation();
 
   const flatFields = useMemo(() => {

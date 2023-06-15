@@ -23,7 +23,7 @@ import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
 import UserWithColor from 'components/molecules/UserWithColor';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 const FamilySettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'FamilySettings'>) => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null);
   const [userInviteToDelete, setUserInviteToDelete] =

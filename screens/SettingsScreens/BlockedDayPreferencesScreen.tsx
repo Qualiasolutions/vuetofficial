@@ -14,7 +14,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { AllBlockedCategories, BlockedCategoryType } from 'types/settings';
 import Checkbox from 'components/molecules/Checkbox';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { TransparentView } from 'components/molecules/ViewComponents';
 
 const blockTypes: BlockedCategoryType[] = [
@@ -51,7 +51,7 @@ export default function BlockedDayPreferencesScreen() {
     useGetAllCategoriesQuery();
 
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
 
   const blockedCategories: {
     [key: string]: { isLoading: boolean; data?: AllBlockedCategories };

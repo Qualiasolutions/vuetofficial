@@ -82,19 +82,29 @@ export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
 
 // Entity Stack
 export type EntityTabParamList = {
-  Calendar: undefined;
-  References: undefined;
-  Home: undefined;
+  EntityCalendar: undefined;
+  EntityReferences: undefined;
+  EntityHome: undefined;
 };
 
 export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
   NativeStackScreenProps<EntityTabParamList, Screen>;
 
+// Entity Type Stack
+export type EntityTypeTabParamList = {
+  EntityTypeCalendar: { entityTypes: EntityTypeName[] };
+  EntityTypeReferences: { entityTypes: EntityTypeName[] };
+  EntityTypeHome: { entityTypes: EntityTypeName[] };
+};
+
+export type EntityTypeTabScreenProps<Screen extends keyof EntityTabParamList> =
+  NativeStackScreenProps<EntityTabParamList, Screen>;
+
 // Category Stack
 export type CategoryTabParamList = {
-  Calendar: undefined;
-  References: undefined;
-  Home: undefined;
+  CategoryCalendar: undefined;
+  CategoryReferences: undefined;
+  CategoryHome: undefined;
 };
 
 export type CategoryTabScreenProps<Screen extends keyof CategoryTabParamList> =

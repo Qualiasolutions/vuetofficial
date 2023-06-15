@@ -3,7 +3,7 @@ import {
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
 
-export default function getUserFullDetails() {
+export default function useGetUserFullDetails() {
   const {
     data: userDetails,
     isLoading: isLoadingUserDetails,

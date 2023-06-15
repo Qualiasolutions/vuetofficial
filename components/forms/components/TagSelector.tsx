@@ -4,7 +4,7 @@ import SafePressable from 'components/molecules/SafePressable';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import {
@@ -47,7 +47,7 @@ type Props = {
 export default function TagSelector({ value, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
 
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
     useGetMemberEntitiesQuery(userDetails?.id || -1, {

@@ -5,7 +5,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useEffect, useState } from 'react';
 import TypedForm from 'components/forms/TypedForm';
@@ -33,7 +33,7 @@ type MyAccountFormFields = {
 };
 
 export default function EditAccountDetailsScreen() {
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const { t } = useTranslation();
   const formFieldsTemplate = useMyAccountForm();
   const [newValues, setNewValues] = useState<null | MyAccountFormFields>(null);

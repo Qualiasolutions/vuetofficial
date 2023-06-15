@@ -2,6 +2,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Calendar from 'components/calendars/TaskCalendar';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectScheduledTaskIdsByEntityIds } from 'reduxStore/slices/calendars/selectors';
 import { EntityTabParamList } from 'types/base';
@@ -9,6 +10,7 @@ import { EntityTabParamList } from 'types/base';
 const TopTabs = createMaterialTopTabNavigator<EntityTabParamList>();
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
+  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByEntityIds([entityId]),
     [entityId]
@@ -34,10 +36,28 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [entityId]);
 
   return (
-    <TopTabs.Navigator initialRouteName="Home">
-      <TopTabs.Screen name="Home" component={homeComponent} />
-      <TopTabs.Screen name="Calendar" component={calendarComponent} />
-      <TopTabs.Screen name="References" component={referencesComponent} />
+    <TopTabs.Navigator initialRouteName="EntityHome">
+      <TopTabs.Screen
+        name="EntityHome"
+        component={homeComponent}
+        options={{
+          title: t('pageTitles.home')
+        }}
+      />
+      <TopTabs.Screen
+        name="EntityCalendar"
+        component={calendarComponent}
+        options={{
+          title: t('pageTitles.calendar')
+        }}
+      />
+      <TopTabs.Screen
+        name="EntityReferences"
+        component={referencesComponent}
+        options={{
+          title: t('pageTitles.references')
+        }}
+      />
     </TopTabs.Navigator>
   );
 }

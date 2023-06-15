@@ -18,7 +18,7 @@ import { Text, TextInput } from 'components/Themed';
 import { useEffect, useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Button } from 'components/molecules/ButtonComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
 
@@ -129,7 +129,7 @@ const EditTaskLimitModal = ({
 
   const [updateTaskLimit, updateTaskLimitResult] = useUpdateTaskLimitMutation();
   const [createTaskLimit, createTaskLimitResult] = useCreateTaskLimitMutation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const defaultLimits = {
     minutes_limit: 120,

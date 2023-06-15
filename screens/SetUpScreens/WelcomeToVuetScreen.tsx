@@ -12,7 +12,7 @@ import { PageTitle, PageSubtitle } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import { ErrorBox } from 'components/molecules/Errors';
 import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   confirmButton: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 const WelcomeToVuetScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [updateUserDetails, result] = useUpdateUserDetailsMutation();
 

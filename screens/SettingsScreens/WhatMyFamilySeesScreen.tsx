@@ -6,7 +6,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import {
@@ -45,7 +45,7 @@ const CategoryToggle = ({
 
 export default function WhatMyFamilySeesScreen() {
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
 
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();

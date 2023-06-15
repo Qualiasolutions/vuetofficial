@@ -3,6 +3,7 @@ import Calendar from 'components/calendars/TaskCalendar';
 import CategoryHome from 'components/organisms/CategoryHome';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectScheduledTaskIdsByCategories } from 'reduxStore/slices/calendars/selectors';
 import { CategoryTabParamList } from 'types/base';
@@ -14,6 +15,7 @@ export default function CategoryNavigator({
 }: {
   categoryId: number;
 }) {
+  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByCategories([categoryId]),
     [categoryId]
@@ -39,10 +41,28 @@ export default function CategoryNavigator({
   }, [categoryId]);
 
   return (
-    <TopTabs.Navigator initialRouteName="Home">
-      <TopTabs.Screen name="Home" component={homeComponent} />
-      <TopTabs.Screen name="Calendar" component={calendarComponent} />
-      <TopTabs.Screen name="References" component={referencesComponent} />
+    <TopTabs.Navigator initialRouteName="CategoryHome">
+      <TopTabs.Screen
+        name="CategoryHome"
+        component={homeComponent}
+        options={{
+          title: t('pageTitles.home')
+        }}
+      />
+      <TopTabs.Screen
+        name="CategoryCalendar"
+        component={calendarComponent}
+        options={{
+          title: t('pageTitles.calendar')
+        }}
+      />
+      <TopTabs.Screen
+        name="CategoryReferences"
+        component={referencesComponent}
+        options={{
+          title: t('pageTitles.references')
+        }}
+      />
     </TopTabs.Navigator>
   );
 }

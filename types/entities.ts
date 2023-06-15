@@ -1,15 +1,23 @@
 import { ListEntryResponse } from './lists';
 
 export type EntityTypeName =
+  | 'Anniversary'
   | 'Car'
+  | 'CareerGoal'
+  | 'Clothing'
   | 'Boat'
   | 'Birthday'
   | 'Event'
   | 'Hobby'
+  | 'Home'
+  | 'PublicTransport'
+  | 'SocialMedia'
+  | 'SocialPlan'
   | 'List'
   | 'Holiday'
   | 'Trip'
   | 'Flight'
+  | 'Food'
   | 'TrainBusFerry'
   | 'RentalCar'
   | 'TaxiOrTransfer'

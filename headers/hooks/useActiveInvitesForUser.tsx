@@ -1,4 +1,4 @@
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useSelector } from 'react-redux';
 import { useGetUserInvitesQuery } from 'reduxStore/services/api/user';
 import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
@@ -6,7 +6,7 @@ import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 export default function useActiveInvitesForUser(ownInvites: boolean) {
   const jwtAccessToken = useSelector(selectAccessToken);
   const { data: userFullDetails, isLoading: isLoadingUserFullDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
 
   const { data: userInvites, isLoading: isLoadingUserInvites } =
     useGetUserInvitesQuery(userFullDetails?.family?.id || -1, {

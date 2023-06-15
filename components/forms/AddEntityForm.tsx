@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, useThemeColor } from 'components/Themed';
+import { useThemeColor } from 'components/Themed';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { useNavigation } from '@react-navigation/native';
 import GenericError from 'components/molecules/GenericError';
@@ -9,15 +9,14 @@ import {
   useGetAllEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useTranslation } from 'react-i18next';
-import forms from './entityFormFieldTypes';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { fieldColorMapping } from './utils/fieldColorMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
-import { FormFieldTypes } from './formFieldTypes';
 import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import useForm from './entityFormFieldTypes/useForm';
 
 type FieldsMapping = {
   [key in EntityTypeName]?: (parent: EntityResponseType | null) => any;
@@ -36,10 +35,9 @@ export default function AddEntityForm({
   entityType: EntityTypeName;
   parentId?: number;
 }) {
-  const entityForms: { [key in EntityTypeName]?: FormFieldTypes } =
-    forms(false);
   const navigation = useNavigation();
 
+  const entityForm = useForm(entityType, false);
   const { t } = useTranslation();
 
   const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
@@ -63,56 +61,49 @@ export default function AddEntityForm({
 
   const parentEntity = parentId ? allEntities.byId[parentId] : null;
 
-  if (entityType && Object.keys(entityForms).includes(entityType)) {
-    const extraFieldsFunction = extraFieldsMapping[entityType];
-    const computedExtraFields = extraFieldsFunction
-      ? extraFieldsFunction(parentEntity)
-      : {};
-    const extraFields = {
-      ...computedExtraFields,
-      resourcetype: entityType
-    } as any;
+  const extraFieldsFunction = extraFieldsMapping[entityType];
+  const computedExtraFields = extraFieldsFunction
+    ? extraFieldsFunction(parentEntity)
+    : {};
+  const extraFields = {
+    ...computedExtraFields,
+    resourcetype: entityType
+  } as any;
 
-    if (parentId) {
-      extraFields.parent = parentId;
-    }
-
-    if (!entityForms[entityType]) {
-      return <Text>AddEntityForm not implemented for {entityType}</Text>;
-    }
-
-    return (
-      <TransparentView>
-        <RTKForm
-          fields={entityForms[entityType] || {}}
-          methodHooks={{
-            POST:
-              dataType === 'form'
-                ? useFormCreateEntityMutation
-                : useCreateEntityMutation
-          }}
-          formType="CREATE"
-          extraFields={extraFields}
-          derivedFieldsFunction={derivedFieldsMapping[entityType]}
-          onSubmitSuccess={() => {
-            Toast.show({
-              type: 'success',
-              text1: t('screens.addEntity.createSuccess', { entityType })
-            });
-            navigation.goBack();
-          }}
-          clearOnSubmit={true}
-          inlineFields={
-            (entityType in inlineFieldsMapping
-              ? inlineFieldsMapping[entityType]
-              : inlineFieldsMapping.default) as boolean
-          }
-          createTextOverride={t('common.save')}
-          fieldColor={fieldColor}
-          formDataType={dataType}
-        />
-      </TransparentView>
-    );
+  if (parentId) {
+    extraFields.parent = parentId;
   }
-  return null;
+
+  return (
+    <TransparentView>
+      <RTKForm
+        fields={entityForm || {}}
+        methodHooks={{
+          POST:
+            dataType === 'form'
+              ? useFormCreateEntityMutation
+              : useCreateEntityMutation
+        }}
+        formType="CREATE"
+        extraFields={extraFields}
+        derivedFieldsFunction={derivedFieldsMapping[entityType]}
+        onSubmitSuccess={() => {
+          Toast.show({
+            type: 'success',
+            text1: t('screens.addEntity.createSuccess', { entityType })
+          });
+          navigation.goBack();
+        }}
+        clearOnSubmit={true}
+        inlineFields={
+          (entityType in inlineFieldsMapping
+            ? inlineFieldsMapping[entityType]
+            : inlineFieldsMapping.default) as boolean
+        }
+        createTextOverride={t('common.save')}
+        fieldColor={fieldColor}
+        formDataType={dataType}
+      />
+    </TransparentView>
+  );
 }

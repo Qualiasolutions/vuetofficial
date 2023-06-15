@@ -20,7 +20,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'components/molecules/ButtonComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import FamilySelector from 'components/forms/components/FamilySelector';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -61,7 +61,7 @@ const RoutineCard = ({ id }: { id?: number }) => {
   const [updateRoutine, updateResult] = useUpdateRoutineMutation();
   const [deleteRoutine] = useDeleteRoutineMutation();
   const [createRoutine, createResult] = useCreateRoutineMutation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const [newName, setNewName] = useState(routine?.name || '');
 

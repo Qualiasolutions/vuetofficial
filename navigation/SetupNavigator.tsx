@@ -7,12 +7,12 @@ import AddFamilyScreen from 'screens/SetUpScreens/AddFamilyScreen';
 import WelcomeToVuetScreen from 'screens/SetUpScreens/WelcomeToVuetScreen';
 import AddFamilyMemberScreen from 'screens/SetUpScreens/AddFamilyMemberScreen';
 
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
 export function SetupNavigator() {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   let initialRouteName = 'CreateAccount' as keyof SetupTabParamList;
 

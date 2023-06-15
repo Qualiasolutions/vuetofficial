@@ -10,14 +10,14 @@ import {
   TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 import { Pressable } from 'react-native';
 import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 
 export function EditAccountTypeScreen() {
   const { t } = useTranslation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const [updateUserDetails] = useUpdateUserDetailsMutation();
 
   if (!userDetails) {

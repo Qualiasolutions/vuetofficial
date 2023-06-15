@@ -18,7 +18,7 @@ import {
   FamilyMemberFormFieldTypes
 } from 'screens/SettingsScreens/Forms/familyMemberFormFieldTypes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 const AddFamilyMemberScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamilyMember'>) => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 

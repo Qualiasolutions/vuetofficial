@@ -5,7 +5,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { useMemo, useState } from 'react';
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 
 export function EditPhoneNumberScreen() {
   const { t } = useTranslation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const [newPhone, setNewPhone] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [switchingToPhone, setSwitchingToPhone] = useState(false);

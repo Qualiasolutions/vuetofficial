@@ -9,7 +9,7 @@ import {
 } from 'reduxStore/services/api/notifications';
 import { useDispatch } from 'react-redux';
 import { setPushToken } from 'reduxStore/slices/notifications/actions';
-import getUserFullDetails from './useGetUserDetails';
+import useGetUserFullDetails from './useGetUserDetails';
 
 const getPushToken = async (): Promise<string | undefined> => {
   if (Device.isDevice && Platform.OS !== 'web') {
@@ -34,7 +34,7 @@ const getPushToken = async (): Promise<string | undefined> => {
 export default function useSetupPushNotifications() {
   const [isSetupComplete, setSetupComplete] = useState<boolean>(false);
   const [createPushToken, result] = useCreatePushTokenMutation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const { data: pushTokens, isLoading: isLoadingPushTokens } =
     useGetPushTokensQuery(userDetails?.id || -1, {
       skip: !userDetails?.id

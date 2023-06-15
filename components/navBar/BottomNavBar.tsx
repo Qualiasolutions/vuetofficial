@@ -13,7 +13,7 @@ import { ListingModal } from 'components/molecules/Modals';
 import { EntityTypeName } from 'types/entities';
 import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 const styles = StyleSheet.create({
   bar: {
@@ -109,7 +109,7 @@ export default function BottomNavBar({
     }
   };
 
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const {
     data: allEntities,
     isLoading,
@@ -197,7 +197,14 @@ export default function BottomNavBar({
                       parentId: (currentScreenParams as RouteParams).entityId
                     });
                   }
-                } else if (currentScreen === 'EntityList') {
+                } else if (
+                  [
+                    'EntityList',
+                    'EntityTypeHome',
+                    'EntityTypeCalendar',
+                    'EntityTypeReferences'
+                  ].includes(currentScreen)
+                ) {
                   type RouteParams = ContentTabParamList['EntityList'];
                   const entityTypes = (currentScreenParams as RouteParams)
                     .entityTypes;

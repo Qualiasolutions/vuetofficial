@@ -3,7 +3,7 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
@@ -28,7 +28,7 @@ const AddReference = ({ entityId }: { entityId: number }) => {
   const [newName, setNewName] = useState('');
   const [newValue, setNewValue] = useState('');
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
   const [createNewReference] = useCreateReferenceMutation();
 
   if (isLoadingUserDetails || !userDetails) {

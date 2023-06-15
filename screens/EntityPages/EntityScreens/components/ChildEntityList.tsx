@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { datetimeSettingsMapping } from 'components/lists/utils/datetimeSettingsMapping';
 import { entityOrderings } from 'components/lists/utils/entityOrderings';
 import { sectionNameMapping } from 'components/lists/utils/sectionNameMapping';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 function DefaultLink({ entity }: { entity: EntityResponseType }) {
   return (
@@ -35,7 +35,7 @@ export default function ChildEntityList({
   showCreateForm: boolean;
 }) {
   const { t } = useTranslation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const [monthsBack, setMonthsBack] = useState(0);
   const {
     data: allEntities,

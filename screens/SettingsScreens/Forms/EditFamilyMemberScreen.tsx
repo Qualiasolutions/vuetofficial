@@ -16,7 +16,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   formContainer: {
@@ -29,7 +29,7 @@ export default function EditFamilyMemberScreen({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {
   const { t } = useTranslation();
-  const { data: userFullDetails, isLoading, error } = getUserFullDetails();
+  const { data: userFullDetails, isLoading, error } = useGetUserFullDetails();
 
   const familyMemberIdRaw = route.params.id;
   const familyMemberId =

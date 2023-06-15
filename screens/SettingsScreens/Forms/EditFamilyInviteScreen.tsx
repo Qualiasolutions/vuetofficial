@@ -17,7 +17,7 @@ import GenericError from 'components/molecules/GenericError';
 import { useEffect } from 'react';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 export default function EditEntityScreen({
   route,
@@ -25,7 +25,7 @@ export default function EditEntityScreen({
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {
   const { t } = useTranslation();
 
-  const { data: userFullDetails, isLoading, error } = getUserFullDetails();
+  const { data: userFullDetails, isLoading, error } = useGetUserFullDetails();
 
   const { data: allUserInvites } = useGetUserInvitesQuery(
     userFullDetails?.family?.id || -1,

@@ -17,7 +17,7 @@ import { DarkTheme, DefaultTheme } from 'constants/Colors';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SideNavigator } from './SideNavigator';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 
 interface NavigationProps {
@@ -28,7 +28,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userFullDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
   const { isLoading: isLoadingUserInvites, data: invitesForUser } =
     useActiveInvitesForUser(true);
 

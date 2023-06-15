@@ -23,7 +23,7 @@ import { Modal } from 'components/molecules/Modals';
 import { TextInput, useThemeColor } from 'components/Themed';
 import Layout from 'constants/Layout';
 import { Ionicons } from '@expo/vector-icons';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 
 const useStyle = function () {
@@ -68,7 +68,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
 
   const [itemName, setItemName] = useState('');
 
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const {
     data: allEntities,

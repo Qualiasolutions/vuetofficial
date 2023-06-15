@@ -24,7 +24,7 @@ import {
 } from 'components/forms/components/ImagePicker';
 import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import SafePressable from 'components/molecules/SafePressable';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   confirmButton: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 const AddFamilyScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
   const { data: userInvites } = useGetUserInvitesQuery(
     userFullDetails?.family?.id || -1
   );

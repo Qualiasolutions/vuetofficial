@@ -16,7 +16,7 @@ import { Modal } from 'components/molecules/Modals';
 import { Text } from 'components/Themed';
 import { useEffect, useState } from 'react';
 import { Button } from 'components/molecules/ButtonComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { PreferredDaysDays } from 'types/settings';
 import { capitalize } from 'lodash';
@@ -71,7 +71,7 @@ const EditPreferredDaysModal = ({
 
   const [updatePreferredDays, updateResult] = useUpdatePreferredDaysMutation();
   const [createPreferredDays, createResult] = useCreatePreferredDaysMutation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const [newPreferences, setNewPreferences] = useState<PreferredDaysDays>({
     ...DEFAULT_PREFERENCES

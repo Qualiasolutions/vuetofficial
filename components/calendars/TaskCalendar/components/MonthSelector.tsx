@@ -13,7 +13,7 @@ import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Image } from 'components/molecules/ImageComponents';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { elevation } from 'styles/elevation';
 import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
@@ -63,7 +63,7 @@ export default function MonthSelector({
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const enforcedDate = useSelector(selectEnforcedDate);
   const navigation = useNavigation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const whiteColor = useThemeColor({}, 'white');
 
   const now = dayjs(new Date());

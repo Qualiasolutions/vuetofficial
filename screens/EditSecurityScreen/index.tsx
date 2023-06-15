@@ -3,7 +3,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { PageTitle } from 'components/molecules/TextComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { TextInput } from 'components/Themed';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -17,7 +17,7 @@ export default function EditSecurityScreen() {
   const [newPasswordConf, setNewPasswordConf] = useState('');
   const [updateUserDetails, updateUserDetailsResult] =
     useSecureUpdateUserDetailsMutation();
-  const { data: userDetails } = getUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   if (!userDetails) {
     return <FullPageSpinner />;

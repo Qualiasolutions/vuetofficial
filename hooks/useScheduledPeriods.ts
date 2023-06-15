@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGetScheduledPeriodsQuery } from 'reduxStore/services/api/period';
-import getUserFullDetails from './useGetUserDetails';
+import useGetUserFullDetails from './useGetUserDetails';
 
 export default function useScheduledPeriods(
   start_datetime?: string,
@@ -11,7 +11,7 @@ export default function useScheduledPeriods(
   const [latestPeriod, setLatestPeriod] = useState<Date | null>(null);
 
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
 
   useEffect(() => {
     const twoYearsAgo = new Date();

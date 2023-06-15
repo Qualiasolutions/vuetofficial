@@ -7,7 +7,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -45,7 +45,7 @@ const BlockTypeSelector = ({ type }: { type: BlockedCategoryType }) => {
     useGetAllCategoriesQuery();
 
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
 
   const { data: blockedCategories, isLoading: isLoadingBlockedCategories } =
     useGetBlockedCategoriesQuery(type);

@@ -1,4 +1,4 @@
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { StyleSheet } from 'react-native';
 import Checkbox from './Checkbox';
 import { PaddedSpinner } from './Spinners';
@@ -22,7 +22,7 @@ export default function UserCheckboxes({
   onToggleUser: (value: number) => void;
 }) {
   const { data: userDetails, isLoading: isLoadingUserDetails } =
-    getUserFullDetails();
+    useGetUserFullDetails();
   if (isLoadingUserDetails || !userDetails) {
     return <PaddedSpinner />;
   }

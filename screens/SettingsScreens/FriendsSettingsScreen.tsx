@@ -23,13 +23,13 @@ import {
   useGetAllFriendshipsQuery
 } from 'reduxStore/services/api/friendships';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import getUserFullDetails from 'hooks/useGetUserDetails';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 
 const FriendSettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'FriendSettings'>) => {
-  const { data: userFullDetails } = getUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [userToDelete, setUserToDelete] = useState<UserResponse | null>(null);
   const [userInviteToDelete, setUserInviteToDelete] =
