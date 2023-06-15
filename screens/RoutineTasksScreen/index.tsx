@@ -1,4 +1,5 @@
 import Task from 'components/calendars/TaskCalendar/components/Task';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import { StyleSheet } from 'react-native';
@@ -22,15 +23,17 @@ export default function RoutineTasksScreen({ route }: RoutineTasksScreenProps) {
   }
 
   const routineTaskViews = routineTasks.map((task) => (
-    <Task task={task} date={date} />
+    <Task task={task} date={date} key={task.id} />
   ));
 
   return (
-    <TransparentPaddedView>
-      <Text style={styles.title}>
-        {routine.name} {date}
-      </Text>
-      {routineTaskViews}
-    </TransparentPaddedView>
+    <TransparentFullPageScrollView>
+      <TransparentPaddedView>
+        <Text style={styles.title}>
+          {routine.name} {date}
+        </Text>
+        {routineTaskViews}
+      </TransparentPaddedView>
+    </TransparentFullPageScrollView>
   );
 }

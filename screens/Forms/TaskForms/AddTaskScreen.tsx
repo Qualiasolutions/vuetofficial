@@ -23,7 +23,8 @@ import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateFlexibleFixedTaskMutation,
-  useCreateTaskMutation
+  useCreateTaskMutation,
+  useCreateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import RadioInput from 'components/forms/components/RadioInput';
@@ -79,11 +80,15 @@ export default function AddTaskScreen() {
   const [formType, setFormType] = useState<AddTaskFormType>('TASK');
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
+  const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
+    useCreateTaskWithoutCacheInvalidationMutation();
   const [createFlexibleTask, createFlexibleTaskResult] =
     useCreateFlexibleFixedTaskMutation();
 
   const isSubmitting =
-    createTaskResult.isLoading || createFlexibleTaskResult.isLoading;
+    createTaskResult.isLoading ||
+    createFlexibleTaskResult.isLoading ||
+    createTaskWithoutMutationResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
   const headerBackgroundColor = useThemeColor({}, 'secondary');
@@ -222,7 +227,11 @@ export default function AddTaskScreen() {
       };
 
       try {
-        await createTask(parsedFieldValues).unwrap();
+        if (parsedFieldValues.recurrence) {
+          await createTask(parsedFieldValues).unwrap();
+        } else {
+          await createTaskWithoutCacheInvalidation(parsedFieldValues).unwrap();
+        }
         Toast.show({
           type: 'success',
           text1: t('screens.addTask.createSuccess')
@@ -259,7 +268,13 @@ export default function AddTaskScreen() {
         if (parsedFieldValues.is_flexible) {
           await createFlexibleTask(parsedFieldValues).unwrap();
         } else {
-          await createTask(parsedFieldValues).unwrap();
+          if (parsedFieldValues.recurrence) {
+            await createTask(parsedFieldValues).unwrap();
+          } else {
+            await createTaskWithoutCacheInvalidation(
+              parsedFieldValues
+            ).unwrap();
+          }
         }
         Toast.show({
           type: 'success',

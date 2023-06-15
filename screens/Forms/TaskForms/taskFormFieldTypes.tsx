@@ -2,6 +2,7 @@ import { FlatFormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
+import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 
 export const useTaskTopFieldTypes = (
   isEdit: boolean = false,
@@ -38,6 +39,7 @@ export const useDueDateFieldTypes = (
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserDetails();
+  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -78,9 +80,21 @@ export const useDueDateFieldTypes = (
       tags: {
         type: 'tagSelector',
         required: true
+      },
+      routine: {
+        type: 'dropDown',
+        required: false,
+        displayName: t('tasks.task.routine'),
+        permittedValues: allRoutines
+          ? Object.values(allRoutines.byId).map((routine) => ({
+              value: routine.id,
+              label: routine.name
+            }))
+          : [],
+        listMode: 'MODAL'
       }
     };
-  }, [userFullDetails, t, isEdit, taskHiddenTag]);
+  }, [userFullDetails, t, isEdit, taskHiddenTag, allRoutines]);
 };
 
 export const useTaskMiddleFieldTypes = (

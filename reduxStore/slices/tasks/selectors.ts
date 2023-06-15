@@ -6,6 +6,7 @@ import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms'
 import tasksApi from 'reduxStore/services/api/tasks';
 import { DayType } from 'types/datesAndTimes';
 import { ScheduledTaskResponseType } from 'types/tasks';
+import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 
 export const selectTaskById = (id: number) =>
   createSelector(
@@ -113,17 +114,24 @@ export const selectTasksInDailyRoutines = createSelector(
       }
 
       const nonRoutineTasks: MinimalScheduledTask[] = [];
-      for (const task of taskData.byDate[date]) {
-        const taskObj =
-          taskData?.byTaskId[task.id][
-            task.recurrence_index === null ? -1 : task.recurrence_index
-          ];
 
-        if (!taskObj) {
-          continue;
-        }
+      const taskObjects = taskData.byDate[date].map(
+        (task) =>
+          taskData.byTaskId[task.id][
+            task.recurrence_index === null ? -1 : task.recurrence_index
+          ]
+      );
+
+      const formattedTaskObjects = formatTasksPerDate(taskObjects);
+
+      for (const taskObj of formattedTaskObjects[date]) {
+        const task = {
+          id: taskObj.id,
+          recurrence_index: taskObj.recurrence_index
+        };
 
         if (taskObj.start_datetime && taskObj.end_datetime) {
+          // In this case the task is a fixed task
           const startTime = new Date(taskObj.start_datetime || '');
           const startDate = dayjs(startTime).format('YYYY-MM-DD');
           const endTime = new Date(taskObj.end_datetime || '');
@@ -147,8 +155,19 @@ export const selectTasksInDailyRoutines = createSelector(
             }
           }
           if (!addedToRoutine) {
-            nonRoutineTasks.push(task);
+            nonRoutineTasks.push({
+              id: taskObj.id,
+              recurrence_index: taskObj.recurrence_index
+            });
           }
+        } else {
+          // Otherwise it is a due date and we place
+          // it in a routine if it is assigned to one
+          if (taskObj.routine) {
+            routineTasks[taskObj.routine].push(task);
+            continue;
+          }
+          nonRoutineTasks.push(task);
         }
       }
 

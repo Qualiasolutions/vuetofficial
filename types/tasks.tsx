@@ -23,19 +23,22 @@ interface Reminder {
   recurrence_type: RecurrenceType;
 }
 
+type TaskResourceType = 'FixedTask' | 'DueDate';
+
 interface BaseTaskType {
   entities: number[];
   id: number;
   is_complete: boolean;
   location: string;
   polymorphic_ctype: number;
-  resourcetype: string;
+  resourcetype: TaskResourceType;
   title: string;
   hidden_tag: string;
   members: number[];
   recurrence?: Recurrence | null;
   recurrence_index?: number;
   reminders: Reminder[];
+  routine: number | null;
   created_at: string;
   date?: string;
   duration?: string;
@@ -53,16 +56,6 @@ type FixedTaskParsedType = BaseTaskType & {
 
 interface DueDateResponseType extends BaseTaskType {}
 
-interface FlexibleTaskResponseType extends BaseTaskType {
-  due_date: string;
-  resourcetype: 'FlexibleTask';
-}
-
-interface FlexibleTaskParsedType extends BaseTaskType {
-  due_date: Date;
-  resourcetype: 'FlexibleTask';
-}
-
 interface ScheduledTaskResponseType {
   id: number;
   is_complete: boolean;
@@ -70,6 +63,7 @@ interface ScheduledTaskResponseType {
   entities: number[];
   recurrence: number | null;
   recurrence_index: number | null;
+  routine: number | null;
   title: string;
   resourcetype: 'FixedTask' | 'DueDate';
   alert: AlertName[];
@@ -79,7 +73,7 @@ interface ScheduledTaskResponseType {
   end_datetime?: string;
 }
 
-type TaskParsedType = FixedTaskParsedType | FlexibleTaskParsedType;
+type TaskParsedType = FixedTaskParsedType;
 
 interface BaseCreateTaskRequest {
   title: string;
@@ -112,14 +106,13 @@ type CreateTaskRequest =
   | CreateFlexibleFixedTaskRequest;
 
 export {
+  TaskResourceType,
   RecurrenceType,
   Recurrence,
   Reminder,
   FixedTaskResponseType,
   FixedTaskParsedType,
   DueDateResponseType,
-  FlexibleTaskResponseType,
-  FlexibleTaskParsedType,
   TaskParsedType,
   CreateTaskRequest,
   CreateFixedTaskRequest,

@@ -19,7 +19,10 @@ export type PeriodResponse = {
   reminders?: PeriodReminder[];
 };
 
-export type ParsedPeriod = Omit<PeriodResponse, 'end_date' | 'start_date' | 'reminders'> & {
+export type ParsedPeriod = Omit<
+  PeriodResponse,
+  'end_date' | 'start_date' | 'reminders'
+> & {
   end_date: Date;
   start_date: Date;
 };

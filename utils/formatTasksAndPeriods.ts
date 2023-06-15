@@ -10,6 +10,7 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
       end_datetime?: string;
       date?: string;
       duration?: number;
+      routine: number | null;
     }[];
   } = {};
   for (const task of tasks) {
@@ -25,7 +26,8 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
         id: task.id,
         recurrence_index: task.recurrence_index,
         start_datetime: task.start_datetime,
-        end_datetime: task.end_datetime
+        end_datetime: task.end_datetime,
+        routine: task.routine
       };
       if (newTasksPerDate[taskDate]) {
         let spliceIndex = 0;

@@ -91,7 +91,6 @@ function Calendar({
   const sectionListRef = useRef<any>(null);
   const { t } = useTranslation();
   const { data: allRoutines } = useGetAllRoutinesQuery(null as any);
-  const { data: allScheduledTasks } = useGetAllScheduledTasksQuery(null as any);
 
   const currentDate = useMemo(() => {
     return new Date(getCurrentDateString());
@@ -186,8 +185,8 @@ function Calendar({
             )
         );
 
-      const tasksToShow = dailyTasksPerRoutine[-1].filter(({ id: taskId }) =>
-        permittedTasksOnDate.map((tsk) => tsk.id).includes(taskId)
+      const tasksToShow = permittedTasksOnDate.filter(({ id: taskId }) =>
+        dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
       );
 
       sectionsArray.push({

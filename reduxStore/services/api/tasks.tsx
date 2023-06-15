@@ -7,9 +7,14 @@ import {
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
   CreateDueDateRequest,
-  DueDateResponseType
+  DueDateResponseType,
+  CreateTaskRequest
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
+import { getDateStringsBetween } from 'utils/datesAndTimes';
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { Api } from '@reduxjs/toolkit/dist/query';
+import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
 
 const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
   return {
@@ -26,6 +31,83 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
       {}
     )
   };
+};
+
+const updateQueryDataForNewTask = (
+  api: any,
+  newTask: FixedTaskResponseType | DueDateResponseType,
+  dispatch: ThunkDispatch<any, any, AnyAction>,
+  getState: () => RootState<any, any, 'vuetApi'>
+) => {
+  const state = getState();
+  for (const { endpointName, originalArgs } of api.util.selectInvalidatedBy(
+    state,
+    [{ type: 'Task' }]
+  )) {
+    if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
+      continue;
+    if (endpointName === 'getAllTasks') {
+      dispatch(
+        api.util.updateQueryData('getAllTasks', originalArgs, (draft: any) => {
+          draft.ids.push(newTask.id);
+          draft.byId[newTask.id] = {
+            ...newTask
+          };
+        })
+      );
+    }
+    if (endpointName === 'getAllScheduledTasks') {
+      if (!newTask.recurrence) {
+        dispatch(
+          api.util.updateQueryData(
+            'getAllScheduledTasks',
+            originalArgs,
+            (draft: any) => {
+              draft.byTaskId[newTask.id] = {
+                '-1': {
+                  ...newTask,
+                  recurrence: null,
+                  recurrence_index: null,
+                  alert: [], // Assume no alert - this will update when data is refetched
+                  resourcetype: newTask.resourcetype
+                }
+              };
+
+              const taskDates = newTask.date
+                ? [newTask.date]
+                : newTask.start_datetime && newTask.end_datetime
+                ? getDateStringsBetween(
+                    newTask.start_datetime,
+                    newTask.end_datetime
+                  )
+                : [];
+              for (const date of taskDates) {
+                if (!draft.byDate[date]) {
+                  draft.byDate[date] = [];
+                }
+                draft.byDate[date] = [
+                  ...draft.byDate[date],
+                  {
+                    id: newTask.id,
+                    recurrence_index: null
+                  }
+                ];
+              }
+
+              draft.ordered.push({
+                id: newTask.id,
+                recurrence_index: null
+              });
+            }
+          )
+        );
+      }
+    }
+  }
+
+  // We can only make these performant updates if the task is
+  // not recurrent - otherwise we simply have to wait for
+  // the server response
 };
 
 type AllScheduledTasks = {
@@ -177,65 +259,31 @@ const tasksApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['Task', 'Alert'], // We leave task invalidation because recurrence requires this
-      async onQueryStarted(
-        { ...patch },
-        { dispatch, queryFulfilled, getState }
-      ) {
+      async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         try {
           const { data: newTask } = await queryFulfilled;
-
-          for (const {
-            endpointName,
-            originalArgs
-          } of tasksApi.util.selectInvalidatedBy(getState(), [
-            { type: 'Task' }
-          ])) {
-            if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
-              continue;
-            if (endpointName === 'getAllTasks') {
-              dispatch(
-                tasksApi.util.updateQueryData(
-                  'getAllTasks',
-                  originalArgs,
-                  (draft) => {
-                    draft.ids.push(newTask.id);
-                    draft.byId[newTask.id] = {
-                      ...newTask,
-                      resourcetype: patch.resourcetype
-                    };
-                  }
-                )
-              );
-            }
-            if (endpointName === 'getAllScheduledTasks') {
-              // We can only make these performant updates if the task is
-              // not recurrent - otherwise we simply have to wait for
-              // the server response
-              if (!newTask.recurrence) {
-                dispatch(
-                  tasksApi.util.updateQueryData(
-                    'getAllScheduledTasks',
-                    originalArgs,
-                    (draft) => {
-                      draft.byTaskId[newTask.id] = {
-                        '-1': {
-                          ...newTask,
-                          recurrence: null, // Flexible tasks never recurrent
-                          recurrence_index: null, // Flexible tasks never recurrent
-                          alert: [], // Assume no alert - this will update when data is refetched
-                          resourcetype: patch.resourcetype
-                        }
-                      };
-                      draft.ordered.push({
-                        id: newTask.id,
-                        recurrence_index: null
-                      });
-                    }
-                  )
-                );
-              }
-            }
-          }
+          updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }),
+    createTaskWithoutCacheInvalidation: builder.mutation<
+      FixedTaskResponseType | DueDateResponseType,
+      CreateFixedTaskRequest | CreateDueDateRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'core/task/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['Alert'],
+      async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
+        try {
+          const { data: newTask } = await queryFulfilled;
+          updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
         } catch (err) {
           console.error(err);
         }
@@ -252,62 +300,11 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      // invalidatesTags: ['Task', 'Alert'],
       invalidatesTags: ['Alert'],
-      async onQueryStarted(
-        { ...patch },
-        { dispatch, queryFulfilled, getState }
-      ) {
+      async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         try {
           const { data: newTask } = await queryFulfilled;
-
-          for (const {
-            endpointName,
-            originalArgs
-          } of tasksApi.util.selectInvalidatedBy(getState(), [
-            { type: 'Task' }
-          ])) {
-            if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
-              continue;
-            if (endpointName === 'getAllTasks') {
-              dispatch(
-                tasksApi.util.updateQueryData(
-                  'getAllTasks',
-                  originalArgs,
-                  (draft) => {
-                    draft.ids.push(newTask.id);
-                    draft.byId[newTask.id] = {
-                      ...newTask,
-                      resourcetype: 'FixedTask'
-                    };
-                  }
-                )
-              );
-            }
-            if (endpointName === 'getAllScheduledTasks') {
-              dispatch(
-                tasksApi.util.updateQueryData(
-                  'getAllScheduledTasks',
-                  originalArgs,
-                  (draft) => {
-                    draft.byTaskId[newTask.id] = {
-                      '-1': {
-                        ...newTask,
-                        recurrence: null, // Flexible tasks never recurrent
-                        recurrence_index: null, // Flexible tasks never recurrent
-                        alert: [], // Assume no alert - this will update when data is refetched
-                        resourcetype: 'FixedTask'
-                      }
-                    };
-                    draft.ordered.push({
-                      id: newTask.id,
-                      recurrence_index: null
-                    });
-                  }
-                )
-              );
-            }
-          }
+          updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
         } catch (err) {
           console.error(err);
         }
@@ -339,5 +336,6 @@ export const {
   useUpdateTaskMutation,
   useDeleteTaskMutation,
   useCreateTaskMutation,
+  useCreateTaskWithoutCacheInvalidationMutation,
   useCreateFlexibleFixedTaskMutation
 } = tasksApi;

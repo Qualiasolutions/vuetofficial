@@ -22,6 +22,10 @@ import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskComp
 import { MinimalScheduledTask } from './components/Task';
 import AlertsList from 'components/organisms/AlertsList';
 import NewItemsList from 'components/organisms/NewItemsList';
+import {
+  useGetAllScheduledTasksQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
 
 dayjs.extend(utc);
 
@@ -48,6 +52,8 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery(null as any);
+  const { isLoading: isLoadingScheduledTasks } = useGetAllScheduledTasksQuery();
+  const { isLoading: isLoadingTasks } = useGetAllTasksQuery();
   const dispatch = useDispatch();
 
   const [responsiveCalendar, setResponsiveCalendar] = useState(false);
@@ -85,7 +91,8 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
     );
   }, [dispatch, filteredTasks, responsiveCalendar]);
 
-  const isLoading = isLoadingTaskCompletionForms;
+  const isLoading =
+    isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;
   if (isLoading) {
     return <FullPageSpinner />;
   }
