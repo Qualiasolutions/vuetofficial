@@ -32,12 +32,13 @@ export default function DateTimeTextInput({
 
   const disabledTextColor = useThemeColor({}, 'disabledGrey');
 
-  const shownValue =
-    mode === 'date'
+  const shownValue = value
+    ? mode === 'date'
       ? dayjs(value).format('DD/MM/YYYY')
       : mode === 'datetime'
       ? dayjs(value).format('YYYY-MM-DD HH:mm')
-      : dayjs(value).format('HH:mm');
+      : dayjs(value).format('HH:mm')
+    : '';
 
   return (
     <TransparentView style={containerStyle}>
