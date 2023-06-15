@@ -5,11 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
   useDeleteEntityMutation,
-  useGetAllEntitiesQuery,
   useUpdateEntityMutation,
   useFormUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
-import GenericError from 'components/molecules/GenericError';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
 import { dataTypeMapping } from './utils/dataTypeMapping';
@@ -18,15 +16,15 @@ import { fieldColorMapping } from './utils/fieldColorMapping';
 import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useForm from './entityFormFieldTypes/useForm';
+import { useSelector } from 'react-redux';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 
 export default function EditEntityForm({ entityId }: { entityId: number }) {
   const navigation = useNavigation();
 
-  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
+  const entityToEdit = useSelector(selectEntityById(entityId));
 
-  const entityToEdit = allEntities?.byId ? allEntities.byId[entityId] : null;
-
-  const formFields = useForm(entityToEdit?.resourcetype || 'Car', false); // Could use any default entity type here
+  const formFields = useForm(entityToEdit?.resourcetype || 'Car', true); // Could use any default entity type here
 
   const fieldColor = useThemeColor(
     {},
@@ -36,12 +34,8 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
       : fieldColorMapping.default
   );
 
-  if (isLoading || !entityToEdit || !allEntities || !entityId) {
+  if (!entityToEdit || !entityId) {
     return <FullPageSpinner />;
-  }
-
-  if (error) {
-    return <GenericError />;
   }
 
   const dataType =
@@ -61,7 +55,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     ? formFields.reduce((a, b) => ({ ...a, ...b }))
     : formFields;
 
-  if (entityId && allEntities.byId[entityId]) {
+  if (entityToEdit) {
     for (const fieldName in flatFields) {
       if (Object.keys(flatFields[fieldName]).includes('sourceField')) {
         flatFields[fieldName].initialValue =

@@ -1,6 +1,4 @@
 import { useLayoutEffect } from 'react';
-import useGetUserDetails from 'hooks/useGetUserDetails';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   NativeStackHeaderProps,
   NativeStackNavigationOptions
@@ -9,6 +7,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { headerMapping } from 'headers/utils/headerMappings';
 import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
 import { headerRightMapping } from 'headers/utils/headerRightMapping';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import { useSelector } from 'react-redux';
 
 export default function useEntityHeader(
   entityId: number,
@@ -17,15 +17,7 @@ export default function useEntityHeader(
 ) {
   const navigation = useNavigation();
   const route = useRoute();
-  const { data: userDetails } = useGetUserDetails();
-
-  const {
-    data: allEntities,
-    isLoading: isLoadingEntities,
-    error: entitiesError
-  } = useGetAllEntitiesQuery();
-
-  const entity = allEntities?.byId[entityId];
+  const entity = useSelector(selectEntityById(entityId));
 
   useLayoutEffect(() => {
     if (entity) {
@@ -67,5 +59,5 @@ export default function useEntityHeader(
 
       navigation.setOptions(options);
     }
-  }, [entity]);
+  }, [entity, includeHeaderRight, navigation, route, title]);
 }

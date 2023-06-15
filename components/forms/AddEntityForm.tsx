@@ -40,7 +40,11 @@ export default function AddEntityForm({
   const entityForm = useForm(entityType, false);
   const { t } = useTranslation();
 
-  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
+  const {
+    data: allEntities,
+    isLoading,
+    error
+  } = useGetAllEntitiesQuery(null as any);
 
   const fieldColor = useThemeColor(
     {},
