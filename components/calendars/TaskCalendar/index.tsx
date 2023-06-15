@@ -100,6 +100,7 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
   const tabs = [
     {
       title: 'List',
+      // component: () => null
       component: listView
     },
     {

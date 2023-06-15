@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'components/molecules/ButtonComponents';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
-import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   TransparentPaddedView,
@@ -9,7 +8,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet } from 'react-native';
+import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import {
@@ -30,9 +29,13 @@ import {
   selectCurrentUserId,
   selectFamilyMemberFromId
 } from 'reduxStore/slices/users/selectors';
+import { ScheduledTaskResponseType } from 'types/tasks';
 
 const alertEntryStyles = StyleSheet.create({
-  container: { flexDirection: 'row', alignItems: 'center' },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   ignoreButtonText: { fontSize: 24, color: 'red', marginLeft: 20 }
 });
 const AlertEntry = ({ alertId }: { alertId: number }) => {
@@ -129,8 +132,7 @@ const OverdueTask = ({
   const navigation = useNavigation();
   const { t } = useTranslation();
 
-  const [triggerCreateCompletionForm, createCompletionFormResult] =
-    useCreateTaskCompletionFormMutation();
+  const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
 
   if (!taskObj) {
     return null;
@@ -191,7 +193,8 @@ const OverdueTask = ({
 };
 
 const listStyles = StyleSheet.create({
-  container: { paddingBottom: 300 }
+  container: { height: '100%', width: '100%' },
+  scrollView: { padding: 10 }
 });
 
 export default function AlertsList() {
@@ -217,30 +220,48 @@ export default function AlertsList() {
     );
   }
 
-  const overdueTaskViews = overdueTasks.map((scheduledTask) => (
-    <OverdueTask
-      key={`${scheduledTask.id}_${scheduledTask.recurrence_index}`}
-      task={scheduledTask.id}
-      recurrenceIndex={
-        scheduledTask.recurrence_index === null
-          ? -1
-          : scheduledTask.recurrence_index
-      }
-    />
-  ));
-
-  const taskAlerts = alertedTasks.map((task) => (
-    <TaskAlerts taskId={task} key={task} />
-  ));
+  const isAlert = (
+    item:
+      | {
+          task: number;
+          type: string;
+        }
+      | {
+          task: ScheduledTaskResponseType;
+          type: string;
+        }
+  ): item is {
+    task: number;
+    type: string;
+  } => {
+    return item.type === 'ALERT';
+  };
 
   return (
-    <TransparentFullPageScrollView>
-      <TransparentPaddedView style={listStyles.container}>
-        <Text>ALERTS</Text>
-        {taskAlerts}
-        <Text>OVERDUE TASKS</Text>
-        {overdueTaskViews}
-      </TransparentPaddedView>
-    </TransparentFullPageScrollView>
+    <TransparentView style={listStyles.container}>
+      <FlatList
+        data={[
+          ...alertedTasks.map((task) => ({ task, type: 'ALERT' })),
+          ...overdueTasks.map((task) => ({ task, type: 'OVERDUE_TASK' }))
+        ]}
+        renderItem={({ item }) => {
+          if (isAlert(item)) {
+            return <TaskAlerts taskId={item.task} key={item.task} />;
+          }
+          return (
+            <OverdueTask
+              key={`${item.task.id}_${item.task.recurrence_index}`}
+              task={item.task.id}
+              recurrenceIndex={
+                item.task.recurrence_index === null
+                  ? -1
+                  : item.task.recurrence_index
+              }
+            />
+          );
+        }}
+        style={listStyles.scrollView}
+      />
+    </TransparentView>
   );
 }
