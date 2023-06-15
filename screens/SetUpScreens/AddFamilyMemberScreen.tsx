@@ -34,7 +34,9 @@ const AddFamilyMemberScreen = ({
 
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-  const formFields = deepCopy<FamilyMemberFormFieldTypes>(useFamilyMemberForm());
+  const formFields = deepCopy<FamilyMemberFormFieldTypes>(
+    useFamilyMemberForm()
+  );
 
   const { t } = useTranslation();
 

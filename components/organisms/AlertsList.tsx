@@ -212,7 +212,7 @@ export default function AlertsList() {
     parseInt(tsk)
   );
 
-  if (alertedTasks.length === 0) {
+  if (alertedTasks.length === 0 && overdueTasks.length === 0) {
     return (
       <TransparentPaddedView>
         <Text>{t('components.alertsList.noAlerts')}</Text>

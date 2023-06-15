@@ -480,14 +480,9 @@ export default function TypedForm({
         }
         case 'colour': {
           return (
-            <WhiteBox key={field} elevated={false}>
+            <WhiteBox key={field} elevated={false} style={styles.inputPair}>
               {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <InputPair
-                field={field}
-                key={field}
-                inlineFieldsOverride={true}
-                containerStyle={styles.inputPair}
-              >
+              <InputPair field={field} key={field} inlineFieldsOverride={true}>
                 <TransparentView style={styles.colourBarContainer}>
                   <ColorPicker
                     value={formValues[field]}
