@@ -16,8 +16,8 @@ import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
-  TransparentPaddedView,
-  TransparentView
+  TransparentView,
+  WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
@@ -26,11 +26,6 @@ import { ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
-import { DayType } from 'types/datesAndTimes';
-import {
-  useGetAllScheduledTasksQuery,
-  useGetAllTasksQuery
-} from 'reduxStore/services/api/tasks';
 import Routine from './Routine';
 import { selectTasksInDailyRoutines } from 'reduxStore/slices/tasks/selectors';
 
@@ -43,6 +38,9 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     fontSize: 18
+  },
+  noTasksContainer: {
+    height: '100%'
   }
 });
 
@@ -333,9 +331,9 @@ function Calendar({
         windowSize={31}
       />
       {noTasks && (
-        <TransparentPaddedView>
+        <WhitePaddedView style={styles.noTasksContainer}>
           <Text>{t('components.calendar.noTasks')}</Text>
-        </TransparentPaddedView>
+        </WhitePaddedView>
       )}
     </>
   );

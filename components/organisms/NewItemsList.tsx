@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
-import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentPaddedView,
   TransparentView
@@ -85,7 +85,7 @@ export default function NewItemsList() {
   ));
 
   return (
-    <TransparentFullPageScrollView>
+    <WhiteFullPageScrollView>
       <TransparentPaddedView style={listStyles.container}>
         <Text>NEW ITEMS</Text>
         <TransparentView style={listStyles.entityCardsWrapper}>
@@ -97,6 +97,6 @@ export default function NewItemsList() {
           {taskCards}
         </TransparentView>
       </TransparentPaddedView>
-    </TransparentFullPageScrollView>
+    </WhiteFullPageScrollView>
   );
 }
