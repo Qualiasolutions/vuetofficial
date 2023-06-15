@@ -27,8 +27,8 @@ export default function CreateTask({
   const [selectedCategory, setSelectedCategory] = useState<Category | null>();
   const [selectedEntity, setSelectedEntity] =
     useState<EntityParsedType | null>();
-  const { data: Categories, isLoading, error } = useGetAllCategoriesQuery();
-  const { data: Entities } = useGetAllEntitiesQuery();
+  const { data: categories } = useGetAllCategoriesQuery();
+  const { data: entities } = useGetAllEntitiesQuery(null as any);
 
   useEffect(() => {
     navigation.addListener('focus', () => {
@@ -44,7 +44,7 @@ export default function CreateTask({
   }, [setShowListing]);
 
   const onselectCategory = useCallback(
-    (category) => {
+    (category: Category) => {
       setSelectedCategory(category);
       onCloseCategory();
       setSelectedEntity(null);
@@ -57,7 +57,7 @@ export default function CreateTask({
   }, [setShowEntityListing]);
 
   const onSelectEntity = useCallback(
-    (entity) => {
+    (entity: EntityParsedType) => {
       setSelectedEntity(entity);
       onCloseEntity();
       navigation.navigate('AddTask', { entityId: entity?.id });
@@ -65,8 +65,8 @@ export default function CreateTask({
     [setSelectedEntity, onCloseEntity, navigation]
   );
 
-  const allEntities = Object.values(Entities?.byId || []);
-  const allCategories = Object.values(Categories?.byId || []);
+  const allEntities = Object.values(entities?.byId || []);
+  const allCategories = Object.values(categories?.byId || []);
 
   return (
     <WhiteView style={styles.container}>

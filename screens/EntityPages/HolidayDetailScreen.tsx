@@ -60,10 +60,8 @@ export default function HolidayDetailScreen({
     Omit<HolidayResponseType, 'id'>[]
   >([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [createEntities, createEntitiesResult] =
-    useBulkCreateEntitiesMutation();
-  const [deleteEntities, deleteEntitiesResult] =
-    useBulkDeleteEntitiesMutation();
+  const [createEntities] = useBulkCreateEntitiesMutation();
+  const [deleteEntities] = useBulkDeleteEntitiesMutation();
 
   const { data: holidays, isError, error } = useGetHolidaysQuery(`${params}`);
 

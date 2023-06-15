@@ -49,7 +49,43 @@ const entitiesApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of entitiesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Entity' }
+        ])) {
+          if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
+            continue;
+
+          const patchResult = dispatch(
+            entitiesApi.util.updateQueryData(
+              endpointName as 'getAllEntities' | 'getMemberEntities',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     }),
     createEntity: builder.mutation<
       EntityResponseType,
@@ -62,7 +98,7 @@ const entitiesApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity', 'Task']
     }),
     formCreateEntity: builder.mutation<
       EntityResponseType,
@@ -76,7 +112,7 @@ const entitiesApi = vuetApi.injectEndpoints({
         },
         body: payload.formData
       }),
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity', 'Task']
     }),
     formUpdateEntity: builder.mutation<
       EntityResponseType,
@@ -92,7 +128,43 @@ const entitiesApi = vuetApi.injectEndpoints({
           body: payload.formData
         };
       },
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of entitiesApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Entity' }
+        ])) {
+          if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
+            continue;
+
+          const patchResult = dispatch(
+            entitiesApi.util.updateQueryData(
+              endpointName as 'getAllEntities' | 'getMemberEntities',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     }),
     deleteEntity: builder.mutation<
       EntityResponseType,

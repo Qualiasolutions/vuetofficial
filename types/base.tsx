@@ -191,6 +191,7 @@ export type RootTabParamList = {
   EditTask: { taskId: number };
   Transport: undefined;
   NotFound: undefined;
+  CreateTask: undefined;
   CalendarScreen: {
     startDate: Date;
     endDate: Date;

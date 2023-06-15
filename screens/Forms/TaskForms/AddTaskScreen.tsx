@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
     zIndex: -1,
     justifyContent: 'center'
   },
-  spinner: { marginTop: 20 }
+  spinner: { marginTop: 20 },
+  hidden: { display: 'none' }
 });
 
 export default function AddTaskScreen() {
@@ -120,75 +121,109 @@ export default function AddTaskScreen() {
   const taskBottomFields = useTaskBottomFieldTypes();
   const dueDateFields = useDueDateFieldTypes();
 
+  const initialTopFields = useMemo(() => {
+    if (!userDetails) {
+      return null;
+    }
+
+    return createInitialObject(taskTopFields, userDetails);
+  }, [taskTopFields, userDetails]);
+
+  const initialMiddleFields = useMemo(() => {
+    if (!userDetails) {
+      return null;
+    }
+
+    const currentTime = new Date();
+    const defaultStartTime = new Date(currentTime);
+    defaultStartTime.setMinutes(0);
+    defaultStartTime.setSeconds(0);
+    defaultStartTime.setMilliseconds(0);
+    defaultStartTime.setHours(defaultStartTime.getHours() + 1);
+
+    const defaultEndTime = new Date(defaultStartTime);
+
+    if (formType === 'TASK') {
+      defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15);
+    }
+    if (formType === 'APPOINTMENT') {
+      defaultEndTime.setHours(defaultStartTime.getHours() + 1);
+    }
+
+    const defaultDuration = 15;
+    const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const defaultDueDate = dayjs(nextWeek).format('YYYY-MM-DD');
+
+    return createInitialObject(taskMiddleFields, userDetails, {
+      start_datetime: defaultStartTime,
+      end_datetime: defaultEndTime,
+      duration_minutes: defaultDuration,
+      recurrence: null,
+      earliest_action_date: defaultEarliestActionDate,
+      due_date: defaultDueDate
+    });
+  }, [taskMiddleFields, userDetails, formType]);
+
+  const initialBottomFields = useMemo(() => {
+    if (!userDetails) {
+      return null;
+    }
+
+    return createInitialObject(taskBottomFields, userDetails);
+  }, [taskBottomFields, userDetails]);
+
+  const initialDueDateFields = useMemo(() => {
+    if (!userDetails) {
+      return null;
+    }
+
+    return createInitialObject(dueDateFields, userDetails);
+  }, [dueDateFields, userDetails]);
+
   useEffect(() => {
     if (userDetails) {
-      const initialTopFields = createInitialObject(taskTopFields, userDetails);
-      setTaskTopFieldValues(initialTopFields);
-
-      const currentTime = new Date();
-      const defaultStartTime = new Date(currentTime);
-      defaultStartTime.setMinutes(0);
-      defaultStartTime.setSeconds(0);
-      defaultStartTime.setMilliseconds(0);
-      defaultStartTime.setHours(defaultStartTime.getHours() + 1);
-
-      const defaultEndTime = new Date(defaultStartTime);
-
-      if (formType === 'TASK') {
-        defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15);
-      }
-      if (formType === 'APPOINTMENT') {
-        defaultEndTime.setHours(defaultStartTime.getHours() + 1);
-      }
-
-      const defaultDuration = 15;
-      const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
-      const nextWeek = new Date();
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      const defaultDueDate = dayjs(nextWeek).format('YYYY-MM-DD');
-
-      const initialMiddleFields = createInitialObject(
-        taskMiddleFields,
-        userDetails,
-        {
-          start_datetime: defaultStartTime,
-          end_datetime: defaultEndTime,
-          duration_minutes: defaultDuration,
-          recurrence: null,
-          earliest_action_date: defaultEarliestActionDate,
-          due_date: defaultDueDate
-        }
-      );
-      setTaskMiddleFieldValues(initialMiddleFields);
-
-      const initialBottomFields = createInitialObject(
-        taskBottomFields,
-        userDetails
-      );
-      setTaskBottomFieldValues(initialBottomFields);
-
-      const initialDueDateFields = createInitialObject(
-        dueDateFields,
-        userDetails,
-        { reminder_timedelta: '14 days, 0:00:00' }
-      );
-      setDueDateFieldValues(initialDueDateFields);
-
-      setResetState(() => () => {
-        setDueDateFieldValues(initialDueDateFields);
+      if (initialTopFields) {
         setTaskTopFieldValues(initialTopFields);
+      }
+
+      if (initialMiddleFields) {
         setTaskMiddleFieldValues(initialMiddleFields);
+      }
+
+      if (initialBottomFields) {
         setTaskBottomFieldValues(initialBottomFields);
-      });
+      }
+
+      if (initialDueDateFields) {
+        setDueDateFieldValues(initialDueDateFields);
+      }
+
+      if (
+        initialTopFields &&
+        initialMiddleFields &&
+        initialBottomFields &&
+        initialDueDateFields
+      ) {
+        setResetState(() => () => {
+          setDueDateFieldValues(initialDueDateFields);
+          setTaskTopFieldValues(initialTopFields);
+          setTaskMiddleFieldValues(initialMiddleFields);
+          setTaskBottomFieldValues(initialBottomFields);
+        });
+      }
 
       setLoadedFields(true);
     }
   }, [
+    initialTopFields,
+    initialMiddleFields,
+    initialBottomFields,
+    initialDueDateFields,
     userDetails,
     formType,
     dueDateFields,
-    taskTopFields,
-    taskMiddleFields,
     taskBottomFields
   ]);
 
@@ -290,6 +325,66 @@ export default function AddTaskScreen() {
     }
   };
 
+  const dueDateTypedForm = useMemo(
+    () => (
+      <TypedForm
+        fields={dueDateFields}
+        formValues={dueDateFieldValues}
+        onFormValuesChange={(values: FieldValueTypes) => {
+          setDueDateFieldValues(values);
+        }}
+        inlineFields={true}
+        fieldColor={fieldColor}
+      />
+    ),
+    [dueDateFields, dueDateFieldValues, fieldColor]
+  );
+
+  const topFieldsTypedForm = useMemo(
+    () => (
+      <TypedForm
+        fields={taskTopFields}
+        formValues={taskTopFieldValues}
+        onFormValuesChange={(values: FieldValueTypes) => {
+          setTaskTopFieldValues(values);
+        }}
+        inlineFields={true}
+        fieldColor={fieldColor}
+      />
+    ),
+    [taskTopFields, taskTopFieldValues, fieldColor]
+  );
+
+  const middleFieldsTypedForm = useMemo(
+    () => (
+      <TypedForm
+        fields={taskMiddleFields}
+        formValues={taskMiddleFieldValues}
+        onFormValuesChange={(values: FieldValueTypes) => {
+          setTaskMiddleFieldValues(values);
+        }}
+        inlineFields={true}
+        fieldColor={fieldColor}
+      />
+    ),
+    [taskMiddleFields, taskMiddleFieldValues, fieldColor]
+  );
+
+  const bottomFieldsTypedForm = useMemo(
+    () => (
+      <TypedForm
+        fields={taskBottomFields}
+        formValues={taskBottomFieldValues}
+        onFormValuesChange={(values: FieldValueTypes) => {
+          setTaskBottomFieldValues(values);
+        }}
+        inlineFields={true}
+        fieldColor={fieldColor}
+      />
+    ),
+    [taskBottomFields, taskBottomFieldValues, fieldColor]
+  );
+
   if (!(userDetails && loadedFields)) {
     return <FullPageSpinner />;
   }
@@ -308,54 +403,19 @@ export default function AddTaskScreen() {
               }}
             />
           </WhiteView>
-          {formType === 'DUE_DATE' ? (
-            <TypedForm
-              fields={dueDateFields}
-              formValues={dueDateFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setDueDateFieldValues(values);
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-            />
-          ) : (
-            <TypedForm
-              fields={taskTopFields}
-              formValues={taskTopFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskTopFieldValues(values);
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-            />
-          )}
+          <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
+            {dueDateTypedForm}
+          </TransparentView>
+          <TransparentView style={formType === 'DUE_DATE' && styles.hidden}>
+            {topFieldsTypedForm}
+          </TransparentView>
         </TransparentView>
-        {formType !== 'DUE_DATE' && (
-          <TransparentView>
-            <TypedForm
-              fields={taskMiddleFields}
-              formValues={taskMiddleFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskMiddleFieldValues(values);
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-            />
-          </TransparentView>
-        )}
-        {formType === 'APPOINTMENT' && (
-          <TransparentView>
-            <TypedForm
-              fields={taskBottomFields}
-              formValues={taskBottomFieldValues}
-              onFormValuesChange={(values: FieldValueTypes) => {
-                setTaskBottomFieldValues(values);
-              }}
-              inlineFields={true}
-              fieldColor={fieldColor}
-            />
-          </TransparentView>
-        )}
+        <TransparentView style={formType === 'DUE_DATE' && styles.hidden}>
+          {middleFieldsTypedForm}
+        </TransparentView>
+        <TransparentView style={formType !== 'APPOINTMENT' && styles.hidden}>
+          {bottomFieldsTypedForm}
+        </TransparentView>
 
         {isSubmitting ? (
           <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
