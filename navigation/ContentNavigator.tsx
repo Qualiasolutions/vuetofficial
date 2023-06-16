@@ -49,7 +49,7 @@ export function ContentNavigator() {
         name="TagScreen"
         component={TagScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen
