@@ -68,6 +68,16 @@ const referencesApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['Reference']
     }),
+    retrievePasswordReference: builder.mutation<
+      Reference,
+      { reference: number; password: string }
+    >({
+      query: (body) => ({
+        url: 'core/password-reference/',
+        method: 'POST',
+        body
+      })
+    }),
     updateReference: builder.mutation<
       Reference,
       Partial<Reference> & Pick<Reference, 'id'>
@@ -391,6 +401,7 @@ export default referencesApi;
 // auto-generated based on the defined endpoints
 export const {
   useGetAllReferencesQuery,
+  useRetrievePasswordReferenceMutation,
   useCreateReferenceMutation,
   useUpdateReferenceMutation,
   useDeleteReferenceMutation,

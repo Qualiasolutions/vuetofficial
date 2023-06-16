@@ -1,7 +1,9 @@
+import { Feather } from '@expo/vector-icons';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import { Button } from 'components/molecules/ButtonComponents';
+import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
@@ -20,7 +22,8 @@ import {
   useCreateReferenceGroupMutation,
   useCreateReferenceMutation,
   useGetAllReferenceGroupsQuery,
-  useGetAllReferencesQuery
+  useGetAllReferencesQuery,
+  useRetrievePasswordReferenceMutation
 } from 'reduxStore/services/api/references';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
@@ -131,7 +134,6 @@ const AddReference = ({ groupId }: { groupId: number }) => {
                 created_by: userDetails.id
               }).unwrap();
             } catch (err) {
-              console.log(err);
               Toast.show({
                 type: 'error',
                 text1: t('common.errors.generic')
@@ -178,7 +180,6 @@ const AddReferenceGroup = ({ entityId }: { entityId: number }) => {
                 created_by: userDetails.id
               }).unwrap();
             } catch (err) {
-              console.log(err);
               Toast.show({
                 type: 'error',
                 text1: t('common.errors.generic')
@@ -191,18 +192,88 @@ const AddReferenceGroup = ({ entityId }: { entityId: number }) => {
   );
 };
 
+const passwordModalStyles = StyleSheet.create({
+  passText: { marginBottom: 10 },
+  passwordInput: { marginBottom: 10 }
+});
+const PasswordModal = ({
+  onRequestClose,
+  visible,
+  reference
+}: {
+  onRequestClose: () => void;
+  visible: boolean;
+  reference: Reference;
+}) => {
+  const { t } = useTranslation();
+  const [value, setValue] = useState('');
+  const [accountPassword, setAccountPassword] = useState('');
+  const [retrievePass, retrievePassResult] =
+    useRetrievePasswordReferenceMutation();
+  return (
+    <Modal
+      onRequestClose={() => {
+        setValue('');
+        setAccountPassword('');
+        onRequestClose();
+      }}
+      visible={visible}
+    >
+      <TransparentView>
+        <Text style={passwordModalStyles.passText}>
+          {reference.name}: {value || '●●●●●●'}
+        </Text>
+        {!value && (
+          <TransparentView>
+            <Text>{t('components.referenceItem.passwordModal.blurb')}</Text>
+            <TextInput
+              secureTextEntry={true}
+              style={passwordModalStyles.passwordInput}
+              onChangeText={setAccountPassword}
+              value={accountPassword}
+            />
+
+            {retrievePassResult.isLoading ? (
+              <PaddedSpinner />
+            ) : (
+              <Button
+                title={t('common.show')}
+                onPress={async () => {
+                  try {
+                    const passObj = await retrievePass({
+                      reference: reference.id,
+                      password: accountPassword
+                    }).unwrap();
+                    setValue(passObj.value);
+                  } catch (err) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('common.errors.generic')
+                    });
+                  }
+                }}
+                disabled={!accountPassword}
+              />
+            )}
+          </TransparentView>
+        )}
+      </TransparentView>
+    </Modal>
+  );
+};
+
 const refItemsStyles = StyleSheet.create({
   nameStyle: { marginRight: 20, fontWeight: 'bold' },
   refPair: { flexDirection: 'row', alignItems: 'center' },
-  addTaskText: {
+  actionIcon: {
     color: 'green',
-    fontSize: 30,
-    fontWeight: 'bold',
     marginLeft: 10
   }
 });
 const ReferenceItem = ({ reference }: { reference: Reference }) => {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <TransparentView style={refItemsStyles.refPair}>
@@ -218,9 +289,33 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
             });
           }}
         >
-          <Text style={refItemsStyles.addTaskText}>+</Text>
+          <Feather
+            name="plus"
+            size={30}
+            color="green"
+            style={refItemsStyles.actionIcon}
+          />
         </SafePressable>
       )}
+      {reference.type === 'PASSWORD' && (
+        <SafePressable
+          onPress={() => {
+            setShowPasswordModal(true);
+          }}
+        >
+          <Feather
+            name="eye"
+            size={20}
+            color="green"
+            style={refItemsStyles.actionIcon}
+          />
+        </SafePressable>
+      )}
+      <PasswordModal
+        onRequestClose={() => setShowPasswordModal(false)}
+        visible={showPasswordModal}
+        reference={reference}
+      />
     </TransparentView>
   );
 };

@@ -265,6 +265,7 @@
     "continue": "Continue",
     "skip": "Skip",
     "save": "Save",
+    "show": "Show",
     "cancel": "Cancel",
     "tasks": "Tasks",
     "minutes": "Minutes",
@@ -510,5 +511,10 @@
       "until": "Until",
       "from": "From"
     },
+    "referenceItem": {
+      "passwordModal": {
+        "blurb": "Enter your account password to view this reference"
+      }
+    }
   }
 }
