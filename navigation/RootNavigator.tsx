@@ -15,11 +15,6 @@ import {
   useGetUserFullDetailsQuery,
   useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
-import {
-  useGetAllScheduledTasksQuery,
-  useGetAllTasksQuery
-} from 'reduxStore/services/api/tasks';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { ConditionallyTintedImage } from 'components/molecules/ImageComponents';
 import {
   AlmostBlackText,
@@ -29,7 +24,6 @@ import useSetupPushNotifications from 'hooks/setupPushNotifications';
 import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
-import { useGetAllFriendshipsQuery } from 'reduxStore/services/api/friendships';
 import ChatScreen from 'screens/ChatScreen';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';

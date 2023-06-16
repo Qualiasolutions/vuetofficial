@@ -326,6 +326,7 @@ const RecurrenceForm = ({
             : t('components.recurrenceSelector.until')
         }
         inlineFields={true}
+        style={{ marginTop: 10 }}
       >
         <DateTimeTextInput
           value={

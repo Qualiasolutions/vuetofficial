@@ -45,7 +45,7 @@ import RecurrenceSelector from './components/RecurrenceSelector';
 import CalculatedDuration from './components/CalculatedDuration';
 import InputWithLabel from 'components/molecules/InputWithLabel';
 import MultipleRecurrenceSelector from './components/MultipleRecurrenceSelector';
-import TagSelector from './components/TagSelector';
+import EntityAndTagSelector from './components/TagSelector';
 import Checkbox from 'components/molecules/Checkbox';
 import Duration from './components/Duration';
 import isFieldShown from './utils/isFieldShown';
@@ -774,7 +774,7 @@ export default function TypedForm({
               containerStyle={styles.inputPair}
             >
               <TransparentView>
-                <TagSelector
+                <EntityAndTagSelector
                   value={formValues[field]}
                   onChange={(value) => {
                     onFormValuesChange({

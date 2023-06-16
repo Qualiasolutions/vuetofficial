@@ -79,7 +79,8 @@ const createInitialObject = (
 
       case 'tagSelector':
         initialObj[key] = formFields[key].initialValue || {
-          entities: []
+          entities: [],
+          tags: []
         };
         continue;
 

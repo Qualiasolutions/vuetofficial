@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   inlineInputPair: {
     flexDirection: 'row',
     width: '100%',
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'space-between'
   },

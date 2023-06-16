@@ -77,9 +77,10 @@ export const useDueDateFieldTypes = (
         displayName: t('tasks.task.reminders'),
         max: 3
       },
-      tags: {
+      tagsAndEntities: {
         type: 'tagSelector',
-        required: true
+        required: true,
+        displayName: t('tasks.task.tags')
       },
       routine: {
         type: 'dropDown',
@@ -185,9 +186,10 @@ export const useTaskMiddleFieldTypes = (
         displayName: t('tasks.task.reminders'),
         max: 3
       },
-      tags: {
+      tagsAndEntities: {
         type: 'tagSelector',
-        required: true
+        required: true,
+        displayName: t('tasks.task.tags')
       }
     };
   }, [t, disabledRecurrenceFields, disableFlexible]);

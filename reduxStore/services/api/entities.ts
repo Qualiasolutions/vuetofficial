@@ -23,7 +23,7 @@ const entitiesApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['Entity']
     }),
-    getMemberEntities: builder.query<AllEntities, number>({
+    getMemberEntities: builder.query<AllEntities, void>({
       query: () => ({
         url: 'core/entity/',
         responseHandler: async (response) => {

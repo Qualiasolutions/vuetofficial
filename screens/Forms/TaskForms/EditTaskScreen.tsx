@@ -98,8 +98,9 @@ export default function EditTaskScreen({
       const oldTask = allTasks.byId[route.params.taskId];
       const newTaskToEdit = {
         ...oldTask,
-        tags: {
-          entities: oldTask.entities
+        tagsAndEntities: {
+          entities: oldTask.entities,
+          tags: oldTask.tags || []
         }
       };
       if (newTaskToEdit) {

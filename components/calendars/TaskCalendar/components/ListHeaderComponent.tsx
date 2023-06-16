@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import TagSelector from 'components/forms/components/TagSelector';
+import EntityAndTagSelector from 'components/forms/components/TagSelector';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { Modal } from 'components/molecules/Modals';
@@ -99,7 +99,7 @@ const EntityFilterSelector = () => {
   return (
     <TransparentView>
       <TransparentView style={styles.tagSelectorWrapper}>
-        <TagSelector
+        <EntityAndTagSelector
           value={{ entities: newFilteredEntities }}
           onChange={({ entities }) => setNewFilteredEntities(entities)}
         />

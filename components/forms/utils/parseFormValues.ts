@@ -68,6 +68,7 @@ const parseFormValues = (
 
     if (['tagSelector'].includes(fields[field]?.type)) {
       parsedFormValues.entities = parsedFormValues[field].entities;
+      parsedFormValues.tags = parsedFormValues[field].tags;
     }
   }
 

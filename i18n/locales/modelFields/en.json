@@ -17,7 +17,8 @@
       "is_flexible": "Flexible",
       "earliest_action_date": "Earliest occurrence",
       "due_date": "Due date",
-      "routine": "Routine"
+      "routine": "Routine",
+      "tags": "Tags"
     },
     "fixedTask": {
       "start_datetime": "Start Datetime",

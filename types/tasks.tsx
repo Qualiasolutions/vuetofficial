@@ -34,6 +34,7 @@ interface BaseTaskType {
   resourcetype: TaskResourceType;
   title: string;
   hidden_tag: string;
+  tags: string[];
   members: number[];
   recurrence?: Recurrence | null;
   recurrence_index?: number;

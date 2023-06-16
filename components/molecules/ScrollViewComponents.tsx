@@ -10,6 +10,13 @@ type ThemeProps = {
 
 export type ViewProps = ThemeProps & DefaultScrollView['props'];
 
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    width: '100%'
+  }
+});
+
 function FullPageScrollViewWithColor(
   backgroundColorName: ColorName,
   borderColorName: ColorName
@@ -59,10 +66,3 @@ export const TransparentFullPageScrollView = FullPageScrollViewWithColor(
   'transparent',
   'grey'
 );
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    width: '100%'
-  }
-});

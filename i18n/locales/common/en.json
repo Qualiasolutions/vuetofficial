@@ -65,6 +65,15 @@
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
   },
+  "tags": {
+    "PETS__FEEDING": "Feeding",
+    "PETS__EXERCISE": "Exercise",
+    "PETS__GROOMING": "Grooming",
+    "PETS__HEALTH": "Health",
+    "TRAVEL__TRANSPORT": "Transport",
+    "TRAVEL__ACTIVITY": "Activity",
+    "TRAVEL__ACCOMMODATION": "Accommodation"
+  },
   "linkTitles": {
     "EDUCATION": "Education",
     "CAREER": "Career",
@@ -261,6 +270,8 @@
     "invite": "Invite",
     "oops": "Oops",
     "next": "Next",
+    "finish": "Finish",
+    "back": "Back",
     "hide": "Hide",
     "continue": "Continue",
     "skip": "Skip",
@@ -515,6 +526,11 @@
       "passwordModal": {
         "blurb": "Enter your account password to view this reference"
       }
+    },
+    "tagSelector": {
+      "selectedEntities": "Selected entities",
+      "requiresPetTag": "You must add a pet tag to this task",
+      "requiresTravelTag": "You must add a travel tag to this task"
     }
   }
 }
