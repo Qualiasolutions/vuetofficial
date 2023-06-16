@@ -1,5 +1,8 @@
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import { Button } from 'components/molecules/ButtonComponents';
+import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -25,6 +28,7 @@ import {
   selectReferenceGroupsByEntityId,
   selectReferencesByGroupId
 } from 'reduxStore/slices/references/selectors';
+import { RootTabParamList } from 'types/base';
 import { Reference, ReferenceType } from 'types/references';
 
 const addReferenceStyles = StyleSheet.create({
@@ -189,13 +193,34 @@ const AddReferenceGroup = ({ entityId }: { entityId: number }) => {
 
 const refItemsStyles = StyleSheet.create({
   nameStyle: { marginRight: 20, fontWeight: 'bold' },
-  refPair: { flexDirection: 'row' }
+  refPair: { flexDirection: 'row', alignItems: 'center' },
+  addTaskText: {
+    color: 'green',
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginLeft: 10
+  }
 });
 const ReferenceItem = ({ reference }: { reference: Reference }) => {
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+
   return (
     <TransparentView style={refItemsStyles.refPair}>
       <Text style={refItemsStyles.nameStyle}>{reference.name}</Text>
       <Text>{reference.type === 'PASSWORD' ? '●●●●●●' : reference.value}</Text>
+      {reference.type === 'DATE' && (
+        <SafePressable
+          onPress={() => {
+            navigation.navigate('AddTask', {
+              title: reference.name,
+              date: reference.value,
+              type: 'DUE_DATE'
+            });
+          }}
+        >
+          <Text style={refItemsStyles.addTaskText}>+</Text>
+        </SafePressable>
+      )}
     </TransparentView>
   );
 };

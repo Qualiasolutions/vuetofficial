@@ -33,6 +33,7 @@ import useColouredHeader from 'headers/hooks/useColouredHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import dayjs from 'dayjs';
+import { RootTabScreenProps } from 'types/base';
 
 const formTypes = [
   {
@@ -54,7 +55,7 @@ const formTypes = [
     label: 'Due Date'
   }
 ];
-type AddTaskFormType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
+export type AddTaskFormType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
 
 const styles = StyleSheet.create({
   container: {
@@ -75,10 +76,14 @@ const styles = StyleSheet.create({
   hidden: { display: 'none' }
 });
 
-export default function AddTaskScreen() {
+type AddTaskScreenProps = RootTabScreenProps<'AddTask'>;
+
+export default function AddTaskScreen({ route }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
-  const [formType, setFormType] = useState<AddTaskFormType>('TASK');
+  const [formType, setFormType] = useState<AddTaskFormType>(
+    route.params?.type || 'TASK'
+  );
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
@@ -121,13 +126,22 @@ export default function AddTaskScreen() {
   const taskBottomFields = useTaskBottomFieldTypes();
   const dueDateFields = useDueDateFieldTypes();
 
+  useEffect(() => {
+    setFormType(route.params?.type || 'TASK');
+  }, [route]);
+
   const initialTopFields = useMemo(() => {
     if (!userDetails) {
       return null;
     }
 
-    return createInitialObject(taskTopFields, userDetails);
-  }, [taskTopFields, userDetails]);
+    const topFieldsOverrides: { [key: string]: any } = {};
+    if (route.params?.title) {
+      topFieldsOverrides.title = route.params.title;
+    }
+
+    return createInitialObject(taskTopFields, userDetails, topFieldsOverrides);
+  }, [taskTopFields, userDetails, route]);
 
   const initialMiddleFields = useMemo(() => {
     if (!userDetails) {
@@ -179,8 +193,17 @@ export default function AddTaskScreen() {
       return null;
     }
 
-    return createInitialObject(dueDateFields, userDetails);
-  }, [dueDateFields, userDetails]);
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const defaultDueDate =
+      route.params?.date || dayjs(nextWeek).format('YYYY-MM-DD');
+
+    return createInitialObject(dueDateFields, userDetails, {
+      date: defaultDueDate,
+      title: route.params?.title || '',
+      duration: 15
+    });
+  }, [dueDateFields, userDetails, route]);
 
   useEffect(() => {
     if (userDetails) {

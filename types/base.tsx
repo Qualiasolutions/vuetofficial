@@ -9,6 +9,7 @@ import {
   NavigatorScreenParams
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AddTaskFormType } from 'screens/Forms/TaskForms/AddTaskScreen';
 import { CategoryName } from './categories';
 import { EntityTypeName } from './entities';
 
@@ -186,7 +187,12 @@ export type RootTabParamList = {
   SettingsNavigator: undefined;
   ContentNavigator: undefined;
   SideNavigator: undefined;
-  AddTask: { entityId: number | string };
+  AddTask: {
+    entityId?: number | string;
+    type?: AddTaskFormType;
+    title?: string;
+    date?: string;
+  };
   PlusButton: undefined;
   EditTask: { taskId: number };
   Transport: undefined;
