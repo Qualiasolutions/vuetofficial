@@ -9,11 +9,9 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import {
   useGetAllEntitiesQuery,
@@ -46,12 +44,17 @@ type ValueType = {
 type TagSelectorProps = {
   selectedEntities: number[];
   value: string[];
+  requiredTags: {
+    PET: boolean;
+    TRAVEL: boolean;
+  };
   onChange: (tags: string[]) => void;
 };
 
 const TagSelector = ({
   selectedEntities,
   value,
+  requiredTags,
   onChange
 }: TagSelectorProps) => {
   const { t } = useTranslation();
@@ -60,16 +63,12 @@ const TagSelector = ({
     useGetMemberEntitiesQuery();
   const { data: allEntities, isLoading: isLoadingAllEntities } =
     useGetAllEntitiesQuery();
-  const { data: allCategories, isLoading: isLoadingCategories } =
-    useGetAllCategoriesQuery();
 
   const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
 
   const isLoading =
     isLoadingMemberEntities ||
     !memberEntities ||
-    isLoadingCategories ||
-    !allCategories ||
     isLoadingAllEntities ||
     !allEntities ||
     isLoadingTags ||
@@ -79,23 +78,13 @@ const TagSelector = ({
     return null;
   }
 
-  const petCategoryId = allCategories.byName.PETS.id;
-  const requiresPetTag = selectedEntities.some(
-    (ent) => memberEntities.byId[ent].category === petCategoryId
-  );
-
-  const travelCategoryId = allCategories.byName.TRAVEL.id;
-  const requiresTravelTag = selectedEntities.some(
-    (ent) => memberEntities.byId[ent].category === travelCategoryId
-  );
-
   return (
     <TransparentView>
       <Text>{t('components.tagSelector.selectedEntities')}:</Text>
       <Text>
         {selectedEntities.map((ent) => allEntities.byId[ent].name).join(', ')}
       </Text>
-      {requiresPetTag && (
+      {requiredTags.PET && (
         <TransparentView style={styles.requiredTagSection}>
           <Text>{t('components.tagSelector.requiresPetTag')}:</Text>
           {allTags.PETS.map((petTagName) => (
@@ -120,7 +109,7 @@ const TagSelector = ({
           ))}
         </TransparentView>
       )}
-      {requiresTravelTag && (
+      {requiredTags.TRAVEL && (
         <TransparentView style={styles.requiredTagSection}>
           <Text>{t('components.tagSelector.requiresTravelTag')}:</Text>
           {allTags.TRAVEL.map((petTagName) => (
@@ -168,12 +157,33 @@ const EntityAndTagSelectorModal = ({
   const { t } = useTranslation();
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
     useGetMemberEntitiesQuery();
+  const { data: allCategories, isLoading: isLoadingCategories } =
+    useGetAllCategoriesQuery();
+  const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
 
-  const isLoading = isLoadingMemberEntities || !memberEntities;
+  const isLoading =
+    isLoadingMemberEntities ||
+    isLoadingCategories ||
+    isLoadingTags ||
+    !memberEntities ||
+    !allTags ||
+    !allCategories;
 
   if (isLoading) {
     return <PaddedSpinner />;
   }
+
+  const petCategoryId = allCategories.byName.PETS.id;
+  const requiresPetTag = selectedEntities.some(
+    (ent) => memberEntities.byId[ent].category === petCategoryId
+  );
+  const hasPetTag = selectedTags.some((tag) => allTags.PETS.includes(tag));
+
+  const travelCategoryId = allCategories.byName.TRAVEL.id;
+  const requiresTravelTag = selectedEntities.some(
+    (ent) => memberEntities.byId[ent].category === travelCategoryId
+  );
+  const hasTravelTag = selectedTags.some((tag) => allTags.TRAVEL.includes(tag));
 
   return (
     <Modal visible={open} onRequestClose={onRequestClose}>
@@ -183,6 +193,10 @@ const EntityAndTagSelectorModal = ({
             selectedEntities={selectedEntities}
             onChange={setSelectedTags}
             value={selectedTags}
+            requiredTags={{
+              PET: requiresPetTag,
+              TRAVEL: requiresTravelTag
+            }}
           />
         </TransparentPaddedView>
       ) : (
@@ -231,6 +245,10 @@ const EntityAndTagSelectorModal = ({
               onRequestClose();
             }}
             style={styles.button}
+            disabled={
+              (requiresPetTag && !hasPetTag) ||
+              (requiresTravelTag && !hasTravelTag)
+            }
           />
         </TransparentView>
       ) : (
