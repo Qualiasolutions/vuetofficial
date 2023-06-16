@@ -11,11 +11,17 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
+  useCreateReferenceGroupMutation,
   useCreateReferenceMutation,
+  useGetAllReferenceGroupsQuery,
   useGetAllReferencesQuery
 } from 'reduxStore/services/api/references';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
-import { selectReferencesByEntityId } from 'reduxStore/slices/references/selectors';
+import {
+  selectReferenceById,
+  selectReferenceGroupsByEntityId,
+  selectReferencesByGroupId
+} from 'reduxStore/slices/references/selectors';
 
 const addReferenceStyles = StyleSheet.create({
   refInputPair: { flexDirection: 'row' },
@@ -23,7 +29,7 @@ const addReferenceStyles = StyleSheet.create({
   buttonWrapper: { flex: 1, alignItems: 'flex-start' },
   button: { paddingVertical: 5 }
 });
-const AddReference = ({ entityId }: { entityId: number }) => {
+const AddReference = ({ groupId }: { groupId: number }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
   const [newValue, setNewValue] = useState('');
@@ -61,6 +67,53 @@ const AddReference = ({ entityId }: { entityId: number }) => {
               await createNewReference({
                 name: newName,
                 value: newValue,
+                group: groupId,
+                created_by: userDetails.id
+              }).unwrap();
+            } catch (err) {
+              console.log(err);
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }}
+        />
+      </TransparentView>
+    </TransparentView>
+  );
+};
+
+const AddReferenceGroup = ({ entityId }: { entityId: number }) => {
+  const { t } = useTranslation();
+  const [newName, setNewName] = useState('');
+  const { data: userDetails, isLoading: isLoadingUserDetails } =
+    useGetUserFullDetails();
+  const [createNewReferenceGroup] = useCreateReferenceGroupMutation();
+
+  if (isLoadingUserDetails || !userDetails) {
+    return null;
+  }
+
+  return (
+    <TransparentView>
+      <TransparentView style={addReferenceStyles.refInputPair}>
+        <TextInput
+          value={newName}
+          onChangeText={setNewName}
+          style={addReferenceStyles.input}
+        />
+      </TransparentView>
+      <TransparentView style={addReferenceStyles.buttonWrapper}>
+        <Button
+          style={addReferenceStyles.button}
+          disabled={!newName}
+          title={t('common.add')}
+          onPress={async () => {
+            try {
+              setNewName('');
+              await createNewReferenceGroup({
+                name: newName,
                 entities: [entityId],
                 created_by: userDetails.id
               }).unwrap();
@@ -95,13 +148,10 @@ const entityRefStyles = StyleSheet.create({
   container: { padding: 10 },
   nameTitle: { fontSize: 20 }
 });
-const EntityReferences = ({ entityId }: { entityId: number }) => {
-  const references = useSelector(selectReferencesByEntityId(entityId));
-  const entity = useSelector(selectEntityById(entityId));
 
-  if (!entity) {
-    return null;
-  }
+const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
+  const references = useSelector(selectReferencesByGroupId(groupId));
+  const refGroup = useSelector(selectReferenceById(groupId));
 
   const refViews = references
     .sort((a, b) => (a.id > b.id ? 1 : -1))
@@ -109,11 +159,40 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
       <ReferenceItem name={ref.name} value={ref.value} key={ref.id} />
     ));
 
+  if (!refGroup) {
+    return null;
+  }
+
+  return (
+    <TransparentView style={entityRefStyles.container}>
+      <Text style={entityRefStyles.nameTitle}>{refGroup.name}</Text>
+      {refViews}
+      <AddReference groupId={groupId} />
+    </TransparentView>
+  );
+};
+
+const EntityReferences = ({ entityId }: { entityId: number }) => {
+  const referenceGroups = useSelector(
+    selectReferenceGroupsByEntityId(entityId)
+  );
+  const entity = useSelector(selectEntityById(entityId));
+
+  if (!entity) {
+    return null;
+  }
+
+  const refViews = referenceGroups
+    .sort((a, b) => (a.id > b.id ? 1 : -1))
+    .map((refGroup) => (
+      <ReferenceGroupItem groupId={refGroup.id} key={refGroup.id} />
+    ));
+
   return (
     <TransparentView style={entityRefStyles.container}>
       <Text style={entityRefStyles.nameTitle}>{entity.name}</Text>
       {refViews}
-      <AddReference entityId={entityId} />
+      <AddReferenceGroup entityId={entityId} />
     </TransparentView>
   );
 };
@@ -129,12 +208,22 @@ export default function ReferencesList({
   const { data: allReferences, isLoading: isLoadingReferences } =
     useGetAllReferencesQuery();
 
-  if (isLoadingReferences || !allReferences || !allEntities) {
+  const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =
+    useGetAllReferenceGroupsQuery();
+
+  if (
+    isLoadingReferences ||
+    isLoadingReferenceGroups ||
+    !allReferences ||
+    !allEntities ||
+    !allReferenceGroups
+  ) {
     return <PaddedSpinner />;
   }
 
   let entitiesToShow: number[] =
-    entities || Object.keys(allReferences.byEntity).map((id) => parseInt(id));
+    entities ||
+    Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id));
 
   if (categories) {
     entitiesToShow = entitiesToShow.filter((ent) =>
