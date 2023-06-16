@@ -62,6 +62,7 @@ interface ScheduledTaskResponseType {
   is_complete: boolean;
   members: number[];
   entities: number[];
+  tags: string[];
   recurrence: number | null;
   recurrence_index: number | null;
   routine: number | null;

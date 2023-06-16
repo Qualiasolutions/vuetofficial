@@ -5,7 +5,7 @@ import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { selectScheduledTaskIdsByEntityTypes } from 'reduxStore/slices/calendars/selectors';
+import { selectScheduledTaskIdsByEntityTypes } from 'reduxStore/slices/tasks/selectors';
 import { EntityTypeTabParamList } from 'types/base';
 import { EntityTypeName } from 'types/entities';
 
@@ -45,8 +45,7 @@ export default function EntityTypeNavigator({
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {
-    return () => <ReferencesList />;
-    // return () => <ReferencesList entities={[entityTypes]} />;
+    return () => <ReferencesList entityTypes={entityTypes} />;
   }, [entityTypes]);
 
   return (

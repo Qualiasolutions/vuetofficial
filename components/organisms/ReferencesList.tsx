@@ -373,9 +373,11 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
 
 export default function ReferencesList({
   entities,
+  entityTypes,
   categories
 }: {
   entities?: number[];
+  entityTypes?: string[];
   categories?: number[];
 }) {
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
@@ -402,6 +404,12 @@ export default function ReferencesList({
   if (categories) {
     entitiesToShow = entitiesToShow.filter((ent) =>
       categories.includes(allEntities.byId[ent].category)
+    );
+  }
+
+  if (entityTypes) {
+    entitiesToShow = entitiesToShow.filter((ent) =>
+      entityTypes.includes(allEntities.byId[ent].resourcetype)
     );
   }
 

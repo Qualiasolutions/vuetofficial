@@ -228,6 +228,7 @@ const EntityAndTagSelectorModal = ({
                 entities: selectedEntities,
                 tags: selectedTags
               });
+              onRequestClose();
             }}
             style={styles.button}
           />

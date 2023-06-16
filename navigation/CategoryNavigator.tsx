@@ -5,7 +5,7 @@ import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { selectScheduledTaskIdsByCategories } from 'reduxStore/slices/calendars/selectors';
+import { selectScheduledTaskIdsByCategories } from 'reduxStore/slices/tasks/selectors';
 import { CategoryTabParamList } from 'types/base';
 
 const TopTabs = createMaterialTopTabNavigator<CategoryTabParamList>();

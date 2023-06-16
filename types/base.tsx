@@ -101,6 +101,15 @@ export type EntityTypeTabParamList = {
 export type EntityTypeTabScreenProps<Screen extends keyof EntityTabParamList> =
   NativeStackScreenProps<EntityTabParamList, Screen>;
 
+// Tag stack
+export type TagScreenTabParamList = {
+  TagCalendar: { entityTypes: EntityTypeName[] };
+};
+
+export type TagScreenTabScreenProps<
+  Screen extends keyof TagScreenTabParamList
+> = NativeStackScreenProps<TagScreenTabParamList, Screen>;
+
 // Category Stack
 export type CategoryTabParamList = {
   CategoryCalendar: undefined;
@@ -139,6 +148,7 @@ export type ContentTabParamList = {
     listName: 'annualDates';
   };
   EntityScreen: { entityId: number | string };
+  TagScreen: { tagName: string };
   EntityPeriods: { entityId: number };
   ChildEntitiesScreen: {
     entityId: number | string;

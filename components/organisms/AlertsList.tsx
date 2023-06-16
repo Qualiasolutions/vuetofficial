@@ -20,7 +20,7 @@ import {
   selectAlertById,
   selectAlertsByTaskId
 } from 'reduxStore/slices/alerts/selectors';
-import { selectScheduledTask } from 'reduxStore/slices/calendars/selectors';
+import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import {
   selectOverdueTasks,
   selectTaskById

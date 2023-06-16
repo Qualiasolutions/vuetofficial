@@ -3,7 +3,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
-import { selectFilteredScheduledTaskIdsByDate } from 'reduxStore/slices/calendars/selectors';
+import { selectFilteredScheduledTaskIdsByDate } from 'reduxStore/slices/tasks/selectors';
 
 const styles = StyleSheet.create({
   container: {

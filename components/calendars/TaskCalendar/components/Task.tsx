@@ -19,11 +19,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
+import OptionTags from 'components/molecules/OptionTags';
 import { useSelector } from 'react-redux';
 import {
   selectIsComplete,
   selectScheduledTask
-} from 'reduxStore/slices/calendars/selectors';
+} from 'reduxStore/slices/tasks/selectors';
 import dayjs from 'dayjs';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import SafePressable from 'components/molecules/SafePressable';
@@ -32,6 +33,7 @@ import {
   selectUserFromId
 } from 'reduxStore/slices/users/selectors';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -75,7 +77,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end'
   },
-  tagsWrapper: { flexDirection: 'row', width: '50%', flex: 0 }
+  tagsWrapper: {
+    flexDirection: 'row',
+    width: '50%',
+    flex: 0
+  }
 });
 
 export type MinimalScheduledTask = {
@@ -272,9 +278,10 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
           )}
         </TransparentView>
         <TransparentView style={styles.bottomWrapper}>
-          <TransparentView style={styles.tagsWrapper}>
+          <TransparentScrollView style={styles.tagsWrapper} horizontal>
             <EntityTags entities={task.entities} />
-          </TransparentView>
+            <OptionTags tagNames={task.tags} />
+          </TransparentScrollView>
           {memberColour}
         </TransparentView>
       </TransparentView>

@@ -1,13 +1,11 @@
 import { Text, useThemeColor } from 'components/Themed';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { useSelector } from 'react-redux';
-import {
-  selectListEnforcedDate,
-  selectScheduledTask
-} from 'reduxStore/slices/calendars/selectors';
+import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 import { ParsedPeriod } from 'types/periods';
 import { TransparentView } from './ViewComponents';

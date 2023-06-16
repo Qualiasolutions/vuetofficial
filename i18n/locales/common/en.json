@@ -91,9 +91,9 @@
     "pets": {
       "myPets": "My Pets",
       "feedingSchedule": "Feeding",
-      "physicalMental": "Exercise",
+      "exercise": "Exercise",
       "cleaningGrooming": "Grooming",
-      "vetsMedsMeasurements": "Health"
+      "health": "Health"
     },
     "social": {
       "anniversaries": "Birthdays & Anniversaries",
@@ -202,7 +202,14 @@
     "FOOD": "Food",
     "LAUNDRY": "Laundry",
     "EDUCATION": "Education",
-    "CAREER": "Career"
+    "CAREER": "Career",
+    "PETS__FEEDING": "Feeding",
+    "PETS__EXERCISE": "Exercise",
+    "PETS__GROOMING": "Grooming",
+    "PETS__HEALTH": "Health",
+    "TRAVEL__TRANSPORT": "Transport",
+    "TRAVEL__ACTIVITY": "Activity",
+    "TRAVEL__ACCOMMODATION": "Accommodation"
   },
   "addEntityHeaders": {
     "Car": "Vehicle",

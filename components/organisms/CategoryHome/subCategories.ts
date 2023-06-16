@@ -15,26 +15,34 @@ export default {
     {
       name: 'pets.feedingSchedule',
       navMethod: 'push',
-      toScreen: '',
-      toScreenParams: {}
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'PETS__FEEDING'
+      }
     },
     {
-      name: 'pets.physicalMental',
+      name: 'pets.exercise',
       navMethod: 'push',
-      toScreen: '',
-      toScreenParams: {}
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'PETS__EXERCISE'
+      }
     },
     {
       name: 'pets.cleaningGrooming',
       navMethod: 'push',
-      toScreen: '',
-      toScreenParams: {}
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'PETS__GROOMING'
+      }
     },
     {
-      name: 'pets.vetsMedsMeasurements',
+      name: 'pets.health',
       navMethod: 'push',
-      toScreen: '',
-      toScreenParams: {}
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'PETS__HEALTH'
+      }
     }
   ],
   SOCIAL_INTERESTS: [
@@ -150,6 +158,30 @@ export default {
       toScreenParams: {
         entityTypes: ['Trip'],
         entityTypeName: 'trips'
+      }
+    },
+    {
+      name: 'travel.transportation',
+      navMethod: 'push',
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'TRAVEL__TRANSPORT'
+      }
+    },
+    {
+      name: 'travel.activities',
+      navMethod: 'push',
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'TRAVEL__ACTIVITY'
+      }
+    },
+    {
+      name: 'travel.accommodation',
+      navMethod: 'push',
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'TRAVEL__ACCOMMODATION'
       }
     },
     {

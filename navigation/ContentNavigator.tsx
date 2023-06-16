@@ -19,6 +19,7 @@ import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildE
 import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
 import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
 import BlockedDaysSettingsScreen from 'screens/Categories/BlockedDaySettingsScreen';
+import TagScreen from 'screens/EntityPages/TagScreen';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
@@ -44,7 +45,13 @@ export function ContentNavigator() {
           headerShown: true
         }}
       />
-
+      <ContentStack.Screen
+        name="TagScreen"
+        component={TagScreen}
+        options={{
+          headerShown: true
+        }}
+      />
       <ContentStack.Screen
         name="HolidayList"
         component={HolidayListScreen}

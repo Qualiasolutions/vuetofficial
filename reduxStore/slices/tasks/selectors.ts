@@ -1,12 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 import dayjs from 'dayjs';
+import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
 import { DayType } from 'types/datesAndTimes';
+import { EntityTypeName } from 'types/entities';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
+import {
+  selectFilteredEntities,
+  selectFilteredUsers
+} from '../calendars/selectors';
 
 export const selectTaskById = (id: number) =>
   createSelector(
@@ -198,3 +204,215 @@ export const selectTasksForRoutineForDate = (routine: number, date: string) => {
     return dailyTasksPerRoutine[date][routine];
   });
 };
+
+const isTask = (
+  item: ScheduledTaskResponseType | undefined
+): item is ScheduledTaskResponseType => {
+  return !!item;
+};
+
+export const selectScheduledTaskIdsByEntityTypes = (
+  entityTypes: EntityTypeName[]
+) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    (scheduledTasks, allEntities) => {
+      const entitiesData = allEntities.data;
+      const taskData = scheduledTasks.data;
+      if (!taskData || !entitiesData) {
+        return {};
+      }
+
+      const filteredTasks =
+        taskData.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              taskData?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !entityTypes ||
+              entityTypes.length === 0 ||
+              task.entities.some((ent) =>
+                entityTypes.includes(entitiesData.byId[ent].resourcetype)
+              )
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectFilteredScheduledTaskIdsByDate = createSelector(
+  tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+  selectFilteredEntities,
+  selectFilteredUsers,
+  (scheduledTasks, entities, users) => {
+    if (!scheduledTasks.data) {
+      return {};
+    }
+
+    const filteredTasks =
+      scheduledTasks.data.ordered
+        .map(
+          ({ id, recurrence_index }) =>
+            scheduledTasks.data?.byTaskId[id][
+              recurrence_index === null ? -1 : recurrence_index
+            ]
+        )
+        .filter(isTask)
+        .filter(
+          (task) =>
+            (!entities ||
+              entities.length === 0 ||
+              task.entities.some((ent) => entities?.includes(ent))) &&
+            (!users ||
+              users.length === 0 ||
+              task.members.some((member) => users?.includes(member)))
+        ) || [];
+
+    const formatted = formatTasksPerDate(filteredTasks);
+
+    return formatted;
+  }
+);
+
+export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    (scheduledTasks) => {
+      if (!scheduledTasks.data) {
+        return {};
+      }
+
+      const filteredTasks =
+        scheduledTasks.data.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              scheduledTasks.data?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !entities ||
+              entities.length === 0 ||
+              task.entities.some((ent) => entities?.includes(ent))
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    (scheduledTasks) => {
+      if (!scheduledTasks.data) {
+        return {};
+      }
+
+      const filteredTasks =
+        scheduledTasks.data.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              scheduledTasks.data?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !tagNames ||
+              tagNames.length === 0 ||
+              task.tags.some((tagName) => tagNames?.includes(tagName))
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    (scheduledTasks, allEntities) => {
+      const entitiesData = allEntities.data;
+      const taskData = scheduledTasks.data;
+      if (!taskData || !entitiesData) {
+        return {};
+      }
+
+      const filteredTasks =
+        taskData.ordered
+          .map(
+            ({ id, recurrence_index }) =>
+              taskData?.byTaskId[id][
+                recurrence_index === null ? -1 : recurrence_index
+              ]
+          )
+          .filter(isTask)
+          .filter(
+            (task) =>
+              !categories ||
+              categories.length === 0 ||
+              task.entities.some((ent) =>
+                categories.some(
+                  (cat) => entitiesData.byId[ent].category === cat
+                )
+              )
+          ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectIsComplete = ({
+  id,
+  recurrenceIndex
+}: {
+  id: number;
+  recurrenceIndex: number | null;
+}) =>
+  createSelector(
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+    (taskCompletionForms) => {
+      const completionForm =
+        taskCompletionForms.data?.byTaskId[id] &&
+        taskCompletionForms.data?.byTaskId[id][
+          recurrenceIndex === null ? -1 : recurrenceIndex
+        ];
+      return {
+        isComplete: !!completionForm,
+        isIgnored: !!(completionForm && completionForm.ignore)
+      };
+    }
+  );
+
+export const selectScheduledTask = ({
+  id,
+  recurrenceIndex
+}: {
+  id: number;
+  recurrenceIndex: number | null;
+}) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    (scheduledTasks) => {
+      return scheduledTasks.data?.byTaskId[id][
+        recurrenceIndex === null ? -1 : recurrenceIndex
+      ];
+    }
+  );
