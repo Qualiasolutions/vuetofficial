@@ -1,15 +1,21 @@
-export type CreateReferenceRequest = {
-  name: string;
-  value: string;
-  group: number;
-  created_by: number;
-};
+export type ReferenceType =
+  | 'NAME'
+  | 'ACCOUNT_NUMBER'
+  | 'USERNAME'
+  | 'PASSWORD'
+  | 'WEBSITE'
+  | 'NOTE'
+  | 'ADDRESS'
+  | 'PHONE_NUMBER'
+  | 'DATE'
+  | 'OTHER';
 
 export type Reference = {
   id: number;
   name: string;
   value: string;
   group: number;
+  type: ReferenceType;
   created_by: number;
   created_at: string;
 };
@@ -22,12 +28,6 @@ export type AllReferences = {
   byGroup: {
     [key: number]: number[];
   };
-};
-
-export type CreateReferenceGroupRequest = {
-  name: string;
-  entities: number[];
-  created_by: number;
 };
 
 export type ReferenceGroup = {

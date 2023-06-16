@@ -1,12 +1,15 @@
+import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import { Button } from 'components/molecules/ButtonComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { Text, TextInput } from 'components/Themed';
+import { Text, TextInput, useThemeColor } from 'components/Themed';
+import dayjs from 'dayjs';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -22,20 +25,32 @@ import {
   selectReferenceGroupsByEntityId,
   selectReferencesByGroupId
 } from 'reduxStore/slices/references/selectors';
+import { Reference, ReferenceType } from 'types/references';
 
 const addReferenceStyles = StyleSheet.create({
-  refInputPair: { flexDirection: 'row' },
+  refInputPair: { flexDirection: 'row', width: '100%' },
   input: { flex: 1, marginRight: 10, marginVertical: 5 },
   buttonWrapper: { flex: 1, alignItems: 'flex-start' },
-  button: { paddingVertical: 5 }
+  button: { paddingVertical: 5 },
+  dropdown: { width: 130, marginRight: 10, flex: 0 }
 });
 const AddReference = ({ groupId }: { groupId: number }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
   const [newValue, setNewValue] = useState('');
+  const [newType, setNewType] = useState<ReferenceType | ''>('');
+  const [typePickerOpen, setTypePickerOpen] = useState(false);
+  const borderColor = useThemeColor({}, 'grey');
+
   const { data: userDetails, isLoading: isLoadingUserDetails } =
     useGetUserFullDetails();
   const [createNewReference] = useCreateReferenceMutation();
+
+  useEffect(() => {
+    if (newType === 'DATE') {
+      setNewValue('');
+    }
+  }, [newType]);
 
   if (isLoadingUserDetails || !userDetails) {
     return null;
@@ -48,17 +63,57 @@ const AddReference = ({ groupId }: { groupId: number }) => {
           value={newName}
           onChangeText={setNewName}
           style={addReferenceStyles.input}
+          placeholder={t('common.name')}
         />
-        <TextInput
-          value={newValue}
-          onChangeText={setNewValue}
-          style={addReferenceStyles.input}
+        <DropDownPicker
+          value={newType}
+          items={[
+            { value: 'NAME', label: 'Name' },
+            { value: 'ACCOUNT_NUMBER', label: 'Account number' },
+            { value: 'USERNAME', label: 'Username' },
+            { value: 'PASSWORD', label: 'Password' },
+            { value: 'WEBSITE', label: 'Website' },
+            { value: 'NOTE', label: 'Note' },
+            { value: 'ADDRESS', label: 'Address' },
+            { value: 'PHONE_NUMBER', label: 'Phone number' },
+            { value: 'DATE', label: 'Date' },
+            { value: 'OTHER', label: 'Other' }
+          ]}
+          multiple={false}
+          setValue={(item) => {
+            if (item(null)) {
+              setNewType(item(null));
+            }
+          }}
+          open={typePickerOpen}
+          setOpen={setTypePickerOpen}
+          listMode="MODAL"
+          placeholder={t('common.type')}
+          containerStyle={addReferenceStyles.dropdown}
+          style={{ borderColor }}
         />
+        {newType === 'DATE' ? (
+          <DateTimeTextInput
+            value={newValue ? new Date(newValue) : null}
+            onValueChange={(newDateValue: Date) => {
+              setNewValue(dayjs(newDateValue).format('YYYY-MM-DD'));
+            }}
+            mode="date"
+            textInputStyle={addReferenceStyles.input}
+          />
+        ) : (
+          <TextInput
+            value={newValue}
+            onChangeText={setNewValue}
+            style={addReferenceStyles.input}
+            placeholder={t('common.value')}
+          />
+        )}
       </TransparentView>
       <TransparentView style={addReferenceStyles.buttonWrapper}>
         <Button
           style={addReferenceStyles.button}
-          disabled={!newName || !newValue}
+          disabled={!newName || !newValue || !newType}
           title={t('common.add')}
           onPress={async () => {
             try {
@@ -67,6 +122,7 @@ const AddReference = ({ groupId }: { groupId: number }) => {
               await createNewReference({
                 name: newName,
                 value: newValue,
+                type: newType || 'OTHER',
                 group: groupId,
                 created_by: userDetails.id
               }).unwrap();
@@ -135,11 +191,11 @@ const refItemsStyles = StyleSheet.create({
   nameStyle: { marginRight: 20, fontWeight: 'bold' },
   refPair: { flexDirection: 'row' }
 });
-const ReferenceItem = ({ name, value }: { name: string; value: string }) => {
+const ReferenceItem = ({ reference }: { reference: Reference }) => {
   return (
     <TransparentView style={refItemsStyles.refPair}>
-      <Text style={refItemsStyles.nameStyle}>{name}</Text>
-      <Text>{value}</Text>
+      <Text style={refItemsStyles.nameStyle}>{reference.name}</Text>
+      <Text>{reference.type === 'PASSWORD' ? '●●●●●●' : reference.value}</Text>
     </TransparentView>
   );
 };
@@ -155,9 +211,7 @@ const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
 
   const refViews = references
     .sort((a, b) => (a.id > b.id ? 1 : -1))
-    .map((ref) => (
-      <ReferenceItem name={ref.name} value={ref.value} key={ref.id} />
-    ));
+    .map((ref) => <ReferenceItem reference={ref} key={ref.id} />);
 
   if (!refGroup) {
     return null;

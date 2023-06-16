@@ -243,6 +243,8 @@
   "common": {
     "start": "Start",
     "end": "End",
+    "name": "Name",
+    "value": "Value",
     "members": "Members",
     "confirm": "Confirm",
     "clear": "Clear",
@@ -279,6 +281,7 @@
     "search": "Type any keyword to search",
     "category": "Category",
     "thing": "Thing",
+    "type": "Type",
     "pleaseSelect": "Please select",
     "selectAll": "Select all",
     "addAnother": "Add Another",
