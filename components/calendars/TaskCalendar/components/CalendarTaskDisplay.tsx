@@ -137,13 +137,15 @@ function Calendar({
       // the first date to be the new date
       setPastMonthsToShow(0);
       setFirstDate(newDate);
-      try {
-        sectionListRef.current.scrollToLocation({
-          sectionIndex: 0,
-          itemIndex: 0
-        });
-      } catch (err) {
-        console.error(err);
+      if (Object.keys(tasks).length > 0) {
+        try {
+          sectionListRef.current.scrollToLocation({
+            sectionIndex: 0,
+            itemIndex: 0
+          });
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
   }, [monthEnforcedDate]);
