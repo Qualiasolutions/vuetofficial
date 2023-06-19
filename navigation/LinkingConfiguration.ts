@@ -28,6 +28,7 @@ const linking: LinkingOptions<TabParamList> = {
       ContentNavigator: {
         path: 'content',
         screens: {
+          AllReferences: 'all-references',
           Categories: 'categories-grid',
           CategoryList: 'category-list',
           EntityList: 'entity-list',

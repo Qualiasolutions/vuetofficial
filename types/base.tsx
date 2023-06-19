@@ -134,6 +134,7 @@ export type MyAccountTabScreenProps<
 
 // Content Stack
 export type ContentTabParamList = {
+  AllReferences: undefined;
   Categories: { initial: boolean; screen: string };
   CategoryPreferences: { categoryId: number };
   CategoryList: { categoryId: number };

@@ -20,6 +20,7 @@ import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScr
 import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
 import BlockedDaysSettingsScreen from 'screens/Categories/BlockedDaySettingsScreen';
 import TagScreen from 'screens/EntityPages/TagScreen';
+import AllReferencesScreen from 'screens/AllReferencesScreen';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
@@ -37,6 +38,11 @@ export function ContentNavigator() {
         name="Categories"
         component={CategoriesGrid}
         options={{ headerShown: false }}
+      />
+      <ContentStack.Screen
+        name="AllReferences"
+        component={AllReferencesScreen}
+        options={{ headerShown: true }}
       />
       <ContentStack.Screen
         name="EntityList"

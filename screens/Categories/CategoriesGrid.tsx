@@ -29,7 +29,9 @@ type CategoryGroupName =
   | 'FINANCE'
   | 'TRANSPORT';
 
-const categoriesImages: { [key in CategoryGroupName]: ImageSourcePropType } = {
+const categoriesImages: {
+  [key in CategoryGroupName | 'REFERENCES']: ImageSourcePropType;
+} = {
   PETS: require('assets/images/categories/pets.png'),
   SOCIAL_INTERESTS: require('assets/images/categories/social.png'),
   EDUCATION_CAREER: require('assets/images/categories/education.png'),
@@ -37,7 +39,8 @@ const categoriesImages: { [key in CategoryGroupName]: ImageSourcePropType } = {
   HEALTH_BEAUTY: require('assets/images/categories/health.png'),
   HOME_GARDEN: require('assets/images/categories/home.png'),
   FINANCE: require('assets/images/categories/finance.png'),
-  TRANSPORT: require('assets/images/categories/transport.png')
+  TRANSPORT: require('assets/images/categories/transport.png'),
+  REFERENCES: require('assets/images/categories/transport.png')
 };
 
 type CategoriesTypes = ContentTabScreenProps<'Categories'>;
@@ -177,7 +180,30 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   );
 
   const categoriesPage = (
-    <View style={styles.gridContainer}>{categoriesContent}</View>
+    <View style={styles.gridContainer}>
+      {categoriesContent}
+      <SafePressable
+        onPress={() => {
+          navigation.navigate('AllReferences');
+        }}
+      >
+        <ImageBackground
+          source={categoriesImages.REFERENCES}
+          style={styles.gridSquare}
+          resizeMode="cover"
+        >
+          <View
+            style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
+          >
+            <BlackText
+              style={[styles.gridText, { color: whiteColor }]}
+              text={t('pageTitles.references')}
+              bold={true}
+            />
+          </View>
+        </ImageBackground>
+      </SafePressable>
+    </View>
   );
 
   return (
