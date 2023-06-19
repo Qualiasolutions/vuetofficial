@@ -177,7 +177,7 @@ export default function BottomNavBar({
                 } else if (currentScreen === 'EntityScreen') {
                   type RouteParams = ContentTabParamList['EntityScreen'];
                   navigation.navigate('AddTask', {
-                    entityId: (currentScreenParams as RouteParams).entityId
+                    entitites: [(currentScreenParams as RouteParams).entityId]
                   });
                 } else if (
                   [

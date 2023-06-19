@@ -34,7 +34,6 @@ import {
 } from 'reduxStore/slices/references/selectors';
 import { RootTabParamList } from 'types/base';
 import { Reference, ReferenceType } from 'types/references';
-import { InformationType } from 'types/settings';
 
 const addReferenceStyles = StyleSheet.create({
   refInputPair: { flexDirection: 'row', width: '100%' },
@@ -282,6 +281,14 @@ const refItemsStyles = StyleSheet.create({
 const ReferenceItem = ({ reference }: { reference: Reference }) => {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const { data: referenceGroups } = useGetAllReferenceGroupsQuery();
+
+  if (!referenceGroups) {
+    return null;
+  }
+
+  const group = referenceGroups.byId[reference.group];
+
   return (
     <TransparentView style={refItemsStyles.refPair}>
       <Text style={refItemsStyles.nameStyle}>{reference.name}</Text>
@@ -292,6 +299,8 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
             navigation.navigate('AddTask', {
               title: reference.name,
               date: reference.value,
+              entities: group.entities,
+              tags: group.tags,
               type: 'DUE_DATE'
             });
           }}

@@ -37,7 +37,11 @@ const hasAllRequired = (
 
     if (['tagSelector'].includes(f?.type)) {
       const value = parsedFormValues[field];
-      if (value && value.entities && value.entities.length > 0) {
+      if (
+        value &&
+        ((value.entities && value.entities.length > 0) ||
+          (value.tags && value.tags.length > 0))
+      ) {
         continue;
       }
       return false;

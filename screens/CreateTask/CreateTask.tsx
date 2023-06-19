@@ -60,7 +60,7 @@ export default function CreateTask({
     (entity: EntityParsedType) => {
       setSelectedEntity(entity);
       onCloseEntity();
-      navigation.navigate('AddTask', { entityId: entity?.id });
+      navigation.navigate('AddTask', { entities: [entity?.id] });
     },
     [setSelectedEntity, onCloseEntity, navigation]
   );

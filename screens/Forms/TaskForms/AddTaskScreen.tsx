@@ -201,7 +201,11 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
     return createInitialObject(dueDateFields, userDetails, {
       date: defaultDueDate,
       title: route.params?.title || '',
-      duration: 15
+      duration: 15,
+      tagsAndEntities: {
+        entities: route.params?.entities || [],
+        tags: route.params?.tags || []
+      }
     });
   }, [dueDateFields, userDetails, route]);
 
