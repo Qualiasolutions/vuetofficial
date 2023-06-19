@@ -29,10 +29,12 @@ import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   selectReferenceById,
   selectReferenceGroupsByEntityId,
+  selectReferenceGroupsByTagName,
   selectReferencesByGroupId
 } from 'reduxStore/slices/references/selectors';
 import { RootTabParamList } from 'types/base';
 import { Reference, ReferenceType } from 'types/references';
+import { InformationType } from 'types/settings';
 
 const addReferenceStyles = StyleSheet.create({
   refInputPair: { flexDirection: 'row', width: '100%' },
@@ -146,7 +148,13 @@ const AddReference = ({ groupId }: { groupId: number }) => {
   );
 };
 
-const AddReferenceGroup = ({ entityId }: { entityId: number }) => {
+const AddReferenceGroup = ({
+  entityId,
+  tagName
+}: {
+  entityId?: number;
+  tagName?: string;
+}) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
   const { data: userDetails, isLoading: isLoadingUserDetails } =
@@ -176,7 +184,8 @@ const AddReferenceGroup = ({ entityId }: { entityId: number }) => {
               setNewName('');
               await createNewReferenceGroup({
                 name: newName,
-                entities: [entityId],
+                entities: entityId ? [entityId] : [],
+                tags: tagName ? [tagName] : [],
                 created_by: userDetails.id
               }).unwrap();
             } catch (err) {
@@ -273,8 +282,6 @@ const refItemsStyles = StyleSheet.create({
 const ReferenceItem = ({ reference }: { reference: Reference }) => {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const { t } = useTranslation();
-
   return (
     <TransparentView style={refItemsStyles.refPair}>
       <Text style={refItemsStyles.nameStyle}>{reference.name}</Text>
@@ -371,13 +378,34 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
   );
 };
 
+const TagReferences = ({ tagName }: { tagName: string }) => {
+  const { t } = useTranslation();
+  const referenceGroups = useSelector(selectReferenceGroupsByTagName(tagName));
+
+  const refViews = referenceGroups
+    .sort((a, b) => (a.id > b.id ? 1 : -1))
+    .map((refGroup) => (
+      <ReferenceGroupItem groupId={refGroup.id} key={refGroup.id} />
+    ));
+
+  return (
+    <TransparentView style={entityRefStyles.container}>
+      <Text style={entityRefStyles.nameTitle}>{t(`tags.${tagName}`)}</Text>
+      {refViews}
+      <AddReferenceGroup tagName={tagName} />
+    </TransparentView>
+  );
+};
+
 export default function ReferencesList({
   entities,
   entityTypes,
+  tags,
   categories
 }: {
   entities?: number[];
   entityTypes?: string[];
+  tags?: string[];
   categories?: number[];
 }) {
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
@@ -396,6 +424,13 @@ export default function ReferencesList({
   ) {
     return <PaddedSpinner />;
   }
+
+  const tagsToShow = tags || Object.keys(allReferenceGroups.byTagName);
+  const tagViews = tagsToShow
+    ? tagsToShow.map((tagName) => (
+        <TagReferences tagName={tagName} key={tagName} />
+      ))
+    : null;
 
   let entitiesToShow: number[] =
     entities ||
@@ -417,7 +452,21 @@ export default function ReferencesList({
     <EntityReferences entityId={entityId} key={entityId} />
   ));
 
+  let content = null;
+  if (entities || categories || entityTypes) {
+    content = entityViews;
+  } else if (tags) {
+    content = tagViews;
+  } else {
+    content = (
+      <>
+        {entityViews}
+        {tagViews}
+      </>
+    );
+  }
+
   return (
-    <TransparentFullPageScrollView>{entityViews}</TransparentFullPageScrollView>
+    <TransparentFullPageScrollView>{content}</TransparentFullPageScrollView>
   );
 }

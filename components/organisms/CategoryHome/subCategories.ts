@@ -99,6 +99,14 @@ export default {
         entityTypes: ['SocialMedia'],
         entityTypeName: 'social-media'
       }
+    },
+    {
+      name: 'social.mySocialInformation',
+      navMethod: 'push',
+      toScreen: 'TagScreen',
+      toScreenParams: {
+        tagName: 'SOCIAL__INFORMATION__PUBLIC'
+      }
     }
   ],
   EDUCATION: [
@@ -148,6 +156,14 @@ export default {
         entityTypes: ['CareerGoal'],
         entityTypeName: 'career-goals'
       }
+    },
+    {
+      name: 'career.myCareerInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: {
+        tagName: 'CAREER__INFORMATION__PUBLIC'
+      }
     }
   ],
   TRAVEL: [
@@ -186,11 +202,10 @@ export default {
     },
     {
       name: 'travel.travellerInfo',
-      toScreen: 'EntityList',
+      toScreen: 'TagScreen',
       navMethod: 'push',
       toScreenParams: {
-        entityTypes: ['Traveller'],
-        entityTypeName: 'traveller'
+        tagName: 'TRAVEL__INFORMATION__PUBLIC'
       }
     }
   ],
@@ -281,6 +296,12 @@ export default {
         entityTypes: ['PublicTransport'],
         entityTypeName: 'public-transport'
       }
+    },
+    {
+      name: 'transport.myTransportInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: { tagName: 'TRANSPORT__INFORMATION__PUBLIC' }
     }
   ]
 } as {

@@ -1,5 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Calendar from 'components/calendars/TaskCalendar';
+import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -26,6 +27,10 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
     );
   }, [filteredTasks]);
 
+  const referencesComponent = useMemo(() => {
+    return () => <ReferencesList tags={[tagName]} />;
+  }, [tagName]);
+
   return (
     <TopTabs.Navigator initialRouteName="TagCalendar">
       <TopTabs.Screen
@@ -33,6 +38,13 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
         component={calendarComponent}
         options={{
           title: t('pageTitles.calendar')
+        }}
+      />
+      <TopTabs.Screen
+        name="TagReferences"
+        component={referencesComponent}
+        options={{
+          title: t('pageTitles.references')
         }}
       />
     </TopTabs.Navigator>

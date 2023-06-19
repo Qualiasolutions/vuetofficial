@@ -78,6 +78,15 @@ const TagSelector = ({
     return null;
   }
 
+  const checkboxOnValueChange = (currentTagName: string) => async () => {
+    if (value.includes(currentTagName)) {
+      const newValue = value.filter((tagName) => tagName !== currentTagName);
+      onChange(newValue);
+    } else {
+      onChange([...value, currentTagName]);
+    }
+  };
+
   return (
     <TransparentView>
       <Text>{t('components.tagSelector.selectedEntities')}:</Text>
@@ -94,16 +103,7 @@ const TagSelector = ({
               </TransparentView>
               <Checkbox
                 checked={value.includes(petTagName)}
-                onValueChange={async () => {
-                  if (value.includes(petTagName)) {
-                    const newValue = value.filter(
-                      (tagName) => tagName !== petTagName
-                    );
-                    onChange(newValue);
-                  } else {
-                    onChange([...value, petTagName]);
-                  }
-                }}
+                onValueChange={checkboxOnValueChange(petTagName)}
               />
             </TransparentView>
           ))}
@@ -112,28 +112,40 @@ const TagSelector = ({
       {requiredTags.TRAVEL && (
         <TransparentView style={styles.requiredTagSection}>
           <Text>{t('components.tagSelector.requiresTravelTag')}:</Text>
-          {allTags.TRAVEL.map((petTagName) => (
-            <TransparentView style={styles.entityCheckboxPair} key={petTagName}>
+          {allTags.TRAVEL.map((travelTagName) => (
+            <TransparentView
+              style={styles.entityCheckboxPair}
+              key={travelTagName}
+            >
               <TransparentView style={styles.entityCheckboxLabel}>
-                <Text>{t(`tags.${petTagName}`)}</Text>
+                <Text>{t(`tags.${travelTagName}`)}</Text>
               </TransparentView>
               <Checkbox
-                checked={value.includes(petTagName)}
-                onValueChange={async () => {
-                  if (value.includes(petTagName)) {
-                    const newValue = value.filter(
-                      (tagName) => tagName !== petTagName
-                    );
-                    onChange(newValue);
-                  } else {
-                    onChange([...value, petTagName]);
-                  }
-                }}
+                checked={value.includes(travelTagName)}
+                onValueChange={checkboxOnValueChange(travelTagName)}
               />
             </TransparentView>
           ))}
         </TransparentView>
       )}
+      <TransparentView style={styles.requiredTagSection}>
+        {[
+          'TRAVEL__INFORMATION__PUBLIC',
+          'TRANSPORT__INFORMATION__PUBLIC',
+          'CAREER__INFORMATION__PUBLIC',
+          'SOCIAL__INFORMATION__PUBLIC'
+        ].map((infoTagName) => (
+          <TransparentView style={styles.entityCheckboxPair} key={infoTagName}>
+            <TransparentView style={styles.entityCheckboxLabel}>
+              <Text>{t(`tags.${infoTagName}`)}</Text>
+            </TransparentView>
+            <Checkbox
+              checked={value.includes(infoTagName)}
+              onValueChange={checkboxOnValueChange(infoTagName)}
+            />
+          </TransparentView>
+        ))}
+      </TransparentView>
     </TransparentView>
   );
 };
@@ -287,7 +299,7 @@ export default function EntityAndTagSelector({ value, onChange }: Props) {
   return (
     <TransparentView>
       <SafePressable onPress={() => setOpen(true)}>
-        {value.entities.length > 0 ? (
+        {value.entities.length > 0 || value.tags.length > 0 ? (
           <TransparentView>
             {value.entities.map((entityId) => (
               <Text key={entityId}>{allEntities.byId[entityId].name}</Text>

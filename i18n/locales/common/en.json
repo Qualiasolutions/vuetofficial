@@ -72,7 +72,11 @@
     "PETS__HEALTH": "Health",
     "TRAVEL__TRANSPORT": "Transport",
     "TRAVEL__ACTIVITY": "Activity",
-    "TRAVEL__ACCOMMODATION": "Accommodation"
+    "TRAVEL__ACCOMMODATION": "Accommodation",
+    "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
+    "TRANSPORT__INFORMATION__PUBLIC": "My Transport Information",
+    "SOCIAL__INFORMATION__PUBLIC": "My Social Information",
+    "CAREER__INFORMATION__PUBLIC": "My Career Information"
   },
   "linkTitles": {
     "EDUCATION": "Education",
@@ -101,7 +105,8 @@
       "events": "Celebration / Event Planning",
       "socialPlans": "My Social Plans",
       "socialMedia": "Social Media",
-      "hobbies": "Interests & Hobbies"
+      "hobbies": "Interests & Hobbies",
+      "mySocialInformation": "My Social Information"
     },
     "educationCareer": {
       "education": "Education",
@@ -112,7 +117,7 @@
       "activities": "Food & Activities",
       "accommodation": "Accommodation",
       "transportation": "Transportation",
-      "travellerInfo": "Traveller Information"
+      "travellerInfo": "My Traveller Information"
     },
     "healthBeauty": {
       "foodExercise": "Food & Exercise",
@@ -132,7 +137,8 @@
     "transport": {
       "cars": "Cars & Motorcycles",
       "boats": "Boats & Other",
-      "publicTransport": "Public Transport"
+      "publicTransport": "Public Transport",
+      "myTransportInformation": "My Transport Information"
     },
     "annualDates": {
       "anniversaries": "Birthdays & Anniversaries",
@@ -140,7 +146,8 @@
     },
     "career": {
       "daysOff": "Days Off",
-      "careerGoal": "Career Planning & Goals"
+      "careerGoal": "Career Planning & Goals",
+      "myCareerInformation": "My Career Information"
     },
     "education": {
       "schools": "Schools",
@@ -209,7 +216,11 @@
     "PETS__HEALTH": "Health",
     "TRAVEL__TRANSPORT": "Transport",
     "TRAVEL__ACTIVITY": "Activity",
-    "TRAVEL__ACCOMMODATION": "Accommodation"
+    "TRAVEL__ACCOMMODATION": "Accommodation",
+    "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
+    "TRANSPORT__INFORMATION__PUBLIC":"My Transport Information",
+    "SOCIAL__INFORMATION__PUBLIC":"My Social Information",
+    "CAREER__INFORMATION__PUBLIC":"My Career Information"
   },
   "addEntityHeaders": {
     "Car": "Vehicle",

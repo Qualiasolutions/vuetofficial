@@ -13,6 +13,18 @@ export const selectReferenceGroupsByEntityId = (entityId: number) =>
     }
   );
 
+export const selectReferenceGroupsByTagName = (tagName: string) =>
+  createSelector(
+    referencesApi.endpoints.getAllReferenceGroups.select(),
+    (references) => {
+      const refData = references?.data;
+      if (!(refData && refData.byTagName && refData.byTagName[tagName])) {
+        return [];
+      }
+      return refData.byTagName[tagName].map((refId) => refData.byId[refId]);
+    }
+  );
+
 export const selectReferencesByGroupId = (groupId: number) =>
   createSelector(
     referencesApi.endpoints.getAllReferences.select(),

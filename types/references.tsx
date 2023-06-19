@@ -34,6 +34,7 @@ export type ReferenceGroup = {
   id: number;
   name: string;
   entities: number[];
+  tags: string[];
   created_by: number;
   created_at: string;
 };
@@ -45,5 +46,8 @@ export type AllReferenceGroups = {
   };
   byEntity: {
     [key: number]: number[];
+  };
+  byTagName: {
+    [key: string]: number[];
   };
 };

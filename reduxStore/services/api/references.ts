@@ -28,7 +28,7 @@ const normalizeReferenceData = (data: { id: number; group: number }[]) => {
 };
 
 const normalizeReferenceGroupData = (
-  data: { id: number; entities: number[] }[]
+  data: { id: number; entities: number[]; tags: string[] }[]
 ) => {
   return {
     ids: data.map(({ id }) => id),
@@ -44,6 +44,15 @@ const normalizeReferenceGroupData = (
       for (const entity of next.entities) {
         newVal[entity] = newVal[entity]
           ? [...newVal[entity], next.id]
+          : [next.id];
+      }
+      return newVal;
+    }, {}),
+    byTagName: data.reduce<{ [key: string]: number[] }>((prev, next) => {
+      const newVal: { [key: string]: number[] } = { ...prev };
+      for (const tagName of next.tags) {
+        newVal[tagName] = newVal[tagName]
+          ? [...newVal[tagName], next.id]
           : [next.id];
       }
       return newVal;
@@ -334,6 +343,14 @@ const referencesApi = vuetApi.injectEndpoints({
                       draft.byEntity[entity] = [];
                     }
                     draft.byEntity[entity].push(mockId);
+                  }
+                }
+                if (patch.tags) {
+                  for (const tag of patch.tags) {
+                    if (!draft.byTagName[tag]) {
+                      draft.byTagName[tag] = [];
+                    }
+                    draft.byTagName[tag].push(mockId);
                   }
                 }
               }

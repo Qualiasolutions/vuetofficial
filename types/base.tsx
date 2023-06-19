@@ -103,7 +103,8 @@ export type EntityTypeTabScreenProps<Screen extends keyof EntityTabParamList> =
 
 // Tag stack
 export type TagScreenTabParamList = {
-  TagCalendar: { entityTypes: EntityTypeName[] };
+  TagCalendar: undefined;
+  TagReferences: undefined;
 };
 
 export type TagScreenTabScreenProps<
