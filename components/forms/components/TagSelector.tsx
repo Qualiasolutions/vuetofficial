@@ -157,15 +157,19 @@ const EntityAndTagSelectorModal = ({
   const { t } = useTranslation();
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
     useGetMemberEntitiesQuery();
+  const { data: allEntities, isLoading: isLoadingAllEntities } =
+    useGetAllEntitiesQuery();
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
   const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
 
   const isLoading =
     isLoadingMemberEntities ||
+    isLoadingAllEntities ||
     isLoadingCategories ||
     isLoadingTags ||
     !memberEntities ||
+    !allEntities ||
     !allTags ||
     !allCategories;
 
@@ -175,13 +179,13 @@ const EntityAndTagSelectorModal = ({
 
   const petCategoryId = allCategories.byName.PETS.id;
   const requiresPetTag = selectedEntities.some(
-    (ent) => memberEntities.byId[ent].category === petCategoryId
+    (ent) => allEntities.byId[ent].category === petCategoryId
   );
   const hasPetTag = selectedTags.some((tag) => allTags.PETS.includes(tag));
 
   const travelCategoryId = allCategories.byName.TRAVEL.id;
   const requiresTravelTag = selectedEntities.some(
-    (ent) => memberEntities.byId[ent].category === travelCategoryId
+    (ent) => allEntities.byId[ent].category === travelCategoryId
   );
   const hasTravelTag = selectedTags.some((tag) => allTags.TRAVEL.includes(tag));
 
