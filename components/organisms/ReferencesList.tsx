@@ -17,6 +17,7 @@ import { StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   useCreateReferenceGroupMutation,
@@ -337,7 +338,7 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
 };
 
 const entityRefStyles = StyleSheet.create({
-  container: { padding: 10 },
+  container: { padding: 10, paddingLeft: 30 },
   nameTitle: { fontSize: 20 }
 });
 
@@ -406,76 +407,137 @@ const TagReferences = ({ tagName }: { tagName: string }) => {
   );
 };
 
+const FlatReferencesList = ({
+  entities,
+  tags
+}: {
+  entities?: number[];
+  tags?: string[];
+}) => {
+  const tagViews = tags
+    ? tags.map((tagName) => <TagReferences tagName={tagName} key={tagName} />)
+    : null;
+
+  const entityViews = entities
+    ? entities.map((entityId) => (
+        <EntityReferences entityId={entityId} key={entityId} />
+      ))
+    : null;
+
+  return (
+    <TransparentView>
+      {entityViews}
+      {tagViews}
+    </TransparentView>
+  );
+};
+
+const referencesListStyles = {
+  categoryHeader: { fontSize: 24 },
+  container: { padding: 10 },
+  categorySection: { marginBottom: 30 }
+};
+
 export default function ReferencesList({
   entities,
   entityTypes,
   tags,
-  categories
+  categories,
+  showCategoryHeaders
 }: {
   entities?: number[];
   entityTypes?: string[];
   tags?: string[];
   categories?: number[];
+  showCategoryHeaders?: boolean;
 }) {
+  const { t } = useTranslation();
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
-  const { data: allReferences, isLoading: isLoadingReferences } =
-    useGetAllReferencesQuery();
+
+  const { data: allCategories } = useGetAllCategoriesQuery();
 
   const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =
     useGetAllReferenceGroupsQuery();
 
+  const { isLoading: isLoadingReferences } = useGetAllReferencesQuery(); // Pull refs
+
   if (
-    isLoadingReferences ||
     isLoadingReferenceGroups ||
-    !allReferences ||
+    isLoadingReferences ||
     !allEntities ||
+    !allCategories ||
     !allReferenceGroups
   ) {
     return <PaddedSpinner />;
   }
 
-  const tagsToShow = tags || Object.keys(allReferenceGroups.byTagName);
-  const tagViews = tagsToShow
-    ? tagsToShow.map((tagName) => (
-        <TagReferences tagName={tagName} key={tagName} />
-      ))
-    : null;
+  const tagsToShow = entities
+    ? []
+    : tags || Object.keys(allReferenceGroups.byTagName);
 
-  let entitiesToShow: number[] =
-    entities ||
-    Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id));
+  let entitiesToShow: number[] = [];
+  if (!tags) {
+    entitiesToShow =
+      entities ||
+      Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id));
+    if (categories) {
+      entitiesToShow = entitiesToShow.filter((ent) =>
+        categories.includes(allEntities.byId[ent].category)
+      );
+    }
 
-  if (categories) {
-    entitiesToShow = entitiesToShow.filter((ent) =>
-      categories.includes(allEntities.byId[ent].category)
-    );
+    if (entityTypes) {
+      entitiesToShow = entitiesToShow.filter((ent) =>
+        entityTypes.includes(allEntities.byId[ent].resourcetype)
+      );
+    }
   }
 
-  if (entityTypes) {
-    entitiesToShow = entitiesToShow.filter((ent) =>
-      entityTypes.includes(allEntities.byId[ent].resourcetype)
-    );
+  const tagsAndEntitiesToShowByCategory: {
+    [key: number]: { tags: string[]; entities: number[] };
+  } = {};
+
+  for (const tag of tagsToShow) {
+    const cat = tag.split('__')[0];
+    const catId = allCategories.byName[cat].id;
+    if (!tagsAndEntitiesToShowByCategory[catId]) {
+      tagsAndEntitiesToShowByCategory[catId] = { tags: [], entities: [] };
+    }
+    tagsAndEntitiesToShowByCategory[catId].tags.push(tag);
   }
 
-  const entityViews = entitiesToShow.map((entityId) => (
-    <EntityReferences entityId={entityId} key={entityId} />
-  ));
-
-  let content = null;
-  if (entities || categories || entityTypes) {
-    content = entityViews;
-  } else if (tags) {
-    content = tagViews;
-  } else {
-    content = (
-      <>
-        {entityViews}
-        {tagViews}
-      </>
-    );
+  for (const entity of entitiesToShow) {
+    const catId = allEntities.byId[entity].category;
+    if (!tagsAndEntitiesToShowByCategory[catId]) {
+      tagsAndEntitiesToShowByCategory[catId] = { tags: [], entities: [] };
+    }
+    tagsAndEntitiesToShowByCategory[catId].entities.push(entity);
   }
+
+  const content = Object.keys(tagsAndEntitiesToShowByCategory).map(
+    (categoryId) => (
+      <TransparentView
+        key={categoryId}
+        style={referencesListStyles.categorySection}
+      >
+        {showCategoryHeaders && (
+          <Text style={referencesListStyles.categoryHeader}>
+            {t(`categories.${allCategories.byId[parseInt(categoryId)].name}`)}
+          </Text>
+        )}
+        <FlatReferencesList
+          entities={
+            tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
+          }
+          tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
+        />
+      </TransparentView>
+    )
+  );
 
   return (
-    <TransparentFullPageScrollView>{content}</TransparentFullPageScrollView>
+    <TransparentFullPageScrollView style={referencesListStyles.container}>
+      {content}
+    </TransparentFullPageScrollView>
   );
 }

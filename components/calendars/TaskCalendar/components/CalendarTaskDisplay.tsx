@@ -107,49 +107,6 @@ function Calendar({
 
   const noTasks = Object.keys(tasks).length === 0;
 
-  useEffect(() => {
-    if (monthEnforcedDate && sectionListRef?.current) {
-      const newDate = new Date(monthEnforcedDate);
-      if (firstDate && firstDate < newDate) {
-        let sectionIndex = -1;
-        for (const date of Object.keys(tasks)) {
-          const dateObj = new Date(date);
-          if (dateObj < newDate && firstDate < dateObj) {
-            sectionIndex += 1;
-          }
-        }
-
-        if (sectionIndex >= 0) {
-          // SCROLL TO THE RIGHT DATE
-          try {
-            sectionListRef.current.scrollToLocation({
-              sectionIndex,
-              itemIndex: 0
-            });
-          } catch (err) {
-            console.error(err);
-          }
-        }
-        return;
-      }
-
-      // Otherwise scroll to the start and set
-      // the first date to be the new date
-      setPastMonthsToShow(0);
-      setFirstDate(newDate);
-      if (Object.keys(tasks).length > 0) {
-        try {
-          sectionListRef.current.scrollToLocation({
-            sectionIndex: 0,
-            itemIndex: 0
-          });
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
-  }, [monthEnforcedDate]);
-
   const [futureSections, pastSections] = useMemo(() => {
     const datesToShow = Object.keys(tasks);
 
@@ -207,6 +164,49 @@ function Calendar({
     }
     return [future, past];
   }, [firstDate, tasks, allRoutines, tasksPerRoutine]);
+
+  useEffect(() => {
+    if (monthEnforcedDate && sectionListRef?.current) {
+      const newDate = new Date(monthEnforcedDate);
+      if (firstDate && firstDate < newDate) {
+        let sectionIndex = -1;
+        for (const date of Object.keys(tasks)) {
+          const dateObj = new Date(date);
+          if (dateObj < newDate && firstDate < dateObj) {
+            sectionIndex += 1;
+          }
+        }
+
+        if (sectionIndex >= 0) {
+          // SCROLL TO THE RIGHT DATE
+          try {
+            sectionListRef.current.scrollToLocation({
+              sectionIndex,
+              itemIndex: 0
+            });
+          } catch (err) {
+            console.error(err);
+          }
+        }
+        return;
+      }
+
+      // Otherwise scroll to the start and set
+      // the first date to be the new date
+      setPastMonthsToShow(0);
+      setFirstDate(newDate);
+      if (futureSections.length > 0) {
+        try {
+          sectionListRef.current.scrollToLocation({
+            sectionIndex: 0,
+            itemIndex: 0
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }, [monthEnforcedDate]);
 
   const shownSections = useMemo(() => {
     return [

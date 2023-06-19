@@ -1,5 +1,5 @@
 import ReferencesList from 'components/organisms/ReferencesList';
 
 export default function AllReferencesScreen() {
-  return <ReferencesList />
+  return <ReferencesList showCategoryHeaders={true} />;
 }
