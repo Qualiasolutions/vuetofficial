@@ -26,6 +26,7 @@ import {
 import { ErrorBox } from 'components/molecules/Errors';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { RegisterAccountRequest } from 'types/signup';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const ENV = Constants.manifest?.extra?.processEnv;
 
@@ -81,65 +82,67 @@ const CreatePasswordScreen = ({
   ) : null;
 
   return (
-    <AlmostWhiteContainerView>
-      <PageTitle text={t('screens.createPassword.title')} />
-      <PageSubtitle text={t('screens.createPassword.addPassword')} />
-      {errorContent}
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={t('screens.createPassword.password')}
+    <TransparentFullPageScrollView>
+      <AlmostWhiteContainerView>
+        <PageTitle text={t('screens.createPassword.title')} />
+        <PageSubtitle text={t('screens.createPassword.addPassword')} />
+        {errorContent}
+        <TransparentView style={styles.inputLabelWrapper}>
+          <AlmostBlackText
+            style={styles.inputLabel}
+            text={t('screens.createPassword.password')}
+          />
+        </TransparentView>
+        <TextInput
+          accessibilityLabel="password-input"
+          value={password}
+          onChangeText={(text) => onChangePassword(text)}
+          secureTextEntry={true}
         />
-      </TransparentView>
-      <TextInput
-        accessibilityLabel="password-input"
-        value={password}
-        onChangeText={(text) => onChangePassword(text)}
-        secureTextEntry={true}
-      />
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={t('screens.createPassword.confirmPassword')}
+        <TransparentView style={styles.inputLabelWrapper}>
+          <AlmostBlackText
+            style={styles.inputLabel}
+            text={t('screens.createPassword.confirmPassword')}
+          />
+        </TransparentView>
+        <TextInput
+          accessibilityLabel="password-input-confirmation"
+          value={passwordConfirm}
+          onChangeText={(text) => onChangePasswordConfirm(text)}
+          secureTextEntry={true}
         />
-      </TransparentView>
-      <TextInput
-        accessibilityLabel="password-input-confirmation"
-        value={passwordConfirm}
-        onChangeText={(text) => onChangePasswordConfirm(text)}
-        secureTextEntry={true}
-      />
-      <Button
-        title={t('common.verify')}
-        onPress={() => {
-          const minimumPasswordLength = ENV === 'PROD' ? 8 : 2;
-          if (password.length < minimumPasswordLength) {
-            setErrorMessage(
-              t('screens.createPassword.passwordTooShort', {
-                minimumLength: minimumPasswordLength
-              })
-            );
-          } else if (password !== passwordConfirm) {
-            Toast.show({
-              type: 'error',
-              text1: t('common.errors.passwordsDontMatch')
-            });
-          } else {
-            const req: RegisterAccountRequest = {
-              password,
-              password2: passwordConfirm
-            };
-            if (isEmail) {
-              req.email = phoneNumber;
+        <Button
+          title={t('common.verify')}
+          onPress={() => {
+            const minimumPasswordLength = ENV === 'PROD' ? 8 : 2;
+            if (password.length < minimumPasswordLength) {
+              setErrorMessage(
+                t('screens.createPassword.passwordTooShort', {
+                  minimumLength: minimumPasswordLength
+                })
+              );
+            } else if (password !== passwordConfirm) {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.passwordsDontMatch')
+              });
             } else {
-              req.phone_number = phoneNumber;
+              const req: RegisterAccountRequest = {
+                password,
+                password2: passwordConfirm
+              };
+              if (isEmail) {
+                req.email = phoneNumber;
+              } else {
+                req.phone_number = phoneNumber;
+              }
+              createAccount(req);
             }
-            createAccount(req);
-          }
-        }}
-        style={styles.confirmButton}
-      />
-    </AlmostWhiteContainerView>
+          }}
+          style={styles.confirmButton}
+        />
+      </AlmostWhiteContainerView>
+    </TransparentFullPageScrollView>
   );
 };
 

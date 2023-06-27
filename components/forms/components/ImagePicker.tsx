@@ -1,10 +1,9 @@
 import { useThemeColor } from 'components/Themed';
 import {
   StyleSheet,
-  View,
   ViewStyle,
-  Pressable,
-  GestureResponderEvent
+  GestureResponderEvent,
+  Platform
 } from 'react-native';
 import * as ExpoImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
@@ -96,14 +95,18 @@ export function ImagePicker({
         imageAsset.width &&
         imageAsset.height
       ) {
-        const { uri } = imageAsset;
+        const { uri: uriRaw } = imageAsset;
+        const uri =
+          Platform.OS === 'ios' ? uriRaw.replace('file://', '') : uriRaw;
         const nameParts = uri.split('.');
         const fileType = nameParts[nameParts.length - 1];
 
         onImageSelect({
-          ...imageAsset,
           name: uri,
-          type: 'application/' + fileType
+          uri,
+          type: 'application/' + fileType,
+          height: imageAsset.height,
+          width: imageAsset.width
         });
       }
     }

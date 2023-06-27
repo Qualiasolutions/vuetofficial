@@ -29,6 +29,7 @@ import { WhiteImagePicker } from 'components/forms/components/ImagePicker';
 import dayjs from 'dayjs';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -106,93 +107,95 @@ const CreateAccountScreen = ({
   const hasAllRequired = firstName && lastName && dateOfBirth && memberColour;
 
   return (
-    <AlmostWhiteContainerView>
-      <PageTitle text={t('screens.createAccount.title')} />
-      <PageSubtitle text={t('screens.createAccount.addDetails')} />
-      <WhiteImagePicker
-        onImageSelect={(image) => {
-          uploadProfileImage(image as any);
-        }}
-        defaultImageUrl={userFullDetails?.presigned_profile_image_url}
-        displayInternalImage={false}
-      />
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={t('screens.createAccount.firstName')}
+    <TransparentFullPageScrollView>
+      <AlmostWhiteContainerView>
+        <PageTitle text={t('screens.createAccount.title')} />
+        <PageSubtitle text={t('screens.createAccount.addDetails')} />
+        <WhiteImagePicker
+          onImageSelect={(image) => {
+            uploadProfileImage(image as any);
+          }}
+          defaultImageUrl={userFullDetails?.presigned_profile_image_url}
+          displayInternalImage={false}
         />
-      </TransparentView>
-      <TextInput
-        value={firstName}
-        onChangeText={(text) => onChangeFirstName(text)}
-        accessibilityLabel="first-name-input"
-      />
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={t('screens.createAccount.lastName')}
+        <TransparentView style={styles.inputLabelWrapper}>
+          <AlmostBlackText
+            style={styles.inputLabel}
+            text={t('screens.createAccount.firstName')}
+          />
+        </TransparentView>
+        <TextInput
+          value={firstName}
+          onChangeText={(text) => onChangeFirstName(text)}
+          accessibilityLabel="first-name-input"
         />
-      </TransparentView>
-      <TextInput
-        value={lastName}
-        onChangeText={(text) => onChangeLastName(text)}
-        accessibilityLabel="last-name-input"
-      />
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={t('screens.createAccount.dob')}
+        <TransparentView style={styles.inputLabelWrapper}>
+          <AlmostBlackText
+            style={styles.inputLabel}
+            text={t('screens.createAccount.lastName')}
+          />
+        </TransparentView>
+        <TextInput
+          value={lastName}
+          onChangeText={(text) => onChangeLastName(text)}
+          accessibilityLabel="last-name-input"
         />
-      </TransparentView>
-      <WhiteDateInput
-        value={dateOfBirth}
-        maximumDate={new Date()}
-        onSubmit={(newValue: Date) => {
-          setDateOfBirth(newValue);
-        }}
-        handleErrors={() => {
-          Toast.show({
-            type: 'error',
-            text1: t('screens.createAccount.invalidDateMessage')
-          });
-        }}
-      />
-      <WhiteBox style={styles.memberColorBox} elevated={false}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={t('screens.createAccount.memberColour')}
-        />
-        <ColorPicker
-          value={memberColour}
-          onValueChange={(value: string) => {
-            setMemberColour(value);
+        <TransparentView style={styles.inputLabelWrapper}>
+          <AlmostBlackText
+            style={styles.inputLabel}
+            text={t('screens.createAccount.dob')}
+          />
+        </TransparentView>
+        <WhiteDateInput
+          value={dateOfBirth}
+          maximumDate={new Date()}
+          onSubmit={(newValue: Date) => {
+            setDateOfBirth(newValue);
+          }}
+          handleErrors={() => {
+            Toast.show({
+              type: 'error',
+              text1: t('screens.createAccount.invalidDateMessage')
+            });
           }}
         />
-      </WhiteBox>
-      <Button
-        title={t('common.next')}
-        disabled={!hasAllRequired}
-        onPress={async () => {
-          if (userFullDetails?.id) {
-            try {
-              await updateUserDetails({
-                user_id: userFullDetails?.id,
-                first_name: firstName,
-                last_name: lastName,
-                dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
-                member_colour: memberColour
-              }).unwrap();
-            } catch (e) {
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
+        <WhiteBox style={styles.memberColorBox} elevated={false}>
+          <AlmostBlackText
+            style={styles.inputLabel}
+            text={t('screens.createAccount.memberColour')}
+          />
+          <ColorPicker
+            value={memberColour}
+            onValueChange={(value: string) => {
+              setMemberColour(value);
+            }}
+          />
+        </WhiteBox>
+        <Button
+          title={t('common.next')}
+          disabled={!hasAllRequired}
+          onPress={async () => {
+            if (userFullDetails?.id) {
+              try {
+                await updateUserDetails({
+                  user_id: userFullDetails?.id,
+                  first_name: firstName,
+                  last_name: lastName,
+                  dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
+                  member_colour: memberColour
+                }).unwrap();
+              } catch (e) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
             }
-          }
-        }}
-        style={styles.confirmButton}
-      />
-    </AlmostWhiteContainerView>
+          }}
+          style={styles.confirmButton}
+        />
+      </AlmostWhiteContainerView>
+    </TransparentFullPageScrollView>
   );
 };
 

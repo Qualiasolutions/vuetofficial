@@ -71,6 +71,7 @@ const AddFamilyScreen = ({
     if (userFullDetails) {
       const data = new FormData();
       data.append('image', image as any);
+
       updateFamilyDetails({
         familyId: userFullDetails.family.id,
         formData: data

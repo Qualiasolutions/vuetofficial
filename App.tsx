@@ -22,7 +22,7 @@ import './i18n/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { enableFreeze } from 'react-native-screens';
-import { StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
 const persistConfig = {
   key: 'root',
@@ -64,9 +64,13 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={<Splash />} persistor={persistor}>
           <SafeAreaProvider>
-            <GestureHandlerRootView style={styles.root}>
-              <Navigation colorScheme={colorScheme} />
-            </GestureHandlerRootView>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+              <GestureHandlerRootView style={styles.root}>
+                <Navigation colorScheme={colorScheme} />
+              </GestureHandlerRootView>
+            </KeyboardAvoidingView>
             <StatusBar translucent={true} />
             <Toast position="bottom" />
           </SafeAreaProvider>

@@ -93,9 +93,8 @@ const FamilySettingsScreen = ({
 
   const { data: userInvites } = useActiveInvitesForUser(false);
 
-  const [updateFamilyDetails, result] = useUpdateFamilyDetailsMutation();
-  const [deleteUserInvite, deleteUserInviteResult] =
-    useDeleteUserInviteMutation();
+  const [updateFamilyDetails] = useUpdateFamilyDetailsMutation();
+  const [deleteUserInvite] = useDeleteUserInviteMutation();
 
   const { t } = useTranslation();
 
@@ -215,6 +214,7 @@ const FamilySettingsScreen = ({
             uploadProfileImage(image);
           }}
           defaultImageUrl={userFullDetails?.family?.presigned_image_url}
+          displayInternalImage={false}
         />
       </AlmostWhiteView>
       <AlmostWhiteView style={styles.familyHeader}>
