@@ -7,13 +7,11 @@ import {
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
   CreateDueDateRequest,
-  DueDateResponseType,
-  CreateTaskRequest
+  DueDateResponseType
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
-import { Api } from '@reduxjs/toolkit/dist/query';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
 
 const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
@@ -51,7 +49,8 @@ const updateQueryDataForNewTask = (
         api.util.updateQueryData('getAllTasks', originalArgs, (draft: any) => {
           draft.ids.push(newTask.id);
           draft.byId[newTask.id] = {
-            ...newTask
+            ...newTask,
+            resourcetype: newTask.resourcetype || 'FixedTask'
           };
         })
       );
@@ -69,7 +68,7 @@ const updateQueryDataForNewTask = (
                   recurrence: null,
                   recurrence_index: null,
                   alert: [], // Assume no alert - this will update when data is refetched
-                  resourcetype: newTask.resourcetype
+                  resourcetype: newTask.resourcetype || 'FixedTask'
                 }
               };
 
