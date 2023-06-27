@@ -82,7 +82,7 @@ export function BottomTabNavigator() {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
-  useGetUserInvitesQuery(userDetails?.user_id || -1, {
+  useGetUserInvitesQuery(null as any, {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });

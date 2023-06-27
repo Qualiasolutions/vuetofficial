@@ -9,7 +9,7 @@ export default function useActiveInvitesForUser(ownInvites: boolean) {
     useGetUserFullDetails();
 
   const { data: userInvites, isLoading: isLoadingUserInvites } =
-    useGetUserInvitesQuery(userFullDetails?.family?.id || -1, {
+    useGetUserInvitesQuery(null as any, {
       skip: !jwtAccessToken || !userFullDetails?.family?.id
     });
 

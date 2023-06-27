@@ -59,8 +59,8 @@ const userApi = vuetApi.injectEndpoints({
       }),
       invalidatesTags: ['Family', 'User']
     }),
-    getUserInvites: builder.query<UserInviteResponse[], number>({
-      query: (familyId) => ({
+    getUserInvites: builder.query<UserInviteResponse[], void>({
+      query: () => ({
         url: 'core/full-user-invite/'
       }),
       providesTags: ['UserInvite']

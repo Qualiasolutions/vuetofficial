@@ -27,12 +27,9 @@ export default function EditEntityScreen({
 
   const { data: userFullDetails, isLoading, error } = useGetUserFullDetails();
 
-  const { data: allUserInvites } = useGetUserInvitesQuery(
-    userFullDetails?.family?.id || -1,
-    {
-      skip: !userFullDetails?.family?.id
-    }
-  );
+  const { data: allUserInvites } = useGetUserInvitesQuery(null as any, {
+    skip: !userFullDetails?.family?.id
+  });
 
   const familyInviteIdRaw = route.params.id;
   const familyInviteId =

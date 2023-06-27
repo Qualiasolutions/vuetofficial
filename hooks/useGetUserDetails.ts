@@ -1,14 +1,18 @@
+import { useSelector } from 'react-redux';
 import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
+import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 
 export default function useGetUserFullDetails() {
+  const jwtAccessToken = useSelector(selectAccessToken);
+
   const {
     data: userDetails,
     isLoading: isLoadingUserDetails,
     error: userDetailsError
-  } = useGetUserDetailsQuery();
+  } = useGetUserDetailsQuery(null as any, { skip: !jwtAccessToken });
 
   const {
     data: userFullDetails,
