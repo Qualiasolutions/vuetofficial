@@ -156,7 +156,13 @@ const LoginScreen = ({
             }
           />
         </SafePressable>
-        <PrimaryText text={t('screens.logIn.forgotPassword')} bold={true} />
+        <SafePressable
+          onPress={() => {
+            navigation.navigate('ForgotPassword');
+          }}
+        >
+          <PrimaryText text={t('screens.logIn.forgotPassword')} bold={true} />
+        </SafePressable>
       </TransparentView>
       {submitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" />

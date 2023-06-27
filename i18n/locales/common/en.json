@@ -380,6 +380,13 @@
       "passwordTooShort": "Your password must be at least {{minimumLength}} letters long",
       "passwordError": "Hmm, something went wrong - make sure your password is secure (at least 8 letters and not too common) and that your passwords match"
     },
+    "forgotPassword": {
+      "title": "Reset Password - TODO",
+      "enterEmail": "Enter your email to receive a password reset code",
+      "enterPhone": "Enter your phone number to receive a password reset code",
+      "logIn": "Log In",
+      "reset": "Reset - TODO"
+    },
     "createAccount": {
       "title": "Create an account",
       "addDetails": "Add your details to start using Vuet App",

@@ -55,6 +55,7 @@ const linking: LinkingOptions<TabParamList> = {
       Signup: 'signup',
       ValidatePhone: 'validate-phone',
       CreatePassword: 'create-password',
+      ForgotPassword: 'forgot-password',
       NotFound: '*',
       CreateAccount: 'create-account',
       AddFamily: 'add-family',
