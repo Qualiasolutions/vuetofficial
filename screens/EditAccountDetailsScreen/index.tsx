@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
-import { FullPageSpinner } from 'components/molecules/Spinners';
+import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -37,7 +37,8 @@ export default function EditAccountDetailsScreen() {
   const { t } = useTranslation();
   const formFieldsTemplate = useMyAccountForm();
   const [newValues, setNewValues] = useState<null | MyAccountFormFields>(null);
-  const [updateUserDetails] = useFormUpdateUserDetailsMutation();
+  const [updateUserDetails, updateUserDetailsResult] =
+    useFormUpdateUserDetailsMutation();
 
   useEffect(() => {
     if (userDetails) {
@@ -71,30 +72,34 @@ export default function EditAccountDetailsScreen() {
           ])}
         />
         <TransparentView style={styles.buttonWrapper}>
-          <Button
-            onPress={async () => {
-              try {
-                const parsedFormValues = parseFormDataFormValues(
-                  newValues,
-                  formFieldsTemplate
-                );
-                await updateUserDetails({
-                  formData: parsedFormValues,
-                  userId: userDetails.id
-                }).unwrap();
-                Toast.show({
-                  type: 'success',
-                  text1: t('screens.myAccount.updateSuccess')
-                });
-              } catch (err) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
-              }
-            }}
-            title={t('common.update')}
-          />
+          {updateUserDetailsResult.isLoading ? (
+            <PaddedSpinner />
+          ) : (
+            <Button
+              onPress={async () => {
+                try {
+                  const parsedFormValues = parseFormDataFormValues(
+                    newValues,
+                    formFieldsTemplate
+                  );
+                  await updateUserDetails({
+                    formData: parsedFormValues,
+                    userId: userDetails.id
+                  }).unwrap();
+                  Toast.show({
+                    type: 'success',
+                    text1: t('screens.myAccount.updateSuccess')
+                  });
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+              title={t('common.update')}
+            />
+          )}
         </TransparentView>
       </TransparentView>
     </TransparentFullPageScrollView>

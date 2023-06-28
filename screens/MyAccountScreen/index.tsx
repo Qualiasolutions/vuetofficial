@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
-import { StyleSheet } from 'react-native';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
 import { useNavigation } from '@react-navigation/native';
@@ -48,9 +47,3 @@ export default function MyAccountScreen() {
     </TransparentFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 20
-  }
-});
