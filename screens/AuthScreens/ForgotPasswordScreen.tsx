@@ -18,6 +18,7 @@ import { TextInput } from 'components/Themed';
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Button } from 'components/molecules/ButtonComponents';
+import { validate } from 'email-validator';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -99,6 +100,10 @@ export default function ForgotPasswordScreen({
           onPress={() => {
             setSubmitting(true);
           }}
+          disabled={
+            (usingEmail && !validate(username)) ||
+            (!usingEmail && username.length < 10)
+          }
           style={styles.confirmButton}
         />
       )}
