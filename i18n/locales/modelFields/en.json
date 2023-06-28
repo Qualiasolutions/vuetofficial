@@ -7,6 +7,7 @@
       "duration_minutes": "Duration",
       "recurrence": "Recurrence",
       "reminders": "Reminders",
+      "actions": "Actions",
       "start_datetime": "Starts",
       "end_datetime": "Ends",
       "first_start_datetime": "First occurrence",

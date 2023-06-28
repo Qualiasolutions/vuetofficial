@@ -3,6 +3,7 @@ import { StyleSheet, ViewStyle } from 'react-native';
 import { Text, TextInput } from 'components/Themed';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import {
+  ActionsSelectorField,
   AddFamilyMembersField,
   AddMembersField,
   CalculatedDurationField,
@@ -49,6 +50,7 @@ import EntityAndTagSelector from './components/TagSelector';
 import Checkbox from 'components/molecules/Checkbox';
 import Duration from './components/Duration';
 import isFieldShown from './utils/isFieldShown';
+import ActionSelector from './components/ActionSelector';
 
 const parseFieldName = (name: string) => {
   return name
@@ -760,6 +762,29 @@ export default function TypedForm({
                   firstOccurrence={firstOccurrence}
                   disabled={f.disabled || false}
                   reverse={f.reverse}
+                  max={f.max}
+                />
+              </TransparentView>
+            </InputPair>
+          );
+        }
+        case 'actionsSelector': {
+          const f = flatFields[field] as ActionsSelectorField;
+          return (
+            <InputPair
+              field={field}
+              key={field}
+              containerStyle={styles.inputPair}
+            >
+              <TransparentView>
+                <ActionSelector
+                  value={formValues[field]}
+                  onChange={(value) => {
+                    onFormValuesChange({
+                      ...formValues,
+                      [field]: value
+                    });
+                  }}
                   max={f.max}
                 />
               </TransparentView>

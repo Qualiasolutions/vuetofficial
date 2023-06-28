@@ -20,3 +20,20 @@ export type AllAlerts = {
     [key: number]: number[];
   };
 };
+
+export type ActionAlert = {
+  id: number;
+  type: AlertName;
+  user: number;
+  action: number;
+};
+
+export type AllActionAlerts = {
+  ids: number[];
+  byId: {
+    [key: number]: ActionAlert;
+  };
+  byAction: {
+    [key: number]: number[];
+  };
+};

@@ -1,4 +1,4 @@
-import { ScheduledTaskResponseType } from 'types/tasks';
+import { ScheduledTaskResponseType, ScheduledTaskType } from 'types/tasks';
 import { getDateStringsBetween } from './datesAndTimes';
 
 export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
@@ -11,6 +11,8 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
       date?: string;
       duration?: number;
       routine: number | null;
+      type: ScheduledTaskType;
+      action_id: number | null;
     }[];
   } = {};
   for (const task of tasks) {
@@ -26,8 +28,12 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
         id: task.id,
         recurrence_index: task.recurrence_index,
         start_datetime: task.start_datetime,
+        type: (task.resourcetype === 'TaskAction'
+          ? 'ACTION'
+          : 'TASK') as ScheduledTaskType,
         end_datetime: task.end_datetime,
-        routine: task.routine
+        routine: task.routine,
+        action_id: task.action_id
       };
       if (newTasksPerDate[taskDate]) {
         let spliceIndex = 0;

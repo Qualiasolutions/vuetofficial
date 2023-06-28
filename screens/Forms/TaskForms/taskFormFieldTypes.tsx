@@ -77,6 +77,12 @@ export const useDueDateFieldTypes = (
         displayName: t('tasks.task.reminders'),
         max: 3
       },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
       tagsAndEntities: {
         type: 'tagSelector',
         required: true,

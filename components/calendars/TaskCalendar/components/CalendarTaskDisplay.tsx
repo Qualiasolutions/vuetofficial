@@ -44,12 +44,18 @@ const styles = StyleSheet.create({
   }
 });
 
-type ItemType = 'TASK' | 'ROUTINE';
-type ItemData = MinimalScheduledTask & { type: ItemType };
+type ItemData = MinimalScheduledTask;
+
 const isTask = (
   item: ItemData
 ): item is MinimalScheduledTask & { type: 'TASK' } => {
   return item.type === 'TASK';
+};
+
+const isAction = (
+  item: ItemData
+): item is MinimalScheduledTask & { type: 'ACTION' } => {
+  return item.type === 'ACTION';
 };
 
 const isRoutine = (
@@ -61,6 +67,9 @@ const isRoutine = (
 const ListItem = React.memo(
   ({ data, date }: { data: ItemData; date: string }) => {
     if (isTask(data)) {
+      return <Task task={data} date={date} />;
+    }
+    if (isAction(data)) {
       return <Task task={data} date={date} />;
     }
     if (isRoutine(data)) {
@@ -142,8 +151,9 @@ function Calendar({
             )
         );
 
-      const tasksToShow = permittedTasksOnDate.filter(({ id: taskId }) =>
-        dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
+      const tasksToShow = permittedTasksOnDate.filter(
+        ({ id: taskId, action_id }) =>
+          dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
       );
 
       sectionsArray.push({
@@ -153,12 +163,10 @@ function Calendar({
           ...routineIdsToShow.map((id) => ({
             id: id,
             recurrence_index: null,
-            type: 'ROUTINE' as ItemType
+            action_id: null,
+            type: 'ROUTINE' as 'ROUTINE'
           })),
-          ...tasksToShow.map((task) => ({
-            ...task,
-            type: 'TASK' as ItemType
-          }))
+          ...tasksToShow
         ]
       });
     }

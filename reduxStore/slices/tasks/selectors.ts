@@ -3,6 +3,7 @@ import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/componen
 import dayjs from 'dayjs';
 import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
+import taskActionsApi from 'reduxStore/services/api/taskActions';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
 import { DayType } from 'types/datesAndTimes';
@@ -18,7 +19,15 @@ export const selectTaskById = (id: number) =>
   createSelector(
     tasksApi.endpoints.getAllTasks.select(null as any),
     (tasks) => {
-      return tasks.data?.byId[id];
+      return tasks.data?.byId && tasks.data?.byId[id];
+    }
+  );
+
+export const selectTaskActionById = (id: number) =>
+  createSelector(
+    taskActionsApi.endpoints.getAllTaskActions.select(null as any),
+    (taskActions) => {
+      return (taskActions.data?.byId && taskActions.data?.byId[id]) || null;
     }
   );
 
@@ -50,28 +59,49 @@ export const selectNewTaskIds = createSelector(
 
 export const selectOverdueTasks = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+  taskActionsApi.endpoints.getAllTaskActions.select(null as any),
   taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
-  (tasks, taskCompletionForms) => {
+  (tasks, taskActions, taskCompletionForms) => {
     const tasksData = tasks?.data;
+    const taskActionsData = taskActions?.data;
     const taskCompletionFormsData = taskCompletionForms?.data;
 
-    if (!tasksData || !taskCompletionFormsData) {
+    if (!tasksData || !taskActionsData || !taskCompletionFormsData) {
       return [];
     }
 
     const overdueTasks: ScheduledTaskResponseType[] = [];
-    for (const { id, recurrence_index: recIndex } of tasksData.ordered) {
-      const task = tasksData.byTaskId[id][recIndex === null ? -1 : recIndex];
+    for (const {
+      id,
+      recurrence_index: recIndex,
+      action_id: actionId
+    } of tasksData.ordered) {
+      const task = actionId
+        ? tasksData.byActionId[actionId]
+        : tasksData.byTaskId[id][recIndex === null ? -1 : recIndex];
+
+      if (actionId) {
+        console.log(task);
+      }
 
       const taskDatetimeString = task.start_datetime || task.date;
       if (!taskDatetimeString) {
         continue;
       }
 
-      const isComplete = !!(
-        taskCompletionFormsData.byTaskId[id] &&
-        taskCompletionFormsData.byTaskId[id][recIndex === null ? -1 : recIndex]
-      );
+      const isComplete = actionId
+        ? taskActionsData.byId[actionId]?.is_complete
+        : !!(
+            taskCompletionFormsData.byTaskId[id] &&
+            taskCompletionFormsData.byTaskId[id][
+              recIndex === null ? -1 : recIndex
+            ]
+          );
+
+      if (actionId) {
+        console.log(taskActionsData.byId[actionId]);
+        console.log(isComplete);
+      }
 
       if (!isComplete) {
         const taskStart = new Date(taskDatetimeString);
@@ -121,19 +151,23 @@ export const selectTasksInDailyRoutines = createSelector(
 
       const nonRoutineTasks: MinimalScheduledTask[] = [];
 
-      const taskObjects = taskData.byDate[date].map(
-        (task) =>
-          taskData.byTaskId[task.id][
-            task.recurrence_index === null ? -1 : task.recurrence_index
-          ]
-      );
+      const taskObjects = taskData.byDate[date].map((task) => {
+        if (task.action_id) {
+          return taskData.byActionId[task.action_id];
+        }
+        return taskData.byTaskId[task.id][
+          task.recurrence_index === null ? -1 : task.recurrence_index
+        ];
+      });
 
       const formattedTaskObjects = formatTasksPerDate(taskObjects);
 
       for (const taskObj of formattedTaskObjects[date]) {
         const task = {
           id: taskObj.id,
-          recurrence_index: taskObj.recurrence_index
+          recurrence_index: taskObj.recurrence_index,
+          action_id: taskObj.action_id,
+          type: taskObj.type
         };
 
         if (taskObj.start_datetime && taskObj.end_datetime) {
@@ -161,10 +195,7 @@ export const selectTasksInDailyRoutines = createSelector(
             }
           }
           if (!addedToRoutine) {
-            nonRoutineTasks.push({
-              id: taskObj.id,
-              recurrence_index: taskObj.recurrence_index
-            });
+            nonRoutineTasks.push(task);
           }
         } else {
           // Otherwise it is a due date and we place
@@ -259,12 +290,17 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
 
     const filteredTasks =
       scheduledTasks.data.ordered
-        .map(
-          ({ id, recurrence_index }) =>
-            scheduledTasks.data?.byTaskId[id][
+        .map(({ id, recurrence_index, resourcetype, action_id }) => {
+          if (['FixedTask', 'DueDate'].includes(resourcetype)) {
+            return scheduledTasks.data?.byTaskId[id][
               recurrence_index === null ? -1 : recurrence_index
-            ]
-        )
+            ];
+          }
+
+          if (action_id) {
+            return scheduledTasks.data?.byActionId[action_id];
+          }
+        })
         .filter(isTask)
         .filter(
           (task) =>
@@ -381,14 +417,23 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
 
 export const selectIsComplete = ({
   id,
-  recurrenceIndex
+  recurrenceIndex,
+  actionId
 }: {
   id: number;
   recurrenceIndex: number | null;
+  actionId: number | null;
 }) =>
   createSelector(
     taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
-    (taskCompletionForms) => {
+    selectTaskActionById(actionId || -1),
+    (taskCompletionForms, taskAction) => {
+      if (actionId) {
+        return {
+          isComplete: taskAction?.is_complete,
+          isIgnored: false
+        };
+      }
       const completionForm =
         taskCompletionForms.data?.byTaskId[id] &&
         taskCompletionForms.data?.byTaskId[id][
@@ -403,16 +448,25 @@ export const selectIsComplete = ({
 
 export const selectScheduledTask = ({
   id,
-  recurrenceIndex
+  recurrenceIndex,
+  actionId
 }: {
-  id: number;
-  recurrenceIndex: number | null;
+  id?: number | null;
+  recurrenceIndex?: number | null;
+  actionId?: number | null;
 }) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(null as any),
     (scheduledTasks) => {
-      return scheduledTasks.data?.byTaskId[id][
-        recurrenceIndex === null ? -1 : recurrenceIndex
-      ];
+      if (actionId) {
+        return scheduledTasks.data?.byActionId[actionId];
+      }
+      if (id) {
+        return scheduledTasks.data?.byTaskId[id][
+          recurrenceIndex === null || recurrenceIndex === undefined
+            ? -1
+            : recurrenceIndex
+        ];
+      }
     }
   );

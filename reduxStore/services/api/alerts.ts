@@ -1,7 +1,7 @@
 import { vuetApi, normalizeData } from './api';
-import { Alert, AllAlerts } from 'types/alerts';
+import { ActionAlert, Alert, AllActionAlerts, AllAlerts } from 'types/alerts';
 
-export const normalizeAlerts = (data: { id: number; task: number }[]) => {
+const normalizeAlerts = (data: { id: number; task: number }[]) => {
   return {
     ids: data.map(({ id }) => id),
     byId: data.reduce(
@@ -21,6 +21,31 @@ export const normalizeAlerts = (data: { id: number; task: number }[]) => {
       return {
         ...prev,
         [next.task]: [next.id]
+      };
+    }, {})
+  };
+};
+
+const normalizeActionAlerts = (data: { id: number; action: number }[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byAction: data.reduce<{ [key: number]: number[] }>((prev, next) => {
+      if (prev[next.action]) {
+        return {
+          ...prev,
+          [next.action]: [...prev[next.action], next.id]
+        };
+      }
+      return {
+        ...prev,
+        [next.action]: [next.id]
       };
     }, {})
   };
@@ -86,6 +111,68 @@ const alertsApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    getAllActionAlerts: builder.query<AllActionAlerts, void>({
+      query: () => ({
+        url: 'core/action-alert/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: ActionAlert[] = await response.json();
+            return normalizeActionAlerts(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['ActionAlert']
+    }),
+    deleteActionAlert: builder.mutation<
+      void,
+      Pick<ActionAlert, 'id' | 'action'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/action-alert/${body.id}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['ActionAlert'],
+      async onQueryStarted(
+        { id: idToDelete, action },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of alertsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ActionAlert' }
+        ])) {
+          if (endpointName !== 'getAllActionAlerts') continue;
+          const patchResult = dispatch(
+            alertsApi.util.updateQueryData(
+              'getAllActionAlerts',
+              originalArgs,
+              (draft) => {
+                draft.ids = draft.ids.filter((id) => id !== idToDelete);
+                draft.byAction[action] = draft.byAction[action].filter(
+                  (id) => id !== idToDelete
+                );
+                delete draft.byId[idToDelete];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
@@ -95,4 +182,9 @@ export default alertsApi;
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllAlertsQuery, useDeleteAlertMutation } = alertsApi;
+export const {
+  useGetAllAlertsQuery,
+  useDeleteAlertMutation,
+  useGetAllActionAlertsQuery,
+  useDeleteActionAlertMutation
+} = alertsApi;

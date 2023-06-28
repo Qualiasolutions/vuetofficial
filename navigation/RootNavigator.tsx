@@ -29,6 +29,7 @@ import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import RoutineTasksScreen from 'screens/RoutineTasksScreen';
+import { useGetAllTaskActionsQuery } from 'reduxStore/services/api/taskActions';
 
 const styles = StyleSheet.create({
   icon: {
@@ -87,6 +88,9 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
   useGetAllAlertsQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetAllTaskActionsQuery(null as any, {
     skip: !userDetails?.user_id
   });
   useGetTaskCompletionFormsQuery(null as any, {

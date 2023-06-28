@@ -10,6 +10,7 @@ import {
 } from 'types/base';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
+import { useUpdateTaskActionMutation } from 'reduxStore/services/api/taskActions';
 
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -26,7 +27,7 @@ import {
   selectScheduledTask
 } from 'reduxStore/slices/tasks/selectors';
 import dayjs from 'dayjs';
-import { ScheduledTaskResponseType } from 'types/tasks';
+import { ScheduledTaskResponseType, ScheduledTaskType } from 'types/tasks';
 import SafePressable from 'components/molecules/SafePressable';
 import {
   selectCurrentUserId,
@@ -87,6 +88,8 @@ const styles = StyleSheet.create({
 export type MinimalScheduledTask = {
   id: number;
   recurrence_index: number | null;
+  action_id: number | null;
+  type: ScheduledTaskType | 'ROUTINE';
 };
 
 type PropTypes = {
@@ -171,15 +174,22 @@ const TimeText = ({
   );
 };
 
-function Task({ task: { id, recurrence_index }, date }: PropTypes) {
+function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
   const { isComplete, isIgnored } = useSelector(
-    selectIsComplete({ id, recurrenceIndex: recurrence_index })
+    selectIsComplete({
+      id,
+      recurrenceIndex: recurrence_index,
+      actionId: action_id
+    })
   );
   const task = useSelector(selectTaskById(id));
 
-  // console.log(`RENDER ${task?.title}`);
   const scheduledTask = useSelector(
-    selectScheduledTask({ id, recurrenceIndex: recurrence_index })
+    selectScheduledTask({
+      id,
+      recurrenceIndex: recurrence_index,
+      actionId: action_id
+    })
   );
 
   const navigation = useNavigation<
@@ -194,8 +204,8 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
   const isCompleteBoxColor = useThemeColor({}, 'primary');
   const isIgnoredBoxColor = useThemeColor({}, 'black');
   const { t } = useTranslation();
-  const [triggerCreateCompletionForm, createCompletionFormResult] =
-    useCreateTaskCompletionFormMutation();
+  const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
+  const [updateTaskAction] = useUpdateTaskActionMutation();
 
   const membersList = useMemo(() => {
     if (!task) {
@@ -238,7 +248,7 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
             <TimeText scheduledTask={scheduledTask} date={date} />
             <TransparentView style={styles.titleContainer}>
               <BlackText
-                text={task.title}
+                text={`${action_id ? 'ACTION - ' : ''}${task.title}`}
                 style={[
                   styles.title,
                   isComplete && {
@@ -268,11 +278,18 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
               checked={isComplete}
               color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
               onValueChange={async () => {
+                if (action_id) {
+                  await updateTaskAction({
+                    id: action_id,
+                    is_complete: true
+                  }).unwrap();
+                  return;
+                }
                 await triggerCreateCompletionForm({
                   resourcetype: 'TaskCompletionForm',
                   recurrence_index: scheduledTask.recurrence_index,
                   task: task.id
-                });
+                }).unwrap();
               }}
             />
           )}
@@ -299,7 +316,8 @@ function Task({ task: { id, recurrence_index }, date }: PropTypes) {
     userDetails?.is_premium,
     isCompleteBoxColor,
     isIgnored,
-    isIgnoredBoxColor
+    isIgnoredBoxColor,
+    action_id
   ]);
 
   return fullContent;

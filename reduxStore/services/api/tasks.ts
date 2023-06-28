@@ -7,7 +7,8 @@ import {
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
   CreateDueDateRequest,
-  DueDateResponseType
+  DueDateResponseType,
+  TaskResourceType
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
@@ -16,18 +17,34 @@ import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
 
 const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
   return {
-    ordered: data.map(({ id, recurrence_index }) => ({ id, recurrence_index })),
+    ordered: data.map(({ id, recurrence_index, resourcetype, action_id }) => ({
+      id,
+      recurrence_index,
+      resourcetype,
+      action_id
+    })),
     byDate: formatTasksPerDate(data),
-    byTaskId: data.reduce<{ [key: number]: {} }>(
-      (prev, next) => ({
-        ...prev,
-        [next.id]: {
-          ...prev[next.id],
-          [next.recurrence_index === null ? -1 : next.recurrence_index]: next
-        }
-      }),
-      {}
-    )
+    byTaskId: data
+      .filter((task) => ['FixedTask', 'DueDate'].includes(task.resourcetype))
+      .reduce<{ [key: number]: {} }>(
+        (prev, next) => ({
+          ...prev,
+          [next.id]: {
+            ...prev[next.id],
+            [next.recurrence_index === null ? -1 : next.recurrence_index]: next
+          }
+        }),
+        {}
+      ),
+    byActionId: data
+      .filter((task) => task.action_id)
+      .reduce<{ [key: number]: {} }>(
+        (prev, next) => ({
+          ...prev,
+          [next.action_id as number]: next
+        }),
+        {}
+      )
   };
 };
 
@@ -80,6 +97,7 @@ const updateQueryDataForNewTask = (
                     newTask.end_datetime
                   )
                 : [];
+
               for (const date of taskDates) {
                 if (!draft.byDate[date]) {
                   draft.byDate[date] = [];
@@ -88,14 +106,18 @@ const updateQueryDataForNewTask = (
                   ...draft.byDate[date],
                   {
                     id: newTask.id,
-                    recurrence_index: null
+                    recurrence_index: null,
+                    type: 'TASK',
+                    action_id: null
                   }
                 ];
               }
 
               draft.ordered.push({
                 id: newTask.id,
-                recurrence_index: null
+                recurrence_index: null,
+                resourcetype: newTask.resourcetype || 'FixedTask',
+                action_id: null
               });
             }
           )
@@ -110,14 +132,26 @@ const updateQueryDataForNewTask = (
 };
 
 type AllScheduledTasks = {
-  ordered: { id: number; recurrence_index: number | null }[];
+  ordered: {
+    id: number;
+    recurrence_index: number | null;
+    resourcetype: TaskResourceType;
+    action_id: number | null;
+  }[];
   byDate: {
-    [date: string]: { id: number; recurrence_index: number | null }[];
+    [date: string]: {
+      id: number;
+      recurrence_index: number | null;
+      action_id: number | null;
+    }[];
   };
   byTaskId: {
     [key: number]: {
       [key: number]: ScheduledTaskResponseType;
     };
+  };
+  byActionId: {
+    [key: number]: ScheduledTaskResponseType;
   };
 };
 
@@ -172,8 +206,7 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      // invalidatesTags: ['Task', 'Alert'],
-      invalidatesTags: ['Alert'],
+      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -257,7 +290,7 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Task', 'Alert'], // We leave task invalidation because recurrence requires this
+      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction'], // We leave task invalidation because recurrence requires this
       async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         try {
           const { data: newTask } = await queryFulfilled;
@@ -278,7 +311,7 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Alert'],
+      invalidatesTags: ['Alert', 'ActionAlert', 'TaskAction'],
       async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         try {
           const { data: newTask } = await queryFulfilled;
@@ -299,7 +332,7 @@ const tasksApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Alert'],
+      invalidatesTags: ['Alert', 'ActionAlert', 'TaskAction'],
       async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         try {
           const { data: newTask } = await queryFulfilled;
@@ -319,7 +352,7 @@ const tasksApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Task', 'Alert']
+      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction']
     })
   }),
   overrideExisting: true

@@ -100,7 +100,7 @@ const EntityFilterSelector = () => {
     <TransparentView>
       <TransparentView style={styles.tagSelectorWrapper}>
         <EntityAndTagSelector
-          value={{ entities: newFilteredEntities }}
+          value={{ entities: newFilteredEntities, tags: [] }}
           onChange={({ entities }) => setNewFilteredEntities(entities)}
         />
       </TransparentView>

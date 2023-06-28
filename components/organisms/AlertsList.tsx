@@ -12,15 +12,23 @@ import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import {
+  useDeleteActionAlertMutation,
   useDeleteAlertMutation,
+  useGetAllActionAlertsQuery,
   useGetAllAlertsQuery
 } from 'reduxStore/services/api/alerts';
+import { useUpdateTaskActionMutation } from 'reduxStore/services/api/taskActions';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 import {
+  selectActionAlertById,
   selectAlertById,
+  selectAlertsByActionId,
   selectAlertsByTaskId
 } from 'reduxStore/slices/alerts/selectors';
-import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectScheduledTask,
+  selectTaskActionById
+} from 'reduxStore/slices/tasks/selectors';
 import {
   selectOverdueTasks,
   selectTaskById
@@ -81,12 +89,59 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
   );
 };
 
+const ActionAlertEntry = ({ actionAlertId }: { actionAlertId: number }) => {
+  const alert = useSelector(selectActionAlertById(actionAlertId));
+  const currentUserId = useSelector(selectCurrentUserId);
+  const user = useSelector(
+    selectFamilyMemberFromId(currentUserId || -1, alert?.user || -1)
+  );
+  const { t } = useTranslation();
+  const [deleteAlert] = useDeleteActionAlertMutation();
+
+  if (!alert) {
+    return null;
+  }
+
+  return (
+    <TransparentView style={alertEntryStyles.container}>
+      <TransparentView>
+        <Text>
+          {alert.type} for{' '}
+          {currentUserId === user?.id
+            ? 'you'
+            : `${user?.first_name} ${user?.last_name}`}
+        </Text>
+      </TransparentView>
+      <Pressable
+        onPress={async () => {
+          try {
+            await deleteAlert({
+              id: actionAlertId,
+              action: alert.action
+            }).unwrap();
+          } catch (err) {
+            Toast.show({
+              type: 'error',
+              text1: t('common.errors.generic')
+            });
+          }
+        }}
+      >
+        {currentUserId === user?.id && (
+          <Text style={alertEntryStyles.ignoreButtonText}>X</Text>
+        )}
+      </Pressable>
+    </TransparentView>
+  );
+};
+
 const taskAlertStyles = StyleSheet.create({
   card: { marginBottom: 10 }
 });
-const TaskAlerts = ({ taskId }: { taskId: number }) => {
-  const task = useSelector(selectTaskById(taskId));
-  const alerts = useSelector(selectAlertsByTaskId(taskId));
+const TaskAlerts = ({ taskId }: { taskId: number | null }) => {
+  const task = useSelector(selectTaskById(taskId || -1));
+  const alerts = useSelector(selectAlertsByTaskId(taskId || -1));
+
   const navigation = useNavigation();
 
   if (!task || alerts.length === 0) {
@@ -104,7 +159,40 @@ const TaskAlerts = ({ taskId }: { taskId: number }) => {
     >
       <Text>{task.title}</Text>
       <Text>
-        {task.start_datetime} - {task.end_datetime}
+        {task.date || `${task.start_datetime} - ${task.end_datetime}`}
+      </Text>
+      {alertList}
+    </ElevatedPressableBox>
+  );
+};
+
+const TaskActionAlerts = ({ actionId }: { actionId: number }) => {
+  const action = useSelector(selectTaskActionById(actionId));
+  const actionAlerts = useSelector(selectAlertsByActionId(actionId));
+  const task = useSelector(selectTaskById(action?.task || -1));
+  const scheduledAction = useSelector(selectScheduledTask({ actionId }));
+
+  const navigation = useNavigation();
+
+  if (!action || !task || !scheduledAction || actionAlerts.length === 0) {
+    return null;
+  }
+
+  const alertList = actionAlerts.map((actionAlertId) => (
+    <ActionAlertEntry actionAlertId={actionAlertId} key={actionAlertId} />
+  ));
+
+  return (
+    <ElevatedPressableBox
+      style={taskAlertStyles.card}
+      onPress={() =>
+        (navigation.navigate as any)('EditTask', { taskId: task.id })
+      }
+    >
+      <Text>{`ACTION - ${task.title}`}</Text>
+      <Text>
+        {scheduledAction.date ||
+          `${scheduledAction.start_datetime} - ${scheduledAction.end_datetime}`}
       </Text>
       {alertList}
     </ElevatedPressableBox>
@@ -121,18 +209,21 @@ const overdueTaskStyles = StyleSheet.create({
 });
 const OverdueTask = ({
   task,
+  action,
   recurrenceIndex
 }: {
   task: number;
+  action: number | null;
   recurrenceIndex: number;
 }) => {
   const taskObj = useSelector(
-    selectScheduledTask({ id: task, recurrenceIndex })
+    selectScheduledTask({ id: task, recurrenceIndex, actionId: action })
   );
   const navigation = useNavigation();
   const { t } = useTranslation();
 
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
+  const [updateTaskAction] = useUpdateTaskActionMutation();
 
   if (!taskObj) {
     return null;
@@ -152,11 +243,18 @@ const OverdueTask = ({
           title={t('common.markDone')}
           onPress={async () => {
             try {
-              await triggerCreateCompletionForm({
-                resourcetype: 'TaskCompletionForm',
-                recurrence_index: recurrenceIndex,
-                task
-              }).unwrap();
+              if (action) {
+                await updateTaskAction({
+                  id: action,
+                  is_complete: true
+                });
+              } else {
+                await triggerCreateCompletionForm({
+                  resourcetype: 'TaskCompletionForm',
+                  recurrence_index: recurrenceIndex,
+                  task
+                }).unwrap();
+              }
             } catch (err) {
               console.error(err);
               Toast.show({
@@ -167,26 +265,28 @@ const OverdueTask = ({
           }}
           style={overdueTaskStyles.button}
         />
-        <Button
-          title={t('common.ignore')}
-          onPress={async () => {
-            try {
-              await triggerCreateCompletionForm({
-                resourcetype: 'TaskCompletionForm',
-                recurrence_index: recurrenceIndex,
-                ignore: true,
-                task
-              }).unwrap();
-            } catch (err) {
-              console.error(err);
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
-            }
-          }}
-          style={overdueTaskStyles.button}
-        />
+        {!action && (
+          <Button
+            title={t('common.ignore')}
+            onPress={async () => {
+              try {
+                await triggerCreateCompletionForm({
+                  resourcetype: 'TaskCompletionForm',
+                  recurrence_index: recurrenceIndex,
+                  ignore: true,
+                  task
+                }).unwrap();
+              } catch (err) {
+                console.error(err);
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+            style={overdueTaskStyles.button}
+          />
+        )}
       </TransparentView>
     </ElevatedPressableBox>
   );
@@ -194,7 +294,8 @@ const OverdueTask = ({
 
 const listStyles = StyleSheet.create({
   container: { height: '100%', width: '100%' },
-  scrollView: { padding: 10 }
+  scrollView: { padding: 10 },
+  listView: { paddingBottom: 250 }
 });
 
 export default function AlertsList() {
@@ -202,9 +303,17 @@ export default function AlertsList() {
   const { data: allAlerts, isLoading: isLoadingAlerts } =
     useGetAllAlertsQuery();
 
+  const { data: allActionAlerts, isLoading: isLoadingActionAlerts } =
+    useGetAllActionAlertsQuery();
+
   const overdueTasks = useSelector(selectOverdueTasks);
 
-  if (isLoadingAlerts || !allAlerts) {
+  if (
+    isLoadingAlerts ||
+    !allAlerts ||
+    isLoadingActionAlerts ||
+    !allActionAlerts
+  ) {
     return <FullPageSpinner />;
   }
 
@@ -212,7 +321,15 @@ export default function AlertsList() {
     parseInt(tsk)
   );
 
-  if (alertedTasks.length === 0 && overdueTasks.length === 0) {
+  const alertedActions = Object.keys(allActionAlerts.byAction).map((action) =>
+    parseInt(action)
+  );
+
+  if (
+    alertedTasks.length === 0 &&
+    alertedActions.length === 0 &&
+    overdueTasks.length === 0
+  ) {
     return (
       <TransparentPaddedView>
         <Text>{t('components.alertsList.noAlerts')}</Text>
@@ -223,7 +340,8 @@ export default function AlertsList() {
   const isAlert = (
     item:
       | {
-          task: number;
+          task?: number;
+          action?: number;
           type: string;
         }
       | {
@@ -232,9 +350,47 @@ export default function AlertsList() {
         }
   ): item is {
     task: number;
+    action: number;
     type: string;
   } => {
     return item.type === 'ALERT';
+  };
+
+  const isActionAlert = (
+    item:
+      | {
+          task?: number;
+          action?: number;
+          type: string;
+        }
+      | {
+          task: ScheduledTaskResponseType;
+          type: string;
+        }
+  ): item is {
+    task: number;
+    action: number;
+    type: string;
+  } => {
+    return item.type === 'ACTION_ALERT';
+  };
+
+  const isOverdueTask = (
+    item:
+      | {
+          task?: number;
+          action?: number;
+          type: string;
+        }
+      | {
+          task: ScheduledTaskResponseType;
+          type: string;
+        }
+  ): item is {
+    task: ScheduledTaskResponseType;
+    type: string;
+  } => {
+    return item.type === 'OVERDUE_TASK';
   };
 
   return (
@@ -242,23 +398,38 @@ export default function AlertsList() {
       <FlatList
         data={[
           ...alertedTasks.map((task) => ({ task, type: 'ALERT' })),
+          ...alertedActions.map((action) => ({ action, type: 'ACTION_ALERT' })),
           ...overdueTasks.map((task) => ({ task, type: 'OVERDUE_TASK' }))
         ]}
+        contentContainerStyle={listStyles.listView}
         renderItem={({ item }) => {
           if (isAlert(item)) {
-            return <TaskAlerts taskId={item.task} key={item.task} />;
+            return (
+              <TaskAlerts taskId={item.task} key={item.task || item.action} />
+            );
+          } else if (isActionAlert(item)) {
+            return (
+              <TaskActionAlerts
+                actionId={item.action}
+                key={item.task || item.action}
+              />
+            );
+          } else if (isOverdueTask(item)) {
+            return (
+              <OverdueTask
+                key={`${item.task.id}_${item.task.recurrence_index}_${item.task.action_id}`}
+                task={item.task.id}
+                action={item.task.action_id}
+                recurrenceIndex={
+                  item.task.recurrence_index === null
+                    ? -1
+                    : item.task.recurrence_index
+                }
+              />
+            );
           }
-          return (
-            <OverdueTask
-              key={`${item.task.id}_${item.task.recurrence_index}`}
-              task={item.task.id}
-              recurrenceIndex={
-                item.task.recurrence_index === null
-                  ? -1
-                  : item.task.recurrence_index
-              }
-            />
-          );
+
+          return null;
         }}
         style={listStyles.scrollView}
       />

@@ -289,7 +289,10 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
       };
 
       try {
-        if (parsedFieldValues.recurrence) {
+        if (
+          parsedFieldValues.recurrence ||
+          (parsedFieldValues.actions && parsedFieldValues.actions.length > 0)
+        ) {
           await createTask(parsedFieldValues).unwrap();
         } else {
           await createTaskWithoutCacheInvalidation(parsedFieldValues).unwrap();
@@ -298,6 +301,7 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
           type: 'success',
           text1: t('screens.addTask.createSuccess')
         });
+        resetState();
       } catch (err) {
         Toast.show({
           type: 'error',
@@ -330,7 +334,10 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
         if (parsedFieldValues.is_flexible) {
           await createFlexibleTask(parsedFieldValues).unwrap();
         } else {
-          if (parsedFieldValues.recurrence) {
+          if (
+            parsedFieldValues.recurrence ||
+            (parsedFieldValues.actions && parsedFieldValues.actions.length > 0)
+          ) {
             await createTask(parsedFieldValues).unwrap();
           } else {
             await createTaskWithoutCacheInvalidation(

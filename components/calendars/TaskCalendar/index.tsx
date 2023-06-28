@@ -26,6 +26,7 @@ import {
   useGetAllScheduledTasksQuery,
   useGetAllTasksQuery
 } from 'reduxStore/services/api/tasks';
+import { ScheduledTaskType } from 'types/tasks';
 
 dayjs.extend(utc);
 
@@ -45,6 +46,7 @@ type CalendarProps = {
       end_datetime?: string | undefined;
       date?: string | undefined;
       duration?: number | undefined;
+      type: ScheduledTaskType;
     })[];
   };
 };

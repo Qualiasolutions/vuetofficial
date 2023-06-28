@@ -42,9 +42,11 @@ export const vuetApi = createApi({
   reducerPath: 'vuetApi',
   tagTypes: [
     'Alert',
+    'ActionAlert',
     'Entity',
     'Task',
     'TaskLimit',
+    'TaskAction',
     'Period',
     'TaskCompletionForm',
     'Category',

@@ -23,7 +23,8 @@ interface Reminder {
   recurrence_type: RecurrenceType;
 }
 
-type TaskResourceType = 'FixedTask' | 'DueDate';
+type TaskResourceType = 'FixedTask' | 'DueDate' | 'TaskAction';
+type ScheduledTaskType = 'TASK' | 'ACTION';
 
 interface BaseTaskType {
   entities: number[];
@@ -60,6 +61,7 @@ interface DueDateResponseType extends BaseTaskType {}
 interface ScheduledTaskResponseType {
   id: number;
   is_complete: boolean;
+  action_id: number | null;
   members: number[];
   entities: number[];
   tags: string[];
@@ -67,7 +69,7 @@ interface ScheduledTaskResponseType {
   recurrence_index: number | null;
   routine: number | null;
   title: string;
-  resourcetype: 'FixedTask' | 'DueDate';
+  resourcetype: 'FixedTask' | 'DueDate' | 'TaskAction';
   alert: AlertName[];
   date?: string;
   duration?: string;
@@ -109,6 +111,7 @@ type CreateTaskRequest =
 
 export {
   TaskResourceType,
+  ScheduledTaskType,
   RecurrenceType,
   Recurrence,
   Reminder,

@@ -116,6 +116,10 @@ const createInitialObject = (
         }
         continue;
 
+      case 'actionsSelector':
+        initialObj[key] = formFields[key].initialValue || [];
+        continue;
+
       default:
         initialObj[key] = formFields[key].initialValue || null;
     }
