@@ -1,5 +1,5 @@
 import { Button } from 'components/molecules/ButtonComponents';
-import { FullPageSpinner } from 'components/molecules/Spinners';
+import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { PageTitle } from 'components/molecules/TextComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { TextInput } from 'components/Themed';
@@ -48,39 +48,46 @@ export default function EditSecurityScreen() {
         secureTextEntry={true}
       />
 
-      <Button
-        title={t('common.update')}
-        onPress={async () => {
-          try {
-            await updateUserDetails({
-              user_id: userDetails.id,
-              password: newPassword,
-              old_password: oldPassword
-            }).unwrap();
-            Toast.show({
-              type: 'success',
-              text1: t('screens.editSecurity.passwordSuccess')
-            });
-          } catch (err) {
-            if (
-              isFieldErrorCodeError('old_password', 'invalid_old_password')(err)
-            ) {
+      {updateUserDetailsResult.isLoading ? (
+        <PaddedSpinner />
+      ) : (
+        <Button
+          title={t('common.update')}
+          onPress={async () => {
+            try {
+              await updateUserDetails({
+                user_id: userDetails.id,
+                password: newPassword,
+                old_password: oldPassword
+              }).unwrap();
               Toast.show({
-                type: 'error',
-                text1: t('screens.editSecurity.oldPasswordIncorrect')
+                type: 'success',
+                text1: t('screens.editSecurity.passwordSuccess')
               });
-            } else {
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
+            } catch (err) {
+              if (
+                isFieldErrorCodeError(
+                  'old_password',
+                  'invalid_old_password'
+                )(err)
+              ) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.editSecurity.oldPasswordIncorrect')
+                });
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
             }
+          }}
+          disabled={
+            !oldPassword || !newPassword || !(newPassword === newPasswordConf)
           }
-        }}
-        disabled={
-          !oldPassword || !newPassword || !(newPassword === newPasswordConf)
-        }
-      />
+        />
+      )}
     </TransparentPaddedView>
   );
 }

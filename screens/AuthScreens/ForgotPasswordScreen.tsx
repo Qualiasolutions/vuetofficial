@@ -19,6 +19,14 @@ import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Button } from 'components/molecules/ButtonComponents';
 import { validate } from 'email-validator';
+import {
+  useCreatePasswordResetCodeMutation,
+  useValidatePasswordResetCodeMutation
+} from 'reduxStore/services/api/auth';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import ValidationCodeInput from 'components/molecules/ValidationCodeInput';
+import { isFieldErrorCodeError } from 'types/signup';
+import { useSecureUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -34,6 +42,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15
   },
+  passwordInput: { marginBottom: 10 },
   otherOptsWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -47,65 +56,175 @@ export default function ForgotPasswordScreen({
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'ForgotPassword'>) {
   const { t } = useTranslation();
   const [username, setUsername] = useState<string>('');
+  const [userId, setUserId] = useState(-1);
+  const [code, setCode] = useState('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [newPasswordConf, setNewPasswordConf] = useState<string>('');
   const [usingEmail, setUsingEmail] = useState<boolean>(false);
-  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [step, setStep] = useState('USERNAME');
+
+  const [createPasswordResetCode, createPasswordResetCodeResult] =
+    useCreatePasswordResetCodeMutation();
+
+  const [validatePasswordResetCode] = useValidatePasswordResetCodeMutation();
+
+  const [updateUserDetails] = useSecureUpdateUserDetailsMutation();
 
   return (
     <AlmostWhiteContainerView>
       <PageTitle text={t('screens.forgotPassword.title')} />
-      <PageSubtitle
-        text={
-          usingEmail
-            ? t('screens.forgotPassword.enterEmail')
-            : t('screens.forgotPassword.enterPhone')
-        }
-      />
-      <TransparentView style={styles.usernameInput}>
-        {usingEmail ? (
+      {step === 'NEW_PASSWORD' && (
+        <>
+          <PageSubtitle text={t('screens.forgotPassword.newPassword')} />
           <TextInput
-            value={username}
-            onChangeText={(newUsername) => {
-              setUsername(newUsername);
+            value={newPassword}
+            onChangeText={setNewPassword}
+            placeholder={t('screens.editSecurity.newPassword')}
+            style={styles.passwordInput}
+            secureTextEntry={true}
+          />
+          <TextInput
+            value={newPasswordConf}
+            onChangeText={setNewPasswordConf}
+            placeholder={t('screens.editSecurity.newPasswordConf')}
+            style={styles.passwordInput}
+            secureTextEntry={true}
+          />
+          <Button
+            title={t('common.update')}
+            style={styles.confirmButton}
+            onPress={async () => {
+              try {
+                await updateUserDetails({
+                  user_id: userId,
+                  password: newPassword,
+                  reset_password_code: code
+                }).unwrap();
+                Toast.show({
+                  type: 'success',
+                  text1: t('screens.editSecurity.passwordSuccess')
+                });
+                navigation.navigate('Login');
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
             }}
           />
-        ) : (
-          <PhoneNumberInput
-            onChangeFormattedText={(newUsername) => {
-              setUsername(newUsername);
+        </>
+      )}
+      {step === 'CODE' && (
+        <>
+          <ValidationCodeInput
+            validationId={-1}
+            isEmail={usingEmail}
+            phoneNumber={username}
+            onVerify={async (validationCode) => {
+              const body = usingEmail
+                ? { email: username, code: validationCode }
+                : { phone_number: username, code: validationCode };
+              const res = await validatePasswordResetCode(body).unwrap();
+
+              setUserId(res.user);
+              setCode(validationCode);
+            }}
+            onResend={() => {
+              const body = usingEmail
+                ? { email: username }
+                : { phone_number: username };
+              createPasswordResetCode(body)
+                .unwrap()
+                .catch(() => {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                });
+            }}
+            onSuccess={() => {
+              setStep('NEW_PASSWORD');
+            }}
+            onError={() => {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
             }}
           />
-        )}
-      </TransparentView>
-      <TransparentView style={styles.otherOptsWrapper}>
-        <SafePressable
-          onPress={() => {
-            setUsingEmail(!usingEmail);
-            setUsername('');
-          }}
-        >
-          <PrimaryText
+        </>
+      )}
+      {step === 'USERNAME' && (
+        <>
+          <PageSubtitle
             text={
               usingEmail
-                ? t('screens.logIn.usePhone')
-                : t('screens.logIn.useEmail')
+                ? t('screens.forgotPassword.enterEmail')
+                : t('screens.forgotPassword.enterPhone')
             }
           />
-        </SafePressable>
-      </TransparentView>
-      {submitting ? (
-        <PaddedSpinner spinnerColor="buttonDefault" />
-      ) : (
-        <Button
-          title={t('screens.forgotPassword.reset')}
-          onPress={() => {
-            setSubmitting(true);
-          }}
-          disabled={
-            (usingEmail && !validate(username)) ||
-            (!usingEmail && username.length < 10)
-          }
-          style={styles.confirmButton}
-        />
+          <TransparentView style={styles.usernameInput}>
+            {usingEmail ? (
+              <TextInput
+                value={username}
+                onChangeText={(newUsername) => {
+                  setUsername(newUsername);
+                }}
+              />
+            ) : (
+              <PhoneNumberInput
+                onChangeFormattedText={(newUsername) => {
+                  setUsername(newUsername);
+                }}
+              />
+            )}
+          </TransparentView>
+          <TransparentView style={styles.otherOptsWrapper}>
+            <SafePressable
+              onPress={() => {
+                setUsingEmail(!usingEmail);
+                setUsername('');
+              }}
+            >
+              <PrimaryText
+                text={
+                  usingEmail
+                    ? t('screens.logIn.usePhone')
+                    : t('screens.logIn.useEmail')
+                }
+              />
+            </SafePressable>
+          </TransparentView>
+          {createPasswordResetCodeResult.isLoading ? (
+            <PaddedSpinner spinnerColor="buttonDefault" />
+          ) : (
+            <Button
+              title={t('screens.forgotPassword.reset')}
+              onPress={() => {
+                const body = usingEmail
+                  ? { email: username }
+                  : { phone_number: username };
+                createPasswordResetCode(body)
+                  .unwrap()
+                  .then(() => {
+                    setStep('CODE');
+                  })
+                  .catch(() => {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('common.errors.generic')
+                    });
+                  });
+              }}
+              disabled={
+                (usingEmail && !validate(username)) ||
+                (!usingEmail && username.length < 10)
+              }
+              style={styles.confirmButton}
+            />
+          )}
+        </>
       )}
       <SafePressable
         onPress={() => {

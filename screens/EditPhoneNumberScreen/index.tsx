@@ -12,7 +12,9 @@ import { useMemo, useState } from 'react';
 import { Button } from 'components/molecules/ButtonComponents';
 import {
   useCreateEmailValidationMutation,
-  useCreatePhoneValidationMutation
+  useCreatePhoneValidationMutation,
+  useUpdateEmailValidationMutation,
+  useUpdatePhoneValidationMutation
 } from 'reduxStore/services/api/signup';
 import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 import {
@@ -53,6 +55,9 @@ export function EditPhoneNumberScreen() {
   const [createEmailValidation, emailValidationResult] =
     useCreateEmailValidationMutation();
 
+  const [updatePhoneValidation] = useUpdatePhoneValidationMutation();
+  const [updateEmailValidation] = useUpdateEmailValidationMutation();
+
   const isEmail = useMemo(() => {
     return userDetails && !userDetails.phone_number && !!userDetails.email;
   }, [userDetails]);
@@ -90,6 +95,30 @@ export function EditPhoneNumberScreen() {
             validationId={validationId}
             phoneNumber={savingEmail ? newEmail : newPhone}
             isEmail={savingEmail}
+            onVerify={async (validationCode) => {
+              if (isEmail) {
+                await updateEmailValidation({
+                  code: validationCode,
+                  id: validationId
+                }).unwrap();
+              } else {
+                await updatePhoneValidation({
+                  code: validationCode,
+                  id: validationId
+                }).unwrap();
+              }
+            }}
+            onResend={() => {
+              if (isEmail) {
+                createEmailValidation({
+                  email: savingEmail ? newEmail : newPhone
+                });
+              } else {
+                createPhoneValidation({
+                  phone_number: savingEmail ? newEmail : newPhone
+                });
+              }
+            }}
             onSuccess={() => {
               const req: UpdateUserRequest = { user_id: userDetails.id };
               if (isEmail) {

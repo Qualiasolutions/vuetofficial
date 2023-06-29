@@ -1,6 +1,7 @@
 import { useThemeColor } from 'components/Themed';
 import { StyleSheet } from 'react-native';
 import { View as DefaultView } from 'react-native';
+import { TransparentFullPageScrollView } from './ScrollViewComponents';
 
 type ThemeProps = {
   lightColor?: string;
@@ -53,10 +54,12 @@ export function AlmostWhiteContainerView(props: ViewProps) {
   const borderColor = useThemeColor({}, 'grey');
 
   return (
-    <DefaultView
-      style={[{ backgroundColor, borderColor }, styles.container, style]}
-      {...otherProps}
-    />
+    <TransparentFullPageScrollView keyboardShouldPersistTaps="handled">
+      <DefaultView
+        style={[{ backgroundColor, borderColor }, styles.container, style]}
+        {...otherProps}
+      />
+    </TransparentFullPageScrollView>
   );
 }
 

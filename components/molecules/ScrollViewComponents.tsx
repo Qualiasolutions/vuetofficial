@@ -30,6 +30,7 @@ function FullPageScrollViewWithColor(
       <DefaultScrollView
         style={[{ backgroundColor, borderColor }, styles.container, style]}
         {...otherProps}
+        contentContainerStyle={styles.container}
       />
     );
   };

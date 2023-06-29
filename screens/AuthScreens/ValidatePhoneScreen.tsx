@@ -9,6 +9,12 @@ import { PageTitle } from 'components/molecules/TextComponents';
 import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import ValidationCodeInput from 'components/molecules/ValidationCodeInput';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import {
+  useCreateEmailValidationMutation,
+  useCreatePhoneValidationMutation,
+  useUpdateEmailValidationMutation,
+  useUpdatePhoneValidationMutation
+} from 'reduxStore/services/api/signup';
 
 const ValidatePhoneScreen = ({
   navigation,
@@ -16,6 +22,10 @@ const ValidatePhoneScreen = ({
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'ValidatePhone'>) => {
   const { t } = useTranslation();
   const { validationId, phoneNumber, isEmail } = route?.params;
+  const [updatePhoneValidation] = useUpdatePhoneValidationMutation();
+  const [updateEmailValidation] = useUpdateEmailValidationMutation();
+  const [createPhoneValidation] = useCreatePhoneValidationMutation();
+  const [createEmailValidation] = useCreateEmailValidationMutation();
 
   return (
     <AlmostWhiteContainerView>
@@ -24,6 +34,30 @@ const ValidatePhoneScreen = ({
         validationId={validationId}
         phoneNumber={phoneNumber}
         isEmail={isEmail}
+        onVerify={async (validationCode) => {
+          if (isEmail) {
+            await updateEmailValidation({
+              code: validationCode,
+              id: validationId
+            }).unwrap();
+          } else {
+            await updatePhoneValidation({
+              code: validationCode,
+              id: validationId
+            }).unwrap();
+          }
+        }}
+        onResend={() => {
+          if (isEmail) {
+            createEmailValidation({
+              email: phoneNumber
+            });
+          } else {
+            createPhoneValidation({
+              phone_number: phoneNumber
+            });
+          }
+        }}
         onSuccess={() => {
           navigation.navigate('CreatePassword', {
             phoneNumber: phoneNumber,

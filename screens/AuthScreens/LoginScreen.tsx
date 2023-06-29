@@ -31,6 +31,7 @@ import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {

@@ -79,7 +79,8 @@ export type UpdateUserRequest = {
 
 export type SecureUpdateUserRequest = {
   user_id: number;
-  old_password: string;
+  old_password?: string;
+  reset_password_code?: string;
   password?: string;
 };
 

@@ -47,13 +47,16 @@ type ValidationCodeInputProps = {
   validationId: number;
   phoneNumber: string;
   isEmail?: boolean;
+  onVerify: (code: string) => void;
+  onResend: () => void;
   onSuccess: () => void;
   onError: (err: any) => void;
 };
 export default function ValidationCodeInput({
-  validationId,
   phoneNumber,
   isEmail,
+  onVerify,
+  onResend,
   onSuccess,
   onError
 }: ValidationCodeInputProps) {
@@ -63,10 +66,6 @@ export default function ValidationCodeInput({
     value: validationCode,
     setValue: onChangeValidationCode
   });
-  const [updatePhoneValidation] = useUpdatePhoneValidationMutation();
-  const [updateEmailValidation] = useUpdateEmailValidationMutation();
-  const [createPhoneValidation] = useCreatePhoneValidationMutation();
-  const [createEmailValidation] = useCreateEmailValidationMutation();
 
   const greyColor = useThemeColor({}, 'grey');
   const whiteColor = useThemeColor({}, 'white');
@@ -108,26 +107,11 @@ export default function ValidationCodeInput({
       <Button
         title={t('common.verify')}
         onPress={async () => {
-          if (isEmail) {
-            try {
-              await updateEmailValidation({
-                code: validationCode,
-                id: validationId
-              }).unwrap();
-              onSuccess();
-            } catch (err) {
-              onError(err);
-            }
-          } else {
-            try {
-              await updatePhoneValidation({
-                code: validationCode,
-                id: validationId
-              }).unwrap();
-              onSuccess();
-            } catch (err) {
-              onError(err);
-            }
+          try {
+            await onVerify(validationCode);
+            onSuccess();
+          } catch (err) {
+            onError(err);
           }
         }}
         style={styles.confirmButton}
@@ -135,15 +119,7 @@ export default function ValidationCodeInput({
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
       <SafePressable
         onPress={() => {
-          if (isEmail) {
-            createEmailValidation({
-              email: phoneNumber
-            });
-          } else {
-            createPhoneValidation({
-              phone_number: phoneNumber
-            });
-          }
+          onResend();
         }}
       >
         <PrimaryText text={t('screens.validatePhone.resend')} bold={true} />
