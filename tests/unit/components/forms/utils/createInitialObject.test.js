@@ -28,7 +28,7 @@ it('createInitialObject ::: addMembers', () => {
 it('createInitialObject ::: addMembers', () => {
   const initialObj = createInitialObject(
     {
-      duration_minutes: {
+      duration: {
         displayName: 'Duration of task',
         listMode: 'MODAL',
         permittedValues: [
@@ -57,9 +57,9 @@ it('createInitialObject ::: addMembers', () => {
       id: 1
     },
     {
-      duration_minutes: 30
+      duration: 30
     }
   );
 
-  expect(initialObj.duration_minutes).toEqual(30);
+  expect(initialObj.duration).toEqual(30);
 });

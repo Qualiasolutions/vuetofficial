@@ -168,9 +168,9 @@ const EntityAndTagSelectorModal = ({
   const [selectedTags, setSelectedTags] = useState(value.tags);
   const { t } = useTranslation();
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
-    useGetMemberEntitiesQuery();
+    useGetMemberEntitiesQuery(null as any);
   const { data: allEntities, isLoading: isLoadingAllEntities } =
-    useGetAllEntitiesQuery();
+    useGetAllEntitiesQuery(null as any);
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
   const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();

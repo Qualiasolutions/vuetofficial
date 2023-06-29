@@ -33,9 +33,11 @@ export const carForm = (
       listMode: 'MODAL',
       hidden: isEdit,
       initialValue: 'MONTHLY',
-      shownFields: {
-        [dueDateFieldName]: true
-      }
+      shownFields: [
+        {
+          [dueDateFieldName]: true
+        }
+      ]
     } as Field);
 
   const dueDateMembershipField = (dueDateFieldName: string) =>
@@ -50,9 +52,11 @@ export const carForm = (
       displayName: t('entities.entity.taskMembers'),
       hidden: isEdit,
       initialValue: [],
-      shownFields: {
-        [dueDateFieldName]: true
-      }
+      shownFields: [
+        {
+          [dueDateFieldName]: true
+        }
+      ]
     } as Field);
 
   const fields: FlatFormFieldTypes[] = [

@@ -8,16 +8,23 @@ export default function isFieldShown(
     return false;
   }
   if (field.shownFields && formValues) {
-    if (field.shownFields) {
-      for (const dependentField in field.shownFields) {
+    for (const fieldConditions of field.shownFields) {
+      let matchesAll = true;
+      for (const dependentField in fieldConditions) {
         if (
-          !(!!formValues[dependentField] === field.shownFields[dependentField])
+          !(!!formValues[dependentField] === fieldConditions[dependentField])
         ) {
-          return false;
+          matchesAll = false;
+          break;
         }
       }
+      if (matchesAll) {
+        return true;
+      }
     }
+  } else {
+    return true;
   }
 
-  return true;
+  return false;
 }

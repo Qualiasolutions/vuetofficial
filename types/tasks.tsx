@@ -50,12 +50,6 @@ interface BaseTaskType {
 
 interface FixedTaskResponseType extends BaseTaskType {}
 
-type FixedTaskParsedType = BaseTaskType & {
-  end_datetime: Date;
-  start_datetime: Date;
-  resourcetype: 'FixedTask';
-};
-
 interface DueDateResponseType extends BaseTaskType {}
 
 interface ScheduledTaskResponseType {
@@ -76,8 +70,6 @@ interface ScheduledTaskResponseType {
   start_datetime?: string;
   end_datetime?: string;
 }
-
-type TaskParsedType = FixedTaskParsedType;
 
 interface BaseCreateTaskRequest {
   title: string;
@@ -101,7 +93,7 @@ interface CreateDueDateRequest extends BaseCreateTaskRequest {
 interface CreateFlexibleFixedTaskRequest extends BaseCreateTaskRequest {
   earliest_action_date: string;
   due_date: string;
-  duration_minutes: number;
+  duration: number;
 }
 
 type CreateTaskRequest =
@@ -116,9 +108,7 @@ export {
   Recurrence,
   Reminder,
   FixedTaskResponseType,
-  FixedTaskParsedType,
   DueDateResponseType,
-  TaskParsedType,
   CreateTaskRequest,
   CreateFixedTaskRequest,
   CreateDueDateRequest,

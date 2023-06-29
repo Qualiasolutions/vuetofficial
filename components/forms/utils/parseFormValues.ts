@@ -5,12 +5,18 @@ import {
   MultiRecurrenceSelectorField
 } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
+import isFieldShown from './isFieldShown';
 
 const parseFormValues = (
   formValues: FieldValueTypes,
   fields: FlatFormFieldTypes
 ) => {
-  const parsedFormValues = { ...formValues };
+  const parsedFormValues: FieldValueTypes = {};
+  for (const fieldName in fields) {
+    if (isFieldShown(fields[fieldName], formValues)) {
+      parsedFormValues[fieldName] = formValues[fieldName];
+    }
+  }
   for (const field in parsedFormValues) {
     if (['DateTime'].includes(fields[field]?.type)) {
       if (parsedFormValues[field]) {

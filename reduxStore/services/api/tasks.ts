@@ -3,7 +3,6 @@ import { vuetApi, normalizeData } from './api';
 import {
   ScheduledTaskResponseType,
   FixedTaskResponseType,
-  FixedTaskParsedType,
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
   CreateDueDateRequest,
@@ -193,11 +192,8 @@ const tasksApi = vuetApi.injectEndpoints({
     }),
     updateTask: builder.mutation<
       FixedTaskResponseType | DueDateResponseType,
-      Partial<FixedTaskParsedType | DueDateResponseType> &
-        Pick<FixedTaskParsedType, 'id'> & {
-          start_datetime?: string;
-          end_datetime?: string;
-        }
+      Partial<FixedTaskResponseType | DueDateResponseType> &
+        Pick<FixedTaskResponseType, 'id'>
     >({
       query: (body) => {
         return {

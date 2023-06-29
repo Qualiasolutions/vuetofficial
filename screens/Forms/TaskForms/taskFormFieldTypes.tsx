@@ -67,7 +67,7 @@ export const useDueDateFieldTypes = (
       duration: {
         type: 'duration',
         required: true,
-        displayName: t('tasks.task.duration_minutes')
+        displayName: t('tasks.task.duration')
       },
       reminders: {
         type: 'multiRecurrenceSelector',
@@ -118,15 +118,23 @@ export const useTaskMiddleFieldTypes = (
         displayName: t('tasks.task.is_flexible'),
         hidden: disableFlexible
       },
+      is_any_time: {
+        type: 'checkbox',
+        required: false,
+        displayName: t('tasks.task.is_any_time')
+      },
       start_datetime: {
         type: 'DateTime',
         required: true,
         displayName: t('tasks.task.start_datetime'),
         disabled: disabledRecurrenceFields,
         associatedEndTimeField: 'end_datetime',
-        shownFields: {
-          is_flexible: false
-        }
+        shownFields: [
+          {
+            is_flexible: false,
+            is_any_time: false
+          }
+        ]
       },
       end_datetime: {
         type: 'DateTime',
@@ -134,45 +142,71 @@ export const useTaskMiddleFieldTypes = (
         displayName: t('tasks.task.end_datetime'),
         disabled: disabledRecurrenceFields,
         associatedStartTimeField: 'start_datetime',
-        shownFields: {
-          is_flexible: false
-        }
+        shownFields: [
+          {
+            is_flexible: false,
+            is_any_time: false
+          }
+        ]
       },
       duration_minutes_calculated: {
         type: 'calculatedDuration',
-        displayName: t('tasks.task.duration_minutes'),
+        displayName: t('tasks.task.duration'),
         disabled: true,
         required: false,
         startFieldName: 'start_datetime',
         endFieldName: 'end_datetime',
-        shownFields: {
-          is_flexible: false
-        }
+        shownFields: [
+          {
+            is_flexible: false,
+            is_any_time: false
+          }
+        ]
       },
       earliest_action_date: {
         type: 'Date',
         displayName: t('tasks.task.earliest_action_date'),
         required: true,
-        shownFields: {
-          is_flexible: true
-        }
+        shownFields: [
+          {
+            is_flexible: true
+          }
+        ]
       },
       due_date: {
         type: 'Date',
         displayName: t('tasks.task.due_date'),
         required: true,
-        shownFields: {
-          is_flexible: true
-        }
+        shownFields: [
+          {
+            is_flexible: true
+          }
+        ]
       },
-      duration_minutes: {
+      date: {
+        type: 'Date',
+        displayName: t('tasks.task.date'),
+        required: true,
+        shownFields: [
+          {
+            is_flexible: false,
+            is_any_time: true
+          }
+        ]
+      },
+      duration: {
         type: 'duration',
-        displayName: t('tasks.task.duration_minutes'),
+        displayName: t('tasks.task.duration'),
         disabled: true,
         required: true,
-        shownFields: {
-          is_flexible: true
-        }
+        shownFields: [
+          {
+            is_flexible: true
+          },
+          {
+            is_any_time: true
+          }
+        ]
       },
       recurrence: {
         type: 'recurrenceSelector',
@@ -180,9 +214,11 @@ export const useTaskMiddleFieldTypes = (
         firstOccurrenceField: 'start_datetime',
         displayName: t('tasks.task.recurrence'),
         disabled: disabledRecurrenceFields,
-        shownFields: {
-          is_flexible: false
-        }
+        shownFields: [
+          {
+            is_flexible: false
+          }
+        ]
       },
       reminders: {
         type: 'multiRecurrenceSelector',

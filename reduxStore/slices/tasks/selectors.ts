@@ -80,10 +80,6 @@ export const selectOverdueTasks = createSelector(
         ? tasksData.byActionId[actionId]
         : tasksData.byTaskId[id][recIndex === null ? -1 : recIndex];
 
-      if (actionId) {
-        console.log(task);
-      }
-
       const taskDatetimeString = task.start_datetime || task.date;
       if (!taskDatetimeString) {
         continue;
@@ -97,11 +93,6 @@ export const selectOverdueTasks = createSelector(
               recIndex === null ? -1 : recIndex
             ]
           );
-
-      if (actionId) {
-        console.log(taskActionsData.byId[actionId]);
-        console.log(isComplete);
-      }
 
       if (!isComplete) {
         const taskStart = new Date(taskDatetimeString);

@@ -34,7 +34,7 @@ export type BaseField<TypeName extends PermittedTypes, ValueType> = {
   initialValue?: ValueType;
   disabled?: boolean;
   disableUpdate?: boolean;
-  shownFields?: { [fieldName: string]: any };
+  shownFields?: { [fieldName: string]: any }[];
   hidden?: boolean;
 };
 
