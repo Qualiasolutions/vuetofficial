@@ -12,11 +12,12 @@ const parseFormValues = (
   fields: FlatFormFieldTypes
 ) => {
   const parsedFormValues: FieldValueTypes = {};
-  for (const fieldName in fields) {
+  for (const fieldName in formValues) {
     if (isFieldShown(fields[fieldName], formValues)) {
       parsedFormValues[fieldName] = formValues[fieldName];
     }
   }
+
   for (const field in parsedFormValues) {
     if (['DateTime'].includes(fields[field]?.type)) {
       if (parsedFormValues[field]) {
@@ -78,7 +79,13 @@ const parseFormValues = (
     }
   }
 
-  return parsedFormValues;
+  const postParsedFields: FieldValueTypes = {};
+  for (const fieldName in parsedFormValues) {
+    const targetField = fields[fieldName]?.targetField || fieldName;
+    postParsedFields[targetField] = parsedFormValues[fieldName];
+  }
+
+  return postParsedFields;
 };
 
 export const parseFormDataFormValues = (

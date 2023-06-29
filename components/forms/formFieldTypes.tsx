@@ -36,6 +36,8 @@ export type BaseField<TypeName extends PermittedTypes, ValueType> = {
   disableUpdate?: boolean;
   shownFields?: { [fieldName: string]: any }[];
   hidden?: boolean;
+  sourceField?: string;
+  targetField?: string;
 };
 
 export type StringField = BaseField<'string', string> & {
@@ -117,7 +119,6 @@ export type ColourField = BaseField<'colour', string>;
 export type PhoneNumberField = BaseField<'phoneNumber', string>;
 
 export type ImageField = BaseField<'Image', string | object> & {
-  sourceField: string;
   centered?: boolean;
 };
 

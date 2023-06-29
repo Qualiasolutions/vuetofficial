@@ -58,9 +58,8 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
   if (entityToEdit) {
     for (const fieldName in flatFields) {
       if (Object.keys(flatFields[fieldName]).includes('sourceField')) {
-        flatFields[fieldName].initialValue =
-          entityToEdit[(flatFields[fieldName] as ImageField).sourceField] ||
-          null;
+        const sourceField = flatFields[fieldName].sourceField || fieldName;
+        flatFields[fieldName].initialValue = entityToEdit[sourceField] || null;
       } else if (fieldName in entityToEdit) {
         flatFields[fieldName].initialValue = entityToEdit[fieldName] || null;
       }

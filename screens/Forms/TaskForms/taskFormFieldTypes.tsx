@@ -121,7 +121,8 @@ export const useTaskMiddleFieldTypes = (
       is_any_time: {
         type: 'checkbox',
         required: false,
-        displayName: t('tasks.task.is_any_time')
+        displayName: t('tasks.task.is_any_time'),
+        disabled: disabledRecurrenceFields
       },
       start_datetime: {
         type: 'DateTime',
@@ -187,6 +188,7 @@ export const useTaskMiddleFieldTypes = (
         type: 'Date',
         displayName: t('tasks.task.date'),
         required: true,
+        disabled: disabledRecurrenceFields,
         shownFields: [
           {
             is_flexible: false,
@@ -197,7 +199,7 @@ export const useTaskMiddleFieldTypes = (
       duration: {
         type: 'duration',
         displayName: t('tasks.task.duration'),
-        disabled: true,
+        disabled: disabledRecurrenceFields,
         required: true,
         shownFields: [
           {
@@ -216,7 +218,23 @@ export const useTaskMiddleFieldTypes = (
         disabled: disabledRecurrenceFields,
         shownFields: [
           {
-            is_flexible: false
+            is_flexible: false,
+            is_any_time: false
+          }
+        ]
+      },
+      date_recurrence: {
+        type: 'recurrenceSelector',
+        required: false,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields,
+        sourceField: 'recurrence',
+        targetField: 'recurrence',
+        shownFields: [
+          {
+            is_flexible: false,
+            is_any_time: true
           }
         ]
       },
@@ -226,7 +244,25 @@ export const useTaskMiddleFieldTypes = (
         reverse: true,
         firstOccurrenceField: 'start_datetime',
         displayName: t('tasks.task.reminders'),
-        max: 3
+        max: 3,
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
+      },
+      date_reminders: {
+        type: 'multiRecurrenceSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3,
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
       },
       tagsAndEntities: {
         type: 'tagSelector',

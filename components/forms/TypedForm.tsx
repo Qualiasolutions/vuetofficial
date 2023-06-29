@@ -7,6 +7,7 @@ import {
   AddFamilyMembersField,
   AddMembersField,
   CalculatedDurationField,
+  CheckboxField,
   DateField,
   DateTimeField,
   DropDownField,
@@ -342,6 +343,9 @@ export default function TypedForm({
                   setFormErrors({ ...formErrors, [field]: '' });
                 }}
                 mode="date"
+                disabled={
+                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                }
                 containerStyle={styles.inlineDateInput}
                 textInputStyle={textInputStyle}
               />
@@ -465,6 +469,7 @@ export default function TypedForm({
           );
         }
         case 'checkbox': {
+          const f = flatFields[field] as CheckboxField;
           return (
             <ValueDependentInputPair field={field} key={field}>
               <Checkbox
@@ -476,6 +481,9 @@ export default function TypedForm({
                     [field]: !value
                   });
                 }}
+                disabled={
+                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                }
               />
             </ValueDependentInputPair>
           );
@@ -854,6 +862,9 @@ export default function TypedForm({
                     [field]: value
                   });
                 }}
+                disabled={
+                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                }
               />
             </InputPair>
           );

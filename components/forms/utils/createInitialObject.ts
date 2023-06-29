@@ -4,7 +4,6 @@ import { deepCopy } from 'utils/copy';
 import {
   Field,
   FormFieldTypes,
-  ImageField,
   MultiRecurrenceSelectorField
 } from '../formFieldTypes';
 
@@ -22,9 +21,9 @@ const createInitialObject = (
   if (initialOverrides) {
     for (const fieldName in formFields) {
       if (Object.keys(formFields[fieldName]).includes('sourceField')) {
+        const sourceField = formFields[fieldName].sourceField || fieldName;
         formFields[fieldName].initialValue =
-          initialOverrides[(formFields[fieldName] as ImageField).sourceField] ||
-          null;
+          initialOverrides[sourceField] || null;
       } else if (fieldName in initialOverrides) {
         formFields[fieldName].initialValue =
           initialOverrides[fieldName] || formFields[fieldName].initialValue;
