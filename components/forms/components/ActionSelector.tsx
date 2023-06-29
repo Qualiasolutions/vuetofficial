@@ -4,6 +4,7 @@ import SafePressable from 'components/molecules/SafePressable';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { TaskAction } from 'types/taskActions';
@@ -108,6 +109,8 @@ const ActionSelectorModal = ({
     null
   );
 
+  const { t } = useTranslation();
+
   const resetVals = () => {
     setNewNumIntervals(null);
     setNewIntervalType(null);
@@ -124,7 +127,9 @@ const ActionSelectorModal = ({
             key={i}
             style={actionSelectorModalStyles.exisitingValueRow}
           >
-            <Text>{action.action_timedelta}</Text>
+            <Text>
+              {action.action_timedelta.split(' ')[0]} {t('common.days')}
+            </Text>
             <SafePressable
               onPress={() => {
                 onChange(value.filter((valueAction) => valueAction !== action));
@@ -199,6 +204,7 @@ export default function ActionSelector({
   max?: number;
 }) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <TransparentView>
@@ -206,7 +212,9 @@ export default function ActionSelector({
         {value.length > 0 ? (
           <TransparentView>
             {value.map((action, i) => (
-              <Text key={i}>{action.action_timedelta}</Text>
+              <Text key={i}>
+                {action.action_timedelta.split(' ')[0]} {t('common.days')}
+              </Text>
             ))}
           </TransparentView>
         ) : (
