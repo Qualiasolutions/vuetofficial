@@ -225,7 +225,10 @@ export default function EditTaskScreen({
           resourcetype: 'FixedTask' as 'FixedTask',
           id: taskToEdit.id
         };
-        if (Object.keys(body as any).includes('recurrence')) {
+        if (
+          taskToEdit.recurrence &&
+          Object.keys(body as any).includes('recurrence')
+        ) {
           delete (body as any).recurrence;
         }
 
