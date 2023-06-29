@@ -93,7 +93,6 @@ export function EditPhoneNumberScreen() {
         <TransparentPaddedView>
           <ValidationCodeInput
             validationId={validationId}
-            phoneNumber={savingEmail ? newEmail : newPhone}
             isEmail={savingEmail}
             onVerify={async (validationCode) => {
               if (isEmail) {

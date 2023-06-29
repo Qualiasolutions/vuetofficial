@@ -32,7 +32,6 @@ const ValidatePhoneScreen = ({
       <PageTitle text={t('screens.validatePhone.title')} />
       <ValidationCodeInput
         validationId={validationId}
-        phoneNumber={phoneNumber}
         isEmail={isEmail}
         onVerify={async (validationCode) => {
           if (isEmail) {

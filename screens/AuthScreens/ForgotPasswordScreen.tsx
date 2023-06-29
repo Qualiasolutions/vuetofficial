@@ -25,7 +25,6 @@ import {
 } from 'reduxStore/services/api/auth';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import ValidationCodeInput from 'components/molecules/ValidationCodeInput';
-import { isFieldErrorCodeError } from 'types/signup';
 import { useSecureUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 
 const styles = StyleSheet.create({
@@ -68,7 +67,8 @@ export default function ForgotPasswordScreen({
 
   const [validatePasswordResetCode] = useValidatePasswordResetCodeMutation();
 
-  const [updateUserDetails] = useSecureUpdateUserDetailsMutation();
+  const [updateUserDetails, updateUserDetailsResult] =
+    useSecureUpdateUserDetailsMutation();
 
   return (
     <AlmostWhiteContainerView>
@@ -90,29 +90,33 @@ export default function ForgotPasswordScreen({
             style={styles.passwordInput}
             secureTextEntry={true}
           />
-          <Button
-            title={t('common.update')}
-            style={styles.confirmButton}
-            onPress={async () => {
-              try {
-                await updateUserDetails({
-                  user_id: userId,
-                  password: newPassword,
-                  reset_password_code: code
-                }).unwrap();
-                Toast.show({
-                  type: 'success',
-                  text1: t('screens.editSecurity.passwordSuccess')
-                });
-                navigation.navigate('Login');
-              } catch (err) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
-              }
-            }}
-          />
+          {updateUserDetailsResult.isLoading ? (
+            <PaddedSpinner />
+          ) : (
+            <Button
+              title={t('common.update')}
+              style={styles.confirmButton}
+              onPress={async () => {
+                try {
+                  await updateUserDetails({
+                    user_id: userId,
+                    password: newPassword,
+                    reset_password_code: code
+                  }).unwrap();
+                  Toast.show({
+                    type: 'success',
+                    text1: t('screens.editSecurity.passwordSuccess')
+                  });
+                  navigation.navigate('Login');
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+            />
+          )}
         </>
       )}
       {step === 'CODE' && (
@@ -120,7 +124,6 @@ export default function ForgotPasswordScreen({
           <ValidationCodeInput
             validationId={-1}
             isEmail={usingEmail}
-            phoneNumber={username}
             onVerify={async (validationCode) => {
               const body = usingEmail
                 ? { email: username, code: validationCode }

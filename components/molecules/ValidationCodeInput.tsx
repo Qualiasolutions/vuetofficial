@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ import {
 import { PrimaryText } from './TextComponents';
 import { TransparentPaddedView } from './ViewComponents';
 import SafePressable from './SafePressable';
+import { PaddedSpinner } from './Spinners';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +46,6 @@ const styles = StyleSheet.create({
 
 type ValidationCodeInputProps = {
   validationId: number;
-  phoneNumber: string;
   isEmail?: boolean;
   onVerify: (code: string) => void;
   onResend: () => void;
@@ -53,14 +53,14 @@ type ValidationCodeInputProps = {
   onError: (err: any) => void;
 };
 export default function ValidationCodeInput({
-  phoneNumber,
   isEmail,
   onVerify,
   onResend,
   onSuccess,
   onError
 }: ValidationCodeInputProps) {
-  const [validationCode, onChangeValidationCode] = React.useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
+  const [validationCode, onChangeValidationCode] = useState<string>('');
   const ref = useBlurOnFulfill({ value: validationCode, cellCount: 6 });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value: validationCode,
@@ -104,18 +104,24 @@ export default function ValidationCodeInput({
         )}
         autoFocus
       />
-      <Button
-        title={t('common.verify')}
-        onPress={async () => {
-          try {
-            await onVerify(validationCode);
-            onSuccess();
-          } catch (err) {
-            onError(err);
-          }
-        }}
-        style={styles.confirmButton}
-      />
+      {submitting ? (
+        <PaddedSpinner />
+      ) : (
+        <Button
+          title={t('common.verify')}
+          onPress={async () => {
+            setSubmitting(true);
+            try {
+              await onVerify(validationCode);
+              onSuccess();
+            } catch (err) {
+              onError(err);
+            }
+            setSubmitting(false);
+          }}
+          style={styles.confirmButton}
+        />
+      )}
       <Text>{t('screens.validatePhone.didntGetCode')}</Text>
       <SafePressable
         onPress={() => {
