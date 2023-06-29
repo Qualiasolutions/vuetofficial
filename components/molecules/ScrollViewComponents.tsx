@@ -14,6 +14,9 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%'
+  },
+  contentContainer: {
+    flexGrow: 1
   }
 });
 
@@ -22,7 +25,7 @@ function FullPageScrollViewWithColor(
   borderColorName: ColorName
 ): (props: ViewProps) => JSX.Element {
   return function ColouredScrollView(props: ViewProps) {
-    const { style, ...otherProps } = props;
+    const { style, contentContainerStyle, ...otherProps } = props;
     const backgroundColor = useThemeColor({}, backgroundColorName);
     const borderColor = useThemeColor({}, borderColorName);
 
@@ -30,7 +33,7 @@ function FullPageScrollViewWithColor(
       <DefaultScrollView
         style={[{ backgroundColor, borderColor }, styles.container, style]}
         {...otherProps}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
       />
     );
   };
