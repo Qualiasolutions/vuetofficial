@@ -35,6 +35,7 @@ import {
 } from 'reduxStore/slices/users/selectors';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
+import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -200,12 +201,25 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
 
   const currentUserId = useSelector(selectCurrentUserId);
   const userDetails = useSelector(selectUserFromId(currentUserId || -1));
+  const { data: memberEntities } = useGetMemberEntitiesQuery(null as any);
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
   const isCompleteBoxColor = useThemeColor({}, 'primary');
   const isIgnoredBoxColor = useThemeColor({}, 'black');
   const { t } = useTranslation();
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
   const [updateTaskAction] = useUpdateTaskActionMutation();
+
+  const hasEditPerms = useMemo(() => {
+    if (userDetails && task?.members.includes(userDetails.id)) {
+      return true;
+    }
+    if (memberEntities) {
+      if (task?.entities.some((entityId) => entityId in memberEntities.byId)) {
+        return true;
+      }
+    }
+    return false;
+  }, [memberEntities, userDetails, task]);
 
   const membersList = useMemo(() => {
     if (!task) {
@@ -257,22 +271,23 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                 ]}
                 bold={true}
               />
-              {['FixedTask', 'DueDate'].includes(task.resourcetype) && (
-                <SafePressable
-                  onPress={() =>
-                    (navigation.navigate as any)('EditTask', {
-                      taskId: task.id
-                    })
-                  }
-                >
-                  <PrimaryText
-                    text={t('components.calendar.task.viewOrEdit')}
-                  />
-                </SafePressable>
-              )}
+              {['FixedTask', 'DueDate'].includes(task.resourcetype) &&
+                hasEditPerms && (
+                  <SafePressable
+                    onPress={() =>
+                      (navigation.navigate as any)('EditTask', {
+                        taskId: task.id
+                      })
+                    }
+                  >
+                    <PrimaryText
+                      text={t('components.calendar.task.viewOrEdit')}
+                    />
+                  </SafePressable>
+                )}
             </TransparentView>
           </TransparentView>
-          {userDetails?.is_premium && (
+          {userDetails?.is_premium && hasEditPerms && (
             <Checkbox
               disabled={isComplete}
               checked={isComplete}

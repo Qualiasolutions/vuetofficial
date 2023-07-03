@@ -62,7 +62,7 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
 
   const [responsiveCalendar, setResponsiveCalendar] = useState(false);
 
-  const MARGIN_BOTTOM = 150;
+  const MARGIN_BOTTOM = 0;
   const listView = useMemo(() => {
     if (!filteredTasks) {
       return () => null;
