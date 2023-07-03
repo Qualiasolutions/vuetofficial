@@ -117,7 +117,7 @@ function Calendar({
   const noTasks = Object.keys(tasks).length === 0;
 
   const [futureSections, pastSections] = useMemo(() => {
-    const datesToShow = Object.keys(tasks);
+    const datesToShow = Object.keys(tasks).sort();
 
     if (!allRoutines) {
       return [[], []];
