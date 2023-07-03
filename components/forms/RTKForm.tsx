@@ -163,6 +163,7 @@ export default function Form({
           ...extraFields,
           ...derivedFields
         })
+        .unwrap()
         .then(() => {
           setSubmittingForm(false);
           onSubmitSuccess();
@@ -202,6 +203,7 @@ export default function Form({
           formData: data,
           ...extraFields
         })
+        .unwrap()
         .then(() => {
           setSubmittingForm(false);
           onSubmitSuccess();
