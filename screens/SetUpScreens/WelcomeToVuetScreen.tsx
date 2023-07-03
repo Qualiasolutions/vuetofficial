@@ -59,7 +59,6 @@ const WelcomeToVuetScreen = ({
         })}
       />
       <PageSubtitle text={t('screens.welcomeToVuet.createdSuccessfully')} />
-      <PageSubtitle text={t('screens.welcomeToVuet.willSend')} />
       {errorContent}
       <Button
         title={t('common.continue')}

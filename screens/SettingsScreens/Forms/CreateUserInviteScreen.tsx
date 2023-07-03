@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%'
   },
-  button: { marginTop: 10 }
+  button: { marginTop: 10 },
+  container: { justifyContent: 'flex-start' }
 });
 
 const CreateUserInviteScreen = ({
@@ -55,7 +56,7 @@ const CreateUserInviteScreen = ({
 
   return (
     <TransparentFullPageScrollView>
-      <TransparentContainerView>
+      <TransparentContainerView style={styles.container}>
         {usingEmail ? (
           <TextInput value={email} onChangeText={setEmail} />
         ) : (

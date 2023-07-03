@@ -87,7 +87,11 @@ const CreateAccountScreen = ({
       userFullDetails?.last_name &&
       userFullDetails?.dob
     ) {
-      navigation.push('AddFamily');
+      if (userFullDetails.family.users.length <= 1) {
+        navigation.push('AddFamily');
+      } else {
+        navigation.push('WelcomeToVuet');
+      }
     }
   }, [userFullDetails, navigation]);
 

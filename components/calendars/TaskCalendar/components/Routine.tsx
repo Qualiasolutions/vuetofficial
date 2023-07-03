@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Text } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
 import React from 'react';
 
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -16,17 +16,20 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   outerContainer: {
-    borderBottomWidth: 1,
-    paddingVertical: 5
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1
   },
   container: {
     flex: 1,
     flexDirection: 'row',
+    paddingHorizontal: 5,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    borderWidth: 2,
     width: '100%'
   },
-  routineName: { fontSize: 20 }
+  routineName: { fontSize: 16 }
 });
 
 type PropTypes = {
@@ -37,6 +40,7 @@ type PropTypes = {
 export default function Routine({ id, date }: PropTypes) {
   const routine = useSelector(selectRoutineById(id));
   const navigation = useNavigation();
+  const backgroundColor = useThemeColor({}, 'lightYellow');
   if (!routine) {
     return (
       <TransparentView
@@ -53,7 +57,7 @@ export default function Routine({ id, date }: PropTypes) {
             date
           });
         }}
-        style={styles.container}
+        style={[styles.container, { backgroundColor }]}
       >
         <TransparentView style={styles.leftInfo}>
           <Text>{routine.start_time.slice(0, 5)}</Text>
