@@ -64,7 +64,9 @@ const TagSelector = ({
   const { data: allEntities, isLoading: isLoadingAllEntities } =
     useGetAllEntitiesQuery();
 
-  const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
+  const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery(
+    null as any
+  );
 
   const isLoading =
     isLoadingMemberEntities ||

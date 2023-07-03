@@ -34,6 +34,7 @@ import {
   useGetAllEntitiesQuery,
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
+import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 
 const styles = StyleSheet.create({
   icon: {
@@ -107,6 +108,9 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
   useGetAllEntitiesQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetAllTagsQuery(null as any, {
     skip: !userDetails?.user_id
   });
 
