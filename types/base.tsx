@@ -86,6 +86,7 @@ export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
 export type EntityTabParamList = {
   EntityCalendar: undefined;
   EntityReferences: undefined;
+  EntityMessages: undefined;
   EntityHome: undefined;
 };
 

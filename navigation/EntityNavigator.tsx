@@ -1,5 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Calendar from 'components/calendars/TaskCalendar';
+import MessageThread from 'components/organisms/MessageThread';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,10 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return () => <ReferencesList entities={[entityId]} />;
   }, [entityId]);
 
+  const messageComponent = useMemo(() => {
+    return () => <MessageThread entityId={entityId} />;
+  }, [entityId]);
+
   return (
     <TopTabs.Navigator initialRouteName="EntityHome">
       <TopTabs.Screen
@@ -56,6 +61,13 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
         component={referencesComponent}
         options={{
           title: t('pageTitles.references')
+        }}
+      />
+      <TopTabs.Screen
+        name="EntityMessages"
+        component={messageComponent}
+        options={{
+          title: t('pageTitles.messages')
         }}
       />
     </TopTabs.Navigator>

@@ -561,6 +561,9 @@
       "selectedEntities": "Selected entities",
       "requiresPetTag": "You must add a pet tag to this task",
       "requiresTravelTag": "You must add a travel tag to this task"
+    },
+    "messageThread": {
+      "send": "Send"
     }
   }
 }

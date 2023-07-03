@@ -62,7 +62,8 @@ export const vuetApi = createApi({
     'BlockedCategories',
     'Reference',
     'Routine',
-    'Tag'
+    'Tag',
+    'Message'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
