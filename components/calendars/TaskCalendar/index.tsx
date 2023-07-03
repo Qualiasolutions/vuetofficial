@@ -69,7 +69,9 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
     }
 
     return () => (
-      <TransparentView style={{ marginBottom: MARGIN_BOTTOM }}>
+      <TransparentView
+        style={[styles.container, { marginBottom: MARGIN_BOTTOM }]}
+      >
         <CalendarTaskDisplay
           tasks={filteredTasks}
           alwaysIncludeCurrentDate={true}

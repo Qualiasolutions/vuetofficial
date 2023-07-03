@@ -112,7 +112,7 @@ const CreatePasswordScreen = ({
           secureTextEntry={true}
         />
         <Button
-          title={t('common.verify')}
+          title={t('common.save')}
           onPress={() => {
             const minimumPasswordLength = ENV === 'PROD' ? 8 : 2;
             if (password.length < minimumPasswordLength) {
