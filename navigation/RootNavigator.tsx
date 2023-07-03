@@ -30,6 +30,10 @@ import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskComp
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import RoutineTasksScreen from 'screens/RoutineTasksScreen';
 import { useGetAllTaskActionsQuery } from 'reduxStore/services/api/taskActions';
+import {
+  useGetAllEntitiesQuery,
+  useGetMemberEntitiesQuery
+} from 'reduxStore/services/api/entities';
 
 const styles = StyleSheet.create({
   icon: {
@@ -97,6 +101,12 @@ export function BottomTabNavigator() {
     skip: !userDetails?.user_id
   });
   useGetAllRoutinesQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetMemberEntitiesQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.user_id
   });
 

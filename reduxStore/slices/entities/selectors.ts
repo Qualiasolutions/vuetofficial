@@ -13,6 +13,18 @@ export const selectEntityById = (entityId: number) =>
     }
   );
 
+export const selectMemberEntityById = (entityId: number) =>
+  createSelector(
+    entitiesApi.endpoints.getMemberEntities.select(null as any),
+    (entities) => {
+      const entityData = entities?.data;
+      if (!entityData) {
+        return null;
+      }
+      return entityData.byId[entityId];
+    }
+  );
+
 export const selectNewEntityIds = createSelector(
   entitiesApi.endpoints.getAllEntities.select(null as any),
   (entities) => {

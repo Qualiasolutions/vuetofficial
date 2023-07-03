@@ -7,7 +7,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { headerMapping } from 'headers/utils/headerMappings';
 import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
 import { headerRightMapping } from 'headers/utils/headerRightMapping';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import {
+  selectEntityById,
+  selectMemberEntityById
+} from 'reduxStore/slices/entities/selectors';
 import { useSelector } from 'react-redux';
 
 export default function useEntityHeader(

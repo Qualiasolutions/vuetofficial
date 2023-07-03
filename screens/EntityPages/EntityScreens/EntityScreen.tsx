@@ -11,7 +11,13 @@ import EventPage from './components/EventPage';
 import HolidayPage from './components/HolidayPage';
 import useEntityHeader from '../../../headers/hooks/useEntityHeader';
 import EntityNavigator from 'navigation/EntityNavigator';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import {
+  selectEntityById,
+  selectMemberEntityById
+} from 'reduxStore/slices/entities/selectors';
+import { Text } from 'components/Themed';
+import { useTranslation } from 'react-i18next';
+import { TransparentContainerView } from 'components/molecules/ViewComponents';
 
 const DefaultEntityPage = ({ entityId }: { entityId: number }) => {
   return <EntityNavigator entityId={entityId} />;
@@ -39,6 +45,9 @@ export default function EntityScreen({
   const entityId =
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entity = useSelector(selectEntityById(entityId));
+  const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
+
+  const { t } = useTranslation();
 
   useEntityHeader(entityId);
   useEffect(() => {
@@ -49,6 +58,14 @@ export default function EntityScreen({
 
   if (!entity) {
     return null;
+  }
+
+  if (!isMemberEntity) {
+    return (
+      <TransparentContainerView>
+        <Text>{t('screens.entityScreen.noPermsBlurb')}</Text>
+      </TransparentContainerView>
+    );
   }
 
   const Screen: React.ElementType | undefined =

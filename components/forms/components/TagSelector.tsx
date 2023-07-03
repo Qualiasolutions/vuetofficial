@@ -60,7 +60,7 @@ const TagSelector = ({
   const { t } = useTranslation();
 
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
-    useGetMemberEntitiesQuery();
+    useGetMemberEntitiesQuery(null as any);
   const { data: allEntities, isLoading: isLoadingAllEntities } =
     useGetAllEntitiesQuery();
 
