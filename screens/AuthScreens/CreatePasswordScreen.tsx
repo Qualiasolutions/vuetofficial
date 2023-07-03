@@ -23,10 +23,10 @@ import {
   AlmostWhiteContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { RegisterAccountRequest } from 'types/signup';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const ENV = Constants.manifest?.extra?.processEnv;
 
@@ -51,7 +51,6 @@ const CreatePasswordScreen = ({
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'CreatePassword'>) => {
   const [password, onChangePassword] = React.useState<string>('');
   const [passwordConfirm, onChangePasswordConfirm] = React.useState<string>('');
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
   const { t } = useTranslation();
 
   const [createAccount, createAccountResult] = useCreateAccountMutation();
@@ -77,16 +76,11 @@ const CreatePasswordScreen = ({
     }
   }, [createAccountResult, dispatch, t]);
 
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage} />
-  ) : null;
-
   return (
     <TransparentFullPageScrollView>
       <AlmostWhiteContainerView>
         <PageTitle text={t('screens.createPassword.title')} />
         <PageSubtitle text={t('screens.createPassword.addPassword')} />
-        {errorContent}
         <TransparentView style={styles.inputLabelWrapper}>
           <AlmostBlackText
             style={styles.inputLabel}
@@ -111,36 +105,41 @@ const CreatePasswordScreen = ({
           onChangeText={(text) => onChangePasswordConfirm(text)}
           secureTextEntry={true}
         />
-        <Button
-          title={t('common.save')}
-          onPress={() => {
-            const minimumPasswordLength = ENV === 'PROD' ? 8 : 2;
-            if (password.length < minimumPasswordLength) {
-              setErrorMessage(
-                t('screens.createPassword.passwordTooShort', {
-                  minimumLength: minimumPasswordLength
-                })
-              );
-            } else if (password !== passwordConfirm) {
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.passwordsDontMatch')
-              });
-            } else {
-              const req: RegisterAccountRequest = {
-                password,
-                password2: passwordConfirm
-              };
-              if (isEmail) {
-                req.email = phoneNumber;
+        {createAccountResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <Button
+            title={t('common.save')}
+            onPress={() => {
+              const minimumPasswordLength = ENV === 'LOCAL' ? 2 : 8;
+              if (password.length < minimumPasswordLength) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('screens.createPassword.passwordTooShort', {
+                    minimumLength: minimumPasswordLength
+                  })
+                });
+              } else if (password !== passwordConfirm) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.passwordsDontMatch')
+                });
               } else {
-                req.phone_number = phoneNumber;
+                const req: RegisterAccountRequest = {
+                  password,
+                  password2: passwordConfirm
+                };
+                if (isEmail) {
+                  req.email = phoneNumber;
+                } else {
+                  req.phone_number = phoneNumber;
+                }
+                createAccount(req);
               }
-              createAccount(req);
-            }
-          }}
-          style={styles.confirmButton}
-        />
+            }}
+            style={styles.confirmButton}
+          />
+        )}
       </AlmostWhiteContainerView>
     </TransparentFullPageScrollView>
   );
