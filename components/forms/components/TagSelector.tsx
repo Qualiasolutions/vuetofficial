@@ -9,7 +9,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
@@ -174,6 +174,15 @@ const EntityAndTagSelectorModal = ({
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
   const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
+
+  const resetValues = useCallback(() => {
+    setSelectedEntities(value.entities);
+    setIsSettingTags(false);
+  }, [value]);
+
+  useEffect(() => {
+    resetValues();
+  }, [resetValues, open]);
 
   const isLoading =
     isLoadingMemberEntities ||
