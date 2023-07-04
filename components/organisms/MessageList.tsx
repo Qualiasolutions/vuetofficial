@@ -113,7 +113,8 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
-    marginTop: 50
+    marginTop: 50,
+    paddingBottom: 100
   }
 });
 export default function MessageList() {
