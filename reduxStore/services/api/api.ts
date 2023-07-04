@@ -43,6 +43,7 @@ export const vuetApi = createApi({
   tagTypes: [
     'Alert',
     'ActionAlert',
+    'CategorySetupCompletion',
     'Entity',
     'Task',
     'TaskLimit',

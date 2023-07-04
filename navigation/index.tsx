@@ -25,6 +25,7 @@ interface NavigationProps {
 }
 
 const Navigation = ({ colorScheme }: NavigationProps) => {
+  const [hasJustSignedUp, setHasJustSignedUp] = React.useState(false);
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userFullDetails, isLoading: isLoadingUserDetails } =
@@ -49,9 +50,14 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       if (firstInviteForUser) {
         navigatorComponent = <FamilyRequestNavigator />;
       } else if (!userFullDetails?.has_done_setup) {
+        if (!hasJustSignedUp) {
+          setHasJustSignedUp(true);
+        }
         navigatorComponent = <SetupNavigator />;
       } else {
-        navigatorComponent = <SideNavigator />;
+        navigatorComponent = (
+          <SideNavigator hasJustSignedUp={hasJustSignedUp} />
+        );
       }
     }
   }

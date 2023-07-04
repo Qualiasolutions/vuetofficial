@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import {
+  useGetCategorySetupCompletionsQuery,
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery,
   useGetUserInvitesQuery
@@ -80,7 +81,11 @@ const BarIcon = ({
   );
 };
 
-export function BottomTabNavigator() {
+export function BottomTabNavigator({
+  hasJustSignedUp
+}: {
+  hasJustSignedUp: boolean;
+}) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetailsQuery();
 
@@ -113,12 +118,15 @@ export function BottomTabNavigator() {
   useGetAllTagsQuery(null as any, {
     skip: !userDetails?.user_id
   });
+  useGetCategorySetupCompletionsQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
 
   useSetupPushNotifications();
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Home"
+      initialRouteName={hasJustSignedUp ? 'ContentNavigator' : 'Home'}
       screenOptions={{
         headerShown: true,
         headerTitleAlign: 'center',

@@ -130,3 +130,9 @@ export type UserFullResponse = {
   profile_image: string;
   presigned_profile_image_url: string;
 };
+
+export type CategorySetupCompletion = {
+  id: number;
+  category: number;
+  user: number;
+};

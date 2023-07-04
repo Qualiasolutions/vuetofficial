@@ -6,7 +6,7 @@ import {
   DrawerItemList
 } from '@react-navigation/drawer';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { SideNavigatorTabParamList } from '../types/base';
 
@@ -32,6 +32,20 @@ import { logOut as logOutAction } from 'reduxStore/slices/auth/actions';
 import TransparentDrawerHeader from 'headers/TransparentDrawerHeader';
 import { YesNoModal } from 'components/molecules/Modals';
 import { MyAccountNavigator } from './MyAccountNavigator';
+
+const styles = StyleSheet.create({
+  drawerItem: {
+    borderBottomWidth: 1,
+    height: 70,
+    justifyContent: 'center',
+    marginTop: 0,
+    marginBottom: 0
+  },
+  drawerLabel: {
+    fontFamily: 'Poppins',
+    fontSize: 16
+  }
+});
 
 const SideDrawer = createDrawerNavigator<SideNavigatorTabParamList>();
 
@@ -64,11 +78,10 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userDetails } = useGetUserFullDetails();
   const devicePushToken = useSelector(selectPushToken);
-  const { data: pushTokens, isLoading: isLoadingPushTokens } =
-    useGetPushTokensQuery(userDetails?.id || -1, {
-      skip: !userDetails?.id
-    });
-  const [updatePushToken, updatePushTokenResult] = useUpdatePushTokenMutation();
+  const { data: pushTokens } = useGetPushTokensQuery(userDetails?.id || -1, {
+    skip: !userDetails?.id
+  });
+  const [updatePushToken] = useUpdatePushTokenMutation();
 
   const labelColor = useThemeColor({}, 'black');
 
@@ -117,10 +130,19 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   );
 }
 
-export function SideNavigator() {
+export function SideNavigator({
+  hasJustSignedUp
+}: {
+  hasJustSignedUp: boolean;
+}) {
   const borderColor = useThemeColor({}, 'grey');
   const labelColor = useThemeColor({}, 'black');
   const headerTintColor = useThemeColor({}, 'primary');
+
+  const bottomTabNavigator = useCallback(
+    () => <BottomTabNavigator hasJustSignedUp={hasJustSignedUp} />,
+    [hasJustSignedUp]
+  );
 
   return (
     <SideDrawer.Navigator
@@ -136,7 +158,7 @@ export function SideNavigator() {
     >
       <SideDrawer.Screen
         name="BottomTabNavigator"
-        component={BottomTabNavigator}
+        component={bottomTabNavigator}
         options={{
           title: 'Home',
           headerShown: false,
@@ -186,17 +208,3 @@ export function SideNavigator() {
     </SideDrawer.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  drawerItem: {
-    borderBottomWidth: 1,
-    height: 70,
-    justifyContent: 'center',
-    marginTop: 0,
-    marginBottom: 0
-  },
-  drawerLabel: {
-    fontFamily: 'Poppins',
-    fontSize: 16
-  }
-});

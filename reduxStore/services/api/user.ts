@@ -8,7 +8,8 @@ import {
   UserInviteResponse,
   UserResponse,
   UserFullResponse,
-  SecureUpdateUserRequest
+  SecureUpdateUserRequest,
+  CategorySetupCompletion
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -94,6 +95,25 @@ const userApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['UserInvite']
+    }),
+    getCategorySetupCompletions: builder.query<CategorySetupCompletion[], void>(
+      {
+        query: () => ({
+          url: `core/category-setup/`
+        }),
+        providesTags: ['CategorySetupCompletion']
+      }
+    ),
+    createCategorySetupCompletion: builder.mutation<
+      CategorySetupCompletion,
+      { category: number; user: number }
+    >({
+      query: (body) => ({
+        url: 'core/category-setup/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['CategorySetupCompletion']
     })
   }),
   overrideExisting: true
@@ -108,7 +128,9 @@ export const {
   useGetUserInvitesQuery,
   useCreateUserInviteMutation,
   useUpdateUserInviteMutation,
-  useDeleteUserInviteMutation
+  useDeleteUserInviteMutation,
+  useGetCategorySetupCompletionsQuery,
+  useCreateCategorySetupCompletionMutation
 } = userApi;
 
 export default userApi;
