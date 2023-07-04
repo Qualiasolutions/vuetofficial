@@ -222,7 +222,7 @@ export function BottomTabNavigator({
         component={RoutineTasksScreen}
         options={{
           tabBarButton: () => null,
-          title: 'Routine'
+          title: ''
         }}
       />
     </BottomTab.Navigator>

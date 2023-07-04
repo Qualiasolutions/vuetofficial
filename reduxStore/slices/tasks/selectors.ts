@@ -264,8 +264,10 @@ export const selectScheduledTaskIdsByEntityTypes = (
             (task) =>
               !entityTypes ||
               entityTypes.length === 0 ||
-              task.entities.some((ent) =>
-                entityTypes.includes(entitiesData.byId[ent].resourcetype)
+              task.entities.some(
+                (ent) =>
+                  entitiesData.byId[ent] &&
+                  entityTypes.includes(entitiesData.byId[ent].resourcetype)
               )
           ) || [];
 
@@ -415,7 +417,9 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
               categories.length === 0 ||
               task.entities.some((ent) =>
                 categories.some(
-                  (cat) => entitiesData.byId[ent].category === cat
+                  (cat) =>
+                    entitiesData.byId[ent] &&
+                    entitiesData.byId[ent].category === cat
                 )
               )
           ) || [];
