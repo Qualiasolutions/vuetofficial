@@ -1,13 +1,10 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import {
-  TransparentContainerView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 import { Text, useThemeColor } from 'components/Themed';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetMessageThreadsQuery } from 'reduxStore/services/api/messages';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
@@ -15,7 +12,6 @@ import { MessagesTabParamList } from 'types/base';
 import { MessageResponse } from 'types/messages';
 import { parseSummaryTime } from 'utils/datesAndTimes';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import SafePressable from 'components/molecules/SafePressable';
 import {
   selectScheduledTask,
   selectTaskById
@@ -42,11 +38,7 @@ const useListingStyles = () => {
       alignItems: 'center'
     },
     summaryTime: { color: greyColor },
-    lastMessage: { color: greyColor, marginTop: 5 },
-    pressedStyle: {
-      borderWidth: 2,
-      borderBottomWidth: 2
-    }
+    lastMessage: { color: greyColor, marginTop: 5 }
   });
 };
 
@@ -92,11 +84,8 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
   }
 
   return (
-    <SafePressable
-      style={({ pressed }) => [
-        listingStyles.container,
-        pressed ? listingStyles.pressedStyle : {}
-      ]}
+    <TouchableOpacity
+      style={listingStyles.container}
       onPress={() =>
         navigation.navigate('MessageThread', {
           taskId: thread.task,
@@ -117,7 +106,7 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
       <Text style={listingStyles.lastMessage}>
         {thread.name}: {thread.text}
       </Text>
-    </SafePressable>
+    </TouchableOpacity>
   );
 };
 
