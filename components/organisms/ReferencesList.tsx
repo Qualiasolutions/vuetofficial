@@ -471,9 +471,10 @@ export default function ReferencesList({
     return <PaddedSpinner />;
   }
 
-  const tagsToShow = entities
-    ? []
-    : tags || Object.keys(allReferenceGroups.byTagName);
+  const tagsToShow =
+    entities || entityTypes
+      ? []
+      : tags || Object.keys(allReferenceGroups.byTagName);
 
   let entitiesToShow: number[] = [];
   if (!tags) {

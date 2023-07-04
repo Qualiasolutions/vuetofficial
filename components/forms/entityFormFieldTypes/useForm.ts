@@ -34,6 +34,7 @@ import { taxiTransferForm } from './formFields/taxi-transfer';
 import { trainBusFerryForm } from './formFields/train-bus-ferry';
 import { tripActivityForm } from './formFields/trip-activity';
 import { tripForm } from './formFields/trip';
+import { useMemo } from 'react';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -43,137 +44,141 @@ export default function useForm(
   const { data: userFullDetails, isLoading: isLoadingFullDetails } =
     useGetUserDetails();
 
-  if (isLoadingFullDetails || !userFullDetails) {
+  const form = useMemo(() => {
+    if (isLoadingFullDetails || !userFullDetails) {
+      return {};
+    }
+
+    if (entityType === 'Car') {
+      return carForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Boat') {
+      return boatForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Anniversary') {
+      return anniversaryForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Birthday') {
+      return birthdayForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'AcademicPlan') {
+      return academicPlanForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'CareerGoal') {
+      return careerGoalForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Clothing') {
+      return clothingForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'DaysOff') {
+      return daysOffForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'DriveTime') {
+      return driveTimeForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Event') {
+      return eventForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'ExtracurricularPlan') {
+      return extracurricularPlanForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Finance') {
+      return financeForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Flight') {
+      return flightForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Food') {
+      return foodForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'HealthBeauty') {
+      return healthBeautyForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Hobby') {
+      return hobbyForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Holiday') {
+      return holidayForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Home') {
+      return homeForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'HotelOrRental') {
+      return hotelForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'List') {
+      return listForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Pet') {
+      return petForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'PublicTransport') {
+      return publicTransportForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'RentalCar') {
+      return rentalCarForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'SchoolBreak') {
+      return schoolBreakForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'School') {
+      return schoolForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'SocialMedia') {
+      return socialMediaForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'SocialPlan') {
+      return socialPlanForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'StayWithFriend') {
+      return stayWithFriendForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'TaxiOrTransfer') {
+      return taxiTransferForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'TrainBusFerry') {
+      return trainBusFerryForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'TripActivity') {
+      return tripActivityForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Trip') {
+      return tripForm(isEdit, userFullDetails, t);
+    }
+
     return {};
-  }
+  }, [entityType, isEdit, isLoadingFullDetails, t, userFullDetails]);
 
-  if (entityType === 'Car') {
-    return carForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Boat') {
-    return boatForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Anniversary') {
-    return anniversaryForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Birthday') {
-    return birthdayForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'AcademicPlan') {
-    return academicPlanForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'CareerGoal') {
-    return careerGoalForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Clothing') {
-    return clothingForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'DaysOff') {
-    return daysOffForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'DriveTime') {
-    return driveTimeForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Event') {
-    return eventForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'ExtracurricularPlan') {
-    return extracurricularPlanForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Finance') {
-    return financeForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Flight') {
-    return flightForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Food') {
-    return foodForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'HealthBeauty') {
-    return healthBeautyForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Hobby') {
-    return hobbyForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Holiday') {
-    return holidayForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Home') {
-    return homeForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'HotelOrRental') {
-    return hotelForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'List') {
-    return listForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Pet') {
-    return petForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'PublicTransport') {
-    return publicTransportForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'RentalCar') {
-    return rentalCarForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'SchoolBreak') {
-    return schoolBreakForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'School') {
-    return schoolForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'SocialMedia') {
-    return socialMediaForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'SocialPlan') {
-    return socialPlanForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'StayWithFriend') {
-    return stayWithFriendForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'TaxiOrTransfer') {
-    return taxiTransferForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'TrainBusFerry') {
-    return trainBusFerryForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'TripActivity') {
-    return tripActivityForm(isEdit, userFullDetails, t);
-  }
-
-  if (entityType === 'Trip') {
-    return tripForm(isEdit, userFullDetails, t);
-  }
-
-  return {};
+  return form;
 }

@@ -21,6 +21,7 @@ export default function TimezoneSelect({
   containerStyle,
   disabled
 }: Props) {
+  console.log(momentTZ.tz.names());
   return (
     <DropDown
       value={value}

@@ -129,7 +129,8 @@ const CalendarContent = ({
                 <ScrollView>
                   <TransparentView style={styles.dayComponentInnerContainer}>
                     <Text style={[styles.date]}>{date.day}</Text>
-                    {tasks[date.dateString] &&
+                    {tasks &&
+                      tasks[date.dateString] &&
                       tasks[date.dateString].map((task) => (
                         <ListedTask
                           id={task.id}
