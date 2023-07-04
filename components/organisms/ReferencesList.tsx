@@ -7,7 +7,7 @@ import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
@@ -37,9 +37,9 @@ import { RootTabParamList } from 'types/base';
 import { Reference, ReferenceType } from 'types/references';
 
 const addReferenceStyles = StyleSheet.create({
-  refInputPair: { flexDirection: 'row', width: '100%' },
+  refInputPair: { flexDirection: 'row', width: '100%', alignItems: 'center' },
   input: { flex: 1, marginRight: 10, marginVertical: 5 },
-  buttonWrapper: { flex: 1, alignItems: 'flex-start' },
+  buttonWrapper: { alignItems: 'flex-start' },
   button: { paddingVertical: 5 },
   dropdown: { width: 130, marginRight: 10, flex: 0 }
 });
@@ -173,29 +173,29 @@ const AddReferenceGroup = ({
           onChangeText={setNewName}
           style={addReferenceStyles.input}
         />
-      </TransparentView>
-      <TransparentView style={addReferenceStyles.buttonWrapper}>
-        <Button
-          style={addReferenceStyles.button}
-          disabled={!newName}
-          title={t('common.add')}
-          onPress={async () => {
-            try {
-              setNewName('');
-              await createNewReferenceGroup({
-                name: newName,
-                entities: entityId ? [entityId] : [],
-                tags: tagName ? [tagName] : [],
-                created_by: userDetails.id
-              }).unwrap();
-            } catch (err) {
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
-            }
-          }}
-        />
+        <TransparentView style={addReferenceStyles.buttonWrapper}>
+          <Button
+            style={addReferenceStyles.button}
+            disabled={!newName}
+            title={t('common.add')}
+            onPress={async () => {
+              try {
+                setNewName('');
+                await createNewReferenceGroup({
+                  name: newName,
+                  entities: entityId ? [entityId] : [],
+                  tags: tagName ? [tagName] : [],
+                  created_by: userDetails.id
+                }).unwrap();
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+          />
+        </TransparentView>
       </TransparentView>
     </TransparentView>
   );
@@ -338,7 +338,7 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
 };
 
 const entityRefStyles = StyleSheet.create({
-  container: { padding: 10, paddingLeft: 30 },
+  container: { padding: 10, marginBottom: 10 },
   nameTitle: { fontSize: 20 }
 });
 
@@ -355,11 +355,11 @@ const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
   }
 
   return (
-    <TransparentView style={entityRefStyles.container}>
+    <WhiteBox style={entityRefStyles.container}>
       <Text style={entityRefStyles.nameTitle}>{refGroup.name}</Text>
       {refViews}
       <AddReference groupId={groupId} />
-    </TransparentView>
+    </WhiteBox>
   );
 };
 
