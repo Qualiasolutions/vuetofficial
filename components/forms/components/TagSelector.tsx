@@ -93,7 +93,10 @@ const TagSelector = ({
     <TransparentView>
       <Text>{t('components.tagSelector.selectedEntities')}:</Text>
       <Text>
-        {selectedEntities.map((ent) => allEntities.byId[ent].name).join(', ')}
+        {selectedEntities
+          .filter((ent) => allEntities.byId[ent])
+          .map((ent) => allEntities.byId[ent].name)
+          .join(', ')}
       </Text>
       {requiredTags.PET && (
         <TransparentView style={styles.requiredTagSection}>
@@ -202,13 +205,16 @@ const EntityAndTagSelectorModal = ({
 
   const petCategoryId = allCategories.byName.PETS.id;
   const requiresPetTag = selectedEntities.some(
-    (ent) => allEntities.byId[ent].category === petCategoryId
+    (ent) =>
+      allEntities.byId[ent] && allEntities.byId[ent].category === petCategoryId
   );
   const hasPetTag = selectedTags.some((tag) => allTags.PETS.includes(tag));
 
   const travelCategoryId = allCategories.byName.TRAVEL.id;
   const requiresTravelTag = selectedEntities.some(
-    (ent) => allEntities.byId[ent].category === travelCategoryId
+    (ent) =>
+      allEntities.byId[ent] &&
+      allEntities.byId[ent].category === travelCategoryId
   );
   const hasTravelTag = selectedTags.some((tag) => allTags.TRAVEL.includes(tag));
 
@@ -312,9 +318,11 @@ export default function EntityAndTagSelector({ value, onChange }: Props) {
       <SafePressable onPress={() => setOpen(true)}>
         {value.entities.length > 0 || value.tags.length > 0 ? (
           <TransparentView>
-            {value.entities.map((entityId) => (
-              <Text key={entityId}>{allEntities.byId[entityId].name}</Text>
-            ))}
+            {value.entities.map((entityId) =>
+              allEntities.byId[entityId] ? (
+                <Text key={entityId}>{allEntities.byId[entityId].name}</Text>
+              ) : null
+            )}
             {value.tags.map((tagName) => (
               <Text key={tagName}>{t(`tags.${tagName}`)}</Text>
             ))}
