@@ -203,6 +203,22 @@ const getStartOfDay = (datetime: Date) => {
   return startOfDay;
 };
 
+const parseSummaryTime = (datetimeString: string) => {
+  const now = new Date();
+  const datetime = new Date(datetimeString);
+
+  const nowDateString = getDateStringFromDateObject(now);
+  const datetimeDateString = getDateStringFromDateObject(datetime);
+
+  if (nowDateString === datetimeDateString) {
+    return getTimeStringFromDateObject(datetime);
+  }
+
+  const dateString = getDateStringFromDateObject(datetime);
+  const [year, month, day] = dateString.split('-');
+  return `${day}/${month}/${year}`;
+};
+
 export {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
@@ -218,5 +234,6 @@ export {
   getNextDate,
   getOffsetMonthStartDateString,
   getEndOfDay,
-  getStartOfDay
+  getStartOfDay,
+  parseSummaryTime
 };

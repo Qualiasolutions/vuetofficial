@@ -135,6 +135,19 @@ export type MyAccountTabScreenProps<
   Screen extends keyof MyAccountTabParamList
 > = NativeStackScreenProps<MyAccountTabParamList, Screen>;
 
+// Messages Stack
+export type MessagesTabParamList = {
+  MessagesList: undefined;
+  MessageThread: {
+    entityId: number | null;
+    taskId: number | null;
+    actionId: number | null;
+    recurrenceIndex: number | null;
+  };
+};
+export type MessagesTabScreenProps<Screen extends keyof MessagesTabParamList> =
+  NativeStackScreenProps<MessagesTabParamList, Screen>;
+
 // Content Stack
 export type ContentTabParamList = {
   AllReferences: undefined;

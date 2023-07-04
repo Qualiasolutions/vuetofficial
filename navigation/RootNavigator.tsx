@@ -24,7 +24,6 @@ import useSetupPushNotifications from 'hooks/setupPushNotifications';
 import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
-import ChatScreen from 'screens/ChatScreen';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
@@ -35,6 +34,7 @@ import {
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
+import MessagesNavigator from './MessagesNavigator';
 
 const styles = StyleSheet.create({
   icon: {
@@ -173,7 +173,7 @@ export function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Chat"
-        component={ChatScreen}
+        component={MessagesNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

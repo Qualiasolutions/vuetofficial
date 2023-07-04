@@ -3,6 +3,20 @@ import { ColorName } from 'constants/Colors';
 import { StyleSheet } from 'react-native';
 import { Text as DefaultText } from 'react-native';
 
+const styles = StyleSheet.create({
+  common: {
+    fontFamily: 'Poppins'
+  },
+  header: {
+    fontSize: 26,
+    marginBottom: 20
+  },
+  subheader: {
+    fontSize: 14,
+    marginBottom: 20
+  }
+});
+
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
@@ -76,17 +90,3 @@ export function PageSubtitle(props: TextProps & { text: string }) {
     </DefaultText>
   );
 }
-
-const styles = StyleSheet.create({
-  common: {
-    fontFamily: 'Poppins'
-  },
-  header: {
-    fontSize: 26,
-    marginBottom: 20
-  },
-  subheader: {
-    fontSize: 14,
-    marginBottom: 20
-  }
-});

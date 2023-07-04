@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Poppins'
   },
+  textBold: {
+    fontFamily: 'Poppins-Bold'
+  },
   textInput: {
     borderRadius: 10,
     height: 40,
@@ -48,16 +51,19 @@ type ThemeProps = {
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText['props'];
+export type TextProps = ThemeProps & DefaultText['props'] & { bold?: boolean };
 export type ViewProps = ThemeProps & DefaultView['props'];
 export type TextInputProps = ThemeProps & DefaultTextInput['props'];
 
 export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
+  const { style, lightColor, darkColor, bold, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
   return (
-    <DefaultText style={[{ color }, styles.text, style]} {...otherProps} />
+    <DefaultText
+      style={[{ color }, styles.text, bold ? styles.textBold : {}, style]}
+      {...otherProps}
+    />
   );
 }
 

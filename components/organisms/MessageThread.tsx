@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { Button } from 'components/molecules/ButtonComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
@@ -12,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import {
   useCreateMessageMutation,
+  useGetMessagesForActionIdQuery,
   useGetMessagesForEntityIdQuery
 } from 'reduxStore/services/api/messages';
 import { MessageResponse } from 'types/messages';
@@ -23,28 +25,40 @@ const useMessageStyles = () => {
   const otherTextColor = useThemeColor({}, 'white');
   const otherBackgroundColor = useThemeColor({}, 'lightBlue');
   return StyleSheet.create({
-    message: { padding: 5, marginBottom: 2 },
-    userMessage: {
-      alignItems: 'flex-end',
-      marginLeft: 30
+    message: {
+      marginBottom: 2
     },
-    userMessageText: {
-      backgroundColor: userBackgroundColor,
+    messageText: {
       paddingVertical: 5,
       paddingHorizontal: 10,
       borderRadius: 5,
-      overflow: 'hidden',
+      overflow: 'hidden'
+    },
+    userMessage: {
+      alignItems: 'flex-end',
+      marginLeft: 50
+    },
+    userMessageText: {
+      backgroundColor: userBackgroundColor,
       color: userTextColor
     },
-    otherMessage: { backgroundColor: otherBackgroundColor },
+    otherMessage: { marginRight: 50 },
     otherMessageText: {
-      color: otherTextColor,
-      marginRight: 30
-    }
+      backgroundColor: otherBackgroundColor,
+      color: otherTextColor
+    },
+    firstMessage: { marginTop: 10 },
+    name: { fontWeight: 'bold', marginBottom: 2 }
   });
 };
 
-const Message = ({ message }: { message: MessageResponse }) => {
+const Message = ({
+  message,
+  firstFromUser
+}: {
+  message: MessageResponse;
+  firstFromUser: boolean;
+}) => {
   const { data: userDetails } = useGetUserFullDetails();
   const messageStyles = useMessageStyles();
 
@@ -58,11 +72,14 @@ const Message = ({ message }: { message: MessageResponse }) => {
     <TransparentView
       style={[
         messageStyles.message,
-        isUserMessage ? messageStyles.userMessage : messageStyles.otherMessage
+        isUserMessage ? messageStyles.userMessage : messageStyles.otherMessage,
+        firstFromUser && messageStyles.firstMessage
       ]}
     >
+      {firstFromUser && <Text style={messageStyles.name}>{message.name}</Text>}
       <Text
         style={[
+          messageStyles.messageText,
           isUserMessage
             ? messageStyles.userMessageText
             : messageStyles.otherMessageText
@@ -78,30 +95,65 @@ const styles = StyleSheet.create({
   sendInput: {
     marginRight: 10,
     flexGrow: 1,
-    height: '100%'
+    height: '100%',
+    width: 10
   },
   sendInputPair: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10
+    width: '100%',
+    marginTop: 5
+  },
+  container: {
+    paddingTop: 0,
+    paddingHorizontal: 10,
+    width: '100%'
+  },
+  containerScrollView: {
+    paddingBottom: 100,
+    paddingTop: 20,
+    paddingHorizontal: 5
   }
 });
 
 export type Props = {
   entityId?: number;
   taskId?: number;
+  actionId?: number;
+  recurrenceIndex?: number;
 };
-export default function MessageThread({ entityId, taskId }: Props) {
+export default function MessageThread({
+  entityId,
+  taskId,
+  actionId,
+  recurrenceIndex
+}: Props) {
+  const isFocused = useIsFocused();
+
   const { data: entityMessages } = useGetMessagesForEntityIdQuery(
     entityId || -1,
     {
-      skip: !entityId
+      skip: !entityId || !isFocused,
+      pollingInterval: 3000
     }
   );
 
-  const { data: taskMessages } = useGetMessagesForTaskIdQuery(taskId || -1, {
-    skip: !taskId
-  });
+  const { data: taskMessages } = useGetMessagesForTaskIdQuery(
+    { taskId: taskId || -1, recurrenceIndex: recurrenceIndex || null },
+    {
+      skip: !taskId || !isFocused,
+      pollingInterval: 3000
+    }
+  );
+
+  const { data: actionMessages } = useGetMessagesForActionIdQuery(
+    actionId || -1,
+    {
+      skip: !actionId || !isFocused,
+      pollingInterval: 3000
+    }
+  );
+
   const [createMessage, createMessageResult] = useCreateMessageMutation();
 
   const { data: userDetails } = useGetUserFullDetails();
@@ -109,17 +161,33 @@ export default function MessageThread({ entityId, taskId }: Props) {
   const [newMessage, setNewMessage] = useState('');
   const { t } = useTranslation();
 
-  const messages = entityMessages || taskMessages;
+  const messages =
+    (entityId && entityMessages) ||
+    (taskId && taskMessages) ||
+    (actionId && actionMessages);
   if (!messages || !userDetails) {
     return null;
   }
 
+  let messageViews = [];
+  let prevMessage = null;
+  for (const message of messages) {
+    messageViews.push(
+      <Message
+        message={message}
+        firstFromUser={!prevMessage || message.user !== prevMessage.user}
+        key={message.id}
+      />
+    );
+    prevMessage = message;
+  }
+
   return (
-    <TransparentContainerView>
-      <TransparentFullPageScrollView>
-        {messages.map((msg, i) => (
-          <Message key={i} message={msg} />
-        ))}
+    <TransparentContainerView style={styles.container}>
+      <TransparentFullPageScrollView
+        contentContainerStyle={styles.containerScrollView}
+      >
+        {messageViews}
       </TransparentFullPageScrollView>
       <TransparentView style={styles.sendInputPair}>
         <TextInput
@@ -132,13 +200,16 @@ export default function MessageThread({ entityId, taskId }: Props) {
         ) : (
           <Button
             title={t('components.messageThread.send')}
+            disabled={!newMessage}
             onPress={async () => {
               setNewMessage('');
               await createMessage({
                 text: newMessage,
                 user: userDetails.id,
                 entity: entityId || null,
-                task: null
+                task: taskId || null,
+                action: actionId || null,
+                recurrence_index: recurrenceIndex || null
               }).unwrap();
             }}
           />

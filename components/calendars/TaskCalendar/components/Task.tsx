@@ -3,14 +3,10 @@ import { Text, useThemeColor } from 'components/Themed';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import React, { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import {
-  ContentTabParamList,
-  RootTabParamList,
-  SettingsTabParamList
-} from 'types/base';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { RootTabParamList } from 'types/base';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
 import { useUpdateTaskActionMutation } from 'reduxStore/services/api/taskActions';
+import { Image } from 'components/molecules/ImageComponents';
 
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -37,54 +33,70 @@ import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flex: 1,
-    justifyContent: 'flex-start'
-  },
-  title: {
-    fontSize: 14,
-    textAlign: 'left',
-    wrap: 'nowrap'
-  },
-  leftInfo: {
-    width: '20%',
-    marginRight: 5
-  },
-  outerContainer: {
-    borderBottomWidth: 1,
-    paddingVertical: 5
-  },
-  containerWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%'
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%'
-  },
-  memberColor: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    marginTop: 13
-  },
-  bottomWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
-  tagsWrapper: {
-    flexDirection: 'row',
-    width: '50%',
-    flex: 0
-  }
-});
+const useStyles = () => {
+  const almostWhiteColor = useThemeColor({}, 'almostWhite');
+  return StyleSheet.create({
+    titleContainer: {
+      flex: 1,
+      justifyContent: 'flex-start'
+    },
+    title: {
+      fontSize: 14,
+      textAlign: 'left',
+      wrap: 'nowrap'
+    },
+    leftInfo: {
+      width: '25%',
+      marginRight: 5
+    },
+    outerContainer: {
+      borderBottomWidth: 1,
+      paddingVertical: 5
+    },
+    containerWrapper: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%'
+    },
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      width: '100%'
+    },
+    memberColor: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-end',
+      marginTop: 13
+    },
+    bottomWrapper: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end'
+    },
+    tagsWrapper: {
+      flexDirection: 'row',
+      width: '50%',
+      flex: 0
+    },
+    chatImageWrapper: {
+      padding: 5,
+      marginRight: 10,
+      overflow: 'hidden',
+      borderRadius: 5
+    },
+    chatImageWrapperPressed: {
+      backgroundColor: almostWhiteColor
+    },
+    chatImage: {
+      height: 18,
+      width: 18
+    }
+  });
+};
 
 export type MinimalScheduledTask = {
   id: number;
@@ -106,6 +118,7 @@ const TimeText = ({
   date: string;
 }) => {
   const { t } = useTranslation();
+  const styles = useStyles();
 
   let textContent = null;
   if (scheduledTask.date && scheduledTask.duration) {
@@ -193,11 +206,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     })
   );
 
-  const navigation = useNavigation<
-    | BottomTabNavigationProp<RootTabParamList>
-    | StackNavigationProp<ContentTabParamList>
-    | StackNavigationProp<SettingsTabParamList>
-  >();
+  const navigation = useNavigation<StackNavigationProp<RootTabParamList>>();
 
   const currentUserId = useSelector(selectCurrentUserId);
   const userDetails = useSelector(selectUserFromId(currentUserId || -1));
@@ -205,6 +214,8 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
   const isCompleteBoxColor = useThemeColor({}, 'primary');
   const isIgnoredBoxColor = useThemeColor({}, 'black');
+  const styles = useStyles();
+
   const { t } = useTranslation();
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
   const [updateTaskAction] = useUpdateTaskActionMutation();
@@ -275,7 +286,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                 hasEditPerms && (
                   <SafePressable
                     onPress={() =>
-                      (navigation.navigate as any)('EditTask', {
+                      navigation.navigate('EditTask', {
                         taskId: task.id
                       })
                     }
@@ -287,6 +298,29 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                 )}
             </TransparentView>
           </TransparentView>
+          <SafePressable
+            onPress={() => {
+              (navigation.navigate as any)('Chat', {
+                screen: 'MessageThread',
+                initial: false,
+                params: {
+                  taskId: action_id ? null : task.id,
+                  actionId: action_id,
+                  recurrenceIndex: recurrence_index
+                }
+              });
+            }}
+            style={({ pressed }) =>
+              pressed
+                ? [styles.chatImageWrapper, styles.chatImageWrapperPressed]
+                : [styles.chatImageWrapper]
+            }
+          >
+            <Image
+              source={require('assets/images/Chat.png')}
+              style={styles.chatImage}
+            />
+          </SafePressable>
           {userDetails?.is_premium && hasEditPerms && (
             <Checkbox
               disabled={isComplete}
@@ -325,14 +359,18 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     isComplete,
     isCompleteTextColor,
     memberColour,
-    navigation.navigate,
     t,
     triggerCreateCompletionForm,
     userDetails?.is_premium,
     isCompleteBoxColor,
     isIgnored,
     isIgnoredBoxColor,
-    action_id
+    action_id,
+    hasEditPerms,
+    navigation,
+    updateTaskAction,
+    recurrence_index,
+    styles
   ]);
 
   return fullContent;
