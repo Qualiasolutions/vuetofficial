@@ -564,6 +564,10 @@
     },
     "messageThread": {
       "send": "Send"
+    },
+    "imagePicker": {
+      "choosePhoto": "Choose photo",
+      "takePhoto": "Take photo"
     }
   }
 }

@@ -6,11 +6,13 @@ import {
   Platform
 } from 'react-native';
 import * as ExpoImagePicker from 'expo-image-picker';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { parsePresignedUrl } from 'utils/urls';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import SafePressable from 'components/molecules/SafePressable';
+import { Button, LinkButton } from 'components/molecules/ButtonComponents';
+import { useTranslation } from 'react-i18next';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,6 +44,14 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     height: 160,
     width: '100%'
+  },
+  photoTypeModalBox: {
+    position: 'absolute',
+    left: 50,
+    top: 50
+  },
+  photoTypeModalLink: {
+    marginBottom: 10
   }
 });
 
@@ -85,6 +95,8 @@ export function ImagePicker({
     useState<ExpoImagePicker.ImagePickerResult | null>(null);
 
   const borderColor = useThemeColor({}, 'grey');
+  const [showPhotoTypeModal, setShowPhotoTypeModal] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (selectedImage && !selectedImage?.canceled) {
@@ -112,20 +124,59 @@ export function ImagePicker({
     }
   }, [selectedImage]);
 
-  const chooseImage = async () => {
-    const res = await ExpoImagePicker.launchImageLibraryAsync({
+  const imagePickerOptions = useMemo(() => {
+    return {
       mediaTypes: ExpoImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: aspect,
       quality: 1
-    });
+    };
+  }, [aspect]);
+
+  const chooseImage = useCallback(async () => {
+    const res = await ExpoImagePicker.launchImageLibraryAsync(
+      imagePickerOptions
+    );
 
     if (res.canceled) {
       setSelectedImage(null);
     } else {
       setSelectedImage(res);
     }
-  };
+    setShowPhotoTypeModal(false);
+  }, [setSelectedImage, imagePickerOptions]);
+
+  const takePhoto = useCallback(async () => {
+    const res = await ExpoImagePicker.launchCameraAsync(imagePickerOptions);
+
+    if (res.canceled) {
+      setSelectedImage(null);
+    } else {
+      setSelectedImage(res);
+    }
+    setShowPhotoTypeModal(false);
+  }, [setSelectedImage, imagePickerOptions]);
+
+  const photoTypeModal = useMemo(() => {
+    return (
+      <WhiteBox style={styles.photoTypeModalBox}>
+        <LinkButton
+          onPress={chooseImage}
+          title={t('components.imagePicker.choosePhoto')}
+          style={styles.photoTypeModalLink}
+        />
+        <LinkButton
+          onPress={takePhoto}
+          title={t('components.imagePicker.takePhoto')}
+          style={styles.photoTypeModalLink}
+        />
+        <Button
+          onPress={() => setShowPhotoTypeModal(false)}
+          title={t('common.cancel')}
+        />
+      </WhiteBox>
+    );
+  }, [t, chooseImage, takePhoto]);
 
   const imageSource =
     (displayInternalImage &&
@@ -139,11 +190,11 @@ export function ImagePicker({
     require('assets/images/icons/camera.png');
 
   if (PressableComponent) {
-    return <PressableComponent onPress={chooseImage} />;
+    return <PressableComponent onPress={() => setShowPhotoTypeModal(true)} />;
   }
 
   return (
-    <SafePressable onPress={chooseImage}>
+    <SafePressable onPress={() => setShowPhotoTypeModal(true)}>
       <TransparentView
         style={[{ backgroundColor, borderColor }, styles.container, style]}
       >
@@ -157,6 +208,7 @@ export function ImagePicker({
           resizeMode="cover"
         />
       </TransparentView>
+      {showPhotoTypeModal && photoTypeModal}
     </SafePressable>
   );
 }

@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     marginLeft: 10
-  }
+  },
+  imagePickerContainer: { zIndex: 10 }
 });
 
 const FamilySettingsScreen = ({
@@ -208,7 +209,7 @@ const FamilySettingsScreen = ({
           setUserInviteToDelete(null);
         }}
       />
-      <AlmostWhiteView>
+      <AlmostWhiteView style={styles.imagePickerContainer}>
         <FullWidthImagePicker
           onImageSelect={(image) => {
             uploadProfileImage(image);

@@ -23,12 +23,14 @@ import { Feather } from '@expo/vector-icons';
 import SafePressable from './SafePressable';
 
 const styles = StyleSheet.create({
-  opaqueBackground: {
+  background: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
-    bottom: 0,
+    bottom: 0
+  },
+  opaqueBackground: {
     color: '#000000',
     opacity: 0.8
   },
@@ -110,8 +112,11 @@ export function Modal(props: ModalProps) {
       {...otherProps}
     >
       <TransparentContainerView>
-        <SafePressable style={styles.opaqueBackground} onPress={onRequestClose}>
-          <View style={styles.opaqueBackground} />
+        <SafePressable
+          style={[styles.background, styles.opaqueBackground]}
+          onPress={onRequestClose}
+        >
+          <View style={[styles.background, styles.opaqueBackground]} />
         </SafePressable>
         <WhiteBox style={boxStyle}>{children}</WhiteBox>
       </TransparentContainerView>
