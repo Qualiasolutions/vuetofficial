@@ -172,7 +172,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
                 text={t(`categories.${categoryGroupName}`)}
                 bold={true}
               />
-              {isPremiumTag}
+              {/* {isPremiumTag} */}
             </View>
           </ImageBackground>
         </SafePressable>
