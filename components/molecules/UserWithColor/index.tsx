@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: 10,
     marginRight: 10,
     overflow: 'hidden',
     alignItems: 'center',
