@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
 });
 
 type CalendarProps = {
-  fullPage: boolean;
   showFilters?: boolean;
   filteredTasks: {
     [key: string]: (MinimalScheduledTask & {
@@ -50,7 +49,7 @@ type CalendarProps = {
     })[];
   };
 };
-function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
+function Calendar({ filteredTasks, showFilters }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery(null as any);
@@ -137,7 +136,6 @@ function Calendar({ fullPage, filteredTasks, showFilters }: CalendarProps) {
             dispatch(setListEnforcedDate({ date: dateString }));
           }
         }}
-        fullPage={fullPage}
       />
       <Tabs
         tabs={tabs}

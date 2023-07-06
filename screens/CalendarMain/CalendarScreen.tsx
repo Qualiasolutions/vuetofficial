@@ -1,4 +1,5 @@
 import Calendar from 'components/calendars/TaskCalendar';
+import SideDrawerButton from 'components/molecules/SideDrawerButton';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -23,11 +24,8 @@ export default function CalendarScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Calendar
-        fullPage={true}
-        filteredTasks={filteredTasks}
-        showFilters={true}
-      />
+      <SideDrawerButton />
+      <Calendar filteredTasks={filteredTasks} showFilters={true} />
     </SafeAreaView>
   );
 }

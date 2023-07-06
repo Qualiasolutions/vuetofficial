@@ -18,6 +18,7 @@ import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
 import SafePressable from 'components/molecules/SafePressable';
+import SideDrawerButton from 'components/molecules/SideDrawerButton';
 
 type CategoryGroupName =
   | 'PETS'
@@ -208,6 +209,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SideDrawerButton />
       <View style={styles.container}>{categoriesPage}</View>
     </SafeAreaView>
   );

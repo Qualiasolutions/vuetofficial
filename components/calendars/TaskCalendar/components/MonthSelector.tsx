@@ -8,13 +8,10 @@ import { useSelector } from 'react-redux';
 import { WhitePaddedView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
-import { useThemeColor, View } from 'components/Themed';
+import { View } from 'components/Themed';
 import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
-import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Image } from 'components/molecules/ImageComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { parsePresignedUrl } from 'utils/urls';
 import { elevation } from 'styles/elevation';
 import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import SafePressable from 'components/molecules/SafePressable';
@@ -24,27 +21,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: 'flex-start',
     justifyContent: 'space-between'
-  },
-  drawerPressable: {
-    height: 60,
-    width: 60,
-    marginLeft: 10,
-    marginBottom: 10,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden'
-  },
-  drawerImage: {
-    height: '100%',
-    width: '100%'
-  },
-  drawerNullImage: {
-    height: 30,
-    width: 30
-  },
-  drawerSpace: {
-    width: '20%'
   },
   endSpace: {
     width: '20%'
@@ -59,17 +35,13 @@ const styles = StyleSheet.create({
 });
 
 export default function MonthSelector({
-  onValueChange,
-  fullPage
+  onValueChange
 }: {
   onValueChange: (date: Date) => void;
-  fullPage: boolean;
 }) {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const enforcedDate = useSelector(selectEnforcedDate);
-  const navigation = useNavigation();
   const { data: userDetails } = useGetUserFullDetails();
-  const whiteColor = useThemeColor({}, 'white');
 
   const now = dayjs(new Date());
   const { monthName, year } = enforcedDate
@@ -79,39 +51,8 @@ export default function MonthSelector({
   if (!userDetails) {
     return null;
   }
-
-  const imageSource = userDetails.presigned_profile_image_url
-    ? { uri: parsePresignedUrl(userDetails.presigned_profile_image_url) }
-    : require('assets/images/icons/camera.png');
-
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
-      {fullPage ? (
-        <SafePressable
-          onPress={() => (navigation as any).openDrawer()}
-          style={[
-            styles.drawerPressable,
-            elevation.elevated,
-            {
-              backgroundColor: whiteColor
-            }
-          ]}
-        >
-          <Image
-            source={imageSource}
-            style={[
-              !userDetails.presigned_profile_image_url
-                ? styles.drawerNullImage
-                : styles.drawerImage,
-              {
-                backgroundColor: whiteColor
-              }
-            ]}
-          />
-        </SafePressable>
-      ) : (
-        <View style={styles.drawerSpace} />
-      )}
       <SafePressable
         onPress={() => {
           setIsDatePickerVisible(true);
