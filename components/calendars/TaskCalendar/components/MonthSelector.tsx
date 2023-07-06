@@ -22,15 +22,15 @@ import SafePressable from 'components/molecules/SafePressable';
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: 'flex-start',
     justifyContent: 'space-between'
   },
   drawerPressable: {
     height: 60,
     width: 60,
-    marginLeft: 40,
-    borderRadius: 30,
+    marginLeft: 10,
+    marginBottom: 10,
+    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden'
@@ -49,7 +49,12 @@ const styles = StyleSheet.create({
   endSpace: {
     width: '20%'
   },
-  monthPressable: { flexDirection: 'row', alignItems: 'center' },
+  monthPressable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%'
+  },
   monthText: { fontWeight: 'bold', fontSize: 20, marginRight: 10 }
 });
 
