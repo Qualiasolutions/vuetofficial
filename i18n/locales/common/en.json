@@ -525,7 +525,10 @@
   },
   "navigation": {
     "dropdown": {
-      "quickNav": "Quick Nav"
+      "placeholders": {
+        "QUICK_NAV": "Quick Nav",
+        "I_WANT_TO": "I Want To"
+      }
     }
   },
   "components": {

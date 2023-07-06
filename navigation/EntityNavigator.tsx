@@ -1,26 +1,27 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Calendar from 'components/calendars/TaskCalendar';
 import MessageThread from 'components/organisms/MessageThread';
 import ReferencesList from 'components/organisms/ReferencesList';
+import { Text } from 'components/Themed';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { selectScheduledTaskIdsByEntityIds } from 'reduxStore/slices/tasks/selectors';
-import { EntityTabParamList } from 'types/base';
-
-const TopTabs = createMaterialTopTabNavigator<EntityTabParamList>();
+import QuickNavigator from './base/QuickNavigator';
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
-  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByEntityIds([entityId]),
     [entityId]
   );
   const filteredTasks = useSelector(taskSelector);
 
+  const entity = useSelector(selectEntityById(entityId));
+  const category = useSelector(selectCategoryById(entity?.category || -1));
+
   const homeComponent = useMemo(() => {
     return () => null;
-  }, [entityId]);
+  }, []);
 
   const calendarComponent = useMemo(() => {
     return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
@@ -30,40 +31,22 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return () => <ReferencesList entities={[entityId]} />;
   }, [entityId]);
 
-  const messageComponent = useMemo(() => {
+  const listsComponent = useMemo(() => {
+    return () => <Text>LISTS</Text>;
+  }, []);
+
+  const messagesComponent = useMemo(() => {
     return () => <MessageThread entityId={entityId} />;
   }, [entityId]);
 
   return (
-    <TopTabs.Navigator initialRouteName="EntityHome">
-      <TopTabs.Screen
-        name="EntityHome"
-        component={homeComponent}
-        options={{
-          title: t('pageTitles.home')
-        }}
-      />
-      <TopTabs.Screen
-        name="EntityCalendar"
-        component={calendarComponent}
-        options={{
-          title: t('pageTitles.calendar')
-        }}
-      />
-      <TopTabs.Screen
-        name="EntityReferences"
-        component={referencesComponent}
-        options={{
-          title: t('pageTitles.references')
-        }}
-      />
-      <TopTabs.Screen
-        name="EntityMessages"
-        component={messageComponent}
-        options={{
-          title: t('pageTitles.messages')
-        }}
-      />
-    </TopTabs.Navigator>
+    <QuickNavigator
+      homeComponent={homeComponent}
+      calendarComponent={calendarComponent}
+      referencesComponent={referencesComponent}
+      listsComponent={listsComponent}
+      messagesComponent={messagesComponent}
+      categoryName={category?.name || ''}
+    />
   );
 }

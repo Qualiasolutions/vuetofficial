@@ -1,15 +1,13 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Calendar from 'components/calendars/TaskCalendar';
 import EntityListPage from 'components/lists/EntityListPage';
 import ReferencesList from 'components/organisms/ReferencesList';
+import { Text } from 'components/Themed';
+import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectScheduledTaskIdsByEntityTypes } from 'reduxStore/slices/tasks/selectors';
-import { EntityTypeTabParamList } from 'types/base';
 import { EntityTypeName } from 'types/entities';
-
-const TopTabs = createMaterialTopTabNavigator<EntityTypeTabParamList>();
+import QuickNavigator from './base/QuickNavigator';
 
 export default function EntityTypeNavigator({
   entityTypes,
@@ -18,7 +16,6 @@ export default function EntityTypeNavigator({
   entityTypes: EntityTypeName[];
   entityTypeName: string;
 }) {
-  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByEntityTypes(entityTypes),
     [entityTypes]
@@ -42,38 +39,19 @@ export default function EntityTypeNavigator({
     return () => <ReferencesList entityTypes={entityTypes} />;
   }, [entityTypes]);
 
+  const listsComponent = useMemo(() => {
+    return () => <Text>LISTS</Text>;
+  }, []);
+
+  const categoryName = ENTITY_TYPE_TO_CATEGORY[entityTypes[0]];
+
   return (
-    <TopTabs.Navigator initialRouteName="EntityTypeHome">
-      <TopTabs.Screen
-        name="EntityTypeHome"
-        component={homeComponent}
-        options={{
-          title: t('pageTitles.home')
-        }}
-        initialParams={{
-          entityTypes
-        }}
-      />
-      <TopTabs.Screen
-        name="EntityTypeCalendar"
-        component={calendarComponent}
-        options={{
-          title: t('pageTitles.calendar')
-        }}
-        initialParams={{
-          entityTypes
-        }}
-      />
-      <TopTabs.Screen
-        name="EntityTypeReferences"
-        component={referencesComponent}
-        options={{
-          title: t('pageTitles.references')
-        }}
-        initialParams={{
-          entityTypes
-        }}
-      />
-    </TopTabs.Navigator>
+    <QuickNavigator
+      homeComponent={homeComponent}
+      calendarComponent={calendarComponent}
+      referencesComponent={referencesComponent}
+      listsComponent={listsComponent}
+      categoryName={categoryName || ''}
+    />
   );
 }

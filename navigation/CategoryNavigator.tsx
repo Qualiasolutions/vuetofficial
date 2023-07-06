@@ -1,32 +1,19 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {
-  createNativeStackNavigator,
-  NativeStackHeaderProps
-} from '@react-navigation/native-stack';
 import Calendar from 'components/calendars/TaskCalendar';
-import DropDown from 'components/molecules/DropDownView';
-import { WhitePaddedView } from 'components/molecules/ViewComponents';
 import CategoryHome from 'components/organisms/CategoryHome';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { Text } from 'components/Themed';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useGetAllReferenceGroupsQuery } from 'reduxStore/services/api/references';
 import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
 import { selectScheduledTaskIdsByCategories } from 'reduxStore/slices/tasks/selectors';
-import { CategoryTabParamList } from 'types/base';
-import { createDropDownNavigator } from './base/DropDownNavigator';
-
-// const TopTabs = createMaterialTopTabNavigator<CategoryTabParamList>();
-const TopTabs = createDropDownNavigator<CategoryTabParamList>();
+import QuickNavigator from './base/QuickNavigator';
 
 export default function CategoryNavigator({
   categoryId
 }: {
   categoryId: number;
 }) {
-  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByCategories([categoryId]),
     [categoryId]
@@ -59,43 +46,16 @@ export default function CategoryNavigator({
   }, [categoryId, categoryTags]);
 
   const listsComponent = useMemo(() => {
-    return () => null;
+    return () => <Text>LISTS</Text>;
   }, []);
 
-  if (!referenceGroups) {
-    return null;
-  }
-
   return (
-    <TopTabs.Navigator initialRouteName="CategoryHome">
-      <TopTabs.Screen
-        name="CategoryHome"
-        component={homeComponent}
-        options={{
-          title: t('pageTitles.home')
-        }}
-      />
-      <TopTabs.Screen
-        name="CategoryCalendar"
-        component={calendarComponent}
-        options={{
-          title: t('pageTitles.calendar')
-        }}
-      />
-      <TopTabs.Screen
-        name="CategoryReferences"
-        component={referencesComponent}
-        options={{
-          title: t('pageTitles.references')
-        }}
-      />
-      <TopTabs.Screen
-        name="CategoryLists"
-        component={listsComponent}
-        options={{
-          title: t('pageTitles.lists')
-        }}
-      />
-    </TopTabs.Navigator>
+    <QuickNavigator
+      homeComponent={homeComponent}
+      calendarComponent={calendarComponent}
+      referencesComponent={referencesComponent}
+      listsComponent={listsComponent}
+      categoryName={category?.name || ''}
+    />
   );
 }

@@ -114,15 +114,12 @@ export type TagScreenTabScreenProps<
 > = NativeStackScreenProps<TagScreenTabParamList, Screen>;
 
 // Category Stack
-export type CategoryTabParamList = {
-  CategoryCalendar: undefined;
-  CategoryReferences: undefined;
-  CategoryHome: undefined;
-  CategoryLists: undefined;
+export type QuickNavTabParamList = {
+  [key: string]: undefined;
 };
 
-export type CategoryTabScreenProps<Screen extends keyof CategoryTabParamList> =
-  NativeStackScreenProps<CategoryTabParamList, Screen>;
+export type QuickNavTabScreenProps<Screen extends keyof QuickNavTabParamList> =
+  NativeStackScreenProps<QuickNavTabParamList, Screen>;
 
 // MyAccount Stack
 export type MyAccountTabParamList = {
@@ -253,4 +250,4 @@ export type TabParamList = RootTabParamList &
   SettingsTabParamList &
   MyAccountTabParamList &
   EntityTabParamList &
-  CategoryTabParamList;
+  QuickNavTabParamList;
