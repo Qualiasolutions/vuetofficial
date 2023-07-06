@@ -12,20 +12,20 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
     alignItems: 'flex-start',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    overflow: 'visible'
   },
-  drawerPressable: {
+  drawerPressableSize: {
     height: 60,
     width: 60,
-    borderRadius: 15,
+    borderRadius: 15
+  },
+  drawerPressable: {
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden'
+    overflow: 'visible'
   },
-  drawerImage: {
-    height: '100%',
-    width: '100%'
-  },
+  drawerImage: {},
   drawerNullImage: {
     height: 30,
     width: 30
@@ -47,6 +47,7 @@ export default function SideDrawerButton() {
         onPress={() => (navigation as any).openDrawer()}
         style={[
           styles.drawerPressable,
+          styles.drawerPressableSize,
           elevation.elevated,
           {
             backgroundColor: whiteColor
@@ -56,9 +57,9 @@ export default function SideDrawerButton() {
         <Image
           source={imageSource}
           style={[
-            !userDetails?.presigned_profile_image_url
-              ? styles.drawerNullImage
-              : styles.drawerImage,
+            ...(!userDetails?.presigned_profile_image_url
+              ? [styles.drawerNullImage]
+              : [styles.drawerImage, styles.drawerPressableSize]),
             {
               backgroundColor: whiteColor
             }
