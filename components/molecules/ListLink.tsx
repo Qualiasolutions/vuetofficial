@@ -10,6 +10,10 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import ListButton from './ListButton';
 
+const styles = StyleSheet.create({
+  listLink: { marginBottom: 3 }
+});
+
 // We will need to add more types here as we use
 // this for more sub-navigators
 type ListLinkProps = {
@@ -50,7 +54,3 @@ export default function ListLink({
     />
   );
 }
-
-const styles = StyleSheet.create({
-  listLink: { marginBottom: 3 }
-});

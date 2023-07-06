@@ -1,5 +1,4 @@
 import { EntityTypeName } from 'types/entities';
-import PetCard from './PetCard';
 import TripActivityCard from './TripActivityCard';
 import AnniversaryCard from './AnniversaryCard';
 import EventCard from './EventCard';
@@ -16,7 +15,7 @@ type LinkMapping = {
 };
 
 export default {
-  Pet: PetCard,
+  Pet: GenericEntityWithImageCard,
   TripActivity: TripActivityCard,
   Trip: TripCard,
   Anniversary: AnniversaryCard,
