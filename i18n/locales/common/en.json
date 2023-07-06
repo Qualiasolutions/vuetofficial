@@ -577,6 +577,9 @@
     "imagePicker": {
       "choosePhoto": "Choose photo",
       "takePhoto": "Take photo"
+    },
+    "userInitials": {
+      "setupPending": "Setup Pending"
     }
   }
 }

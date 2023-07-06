@@ -26,6 +26,7 @@ import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import UserInitialsWithImage from 'components/molecules/UserInitialsWithImage';
 
 const styles = StyleSheet.create({
   familyHeader: {
@@ -139,15 +140,7 @@ const FamilySettingsScreen = ({
     isPending: boolean = false
   ) => (
     <TransparentView style={styles.listElement} key={user.id}>
-      <UserWithColor
-        name={
-          isPending
-            ? `${user.phone_number || user.email} (${t('common.pending')})`
-            : `${user.first_name} ${user.last_name}`
-        }
-        memberColour={user.member_colour || 'efefef'}
-        userImage={isUserResponse(user) ? user.presigned_profile_image_url : ''}
-      />
+      <UserInitialsWithImage user={user} isPending={isPending} />
       <TransparentView style={styles.listRight}>
         <SafePressable
           onPress={() => {

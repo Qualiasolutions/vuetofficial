@@ -40,8 +40,6 @@ export function DropDownNavigator({
       initialRouteName
     });
 
-  const currentRouteKey = state.routes[state.index].key;
-
   const routesByDropdownId: {
     [key: string]: { key: string; name: string }[];
   } = {};
@@ -63,7 +61,7 @@ export function DropDownNavigator({
     <NavigationContent>
       <WhitePaddedView style={[styles.header, elevation.elevated]}>
         {Object.entries(routesByDropdownId).map(([dropDownId, routes]) => (
-          <TransparentView style={styles.dropDownWrapper}>
+          <TransparentView style={styles.dropDownWrapper} key={dropDownId}>
             <DropDown
               listMode="MODAL"
               dropdownPlaceholder={t(

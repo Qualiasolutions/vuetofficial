@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     width: '60%',
     height: '60%'
   },
+  usernameAndColor: { justifyContent: 'center' },
   nameText: { fontSize: 16 }
 });
 
@@ -58,7 +59,7 @@ export default function UserWithColor({
           )}
         </AlmostWhiteView>
       ) : null}
-      <TransparentView style={{ justifyContent: 'center' }}>
+      <TransparentView style={styles.usernameAndColor}>
         <AlmostBlackText text={name} style={styles.nameText} />
         {memberColour && (
           <View

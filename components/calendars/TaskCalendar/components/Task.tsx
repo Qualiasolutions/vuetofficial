@@ -11,7 +11,6 @@ import { Image } from 'components/molecules/ImageComponents';
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
-import ColourBar from 'components/molecules/ColourBar';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { ITEM_HEIGHT } from './shared';
@@ -32,6 +31,7 @@ import {
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
+import UserInitialsWithColor from 'components/molecules/UserInitialsWithColor';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -70,7 +70,10 @@ const useStyles = () => {
       flexDirection: 'row',
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
-      marginTop: 13
+      marginTop: 2
+    },
+    userInitials: {
+      marginLeft: 2
     },
     bottomWrapper: {
       flexDirection: 'row',
@@ -245,17 +248,15 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     return [...(familyMembersList || []), ...(friendMembersList || [])];
   }, [userDetails, task]);
 
-  const memberColour = useMemo(
+  const memberColours = useMemo(
     () => (
       <TransparentView pointerEvents="none" style={styles.memberColor}>
-        <ColourBar
-          colourHexcodes={
-            membersList?.map(({ member_colour }) => member_colour) || []
-          }
-        />
+        {membersList?.map((user) => (
+          <UserInitialsWithColor user={user} style={styles.userInitials} />
+        )) || []}
       </TransparentView>
     ),
-    [membersList]
+    [membersList, styles]
   );
   const fullContent = useMemo(() => {
     if (!scheduledTask || !task) {
@@ -348,7 +349,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
             <EntityTags entities={task.entities} />
             <OptionTags tagNames={task.tags} />
           </TransparentScrollView>
-          {memberColour}
+          {memberColours}
         </TransparentView>
       </TransparentView>
     );
@@ -358,7 +359,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     date,
     isComplete,
     isCompleteTextColor,
-    memberColour,
+    memberColours,
     t,
     triggerCreateCompletionForm,
     userDetails?.is_premium,
