@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     padding: 20
+  },
+  headerContainer: {
+    borderBottomWidth: 2
   }
 });
 
@@ -78,7 +81,7 @@ export default function HolidayDetailScreen({
   const [createEntities] = useBulkCreateEntitiesMutation();
   const [deleteEntities] = useBulkDeleteEntitiesMutation();
 
-  const { data: holidays, isError, error } = useGetHolidaysQuery(`${params}`);
+  const { data: holidays } = useGetHolidaysQuery(`${params}`);
 
   useEffect(() => {
     if (
@@ -238,7 +241,11 @@ export default function HolidayDetailScreen({
         );
       }}
       renderSectionHeader={({ section: { title } }) => {
-        return <AlmostBlackText text={title} style={styles.headerText} />;
+        return (
+          <WhiteView style={styles.headerContainer}>
+            <AlmostBlackText text={title} style={styles.headerText} />
+          </WhiteView>
+        );
       }}
       ListFooterComponent={
         monthsAhead < 36 ? (

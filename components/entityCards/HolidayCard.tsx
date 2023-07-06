@@ -25,7 +25,10 @@ export default function HolidayCard({
       borderColor: useThemeColor({}, 'almostBlack')
     },
     listEntryText: {
-      fontSize: 20
+      fontSize: 16
+    },
+    datesText: {
+      fontSize: 14
     }
   });
 
@@ -47,7 +50,7 @@ export default function HolidayCard({
       <WhiteBox style={styles.card}>
         <LightBlackText text={entity.name || ''} style={styles.listEntryText} />
         <AlmostBlackText
-          style={{ fontSize: 18 }}
+          style={styles.datesText}
           text={`${startDateString}${
             entity.end_date !== entity.start_date ? ` to ${endDateString}` : ''
           }`}

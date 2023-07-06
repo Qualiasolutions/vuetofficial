@@ -31,13 +31,12 @@ export default function HolidayListScreen({
   });
   const { data: userDetails } = useGetUserDetails();
   const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
-  const {
-    data: allCountries,
-    isError,
-    error
-  } = useGetAllCountriesQuery(userDetails?.id || -1, {
-    skip: !userDetails?.id
-  });
+  const { data: allCountries } = useGetAllCountriesQuery(
+    userDetails?.id || -1,
+    {
+      skip: !userDetails?.id
+    }
+  );
 
   const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
@@ -59,13 +58,11 @@ export default function HolidayListScreen({
     }
   }, [allEntities, allCountries]);
 
-  const whiteColor = useThemeColor({}, 'white');
-
   const onPress = useCallback(
-    (country, selected) => {
-      if (selectedCountries.some((cou) => cou.code == country.code)) {
+    (country: Country, selected?: boolean) => {
+      if (selectedCountries.some((cou) => cou.code === country.code)) {
         setSelectedCountries(
-          selectedCountries.filter((cou) => cou.code != country.code)
+          selectedCountries.filter((cou) => cou.code !== country.code)
         );
       } else {
         setSelectedCountries([...selectedCountries, country]);
@@ -91,7 +88,7 @@ export default function HolidayListScreen({
               onSelect={async (selected) => onPress(country, selected)}
               onPressContainer={async (selected) => onPress(country, selected)}
               selected={selectedCountries.some(
-                (cou) => cou.code == country.code
+                (cou) => cou.code === country.code
               )}
             />
           ))}
@@ -105,7 +102,7 @@ export default function HolidayListScreen({
               onSelect={async (selected) => onPress(country, selected)}
               onPressContainer={async (selected) => onPress(country, selected)}
               selected={selectedCountries.some(
-                (cou) => cou.code == country.code
+                (cou) => cou.code === country.code
               )}
             />
           ))}
