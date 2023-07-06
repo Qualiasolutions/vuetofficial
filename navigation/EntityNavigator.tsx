@@ -23,13 +23,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [entityId]);
 
   const calendarComponent = useMemo(() => {
-    return () => (
-      <Calendar
-        fullPage={false}
-        showFilters={false}
-        filteredTasks={filteredTasks}
-      />
-    );
+    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {

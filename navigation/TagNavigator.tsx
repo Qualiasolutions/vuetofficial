@@ -18,13 +18,7 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
   const filteredTasks = useSelector(taskSelector);
 
   const calendarComponent = useMemo(() => {
-    return () => (
-      <Calendar
-        fullPage={false}
-        showFilters={false}
-        filteredTasks={filteredTasks}
-      />
-    );
+    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {

@@ -1,9 +1,25 @@
 import { TextInput, useThemeColor, View } from 'components/Themed';
 import { useState } from 'react';
-import { ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import DropDownPicker, { ListModeType } from 'react-native-dropdown-picker';
 
 const otherKey = '%%%%%%OTHER%%%%%%';
+
+const styles = StyleSheet.create({
+  pickerStyle: {
+    borderWidth: 1,
+    minHeight: 0 // Need to override the default
+  },
+  textStyle: {
+    fontFamily: 'Poppins',
+    fontSize: 15
+  },
+  textInput: {
+    height: 50,
+    flex: 1,
+    marginTop: 10
+  }
+});
 
 export default function DropDown({
   value = '',
@@ -44,7 +60,7 @@ export default function DropDown({
         }
         setOpen={setOpen}
         setValue={(item) => {
-          if (item(null) == otherKey) {
+          if (item(null) === otherKey) {
             setFormValues('');
             return setShowOther(true);
           }
@@ -52,19 +68,9 @@ export default function DropDown({
           setFormValues(item(null));
         }}
         placeholder={dropdownPlaceholder}
-        style={[
-          {
-            borderWidth: 1,
-            borderColor,
-            minHeight: 0 // Need to override the default
-          },
-          style
-        ]}
+        style={[styles.pickerStyle, { borderColor }, style]}
         textStyle={[
-          {
-            fontFamily: 'Poppins',
-            fontSize: 15
-          },
+          styles.textStyle,
           disabled
             ? {
                 color: disabledTextColor
@@ -80,14 +86,7 @@ export default function DropDown({
           onChangeText={(newValue) => {
             setFormValues(newValue);
           }}
-          style={[
-            {
-              height: 50,
-              flex: 1,
-              marginTop: 10
-            },
-            textInputStyle
-          ]}
+          style={[styles.textInput, textInputStyle]}
         />
       )}
     </View>

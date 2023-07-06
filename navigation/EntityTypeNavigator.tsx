@@ -35,13 +35,7 @@ export default function EntityTypeNavigator({
   }, [entityTypes, entityTypeName]);
 
   const calendarComponent = useMemo(() => {
-    return () => (
-      <Calendar
-        fullPage={false}
-        showFilters={false}
-        filteredTasks={filteredTasks}
-      />
-    );
+    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {

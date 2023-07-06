@@ -3,6 +3,7 @@
     "home": "Home",
     "references": "References",
     "categories": "Categories",
+    "lists": "Lists",
     "messages": "Messages",
     "settings": "Settings",
     "addTask": "Add Task",
@@ -519,6 +520,11 @@
     },
     "categoryList": {
       "categoryPreferences": "{{category}} Preferences",
+      "quickNav": "Quick Nav"
+    }
+  },
+  "navigation": {
+    "dropdown": {
       "quickNav": "Quick Nav"
     }
   },

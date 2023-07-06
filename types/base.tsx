@@ -118,6 +118,7 @@ export type CategoryTabParamList = {
   CategoryCalendar: undefined;
   CategoryReferences: undefined;
   CategoryHome: undefined;
+  CategoryLists: undefined;
 };
 
 export type CategoryTabScreenProps<Screen extends keyof CategoryTabParamList> =

@@ -76,7 +76,6 @@ export default function ChildEntitiesCalendarScreen({
             .map((ent) => ent.id)
             .some((ent) => period.entities.includes(ent))
       ]}
-      fullPage={false}
     />
   );
 }
