@@ -132,9 +132,6 @@ const FamilySettingsScreen = ({
       !(invite?.email && familyEmails.includes(invite?.email))
   );
 
-  const isUserResponse = (x: any): x is UserResponse =>
-    !!x.presigned_profile_image_url;
-
   const userToListElement = (
     user: UserResponse | UserInviteResponse,
     isPending: boolean = false

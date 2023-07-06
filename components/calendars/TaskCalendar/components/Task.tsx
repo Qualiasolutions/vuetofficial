@@ -252,7 +252,11 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     () => (
       <TransparentView pointerEvents="none" style={styles.memberColor}>
         {membersList?.map((user) => (
-          <UserInitialsWithColor user={user} style={styles.userInitials} />
+          <UserInitialsWithColor
+            user={user}
+            style={styles.userInitials}
+            key={user.id}
+          />
         )) || []}
       </TransparentView>
     ),

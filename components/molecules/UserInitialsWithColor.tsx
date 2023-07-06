@@ -20,8 +20,8 @@ const styles = StyleSheet.create({
 type UserProp = {
   first_name: string;
   last_name: string;
-  phone_number: string;
-  email: string;
+  phone_number: string | null;
+  email: string | null;
   member_colour: string;
 };
 

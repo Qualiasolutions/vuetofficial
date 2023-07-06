@@ -35,6 +35,8 @@ type UserProp = {
   presigned_profile_image_url?: string;
   first_name: string;
   last_name: string;
+  phone_number: string | null;
+  email: string | null;
   member_colour: string;
 };
 
