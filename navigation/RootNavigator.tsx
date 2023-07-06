@@ -36,6 +36,9 @@ import {
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import MessagesNavigator from './MessagesNavigator';
+import BackOnlyHeader, {
+  BackOnlyHeaderWithSafeArea
+} from 'headers/BackOnlyHeader';
 
 const styles = StyleSheet.create({
   icon: {
@@ -222,7 +225,8 @@ export function BottomTabNavigator({
         component={RoutineTasksScreen}
         options={{
           tabBarButton: () => null,
-          title: ''
+          title: '',
+          header: BackOnlyHeaderWithSafeArea
         }}
       />
     </BottomTab.Navigator>
