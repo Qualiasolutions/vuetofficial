@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import { Recurrence } from 'types/tasks';
 import {
   FlatFormFieldTypes,
-  MultiRecurrenceSelectorField
+  MultiRecurrenceSelectorField,
+  OptionalYearDate
 } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
 import isFieldShown from './isFieldShown';
@@ -76,6 +77,13 @@ const parseFormValues = (
     if (['tagSelector'].includes(fields[field]?.type)) {
       parsedFormValues.entities = parsedFormValues[field].entities;
       parsedFormValues.tags = parsedFormValues[field].tags;
+    }
+
+    if (['OptionalYearDate'].includes(fields[field]?.type)) {
+      const f = fields[field] as OptionalYearDate;
+      if (f.knownYearField) {
+        parsedFormValues[f.knownYearField] = !!formValues[f.knownYearField];
+      }
     }
   }
 

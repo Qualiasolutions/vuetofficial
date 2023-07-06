@@ -106,7 +106,6 @@ export default function Form({
 
   const [formValues, setFormValues] =
     React.useState<FieldValueTypes>(initialFormValues);
-  const [submittingForm, setSubmittingForm] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   const resetState = useCallback(() => {
@@ -143,8 +142,6 @@ export default function Form({
   }, [formValues, flatFields]);
 
   const submitForm = useCallback(() => {
-    setSubmittingForm(true);
-
     const submitMethod = formType === 'CREATE' ? 'POST' : 'PATCH';
     const parsedFormValues = parseFormValues(formValues, flatFields);
 
@@ -165,7 +162,6 @@ export default function Form({
         })
         .unwrap()
         .then(() => {
-          setSubmittingForm(false);
           onSubmitSuccess();
           if (clearOnSubmit) {
             resetState();
@@ -176,7 +172,6 @@ export default function Form({
             type: 'error',
             text1: t('common.errors.generic')
           });
-          setSubmittingForm(false);
           onSubmitFailure();
         });
     } else if (formDataType === 'form') {
@@ -205,7 +200,6 @@ export default function Form({
         })
         .unwrap()
         .then(() => {
-          setSubmittingForm(false);
           onSubmitSuccess();
           if (clearOnSubmit) {
             resetState();
@@ -216,7 +210,6 @@ export default function Form({
             type: 'error',
             text1: t('common.errors.generic')
           });
-          setSubmittingForm(false);
           onSubmitFailure();
         });
     }
@@ -236,11 +229,9 @@ export default function Form({
   ]);
 
   const makeDeleteRequest = () => {
-    setSubmittingForm(true);
     methodHookTriggers.DELETE.trigger(extraFields)
       .then(() => {
         onDeleteSuccess();
-        setSubmittingForm(false);
       })
       .catch((err) => {
         Toast.show({
@@ -248,7 +239,6 @@ export default function Form({
           text1: t('common.errors.generic')
         });
         onDeleteFailure(err);
-        setSubmittingForm(false);
       });
   };
 
@@ -290,7 +280,7 @@ export default function Form({
             onPress={() => {
               submitForm();
             }}
-            disabled={submittingForm || !hasRequired}
+            disabled={isSubmitting || !hasRequired}
             style={styles.button}
           />
           {formType === 'UPDATE' && methodHookTriggers.DELETE ? (
@@ -299,7 +289,7 @@ export default function Form({
               onPress={() => {
                 setShowDeleteModal(true);
               }}
-              disabled={submittingForm}
+              disabled={isSubmitting}
               style={[styles.button, styles.deleteButton]}
             />
           ) : null}

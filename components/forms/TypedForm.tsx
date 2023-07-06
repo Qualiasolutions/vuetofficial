@@ -289,6 +289,7 @@ export default function TypedForm({
           );
         case 'OptionalYearDate': {
           const f = flatFields[field];
+          const knownYearField = (f as OptionalYearDate).knownYearField;
           return (
             <InputPair
               field={field}
@@ -297,8 +298,9 @@ export default function TypedForm({
             >
               <OptionalYearDateInput
                 value={formValues[field]}
+                knownYear={knownYearField ? formValues[knownYearField] : false}
                 onValueChange={(newValue: Date, knownYear: boolean) => {
-                  const knownYearFields = (f as OptionalYearDate).knownYearField
+                  const knownYearFields = knownYearField
                     ? {
                         [(f as OptionalYearDate).knownYearField as string]:
                           knownYear
@@ -309,7 +311,6 @@ export default function TypedForm({
                     ...knownYearFields,
                     [field]: newValue
                   });
-                  setFormErrors({ ...formErrors, [field]: '' });
                 }}
                 textInputStyle={textInputStyle}
               />

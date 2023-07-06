@@ -11,7 +11,7 @@ const hasAllRequired = (
   for (const field in parsedFormValues) {
     const f = fields[field];
 
-    if (!f.required) {
+    if (!f?.required) {
       continue;
     }
 

@@ -2,7 +2,7 @@ import { MediumLightGreyText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { TextInput } from 'components/Themed';
 import { t } from 'i18next';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { StyleSheet, ViewStyle } from 'react-native';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -50,8 +50,10 @@ export function OptionalYearDateInput({
   const [dateValue, setDateValue] = useState<string>(
     String(value?.getDate() || '')
   );
+
+  const valueMonth = value?.getMonth();
   const [monthValue, setMonthValue] = useState<string>(
-    String(value?.getMonth() || '')
+    String(valueMonth ? valueMonth + 1 : '')
   );
   const [yearValue, setYearValue] = useState<string>(
     (knownYear && String(value?.getFullYear())) || ''
@@ -62,7 +64,7 @@ export function OptionalYearDateInput({
     null
   );
 
-  const validatedDate = () => {
+  const validatedDate = useCallback(() => {
     try {
       const dayJsDate = dayjs(
         `${yearValue || DEFAULT_YEAR}-${monthValue}-${dateValue}`,
@@ -77,7 +79,7 @@ export function OptionalYearDateInput({
     } catch {
       return false;
     }
-  };
+  }, [dateValue, monthValue, yearValue]);
 
   useEffect(() => {
     if (!value) {

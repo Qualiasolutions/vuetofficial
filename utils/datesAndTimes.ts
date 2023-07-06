@@ -16,7 +16,7 @@ const getTimeStringFromDateObject = (date: Date): string => {
 };
 
 const getDateWithoutTimezone = (date: string): Date => {
-  return new Date(`${date}T00:00:00`);
+  return new Date(`${date}T00:00:00Z`);
 };
 
 const getLongDateFromDateObject = (
