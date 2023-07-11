@@ -576,6 +576,7 @@
     },
     "tagSelector": {
       "selectedEntities": "Selected entities",
+      "selectedTags": "Selected tags",
       "requiresPetTag": "You must add a pet tag to this task",
       "requiresTravelTag": "You must add a travel tag to this task"
     },

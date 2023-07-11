@@ -4,7 +4,29 @@ import {
   FormCreateEntityRequest,
   FormUpdateEntityRequest
 } from 'types/entities';
-import { vuetApi, normalizeData } from './api';
+import { vuetApi } from './api';
+
+const normalizeEntityData = (data: { id: number; category: number }[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byCategory: data.reduce<{ [key: number]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.category]: prev[next.category]
+          ? [...prev[next.category], next.id]
+          : [next.id]
+      }),
+      {}
+    )
+  };
+};
 
 const entitiesApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,7 +36,7 @@ const entitiesApi = vuetApi.injectEndpoints({
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: EntityResponseType[] = await response.json();
-            return normalizeData(responseJson);
+            return normalizeEntityData(responseJson);
           } else {
             // Just return the error data
             return response.json();
@@ -29,7 +51,7 @@ const entitiesApi = vuetApi.injectEndpoints({
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: EntityResponseType[] = await response.json();
-            return normalizeData(responseJson);
+            return normalizeEntityData(responseJson);
           } else {
             // Just return the error data
             return response.json();

@@ -1,6 +1,6 @@
 import { DueDateResponseType, FixedTaskResponseType } from 'types/tasks';
 import { EntityResponseType } from 'types/entities';
-import { Category } from 'types/categories';
+import { Category, CategoryName } from 'types/categories';
 import { PeriodResponse } from 'types/periods';
 
 type AllTasks = {
@@ -14,6 +14,9 @@ type AllEntities = {
   ids: number[];
   byId: {
     [id: number]: EntityResponseType;
+  };
+  byCategory: {
+    [key: number]: number[];
   };
 };
 
