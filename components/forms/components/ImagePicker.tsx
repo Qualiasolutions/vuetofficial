@@ -110,6 +110,14 @@ export function ImagePicker({
   const [showPhotoTypeModal, setShowPhotoTypeModal] = useState(false);
   const { t } = useTranslation();
 
+  const [permissionStatus, requestPermission] = ExpoImagePicker.useCameraPermissions();
+
+  useEffect(() => {
+    if (!permissionStatus?.granted) {
+      requestPermission()
+    }
+  }, [permissionStatus?.granted])
+
   useEffect(() => {
     if (selectedImage && !selectedImage?.canceled) {
       const imageAsset = selectedImage?.assets[0];
@@ -159,6 +167,10 @@ export function ImagePicker({
   }, [setSelectedImage, imagePickerOptions]);
 
   const takePhoto = useCallback(async () => {
+    if (!permissionStatus?.granted) {
+      return requestPermission()
+    }
+
     const res = await ExpoImagePicker.launchCameraAsync(imagePickerOptions);
 
     if (res.canceled) {
