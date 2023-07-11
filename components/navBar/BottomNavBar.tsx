@@ -4,10 +4,10 @@ import {
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ContentTabParamList } from 'types/base';
 import { ListingModal } from 'components/molecules/Modals';
 import { EntityTypeName } from 'types/entities';
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const AddButton = ({ children, onPress }: { [key: string]: any }) => (
+const AddButton = ({ onPress }: { [key: string]: any }) => (
   <TransparentView style={styles.addButtonWrapper}>
     <TouchableHighlight style={styles.addButtonPressable} onPress={onPress}>
       <PrimaryColouredView style={styles.addButton}>
@@ -96,8 +96,9 @@ export default function BottomNavBar({
     [key: string]: any;
   }>({});
   const { t } = useTranslation();
+  const lightGreyColor = useThemeColor({}, 'lightGrey');
 
-  const getCurrentScreenAndParams = () => {
+  const getCurrentScreenAndParams = useCallback(() => {
     let nestedState: any = { ...state };
     while (true) {
       const route = nestedState.routes[nestedState.index];
@@ -107,14 +108,10 @@ export default function BottomNavBar({
         return route;
       }
     }
-  };
+  }, [state]);
 
   const { data: userDetails } = useGetUserFullDetails();
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any, {
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
 
@@ -128,7 +125,7 @@ export default function BottomNavBar({
     const { name, params } = getCurrentScreenAndParams();
     setCurrentScreen(name);
     setCurrentScreenParams(params);
-  }, [state]);
+  }, [state, getCurrentScreenAndParams]);
 
   const [showingEntityTypeSelector, setShowingEntityTypeSelector] =
     useState(false);
@@ -158,9 +155,7 @@ export default function BottomNavBar({
   );
 
   return (
-    <WhiteView
-      style={[{ borderTopColor: useThemeColor({}, 'lightGrey') }, styles.bar]}
-    >
+    <WhiteView style={[{ borderTopColor: lightGreyColor }, styles.bar]}>
       {entityTypeSelector}
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
