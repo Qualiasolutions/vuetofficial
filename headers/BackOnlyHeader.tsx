@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     height: 30,
     padding: 0,
     paddingLeft: 20,
-    marginBottom: 30
+    marginBottom: 30,
   }
 });
 export default function BackOnlyHeader(
@@ -47,7 +47,7 @@ export function BackOnlyHeaderWithSafeArea(
       style={[
         styles.container,
         {
-          paddingTop: insets.top + 5
+          paddingTop: insets.top + 5,
         }
       ]}
     >

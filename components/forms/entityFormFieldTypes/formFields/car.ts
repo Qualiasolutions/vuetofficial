@@ -1,65 +1,17 @@
 import {
-  Field,
   FlatFormFieldTypes,
   FormFieldTypes
 } from 'components/forms/formFieldTypes';
 import { UserFullResponse } from 'types/users';
 import { TFunction } from 'i18next';
+import reminderDropDownField from '../utils/reminderDropDownField';
+import dueDateMembershipField from '../utils/dueDateMembershipField';
 
 export const carForm = (
   isEdit: boolean,
   userFullDetails: UserFullResponse,
   t: TFunction
 ): FormFieldTypes => {
-  const reminderDropDownField = (dueDateFieldName: string) =>
-  ({
-    type: 'dropDown',
-    permittedValues: [
-      {
-        label: '1 day before',
-        value: 'DAILY'
-      },
-      {
-        label: '1 week before',
-        value: 'WEEKLY'
-      },
-      {
-        label: '1 month before',
-        value: 'MONTHLY'
-      }
-    ],
-    required: false,
-    displayName: t('entities.entity.reminder'),
-    listMode: 'MODAL',
-    hidden: isEdit,
-    initialValue: 'MONTHLY',
-    shownFields: [
-      {
-        [dueDateFieldName]: true
-      }
-    ]
-  } as Field);
-
-  const dueDateMembershipField = (dueDateFieldName: string) =>
-  ({
-    type: 'addMembers',
-    required: true,
-    permittedValues: {
-      family: userFullDetails?.family?.users || [],
-      friends: userFullDetails?.friends || []
-    },
-    valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-    displayName: t('entities.entity.taskMembers'),
-    hidden: isEdit,
-    changeMembersText: t('tasks.task.changeMembers'),
-    initialValue: [],
-    shownFields: [
-      {
-        [dueDateFieldName]: true
-      }
-    ]
-  } as Field);
-
   const fields: FlatFormFieldTypes[] = [
     {
       image: {
@@ -134,8 +86,8 @@ export const carForm = (
         displayName: t('entities.car.mot_due_date'),
         hidden: isEdit
       },
-      mot_reminder_interval: reminderDropDownField('mot_due_date'),
-      mot_due_date_members: dueDateMembershipField('mot_due_date')
+      mot_reminder_interval: reminderDropDownField('mot_due_date', t('entities.entity.reminder'), isEdit),
+      mot_due_date_members: dueDateMembershipField('mot_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
     },
     {
       tax_due_date: {
@@ -144,8 +96,8 @@ export const carForm = (
         displayName: t('entities.car.tax_due_date'),
         hidden: isEdit
       },
-      tax_reminder_interval: reminderDropDownField('tax_due_date'),
-      tax_due_date_members: dueDateMembershipField('tax_due_date')
+      tax_reminder_interval: reminderDropDownField('tax_due_date', t('entities.entity.reminder'), isEdit),
+      tax_due_date_members: dueDateMembershipField('tax_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
     },
     {
       service_due_date: {
@@ -154,8 +106,8 @@ export const carForm = (
         displayName: t('entities.car.service_due_date'),
         hidden: isEdit
       },
-      service_reminder_interval: reminderDropDownField('service_due_date'),
-      service_due_date_members: dueDateMembershipField('service_due_date')
+      service_reminder_interval: reminderDropDownField('service_due_date', t('entities.entity.reminder'), isEdit),
+      service_due_date_members: dueDateMembershipField('service_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
     },
     {
       insurance_due_date: {
@@ -164,8 +116,8 @@ export const carForm = (
         displayName: t('entities.car.insurance_due_date'),
         hidden: isEdit
       },
-      insurance_reminder_interval: reminderDropDownField('insurance_due_date'),
-      insurance_due_date_members: dueDateMembershipField('insurance_due_date')
+      insurance_reminder_interval: reminderDropDownField('insurance_due_date', t('entities.entity.reminder'), isEdit),
+      insurance_due_date_members: dueDateMembershipField('insurance_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
     },
     {
       warranty_due_date: {
@@ -174,8 +126,8 @@ export const carForm = (
         displayName: t('entities.car.warranty_due_date'),
         hidden: isEdit
       },
-      warranty_reminder_interval: reminderDropDownField('warranty_due_date'),
-      warranty_due_date_members: dueDateMembershipField('warranty_due_date')
+      warranty_reminder_interval: reminderDropDownField('warranty_due_date', t('entities.entity.reminder'), isEdit),
+      warranty_due_date_members: dueDateMembershipField('warranty_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
     }
   ];
 

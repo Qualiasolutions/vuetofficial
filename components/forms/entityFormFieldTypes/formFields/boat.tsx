@@ -1,13 +1,15 @@
-import { FormFieldTypes } from 'components/forms/formFieldTypes';
+import { FlatFormFieldTypes, FormFieldTypes } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
 import { UserFullResponse } from 'types/users';
+import dueDateMembershipField from '../utils/dueDateMembershipField';
+import reminderDropDownField from '../utils/reminderDropDownField';
 
 export const boatForm = (
   isEdit: boolean,
   userFullDetails: UserFullResponse,
   t: TFunction
 ): FormFieldTypes => {
-  return {
+  const fields: FlatFormFieldTypes[] = [{
     image: {
       type: 'Image',
       required: false,
@@ -40,16 +42,17 @@ export const boatForm = (
       required: false,
       displayName: t('entities.car.date_registered')
     },
-    service_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.service_due_date')
-    },
-    insurance_due_date: {
-      type: 'Date',
-      required: false,
-      displayName: t('entities.car.insurance_due_date')
-    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || []
+      },
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('entities.entity.members')
+    }
+  }, {
     vehicle_type: {
       type: 'dropDown',
       permittedValues: [
@@ -66,15 +69,34 @@ export const boatForm = (
       displayName: t('entities.car.vehicle_type'),
       listMode: 'MODAL'
     },
-    members: {
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
+  }];
+
+  const createFields: FlatFormFieldTypes[] = [
+    {
+      service_due_date: {
+        type: 'Date',
+        required: false,
+        displayName: t('entities.car.service_due_date'),
+        hidden: isEdit
       },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
-    }
-  };
+      service_reminder_interval: reminderDropDownField('service_due_date', t('entities.entity.reminder'), isEdit),
+      service_due_date_members: dueDateMembershipField('service_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+    },
+    {
+      insurance_due_date: {
+        type: 'Date',
+        required: false,
+        displayName: t('entities.car.insurance_due_date'),
+        hidden: isEdit
+      },
+      insurance_reminder_interval: reminderDropDownField('insurance_due_date', t('entities.entity.reminder'), isEdit),
+      insurance_due_date_members: dueDateMembershipField('insurance_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+    },
+  ];
+
+  if (!isEdit) {
+    return [...fields, ...createFields];
+  }
+
+  return fields;
 };
