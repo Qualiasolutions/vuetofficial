@@ -21,7 +21,8 @@
       "due_date": "Due date",
       "date": "Date",
       "routine": "Routine",
-      "tags": "Tags"
+      "tags": "Tags",
+      "changeMembers": "Who is doing?"
     },
     "fixedTask": {
       "start_datetime": "Start Datetime",

@@ -17,6 +17,7 @@ export default function QuickNavigator({
   referencesComponent,
   listsComponent,
   messagesComponent,
+  initialRouteName,
   categoryName
 }: {
   homeComponent?: (() => JSX.Element | null) | null;
@@ -24,6 +25,7 @@ export default function QuickNavigator({
   referencesComponent?: (() => JSX.Element | null) | null;
   listsComponent?: (() => JSX.Element | null) | null;
   messagesComponent?: (() => JSX.Element | null) | null;
+  initialRouteName?: string;
   categoryName: CategoryName | '';
 }) {
   const { t } = useTranslation();
@@ -44,11 +46,11 @@ export default function QuickNavigator({
     return null;
   }
 
-  const initialRouteName = homeComponent ? "Home" : "Calendar"
+  const initialRouteNameValue = initialRouteName || (homeComponent ? "Home" : "Calendar")
 
 
   return (
-    <TopTabs.Navigator initialRouteName={initialRouteName}>
+    <TopTabs.Navigator initialRouteName={initialRouteNameValue}>
       {homeComponent && (
         <TopTabs.Screen
           name="Home"

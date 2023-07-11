@@ -57,7 +57,8 @@ export function ModalListing({
 export default function MemberSelector({
   data,
   values,
-  onValueChange
+  onValueChange,
+  changeMembersText
 }: {
   data: {
     family: UserResponse[];
@@ -65,6 +66,7 @@ export default function MemberSelector({
   };
   values: number[];
   onValueChange: (val: number[]) => void;
+  changeMembersText?: string;
 }) {
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
   const { t } = useTranslation();
@@ -142,7 +144,7 @@ export default function MemberSelector({
           source={require('assets/images/icons/plus.png')}
           style={styles.addIcon}
         />
-        <PrimaryText text={t('components.memberSelector.changeMembers')} />
+        <PrimaryText text={changeMembersText || t('components.memberSelector.changeMembers')} />
       </SafePressable>
       <ListingModal
         visible={showMembersList}

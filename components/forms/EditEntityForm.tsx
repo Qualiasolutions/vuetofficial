@@ -18,8 +18,9 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useForm from './entityFormFieldTypes/useForm';
 import { useSelector } from 'react-redux';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import { ViewStyle } from 'react-native';
 
-export default function EditEntityForm({ entityId }: { entityId: number }) {
+export default function EditEntityForm({ entityId, style }: { entityId: number; style?: ViewStyle; }) {
   const navigation = useNavigation();
 
   const entityToEdit = useSelector(selectEntityById(entityId));
@@ -30,7 +31,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     {},
     entityToEdit
       ? fieldColorMapping[entityToEdit.resourcetype] ||
-          fieldColorMapping.default
+      fieldColorMapping.default
       : fieldColorMapping.default
   );
 
@@ -66,7 +67,7 @@ export default function EditEntityForm({ entityId }: { entityId: number }) {
     }
 
     return (
-      <TransparentView>
+      <TransparentView style={style || {}}>
         <RTKForm
           fields={formFields}
           methodHooks={{

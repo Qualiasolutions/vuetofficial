@@ -6,7 +6,6 @@ import {
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import {
-  useGetAllEntitiesQuery,
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
 
@@ -23,6 +22,8 @@ import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { useSelector } from 'react-redux';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -50,15 +51,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function ListScreen({ entityId }: { entityId: number }) {
+export default function ListEntityPage({ entityId }: { entityId: number }) {
   const { data: userFullDetails } = useGetUserFullDetails();
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any);
-
-  const entityData = allEntities?.byId[entityId];
+  const entityData = useSelector(selectEntityById(entityId))
   const { t } = useTranslation();
   const [newEntryTitle, setNewEntryTitle] = useState<string>('');
   const [createListEntry, createListEntryResult] = useCreateListEntryMutation();
@@ -66,11 +61,11 @@ export default function ListScreen({ entityId }: { entityId: number }) {
 
   const [updateEntity, updateEntityResult] = useUpdateEntityMutation();
 
-  if (!isListEntity(entityData) || isLoading) {
+  if (!isListEntity(entityData)) {
     return null;
   }
 
-  const memberIds = Array(...new Set(entityData.members));
+  const memberIds: number[] = Array(...new Set(entityData.members));
   const members: UserResponse[] = [];
 
   if (userFullDetails) {

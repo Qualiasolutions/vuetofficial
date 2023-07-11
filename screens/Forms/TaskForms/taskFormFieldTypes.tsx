@@ -27,7 +27,8 @@ export const useTaskTopFieldTypes = (
           friends: userFullDetails?.friends || []
         },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-        displayName: t('tasks.task.members')
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
       }
     };
   }, [t, userFullDetails, isEdit, taskHiddenTag]);
@@ -57,7 +58,8 @@ export const useDueDateFieldTypes = (
           friends: userFullDetails?.friends || []
         },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-        displayName: t('tasks.task.members')
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
       },
       date: {
         type: 'Date',
@@ -94,9 +96,9 @@ export const useDueDateFieldTypes = (
         displayName: t('tasks.task.routine'),
         permittedValues: allRoutines
           ? Object.values(allRoutines.byId).map((routine) => ({
-              value: routine.id,
-              label: routine.name
-            }))
+            value: routine.id,
+            label: routine.name
+          }))
           : [],
         listMode: 'MODAL'
       }

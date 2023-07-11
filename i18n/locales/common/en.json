@@ -580,6 +580,9 @@
     },
     "userInitials": {
       "setupPending": "Setup Pending"
+    },
+    "listOfLists": {
+      "addList": "Add List"
     }
   }
 }

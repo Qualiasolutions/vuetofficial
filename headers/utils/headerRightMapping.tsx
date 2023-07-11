@@ -52,7 +52,7 @@ const EditPressable: React.ElementType = ({ route, navigation }) => {
 
 export const headerRightMapping = {
   entities: {
-    default: EditPressable
+    default: () => null
   },
   entityTypes: {
     holidays: ({ route, navigation }) => {

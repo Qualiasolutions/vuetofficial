@@ -66,6 +66,7 @@ export type AddMembersField = BaseField<'addMembers', any> & {
     family: UserResponse[];
   };
   valueToDisplay: Function;
+  changeMembersText?: string;
 };
 export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {
   permittedValues: any[];

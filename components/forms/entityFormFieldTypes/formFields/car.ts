@@ -12,52 +12,53 @@ export const carForm = (
   t: TFunction
 ): FormFieldTypes => {
   const reminderDropDownField = (dueDateFieldName: string) =>
-    ({
-      type: 'dropDown',
-      permittedValues: [
-        {
-          label: '1 day before',
-          value: 'DAILY'
-        },
-        {
-          label: '1 week before',
-          value: 'WEEKLY'
-        },
-        {
-          label: '1 month before',
-          value: 'MONTHLY'
-        }
-      ],
-      required: false,
-      displayName: t('entities.entity.reminder'),
-      listMode: 'MODAL',
-      hidden: isEdit,
-      initialValue: 'MONTHLY',
-      shownFields: [
-        {
-          [dueDateFieldName]: true
-        }
-      ]
-    } as Field);
+  ({
+    type: 'dropDown',
+    permittedValues: [
+      {
+        label: '1 day before',
+        value: 'DAILY'
+      },
+      {
+        label: '1 week before',
+        value: 'WEEKLY'
+      },
+      {
+        label: '1 month before',
+        value: 'MONTHLY'
+      }
+    ],
+    required: false,
+    displayName: t('entities.entity.reminder'),
+    listMode: 'MODAL',
+    hidden: isEdit,
+    initialValue: 'MONTHLY',
+    shownFields: [
+      {
+        [dueDateFieldName]: true
+      }
+    ]
+  } as Field);
 
   const dueDateMembershipField = (dueDateFieldName: string) =>
-    ({
-      type: 'addMembers',
-      required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
-      },
-      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.taskMembers'),
-      hidden: isEdit,
-      initialValue: [],
-      shownFields: [
-        {
-          [dueDateFieldName]: true
-        }
-      ]
-    } as Field);
+  ({
+    type: 'addMembers',
+    required: true,
+    permittedValues: {
+      family: userFullDetails?.family?.users || [],
+      friends: userFullDetails?.friends || []
+    },
+    valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+    displayName: t('entities.entity.taskMembers'),
+    hidden: isEdit,
+    changeMembersText: t('tasks.task.changeMembers'),
+    initialValue: [],
+    shownFields: [
+      {
+        [dueDateFieldName]: true
+      }
+    ]
+  } as Field);
 
   const fields: FlatFormFieldTypes[] = [
     {

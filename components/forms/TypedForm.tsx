@@ -532,6 +532,7 @@ export default function TypedForm({
                     [field]: selectedMembers
                   });
                 }}
+                changeMembersText={f.changeMembersText || ''}
               />
             </InputPair>
           );
