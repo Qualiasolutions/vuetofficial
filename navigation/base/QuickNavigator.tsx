@@ -44,11 +44,14 @@ export default function QuickNavigator({
     return null;
   }
 
+  const initialRouteName = homeComponent ? "Home" : "Calendar"
+
+
   return (
-    <TopTabs.Navigator initialRouteName="CategoryHome">
+    <TopTabs.Navigator initialRouteName={initialRouteName}>
       {homeComponent && (
         <TopTabs.Screen
-          name="CategoryHome"
+          name="Home"
           component={homeComponent}
           options={{
             title: t('pageTitles.home'),
@@ -58,7 +61,7 @@ export default function QuickNavigator({
       )}
       {calendarComponent && (
         <TopTabs.Screen
-          name="CategoryCalendar"
+          name="Calendar"
           component={calendarComponent}
           options={{
             title: t('pageTitles.calendar'),
@@ -68,7 +71,7 @@ export default function QuickNavigator({
       )}
       {referencesComponent && (
         <TopTabs.Screen
-          name="CategoryReferences"
+          name="References"
           component={referencesComponent}
           options={{
             title: t('pageTitles.references'),
@@ -78,7 +81,7 @@ export default function QuickNavigator({
       )}
       {listsComponent && (
         <TopTabs.Screen
-          name="CategoryLists"
+          name="Lists"
           component={listsComponent}
           options={{
             title: t('pageTitles.lists'),
@@ -88,7 +91,7 @@ export default function QuickNavigator({
       )}
       {messagesComponent && (
         <TopTabs.Screen
-          name="CategoryMessages"
+          name="Messages"
           component={messagesComponent}
           options={{
             title: t('pageTitles.messages'),

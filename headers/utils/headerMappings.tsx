@@ -42,7 +42,10 @@ export const headerWithBackgroundColor = (
 export const headerWithBackground = (
   backgroundImage: ImageSourcePropType,
   height: number = 150,
-  headerStyle?: TextStyle
+  customStyles?: {
+    header?: TextStyle,
+    overlay?: (overlayColour: string) => ViewStyle
+  }
 ) => {
   return (props: NativeStackHeaderProps) => {
     const overlayColor = useThemeColor({}, 'overlay');
@@ -60,13 +63,13 @@ export const headerWithBackground = (
           source={backgroundImage}
         >
           <View
-            style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
+            style={[styles.overlay, { backgroundColor: `${overlayColor}99` }, (customStyles?.overlay && customStyles?.overlay(overlayColor)) || {}]}
           >
             <HeaderBackButton
               tintColor={props.options.headerTintColor}
               onPress={props.navigation.goBack}
             />
-            <HeaderTitle tintColor={props.options.headerTintColor} style={headerStyle || {}}>
+            <HeaderTitle tintColor={props.options.headerTintColor} style={customStyles?.header || {}}>
               {props.options.title}
             </HeaderTitle>
             <View style={styles.sideSections}>
@@ -79,6 +82,22 @@ export const headerWithBackground = (
   };
 };
 
+export const entityTypeHeader = (
+  backgroundImage: ImageSourcePropType,
+) => headerWithBackground(
+  backgroundImage,
+  150,
+  { header: { fontSize: 22 }, overlay: (overlayColor) => ({ backgroundColor: `${overlayColor}dd` }) }
+)
+
+export const categoryHeader = (
+  backgroundImage: ImageSourcePropType,
+) => headerWithBackground(
+  backgroundImage,
+  150,
+  { header: { fontSize: 28 } }
+)
+
 // TODO - set correct images
 export const headerMapping = {
   entities: {
@@ -88,103 +107,103 @@ export const headerMapping = {
     )
   },
   entityTypes: {
-    cars: headerWithBackground(
+    cars: entityTypeHeader(
+      require('assets/images/header-backgrounds/cars.png'),
+    ),
+    boats: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    boats: headerWithBackground(
+    'public-transport': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'public-transport': headerWithBackground(
+    events: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    events: headerWithBackground(
+    anniversaries: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    anniversaries: headerWithBackground(
+    hobbies: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    hobbies: headerWithBackground(
+    trips: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    trips: headerWithBackground(
+    pets: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    pets: headerWithBackground(
+    'days-off': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'days-off': headerWithBackground(
+    holidays: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    holidays: headerWithBackground(
+    schools: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    schools: headerWithBackground(
+    'academic-plans': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'academic-plans': headerWithBackground(
+    'extracurricular-plans': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'extracurricular-plans': headerWithBackground(
+    'career-goals': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'career-goals': headerWithBackground(
+    homes: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    homes: headerWithBackground(
+    food: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    food: headerWithBackground(
+    clothing: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    clothing: headerWithBackground(
+    'social-plans': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'social-plans': headerWithBackground(
+    'social-media': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'social-media': headerWithBackground(
+    'school-breaks': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'school-breaks': headerWithBackground(
+    'health-beauty': entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    'health-beauty': headerWithBackground(
+    finance: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    finance: headerWithBackground(
+    SchoolBreak: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    SchoolBreak: headerWithBackground(
+    TripActivity: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    TripActivity: headerWithBackground(
+    Flight: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    Flight: headerWithBackground(
+    TrainBusFerry: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    TrainBusFerry: headerWithBackground(
+    RentalCar: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    RentalCar: headerWithBackground(
+    TaxiOrTransfer: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    TaxiOrTransfer: headerWithBackground(
+    DriveTime: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    DriveTime: headerWithBackground(
+    HotelOrRental: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    HotelOrRental: headerWithBackground(
+    StayWithFriend: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    StayWithFriend: headerWithBackground(
+    Birthday: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    Birthday: headerWithBackground(
-      require('assets/images/header-backgrounds/cars.png')
-    ),
-    Anniversary: headerWithBackground(
+    Anniversary: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
     default: headerWithBackgroundColor('#444444')
@@ -193,47 +212,31 @@ export const headerMapping = {
     FAMILY: headerWithBackground(
       require('assets/images/header-backgrounds/holidays.png'),
       150,
-      { fontSize: 28 }
+      { header: { fontSize: 28 } }
     ),
-    PETS: headerWithBackground(
+    PETS: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    SOCIAL_INTERESTS: headerWithBackground(
+    SOCIAL_INTERESTS: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    EDUCATION_CAREER: headerWithBackground(
+    EDUCATION_CAREER: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    TRAVEL: headerWithBackground(
+    TRAVEL: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    HEALTH_BEAUTY: headerWithBackground(
+    HEALTH_BEAUTY: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    HOME_GARDEN: headerWithBackground(
+    HOME_GARDEN: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    FINANCE: headerWithBackground(
+    FINANCE: categoryHeader(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
-      { fontSize: 28 }
     ),
-    TRANSPORT: headerWithBackground(
+    TRANSPORT: categoryHeader(
       require('assets/images/header-backgrounds/cars.png'),
-      150,
-      { fontSize: 28 }
     ),
     default: headerWithBackgroundColor('#444444')
   }

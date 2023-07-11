@@ -19,9 +19,9 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const entity = useSelector(selectEntityById(entityId));
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
-  const homeComponent = useMemo(() => {
-    return () => null;
-  }, []);
+  // const homeComponent = useMemo(() => {
+  //   return () => null;
+  // }, []);
 
   const calendarComponent = useMemo(() => {
     return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
@@ -41,7 +41,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
 
   return (
     <QuickNavigator
-      homeComponent={homeComponent}
+      // homeComponent={homeComponent}
       calendarComponent={calendarComponent}
       referencesComponent={referencesComponent}
       listsComponent={listsComponent}

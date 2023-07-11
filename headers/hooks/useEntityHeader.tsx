@@ -4,7 +4,7 @@ import {
   NativeStackNavigationOptions
 } from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { headerMapping } from 'headers/utils/headerMappings';
+import { headerMapping, headerWithBackground } from 'headers/utils/headerMappings';
 import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
 import { headerRightMapping } from 'headers/utils/headerRightMapping';
 import {
@@ -12,6 +12,7 @@ import {
   selectMemberEntityById
 } from 'reduxStore/slices/entities/selectors';
 import { useSelector } from 'react-redux';
+import { parsePresignedUrl } from 'utils/urls';
 
 export default function useEntityHeader(
   entityId: number,
@@ -41,9 +42,11 @@ export default function useEntityHeader(
         ? headerTintColorMapping[entity.resourcetype]
         : headerTintColorMapping.default;
 
-      const HeaderComponent =
-        headerMapping.entities[entity.resourcetype] ||
-        headerMapping.entities.default;
+      const HeaderComponent = entity.presigned_image_url ? headerWithBackground(
+        { uri: parsePresignedUrl(entity.presigned_image_url) },
+        150
+      ) : (headerMapping.entities[entity.resourcetype] ||
+        headerMapping.entities.default);
 
       const header = HeaderComponent
         ? (props: NativeStackHeaderProps) => <HeaderComponent {...props} />
