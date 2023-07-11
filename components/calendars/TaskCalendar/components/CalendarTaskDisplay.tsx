@@ -136,8 +136,16 @@ function Calendar({
 
       const dailyTasksPerRoutine = tasksPerRoutine[date];
 
+      if (!dailyTasksPerRoutine) {
+        continue;
+      }
+
       // We want to only show the filtered tasks
       const permittedTasksOnDate = tasks[date];
+
+      if (!permittedTasksOnDate) {
+        continue;
+      }
 
       const routineIdsToShow = Object.keys(dailyTasksPerRoutine)
         .map((routineId) => parseInt(routineId))

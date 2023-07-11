@@ -112,7 +112,7 @@ export default function TypedForm({
   formType = 'CREATE',
   inlineFields = false,
   fieldColor = '#ffffff',
-  onFormValuesChange = () => { },
+  onFormValuesChange = () => {},
   style = {},
   sectionStyle = {}
 }: {
@@ -148,8 +148,8 @@ export default function TypedForm({
     return (fieldName: string) => {
       const displayName =
         flatFields &&
-          flatFields[fieldName] &&
-          Object.keys(flatFields[fieldName]).includes('displayName')
+        flatFields[fieldName] &&
+        Object.keys(flatFields[fieldName]).includes('displayName')
           ? flatFields[fieldName].displayName
           : parseFieldName(fieldName);
 
@@ -302,9 +302,9 @@ export default function TypedForm({
                 onValueChange={(newValue: Date, knownYear: boolean) => {
                   const knownYearFields = knownYearField
                     ? {
-                      [(f as OptionalYearDate).knownYearField as string]:
-                        knownYear
-                    }
+                        [(f as OptionalYearDate).knownYearField as string]:
+                          knownYear
+                      }
                     : {};
                   onFormValuesChange({
                     ...formValues,
@@ -661,7 +661,10 @@ export default function TypedForm({
             <InputPair
               field={field}
               key={field}
-              containerStyle={StyleSheet.flatten([styles.inputPair, { zIndex: 10 }])}
+              containerStyle={StyleSheet.flatten([
+                styles.inputPair,
+                { zIndex: 10 }
+              ])}
             >
               <WhiteImagePicker
                 onImageSelect={(image) => {

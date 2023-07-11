@@ -223,6 +223,13 @@
     "SOCIAL__INFORMATION__PUBLIC":"My Social Information",
     "CAREER__INFORMATION__PUBLIC":"My Career Information"
   },
+  "hiddenTags": {
+    "MOT_DUE": "MOT",
+    "INSURANCE_DUE": "Insurance",
+    "WARRANTY_DUE": "Warranty",
+    "SERVICE_DUE": "Service",
+    "TAX_DUE": "Tax"
+  },
   "addEntityHeaders": {
     "Car": "Vehicle",
     "Boat": "Boat or Other",
@@ -295,6 +302,7 @@
     "continue": "Continue",
     "skip": "Skip",
     "save": "Save",
+    "submit": "Submit",
     "show": "Show",
     "cancel": "Cancel",
     "tasks": "Tasks",
@@ -583,6 +591,14 @@
     },
     "listOfLists": {
       "addList": "Add List"
+    },
+    "entityPages": {
+      "car": {
+        "addingDueDate": "Adding {{dueDateType}} due date",
+        "dueDateTitle": "{{dueDateType}} Due",
+        "nextDueDate": "Next {{dueDateType}} due date",
+        "addDueDate": "Add {{dueDateType}} due date"
+      }
     }
   }
 }

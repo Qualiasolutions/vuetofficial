@@ -1,6 +1,10 @@
-import { Field } from "components/forms/formFieldTypes";
+import { Field } from 'components/forms/formFieldTypes';
 
-export default function reminderDropDownField(dueDateFieldName: string, displayName: string, hidden: boolean) {
+export default function reminderDropDownField(
+  dueDateFieldName: string,
+  displayName: string,
+  hidden: boolean
+) {
   return {
     type: 'dropDown',
     permittedValues: [

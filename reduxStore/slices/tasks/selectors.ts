@@ -8,7 +8,7 @@ import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms'
 import tasksApi from 'reduxStore/services/api/tasks';
 import { DayType } from 'types/datesAndTimes';
 import { EntityTypeName } from 'types/entities';
-import { ScheduledTaskResponseType } from 'types/tasks';
+import { HiddenTagType, ScheduledTaskResponseType } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import {
   selectFilteredEntities,
@@ -152,50 +152,52 @@ export const selectTasksInDailyRoutines = createSelector(
       });
 
       const formattedTaskObjects = formatTasksPerDate(taskObjects);
+      if (formattedTaskObjects[date]) {
+        for (const taskObj of formattedTaskObjects[date]) {
+          const task = {
+            id: taskObj.id,
+            recurrence_index: taskObj.recurrence_index,
+            action_id: taskObj.action_id,
+            type: taskObj.type
+          };
 
-      for (const taskObj of formattedTaskObjects[date]) {
-        const task = {
-          id: taskObj.id,
-          recurrence_index: taskObj.recurrence_index,
-          action_id: taskObj.action_id,
-          type: taskObj.type
-        };
+          if (taskObj.start_datetime && taskObj.end_datetime) {
+            // In this case the task is a fixed task
+            const startTime = new Date(taskObj.start_datetime || '');
+            const startDate = dayjs(startTime).format('YYYY-MM-DD');
+            const endTime = new Date(taskObj.end_datetime || '');
+            const endDate = dayjs(endTime).format('YYYY-MM-DD');
+            const multiDay = startDate !== endDate;
 
-        if (taskObj.start_datetime && taskObj.end_datetime) {
-          // In this case the task is a fixed task
-          const startTime = new Date(taskObj.start_datetime || '');
-          const startDate = dayjs(startTime).format('YYYY-MM-DD');
-          const endTime = new Date(taskObj.end_datetime || '');
-          const endDate = dayjs(endTime).format('YYYY-MM-DD');
-          const multiDay = startDate !== endDate;
-
-          if (multiDay) {
-            nonRoutineTasks.push(task);
-            continue;
-          }
-
-          let addedToRoutine = false;
-          for (const routine of dayRoutines) {
-            if (
-              dayjs(taskObj.start_datetime).format('HH:mm:dd') >=
-                routine.start_time &&
-              dayjs(taskObj.end_datetime).format('HH:mm:dd') <= routine.end_time
-            ) {
-              routineTasks[routine.id].push(task);
-              addedToRoutine = true;
+            if (multiDay) {
+              nonRoutineTasks.push(task);
+              continue;
             }
-          }
-          if (!addedToRoutine) {
+
+            let addedToRoutine = false;
+            for (const routine of dayRoutines) {
+              if (
+                dayjs(taskObj.start_datetime).format('HH:mm:dd') >=
+                  routine.start_time &&
+                dayjs(taskObj.end_datetime).format('HH:mm:dd') <=
+                  routine.end_time
+              ) {
+                routineTasks[routine.id].push(task);
+                addedToRoutine = true;
+              }
+            }
+            if (!addedToRoutine) {
+              nonRoutineTasks.push(task);
+            }
+          } else {
+            // Otherwise it is a due date and we place
+            // it in a routine if it is assigned to one
+            if (taskObj.routine) {
+              routineTasks[taskObj.routine].push(task);
+              continue;
+            }
             nonRoutineTasks.push(task);
           }
-        } else {
-          // Otherwise it is a due date and we place
-          // it in a routine if it is assigned to one
-          if (taskObj.routine) {
-            routineTasks[taskObj.routine].push(task);
-            continue;
-          }
-          nonRoutineTasks.push(task);
         }
       }
 
@@ -483,5 +485,58 @@ export const selectScheduledTask = ({
             : recurrenceIndex
         ];
       }
+    }
+  );
+
+export const selectTasksFromEntityAndHiddenTag = (
+  entityId: number,
+  tagName: HiddenTagType
+) =>
+  createSelector(
+    tasksApi.endpoints.getAllTasks.select(null as any),
+    (tasks) => {
+      const taskData = tasks.data;
+
+      if (!taskData) {
+        return [];
+      }
+      return taskData?.ids
+        .filter((id) => {
+          const task = taskData.byId[id];
+          return (
+            task.entities.includes(entityId) && task.hidden_tag === tagName
+          );
+        })
+        .map((id) => taskData.byId[id]);
+    }
+  );
+
+export const selectNextTaskFromEntityAndHiddenTag = (
+  entityId: number,
+  tagName: HiddenTagType
+) =>
+  createSelector(
+    selectTasksFromEntityAndHiddenTag(entityId, tagName),
+    (tasks) => {
+      const sortedTasks = tasks.sort((taskA, taskB) => {
+        const taskAStart = taskA.start_datetime || taskA.date;
+        const taskBStart = taskB.start_datetime || taskB.date;
+        if (!(taskAStart && taskBStart)) {
+          return 0;
+        }
+        return taskAStart < taskBStart ? -1 : 1;
+      });
+
+      const now = new Date();
+      for (const task of sortedTasks) {
+        if (task.start_datetime && new Date(task.start_datetime) > now) {
+          return task;
+        }
+        if (task.date && new Date(task.date) > now) {
+          return task;
+        }
+      }
+
+      return null;
     }
   );

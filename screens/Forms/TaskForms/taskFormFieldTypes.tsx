@@ -96,9 +96,9 @@ export const useDueDateFieldTypes = (
         displayName: t('tasks.task.routine'),
         permittedValues: allRoutines
           ? Object.values(allRoutines.byId).map((routine) => ({
-            value: routine.id,
-            label: routine.name
-          }))
+              value: routine.id,
+              label: routine.name
+            }))
           : [],
         listMode: 'MODAL'
       }

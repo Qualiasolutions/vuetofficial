@@ -77,6 +77,7 @@ interface BaseCreateTaskRequest {
   entities: number[];
   location?: string;
   reminders?: Reminder[];
+  hidden_tag?: HiddenTagType;
 }
 
 interface CreateFixedTaskRequest extends BaseCreateTaskRequest {
@@ -87,6 +88,7 @@ interface CreateFixedTaskRequest extends BaseCreateTaskRequest {
 
 interface CreateDueDateRequest extends BaseCreateTaskRequest {
   date: string;
+  duration: number;
   resourcetype: 'DueDate';
 }
 
@@ -101,6 +103,13 @@ type CreateTaskRequest =
   | CreateDueDateRequest
   | CreateFlexibleFixedTaskRequest;
 
+type HiddenTagType =
+  | 'MOT_DUE'
+  | 'INSURANCE_DUE'
+  | 'WARRANTY_DUE'
+  | 'SERVICE_DUE'
+  | 'TAX_DUE';
+
 export {
   TaskResourceType,
   ScheduledTaskType,
@@ -113,5 +122,6 @@ export {
   CreateFixedTaskRequest,
   CreateDueDateRequest,
   CreateFlexibleFixedTaskRequest,
-  ScheduledTaskResponseType
+  ScheduledTaskResponseType,
+  HiddenTagType
 };

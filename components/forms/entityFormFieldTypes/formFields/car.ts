@@ -86,8 +86,18 @@ export const carForm = (
         displayName: t('entities.car.mot_due_date'),
         hidden: isEdit
       },
-      mot_reminder_interval: reminderDropDownField('mot_due_date', t('entities.entity.reminder'), isEdit),
-      mot_due_date_members: dueDateMembershipField('mot_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+      mot_reminder_interval: reminderDropDownField(
+        'mot_due_date',
+        t('entities.entity.reminder'),
+        isEdit
+      ),
+      mot_due_date_members: dueDateMembershipField(
+        'mot_due_date',
+        userFullDetails,
+        isEdit,
+        t('entities.entity.taskMembers'),
+        t('tasks.task.changeMembers')
+      )
     },
     {
       tax_due_date: {
@@ -96,8 +106,18 @@ export const carForm = (
         displayName: t('entities.car.tax_due_date'),
         hidden: isEdit
       },
-      tax_reminder_interval: reminderDropDownField('tax_due_date', t('entities.entity.reminder'), isEdit),
-      tax_due_date_members: dueDateMembershipField('tax_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+      tax_reminder_interval: reminderDropDownField(
+        'tax_due_date',
+        t('entities.entity.reminder'),
+        isEdit
+      ),
+      tax_due_date_members: dueDateMembershipField(
+        'tax_due_date',
+        userFullDetails,
+        isEdit,
+        t('entities.entity.taskMembers'),
+        t('tasks.task.changeMembers')
+      )
     },
     {
       service_due_date: {
@@ -106,8 +126,18 @@ export const carForm = (
         displayName: t('entities.car.service_due_date'),
         hidden: isEdit
       },
-      service_reminder_interval: reminderDropDownField('service_due_date', t('entities.entity.reminder'), isEdit),
-      service_due_date_members: dueDateMembershipField('service_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+      service_reminder_interval: reminderDropDownField(
+        'service_due_date',
+        t('entities.entity.reminder'),
+        isEdit
+      ),
+      service_due_date_members: dueDateMembershipField(
+        'service_due_date',
+        userFullDetails,
+        isEdit,
+        t('entities.entity.taskMembers'),
+        t('tasks.task.changeMembers')
+      )
     },
     {
       insurance_due_date: {
@@ -116,8 +146,18 @@ export const carForm = (
         displayName: t('entities.car.insurance_due_date'),
         hidden: isEdit
       },
-      insurance_reminder_interval: reminderDropDownField('insurance_due_date', t('entities.entity.reminder'), isEdit),
-      insurance_due_date_members: dueDateMembershipField('insurance_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+      insurance_reminder_interval: reminderDropDownField(
+        'insurance_due_date',
+        t('entities.entity.reminder'),
+        isEdit
+      ),
+      insurance_due_date_members: dueDateMembershipField(
+        'insurance_due_date',
+        userFullDetails,
+        isEdit,
+        t('entities.entity.taskMembers'),
+        t('tasks.task.changeMembers')
+      )
     },
     {
       warranty_due_date: {
@@ -126,8 +166,18 @@ export const carForm = (
         displayName: t('entities.car.warranty_due_date'),
         hidden: isEdit
       },
-      warranty_reminder_interval: reminderDropDownField('warranty_due_date', t('entities.entity.reminder'), isEdit),
-      warranty_due_date_members: dueDateMembershipField('warranty_due_date', userFullDetails, isEdit, t('entities.entity.taskMembers'), t('tasks.task.changeMembers')),
+      warranty_reminder_interval: reminderDropDownField(
+        'warranty_due_date',
+        t('entities.entity.reminder'),
+        isEdit
+      ),
+      warranty_due_date_members: dueDateMembershipField(
+        'warranty_due_date',
+        userFullDetails,
+        isEdit,
+        t('entities.entity.taskMembers'),
+        t('tasks.task.changeMembers')
+      )
     }
   ];
 
