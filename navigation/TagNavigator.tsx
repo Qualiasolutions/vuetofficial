@@ -22,6 +22,16 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {
+    if (
+      [
+        'TRANSPORT__INFORMATION__PUBLIC',
+        'TRAVEL__INFORMATION__PUBLIC',
+        'CAREER__INFORMATION__PUBLIC',
+        'SOCIAL__INFORMATION__PUBLIC'
+      ].includes(tagName)
+    ) {
+      return () => <ReferencesList tagsFirst={true} />;
+    }
     return () => <ReferencesList tags={[tagName]} />;
   }, [tagName]);
 

@@ -409,10 +409,12 @@ const TagReferences = ({ tagName }: { tagName: string }) => {
 
 const FlatReferencesList = ({
   entities,
-  tags
+  tags,
+  tagsFirst
 }: {
   entities?: number[];
   tags?: string[];
+  tagsFirst?: boolean;
 }) => {
   const tagViews = tags
     ? tags.map((tagName) => <TagReferences tagName={tagName} key={tagName} />)
@@ -420,16 +422,22 @@ const FlatReferencesList = ({
 
   const entityViews = entities
     ? entities.map((entityId) => (
-      <EntityReferences entityId={entityId} key={entityId} />
-    ))
+        <EntityReferences entityId={entityId} key={entityId} />
+      ))
     : null;
 
-  return (
-    <TransparentView>
+  const content = tagsFirst ? (
+    <>
+      {tagViews}
+      {entityViews}
+    </>
+  ) : (
+    <>
       {entityViews}
       {tagViews}
-    </TransparentView>
+    </>
   );
+  return <TransparentView>{content}</TransparentView>;
 };
 
 const referencesListStyles = {
@@ -442,12 +450,14 @@ export default function ReferencesList({
   entities,
   entityTypes,
   tags,
+  tagsFirst,
   categories,
   showCategoryHeaders
 }: {
   entities?: number[];
   entityTypes?: string[];
   tags?: string[];
+  tagsFirst?: boolean;
   categories?: number[];
   showCategoryHeaders?: boolean;
 }) {
@@ -471,37 +481,43 @@ export default function ReferencesList({
     return <PaddedSpinner />;
   }
 
-  const tagsToShow = (
-    tags || Object.keys(allReferenceGroups.byTagName)
-  ).filter(tagName => {
-    if (tags && tags.includes(tagName)) {
-      return true
+  const tagsToShow = (tags || Object.keys(allReferenceGroups.byTagName)).filter(
+    (tagName) => {
+      if (tags && tags.includes(tagName)) {
+        return true;
+      }
+      if (!(categories || entities || entityTypes || tags)) {
+        // If no args are provided then we show everything
+        return true;
+      }
+      return false;
     }
-    if (!(categories || entities || entityTypes || tags)) {
-      // If no args are provided then we show everything
-      return true
-    }
-    return false
-  })
+  );
 
   const entitiesToShow: number[] = (
     entities ||
     Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id))
-  ).filter(entityId => {
-    if (categories && categories.includes(allEntities.byId[entityId].category)) {
-      return true
+  ).filter((entityId) => {
+    if (
+      categories &&
+      categories.includes(allEntities.byId[entityId].category)
+    ) {
+      return true;
     }
     if (entities && entities.includes(entityId)) {
-      return true
+      return true;
     }
-    if (entityTypes && entityTypes.includes(allEntities.byId[entityId].resourcetype)) {
-      return true
+    if (
+      entityTypes &&
+      entityTypes.includes(allEntities.byId[entityId].resourcetype)
+    ) {
+      return true;
     }
     if (!(categories || entities || entityTypes || tags)) {
       // If no args are provided then we show everything
-      return true
+      return true;
     }
-    return false
+    return false;
   });
 
   const tagsAndEntitiesToShowByCategory: {
@@ -541,6 +557,7 @@ export default function ReferencesList({
             tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
           }
           tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
+          tagsFirst={tagsFirst}
         />
       </TransparentView>
     )
