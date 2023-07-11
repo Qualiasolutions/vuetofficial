@@ -46,8 +46,8 @@ export default function QuickNavigator({
     return null;
   }
 
-  const initialRouteNameValue = initialRouteName || (homeComponent ? "Home" : "Calendar")
-
+  const initialRouteNameValue =
+    initialRouteName || (homeComponent ? 'Home' : 'Calendar');
 
   return (
     <TopTabs.Navigator initialRouteName={initialRouteNameValue}>

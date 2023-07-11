@@ -1,7 +1,13 @@
-import { Field } from "components/forms/formFieldTypes";
-import { UserFullResponse } from "types/users";
+import { Field } from 'components/forms/formFieldTypes';
+import { UserFullResponse } from 'types/users';
 
-export default function dueDateMembershipField(dueDateFieldName: string, userDetails: UserFullResponse, hidden: boolean, displayName: string, changeMembersText: string) {
+export default function dueDateMembershipField(
+  dueDateFieldName: string,
+  userDetails: UserFullResponse,
+  hidden: boolean,
+  displayName: string,
+  changeMembersText: string
+) {
   return {
     type: 'addMembers',
     required: true,

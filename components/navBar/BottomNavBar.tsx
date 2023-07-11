@@ -120,8 +120,8 @@ export default function BottomNavBar({
 
   const holidayEntities = allEntities
     ? Object.values(allEntities.byId).filter(
-      (ent) => ent.resourcetype === 'Holiday'
-    )
+        (ent) => ent.resourcetype === 'Holiday'
+      )
     : [];
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export default function BottomNavBar({
                 } else if (currentScreen === 'EntityScreen') {
                   type RouteParams = ContentTabParamList['EntityScreen'];
                   navigation.navigate('AddTask', {
-                    entitites: [(currentScreenParams as RouteParams).entityId]
+                    entities: [(currentScreenParams as RouteParams).entityId]
                   });
                 } else if (
                   [
@@ -236,8 +236,8 @@ export default function BottomNavBar({
             route.name === 'ContentNavigator'
               ? 'Categories'
               : route.name === 'SettingsNavigator'
-                ? 'Settings'
-                : '';
+              ? 'Settings'
+              : '';
           return (
             <SafePressable
               key={index}

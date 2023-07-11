@@ -176,9 +176,13 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
       duration: defaultDuration,
       recurrence: null,
       earliest_action_date: defaultEarliestActionDate,
-      due_date: defaultDueDate
+      due_date: defaultDueDate,
+      tagsAndEntities: {
+        entities: route.params?.entities || [],
+        tags: route.params?.tags || []
+      }
     });
-  }, [taskMiddleFields, userDetails, formType]);
+  }, [taskMiddleFields, userDetails, formType, route]);
 
   const initialBottomFields = useMemo(() => {
     if (!userDetails) {
