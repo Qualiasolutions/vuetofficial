@@ -23,6 +23,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { enableFreeze } from 'react-native-screens';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { EventProvider } from 'react-native-outside-press';
 
 const persistConfig = {
   key: 'root',
@@ -50,7 +51,8 @@ setupListeners(store.dispatch);
 enableFreeze();
 
 const styles = StyleSheet.create({
-  root: { width: '100%', height: '100%' }
+  root: { width: '100%', height: '100%' },
+  eventProvider: { flex: 1 }
 });
 
 export default function App() {
@@ -64,15 +66,17 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={<Splash />} persistor={persistor}>
           <SafeAreaProvider>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            >
-              <GestureHandlerRootView style={styles.root}>
-                <Navigation colorScheme={colorScheme} />
-              </GestureHandlerRootView>
-            </KeyboardAvoidingView>
-            <StatusBar translucent={true} />
-            <Toast position="bottom" />
+            <EventProvider style={styles.eventProvider}>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              >
+                <GestureHandlerRootView style={styles.root}>
+                  <Navigation colorScheme={colorScheme} />
+                </GestureHandlerRootView>
+              </KeyboardAvoidingView>
+              <StatusBar translucent={true} />
+              <Toast position="bottom" />
+            </EventProvider>
           </SafeAreaProvider>
         </PersistGate>
       </Provider>

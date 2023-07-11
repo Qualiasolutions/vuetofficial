@@ -1,4 +1,4 @@
-import { useThemeColor } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
 import {
   StyleSheet,
   ViewStyle,
@@ -13,6 +13,7 @@ import { Image } from 'components/molecules/ImageComponents';
 import SafePressable from 'components/molecules/SafePressable';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { useTranslation } from 'react-i18next';
+import OutsidePressHandler from 'react-native-outside-press';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,11 +49,22 @@ const styles = StyleSheet.create({
   photoTypeModalBox: {
     position: 'absolute',
     left: 50,
-    top: 50
+    top: 50,
   },
   photoTypeModalLink: {
     marginBottom: 10
-  }
+  },
+  background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0
+  },
+  opaqueBackground: {
+    color: '#000000',
+    opacity: 0.8
+  },
 });
 
 export type CustomFile = {
@@ -159,22 +171,28 @@ export function ImagePicker({
 
   const photoTypeModal = useMemo(() => {
     return (
-      <WhiteBox style={styles.photoTypeModalBox}>
-        <LinkButton
-          onPress={chooseImage}
-          title={t('components.imagePicker.choosePhoto')}
-          style={styles.photoTypeModalLink}
-        />
-        <LinkButton
-          onPress={takePhoto}
-          title={t('components.imagePicker.takePhoto')}
-          style={styles.photoTypeModalLink}
-        />
-        <Button
-          onPress={() => setShowPhotoTypeModal(false)}
-          title={t('common.cancel')}
-        />
-      </WhiteBox>
+      <OutsidePressHandler
+        onOutsidePress={() => setShowPhotoTypeModal(false)}
+        disabled={false}
+        style={styles.photoTypeModalBox}
+      >
+        <WhiteBox>
+          <LinkButton
+            onPress={chooseImage}
+            title={t('components.imagePicker.choosePhoto')}
+            style={styles.photoTypeModalLink}
+          />
+          <LinkButton
+            onPress={takePhoto}
+            title={t('components.imagePicker.takePhoto')}
+            style={styles.photoTypeModalLink}
+          />
+          <Button
+            onPress={() => setShowPhotoTypeModal(false)}
+            title={t('common.cancel')}
+          />
+        </WhiteBox>
+      </OutsidePressHandler>
     );
   }, [t, chooseImage, takePhoto]);
 
