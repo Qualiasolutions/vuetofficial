@@ -36,19 +36,19 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
   }, [tagName]);
 
   return (
-    <TopTabs.Navigator initialRouteName="TagCalendar">
-      <TopTabs.Screen
-        name="TagCalendar"
-        component={calendarComponent}
-        options={{
-          title: t('pageTitles.calendar')
-        }}
-      />
+    <TopTabs.Navigator initialRouteName="TagReferences">
       <TopTabs.Screen
         name="TagReferences"
         component={referencesComponent}
         options={{
           title: t('pageTitles.references')
+        }}
+      />
+      <TopTabs.Screen
+        name="TagCalendar"
+        component={calendarComponent}
+        options={{
+          title: t('pageTitles.calendar')
         }}
       />
     </TopTabs.Navigator>
