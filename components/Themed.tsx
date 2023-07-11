@@ -93,7 +93,7 @@ export function TextInput(props: TextInputProps) {
           color
         },
         styles.textInput,
-        style
+        style || {}
       ]}
       {...otherProps}
     />

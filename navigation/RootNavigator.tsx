@@ -209,7 +209,8 @@ export function BottomTabNavigator({
         component={EditTaskScreen}
         options={{
           tabBarButton: () => null,
-          title: t('pageTitles.editTask')
+          title: t('pageTitles.editTask'),
+          header: BackOnlyHeaderWithSafeArea
         }}
       />
       <BottomTab.Screen

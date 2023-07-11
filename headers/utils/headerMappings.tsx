@@ -1,7 +1,7 @@
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor, View } from 'components/Themed';
-import { ImageBackground, ImageSourcePropType, StyleSheet } from 'react-native';
+import { ImageBackground, ImageSourcePropType, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
 export const headerWithBackgroundColor = (
@@ -41,7 +41,8 @@ export const headerWithBackgroundColor = (
 
 export const headerWithBackground = (
   backgroundImage: ImageSourcePropType,
-  height: number = 150
+  height: number = 150,
+  headerStyle?: TextStyle
 ) => {
   return (props: NativeStackHeaderProps) => {
     const overlayColor = useThemeColor({}, 'overlay');
@@ -65,7 +66,7 @@ export const headerWithBackground = (
               tintColor={props.options.headerTintColor}
               onPress={props.navigation.goBack}
             />
-            <HeaderTitle tintColor={props.options.headerTintColor}>
+            <HeaderTitle tintColor={props.options.headerTintColor} style={headerStyle || {}}>
               {props.options.title}
             </HeaderTitle>
             <View style={styles.sideSections}>
@@ -186,38 +187,60 @@ export const headerMapping = {
     Anniversary: headerWithBackground(
       require('assets/images/header-backgrounds/cars.png')
     ),
+    default: headerWithBackgroundColor('#444444')
+  },
+  categories: {
     FAMILY: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     PETS: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     SOCIAL_INTERESTS: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     EDUCATION_CAREER: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     TRAVEL: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     HEALTH_BEAUTY: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     HOME_GARDEN: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     FINANCE: headerWithBackground(
-      require('assets/images/header-backgrounds/holidays.png')
+      require('assets/images/header-backgrounds/holidays.png'),
+      150,
+      { fontSize: 28 }
     ),
     TRANSPORT: headerWithBackground(
-      require('assets/images/header-backgrounds/cars.png')
+      require('assets/images/header-backgrounds/cars.png'),
+      150,
+      { fontSize: 28 }
     ),
     default: headerWithBackgroundColor('#444444')
   }
 } as {
   entities: { [key: string]: React.ElementType | undefined };
   entityTypes: { [key: string]: React.ElementType | undefined };
+  categories: { [key: string]: React.ElementType | undefined };
 };
 
 const styles = StyleSheet.create({

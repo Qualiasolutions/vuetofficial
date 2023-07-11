@@ -420,8 +420,8 @@ const FlatReferencesList = ({
 
   const entityViews = entities
     ? entities.map((entityId) => (
-        <EntityReferences entityId={entityId} key={entityId} />
-      ))
+      <EntityReferences entityId={entityId} key={entityId} />
+    ))
     : null;
 
   return (
@@ -471,28 +471,38 @@ export default function ReferencesList({
     return <PaddedSpinner />;
   }
 
-  const tagsToShow =
-    entities || entityTypes
-      ? []
-      : tags || Object.keys(allReferenceGroups.byTagName);
-
-  let entitiesToShow: number[] = [];
-  if (!tags) {
-    entitiesToShow =
-      entities ||
-      Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id));
-    if (categories) {
-      entitiesToShow = entitiesToShow.filter((ent) =>
-        categories.includes(allEntities.byId[ent].category)
-      );
+  const tagsToShow = (
+    tags || Object.keys(allReferenceGroups.byTagName)
+  ).filter(tagName => {
+    if (tags && tags.includes(tagName)) {
+      return true
     }
-
-    if (entityTypes) {
-      entitiesToShow = entitiesToShow.filter((ent) =>
-        entityTypes.includes(allEntities.byId[ent].resourcetype)
-      );
+    if (!(categories || entities || entityTypes || tags)) {
+      // If no args are provided then we show everything
+      return true
     }
-  }
+    return false
+  })
+
+  const entitiesToShow: number[] = (
+    entities ||
+    Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id))
+  ).filter(entityId => {
+    if (categories && categories.includes(allEntities.byId[entityId].category)) {
+      return true
+    }
+    if (entities && entities.includes(entityId)) {
+      return true
+    }
+    if (entityTypes && entityTypes.includes(allEntities.byId[entityId].resourcetype)) {
+      return true
+    }
+    if (!(categories || entities || entityTypes || tags)) {
+      // If no args are provided then we show everything
+      return true
+    }
+    return false
+  });
 
   const tagsAndEntitiesToShowByCategory: {
     [key: number]: { tags: string[]; entities: number[] };

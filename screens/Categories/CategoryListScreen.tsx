@@ -3,7 +3,7 @@ import { ContentTabScreenProps } from 'types/base';
 import CategoryNavigator from 'navigation/CategoryNavigator';
 import { useSelector } from 'react-redux';
 import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
-import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
+import useCategoryHeader from 'headers/hooks/useCategoryHeader';
 import {
   useCreateCategorySetupCompletionMutation,
   useGetCategorySetupCompletionsQuery
@@ -95,7 +95,7 @@ const SetupPages = ({
 
 export default function CategoryListScreen({ route }: CategoryListScreenProps) {
   const category = useSelector(selectCategoryById(route.params.categoryId));
-  useEntityTypeHeader(category?.name || '');
+  useCategoryHeader(category?.name || '');
 
   const { data: categorySetupData, isLoading: isLoadingSetupData } =
     useGetCategorySetupCompletionsQuery(null as any);
