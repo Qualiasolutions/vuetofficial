@@ -1,5 +1,4 @@
 import { useThemeColor } from 'components/Themed';
-import { ImageField } from 'components/forms/formFieldTypes';
 import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { useNavigation } from '@react-navigation/native';
 
@@ -20,7 +19,13 @@ import { useSelector } from 'react-redux';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { ViewStyle } from 'react-native';
 
-export default function EditEntityForm({ entityId, style }: { entityId: number; style?: ViewStyle; }) {
+export default function EditEntityForm({
+  entityId,
+  style
+}: {
+  entityId: number;
+  style?: ViewStyle;
+}) {
   const navigation = useNavigation();
 
   const entityToEdit = useSelector(selectEntityById(entityId));
@@ -31,7 +36,7 @@ export default function EditEntityForm({ entityId, style }: { entityId: number; 
     {},
     entityToEdit
       ? fieldColorMapping[entityToEdit.resourcetype] ||
-      fieldColorMapping.default
+          fieldColorMapping.default
       : fieldColorMapping.default
   );
 

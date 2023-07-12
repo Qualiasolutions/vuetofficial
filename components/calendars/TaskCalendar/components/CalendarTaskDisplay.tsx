@@ -296,7 +296,7 @@ function Calendar({
     return layouts;
   }, [shownSections]);
 
-  const PADDING_BOTTOM = 200;
+  const PADDING_BOTTOM = 300;
   return (
     <>
       <SectionList

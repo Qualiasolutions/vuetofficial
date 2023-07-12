@@ -30,7 +30,7 @@ import {
 } from 'reduxStore/services/api/tasks';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { DueDateResponseType, FixedTaskResponseType } from 'types/tasks';
+import { FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
@@ -69,9 +69,9 @@ export default function EditTaskScreen({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [taskToEdit, setTaskToEdit] = useState<
-    FixedTaskResponseType | DueDateResponseType | null
-  >(null);
+  const [taskToEdit, setTaskToEdit] = useState<FixedTaskResponseType | null>(
+    null
+  );
   const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
     {}
   );
@@ -205,7 +205,7 @@ export default function EditTaskScreen({
 
   const submitUpdateForm = () => {
     if (taskToEdit) {
-      if (taskToEdit.resourcetype === 'FixedTask') {
+      if (['TASK', 'APPOINTMENT'].includes(taskToEdit.type)) {
         const parsedTopFieldValues = parseFormValues(
           taskTopFieldValues,
           taskTopFields
@@ -241,7 +241,7 @@ export default function EditTaskScreen({
 
         const body = {
           ...parsedDueDateFieldValues,
-          resourcetype: 'DueDate' as 'DueDate',
+          resourcetype: 'FixedTask' as 'FixedTask',
           id: taskToEdit.id
         };
         if (Object.keys(body as any).includes('recurrence')) {
@@ -257,56 +257,55 @@ export default function EditTaskScreen({
     return <FullPageSpinner />;
   }
 
-  const formFields =
-    taskToEdit.resourcetype === 'FixedTask' ? (
-      <>
-        <TransparentView>
-          <TypedForm
-            fields={taskTopFields}
-            formValues={taskTopFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskTopFieldValues(values);
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </TransparentView>
-        <TransparentView>
-          <TypedForm
-            fields={taskMiddleFields}
-            formValues={taskMiddleFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskMiddleFieldValues(values);
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </TransparentView>
-        <TransparentView>
-          <TypedForm
-            fields={taskBottomFields}
-            formValues={taskBottomFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskBottomFieldValues(values);
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </TransparentView>
-      </>
-    ) : (
+  const formFields = ['TASK', 'APPOINTMENT'].includes(taskToEdit.type) ? (
+    <>
       <TransparentView>
         <TypedForm
-          fields={dueDateFields}
-          formValues={dueDateFieldValues}
+          fields={taskTopFields}
+          formValues={taskTopFieldValues}
           onFormValuesChange={(values: FieldValueTypes) => {
-            setDueDateFieldValues(values);
+            setTaskTopFieldValues(values);
           }}
           inlineFields={true}
           fieldColor={fieldColor}
         />
       </TransparentView>
-    );
+      <TransparentView>
+        <TypedForm
+          fields={taskMiddleFields}
+          formValues={taskMiddleFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setTaskMiddleFieldValues(values);
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+        />
+      </TransparentView>
+      <TransparentView>
+        <TypedForm
+          fields={taskBottomFields}
+          formValues={taskBottomFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setTaskBottomFieldValues(values);
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+        />
+      </TransparentView>
+    </>
+  ) : (
+    <TransparentView>
+      <TypedForm
+        fields={dueDateFields}
+        formValues={dueDateFieldValues}
+        onFormValuesChange={(values: FieldValueTypes) => {
+          setDueDateFieldValues(values);
+        }}
+        inlineFields={true}
+        fieldColor={fieldColor}
+      />
+    </TransparentView>
+  );
 
   return (
     <TransparentFullPageScrollView>

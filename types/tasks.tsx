@@ -23,7 +23,9 @@ interface Reminder {
   recurrence_type: RecurrenceType;
 }
 
-type TaskResourceType = 'FixedTask' | 'DueDate' | 'TaskAction';
+type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction';
+type TaskResourceType = 'FixedTask';
+type TaskType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
 type ScheduledTaskType = 'TASK' | 'ACTION';
 
 interface BaseTaskType {
@@ -46,11 +48,10 @@ interface BaseTaskType {
   duration?: string;
   start_datetime?: string;
   end_datetime?: string;
+  type: TaskType;
 }
 
 interface FixedTaskResponseType extends BaseTaskType {}
-
-interface DueDateResponseType extends BaseTaskType {}
 
 interface ScheduledTaskResponseType {
   id: number;
@@ -63,7 +64,7 @@ interface ScheduledTaskResponseType {
   recurrence_index: number | null;
   routine: number | null;
   title: string;
-  resourcetype: 'FixedTask' | 'DueDate' | 'TaskAction';
+  resourcetype: ScheduledTaskResourceType;
   alert: AlertName[];
   date?: string;
   duration?: string;
@@ -79,18 +80,15 @@ interface BaseCreateTaskRequest {
   reminders?: Reminder[];
   actions?: { action_timedelta: string }[];
   hidden_tag?: HiddenTagType;
+  type?: TaskType;
 }
 
 interface CreateFixedTaskRequest extends BaseCreateTaskRequest {
-  start_datetime: string;
-  end_datetime: string;
+  start_datetime?: string;
+  end_datetime?: string;
+  date?: string;
+  duration?: number;
   resourcetype: 'FixedTask';
-}
-
-interface CreateDueDateRequest extends BaseCreateTaskRequest {
-  date: string;
-  duration: number;
-  resourcetype: 'DueDate';
 }
 
 interface CreateFlexibleFixedTaskRequest extends BaseCreateTaskRequest {
@@ -101,7 +99,6 @@ interface CreateFlexibleFixedTaskRequest extends BaseCreateTaskRequest {
 
 type CreateTaskRequest =
   | CreateFixedTaskRequest
-  | CreateDueDateRequest
   | CreateFlexibleFixedTaskRequest;
 
 type HiddenTagType =
@@ -112,16 +109,14 @@ type HiddenTagType =
   | 'TAX_DUE';
 
 export {
-  TaskResourceType,
+  ScheduledTaskResourceType,
   ScheduledTaskType,
   RecurrenceType,
   Recurrence,
   Reminder,
   FixedTaskResponseType,
-  DueDateResponseType,
   CreateTaskRequest,
   CreateFixedTaskRequest,
-  CreateDueDateRequest,
   CreateFlexibleFixedTaskRequest,
   ScheduledTaskResponseType,
   HiddenTagType

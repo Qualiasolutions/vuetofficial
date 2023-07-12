@@ -28,7 +28,7 @@ export default function useCompletionCallback(taskId: number) {
       };
       await createTask({
         hidden_tag: task.hidden_tag,
-        resourcetype: 'DueDate',
+        resourcetype: 'FixedTask',
         date: parsedFormValues.date,
         duration: 30,
         members: parsedFormValues.members,
@@ -43,7 +43,8 @@ export default function useCompletionCallback(taskId: number) {
               }
             ]
           : [],
-        entities: task.entities
+        entities: task.entities,
+        type: 'DUE_DATE'
       }).unwrap();
     };
   }

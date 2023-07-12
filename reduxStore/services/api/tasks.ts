@@ -5,9 +5,7 @@ import {
   FixedTaskResponseType,
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
-  CreateDueDateRequest,
-  DueDateResponseType,
-  TaskResourceType
+  ScheduledTaskResourceType
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
@@ -24,7 +22,7 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
     })),
     byDate: formatTasksPerDate(data),
     byTaskId: data
-      .filter((task) => ['FixedTask', 'DueDate'].includes(task.resourcetype))
+      .filter((task) => ['FixedTask'].includes(task.resourcetype))
       .reduce<{ [key: number]: {} }>(
         (prev, next) => ({
           ...prev,
@@ -49,7 +47,7 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
 
 const updateQueryDataForNewTask = (
   api: any,
-  newTask: FixedTaskResponseType | DueDateResponseType,
+  newTask: FixedTaskResponseType,
   dispatch: ThunkDispatch<any, any, AnyAction>,
   getState: () => RootState<any, any, 'vuetApi'>
 ) => {
@@ -134,7 +132,7 @@ type AllScheduledTasks = {
   ordered: {
     id: number;
     recurrence_index: number | null;
-    resourcetype: TaskResourceType;
+    resourcetype: ScheduledTaskResourceType;
     action_id: number | null;
   }[];
   byDate: {
@@ -177,10 +175,7 @@ const tasksApi = vuetApi.injectEndpoints({
         url: 'core/task/',
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: (
-              | FixedTaskResponseType
-              | DueDateResponseType
-            )[] = await response.json();
+            const responseJson: FixedTaskResponseType[] = await response.json();
             return normalizeData(responseJson);
           } else {
             // Just return the error data
@@ -191,9 +186,8 @@ const tasksApi = vuetApi.injectEndpoints({
       providesTags: ['Task']
     }),
     updateTask: builder.mutation<
-      FixedTaskResponseType | DueDateResponseType,
-      Partial<FixedTaskResponseType | DueDateResponseType> &
-        Pick<FixedTaskResponseType, 'id'>
+      FixedTaskResponseType,
+      Partial<FixedTaskResponseType> & Pick<FixedTaskResponseType, 'id'>
     >({
       query: (body) => {
         return {
@@ -275,30 +269,29 @@ const tasksApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    createTask: builder.mutation<
-      FixedTaskResponseType | DueDateResponseType,
-      CreateFixedTaskRequest | CreateDueDateRequest
-    >({
-      query: (body) => {
-        return {
-          url: 'core/task/',
-          method: 'POST',
-          body
-        };
-      },
-      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction'], // We leave task invalidation because recurrence requires this
-      async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
-        try {
-          const { data: newTask } = await queryFulfilled;
-          updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
-        } catch (err) {
-          console.error(err);
+    createTask: builder.mutation<FixedTaskResponseType, CreateFixedTaskRequest>(
+      {
+        query: (body) => {
+          return {
+            url: 'core/task/',
+            method: 'POST',
+            body
+          };
+        },
+        invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction'], // We leave task invalidation because recurrence requires this
+        async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
+          try {
+            const { data: newTask } = await queryFulfilled;
+            updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
+          } catch (err) {
+            console.error(err);
+          }
         }
       }
-    }),
+    ),
     createTaskWithoutCacheInvalidation: builder.mutation<
-      FixedTaskResponseType | DueDateResponseType,
-      CreateFixedTaskRequest | CreateDueDateRequest
+      FixedTaskResponseType,
+      CreateFixedTaskRequest
     >({
       query: (body) => {
         return {

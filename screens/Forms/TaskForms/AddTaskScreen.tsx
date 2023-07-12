@@ -289,7 +289,8 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
       const parsedFieldValues: any = {
         ...parsedDueDateFieldValues,
         end_date: parsedDueDateFieldValues.start_date,
-        resourcetype: 'DueDate'
+        type: 'DUE_DATE',
+        resourcetype: 'FixedTask'
       };
 
       try {

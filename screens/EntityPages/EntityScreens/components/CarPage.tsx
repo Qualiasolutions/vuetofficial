@@ -30,7 +30,7 @@ import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { selectNextTaskFromEntityAndHiddenTag } from 'reduxStore/slices/tasks/selectors';
 import { elevation } from 'styles/elevation';
-import { DueDateResponseType, HiddenTagType } from 'types/tasks';
+import { FixedTaskResponseType, HiddenTagType } from 'types/tasks';
 
 const styles = StyleSheet.create({
   titleBar: { flexDirection: 'row', alignItems: 'flex-end', marginBottom: 10 },
@@ -132,9 +132,10 @@ const DueDateInputForm = ({
               await createTask({
                 entities: [entityId],
                 hidden_tag: hiddenTag,
-                resourcetype: 'DueDate',
+                resourcetype: 'FixedTask',
                 date: parsedFormValues.due_date,
                 duration: 15,
+                type: 'DUE_DATE',
                 members: parsedFormValues.due_date_members,
                 title: t('components.entityPages.car.dueDateTitle', {
                   dueDateType: t(`hiddenTags.${hiddenTag}`)
@@ -193,7 +194,7 @@ export default function CarPage({ entityId }: { entityId: number }) {
       | 'INSURANCE_DUE'
       | 'SERVICE_DUE'
       | 'TAX_DUE'
-      | 'WARRANTY_DUE']: DueDateResponseType | undefined | null;
+      | 'WARRANTY_DUE']: FixedTaskResponseType | undefined | null;
   } = {
     MOT_DUE: nextMotTask,
     INSURANCE_DUE: nextInsuranceTask,

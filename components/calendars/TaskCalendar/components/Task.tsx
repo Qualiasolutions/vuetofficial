@@ -292,20 +292,19 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                 ]}
                 bold={true}
               />
-              {['FixedTask', 'DueDate'].includes(task.resourcetype) &&
-                hasEditPerms && (
-                  <SafePressable
-                    onPress={() =>
-                      navigation.navigate('EditTask', {
-                        taskId: task.id
-                      })
-                    }
-                  >
-                    <PrimaryText
-                      text={t('components.calendar.task.viewOrEdit')}
-                    />
-                  </SafePressable>
-                )}
+              {['FixedTask'].includes(task.resourcetype) && hasEditPerms && (
+                <SafePressable
+                  onPress={() =>
+                    navigation.navigate('EditTask', {
+                      taskId: task.id
+                    })
+                  }
+                >
+                  <PrimaryText
+                    text={t('components.calendar.task.viewOrEdit')}
+                  />
+                </SafePressable>
+              )}
             </TransparentView>
           </TransparentView>
           <SafePressable

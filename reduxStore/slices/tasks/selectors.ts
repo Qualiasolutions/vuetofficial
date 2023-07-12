@@ -251,7 +251,7 @@ export const selectScheduledTaskIdsByEntityTypes = (
       const filteredTasks =
         taskData.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
-            if (['FixedTask', 'DueDate'].includes(resourcetype)) {
+            if (['FixedTask'].includes(resourcetype)) {
               return taskData.byTaskId[id][
                 recurrence_index === null ? -1 : recurrence_index
               ];
@@ -291,7 +291,7 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
     const filteredTasks =
       scheduledTasks.data.ordered
         .map(({ id, recurrence_index, resourcetype, action_id }) => {
-          if (['FixedTask', 'DueDate'].includes(resourcetype)) {
+          if (['FixedTask'].includes(resourcetype)) {
             return scheduledTasks.data?.byTaskId[id][
               recurrence_index === null ? -1 : recurrence_index
             ];
@@ -329,7 +329,7 @@ export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
       const filteredTasks =
         scheduledTasks.data.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
-            if (['FixedTask', 'DueDate'].includes(resourcetype)) {
+            if (['FixedTask'].includes(resourcetype)) {
               return scheduledTasks.data?.byTaskId[id][
                 recurrence_index === null ? -1 : recurrence_index
               ];
@@ -364,7 +364,7 @@ export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
       const filteredTasks =
         scheduledTasks.data.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
-            if (['FixedTask', 'DueDate'].includes(resourcetype)) {
+            if (['FixedTask'].includes(resourcetype)) {
               return scheduledTasks.data?.byTaskId[id][
                 recurrence_index === null ? -1 : recurrence_index
               ];
@@ -402,7 +402,7 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
       const filteredTasks =
         taskData.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
-            if (['FixedTask', 'DueDate'].includes(resourcetype)) {
+            if (['FixedTask'].includes(resourcetype)) {
               return taskData.byTaskId[id][
                 recurrence_index === null ? -1 : recurrence_index
               ];
