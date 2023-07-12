@@ -375,20 +375,20 @@ const getTypeOptions = (firstOccurrence: Date) => {
   if (weekNumber < 5) {
     typeItems.push({
       value: 'MONTH_WEEKLY',
-      label: `month on the ${ordinal(weekNumber)} ${dayName}`
+      label: `Month on the ${ordinal(weekNumber)} ${dayName}`
     });
   }
 
   if (isLastWeek) {
     typeItems.push({
       value: 'MONTHLY_LAST_WEEK',
-      label: `month on the last ${dayName}`
+      label: `Month on the last ${dayName}`
     });
   }
 
   typeItems.push({
     value: 'YEAR_MONTH_WEEKLY',
-    label: `year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
+    label: `Year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
   });
 
   return typeItems;
