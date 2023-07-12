@@ -8,6 +8,13 @@ import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
+const styles = StyleSheet.create({
+  listLink: {
+    borderRadius: 16,
+    marginBottom: 15
+  }
+});
+
 export default function HobbyScreen({ entityId }: { entityId: number }) {
   const {
     data: userDetails,
@@ -104,10 +111,3 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
     </WhiteFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  listLink: {
-    borderRadius: 16,
-    marginBottom: 15
-  }
-});

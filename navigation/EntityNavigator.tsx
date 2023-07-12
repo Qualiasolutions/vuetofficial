@@ -33,7 +33,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [entityId]);
 
   const listsComponent = useMemo(() => {
-    return () => <ListOfLists entityId={entityId} />;
+    return () => <ListOfLists entities={[entityId]} />;
   }, [entityId]);
 
   const messagesComponent = useMemo(() => {

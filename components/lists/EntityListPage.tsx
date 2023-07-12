@@ -7,7 +7,8 @@ import linkMapping from 'components/entityCards';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import {
   TransparentPaddedView,
-  TransparentView
+  TransparentView,
+  WhiteView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';
@@ -19,7 +20,7 @@ import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 100
+    marginBottom: 0
   },
   noEntitiesText: {
     fontSize: 20,
@@ -207,7 +208,7 @@ export default function EntityListPage({
 
   if (listLinks.length === 0) {
     return (
-      <WhiteFullPageScrollView>
+      <TransparentView>
         {showPreviousButton}
         <TransparentPaddedView style={styles.container}>
           <AlmostBlackText
@@ -218,18 +219,18 @@ export default function EntityListPage({
           />
         </TransparentPaddedView>
         {showFutureButton}
-      </WhiteFullPageScrollView>
+      </TransparentView>
     );
   }
 
   return (
-    <WhiteFullPageScrollView>
+    <TransparentView>
       <TransparentPaddedView style={styles.container}>
         {showPreviousButton}
         {listLinks}
         {isFetching && <PaddedSpinner />}
         {showFutureButton}
       </TransparentPaddedView>
-    </WhiteFullPageScrollView>
+    </TransparentView>
   );
 }

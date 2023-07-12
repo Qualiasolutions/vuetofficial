@@ -463,12 +463,9 @@ export default function ReferencesList({
 }) {
   const { t } = useTranslation();
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
-
   const { data: allCategories } = useGetAllCategoriesQuery();
-
   const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =
     useGetAllReferenceGroupsQuery();
-
   const { isLoading: isLoadingReferences } = useGetAllReferencesQuery(); // Pull refs
 
   if (

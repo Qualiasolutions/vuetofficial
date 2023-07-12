@@ -1,5 +1,6 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import CategoryHome from 'components/organisms/CategoryHome';
+import ListOfLists from 'components/organisms/ListOfLists';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { Text } from 'components/Themed';
 import { useMemo } from 'react';
@@ -46,8 +47,8 @@ export default function CategoryNavigator({
   }, [categoryId, categoryTags]);
 
   const listsComponent = useMemo(() => {
-    return () => <Text>LISTS</Text>;
-  }, []);
+    return () => <ListOfLists categories={[categoryId]} />;
+  }, [categoryId]);
 
   return (
     <QuickNavigator

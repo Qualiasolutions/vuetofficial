@@ -1,5 +1,7 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import EntityListPage from 'components/lists/EntityListPage';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import ListOfLists from 'components/organisms/ListOfLists';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { Text } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
@@ -24,10 +26,12 @@ export default function EntityTypeNavigator({
 
   const homeComponent = useMemo(() => {
     return () => (
-      <EntityListPage
-        entityTypes={entityTypes}
-        entityTypeName={entityTypeName}
-      />
+      <TransparentFullPageScrollView>
+        <EntityListPage
+          entityTypes={entityTypes}
+          entityTypeName={entityTypeName}
+        />
+      </TransparentFullPageScrollView>
     );
   }, [entityTypes, entityTypeName]);
 
@@ -40,8 +44,8 @@ export default function EntityTypeNavigator({
   }, [entityTypes]);
 
   const listsComponent = useMemo(() => {
-    return () => <Text>LISTS</Text>;
-  }, []);
+    return () => <ListOfLists entityTypes={entityTypes} />;
+  }, [entityTypes]);
 
   const categoryName = ENTITY_TYPE_TO_CATEGORY[entityTypes[0]];
 

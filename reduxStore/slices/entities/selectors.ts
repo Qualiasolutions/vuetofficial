@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import entitiesApi from 'reduxStore/services/api/entities';
+import { EntityTypeName } from 'types/entities';
 
 export const selectEntityById = (entityId: number) =>
   createSelector(
@@ -50,3 +51,19 @@ export const selectNewEntityIds = createSelector(
     return newIds;
   }
 );
+
+export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
+  createSelector(
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    (entities) => {
+      const entityData = entities?.data;
+      if (!entityData) {
+        return [];
+      }
+
+      return entityData.ids.filter((id) => {
+        const entity = entityData.byId[id];
+        return entityTypes.includes(entity.resourcetype);
+      });
+    }
+  );
