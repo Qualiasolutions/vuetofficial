@@ -61,12 +61,21 @@ export const selectOverdueTasks = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(null as any),
   taskActionsApi.endpoints.getAllTaskActions.select(null as any),
   taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
-  (tasks, taskActions, taskCompletionForms) => {
+  taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(
+    null as any
+  ),
+  (tasks, taskActions, taskCompletionForms, taskActionCompletionForms) => {
     const tasksData = tasks?.data;
     const taskActionsData = taskActions?.data;
     const taskCompletionFormsData = taskCompletionForms?.data;
+    const taskActionCompletionFormsData = taskActionCompletionForms?.data;
 
-    if (!tasksData || !taskActionsData || !taskCompletionFormsData) {
+    if (
+      !tasksData ||
+      !taskActionsData ||
+      !taskCompletionFormsData ||
+      !taskActionCompletionFormsData
+    ) {
       return [];
     }
 
@@ -87,7 +96,10 @@ export const selectOverdueTasks = createSelector(
       }
 
       const isComplete = actionId
-        ? taskActionsData.byId[actionId]?.is_complete
+        ? !!(
+            taskActionCompletionFormsData.byActionId[actionId] &&
+            taskActionCompletionFormsData.byActionId[id][recurrenceIndex]
+          )
         : !!(
             taskCompletionFormsData.byTaskId[id] &&
             taskCompletionFormsData.byTaskId[id][recurrenceIndex]
@@ -453,8 +465,7 @@ export const selectIsComplete = ({
     taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(
       null as any
     ),
-    selectTaskActionById(actionId || -1),
-    (taskCompletionForms, taskActionCompletionForms, taskAction) => {
+    (taskCompletionForms, taskActionCompletionForms) => {
       if (actionId) {
         const completionForm =
           taskActionCompletionForms.data?.byActionId[actionId] &&

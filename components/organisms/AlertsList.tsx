@@ -17,8 +17,10 @@ import {
   useGetAllActionAlertsQuery,
   useGetAllAlertsQuery
 } from 'reduxStore/services/api/alerts';
-import { useUpdateTaskActionMutation } from 'reduxStore/services/api/taskActions';
-import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
+import {
+  useCreateTaskActionCompletionFormMutation,
+  useCreateTaskCompletionFormMutation
+} from 'reduxStore/services/api/taskCompletionForms';
 import {
   selectActionAlertById,
   selectAlertById,
@@ -223,7 +225,8 @@ const OverdueTask = ({
   const { t } = useTranslation();
 
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
-  const [updateTaskAction] = useUpdateTaskActionMutation();
+  const [createTaskActionCompletionForm] =
+    useCreateTaskActionCompletionFormMutation();
 
   if (!taskObj) {
     return null;
@@ -244,9 +247,9 @@ const OverdueTask = ({
           onPress={async () => {
             try {
               if (action) {
-                await updateTaskAction({
-                  id: action,
-                  is_complete: true
+                await createTaskActionCompletionForm({
+                  action,
+                  recurrence_index: recurrenceIndex
                 });
               } else {
                 await triggerCreateCompletionForm({
@@ -265,28 +268,34 @@ const OverdueTask = ({
           }}
           style={overdueTaskStyles.button}
         />
-        {!action && (
-          <Button
-            title={t('common.ignore')}
-            onPress={async () => {
-              try {
+        <Button
+          title={t('common.ignore')}
+          onPress={async () => {
+            try {
+              if (action) {
+                await createTaskActionCompletionForm({
+                  action,
+                  recurrence_index: recurrenceIndex,
+                  ignore: true
+                });
+              } else {
                 await triggerCreateCompletionForm({
                   resourcetype: 'TaskCompletionForm',
                   recurrence_index: recurrenceIndex,
                   ignore: true,
                   task
                 }).unwrap();
-              } catch (err) {
-                console.error(err);
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
               }
-            }}
-            style={overdueTaskStyles.button}
-          />
-        )}
+            } catch (err) {
+              console.error(err);
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }}
+          style={overdueTaskStyles.button}
+        />
       </TransparentView>
     </ElevatedPressableBox>
   );
