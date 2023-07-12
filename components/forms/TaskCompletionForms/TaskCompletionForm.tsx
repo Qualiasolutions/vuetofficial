@@ -54,11 +54,17 @@ export default function TaskCompletionForm({
   const completionCallback = useCompletionCallback(taskId);
 
   const initialFieldValues = useMemo(() => {
-    if (userDetails && completionFields) {
-      return createInitialObject(completionFields, userDetails);
+    if (userDetails && completionFields && taskObj) {
+      const initialFields: { [key: string]: any } = { ...taskObj };
+      if (taskObj.date) {
+        const nextYear = new Date(taskObj.date);
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        initialFields.date = nextYear;
+      }
+      return createInitialObject(completionFields, userDetails, initialFields);
     }
     return {};
-  }, [userDetails, completionFields]);
+  }, [userDetails, completionFields, taskObj]);
 
   useEffect(() => {
     if (initialFieldValues) {
@@ -76,7 +82,7 @@ export default function TaskCompletionForm({
 
   if (FORM_REQUIRED_TAGS.includes(taskObj.hidden_tag) && completionFields) {
     return (
-      <Modal onRequestClose={onRequestClose} visible={visible}>
+      <Modal onRequestClose={() => {}} visible={visible}>
         <TransparentScrollView style={styles.modalFormContainer}>
           <TransparentView>
             {title ? <Text>{title}</Text> : null}
