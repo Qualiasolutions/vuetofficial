@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   photoTypeModalBox: {
     position: 'absolute',
     left: 50,
-    top: 50,
+    top: 50
   },
   photoTypeModalLink: {
     marginBottom: 10
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   opaqueBackground: {
     color: '#000000',
     opacity: 0.8
-  },
+  }
 });
 
 export type CustomFile = {
@@ -110,13 +110,14 @@ export function ImagePicker({
   const [showPhotoTypeModal, setShowPhotoTypeModal] = useState(false);
   const { t } = useTranslation();
 
-  const [permissionStatus, requestPermission] = ExpoImagePicker.useCameraPermissions();
+  const [permissionStatus, requestPermission] =
+    ExpoImagePicker.useCameraPermissions();
 
   useEffect(() => {
     if (!permissionStatus?.granted) {
-      requestPermission()
+      requestPermission();
     }
-  }, [permissionStatus?.granted])
+  }, [permissionStatus?.granted, requestPermission]);
 
   useEffect(() => {
     if (selectedImage && !selectedImage?.canceled) {
@@ -168,7 +169,7 @@ export function ImagePicker({
 
   const takePhoto = useCallback(async () => {
     if (!permissionStatus?.granted) {
-      return requestPermission()
+      return requestPermission();
     }
 
     const res = await ExpoImagePicker.launchCameraAsync(imagePickerOptions);
@@ -179,7 +180,12 @@ export function ImagePicker({
       setSelectedImage(res);
     }
     setShowPhotoTypeModal(false);
-  }, [setSelectedImage, imagePickerOptions]);
+  }, [
+    setSelectedImage,
+    imagePickerOptions,
+    permissionStatus?.granted,
+    requestPermission
+  ]);
 
   const photoTypeModal = useMemo(() => {
     return (
