@@ -1,3 +1,4 @@
+import { Button } from 'components/molecules/ButtonComponents';
 import InputWithLabel from 'components/molecules/InputWithLabel';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
@@ -11,10 +12,29 @@ import dayjs from 'dayjs';
 import { t } from 'i18next';
 import ordinal from 'ordinal';
 import { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Recurrence, RecurrenceType } from 'types/tasks';
 import { getUTCValuesFromDateTimeString } from 'utils/datesAndTimes';
 import DateTimeTextInput from './DateTimeTextInput';
+
+const styles = StyleSheet.create({
+  formContainer: { width: '100%' },
+  formInnerContainer: { flexDirection: 'row' },
+  intervalSelectorWrapper: { marginRight: 5, flex: 1 },
+  typeSelectorWrapper: { marginLeft: 5, flex: 1 },
+  untilInput: { marginTop: 10 },
+  summary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: 10,
+    width: '100%'
+  },
+  summaryText: { margin: 10, fontSize: 18, width: '70%' },
+  modalBox: { width: '100%' },
+  buttonWrapper: { flexDirection: 'row' }
+});
 
 const recurrenceToName = (
   recurrence: Recurrence,
@@ -277,9 +297,9 @@ const RecurrenceForm = ({
     recurrence: 'DAILY'
   };
   return (
-    <TransparentView style={{ width: '100%' }}>
-      <TransparentView style={{ flexDirection: 'row' }}>
-        <TransparentView style={{ marginRight: 5, flex: 1 }}>
+    <TransparentView style={styles.formContainer}>
+      <TransparentView style={styles.formInnerContainer}>
+        <TransparentView style={styles.intervalSelectorWrapper}>
           <IntervalSelector
             value={String(value?.interval_length) || ''}
             onChange={(intervalLength) => {
@@ -299,7 +319,7 @@ const RecurrenceForm = ({
             }}
           />
         </TransparentView>
-        <TransparentView style={{ marginLeft: 5, flex: 1 }}>
+        <TransparentView style={styles.typeSelectorWrapper}>
           <TypeSelector
             value={value?.recurrence || ''}
             firstOccurrence={firstOccurrence}
@@ -326,7 +346,7 @@ const RecurrenceForm = ({
             : t('components.recurrenceSelector.until')
         }
         inlineFields={true}
-        style={{ marginTop: 10 }}
+        style={styles.untilInput}
       >
         <DateTimeTextInput
           value={
@@ -354,16 +374,8 @@ const RecurrenceForm = ({
           }
         />
       </InputWithLabel>
-      <TransparentView
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingRight: 10,
-          width: '100%'
-        }}
-      >
-        <Text style={{ margin: 10, fontSize: 18, width: '70%' }}>
+      <TransparentView style={styles.summary}>
+        <Text style={styles.summaryText}>
           {valueString || t('common.none')}
         </Text>
         {valueString && (
@@ -414,7 +426,7 @@ export default function RecurrenceSelector({
       <Modal
         visible={editing}
         onRequestClose={() => setEditing(false)}
-        boxStyle={{ width: '100%' }}
+        boxStyle={styles.modalBox}
       >
         {firstOccurrence ? (
           <RecurrenceForm
@@ -426,6 +438,9 @@ export default function RecurrenceSelector({
         ) : (
           <Text>Please set the first occurence</Text>
         )}
+        <TransparentView style={styles.buttonWrapper}>
+          <Button title={t('common.ok')} onPress={() => setEditing(false)} />
+        </TransparentView>
       </Modal>
     </TransparentView>
   );
