@@ -60,6 +60,76 @@ const parseFieldName = (name: string) => {
     .join(' ');
 };
 
+const getAssociatedUpdates = (
+  f: DateTimeField,
+  field: string,
+  formValues: FieldValueTypes,
+  newValue: Date
+) => {
+  const associatedUpdates: { [key: string]: Date } = {};
+  if (f.associatedEndTimeField) {
+    if (newValue) {
+      if (
+        !formValues[f.associatedEndTimeField] ||
+        (!formValues[field] && formValues[f.associatedEndTimeField] < newValue)
+      ) {
+        /*
+          If the end time field isn't set or the previous start time isn't
+          set but the end time is before the new start time then set the
+          end time to be an hour ahead of the new start time.
+        */
+        const associatedDateTime = new Date(newValue);
+        associatedDateTime.setHours(associatedDateTime.getHours() + 1);
+        associatedUpdates[f.associatedEndTimeField] = associatedDateTime;
+      } else if (formValues[field]) {
+        /*
+          Otherwise is the old start time is set then maintain the
+          event length
+        */
+        const currentDelta =
+          formValues[f.associatedEndTimeField].getTime() -
+          formValues[field].getTime();
+        associatedUpdates[f.associatedEndTimeField] = new Date(
+          newValue.getTime() + currentDelta
+        );
+      }
+    }
+  }
+  if (f.associatedStartTimeField) {
+    if (newValue) {
+      if (
+        !formValues[f.associatedStartTimeField] ||
+        (!formValues[field] &&
+          formValues[f.associatedStartTimeField] > newValue)
+      ) {
+        /*
+          If the start time field isn't set or the previous end time isn't
+          set but the start time is after the new end time then set the
+          start time to be an hour before the new end time.
+        */
+        const associatedDateTime = new Date(newValue);
+        associatedDateTime.setHours(associatedDateTime.getHours() - 1);
+        associatedUpdates[f.associatedStartTimeField] = associatedDateTime;
+      } else if (
+        formValues[field] &&
+        newValue < formValues[f.associatedStartTimeField]
+      ) {
+        /*
+          Otherwise if the old end time is set but the new end time
+          is before the start time then maintain the event length
+        */
+        const currentDelta =
+          formValues[field].getTime() -
+          formValues[f.associatedStartTimeField].getTime();
+        associatedUpdates[f.associatedStartTimeField] = new Date(
+          newValue.getTime() - currentDelta
+        );
+      }
+    }
+  }
+  return associatedUpdates;
+};
+
 const styles = StyleSheet.create({
   inlineDateInput: {
     flexShrink: 1,
@@ -361,73 +431,12 @@ export default function TypedForm({
               <DateTimeTextInput
                 value={formValues[field]}
                 onValueChange={(newValue: Date) => {
-                  const associatedUpdates: { [key: string]: Date } = {};
-                  if (f.associatedEndTimeField) {
-                    if (newValue) {
-                      if (
-                        !formValues[f.associatedEndTimeField] ||
-                        (!formValues[field] &&
-                          formValues[f.associatedEndTimeField] < newValue)
-                      ) {
-                        /*
-                          If the end time field isn't set or the previous start time isn't
-                          set but the end time is before the new start time then set the
-                          end time to be an hour ahead of the new start time.
-                        */
-                        const associatedDateTime = new Date(newValue);
-                        associatedDateTime.setHours(
-                          associatedDateTime.getHours() + 1
-                        );
-                        associatedUpdates[f.associatedEndTimeField] =
-                          associatedDateTime;
-                      } else if (formValues[field]) {
-                        /*
-                          Otherwise is the old start time is set then maintain the
-                          event length
-                        */
-                        const currentDelta =
-                          formValues[f.associatedEndTimeField].getTime() -
-                          formValues[field].getTime();
-                        associatedUpdates[f.associatedEndTimeField] = new Date(
-                          newValue.getTime() + currentDelta
-                        );
-                      }
-                    }
-                  }
-                  if (f.associatedStartTimeField) {
-                    if (newValue) {
-                      if (
-                        !formValues[f.associatedStartTimeField] ||
-                        (!formValues[field] &&
-                          formValues[f.associatedStartTimeField] > newValue)
-                      ) {
-                        /*
-                          If the start time field isn't set or the previous end time isn't
-                          set but the start time is after the new end time then set the
-                          start time to be an hour before the new end time.
-                        */
-                        const associatedDateTime = new Date(newValue);
-                        associatedDateTime.setHours(
-                          associatedDateTime.getHours() - 1
-                        );
-                        associatedUpdates[f.associatedStartTimeField] =
-                          associatedDateTime;
-                      } else if (
-                        formValues[field] &&
-                        newValue < formValues[f.associatedStartTimeField]
-                      ) {
-                        /*
-                          Otherwise if the old end time is set but the new end time
-                          is before the start time then maintain the event length
-                        */
-                        const currentDelta =
-                          formValues[field].getTime() -
-                          formValues[f.associatedStartTimeField].getTime();
-                        associatedUpdates[f.associatedStartTimeField] =
-                          new Date(newValue.getTime() - currentDelta);
-                      }
-                    }
-                  }
+                  const associatedUpdates = getAssociatedUpdates(
+                    f,
+                    field,
+                    formValues,
+                    newValue
+                  );
                   onFormValuesChange({
                     ...formValues,
                     ...associatedUpdates,
@@ -735,6 +744,21 @@ export default function TypedForm({
                     onFormValuesChange({
                       ...formValues,
                       [field]: value
+                    });
+                  }}
+                  onChangeFirstOccurrenceField={(value) => {
+                    const firstOccurrenceField =
+                      flatFields[f.firstOccurrenceField];
+                    const associatedUpdates = getAssociatedUpdates(
+                      firstOccurrenceField as DateTimeField,
+                      f.firstOccurrenceField,
+                      formValues,
+                      value
+                    );
+                    onFormValuesChange({
+                      ...formValues,
+                      ...associatedUpdates,
+                      [f.firstOccurrenceField]: value
                     });
                   }}
                   firstOccurrence={firstOccurrence}

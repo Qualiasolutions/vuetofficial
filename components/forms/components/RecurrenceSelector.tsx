@@ -2,18 +2,15 @@ import { Button } from 'components/molecules/ButtonComponents';
 import InputWithLabel from 'components/molecules/InputWithLabel';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PrimaryText } from 'components/molecules/TextComponents';
-import {
-  TransparentView,
-  WhiteView
-} from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 import ordinal from 'ordinal';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { Recurrence, RecurrenceType } from 'types/tasks';
 import { getUTCValuesFromDateTimeString } from 'utils/datesAndTimes';
 import DateTimeTextInput from './DateTimeTextInput';
@@ -23,19 +20,91 @@ const styles = StyleSheet.create({
   formInnerContainer: { flexDirection: 'row' },
   intervalSelectorWrapper: { marginRight: 5, flex: 1 },
   typeSelectorWrapper: { marginLeft: 5, flex: 1 },
-  untilInput: { marginTop: 10 },
-  summary: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingRight: 10,
-    width: '100%'
-  },
-  summaryText: { margin: 10, fontSize: 18 },
+  untilInput: { marginVertical: 10 },
+  summaryPressables: { flexDirection: 'row', flexWrap: 'wrap' },
+  summaryIntervalPiece: { marginRight: 10 },
   modalBox: { width: '100%' },
   buttonWrapper: { flexDirection: 'row' },
-  okButton: { marginRight: 5 }
+  okButton: { marginRight: 5 },
+  optionsList: { maxHeight: 250 },
+  option: {
+    paddingVertical: 3,
+    borderBottomWidth: 1
+  }
 });
+
+const getIntervalText = (recurrence: Recurrence) => {
+  const { interval_length: intervalLength } = recurrence;
+  if (intervalLength === 1) {
+    return `Every`;
+  }
+  if (intervalLength === 2) {
+    return `Every other`;
+  }
+  return `Every ${ordinal(intervalLength)}`;
+};
+
+const getTypeText = (recurrence: Recurrence) => {
+  const { recurrence: type } = recurrence;
+
+  if (['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'WEEKDAILY'].includes(type)) {
+    const typeMap: { [key in RecurrenceType]: string } = {
+      DAILY: 'day',
+      WEEKLY: 'week',
+      MONTHLY: 'month',
+      YEARLY: 'year',
+      WEEKDAILY: 'weekday',
+      MONTHLY_LAST_WEEK: '',
+      MONTH_WEEKLY: '',
+      YEAR_MONTH_WEEKLY: ''
+    };
+
+    return typeMap[type];
+  }
+
+  if (type === 'MONTH_WEEKLY') {
+    return 'month';
+  }
+
+  if (type === 'MONTHLY_LAST_WEEK') {
+    return 'month';
+  }
+
+  if (type === 'YEAR_MONTH_WEEKLY') {
+    return 'year';
+  }
+
+  return '';
+};
+
+const getWeekNumber = (firstOccurrence: Date) => {
+  const firstOccDayJs = dayjs(firstOccurrence);
+  const dayNumber = parseInt(firstOccDayJs.format('D'));
+  const weekNumber = Math.floor((dayNumber - 1) / 7) + 1;
+  return weekNumber;
+};
+
+const getWeekNumberString = (recurrence: Recurrence, firstOccurrence: Date) => {
+  if (recurrence.recurrence === 'MONTHLY_LAST_WEEK') {
+    return 'last';
+  }
+  const firstOccDayJs = dayjs(firstOccurrence);
+  const dayNumber = parseInt(firstOccDayJs.format('D'));
+  const weekNumber = Math.floor((dayNumber - 1) / 7) + 1;
+  return ordinal(weekNumber);
+};
+
+const getDayName = (firstOccurrence: Date) => {
+  const firstOccDayJs = dayjs(firstOccurrence);
+  const dayName = firstOccDayJs.format('dddd');
+  return dayName;
+};
+
+const getMonthName = (firstOccurrence: Date) => {
+  const firstOccDayJs = dayjs(firstOccurrence);
+  const monthName = firstOccDayJs.format('MMMM');
+  return monthName;
+};
 
 const recurrenceToName = (
   recurrence: Recurrence,
@@ -76,13 +145,10 @@ const recurrenceToName = (
       YEAR_MONTH_WEEKLY: ''
     };
 
-    if (intervalLength === 1) {
-      return `Every ${typeMap[type]} ${untilString}`;
+    if (intervalLength === 1 || intervalLength === 2) {
+      return `${getIntervalText(recurrence)} ${typeMap[type]} ${untilString}`;
     }
-    if (intervalLength === 2) {
-      return `Every other ${typeMap[type]} ${untilString}`;
-    }
-    return `Every ${intervalLength} ${typeMap[type]}s ${untilString}`;
+    return `${getIntervalText(recurrence)} ${typeMap[type]}s ${untilString}`;
   }
 
   const firstOccDayJs = dayjs(firstOccurrence);
@@ -153,45 +219,115 @@ for (let i = 3; i <= 30; i++) {
   INTERVAL_ITEMS.push({ value: `${i}`, label: `Every ${ordinal(i)}` });
 }
 
-const IntervalSelector = ({
-  value,
-  onChange
-}: {
-  value: string;
-  onChange: (value: string) => void;
-}) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <WhiteView>
-      <DropDownPicker
-        value={value}
-        items={INTERVAL_ITEMS}
-        multiple={false}
-        setValue={(item) => {
-          if (item(null)) {
-            onChange(item(null));
-          }
-        }}
-        open={open}
-        setOpen={setOpen}
-        listMode="MODAL"
-        placeholder={t('common.frequency')}
-      />
-    </WhiteView>
-  );
-};
+const WEEK_NUMBER_OPTIONS: {
+  value: number | 'LAST';
+  label: string;
+}[] = [
+  {
+    value: 1,
+    label: '1st'
+  },
+  {
+    value: 2,
+    label: '2nd'
+  },
+  {
+    value: 3,
+    label: '3rd'
+  },
+  {
+    value: 4,
+    label: '4th'
+  },
+  {
+    value: 'LAST',
+    label: 'last'
+  }
+];
 
-const TypeSelector = ({
-  value,
-  firstOccurrence,
-  onChange
-}: {
-  value: string;
-  firstOccurrence: Date;
-  onChange: (value: RecurrenceType) => void;
-}) => {
-  const [open, setOpen] = useState(false);
+const DAY_NAME_OPTIONS = [
+  {
+    value: 0,
+    label: 'Sunday'
+  },
+  {
+    value: 1,
+    label: 'Monday'
+  },
+  {
+    value: 2,
+    label: 'Tuesday'
+  },
+  {
+    value: 3,
+    label: 'Wednesday'
+  },
+  {
+    value: 4,
+    label: 'Thursday'
+  },
+  {
+    value: 5,
+    label: 'Friday'
+  },
+  {
+    value: 6,
+    label: 'Saturday'
+  }
+];
 
+const MONTH_NAME_OPTIONS = [
+  {
+    value: 0,
+    label: 'January'
+  },
+  {
+    value: 1,
+    label: 'February'
+  },
+  {
+    value: 2,
+    label: 'March'
+  },
+  {
+    value: 3,
+    label: 'April'
+  },
+  {
+    value: 4,
+    label: 'May'
+  },
+  {
+    value: 5,
+    label: 'June'
+  },
+  {
+    value: 6,
+    label: 'July'
+  },
+  {
+    value: 7,
+    label: 'August'
+  },
+  {
+    value: 8,
+    label: 'September'
+  },
+  {
+    value: 9,
+    label: 'October'
+  },
+  {
+    value: 10,
+    label: 'November'
+  },
+  {
+    value: 11,
+    label: 'December'
+  }
+];
+
+const getTypeOptions = (firstOccurrence: Date) => {
   const firstOccDayJs = dayjs(firstOccurrence);
   const dayName = firstOccDayJs.format('dddd');
   const dayNumber = parseInt(firstOccDayJs.format('D'));
@@ -255,89 +391,253 @@ const TypeSelector = ({
     label: `year on the ${ordinal(weekNumber)} ${dayName} in ${monthName}`
   });
 
-  return (
-    <TransparentView>
-      <DropDownPicker
-        value={value}
-        items={typeItems}
-        multiple={false}
-        setValue={(item) => {
-          if (item(null)) {
-            onChange(item(null));
-          }
-        }}
-        open={open}
-        setOpen={setOpen}
-        listMode="MODAL"
-        placeholder={t('common.timePeriod')}
-      />
-    </TransparentView>
-  );
+  return typeItems;
 };
 
 type RecurrenceFormProps = {
   value: Recurrence;
   onChange: (newValue: Recurrence) => void;
+  onChangeFirstOccurrenceField: (newValue: Date) => void;
   firstOccurrence: Date;
   reverse?: boolean;
 };
 const RecurrenceForm = ({
   value,
   onChange,
+  onChangeFirstOccurrenceField,
   firstOccurrence,
   reverse
 }: RecurrenceFormProps) => {
-  const valueString =
-    value && firstOccurrence
-      ? recurrenceToName(value, firstOccurrence, reverse)
-      : null;
+  const [choosing, setChoosing] = useState('');
+
   const defaultValues: Recurrence = {
     earliest_occurrence: firstOccurrence.toISOString(),
     latest_occurrence: null,
     interval_length: 1,
     recurrence: 'DAILY'
   };
+
+  const intervalText = getIntervalText(value);
+  const typeText = getTypeText(value);
+  const typeOptions = getTypeOptions(firstOccurrence);
+
   return (
     <TransparentView style={styles.formContainer}>
       <TransparentView style={styles.formInnerContainer}>
-        <TransparentView style={styles.intervalSelectorWrapper}>
-          <IntervalSelector
-            value={String(value?.interval_length) || ''}
-            onChange={(intervalLength) => {
-              if (value) {
-                onChange({
-                  ...value,
-                  interval_length: parseInt(intervalLength)
-                });
-              } else {
-                onChange({
-                  recurrence: 'DAILY',
-                  earliest_occurrence: firstOccurrence.toISOString(),
-                  latest_occurrence: null,
-                  interval_length: parseInt(intervalLength)
-                });
-              }
-            }}
-          />
-        </TransparentView>
-        <TransparentView style={styles.typeSelectorWrapper}>
-          <TypeSelector
-            value={value?.recurrence || ''}
-            firstOccurrence={firstOccurrence}
-            onChange={(type) => {
-              if (value) {
-                onChange({
-                  ...value,
-                  recurrence: type
-                });
-              } else {
-                onChange({
-                  ...defaultValues,
-                  recurrence: type
-                });
-              }
-            }}
-          />
+        <TransparentView>
+          <TransparentView style={styles.summaryPressables}>
+            <SafePressable
+              onPress={() => {
+                setChoosing('INTERVAL');
+              }}
+              style={styles.summaryIntervalPiece}
+            >
+              <PrimaryText text={intervalText} />
+            </SafePressable>
+            <SafePressable
+              onPress={() => {
+                setChoosing('TYPE');
+              }}
+              style={styles.summaryIntervalPiece}
+            >
+              <PrimaryText text={typeText} />
+            </SafePressable>
+            {[
+              'MONTH_WEEKLY',
+              'MONTHLY_LAST_WEEK',
+              'YEAR_MONTH_WEEKLY'
+            ].includes(value.recurrence) && (
+              <TransparentView>
+                <Text style={styles.summaryIntervalPiece}>on the</Text>
+              </TransparentView>
+            )}
+            {[
+              'MONTH_WEEKLY',
+              'MONTHLY_LAST_WEEK',
+              'YEAR_MONTH_WEEKLY'
+            ].includes(value.recurrence) && (
+              <SafePressable
+                onPress={() => {
+                  setChoosing('WEEK_NUMBER');
+                }}
+                style={styles.summaryIntervalPiece}
+              >
+                <PrimaryText
+                  text={getWeekNumberString(value, firstOccurrence)}
+                />
+              </SafePressable>
+            )}
+            {[
+              'MONTH_WEEKLY',
+              'MONTHLY_LAST_WEEK',
+              'YEAR_MONTH_WEEKLY'
+            ].includes(value.recurrence) && (
+              <SafePressable
+                onPress={() => {
+                  setChoosing('DAY_NAME');
+                }}
+                style={styles.summaryIntervalPiece}
+              >
+                <PrimaryText text={getDayName(firstOccurrence)} />
+              </SafePressable>
+            )}
+            {value.recurrence === 'YEAR_MONTH_WEEKLY' && (
+              <>
+                <TransparentView style={styles.summaryIntervalPiece}>
+                  <Text>in</Text>
+                </TransparentView>
+                <SafePressable
+                  onPress={() => {
+                    setChoosing('MONTH_NAME');
+                  }}
+                  style={styles.summaryIntervalPiece}
+                >
+                  <PrimaryText text={getMonthName(firstOccurrence)} />
+                </SafePressable>
+              </>
+            )}
+          </TransparentView>
+          {choosing === 'TYPE' && (
+            <TransparentScrollView style={styles.optionsList}>
+              {typeOptions.map((opt, i) => (
+                <SafePressable
+                  key={i}
+                  onPress={() => {
+                    onChange({
+                      ...value,
+                      recurrence: opt.value
+                    });
+                    setChoosing('');
+                  }}
+                  style={styles.option}
+                >
+                  <Text>{opt.label}</Text>
+                </SafePressable>
+              ))}
+            </TransparentScrollView>
+          )}
+          {choosing === 'INTERVAL' && (
+            <TransparentScrollView style={styles.optionsList}>
+              {INTERVAL_ITEMS.map((opt, i) => (
+                <SafePressable
+                  key={i}
+                  onPress={() => {
+                    const intervalLength = opt.value;
+                    onChange({
+                      ...value,
+                      interval_length: parseInt(intervalLength)
+                    });
+                    setChoosing('');
+                  }}
+                  style={styles.option}
+                >
+                  <Text>{opt.label}</Text>
+                </SafePressable>
+              ))}
+            </TransparentScrollView>
+          )}
+          {choosing === 'WEEK_NUMBER' && (
+            <TransparentScrollView style={styles.optionsList}>
+              {WEEK_NUMBER_OPTIONS.map((opt, i) => (
+                <SafePressable
+                  key={i}
+                  style={styles.option}
+                  onPress={() => {
+                    const currentWeekNumber = getWeekNumber(firstOccurrence);
+                    const newWeekNumber = opt.value;
+
+                    const newDate = new Date(firstOccurrence);
+                    const initialMonth = newDate.getMonth();
+                    if (newWeekNumber === 'LAST') {
+                      while (newDate.getMonth() === initialMonth) {
+                        newDate.setDate(newDate.getDate() + 7);
+                      }
+                      // We overshot by one week
+                      newDate.setDate(newDate.getDate() - 7);
+                    } else {
+                      if (currentWeekNumber < newWeekNumber) {
+                        const weekDelta = newWeekNumber - currentWeekNumber;
+                        newDate.setDate(newDate.getDate() + 7 * weekDelta);
+                      } else {
+                        const weekDelta = currentWeekNumber - newWeekNumber;
+                        newDate.setDate(newDate.getDate() - 7 * weekDelta);
+                      }
+                    }
+                    onChangeFirstOccurrenceField(newDate);
+
+                    if (newWeekNumber === 'LAST') {
+                      onChange({
+                        ...value,
+                        recurrence: 'MONTHLY_LAST_WEEK'
+                      });
+                    } else {
+                      onChange({
+                        ...value,
+                        recurrence: 'MONTH_WEEKLY'
+                      });
+                    }
+                    setChoosing('');
+                  }}
+                >
+                  <Text>{opt.label}</Text>
+                </SafePressable>
+              ))}
+            </TransparentScrollView>
+          )}
+          {choosing === 'DAY_NAME' && (
+            <TransparentScrollView style={styles.optionsList}>
+              {DAY_NAME_OPTIONS.map((opt, i) => (
+                <SafePressable
+                  key={i}
+                  style={styles.option}
+                  onPress={() => {
+                    const initialWeekNumber = getWeekNumber(firstOccurrence);
+                    const newDay = opt.value;
+                    const initialDay = firstOccurrence.getDay();
+
+                    const newDate = new Date(firstOccurrence);
+
+                    newDate.setDate(newDate.getDate() + newDay - initialDay);
+                    if (getWeekNumber(newDate) === initialWeekNumber) {
+                      // We are in the same week number, great!
+                      onChangeFirstOccurrenceField(newDate);
+                    } else {
+                      if (newDay > initialDay) {
+                        // We must have overshot, let's go a week back
+                        newDate.setDate(newDate.getDate() - 7);
+                      } else {
+                        // We must have overshot, let's go a week forward
+                        newDate.setDate(newDate.getDate() + 7);
+                      }
+                      onChangeFirstOccurrenceField(newDate);
+                    }
+                    setChoosing('');
+                  }}
+                >
+                  <Text>{opt.label}</Text>
+                </SafePressable>
+              ))}
+            </TransparentScrollView>
+          )}
+          {choosing === 'MONTH_NAME' && (
+            <TransparentScrollView style={styles.optionsList}>
+              {MONTH_NAME_OPTIONS.map((opt, i) => (
+                <SafePressable
+                  key={i}
+                  style={styles.option}
+                  onPress={() => {
+                    const newMonth = opt.value;
+                    const newDate = new Date(firstOccurrence);
+                    newDate.setMonth(newMonth);
+                    onChangeFirstOccurrenceField(newDate);
+                    setChoosing('');
+                  }}
+                >
+                  <Text>{opt.label}</Text>
+                </SafePressable>
+              ))}
+            </TransparentScrollView>
+          )}
         </TransparentView>
       </TransparentView>
       <InputWithLabel
@@ -375,11 +675,6 @@ const RecurrenceForm = ({
           }
         />
       </InputWithLabel>
-      <TransparentView style={styles.summary}>
-        <Text style={styles.summaryText}>
-          {valueString || t('common.none')}
-        </Text>
-      </TransparentView>
     </TransparentView>
   );
 };
@@ -387,6 +682,7 @@ const RecurrenceForm = ({
 type RecurrenceSelectorProps = {
   value: Recurrence | null;
   onChange: (newValue: Recurrence | null) => void;
+  onChangeFirstOccurrenceField: (newValue: Date) => void;
   firstOccurrence: Date | null;
   disabled?: boolean;
   reverse?: boolean;
@@ -394,19 +690,21 @@ type RecurrenceSelectorProps = {
 export default function RecurrenceSelector({
   value,
   onChange,
+  onChangeFirstOccurrenceField,
   firstOccurrence,
   disabled,
   reverse
 }: RecurrenceSelectorProps) {
   const [editing, setEditing] = useState(false);
-  const [newValue, setNewValue] = useState<Recurrence>(
-    value || {
-      earliest_occurrence: (firstOccurrence || new Date()).toISOString(),
-      latest_occurrence: null,
-      interval_length: 1,
-      recurrence: 'DAILY'
-    }
-  );
+
+  const defaultValue: Recurrence = {
+    earliest_occurrence: (firstOccurrence || new Date()).toISOString(),
+    latest_occurrence: null,
+    interval_length: 1,
+    recurrence: 'DAILY'
+  };
+
+  const [newValue, setNewValue] = useState<Recurrence>(value || defaultValue);
   const valueString =
     value && firstOccurrence
       ? recurrenceToName(value, firstOccurrence, reverse)
@@ -432,6 +730,7 @@ export default function RecurrenceSelector({
           <RecurrenceForm
             value={newValue}
             onChange={(val) => setNewValue(val)}
+            onChangeFirstOccurrenceField={onChangeFirstOccurrenceField}
             firstOccurrence={firstOccurrence}
             reverse={reverse}
           />
@@ -450,6 +749,7 @@ export default function RecurrenceSelector({
           <Button
             title={t('common.clear')}
             onPress={() => {
+              setNewValue(defaultValue);
               onChange(null);
               setEditing(false);
             }}

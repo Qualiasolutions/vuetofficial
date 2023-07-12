@@ -98,7 +98,7 @@ export const selectOverdueTasks = createSelector(
       const isComplete = actionId
         ? !!(
             taskActionCompletionFormsData.byActionId[actionId] &&
-            taskActionCompletionFormsData.byActionId[id][recurrenceIndex]
+            taskActionCompletionFormsData.byActionId[actionId][recurrenceIndex]
           )
         : !!(
             taskCompletionFormsData.byTaskId[id] &&
