@@ -1,63 +1,133 @@
-import { Text, View } from 'components/Themed';
-import { completionFormFieldTypes } from './taskCompletionFormFieldTypes';
-import RTKForm from 'components/forms/RTKForm';
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
-import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
+import { Text } from 'components/Themed';
+import { useEffect, useMemo, useState } from 'react';
 import { Modal } from 'components/molecules/Modals';
-import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
+import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import { useSelector } from 'react-redux';
+import TypedForm from '../TypedForm';
+import createInitialObject from '../utils/createInitialObject';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { FieldValueTypes } from '../types';
+import { StyleSheet } from 'react-native';
+import { elevation } from 'styles/elevation';
+import { t } from 'i18next';
+import { Button } from 'components/molecules/ButtonComponents';
+import SafePressable from 'components/molecules/SafePressable';
+import { PrimaryText } from 'components/molecules/TextComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
+import useCompletionFormFieldTypes from './taskCompletionFormFieldTypes';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
+import useCompletionCallback from './taskCompletionCallbacks';
+import parseFormValues from '../utils/parseFormValues';
+import hasAllRequired from '../utils/hasAllRequired';
+import { PaddedSpinner } from 'components/molecules/Spinners';
+
+const styles = StyleSheet.create({
+  buttons: { alignItems: 'flex-end' },
+  skipButton: { marginTop: 5 },
+  modalFormContainer: { flexGrow: 0 }
+});
 
 export default function TaskCompletionForm({
-  task,
+  taskId,
   title = '',
   onSubmitSuccess = () => {},
-  onRequestClose = () => {}
+  onRequestClose = () => {},
+  visible = false
 }: {
-  task: MinimalScheduledTask;
+  taskId: number;
   title?: string;
   onSubmitSuccess?: Function;
   onRequestClose?: () => void;
+  visible?: boolean;
 }) {
-  const [createSuccessful, setCreateSuccessful] = useState<boolean>(false);
+  const taskObj = useSelector(selectTaskById(taskId));
+  const { data: userDetails } = useGetUserFullDetails();
 
-  const updateTasks = () => {
-    setCreateSuccessful(true);
-    onSubmitSuccess();
-  };
+  const [fieldValues, setFieldValues] = useState<FieldValueTypes>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      setCreateSuccessful(false);
-    }, [])
+  const completionFields = useCompletionFormFieldTypes(
+    taskObj?.hidden_tag || ''
   );
+  const completionCallback = useCompletionCallback(taskId);
 
-  const permittedTaskForms = ['BookMOTTask'];
-  if (task.resourcetype && permittedTaskForms.includes(task.resourcetype)) {
+  const initialFieldValues = useMemo(() => {
+    if (userDetails && completionFields) {
+      return createInitialObject(completionFields, userDetails);
+    }
+    return {};
+  }, [userDetails, completionFields]);
+
+  useEffect(() => {
+    if (initialFieldValues) {
+      setFieldValues(initialFieldValues);
+    }
+  }, [initialFieldValues]);
+
+  if (!taskObj || !userDetails) {
+    return null;
+  }
+
+  const allRequired = completionFields
+    ? hasAllRequired(fieldValues, completionFields)
+    : false;
+
+  const permittedTaskForms = ['MOT_DUE'];
+  if (permittedTaskForms.includes(taskObj.hidden_tag) && completionFields) {
     return (
-      <Modal onRequestClose={onRequestClose || (() => {})}>
-        <View>
-          {title ? <Text>{title}</Text> : null}
-          {createSuccessful ? (
-            <Text>Successfully created new {task.resourcetype}</Text>
-          ) : null}
-          <RTKForm
-            fields={completionFormFieldTypes[task.resourcetype]}
-            methodHooks={{
-              POST: useCreateTaskCompletionFormMutation
-            }}
-            formType="CREATE"
-            extraFields={{
-              resourcetype: `${task.resourcetype}CompletionForm`,
-              recurrence_index: task.recurrence_index,
-              task: task.id
-            }}
-            onSubmitSuccess={updateTasks}
-            onValueChange={() => setCreateSuccessful(false)}
-            clearOnSubmit={true}
-            submitText="Mark complete"
-            // inlineFields={true}
-          />
-        </View>
+      <Modal onRequestClose={onRequestClose} visible={visible}>
+        <TransparentScrollView style={styles.modalFormContainer}>
+          <TransparentView>
+            {title ? <Text>{title}</Text> : null}
+            <TypedForm
+              fields={completionFields}
+              formValues={fieldValues}
+              onFormValuesChange={(values: FieldValueTypes) =>
+                setFieldValues(values)
+              }
+              sectionStyle={StyleSheet.flatten([
+                {
+                  backgroundColor: 'transparent',
+                  marginBottom: 0,
+                  paddingHorizontal: 0
+                },
+                elevation.unelevated
+              ])}
+            />
+            {submitting ? (
+              <PaddedSpinner />
+            ) : (
+              <>
+                <Button
+                  title={t('common.submit')}
+                  onPress={async () => {
+                    setSubmitting(true);
+                    const parsedFormValues = parseFormValues(
+                      fieldValues,
+                      completionFields
+                    );
+                    try {
+                      await completionCallback(parsedFormValues);
+                      setSubmitting(false);
+                      onSubmitSuccess();
+                    } catch {
+                      setSubmitting(true);
+                    }
+                  }}
+                  disabled={!allRequired}
+                />
+                <TransparentView style={styles.buttons}>
+                  <SafePressable
+                    style={styles.skipButton}
+                    onPress={onRequestClose}
+                  >
+                    <PrimaryText text={t('common.skip')} />
+                  </SafePressable>
+                </TransparentView>
+              </>
+            )}
+          </TransparentView>
+        </TransparentScrollView>
       </Modal>
     );
   }

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from 'types/base';
 import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
@@ -32,6 +32,7 @@ import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
 import UserInitialsWithColor from 'components/molecules/UserInitialsWithColor';
+import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -209,6 +210,8 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     })
   );
 
+  const [showTaskCompletionForm, setShowTaskCompletionForm] = useState(false);
+
   const navigation = useNavigation<StackNavigationProp<RootTabParamList>>();
 
   const currentUserId = useSelector(selectCurrentUserId);
@@ -344,6 +347,10 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                   recurrence_index: scheduledTask.recurrence_index,
                   task: task.id
                 }).unwrap();
+
+                if (['MOT_DUE'].includes(task.hidden_tag)) {
+                  setShowTaskCompletionForm(true);
+                }
               }}
             />
           )}
@@ -355,6 +362,19 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
           </TransparentScrollView>
           {memberColours}
         </TransparentView>
+        <TaskCompletionForm
+          taskId={id}
+          title={t('components.task.scheduleNext', {
+            dueDateType: t(`hiddenTags.${task.hidden_tag}`)
+          })}
+          onSubmitSuccess={() => {
+            setShowTaskCompletionForm(false);
+          }}
+          onRequestClose={() => {
+            setShowTaskCompletionForm(false);
+          }}
+          visible={showTaskCompletionForm}
+        />
       </TransparentView>
     );
   }, [
@@ -375,7 +395,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     navigation,
     updateTaskAction,
     recurrence_index,
-    styles
+    styles,
+    id,
+    showTaskCompletionForm
   ]);
 
   return fullContent;

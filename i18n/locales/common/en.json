@@ -600,6 +600,9 @@
         "nextDueDate": "Next {{dueDateType}} due date",
         "addDueDate": "Add {{dueDateType}} due date"
       }
+    },
+    "task": {
+      "scheduleNext": "Schedule next {{dueDateType}} due date"
     }
   }
 }

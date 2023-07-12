@@ -34,7 +34,7 @@ interface BaseTaskType {
   polymorphic_ctype: number;
   resourcetype: TaskResourceType;
   title: string;
-  hidden_tag: string;
+  hidden_tag: HiddenTagType;
   tags: string[];
   members: number[];
   recurrence?: Recurrence | null;
@@ -77,6 +77,7 @@ interface BaseCreateTaskRequest {
   entities: number[];
   location?: string;
   reminders?: Reminder[];
+  actions?: { action_timedelta: string }[];
   hidden_tag?: HiddenTagType;
 }
 

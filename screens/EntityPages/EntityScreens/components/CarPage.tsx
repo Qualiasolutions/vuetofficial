@@ -21,7 +21,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -67,29 +67,35 @@ const DueDateInputForm = ({
     });
   }, []);
 
+  const formFields: FormFieldTypes = useMemo(() => {
+    if (!userFullDetails) {
+      return {} as {};
+    }
+
+    return {
+      due_date: {
+        type: 'Date',
+        required: true,
+        displayName: modelFieldTranslations('tasks.task.date')
+      },
+      reminder_interval: reminderDropDownField(
+        'due_date',
+        modelFieldTranslations('entities.entity.reminder'),
+        false
+      ),
+      due_date_members: dueDateMembershipField(
+        'due_date',
+        userFullDetails,
+        false,
+        modelFieldTranslations('entities.entity.taskMembers'),
+        modelFieldTranslations('tasks.task.changeMembers')
+      )
+    };
+  }, [userFullDetails, modelFieldTranslations]);
+
   if (!userFullDetails) {
     return null;
   }
-
-  const formFields: FormFieldTypes = {
-    due_date: {
-      type: 'Date',
-      required: true,
-      displayName: modelFieldTranslations('tasks.task.date')
-    },
-    reminder_interval: reminderDropDownField(
-      'due_date',
-      modelFieldTranslations('entities.entity.reminder'),
-      false
-    ),
-    due_date_members: dueDateMembershipField(
-      'due_date',
-      userFullDetails,
-      false,
-      modelFieldTranslations('entities.entity.taskMembers'),
-      modelFieldTranslations('tasks.task.changeMembers')
-    )
-  };
 
   const allRequired = hasAllRequired(formValues, formFields);
 
@@ -118,6 +124,11 @@ const DueDateInputForm = ({
           onPress={async () => {
             const parsedFormValues = parseFormValues(formValues, formFields);
             try {
+              const timeDeltaMapping: { [key: string]: string } = {
+                DAILY: '1 day, 00:00:00',
+                WEEKLY: '7 days, 00:00:00',
+                MONTHLY: '30 days, 00:00:00'
+              };
               await createTask({
                 entities: [entityId],
                 hidden_tag: hiddenTag,
@@ -127,7 +138,15 @@ const DueDateInputForm = ({
                 members: parsedFormValues.due_date_members,
                 title: t('components.entityPages.car.dueDateTitle', {
                   dueDateType: t(`hiddenTags.${hiddenTag}`)
-                })
+                }),
+                actions: parsedFormValues.reminder_interval
+                  ? [
+                      {
+                        action_timedelta:
+                          timeDeltaMapping[parsedFormValues.reminder_interval]
+                      }
+                    ]
+                  : []
               }).unwrap();
               resetValues();
               onSuccess();
@@ -174,7 +193,7 @@ export default function CarPage({ entityId }: { entityId: number }) {
       | 'INSURANCE_DUE'
       | 'SERVICE_DUE'
       | 'TAX_DUE'
-      | 'WARRANTY_DUE']: DueDateResponseType | undefined;
+      | 'WARRANTY_DUE']: DueDateResponseType | undefined | null;
   } = {
     MOT_DUE: nextMotTask,
     INSURANCE_DUE: nextInsuranceTask,
