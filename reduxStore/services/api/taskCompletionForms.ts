@@ -15,6 +15,19 @@ type TaskCompletionForm = {
   ignore: boolean;
 };
 
+type TaskActionCompletionFormCreateRequest = {
+  recurrence_index: number | null;
+  action: number;
+  ignore?: boolean;
+};
+
+type TaskActionCompletionForm = {
+  recurrence_index: number | null;
+  action: number;
+  id: number;
+  ignore: boolean;
+};
+
 export type AllTaskCompletionForms = {
   ids: number[];
   byId: {
@@ -23,6 +36,18 @@ export type AllTaskCompletionForms = {
   byTaskId: {
     [key: number]: {
       [key: number]: TaskCompletionForm;
+    };
+  };
+};
+
+export type AllTaskActionCompletionForms = {
+  ids: number[];
+  byId: {
+    [key: number]: TaskActionCompletionForm;
+  };
+  byActionId: {
+    [key: number]: {
+      [key: number]: TaskActionCompletionForm;
     };
   };
 };
@@ -52,6 +77,31 @@ const normalizeCompletionForms = (
   };
 };
 
+const normalizeActionCompletionForms = (
+  data: { id: number; action: number; recurrence_index: number | null }[]
+) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce<{ [key: number]: {} }>(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byActionId: data.reduce<{ [key: number]: {} }>(
+      (prev, next) => ({
+        ...prev,
+        [next.action]: {
+          ...prev[next.action],
+          [next.recurrence_index === null ? -1 : next.recurrence_index]: next
+        }
+      }),
+      {}
+    )
+  };
+};
+
 const taskCompletionFormsApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getTaskCompletionForms: builder.query<AllTaskCompletionForms, void>({
@@ -61,6 +111,25 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           if (response.ok) {
             const responseJson: TaskCompletionForm[] = await response.json();
             return normalizeCompletionForms(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['TaskCompletionForm']
+    }),
+    getTaskActionCompletionForms: builder.query<
+      AllTaskActionCompletionForms,
+      void
+    >({
+      query: () => ({
+        url: 'core/task_action_completion_form/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: TaskActionCompletionForm[] =
+              await response.json();
+            return normalizeActionCompletionForms(responseJson);
           } else {
             // Just return the error data
             return response.json();
@@ -126,6 +195,64 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    createTaskActionCompletionForm: builder.mutation<
+      object,
+      TaskActionCompletionFormCreateRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'core/task_action_completion_form/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['TaskCompletionForm'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of taskCompletionFormsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'TaskCompletionForm' }
+        ])) {
+          if (endpointName !== 'getTaskActionCompletionForms') continue;
+          const patchResult = dispatch(
+            taskCompletionFormsApi.util.updateQueryData(
+              'getTaskActionCompletionForms',
+              originalArgs,
+              (draft) => {
+                const mockId = 1e10 + Math.round(Math.random() * 1e10);
+                const mockEntry = {
+                  ...patch,
+                  ignore: !!patch.ignore,
+                  id: mockId
+                };
+                draft.ids.push(mockId);
+                draft.byId[mockId] = mockEntry;
+
+                if (!draft.byActionId[patch.action]) {
+                  draft.byActionId[patch.action] = {};
+                }
+                draft.byActionId[patch.action][
+                  patch.recurrence_index === null ? -1 : patch.recurrence_index
+                ] = mockEntry;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
@@ -137,5 +264,7 @@ export default taskCompletionFormsApi;
 // auto-generated based on the defined endpoints
 export const {
   useCreateTaskCompletionFormMutation,
-  useGetTaskCompletionFormsQuery
+  useGetTaskCompletionFormsQuery,
+  useCreateTaskActionCompletionFormMutation,
+  useGetTaskActionCompletionFormsQuery
 } = taskCompletionFormsApi;

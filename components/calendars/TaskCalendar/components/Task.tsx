@@ -4,8 +4,10 @@ import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
 import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from 'types/base';
-import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
-import { useUpdateTaskActionMutation } from 'reduxStore/services/api/taskActions';
+import {
+  useCreateTaskActionCompletionFormMutation,
+  useCreateTaskCompletionFormMutation
+} from 'reduxStore/services/api/taskCompletionForms';
 import { Image } from 'components/molecules/ImageComponents';
 
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
@@ -226,7 +228,8 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
 
   const { t } = useTranslation();
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
-  const [updateTaskAction] = useUpdateTaskActionMutation();
+  const [createTaskActionCompletionForm] =
+    useCreateTaskActionCompletionFormMutation();
 
   const hasEditPerms = useMemo(() => {
     if (userDetails && task?.members.includes(userDetails.id)) {
@@ -337,9 +340,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
               color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
               onValueChange={async () => {
                 if (action_id) {
-                  await updateTaskAction({
-                    id: action_id,
-                    is_complete: true
+                  await createTaskActionCompletionForm({
+                    action: action_id,
+                    recurrence_index: scheduledTask.recurrence_index
                   }).unwrap();
                   return;
                 }
@@ -366,7 +369,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
         <TaskCompletionForm
           taskId={id}
           title={t('components.task.scheduleNext', {
-            dueDateType: t(`hiddenTags.${task.hidden_tag}`)
+            dueDateType: task.hidden_tag
+              ? t(`hiddenTags.${task.hidden_tag}`)
+              : ''
           })}
           onSubmitSuccess={() => {
             setShowTaskCompletionForm(false);
@@ -394,11 +399,11 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     action_id,
     hasEditPerms,
     navigation,
-    updateTaskAction,
     recurrence_index,
     styles,
     id,
-    showTaskCompletionForm
+    showTaskCompletionForm,
+    createTaskActionCompletionForm
   ]);
 
   return fullContent;

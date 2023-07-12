@@ -91,7 +91,11 @@ export default function EditTaskScreen({
     !!(taskToEdit && taskToEdit.recurrence)
   );
   const taskBottomFields = useTaskBottomFieldTypes();
-  const dueDateFields = useDueDateFieldTypes(true, taskToEdit?.hidden_tag);
+  const dueDateFields = useDueDateFieldTypes(
+    true,
+    taskToEdit?.hidden_tag,
+    !!(taskToEdit && taskToEdit.recurrence)
+  );
 
   useEffect(() => {
     if (allTasks && userDetails) {

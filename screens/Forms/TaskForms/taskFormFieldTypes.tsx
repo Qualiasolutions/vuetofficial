@@ -36,7 +36,8 @@ export const useTaskTopFieldTypes = (
 
 export const useDueDateFieldTypes = (
   isEdit: boolean = false,
-  taskHiddenTag: string = ''
+  taskHiddenTag: string = '',
+  disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserDetails();
@@ -70,6 +71,13 @@ export const useDueDateFieldTypes = (
         type: 'duration',
         required: true,
         displayName: t('tasks.task.duration')
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: false,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields
       },
       reminders: {
         type: 'multiRecurrenceSelector',

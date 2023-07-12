@@ -1,7 +1,6 @@
 export type TaskAction = {
   id: number;
   task: number;
-  is_complete: boolean;
   action_timedelta: string;
 };
 

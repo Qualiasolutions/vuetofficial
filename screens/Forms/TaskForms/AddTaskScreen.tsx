@@ -173,6 +173,7 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
     return createInitialObject(taskMiddleFields, userDetails, {
       start_datetime: defaultStartTime,
       end_datetime: defaultEndTime,
+      date: defaultDueDate,
       duration: defaultDuration,
       recurrence: null,
       earliest_action_date: defaultEarliestActionDate,

@@ -26,7 +26,10 @@ import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
 import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
-import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
+import {
+  useGetTaskActionCompletionFormsQuery,
+  useGetTaskCompletionFormsQuery
+} from 'reduxStore/services/api/taskCompletionForms';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import RoutineTasksScreen from 'screens/RoutineTasksScreen';
 import { useGetAllTaskActionsQuery } from 'reduxStore/services/api/taskActions';
@@ -36,9 +39,7 @@ import {
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import MessagesNavigator from './MessagesNavigator';
-import BackOnlyHeader, {
-  BackOnlyHeaderWithSafeArea
-} from 'headers/BackOnlyHeader';
+import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
 
 const styles = StyleSheet.create({
   icon: {
@@ -107,6 +108,9 @@ export function BottomTabNavigator({
     skip: !userDetails?.user_id
   });
   useGetTaskCompletionFormsQuery(null as any, {
+    skip: !userDetails?.user_id
+  });
+  useGetTaskActionCompletionFormsQuery(null as any, {
     skip: !userDetails?.user_id
   });
   useGetAllRoutinesQuery(null as any, {

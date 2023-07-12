@@ -76,9 +76,10 @@ export const selectOverdueTasks = createSelector(
       recurrence_index: recIndex,
       action_id: actionId
     } of tasksData.ordered) {
+      const recurrenceIndex = recIndex === null ? -1 : recIndex;
       const task = actionId
-        ? tasksData.byActionId[actionId]
-        : tasksData.byTaskId[id][recIndex === null ? -1 : recIndex];
+        ? tasksData.byActionId[actionId][recurrenceIndex]
+        : tasksData.byTaskId[id][recurrenceIndex];
 
       const taskDatetimeString = task.start_datetime || task.date;
       if (!taskDatetimeString) {
@@ -89,9 +90,7 @@ export const selectOverdueTasks = createSelector(
         ? taskActionsData.byId[actionId]?.is_complete
         : !!(
             taskCompletionFormsData.byTaskId[id] &&
-            taskCompletionFormsData.byTaskId[id][
-              recIndex === null ? -1 : recIndex
-            ]
+            taskCompletionFormsData.byTaskId[id][recurrenceIndex]
           );
 
       if (!isComplete) {
@@ -143,12 +142,12 @@ export const selectTasksInDailyRoutines = createSelector(
       const nonRoutineTasks: MinimalScheduledTask[] = [];
 
       const taskObjects = taskData.byDate[date].map((task) => {
+        const recurrenceIndex =
+          task.recurrence_index === null ? -1 : task.recurrence_index;
         if (task.action_id) {
-          return taskData.byActionId[task.action_id];
+          return taskData.byActionId[task.action_id][recurrenceIndex];
         }
-        return taskData.byTaskId[task.id][
-          task.recurrence_index === null ? -1 : task.recurrence_index
-        ];
+        return taskData.byTaskId[task.id][recurrenceIndex];
       });
 
       const formattedTaskObjects = formatTasksPerDate(taskObjects);
@@ -251,14 +250,16 @@ export const selectScheduledTaskIdsByEntityTypes = (
       const filteredTasks =
         taskData.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
+            const recurrenceIndex =
+              recurrence_index === null ? -1 : recurrence_index;
             if (['FixedTask'].includes(resourcetype)) {
-              return taskData.byTaskId[id][
-                recurrence_index === null ? -1 : recurrence_index
-              ];
+              return taskData.byTaskId[id][recurrenceIndex];
             }
 
             if (action_id) {
-              return scheduledTasks.data?.byActionId[action_id];
+              return scheduledTasks.data?.byActionId[action_id][
+                recurrenceIndex
+              ];
             }
           })
           .filter(isTask)
@@ -291,14 +292,14 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
     const filteredTasks =
       scheduledTasks.data.ordered
         .map(({ id, recurrence_index, resourcetype, action_id }) => {
+          const recurrenceIndex =
+            recurrence_index === null ? -1 : recurrence_index;
           if (['FixedTask'].includes(resourcetype)) {
-            return scheduledTasks.data?.byTaskId[id][
-              recurrence_index === null ? -1 : recurrence_index
-            ];
+            return scheduledTasks.data?.byTaskId[id][recurrenceIndex];
           }
 
           if (action_id) {
-            return scheduledTasks.data?.byActionId[action_id];
+            return scheduledTasks.data?.byActionId[action_id][recurrenceIndex];
           }
         })
         .filter(isTask)
@@ -329,14 +330,16 @@ export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
       const filteredTasks =
         scheduledTasks.data.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
+            const recurrenceIndex =
+              recurrence_index === null ? -1 : recurrence_index;
             if (['FixedTask'].includes(resourcetype)) {
-              return scheduledTasks.data?.byTaskId[id][
-                recurrence_index === null ? -1 : recurrence_index
-              ];
+              return scheduledTasks.data?.byTaskId[id][recurrenceIndex];
             }
 
             if (action_id) {
-              return scheduledTasks.data?.byActionId[action_id];
+              return scheduledTasks.data?.byActionId[action_id][
+                recurrenceIndex
+              ];
             }
           })
           .filter(isTask)
@@ -364,14 +367,16 @@ export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
       const filteredTasks =
         scheduledTasks.data.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
+            const recurrenceIndex =
+              recurrence_index === null ? -1 : recurrence_index;
             if (['FixedTask'].includes(resourcetype)) {
-              return scheduledTasks.data?.byTaskId[id][
-                recurrence_index === null ? -1 : recurrence_index
-              ];
+              return scheduledTasks.data?.byTaskId[id][recurrenceIndex];
             }
 
             if (action_id) {
-              return scheduledTasks.data?.byActionId[action_id];
+              return scheduledTasks.data?.byActionId[action_id][
+                recurrenceIndex
+              ];
             }
           })
           .filter(isTask)
@@ -402,14 +407,16 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
       const filteredTasks =
         taskData.ordered
           .map(({ id, recurrence_index, resourcetype, action_id }) => {
+            const recurrenceIndex =
+              recurrence_index === null ? -1 : recurrence_index;
             if (['FixedTask'].includes(resourcetype)) {
-              return taskData.byTaskId[id][
-                recurrence_index === null ? -1 : recurrence_index
-              ];
+              return taskData.byTaskId[id][recurrenceIndex];
             }
 
             if (action_id) {
-              return scheduledTasks.data?.byActionId[action_id];
+              return scheduledTasks.data?.byActionId[action_id][
+                recurrenceIndex
+              ];
             }
           })
           .filter(isTask)
@@ -443,12 +450,20 @@ export const selectIsComplete = ({
 }) =>
   createSelector(
     taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+    taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(
+      null as any
+    ),
     selectTaskActionById(actionId || -1),
-    (taskCompletionForms, taskAction) => {
+    (taskCompletionForms, taskActionCompletionForms, taskAction) => {
       if (actionId) {
+        const completionForm =
+          taskActionCompletionForms.data?.byActionId[actionId] &&
+          taskActionCompletionForms.data?.byActionId[actionId][
+            recurrenceIndex === null ? -1 : recurrenceIndex
+          ];
         return {
-          isComplete: taskAction?.is_complete,
-          isIgnored: false
+          isComplete: !!completionForm,
+          isIgnored: !!(completionForm && completionForm.ignore)
         };
       }
       const completionForm =
@@ -475,15 +490,15 @@ export const selectScheduledTask = ({
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(null as any),
     (scheduledTasks) => {
+      const recIndex =
+        recurrenceIndex === null || recurrenceIndex === undefined
+          ? -1
+          : recurrenceIndex;
       if (actionId) {
-        return scheduledTasks.data?.byActionId[actionId];
+        return scheduledTasks.data?.byActionId[actionId][recIndex];
       }
       if (id) {
-        return scheduledTasks.data?.byTaskId[id][
-          recurrenceIndex === null || recurrenceIndex === undefined
-            ? -1
-            : recurrenceIndex
-        ];
+        return scheduledTasks.data?.byTaskId[id][recIndex];
       }
     }
   );

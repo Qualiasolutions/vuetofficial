@@ -38,7 +38,10 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
       .reduce<{ [key: number]: {} }>(
         (prev, next) => ({
           ...prev,
-          [next.action_id as number]: next
+          [next.action_id as number]: {
+            ...prev[next.action_id || -1], // -1 should never be used here
+            [next.recurrence_index === null ? -1 : next.recurrence_index]: next
+          }
         }),
         {}
       )
@@ -148,7 +151,9 @@ type AllScheduledTasks = {
     };
   };
   byActionId: {
-    [key: number]: ScheduledTaskResponseType;
+    [key: number]: {
+      [key: number]: ScheduledTaskResponseType;
+    };
   };
 };
 
