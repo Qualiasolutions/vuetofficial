@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
@@ -16,21 +15,12 @@ const styles = StyleSheet.create({
 });
 
 export default function HobbyScreen({ entityId }: { entityId: number }) {
-  const {
-    data: userDetails,
-    isLoading: isLoadingUserDetails,
-    error: userError
-  } = useGetUserDetails();
+  const { data: userDetails, isLoading: isLoadingUserDetails } =
+    useGetUserDetails();
 
-  const {
-    data: allEntities,
-    isLoading: isLoadingEntities,
-    error: entitiesError
-  } = useGetAllEntitiesQuery(null as any, {
+  const { isLoading: isLoadingEntities } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
-
-  const { t } = useTranslation();
 
   const isLoading = isLoadingUserDetails || isLoadingEntities;
   if (isLoading) {

@@ -302,7 +302,6 @@ function Calendar({
       <SectionList
         sections={shownSections}
         initialNumToRender={10}
-        removeClippedSubviews={true}
         scrollEventThrottle={1000}
         renderSectionHeader={({ section }) => {
           return (
