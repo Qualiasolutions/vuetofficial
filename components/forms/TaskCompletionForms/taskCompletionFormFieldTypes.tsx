@@ -17,7 +17,15 @@ export default function useCompletionFormFieldTypes(
       return {} as FieldValueTypes;
     }
 
-    if (hiddenTag === 'MOT_DUE') {
+    if (
+      [
+        'MOT_DUE',
+        'INSURANCE_DUE',
+        'SERVICE_DUE',
+        'WARRANTY_DUE',
+        'TAX_DUE'
+      ].includes(hiddenTag)
+    ) {
       return {
         date: {
           type: 'Date',

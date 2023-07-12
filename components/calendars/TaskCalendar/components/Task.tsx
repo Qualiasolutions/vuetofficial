@@ -32,7 +32,9 @@ import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
 import UserInitialsWithColor from 'components/molecules/UserInitialsWithColor';
-import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
+import TaskCompletionForm, {
+  FORM_REQUIRED_TAGS
+} from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -348,7 +350,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                   task: task.id
                 }).unwrap();
 
-                if (['MOT_DUE'].includes(task.hidden_tag)) {
+                if (FORM_REQUIRED_TAGS.includes(task.hidden_tag)) {
                   setShowTaskCompletionForm(true);
                 }
               }}

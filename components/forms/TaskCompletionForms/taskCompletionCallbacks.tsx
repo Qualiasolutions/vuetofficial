@@ -10,7 +10,16 @@ export default function useCompletionCallback(taskId: number) {
 
   const { t } = useTranslation();
 
-  if (task?.hidden_tag === 'MOT_DUE') {
+  if (
+    task?.hidden_tag &&
+    [
+      'MOT_DUE',
+      'INSURANCE_DUE',
+      'SERVICE_DUE',
+      'WARRANTY_DUE',
+      'TAX_DUE'
+    ].includes(task.hidden_tag)
+  ) {
     return async (parsedFormValues: FieldValueTypes) => {
       const timeDeltaMapping: { [key: string]: string } = {
         DAILY: '1 day, 00:00:00',

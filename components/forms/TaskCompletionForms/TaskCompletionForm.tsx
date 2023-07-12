@@ -21,6 +21,8 @@ import parseFormValues from '../utils/parseFormValues';
 import hasAllRequired from '../utils/hasAllRequired';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
+export const FORM_REQUIRED_TAGS = ['MOT_DUE', 'INSURANCE_DUE'];
+
 const styles = StyleSheet.create({
   buttons: { alignItems: 'flex-end' },
   skipButton: { marginTop: 5 },
@@ -72,8 +74,7 @@ export default function TaskCompletionForm({
     ? hasAllRequired(fieldValues, completionFields)
     : false;
 
-  const permittedTaskForms = ['MOT_DUE'];
-  if (permittedTaskForms.includes(taskObj.hidden_tag) && completionFields) {
+  if (FORM_REQUIRED_TAGS.includes(taskObj.hidden_tag) && completionFields) {
     return (
       <Modal onRequestClose={onRequestClose} visible={visible}>
         <TransparentScrollView style={styles.modalFormContainer}>
