@@ -31,9 +31,10 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     width: '100%'
   },
-  summaryText: { margin: 10, fontSize: 18, width: '70%' },
+  summaryText: { margin: 10, fontSize: 18 },
   modalBox: { width: '100%' },
-  buttonWrapper: { flexDirection: 'row' }
+  buttonWrapper: { flexDirection: 'row' },
+  okButton: { marginRight: 5 }
 });
 
 const recurrenceToName = (
@@ -275,8 +276,8 @@ const TypeSelector = ({
 };
 
 type RecurrenceFormProps = {
-  value: Recurrence | null;
-  onChange: (newValue: Recurrence | null) => void;
+  value: Recurrence;
+  onChange: (newValue: Recurrence) => void;
   firstOccurrence: Date;
   reverse?: boolean;
 };
@@ -378,15 +379,6 @@ const RecurrenceForm = ({
         <Text style={styles.summaryText}>
           {valueString || t('common.none')}
         </Text>
-        {valueString && (
-          <SafePressable
-            onPress={() => {
-              onChange(null);
-            }}
-          >
-            <PrimaryText text={t('common.clear')} />
-          </SafePressable>
-        )}
       </TransparentView>
     </TransparentView>
   );
@@ -407,6 +399,14 @@ export default function RecurrenceSelector({
   reverse
 }: RecurrenceSelectorProps) {
   const [editing, setEditing] = useState(false);
+  const [newValue, setNewValue] = useState<Recurrence>(
+    value || {
+      earliest_occurrence: (firstOccurrence || new Date()).toISOString(),
+      latest_occurrence: null,
+      interval_length: 1,
+      recurrence: 'DAILY'
+    }
+  );
   const valueString =
     value && firstOccurrence
       ? recurrenceToName(value, firstOccurrence, reverse)
@@ -430,8 +430,8 @@ export default function RecurrenceSelector({
       >
         {firstOccurrence ? (
           <RecurrenceForm
-            value={value}
-            onChange={onChange}
+            value={newValue}
+            onChange={(val) => setNewValue(val)}
             firstOccurrence={firstOccurrence}
             reverse={reverse}
           />
@@ -439,7 +439,21 @@ export default function RecurrenceSelector({
           <Text>Please set the first occurence</Text>
         )}
         <TransparentView style={styles.buttonWrapper}>
-          <Button title={t('common.ok')} onPress={() => setEditing(false)} />
+          <Button
+            title={t('common.ok')}
+            onPress={() => {
+              onChange(newValue);
+              setEditing(false);
+            }}
+            style={styles.okButton}
+          />
+          <Button
+            title={t('common.clear')}
+            onPress={() => {
+              onChange(null);
+              setEditing(false);
+            }}
+          />
         </TransparentView>
       </Modal>
     </TransparentView>
