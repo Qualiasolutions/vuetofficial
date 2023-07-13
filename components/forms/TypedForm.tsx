@@ -52,6 +52,7 @@ import Checkbox from 'components/molecules/Checkbox';
 import Duration from './components/Duration';
 import isFieldShown from './utils/isFieldShown';
 import ActionSelector from './components/ActionSelector';
+import ReminderSelector from './components/ReminderSelector';
 
 const parseFieldName = (name: string) => {
   return name
@@ -273,10 +274,12 @@ export default function TypedForm({
     ({
       field,
       children,
+      values,
       labelStyle
     }: {
       field: string;
       children: ReactNode;
+      values: FieldValueTypes;
       labelStyle?: ViewStyle;
     }) => {
       /*
@@ -286,7 +289,7 @@ export default function TypedForm({
         is not used for text fields, some tag selectors etc
       */
       const fieldObj = flatFields[field];
-      if (!isFieldShown(fieldObj, formValues)) {
+      if (!isFieldShown(fieldObj, values)) {
         return null;
       }
 
@@ -299,616 +302,689 @@ export default function TypedForm({
         />
       );
     },
-    [InputPair, formValues, flatFields]
+    [InputPair, flatFields]
   );
 
-  const formFields = fieldSections.map((section, i) => {
-    const sectionFields = Object.keys(section).map((field: string) => {
-      const fieldType = flatFields[field];
+  const formFields = useMemo(
+    () =>
+      fieldSections.map((section, i) => {
+        const sectionFields = Object.keys(section).map((field: string) => {
+          const fieldType = flatFields[field];
 
-      switch (fieldType.type) {
-        case 'string': {
-          const f = flatFields[field] as StringField;
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TextInput
-                value={formValues[field]}
-                onChangeText={(newValue) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                }}
-                style={textInputStyle}
-                autoCapitalize={
-                  f.transform === 'uppercase' ? 'characters' : 'sentences'
-                }
-                editable={!f.disabled}
-              />
-            </InputPair>
-          );
-        }
-        case 'phoneNumber':
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <PhoneNumberInput
-                defaultValue={formValues[field]}
-                onChangeFormattedText={(newValue) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                }}
-                textContainerStyle={{
-                  backgroundColor: fieldColor
-                }}
-                placeholder={
-                  inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')
-                }
-                containerStyle={styles.fullWidth}
-              />
-            </InputPair>
-          );
-        case 'OptionalYearDate': {
-          const f = flatFields[field];
-          const knownYearField = (f as OptionalYearDate).knownYearField;
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <OptionalYearDateInput
-                value={formValues[field]}
-                knownYear={knownYearField ? formValues[knownYearField] : false}
-                onValueChange={(newValue: Date, knownYear: boolean) => {
-                  const knownYearFields = knownYearField
-                    ? {
-                        [(f as OptionalYearDate).knownYearField as string]:
-                          knownYear
-                      }
-                    : {};
-                  onFormValuesChange({
-                    ...formValues,
-                    ...knownYearFields,
-                    [field]: newValue
-                  });
-                }}
-                textInputStyle={textInputStyle}
-              />
-            </InputPair>
-          );
-        }
-        case 'Date': {
-          const f = flatFields[field] as DateField;
-          const limitValues: { [key: string]: Date } = {};
-          if (f.associatedEndDateField) {
-            if (formValues[f.associatedEndDateField]) {
-              limitValues.maximum = formValues[f.associatedEndDateField];
-            }
-          }
-          if (f.associatedStartDateField) {
-            if (formValues[f.associatedStartDateField]) {
-              limitValues.minimum = formValues[f.associatedStartDateField];
-            }
-          }
-          return (
-            <ValueDependentInputPair field={field} key={field}>
-              <DateTimeTextInput
-                value={formValues[field]}
-                maximumDate={limitValues.maximum}
-                minimumDate={limitValues.minimum}
-                onValueChange={(newValue: Date) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: newValue
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                }}
-                mode="date"
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-                containerStyle={styles.inlineDateInput}
-                textInputStyle={textInputStyle}
-              />
-              <Feather name="calendar" size={20} style={styles.calendarIcon} />
-            </ValueDependentInputPair>
-          );
-        }
-        case 'DateTime': {
-          const f = flatFields[field] as DateTimeField;
-          return (
-            <ValueDependentInputPair field={field} key={field}>
-              <DateTimeTextInput
-                value={formValues[field]}
-                onValueChange={(newValue: Date) => {
-                  const associatedUpdates = getAssociatedUpdates(
-                    f,
-                    field,
-                    formValues,
-                    newValue
-                  );
-                  onFormValuesChange({
-                    ...formValues,
-                    ...associatedUpdates,
-                    [field]: newValue
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                }}
-                containerStyle={styles.inlineDateInput}
-                textInputStyle={textInputStyle}
-                mode="datetime"
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-              />
-              <Feather name="calendar" size={20} style={styles.calendarIcon} />
-            </ValueDependentInputPair>
-          );
-        }
-        case 'radio': {
-          const f = flatFields[field] as RadioField;
-          const permittedValueObjects = f.permittedValues.map((value: any) => ({
-            label: f.valueToDisplay(value),
-            value
-          }));
-
-          return (
-            <ValueDependentInputPair field={field} key={field}>
-              <RadioInput
-                value={formValues[field]}
-                permittedValues={permittedValueObjects}
-                onValueChange={(value: any) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: value.id
-                  });
-                  setFormErrors({ ...formErrors, [field]: '' });
-                }}
-              />
-            </ValueDependentInputPair>
-          );
-        }
-        case 'checkbox': {
-          const f = flatFields[field] as CheckboxField;
-          return (
-            <ValueDependentInputPair field={field} key={field}>
-              <Checkbox
-                smoothChecking={false}
-                checked={formValues[field]}
-                onValueChange={async (value: any) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: !value
-                  });
-                }}
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-              />
-            </ValueDependentInputPair>
-          );
-        }
-        case 'colour': {
-          return (
-            <WhiteBox key={field} elevated={false} style={styles.inputPair}>
-              {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
-              <InputPair field={field} key={field} inlineFieldsOverride={true}>
-                <TransparentView style={styles.colourBarContainer}>
-                  <ColorPicker
+          switch (fieldType.type) {
+            case 'string': {
+              const f = flatFields[field] as StringField;
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <TextInput
                     value={formValues[field]}
-                    onValueChange={(value: string) => {
+                    onChangeText={(newValue) => {
                       onFormValuesChange({
                         ...formValues,
-                        [field]: value
+                        [field]: newValue
+                      });
+                    }}
+                    style={textInputStyle}
+                    autoCapitalize={
+                      f.transform === 'uppercase' ? 'characters' : 'sentences'
+                    }
+                    editable={!f.disabled}
+                  />
+                </InputPair>
+              );
+            }
+            case 'phoneNumber':
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <PhoneNumberInput
+                    defaultValue={formValues[field]}
+                    onChangeFormattedText={(newValue) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: newValue
+                      });
+                    }}
+                    textContainerStyle={{
+                      backgroundColor: fieldColor
+                    }}
+                    placeholder={
+                      inlineFields ? t('misc.phoneNo') : t('misc.phoneNumber')
+                    }
+                    containerStyle={styles.fullWidth}
+                  />
+                </InputPair>
+              );
+            case 'OptionalYearDate': {
+              const f = flatFields[field];
+              const knownYearField = (f as OptionalYearDate).knownYearField;
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <OptionalYearDateInput
+                    value={formValues[field]}
+                    knownYear={
+                      knownYearField ? formValues[knownYearField] : false
+                    }
+                    onValueChange={(newValue: Date, knownYear: boolean) => {
+                      const knownYearFields = knownYearField
+                        ? {
+                            [(f as OptionalYearDate).knownYearField as string]:
+                              knownYear
+                          }
+                        : {};
+                      onFormValuesChange({
+                        ...formValues,
+                        ...knownYearFields,
+                        [field]: newValue
+                      });
+                    }}
+                    textInputStyle={textInputStyle}
+                  />
+                </InputPair>
+              );
+            }
+            case 'Date': {
+              const f = flatFields[field] as DateField;
+              const limitValues: { [key: string]: Date } = {};
+              if (f.associatedEndDateField) {
+                if (formValues[f.associatedEndDateField]) {
+                  limitValues.maximum = formValues[f.associatedEndDateField];
+                }
+              }
+              if (f.associatedStartDateField) {
+                if (formValues[f.associatedStartDateField]) {
+                  limitValues.minimum = formValues[f.associatedStartDateField];
+                }
+              }
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <DateTimeTextInput
+                    value={formValues[field]}
+                    maximumDate={limitValues.maximum}
+                    minimumDate={limitValues.minimum}
+                    onValueChange={(newValue: Date) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: newValue
+                      });
+                      setFormErrors({ ...formErrors, [field]: '' });
+                    }}
+                    mode="date"
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                    containerStyle={styles.inlineDateInput}
+                    textInputStyle={textInputStyle}
+                  />
+                  <Feather
+                    name="calendar"
+                    size={20}
+                    style={styles.calendarIcon}
+                  />
+                </ValueDependentInputPair>
+              );
+            }
+            case 'DateTime': {
+              const f = flatFields[field] as DateTimeField;
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <DateTimeTextInput
+                    value={formValues[field]}
+                    onValueChange={(newValue: Date) => {
+                      const associatedUpdates = getAssociatedUpdates(
+                        f,
+                        field,
+                        formValues,
+                        newValue
+                      );
+                      onFormValuesChange({
+                        ...formValues,
+                        ...associatedUpdates,
+                        [field]: newValue
+                      });
+                      setFormErrors({ ...formErrors, [field]: '' });
+                    }}
+                    containerStyle={styles.inlineDateInput}
+                    textInputStyle={textInputStyle}
+                    mode="datetime"
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                  />
+                  <Feather
+                    name="calendar"
+                    size={20}
+                    style={styles.calendarIcon}
+                  />
+                </ValueDependentInputPair>
+              );
+            }
+            case 'radio': {
+              const f = flatFields[field] as RadioField;
+              const permittedValueObjects = f.permittedValues.map(
+                (value: any) => ({
+                  label: f.valueToDisplay(value),
+                  value
+                })
+              );
+
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <RadioInput
+                    value={formValues[field]}
+                    permittedValues={permittedValueObjects}
+                    onValueChange={(value: any) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: value.id
                       });
                       setFormErrors({ ...formErrors, [field]: '' });
                     }}
                   />
-                </TransparentView>
-              </InputPair>
-            </WhiteBox>
-          );
-        }
-        case 'addMembers': {
-          const f = flatFields[field] as AddMembersField;
-
-          if (!isFieldShown(f, formValues)) {
-            return null;
-          }
-
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <MemberSelector
-                data={f.permittedValues}
-                values={formValues[field] || []}
-                onValueChange={(selectedMembers) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: selectedMembers
-                  });
-                }}
-                changeMembersText={f.changeMembersText || ''}
-              />
-            </InputPair>
-          );
-        }
-        case 'TextArea':
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TransparentView style={styles.flex}>
-                <TextInput
-                  value={formValues[field]}
-                  onChangeText={(newValue) => {
-                    onFormValuesChange({
-                      ...formValues,
-                      [field]: newValue
-                    });
-                  }}
-                  style={[
-                    styles.textArea,
-                    {
-                      backgroundColor: fieldColor
+                </ValueDependentInputPair>
+              );
+            }
+            case 'checkbox': {
+              const f = flatFields[field] as CheckboxField;
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <Checkbox
+                    smoothChecking={false}
+                    checked={formValues[field]}
+                    onValueChange={async (value: any) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: !value
+                      });
+                    }}
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                     }
-                  ]}
-                  multiline={true}
-                  maxLength={150}
-                />
-                <AlmostBlackText
-                  text={`${formValues[field]?.length || 0}/150`}
-                  style={styles.textAreaCount}
-                />
-              </TransparentView>
-            </InputPair>
-          );
-        case 'addFamilyMembers': {
-          const f = flatFields[field] as AddFamilyMembersField;
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <FamilySelector
-                data={f.permittedValues}
-                values={formValues[field] || []}
-                onValueChange={(selectedMembers: any) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: [...selectedMembers]
-                  });
-                }}
-              />
-            </InputPair>
-          );
-        }
-        case 'dropDown': {
-          const f = flatFields[field] as DropDownField;
+                  />
+                </ValueDependentInputPair>
+              );
+            }
+            case 'colour': {
+              return (
+                <WhiteBox key={field} elevated={false} style={styles.inputPair}>
+                  {formErrors[field] ? <Text>{formErrors[field]}</Text> : null}
+                  <InputPair
+                    field={field}
+                    key={field}
+                    inlineFieldsOverride={true}
+                  >
+                    <TransparentView style={styles.colourBarContainer}>
+                      <ColorPicker
+                        value={formValues[field]}
+                        onValueChange={(value: string) => {
+                          onFormValuesChange({
+                            ...formValues,
+                            [field]: value
+                          });
+                          setFormErrors({ ...formErrors, [field]: '' });
+                        }}
+                      />
+                    </TransparentView>
+                  </InputPair>
+                </WhiteBox>
+              );
+            }
+            case 'addMembers': {
+              const f = flatFields[field] as AddMembersField;
 
-          if (!isFieldShown(f, formValues)) {
-            return null;
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <MemberSelector
+                    data={f.permittedValues}
+                    values={formValues[field] || []}
+                    onValueChange={(selectedMembers) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: selectedMembers
+                      });
+                    }}
+                    changeMembersText={f.changeMembersText || ''}
+                  />
+                </InputPair>
+              );
+            }
+            case 'TextArea':
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <TransparentView style={styles.flex}>
+                    <TextInput
+                      value={formValues[field]}
+                      onChangeText={(newValue) => {
+                        onFormValuesChange({
+                          ...formValues,
+                          [field]: newValue
+                        });
+                      }}
+                      style={[
+                        styles.textArea,
+                        {
+                          backgroundColor: fieldColor
+                        }
+                      ]}
+                      multiline={true}
+                      maxLength={150}
+                    />
+                    <AlmostBlackText
+                      text={`${formValues[field]?.length || 0}/150`}
+                      style={styles.textAreaCount}
+                    />
+                  </TransparentView>
+                </InputPair>
+              );
+            case 'addFamilyMembers': {
+              const f = flatFields[field] as AddFamilyMembersField;
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <FamilySelector
+                    data={f.permittedValues}
+                    values={formValues[field] || []}
+                    onValueChange={(selectedMembers: any) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: [...selectedMembers]
+                      });
+                    }}
+                  />
+                </InputPair>
+              );
+            }
+            case 'dropDown': {
+              const f = flatFields[field] as DropDownField;
+
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <DropDown
+                    value={formValues[field]}
+                    items={f.permittedValues}
+                    setFormValues={(item) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: item
+                      });
+                    }}
+                    dropdownPlaceholder={
+                      (hasPlaceholder(f) && f.placeholder) || undefined
+                    }
+                    listMode={(hasListMode(f) && f.listMode) || undefined}
+                    style={textInputStyle}
+                    containerStyle={styles.flex}
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                  />
+                </InputPair>
+              );
+            }
+            case 'dropDownWithOther': {
+              const f = flatFields[field] as DropDownWithOtherField;
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <DropDown
+                    value={formValues[field]}
+                    items={f.permittedValues}
+                    setFormValues={(item) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: item
+                      });
+                    }}
+                    allowOther={true}
+                    dropdownPlaceholder={
+                      (hasPlaceholder(f) && f.placeholder) || undefined
+                    }
+                    listMode={(hasListMode(f) && f.listMode) || undefined}
+                    style={textInputStyle}
+                    containerStyle={styles.flex}
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                  />
+                </InputPair>
+              );
+            }
+            case 'Image': {
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={StyleSheet.flatten([
+                    styles.inputPair,
+                    { zIndex: 10 }
+                  ])}
+                >
+                  <WhiteImagePicker
+                    onImageSelect={(image) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: image
+                      });
+                    }}
+                    defaultImageUrl={
+                      formValues[field]?.uri || formValues[field] || ''
+                    }
+                    displayInternalImage={false}
+                    style={{
+                      backgroundColor: fieldColor
+                    }}
+                  />
+                </InputPair>
+              );
+            }
+            case 'timezone': {
+              const f = flatFields[field] as TimezoneField;
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <TimezoneSelect
+                    value={formValues[field]}
+                    onSelectTimezone={(value) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: value
+                      });
+                    }}
+                    listMode={f.listMode || 'MODAL'}
+                    style={textInputStyle}
+                    containerStyle={styles.flex}
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                  />
+                </InputPair>
+              );
+            }
+            case 'recurrenceSelector': {
+              const f = flatFields[field] as RecurrenceSelectorField;
+              const firstOccurrence: Date = formValues[f.firstOccurrenceField];
+
+              if (!firstOccurrence) {
+                return null;
+              }
+
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <TransparentView>
+                    <RecurrenceSelector
+                      value={formValues[field]}
+                      onChange={(value) => {
+                        onFormValuesChange({
+                          ...formValues,
+                          [field]: value
+                        });
+                      }}
+                      onChangeFirstOccurrenceField={(value) => {
+                        const firstOccurrenceField =
+                          flatFields[f.firstOccurrenceField];
+                        const associatedUpdates = getAssociatedUpdates(
+                          firstOccurrenceField as DateTimeField,
+                          f.firstOccurrenceField,
+                          formValues,
+                          value
+                        );
+                        onFormValuesChange({
+                          ...formValues,
+                          ...associatedUpdates,
+                          [f.firstOccurrenceField]: value
+                        });
+                      }}
+                      firstOccurrence={firstOccurrence}
+                      disabled={f.disabled || false}
+                      reverse={f.reverse}
+                    />
+                  </TransparentView>
+                </InputPair>
+              );
+            }
+            case 'multiRecurrenceSelector': {
+              const f = flatFields[field] as MultiRecurrenceSelectorField;
+              const firstOccurrence: Date = formValues[f.firstOccurrenceField];
+
+              if (!firstOccurrence) {
+                return null;
+              }
+
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <TransparentView>
+                    <MultipleRecurrenceSelector
+                      value={formValues[field]}
+                      onChange={(value) => {
+                        onFormValuesChange({
+                          ...formValues,
+                          [field]: value
+                        });
+                      }}
+                      firstOccurrence={firstOccurrence}
+                      disabled={f.disabled || false}
+                      reverse={f.reverse}
+                      max={f.max}
+                    />
+                  </TransparentView>
+                </InputPair>
+              );
+            }
+            case 'actionsSelector': {
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <TransparentView>
+                    <ActionSelector
+                      value={formValues[field]}
+                      onChange={(value) => {
+                        onFormValuesChange({
+                          ...formValues,
+                          [field]: value
+                        });
+                      }}
+                    />
+                  </TransparentView>
+                </ValueDependentInputPair>
+              );
+            }
+            case 'reminderSelector': {
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <TransparentView>
+                    <ReminderSelector
+                      value={formValues[field]}
+                      onChange={(value) => {
+                        onFormValuesChange({
+                          ...formValues,
+                          [field]: value
+                        });
+                      }}
+                    />
+                  </TransparentView>
+                </ValueDependentInputPair>
+              );
+            }
+            case 'tagSelector': {
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <TransparentView>
+                    <EntityAndTagSelector
+                      value={formValues[field]}
+                      onChange={(value) => {
+                        onFormValuesChange({
+                          ...formValues,
+                          [field]: value
+                        });
+                      }}
+                    />
+                  </TransparentView>
+                </InputPair>
+              );
+            }
+            case 'calculatedDuration': {
+              const f = flatFields[field] as CalculatedDurationField;
+              const startDatetime: Date = formValues[f.startFieldName];
+              const endDatetime: Date = formValues[f.endFieldName];
+
+              if (!(startDatetime && endDatetime)) {
+                return null;
+              }
+
+              return (
+                <ValueDependentInputPair
+                  field={field}
+                  key={field}
+                  values={formValues}
+                >
+                  <CalculatedDuration
+                    startDatetime={startDatetime}
+                    endDatetime={endDatetime}
+                    textInputStyle={{
+                      backgroundColor: fieldColor
+                    }}
+                  />
+                </ValueDependentInputPair>
+              );
+            }
+            case 'duration': {
+              const f = flatFields[field] as DurationField;
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                >
+                  <Duration
+                    value={formValues[field]}
+                    textInputStyle={textInputStyle}
+                    onChange={(value) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: value
+                      });
+                    }}
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                  />
+                </InputPair>
+              );
+            }
           }
-
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <DropDown
-                value={formValues[field]}
-                items={f.permittedValues}
-                setFormValues={(item) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: item
-                  });
-                }}
-                dropdownPlaceholder={
-                  (hasPlaceholder(f) && f.placeholder) || undefined
-                }
-                listMode={(hasListMode(f) && f.listMode) || undefined}
-                style={textInputStyle}
-                containerStyle={styles.flex}
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-              />
-            </InputPair>
-          );
-        }
-        case 'dropDownWithOther': {
-          const f = flatFields[field] as DropDownWithOtherField;
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <DropDown
-                value={formValues[field]}
-                items={f.permittedValues}
-                setFormValues={(item) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: item
-                  });
-                }}
-                allowOther={true}
-                dropdownPlaceholder={
-                  (hasPlaceholder(f) && f.placeholder) || undefined
-                }
-                listMode={(hasListMode(f) && f.listMode) || undefined}
-                style={textInputStyle}
-                containerStyle={styles.flex}
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-              />
-            </InputPair>
-          );
-        }
-        case 'Image': {
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={StyleSheet.flatten([
-                styles.inputPair,
-                { zIndex: 10 }
-              ])}
-            >
-              <WhiteImagePicker
-                onImageSelect={(image) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: image
-                  });
-                }}
-                defaultImageUrl={
-                  formValues[field]?.uri || formValues[field] || ''
-                }
-                displayInternalImage={false}
-                style={{
-                  backgroundColor: fieldColor
-                }}
-              />
-            </InputPair>
-          );
-        }
-        case 'timezone': {
-          const f = flatFields[field] as TimezoneField;
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TimezoneSelect
-                value={formValues[field]}
-                onSelectTimezone={(value) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: value
-                  });
-                }}
-                listMode={f.listMode || 'MODAL'}
-                style={textInputStyle}
-                containerStyle={styles.flex}
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-              />
-            </InputPair>
-          );
-        }
-        case 'recurrenceSelector': {
-          const f = flatFields[field] as RecurrenceSelectorField;
-          const firstOccurrence: Date = formValues[f.firstOccurrenceField];
-
-          if (!firstOccurrence) {
-            return null;
-          }
-
-          if (!isFieldShown(f, formValues)) {
-            return null;
-          }
-
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TransparentView>
-                <RecurrenceSelector
-                  value={formValues[field]}
-                  onChange={(value) => {
-                    onFormValuesChange({
-                      ...formValues,
-                      [field]: value
-                    });
-                  }}
-                  onChangeFirstOccurrenceField={(value) => {
-                    const firstOccurrenceField =
-                      flatFields[f.firstOccurrenceField];
-                    const associatedUpdates = getAssociatedUpdates(
-                      firstOccurrenceField as DateTimeField,
-                      f.firstOccurrenceField,
-                      formValues,
-                      value
-                    );
-                    onFormValuesChange({
-                      ...formValues,
-                      ...associatedUpdates,
-                      [f.firstOccurrenceField]: value
-                    });
-                  }}
-                  firstOccurrence={firstOccurrence}
-                  disabled={f.disabled || false}
-                  reverse={f.reverse}
-                />
-              </TransparentView>
-            </InputPair>
-          );
-        }
-        case 'multiRecurrenceSelector': {
-          const f = flatFields[field] as MultiRecurrenceSelectorField;
-          const firstOccurrence: Date = formValues[f.firstOccurrenceField];
-
-          if (!firstOccurrence) {
-            return null;
-          }
-
-          if (!isFieldShown(f, formValues)) {
-            return null;
-          }
-
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TransparentView>
-                <MultipleRecurrenceSelector
-                  value={formValues[field]}
-                  onChange={(value) => {
-                    onFormValuesChange({
-                      ...formValues,
-                      [field]: value
-                    });
-                  }}
-                  firstOccurrence={firstOccurrence}
-                  disabled={f.disabled || false}
-                  reverse={f.reverse}
-                  max={f.max}
-                />
-              </TransparentView>
-            </InputPair>
-          );
-        }
-        case 'actionsSelector': {
-          const f = flatFields[field] as ActionsSelectorField;
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TransparentView>
-                <ActionSelector
-                  value={formValues[field]}
-                  onChange={(value) => {
-                    onFormValuesChange({
-                      ...formValues,
-                      [field]: value
-                    });
-                  }}
-                  max={f.max}
-                />
-              </TransparentView>
-            </InputPair>
-          );
-        }
-        case 'tagSelector': {
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <TransparentView>
-                <EntityAndTagSelector
-                  value={formValues[field]}
-                  onChange={(value) => {
-                    onFormValuesChange({
-                      ...formValues,
-                      [field]: value
-                    });
-                  }}
-                />
-              </TransparentView>
-            </InputPair>
-          );
-        }
-        case 'calculatedDuration': {
-          const f = flatFields[field] as CalculatedDurationField;
-          const startDatetime: Date = formValues[f.startFieldName];
-          const endDatetime: Date = formValues[f.endFieldName];
-
-          if (!(startDatetime && endDatetime)) {
-            return null;
-          }
-
-          return (
-            <ValueDependentInputPair field={field} key={field}>
-              <CalculatedDuration
-                startDatetime={startDatetime}
-                endDatetime={endDatetime}
-                textInputStyle={{
-                  backgroundColor: fieldColor
-                }}
-              />
-            </ValueDependentInputPair>
-          );
-        }
-        case 'duration': {
-          const f = flatFields[field] as DurationField;
-          if (!isFieldShown(f, formValues)) {
-            return null;
-          }
-
-          return (
-            <InputPair
-              field={field}
-              key={field}
-              containerStyle={styles.inputPair}
-            >
-              <Duration
-                value={formValues[field]}
-                textInputStyle={textInputStyle}
-                onChange={(value) => {
-                  onFormValuesChange({
-                    ...formValues,
-                    [field]: value
-                  });
-                }}
-                disabled={
-                  f.disabled || (formType === 'UPDATE' && f.disableUpdate)
-                }
-              />
-            </InputPair>
-          );
-        }
-      }
-    });
-    return (
-      <WhiteView
-        style={[styles.fieldSection, elevation.elevated, sectionStyle]}
-        key={i}
-      >
-        {sectionFields}
-      </WhiteView>
-    );
-  });
+        });
+        return (
+          <WhiteView
+            style={[styles.fieldSection, elevation.elevated, sectionStyle]}
+            key={i}
+          >
+            {sectionFields}
+          </WhiteView>
+        );
+      }),
+    [
+      InputPair,
+      ValueDependentInputPair,
+      fieldColor,
+      fieldSections,
+      flatFields,
+      formErrors,
+      formType,
+      formValues,
+      inlineFields,
+      onFormValuesChange,
+      sectionStyle,
+      t,
+      textInputStyle
+    ]
+  );
 
   return (
     <TransparentView style={style}>

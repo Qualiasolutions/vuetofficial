@@ -80,7 +80,7 @@ export const useDueDateFieldTypes = (
         disabled: disabledRecurrenceFields
       },
       reminders: {
-        type: 'multiRecurrenceSelector',
+        type: 'reminderSelector',
         required: false,
         reverse: true,
         firstOccurrenceField: 'date',
@@ -249,7 +249,7 @@ export const useTaskMiddleFieldTypes = (
         ]
       },
       reminders: {
-        type: 'multiRecurrenceSelector',
+        type: 'reminderSelector',
         required: false,
         reverse: true,
         firstOccurrenceField: 'start_datetime',
@@ -262,7 +262,7 @@ export const useTaskMiddleFieldTypes = (
         ]
       },
       date_reminders: {
-        type: 'multiRecurrenceSelector',
+        type: 'reminderSelector',
         required: false,
         reverse: true,
         firstOccurrenceField: 'date',

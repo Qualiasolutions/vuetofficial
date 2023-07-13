@@ -1,4 +1,4 @@
-import { Reminder } from 'types/tasks';
+import { Recurrence, Reminder } from 'types/tasks';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { deepCopy } from 'utils/copy';
 import {
@@ -104,9 +104,9 @@ const createInitialObject = (
               latestOccurrence.setDate(latestOccurrence.getDate() - days);
             }
 
-            const initialValue = f.initialValue.map((rec: Reminder) => ({
+            const initialValue = f.initialValue.map((rec: Recurrence) => ({
               ...rec,
-              recurrence: rec.recurrence_type,
+              recurrence: rec.recurrence,
               latest_occurrence: latestOccurrence
             }));
 
@@ -116,6 +116,7 @@ const createInitialObject = (
         continue;
 
       case 'actionsSelector':
+      case 'reminderSelector':
         initialObj[key] = formFields[key].initialValue || [];
         continue;
 

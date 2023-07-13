@@ -18,6 +18,7 @@ export type PermittedTypes =
   | 'recurrenceSelector'
   | 'multiRecurrenceSelector'
   | 'actionsSelector'
+  | 'reminderSelector'
   | 'tagSelector'
   | 'calculatedDuration'
   | 'duration'
@@ -102,9 +103,8 @@ export type MultiRecurrenceSelectorField = BaseField<
   max?: number;
 };
 
-export type ActionsSelectorField = BaseField<'actionsSelector', any> & {
-  max?: number;
-};
+export type ActionsSelectorField = BaseField<'actionsSelector', any>;
+export type ReminderSelectorField = BaseField<'reminderSelector', any>;
 
 export type TagSelectorField = BaseField<'tagSelector', any>;
 
@@ -148,6 +148,7 @@ export type Field =
   | MultiRecurrenceSelectorField
   | TagSelectorField
   | ActionsSelectorField
+  | ReminderSelectorField
   | CalculatedDurationField
   | DurationField
   | ImageField

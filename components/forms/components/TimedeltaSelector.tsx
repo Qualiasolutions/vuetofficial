@@ -1,4 +1,5 @@
 import { Feather } from '@expo/vector-icons';
+import { Button } from 'components/molecules/ButtonComponents';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -9,10 +10,30 @@ import { StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 type IntervalType = 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK';
-type TimeDeltaObject = { timedelta: string };
+export type TimeDeltaObject = { timedelta: string };
+
+const useTimeDeltaStringToReadableString = () => {
+  const { t } = useTranslation();
+
+  return (td: string) => {
+    const parts = td.split(' ');
+    if (parts.length === 1) {
+      // If there are no days then insert 0 days
+      parts.unshift('');
+    }
+    const numDays = parseInt(parts[0]);
+    const [numHours, numMinutes] = parts[1]
+      .split(':')
+      .map((val) => parseInt(val));
+
+    return `${numDays ? `${numDays} ${t('common.days')} ` : ''}${
+      numHours ? `${numHours} ${t('common.hours')} ` : ''
+    }${numMinutes ? `${numMinutes} ${t('common.minutes')} ` : ''}before`;
+  };
+};
 
 const NUMBER_ITEMS: { value: number; label: string }[] = [];
-for (let i = 1; i < 31; i++) {
+for (let i = 1; i < 61; i++) {
   NUMBER_ITEMS.push({
     value: i,
     label: `${i}`
@@ -106,7 +127,8 @@ const modalStyles = StyleSheet.create({
   dropdownContainer: { flex: 1 },
   selectionRow: { width: '100%', flexDirection: 'row', alignItems: 'center' },
   exisitingValueRow: { flexDirection: 'row' },
-  deleteActionCross: { marginLeft: 10 }
+  deleteActionCross: { marginLeft: 10 },
+  buttonWrapper: { flexDirection: 'row', marginTop: 10 }
 });
 
 const TimedeltaSelectorModal = ({
@@ -123,6 +145,7 @@ const TimedeltaSelectorModal = ({
   );
 
   const { t } = useTranslation();
+  const timeDeltaStringToReadableString = useTimeDeltaStringToReadableString();
 
   const resetVals = () => {
     setNewNumIntervals(null);
@@ -138,7 +161,7 @@ const TimedeltaSelectorModal = ({
         {value.map((timedeltaObj, i) => (
           <TransparentView key={i} style={modalStyles.exisitingValueRow}>
             <Text>
-              {timedeltaObj.timedelta.split(' ')[0]} {t('common.days')}
+              {timeDeltaStringToReadableString(timedeltaObj.timedelta)}
             </Text>
             <SafePressable
               onPress={() => {
@@ -178,15 +201,24 @@ const TimedeltaSelectorModal = ({
                     onChange([
                       ...value,
                       {
-                        timedelta: `0 00:00:${newNumIntervals}`
+                        timedelta: `0 00:${newNumIntervals
+                          .toString()
+                          .padStart(2, '0')}:00`
                       }
                     ]);
                     resetVals();
                   } else if (newIntervalType === 'HOUR') {
+                    const numDays = Math.floor(newNumIntervals / 24);
+                    const numHours = newNumIntervals - 24 * numDays;
+
                     onChange([
                       ...value,
                       {
-                        timedelta: `0 00:${newNumIntervals}:00`
+                        timedelta: `${numDays
+                          .toString()
+                          .padStart(2, '0')} ${numHours
+                          .toString()
+                          .padStart(2, '0')}:00:00`
                       }
                     ]);
                     resetVals();
@@ -215,6 +247,9 @@ const TimedeltaSelectorModal = ({
           </TransparentView>
         )}
       </TransparentView>
+      <TransparentView style={modalStyles.buttonWrapper}>
+        <Button title={t('common.ok')} onPress={onRequestClose} />
+      </TransparentView>
     </Modal>
   );
 };
@@ -224,27 +259,32 @@ export default function TimedeltaSelector({
   onChange,
   max,
   placeholder,
-  intervalTypes = ['MINUTE', 'HOUR', 'DAY', 'WEEK']
+  intervalTypes = ['MINUTE', 'HOUR', 'DAY', 'WEEK'],
+  open,
+  setOpen
 }: {
   value: TimeDeltaObject[];
   onChange: (actions: TimeDeltaObject[]) => void;
   max?: number;
   placeholder?: string;
   intervalTypes?: IntervalType[];
+  open: boolean;
+  setOpen: (val: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const { t } = useTranslation();
+  const timeDeltaStringToReadableString = useTimeDeltaStringToReadableString();
 
   return (
     <TransparentView>
       <SafePressable onPress={() => setOpen(true)}>
         {value.length > 0 ? (
           <TransparentView>
-            {value.map((timedeltaObj, i) => (
-              <Text key={i}>
-                {timedeltaObj.timedelta.split(' ')[0]} {t('common.days')}
-              </Text>
-            ))}
+            {value.map((timedeltaObj, i) => {
+              return (
+                <Text key={i}>
+                  {timeDeltaStringToReadableString(timedeltaObj.timedelta)}
+                </Text>
+              );
+            })}
           </TransparentView>
         ) : (
           <Text>{placeholder || 'ADD TIMEDELTAS'}</Text>

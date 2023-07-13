@@ -73,7 +73,7 @@ export default function MemberSelector({
 
   const onSelectMember = (member: UserResponse) => {
     if (values.includes(member.id)) {
-      onValueChange([...values.filter((i) => member.id != i)]);
+      onValueChange([...values.filter((i) => member.id !== i)]);
     } else {
       onValueChange([...values, member.id]);
     }
@@ -144,7 +144,11 @@ export default function MemberSelector({
           source={require('assets/images/icons/plus.png')}
           style={styles.addIcon}
         />
-        <PrimaryText text={changeMembersText || t('components.memberSelector.changeMembers')} />
+        <PrimaryText
+          text={
+            changeMembersText || t('components.memberSelector.changeMembers')
+          }
+        />
       </SafePressable>
       <ListingModal
         visible={showMembersList}

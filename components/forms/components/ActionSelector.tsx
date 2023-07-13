@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TaskAction } from 'types/taskActions';
 import TimedeltaSelector from './TimedeltaSelector';
@@ -12,6 +13,8 @@ export default function ActionSelector({
   onChange: (actions: TaskActionFields[]) => void;
 }) {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+
   return (
     <TimedeltaSelector
       value={value.map((action) => ({ timedelta: action.action_timedelta }))}
@@ -20,6 +23,9 @@ export default function ActionSelector({
       }
       placeholder={t('components.actionSelector.placeholder')}
       intervalTypes={['DAY', 'WEEK']}
+      open={open}
+      setOpen={setOpen}
+      max={3}
     />
   );
 }
