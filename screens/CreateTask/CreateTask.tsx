@@ -97,7 +97,7 @@ export default function CreateTask({
             onPress={() => {
               setModalData({
                 options: allEntities.filter(
-                  (entity) => entity.category == selectedCategory?.id
+                  (entity) => entity.category === selectedCategory?.id
                 )
               });
               setShowEntityListing(!showEntityListing);

@@ -78,7 +78,10 @@ const styles = StyleSheet.create({
 
 type AddTaskScreenProps = RootTabScreenProps<'AddTask'>;
 
-export default function AddTaskScreen({ route }: AddTaskScreenProps) {
+export default function AddTaskScreen({
+  route,
+  navigation
+}: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
   const [formType, setFormType] = useState<AddTaskFormType>(
@@ -308,6 +311,7 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
           text1: t('screens.addTask.createSuccess')
         });
         resetState();
+        navigation.goBack();
       } catch (err) {
         Toast.show({
           type: 'error',
@@ -356,6 +360,7 @@ export default function AddTaskScreen({ route }: AddTaskScreenProps) {
           text1: t('screens.addTask.createSuccess')
         });
         resetState();
+        navigation.goBack();
       } catch (err) {
         Toast.show({
           type: 'error',
