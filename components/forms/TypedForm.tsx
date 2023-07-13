@@ -3,7 +3,6 @@ import { StyleSheet, ViewStyle } from 'react-native';
 import { Text, TextInput } from 'components/Themed';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import {
-  ActionsSelectorField,
   AddFamilyMembersField,
   AddMembersField,
   CalculatedDurationField,
@@ -519,10 +518,18 @@ export default function TypedForm({
                     smoothChecking={false}
                     checked={formValues[field]}
                     onValueChange={async (value: any) => {
-                      onFormValuesChange({
+                      const newFormValues = {
                         ...formValues,
                         [field]: !value
-                      });
+                      };
+
+                      if (f.forceUnchecked) {
+                        for (const fieldName of f.forceUnchecked) {
+                          newFormValues[fieldName] = false;
+                        }
+                      }
+
+                      onFormValuesChange(newFormValues);
                     }}
                     disabled={
                       f.disabled || (formType === 'UPDATE' && f.disableUpdate)

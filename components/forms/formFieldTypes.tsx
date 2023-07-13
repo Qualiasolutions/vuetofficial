@@ -60,7 +60,10 @@ export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
   valueToDisplay: Function;
 };
-export type CheckboxField = BaseField<'checkbox', any>;
+export type CheckboxField = BaseField<'checkbox', any> & {
+  forceUnchecked?: string[];
+};
+
 export type AddMembersField = BaseField<'addMembers', any> & {
   permittedValues: {
     friends: UserResponse[];

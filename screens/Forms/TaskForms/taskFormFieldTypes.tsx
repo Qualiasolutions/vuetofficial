@@ -111,7 +111,14 @@ export const useDueDateFieldTypes = (
         listMode: 'MODAL'
       }
     };
-  }, [userFullDetails, t, isEdit, taskHiddenTag, allRoutines]);
+  }, [
+    userFullDetails,
+    t,
+    isEdit,
+    taskHiddenTag,
+    allRoutines,
+    disabledRecurrenceFields
+  ]);
 };
 
 export const useTaskMiddleFieldTypes = (
@@ -119,6 +126,7 @@ export const useTaskMiddleFieldTypes = (
   disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
+  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo(() => {
     return {
@@ -126,13 +134,15 @@ export const useTaskMiddleFieldTypes = (
         type: 'checkbox',
         required: false,
         displayName: t('tasks.task.is_flexible'),
-        hidden: disableFlexible
+        hidden: disableFlexible,
+        forceUnchecked: ['is_any_time']
       },
       is_any_time: {
         type: 'checkbox',
         required: false,
         displayName: t('tasks.task.is_any_time'),
-        disabled: disabledRecurrenceFields
+        disabled: disabledRecurrenceFields,
+        forceUnchecked: ['is_flexible']
       },
       start_datetime: {
         type: 'DateTime',
@@ -274,13 +284,30 @@ export const useTaskMiddleFieldTypes = (
           }
         ]
       },
+      routine: {
+        type: 'dropDown',
+        required: false,
+        displayName: t('tasks.task.routine'),
+        permittedValues: allRoutines
+          ? Object.values(allRoutines.byId).map((routine) => ({
+              value: routine.id,
+              label: routine.name
+            }))
+          : [],
+        listMode: 'MODAL',
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
+      },
       tagsAndEntities: {
         type: 'tagSelector',
         required: true,
         displayName: t('tasks.task.tags')
       }
     };
-  }, [t, disabledRecurrenceFields, disableFlexible]);
+  }, [t, disabledRecurrenceFields, disableFlexible, allRoutines]);
 };
 
 export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {
