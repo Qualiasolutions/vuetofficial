@@ -37,6 +37,7 @@ import UserInitialsWithColor from 'components/molecules/UserInitialsWithColor';
 import TaskCompletionForm, {
   FORM_REQUIRED_TAGS
 } from 'components/forms/TaskCompletionForms/TaskCompletionForm';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -275,7 +276,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
       return (
         <TransparentView
           style={[styles.outerContainer, { height: ITEM_HEIGHT }]}
-        />
+        >
+          <PaddedSpinner />
+        </TransparentView>
       );
     }
 

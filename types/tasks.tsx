@@ -18,9 +18,8 @@ interface Recurrence {
 }
 
 interface Reminder {
-  earliest_timedelta: string;
-  interval_length: number;
-  recurrence_type: RecurrenceType;
+  id: number;
+  timedelta: string;
 }
 
 type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction';
@@ -77,7 +76,7 @@ interface BaseCreateTaskRequest {
   members: number[];
   entities: number[];
   location?: string;
-  reminders?: Reminder[];
+  reminders?: Omit<Reminder, 'id'>[];
   actions?: { action_timedelta: string }[];
   hidden_tag?: HiddenTagType;
   type?: TaskType;

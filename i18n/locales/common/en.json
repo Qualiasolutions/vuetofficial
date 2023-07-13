@@ -604,6 +604,12 @@
     },
     "task": {
       "scheduleNext": "Schedule next {{dueDateType}} due date"
+    },
+    "actionSelector": {
+      "placeholder": "Add Actions"
+    },
+    "reminderSelector": {
+      "placeholder": "Add Reminders"
     }
   }
 }
