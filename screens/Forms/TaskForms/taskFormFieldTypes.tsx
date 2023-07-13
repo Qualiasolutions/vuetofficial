@@ -298,6 +298,9 @@ export const useTaskMiddleFieldTypes = (
         shownFields: [
           {
             is_any_time: true
+          },
+          {
+            is_flexible: true
           }
         ]
       },
