@@ -35,6 +35,10 @@ import { trainBusFerryForm } from './formFields/train-bus-ferry';
 import { tripActivityForm } from './formFields/trip-activity';
 import { tripForm } from './formFields/trip';
 import { useMemo } from 'react';
+import { patientForm } from './formFields/patient';
+import { appointmentForm } from './formFields/appointment';
+import { studentForm } from './formFields/student';
+import { employeeForm } from './formFields/employee';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -175,6 +179,22 @@ export default function useForm(
 
     if (entityType === 'Trip') {
       return tripForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Patient') {
+      return patientForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Appointment') {
+      return appointmentForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Student') {
+      return studentForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Employee') {
+      return employeeForm(isEdit, userFullDetails, t);
     }
 
     return {};

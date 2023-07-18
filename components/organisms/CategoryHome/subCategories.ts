@@ -111,6 +111,15 @@ export default {
   ],
   EDUCATION: [
     {
+      name: 'education.students',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Student'],
+        entityTypeName: 'students'
+      }
+    },
+    {
       name: 'education.schools',
       toScreen: 'EntityList',
       navMethod: 'push',
@@ -139,6 +148,15 @@ export default {
     }
   ],
   CAREER: [
+    {
+      name: 'career.employees',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Employee'],
+        entityTypeName: 'employees'
+      }
+    },
     {
       name: 'career.daysOff',
       toScreen: 'EntityList',

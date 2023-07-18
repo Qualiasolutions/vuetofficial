@@ -2,7 +2,10 @@ import { Button } from 'components/molecules/ButtonComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
-import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
+import {
+  TransparentFullPageScrollView,
+  TransparentScrollView
+} from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import {
   TransparentPaddedView,
@@ -19,6 +22,7 @@ import {
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
+import { EntityTypeName } from 'types/entities';
 
 const styles = StyleSheet.create({
   checkboxContainer: { flexGrow: 0 },
@@ -51,15 +55,21 @@ type TagSelectorProps = {
     PET: boolean;
     TRAVEL: boolean;
   };
+  requiredEntityTypes: {
+    name: string;
+    resourceTypes: EntityTypeName[];
+  }[];
   onChange: (tags: string[]) => void;
+  onChangeEntities: (entities: number[]) => void;
 };
 
-const TagSelector = ({
+const StepTwoSelector = ({
   selectedEntities,
   selectedTags,
-  value,
   requiredTags,
-  onChange
+  requiredEntityTypes,
+  onChange,
+  onChangeEntities
 }: TagSelectorProps) => {
   const { t } = useTranslation();
 
@@ -85,29 +95,48 @@ const TagSelector = ({
   }
 
   const checkboxOnValueChange = (currentTagName: string) => async () => {
-    if (value.includes(currentTagName)) {
-      const newValue = value.filter((tagName) => tagName !== currentTagName);
+    if (selectedTags.includes(currentTagName)) {
+      const newValue = selectedTags.filter(
+        (tagName) => tagName !== currentTagName
+      );
       onChange(newValue);
     } else {
-      onChange([...value, currentTagName]);
+      onChange([...selectedTags, currentTagName]);
+    }
+  };
+
+  const entityCheckboxOnChange = (currentEntityId: number) => async () => {
+    if (selectedEntities.includes(currentEntityId)) {
+      const newValue = selectedEntities.filter(
+        (tagName) => tagName !== currentEntityId
+      );
+      onChangeEntities(newValue);
+    } else {
+      onChangeEntities([...selectedEntities, currentEntityId]);
     }
   };
 
   return (
     <TransparentView>
-      <TransparentView style={styles.selectedEntitiesSummary}>
-        <Text>{t('components.tagSelector.selectedEntities')}:</Text>
-        <Text>
-          {selectedEntities
-            .filter((ent) => allEntities.byId[ent])
-            .map((ent) => allEntities.byId[ent].name)
-            .join(', ')}
-        </Text>
-      </TransparentView>
-      <TransparentView style={styles.selectedEntitiesSummary}>
-        <Text>{t('components.tagSelector.selectedTags')}:</Text>
-        <Text>{selectedTags.map((tag) => t(`tags.${tag}`)).join(', ')}</Text>
-      </TransparentView>
+      {selectedEntities.length > 0 && (
+        <TransparentView style={styles.selectedEntitiesSummary}>
+          <Text bold={true}>
+            {t('components.tagSelector.selectedEntities')}:
+          </Text>
+          <Text>
+            {selectedEntities
+              .filter((ent) => allEntities.byId[ent])
+              .map((ent) => allEntities.byId[ent].name)
+              .join(', ')}
+          </Text>
+        </TransparentView>
+      )}
+      {selectedTags.length > 0 && (
+        <TransparentView style={styles.selectedEntitiesSummary}>
+          <Text bold={true}>{t('components.tagSelector.selectedTags')}:</Text>
+          <Text>{selectedTags.map((tag) => t(`tags.${tag}`)).join(', ')}</Text>
+        </TransparentView>
+      )}
 
       {requiredTags.PET && (
         <TransparentView style={styles.requiredTagSection}>
@@ -118,7 +147,7 @@ const TagSelector = ({
                 <Text>{t(`tags.${petTagName}`)}</Text>
               </TransparentView>
               <Checkbox
-                checked={value.includes(petTagName)}
+                checked={selectedTags.includes(petTagName)}
                 onValueChange={checkboxOnValueChange(petTagName)}
               />
             </TransparentView>
@@ -137,13 +166,50 @@ const TagSelector = ({
                 <Text>{t(`tags.${travelTagName}`)}</Text>
               </TransparentView>
               <Checkbox
-                checked={value.includes(travelTagName)}
+                checked={selectedTags.includes(travelTagName)}
                 onValueChange={checkboxOnValueChange(travelTagName)}
               />
             </TransparentView>
           ))}
         </TransparentView>
       )}
+      {requiredEntityTypes.map(({ name, resourceTypes }) => {
+        const matchingEntities = Object.values(memberEntities.byId).filter(
+          (entity) => resourceTypes.includes(entity.resourcetype)
+        );
+        return (
+          <TransparentView style={styles.requiredTagSection}>
+            <Text>
+              {t('components.tagSelector.requiresTag', {
+                requirementName: name
+              })}
+              :
+            </Text>
+            {matchingEntities.length > 0 ? (
+              matchingEntities.map((entity) => (
+                <TransparentView
+                  style={styles.entityCheckboxPair}
+                  key={entity.id}
+                >
+                  <TransparentView style={styles.entityCheckboxLabel}>
+                    <Text>{entity.name}</Text>
+                  </TransparentView>
+                  <Checkbox
+                    checked={selectedEntities.includes(entity.id)}
+                    onValueChange={entityCheckboxOnChange(entity.id)}
+                  />
+                </TransparentView>
+              ))
+            ) : (
+              <Text bold={true}>
+                {t('components.tagSelector.noEntities', {
+                  entityType: name
+                })}
+              </Text>
+            )}
+          </TransparentView>
+        );
+      })}
     </TransparentView>
   );
 };
@@ -211,21 +277,113 @@ const EntityAndTagSelectorModal = ({
   );
   const hasTravelTag = selectedTags.some((tag) => allTags.TRAVEL.includes(tag));
 
+  const requiresAppointmentTag = selectedEntities.some(
+    (ent) =>
+      allEntities.byId[ent] && allEntities.byId[ent].resourcetype === 'Patient'
+  );
+  const requiresPatientTag = selectedEntities.some(
+    (ent) =>
+      allEntities.byId[ent] &&
+      allEntities.byId[ent].resourcetype === 'Appointment'
+  );
+  const requiresStudentTag = selectedEntities.some(
+    (ent) =>
+      allEntities.byId[ent] &&
+      ['School', 'AcademicPlan', 'ExtracurricularPlan'].includes(
+        allEntities.byId[ent].resourcetype
+      )
+  );
+  const requiresMatchingStudentTag = selectedEntities.some(
+    (ent) =>
+      allEntities.byId[ent] &&
+      ['Student'].includes(allEntities.byId[ent].resourcetype)
+  );
+
+  const requiresEmployeeTag = selectedEntities.some(
+    (ent) =>
+      allEntities.byId[ent] &&
+      ['DaysOff', 'CareerGoal'].includes(allEntities.byId[ent].resourcetype)
+  );
+  const requiresMatchingEmployeeTag = selectedEntities.some(
+    (ent) =>
+      allEntities.byId[ent] &&
+      ['Employee'].includes(allEntities.byId[ent].resourcetype)
+  );
+
+  const requiredEntityTypes: {
+    name: string;
+    resourceTypes: EntityTypeName[];
+  }[] = [];
+  if (requiresAppointmentTag) {
+    requiredEntityTypes.push({
+      name: 'Appointment',
+      resourceTypes: ['Appointment']
+    });
+  }
+  if (requiresPatientTag) {
+    requiredEntityTypes.push({
+      name: 'Patient',
+      resourceTypes: ['Patient']
+    });
+  }
+  if (requiresStudentTag) {
+    requiredEntityTypes.push({
+      name: 'Student',
+      resourceTypes: ['Student']
+    });
+  }
+  if (requiresMatchingStudentTag) {
+    requiredEntityTypes.push({
+      name: 'School, Extracurricular or Academic Plan',
+      resourceTypes: ['School', 'ExtracurricularPlan', 'AcademicPlan']
+    });
+  }
+  if (requiresEmployeeTag) {
+    requiredEntityTypes.push({
+      name: 'Employee',
+      resourceTypes: ['Employee']
+    });
+  }
+  if (requiresMatchingEmployeeTag) {
+    requiredEntityTypes.push({
+      name: 'Days off or Career goal',
+      resourceTypes: ['DaysOff', 'CareerGoal']
+    });
+  }
+
+  let hasRequiredEntityTags = true;
+  for (const requiredType of requiredEntityTypes) {
+    if (
+      !selectedEntities.some(
+        (ent) =>
+          allEntities.byId[ent] &&
+          requiredType.resourceTypes.includes(
+            allEntities.byId[ent].resourcetype
+          )
+      )
+    ) {
+      hasRequiredEntityTags = false;
+      break;
+    }
+  }
+
   return (
     <Modal visible={open} onRequestClose={onRequestClose}>
       {isSettingTags ? (
-        <TransparentPaddedView>
-          <TagSelector
+        <TransparentScrollView style={styles.checkboxContainer}>
+          <StepTwoSelector
             selectedEntities={selectedEntities}
             selectedTags={selectedTags}
             onChange={setSelectedTags}
+            onChangeEntities={setSelectedEntities}
             value={selectedTags}
             requiredTags={{
               PET: requiresPetTag,
               TRAVEL: requiresTravelTag
             }}
+            requiredEntityTypes={requiredEntityTypes}
           />
-        </TransparentPaddedView>
+        </TransparentScrollView>
       ) : (
         <TransparentScrollView style={styles.checkboxContainer}>
           <EntityCheckboxes
@@ -257,7 +415,8 @@ const EntityAndTagSelectorModal = ({
             style={styles.button}
             disabled={
               (requiresPetTag && !hasPetTag) ||
-              (requiresTravelTag && !hasTravelTag)
+              (requiresTravelTag && !hasTravelTag) ||
+              !hasRequiredEntityTags
             }
           />
         </TransparentView>

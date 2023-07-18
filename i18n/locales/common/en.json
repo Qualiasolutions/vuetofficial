@@ -148,9 +148,11 @@
     "career": {
       "daysOff": "Days Off",
       "careerGoal": "Career Planning & Goals",
-      "myCareerInformation": "My Career Information"
+      "myCareerInformation": "My Career Information",
+      "employees": "Employees"
     },
     "education": {
+      "students": "Students",
       "schools": "Schools",
       "academicPlans": "Academic Plans",
       "extracurricularPlans": "Extracurricular Plans",
@@ -161,8 +163,10 @@
   },
   "entityTypes": {
     "annualDates": "Annual Dates to Remember",
+    "appointment": "Appointments",
     "career": "Career",
     "education": "Education",
+    "employees": "Employees",
     "cars": "Cars & Motorcycles",
     "boats": "Boats & Other",
     "public-transport": "Public Transport",
@@ -171,6 +175,7 @@
     "hobbies": "Interests & Hobbies",
     "trips": "Trips",
     "pets": "Pets",
+    "patient": "Patients",
     "days-off": "Days Off",
     "holidays": "Holidays",
     "schools": "Schools",
@@ -182,6 +187,7 @@
     "clothing": "Laundry items",
     "social-plans": "Social Plans",
     "social-media": "Social Media",
+    "students": "Students",
     "school-breaks": "School Breaks",
     "health-beauty": "Health & Beauty",
     "finance": "Finance",
@@ -237,6 +243,7 @@
     "Event": "Event",
     "List": "List",
     "Birthday": "Birthday",
+    "Employee": "Employee",
     "Anniversary": "Anniversary",
     "Hobby": "Hobby",
     "Holiday": "Holiday",
@@ -262,6 +269,7 @@
     "ExtracurricularPlan": "Extracurricular Plan",
     "CareerGoal": "Career Goal",
     "School": "School",
+    "Student": "Student",
     "SchoolBreak": "School Break",
     "Home": "Home",
     "Food": "Food",
@@ -269,7 +277,9 @@
     "SocialMedia": "Social Media",
     "SocialPlan": "Social Plan",
     "HealthBeauty": "Health / Beauty",
-    "Finance": "Finance"
+    "Finance": "Finance",
+    "Patient": "Patient",
+    "Appointment": "Appointment"
   },
   "filters": {
     "userFilters": "User filters",
@@ -580,7 +590,9 @@
       "selectedEntities": "Selected entities",
       "selectedTags": "Selected tags",
       "requiresPetTag": "You must add a pet tag to this task",
-      "requiresTravelTag": "You must add a travel tag to this task"
+      "requiresTravelTag": "You must add a travel tag to this task",
+      "requiresTag": "You must add a {{requirementName}} entity to this task",
+      "noEntities": "No {{entityType}} entities found"
     },
     "messageThread": {
       "send": "Send"

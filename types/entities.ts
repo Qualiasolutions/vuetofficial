@@ -32,6 +32,10 @@ export type EntityTypeName =
   | 'School'
   | 'SchoolBreak'
   | 'HealthBeauty'
+  | 'Patient'
+  | 'Appointment'
+  | 'Student'
+  | 'Employee'
   | 'Finance';
 
 export interface BaseEntityType {
