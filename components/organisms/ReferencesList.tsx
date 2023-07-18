@@ -3,7 +3,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import { Button } from 'components/molecules/ButtonComponents';
-import { Modal } from 'components/molecules/Modals';
+import { Modal, YesNoModal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner, SmallSpinner } from 'components/molecules/Spinners';
@@ -22,6 +22,8 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   useCreateReferenceGroupMutation,
   useCreateReferenceMutation,
+  useDeleteReferenceGroupMutation,
+  useDeleteReferenceMutation,
   useGetAllReferenceGroupsQuery,
   useGetAllReferencesQuery,
   useRetrievePasswordReferenceMutation,
@@ -304,6 +306,7 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
   const [newValue, setNewValue] = useState(reference.value);
 
   const [updateReference, updateReferenceResult] = useUpdateReferenceMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
 
   const resetValues = useCallback(() => {
     setNewName(reference.name);
@@ -440,6 +443,18 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
               style={refItemsStyles.actionIcon}
             />
           </SafePressable>
+          <SafePressable
+            onPress={() => {
+              deleteReference({ id: reference.id });
+            }}
+          >
+            <Feather
+              name="trash"
+              size={20}
+              color="red"
+              style={refItemsStyles.actionIcon}
+            />
+          </SafePressable>
         </>
       )}
       <PasswordModal
@@ -469,8 +484,11 @@ const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
   const [newName, setNewName] = useState(refGroup?.name || '');
   const { t } = useTranslation();
   const [updateGroup, updateGroupResult] = useUpdateReferenceGroupMutation();
+  const [deleteGroup] = useDeleteReferenceGroupMutation();
+  const [deletingGroup, setDeletingGroup] = useState(false);
 
   const refViews = references
+    .filter((ref) => !!ref?.id)
     .sort((a, b) => (a.id > b.id ? 1 : -1))
     .map((ref) => <ReferenceItem reference={ref} key={ref.id} />);
 
@@ -527,22 +545,45 @@ const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
           <Text style={entityRefStyles.nameTitle}>{refGroup.name}</Text>
         )}
         {!editing && (
-          <SafePressable
-            onPress={() => {
-              setEditing(true);
-            }}
-          >
-            <Feather
-              name="edit"
-              size={20}
-              color="orange"
-              style={refItemsStyles.actionIcon}
-            />
-          </SafePressable>
+          <>
+            <SafePressable
+              onPress={() => {
+                setEditing(true);
+              }}
+            >
+              <Feather
+                name="edit"
+                size={20}
+                color="orange"
+                style={refItemsStyles.actionIcon}
+              />
+            </SafePressable>
+            <SafePressable
+              onPress={() => {
+                setDeletingGroup(true);
+              }}
+            >
+              <Feather
+                name="trash"
+                size={20}
+                color="red"
+                style={refItemsStyles.actionIcon}
+              />
+            </SafePressable>
+          </>
         )}
       </TransparentView>
       {refViews}
       <AddReference groupId={groupId} />
+      <YesNoModal
+        title={t('components.referencesList.deletingGroup')}
+        question={t('components.referencesList.deletingGroupConfirmation')}
+        visible={!!deletingGroup}
+        onYes={() => deleteGroup({ id: refGroup.id })}
+        onNo={() => {
+          setDeletingGroup(false);
+        }}
+      />
     </WhiteBox>
   );
 };
@@ -559,6 +600,7 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
 
   const refViews = referenceGroups
     .sort((a, b) => (a.id > b.id ? 1 : -1))
+    .filter((refGroup) => !!refGroup?.id)
     .map((refGroup) => (
       <ReferenceGroupItem groupId={refGroup.id} key={refGroup.id} />
     ));
@@ -578,6 +620,7 @@ const TagReferences = ({ tagName }: { tagName: string }) => {
 
   const refViews = referenceGroups
     .sort((a, b) => (a.id > b.id ? 1 : -1))
+    .filter((refGroup) => !!refGroup?.id)
     .map((refGroup) => (
       <ReferenceGroupItem groupId={refGroup.id} key={refGroup.id} />
     ));

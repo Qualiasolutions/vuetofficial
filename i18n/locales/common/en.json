@@ -611,6 +611,10 @@
     },
     "reminderSelector": {
       "placeholder": "Add Reminders"
+    },
+    "referencesList": {
+      "deletingGroup": "Delete reference group",
+      "deletingGroupConfirmation": "Are you sure you would like to delete this reference group?"
     }
   }
 }
