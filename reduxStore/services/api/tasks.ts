@@ -5,7 +5,8 @@ import {
   FixedTaskResponseType,
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
-  ScheduledTaskResourceType
+  ScheduledTaskResourceType,
+  CreateRecurrentTaskOverwriteRequest
 } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
@@ -347,6 +348,63 @@ const tasksApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction']
+    }),
+    createRecurrentTaskOverwrite: builder.mutation<
+      {
+        task: FixedTaskResponseType;
+        recurrence: number;
+        recurrence_index: number;
+      },
+      CreateRecurrentTaskOverwriteRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'core/recurrent_task_overwrite/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['Alert', 'ActionAlert', 'TaskAction'],
+      async onQueryStarted(body, { dispatch, queryFulfilled, getState }) {
+        try {
+          const {
+            data: { task: newTask }
+          } = await queryFulfilled;
+
+          updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
+        } catch (err) {
+          console.error(err);
+        }
+
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (!['getAllScheduledTasks'].includes(endpointName)) continue;
+          if (endpointName === 'getAllScheduledTasks') {
+            const patchResult = dispatch(
+              tasksApi.util.updateQueryData(
+                'getAllScheduledTasks',
+                originalArgs,
+                (draft) => {
+                  delete draft.byTaskId[body.baseTaskId][body.recurrence_index];
+                }
+              )
+            );
+            patchResults.push(patchResult);
+          }
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
@@ -363,5 +421,6 @@ export const {
   useDeleteTaskMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation,
-  useCreateFlexibleFixedTaskMutation
+  useCreateFlexibleFixedTaskMutation,
+  useCreateRecurrentTaskOverwriteMutation
 } = tasksApi;

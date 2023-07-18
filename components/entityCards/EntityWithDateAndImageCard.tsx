@@ -3,7 +3,7 @@ import {
   LightBlackText
 } from 'components/molecules/TextComponents';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { getDatesPeriodString } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';

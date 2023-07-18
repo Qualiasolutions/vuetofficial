@@ -9,7 +9,7 @@ import {
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes
-} from './taskFormFieldTypes';
+} from 'components/forms/taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';

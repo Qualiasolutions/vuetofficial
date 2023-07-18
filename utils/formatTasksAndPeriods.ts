@@ -16,6 +16,9 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
     }[];
   } = {};
   for (const task of tasks) {
+    if (!task) {
+      continue;
+    }
     const taskDates =
       task.start_datetime && task.end_datetime
         ? getDateStringsBetween(task.start_datetime, task.end_datetime)

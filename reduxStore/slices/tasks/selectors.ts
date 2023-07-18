@@ -91,7 +91,7 @@ export const selectOverdueTasks = createSelector(
         ? tasksData.byActionId[actionId][recurrenceIndex]
         : tasksData.byTaskId[id][recurrenceIndex];
 
-      const taskDatetimeString = task.start_datetime || task.date;
+      const taskDatetimeString = task?.start_datetime || task?.date;
       if (!taskDatetimeString) {
         continue;
       }

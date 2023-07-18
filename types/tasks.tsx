@@ -11,6 +11,7 @@ type RecurrenceType =
   | 'YEAR_MONTH_WEEKLY';
 
 interface Recurrence {
+  id: number;
   earliest_occurrence: string;
   latest_occurrence: string | null;
   interval_length: number;
@@ -44,7 +45,7 @@ interface BaseTaskType {
   routine: number | null;
   created_at: string;
   date?: string;
-  duration?: string;
+  duration?: number;
   start_datetime?: string;
   end_datetime?: string;
   type: TaskType;
@@ -66,7 +67,7 @@ interface ScheduledTaskResponseType {
   resourcetype: ScheduledTaskResourceType;
   alert: AlertName[];
   date?: string;
-  duration?: string;
+  duration?: number;
   start_datetime?: string;
   end_datetime?: string;
 }
@@ -96,6 +97,13 @@ interface CreateFlexibleFixedTaskRequest extends BaseCreateTaskRequest {
   duration: number;
 }
 
+interface CreateRecurrentTaskOverwriteRequest {
+  task: CreateFixedTaskRequest;
+  recurrence: number;
+  recurrence_index: number;
+  baseTaskId: number;
+}
+
 type CreateTaskRequest =
   | CreateFixedTaskRequest
   | CreateFlexibleFixedTaskRequest;
@@ -117,6 +125,7 @@ export {
   CreateTaskRequest,
   CreateFixedTaskRequest,
   CreateFlexibleFixedTaskRequest,
+  CreateRecurrentTaskOverwriteRequest,
   ScheduledTaskResponseType,
   HiddenTagType
 };

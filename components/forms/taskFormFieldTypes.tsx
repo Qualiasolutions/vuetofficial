@@ -37,7 +37,8 @@ export const useTaskTopFieldTypes = (
 export const useDueDateFieldTypes = (
   isEdit: boolean = false,
   taskHiddenTag: string = '',
-  disabledRecurrenceFields: boolean = false
+  disabledRecurrenceFields: boolean = false,
+  allowRecurrence: boolean = true
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserDetails();
@@ -78,7 +79,8 @@ export const useDueDateFieldTypes = (
         required: false,
         firstOccurrenceField: 'date',
         displayName: t('tasks.task.recurrence'),
-        disabled: disabledRecurrenceFields
+        disabled: disabledRecurrenceFields,
+        hidden: !allowRecurrence
       },
       reminders: {
         type: 'reminderSelector',
@@ -118,13 +120,15 @@ export const useDueDateFieldTypes = (
     isEdit,
     taskHiddenTag,
     allRoutines,
-    disabledRecurrenceFields
+    disabledRecurrenceFields,
+    allowRecurrence
   ]);
 };
 
 export const useTaskMiddleFieldTypes = (
   disableFlexible: boolean = false,
-  disabledRecurrenceFields: boolean = false
+  disabledRecurrenceFields: boolean = false,
+  allowRecurrence: boolean = true
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: allRoutines } = useGetAllRoutinesQuery();
@@ -242,7 +246,8 @@ export const useTaskMiddleFieldTypes = (
             is_flexible: false,
             is_any_time: false
           }
-        ]
+        ],
+        hidden: !allowRecurrence
       },
       date_recurrence: {
         type: 'recurrenceSelector',
@@ -257,7 +262,8 @@ export const useTaskMiddleFieldTypes = (
             is_flexible: false,
             is_any_time: true
           }
-        ]
+        ],
+        hidden: !allowRecurrence
       },
       reminders: {
         type: 'reminderSelector',
