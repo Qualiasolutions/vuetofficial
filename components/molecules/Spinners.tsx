@@ -21,6 +21,19 @@ export function PaddedSpinner({
   );
 }
 
+export function SmallSpinner({
+  spinnerColor = 'primary',
+  style = {}
+}: SpinnerProps) {
+  return (
+    <ActivityIndicator
+      color={useThemeColor({}, spinnerColor)}
+      size="small"
+      style={style}
+    />
+  );
+}
+
 export function FullPageSpinner({
   spinnerColor = 'primary',
   style = {}

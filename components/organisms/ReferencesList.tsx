@@ -6,12 +6,12 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import { PaddedSpinner } from 'components/molecules/Spinners';
+import { PaddedSpinner, SmallSpinner } from 'components/molecules/Spinners';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -24,7 +24,9 @@ import {
   useCreateReferenceMutation,
   useGetAllReferenceGroupsQuery,
   useGetAllReferencesQuery,
-  useRetrievePasswordReferenceMutation
+  useRetrievePasswordReferenceMutation,
+  useUpdateReferenceGroupMutation,
+  useUpdateReferenceMutation
 } from 'reduxStore/services/api/references';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
@@ -41,7 +43,7 @@ const addReferenceStyles = StyleSheet.create({
   input: { flex: 1, marginRight: 10, marginVertical: 5 },
   buttonWrapper: { alignItems: 'flex-start' },
   button: { paddingVertical: 5 },
-  dropdown: { width: 130, marginRight: 10, flex: 0 }
+  dropdown: { width: 130, marginRight: 10, flex: 0, height: 40 }
 });
 const AddReference = ({ groupId }: { groupId: number }) => {
   const { t } = useTranslation();
@@ -273,60 +275,172 @@ const PasswordModal = ({
 
 const refItemsStyles = StyleSheet.create({
   nameStyle: { marginRight: 20, fontWeight: 'bold' },
-  refPair: { flexDirection: 'row', alignItems: 'center' },
+  refPair: { flexDirection: 'row', alignItems: 'center', width: '100%' },
   actionIcon: {
-    color: 'green',
     marginLeft: 10
+  },
+  editingContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginBottom: 10
+  },
+  editingInput: {
+    paddingVertical: 1,
+    paddingHorizontal: 5,
+    height: 25,
+    marginRight: 5,
+    minWidth: 80,
+    width: 'auto'
   }
 });
 const ReferenceItem = ({ reference }: { reference: Reference }) => {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [editing, setEditing] = useState(false);
   const { data: referenceGroups } = useGetAllReferenceGroupsQuery();
+  const { t } = useTranslation();
+  const [newName, setNewName] = useState(reference.name);
+  const [newValue, setNewValue] = useState(reference.value);
+
+  const [updateReference, updateReferenceResult] = useUpdateReferenceMutation();
+
+  const resetValues = useCallback(() => {
+    setNewName(reference.name);
+    setNewValue(reference.value);
+  }, [reference.value, reference.name]);
+
+  useEffect(() => {
+    resetValues();
+  }, [resetValues]);
 
   if (!referenceGroups) {
     return null;
+  }
+
+  const isLoading = updateReferenceResult.isLoading;
+
+  if (isLoading) {
+    return <SmallSpinner />;
   }
 
   const group = referenceGroups.byId[reference.group];
 
   return (
     <TransparentView style={refItemsStyles.refPair}>
-      <Text style={refItemsStyles.nameStyle}>{reference.name}</Text>
-      <Text>{reference.type === 'PASSWORD' ? '●●●●●●' : reference.value}</Text>
-      {reference.type === 'DATE' && (
-        <SafePressable
-          onPress={() => {
-            navigation.navigate('AddTask', {
-              title: reference.name,
-              date: reference.value,
-              entities: group.entities,
-              tags: group.tags,
-              type: 'DUE_DATE'
-            });
-          }}
-        >
-          <Feather
-            name="plus"
-            size={30}
-            color="green"
-            style={refItemsStyles.actionIcon}
+      {editing ? (
+        <TransparentView style={refItemsStyles.editingContainer}>
+          <TextInput
+            value={newName}
+            onChangeText={setNewName}
+            style={refItemsStyles.editingInput}
+            placeholder={t('common.name')}
           />
-        </SafePressable>
+          {reference.type === 'DATE' ? (
+            <DateTimeTextInput
+              value={newValue ? new Date(newValue) : null}
+              onValueChange={(newDateValue: Date) => {
+                setNewValue(dayjs(newDateValue).format('YYYY-MM-DD'));
+              }}
+              mode="date"
+              textInputStyle={refItemsStyles.editingInput}
+            />
+          ) : (
+            <TextInput
+              value={newValue}
+              onChangeText={setNewValue}
+              style={refItemsStyles.editingInput}
+              placeholder={t('common.value')}
+            />
+          )}
+          <SafePressable
+            onPress={() => {
+              updateReference({
+                id: reference.id,
+                name: newName,
+                value: newValue
+              });
+              setEditing(false);
+            }}
+          >
+            <Feather
+              name="check"
+              size={20}
+              color="green"
+              style={refItemsStyles.actionIcon}
+            />
+          </SafePressable>
+          <SafePressable
+            onPress={() => {
+              setEditing(false);
+              resetValues();
+            }}
+          >
+            <Feather
+              name="x"
+              size={20}
+              color="red"
+              style={refItemsStyles.actionIcon}
+            />
+          </SafePressable>
+        </TransparentView>
+      ) : (
+        <>
+          <Text style={refItemsStyles.nameStyle}>{reference.name}</Text>
+          <Text>
+            {reference.type === 'PASSWORD' ? '●●●●●●' : reference.value}
+          </Text>
+        </>
       )}
-      {reference.type === 'PASSWORD' && (
-        <SafePressable
-          onPress={() => {
-            setShowPasswordModal(true);
-          }}
-        >
-          <Feather
-            name="eye"
-            size={20}
-            color="green"
-            style={refItemsStyles.actionIcon}
-          />
-        </SafePressable>
+      {!editing && (
+        <>
+          {reference.type === 'DATE' && (
+            <SafePressable
+              onPress={() => {
+                navigation.navigate('AddTask', {
+                  title: reference.name,
+                  date: reference.value,
+                  entities: group.entities,
+                  tags: group.tags,
+                  type: 'DUE_DATE'
+                });
+              }}
+            >
+              <Feather
+                name="plus"
+                size={30}
+                color="green"
+                style={refItemsStyles.actionIcon}
+              />
+            </SafePressable>
+          )}
+          {reference.type === 'PASSWORD' && (
+            <SafePressable
+              onPress={() => {
+                setShowPasswordModal(true);
+              }}
+            >
+              <Feather
+                name="eye"
+                size={20}
+                color="green"
+                style={refItemsStyles.actionIcon}
+              />
+            </SafePressable>
+          )}
+          <SafePressable
+            onPress={() => {
+              setEditing(true);
+            }}
+          >
+            <Feather
+              name="edit"
+              size={20}
+              color="orange"
+              style={refItemsStyles.actionIcon}
+            />
+          </SafePressable>
+        </>
       )}
       <PasswordModal
         onRequestClose={() => setShowPasswordModal(false)}
@@ -338,13 +452,23 @@ const ReferenceItem = ({ reference }: { reference: Reference }) => {
 };
 
 const entityRefStyles = StyleSheet.create({
-  container: { padding: 10, marginBottom: 10 },
+  container: { padding: 10, marginBottom: 10, width: '100%' },
+  titleBox: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  nameInput: {
+    minWidth: 120,
+    width: 'auto',
+    fontSize: 18
+  },
   nameTitle: { fontSize: 20 }
 });
 
 const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
+  const [editing, setEditing] = useState(false);
   const references = useSelector(selectReferencesByGroupId(groupId));
   const refGroup = useSelector(selectReferenceById(groupId));
+  const [newName, setNewName] = useState(refGroup?.name || '');
+  const { t } = useTranslation();
+  const [updateGroup, updateGroupResult] = useUpdateReferenceGroupMutation();
 
   const refViews = references
     .sort((a, b) => (a.id > b.id ? 1 : -1))
@@ -354,9 +478,69 @@ const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
     return null;
   }
 
+  const isLoading = updateGroupResult.isLoading;
+
   return (
     <WhiteBox style={entityRefStyles.container}>
-      <Text style={entityRefStyles.nameTitle}>{refGroup.name}</Text>
+      <TransparentView style={entityRefStyles.titleBox}>
+        {isLoading ? (
+          <SmallSpinner />
+        ) : editing ? (
+          <>
+            <TextInput
+              value={newName}
+              onChangeText={setNewName}
+              placeholder={t('common.name')}
+              style={entityRefStyles.nameInput}
+            />
+            <SafePressable
+              onPress={() => {
+                updateGroup({
+                  id: refGroup.id,
+                  name: newName
+                });
+                setEditing(false);
+              }}
+            >
+              <Feather
+                name="check"
+                size={20}
+                color="green"
+                style={refItemsStyles.actionIcon}
+              />
+            </SafePressable>
+            <SafePressable
+              onPress={() => {
+                setEditing(false);
+                setNewName('');
+              }}
+            >
+              <Feather
+                name="x"
+                size={20}
+                color="red"
+                style={refItemsStyles.actionIcon}
+              />
+            </SafePressable>
+          </>
+        ) : (
+          <Text style={entityRefStyles.nameTitle}>{refGroup.name}</Text>
+        )}
+        {!editing && (
+          <SafePressable
+            onPress={() => {
+              setEditing(true);
+            }}
+          >
+            <Feather
+              name="edit"
+              size={20}
+              color="orange"
+              style={refItemsStyles.actionIcon}
+            />
+          </SafePressable>
+        )}
+      </TransparentView>
       {refViews}
       <AddReference groupId={groupId} />
     </WhiteBox>
