@@ -40,6 +40,8 @@ import TaskCompletionForm, {
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import OutsidePressHandler from 'react-native-outside-press';
 import { LinkButton } from 'components/molecules/ButtonComponents';
+import { YesNoModal } from 'components/molecules/Modals';
+import { useCreateRecurrentTaskOverwriteMutation } from 'reduxStore/services/api/tasks';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -108,11 +110,13 @@ const useStyles = () => {
     },
     editRecurrenceModal: {
       position: 'absolute',
-      left: 20,
-      top: 20
+      left: 5,
+      top: 5
     },
     editRecurrenceModalBox: {
       flexDirection: 'row',
+      flexWrap: 'wrap',
+      maxWidth: '100%',
       alignItems: 'center'
     },
     editRecurrenceModalLink: {
@@ -234,6 +238,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
   );
 
   const [showTaskCompletionForm, setShowTaskCompletionForm] = useState(false);
+  const [deletingOccurrence, setDeletingOccurrence] = useState(false);
   const [showUpdateRecurrenceModal, setShowUpdateRecurrenceModal] =
     useState(false);
 
@@ -251,6 +256,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
   const [createTaskActionCompletionForm] =
     useCreateTaskActionCompletionFormMutation();
+
+  const [createRecurrentTaskOverwrite] =
+    useCreateRecurrentTaskOverwriteMutation();
 
   const hasEditPerms = useMemo(() => {
     if (userDetails && task?.members.includes(userDetails.id)) {
@@ -296,6 +304,13 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
               });
             }}
             title={t('components.task.editOccurrence')}
+            style={styles.editRecurrenceModalLink}
+          />
+          <LinkButton
+            onPress={() => {
+              setDeletingOccurrence(true);
+            }}
+            title={t('components.task.deleteOccurrence')}
             style={styles.editRecurrenceModalLink}
           />
           <LinkButton
@@ -450,6 +465,24 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
             visible={showTaskCompletionForm}
           />
         </TransparentView>
+        <YesNoModal
+          title={t('components.task.deleteOccurrence')}
+          question={t('components.task.deleteOccurrenceConfirmation')}
+          visible={deletingOccurrence}
+          onYes={() => {
+            if (task?.recurrence?.id && recurrence_index !== null) {
+              createRecurrentTaskOverwrite({
+                task: null,
+                recurrence_index,
+                recurrence: task.recurrence.id,
+                baseTaskId: task.id
+              });
+            }
+          }}
+          onNo={() => {
+            setDeletingOccurrence(false);
+          }}
+        />
         {showUpdateRecurrenceModal && editRecurrenceModal}
       </>
     );
@@ -475,7 +508,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     showTaskCompletionForm,
     createTaskActionCompletionForm,
     showUpdateRecurrenceModal,
-    editRecurrenceModal
+    editRecurrenceModal,
+    deletingOccurrence,
+    createRecurrentTaskOverwrite
   ]);
 
   return fullContent;

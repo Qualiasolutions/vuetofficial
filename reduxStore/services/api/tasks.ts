@@ -351,7 +351,7 @@ const tasksApi = vuetApi.injectEndpoints({
     }),
     createRecurrentTaskOverwrite: builder.mutation<
       {
-        task: FixedTaskResponseType;
+        task: FixedTaskResponseType | null;
         recurrence: number;
         recurrence_index: number;
       },
@@ -371,7 +371,9 @@ const tasksApi = vuetApi.injectEndpoints({
             data: { task: newTask }
           } = await queryFulfilled;
 
-          updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
+          if (newTask) {
+            updateQueryDataForNewTask(tasksApi, newTask, dispatch, getState);
+          }
         } catch (err) {
           console.error(err);
         }

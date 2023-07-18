@@ -98,7 +98,7 @@ interface CreateFlexibleFixedTaskRequest extends BaseCreateTaskRequest {
 }
 
 interface CreateRecurrentTaskOverwriteRequest {
-  task: CreateFixedTaskRequest;
+  task: CreateFixedTaskRequest | null;
   recurrence: number;
   recurrence_index: number;
   baseTaskId: number;
