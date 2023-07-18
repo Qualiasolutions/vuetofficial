@@ -614,7 +614,11 @@
     },
     "referencesList": {
       "deletingGroup": "Delete reference group",
-      "deletingGroupConfirmation": "Are you sure you would like to delete this reference group?"
+      "deletingGroupConfirmation": "Are you sure you would like to delete this reference group?",
+      "noReferences": "No references have been added here yet - go to your entities to add references"
+    },
+    "listOfLists": {
+      "noLists": "No lists have been added here yet - go to your entities to add lists"
     }
   }
 }

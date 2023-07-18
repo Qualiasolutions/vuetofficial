@@ -112,9 +112,15 @@ export default function ListOfLists({
 
   return (
     <WhiteFullPageScrollView contentContainerStyle={styles.container}>
-      {entitiesToShow.map((entityId) => (
-        <FlatList entityId={entityId} key={entityId} />
-      ))}
+      {entitiesToShow.length > 0 ? (
+        entitiesToShow.map((entityId) => (
+          <FlatList entityId={entityId} key={entityId} />
+        ))
+      ) : (
+        <TransparentPaddedView>
+          <Text>{t('components.listOfLists.noLists')}</Text>
+        </TransparentPaddedView>
+      )}
     </WhiteFullPageScrollView>
   );
 }

@@ -765,27 +765,30 @@ export default function ReferencesList({
     tagsAndEntitiesToShowByCategory[catId].entities.push(entity);
   }
 
-  const content = Object.keys(tagsAndEntitiesToShowByCategory).map(
-    (categoryId) => (
-      <TransparentView
-        key={categoryId}
-        style={referencesListStyles.categorySection}
-      >
-        {showCategoryHeaders && (
-          <Text style={referencesListStyles.categoryHeader}>
-            {t(`categories.${allCategories.byId[parseInt(categoryId)].name}`)}
-          </Text>
-        )}
-        <FlatReferencesList
-          entities={
-            tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
-          }
-          tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
-          tagsFirst={tagsFirst}
-        />
-      </TransparentView>
-    )
-  );
+  const content =
+    Object.keys(tagsAndEntitiesToShowByCategory).length > 0 ? (
+      Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => (
+        <TransparentView
+          key={categoryId}
+          style={referencesListStyles.categorySection}
+        >
+          {showCategoryHeaders && (
+            <Text style={referencesListStyles.categoryHeader}>
+              {t(`categories.${allCategories.byId[parseInt(categoryId)].name}`)}
+            </Text>
+          )}
+          <FlatReferencesList
+            entities={
+              tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
+            }
+            tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
+            tagsFirst={tagsFirst}
+          />
+        </TransparentView>
+      ))
+    ) : (
+      <Text>{t('components.referencesList.noReferences')}</Text>
+    );
 
   return (
     <TransparentFullPageScrollView style={referencesListStyles.container}>
