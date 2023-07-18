@@ -51,6 +51,7 @@ const linking: LinkingOptions<TabParamList> = {
       },
       AddTask: 'add-task',
       EditTask: 'edit-task',
+      EditTaskOccurrence: 'edit-task-occurrence',
       Login: 'login',
       Signup: 'signup',
       ValidatePhone: 'validate-phone',

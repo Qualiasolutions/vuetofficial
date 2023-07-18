@@ -11,7 +11,7 @@ import {
 import { Image } from 'components/molecules/ImageComponents';
 
 import { PrimaryText, BlackText } from 'components/molecules/TextComponents';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +38,8 @@ import TaskCompletionForm, {
   FORM_REQUIRED_TAGS
 } from 'components/forms/TaskCompletionForms/TaskCompletionForm';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import OutsidePressHandler from 'react-native-outside-press';
+import { LinkButton } from 'components/molecules/ButtonComponents';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -103,6 +105,22 @@ const useStyles = () => {
     chatImage: {
       height: 18,
       width: 18
+    },
+    editRecurrenceModal: {
+      position: 'absolute',
+      left: 20,
+      top: 20
+    },
+    editRecurrenceModalBox: {
+      flexDirection: 'row',
+      alignItems: 'center'
+    },
+    editRecurrenceModalLink: {
+      marginRight: 10
+    },
+    editRecurrenceModalButton: {
+      paddingVertical: 3,
+      paddingHorizontal: 6
     }
   });
 };
@@ -216,6 +234,8 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
   );
 
   const [showTaskCompletionForm, setShowTaskCompletionForm] = useState(false);
+  const [showUpdateRecurrenceModal, setShowUpdateRecurrenceModal] =
+    useState(false);
 
   const navigation = useNavigation<StackNavigationProp<RootTabParamList>>();
 
@@ -257,6 +277,44 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     return [...(familyMembersList || []), ...(friendMembersList || [])];
   }, [userDetails, task]);
 
+  const editRecurrenceModal = useMemo(() => {
+    if (!(task && recurrence_index !== null)) {
+      return null;
+    }
+    return (
+      <OutsidePressHandler
+        onOutsidePress={() => setShowUpdateRecurrenceModal(false)}
+        disabled={false}
+        style={styles.editRecurrenceModal}
+      >
+        <WhiteBox style={styles.editRecurrenceModalBox}>
+          <LinkButton
+            onPress={() => {
+              navigation.navigate('EditTaskOccurrence', {
+                taskId: task.id,
+                recurrenceIndex: recurrence_index
+              });
+            }}
+            title={t('components.task.editOccurrence')}
+            style={styles.editRecurrenceModalLink}
+          />
+          <LinkButton
+            onPress={() => {
+              navigation.navigate('EditTask', {
+                taskId: task.id
+              });
+            }}
+            title={t('components.task.editAll')}
+            style={styles.editRecurrenceModalLink}
+          />
+          <SafePressable onPress={() => setShowUpdateRecurrenceModal(false)}>
+            <PrimaryText text={t('common.cancel')} bold={true} />
+          </SafePressable>
+        </WhiteBox>
+      </OutsidePressHandler>
+    );
+  }, [t, styles, navigation, task, recurrence_index]);
+
   const memberColours = useMemo(
     () => (
       <TransparentView pointerEvents="none" style={styles.memberColor}>
@@ -283,108 +341,117 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     }
 
     return (
-      <TransparentView style={[styles.outerContainer, { height: ITEM_HEIGHT }]}>
-        <TransparentView style={[styles.containerWrapper]}>
-          <TransparentView style={styles.container}>
-            <TimeText scheduledTask={scheduledTask} date={date} />
-            <TransparentView style={styles.titleContainer}>
-              <BlackText
-                text={`${action_id ? 'ACTION - ' : ''}${task.title}`}
-                style={[
-                  styles.title,
-                  isComplete && {
-                    color: isCompleteTextColor
-                  }
-                ]}
-                bold={true}
-              />
-              {['FixedTask'].includes(task.resourcetype) && hasEditPerms && (
-                <SafePressable
-                  onPress={() =>
-                    navigation.navigate('EditTask', {
-                      taskId: task.id
-                    })
-                  }
-                >
-                  <PrimaryText
-                    text={t('components.calendar.task.viewOrEdit')}
-                  />
-                </SafePressable>
-              )}
+      <>
+        <TransparentView
+          style={[styles.outerContainer, { height: ITEM_HEIGHT }]}
+        >
+          <TransparentView style={[styles.containerWrapper]}>
+            <TransparentView style={styles.container}>
+              <TimeText scheduledTask={scheduledTask} date={date} />
+              <TransparentView style={styles.titleContainer}>
+                <BlackText
+                  text={`${action_id ? 'ACTION - ' : ''}${task.title}`}
+                  style={[
+                    styles.title,
+                    isComplete && {
+                      color: isCompleteTextColor
+                    }
+                  ]}
+                  bold={true}
+                />
+                {['FixedTask'].includes(task.resourcetype) && hasEditPerms && (
+                  <SafePressable
+                    onPress={() => {
+                      if (task.recurrence) {
+                        setShowUpdateRecurrenceModal(true);
+                      } else {
+                        navigation.navigate('EditTask', {
+                          taskId: task.id
+                        });
+                      }
+                    }}
+                  >
+                    <PrimaryText
+                      text={t('components.calendar.task.viewOrEdit')}
+                    />
+                  </SafePressable>
+                )}
+              </TransparentView>
             </TransparentView>
-          </TransparentView>
-          <SafePressable
-            onPress={() => {
-              (navigation.navigate as any)('Chat', {
-                screen: 'MessageThread',
-                initial: false,
-                params: {
-                  taskId: action_id ? null : task.id,
-                  actionId: action_id,
-                  recurrenceIndex: recurrence_index
-                }
-              });
-            }}
-            style={({ pressed }) =>
-              pressed
-                ? [styles.chatImageWrapper, styles.chatImageWrapperPressed]
-                : [styles.chatImageWrapper]
-            }
-          >
-            <Image
-              source={require('assets/images/Chat.png')}
-              style={styles.chatImage}
-            />
-          </SafePressable>
-          {userDetails?.is_premium && hasEditPerms && (
-            <Checkbox
-              disabled={isComplete}
-              checked={isComplete}
-              color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
-              onValueChange={async () => {
-                if (action_id) {
-                  await createTaskActionCompletionForm({
-                    action: action_id,
-                    recurrence_index: scheduledTask.recurrence_index
-                  }).unwrap();
-                  return;
-                }
-                await triggerCreateCompletionForm({
-                  resourcetype: 'TaskCompletionForm',
-                  recurrence_index: scheduledTask.recurrence_index,
-                  task: task.id
-                }).unwrap();
-
-                if (FORM_REQUIRED_TAGS.includes(task.hidden_tag)) {
-                  setShowTaskCompletionForm(true);
-                }
+            <SafePressable
+              onPress={() => {
+                (navigation.navigate as any)('Chat', {
+                  screen: 'MessageThread',
+                  initial: false,
+                  params: {
+                    taskId: action_id ? null : task.id,
+                    actionId: action_id,
+                    recurrenceIndex: recurrence_index
+                  }
+                });
               }}
-            />
-          )}
+              style={({ pressed }) =>
+                pressed
+                  ? [styles.chatImageWrapper, styles.chatImageWrapperPressed]
+                  : [styles.chatImageWrapper]
+              }
+            >
+              <Image
+                source={require('assets/images/Chat.png')}
+                style={styles.chatImage}
+              />
+            </SafePressable>
+            {userDetails?.is_premium && hasEditPerms && (
+              <Checkbox
+                disabled={isComplete}
+                checked={isComplete}
+                color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
+                onValueChange={async () => {
+                  if (action_id) {
+                    await createTaskActionCompletionForm({
+                      action: action_id,
+                      recurrence_index: scheduledTask.recurrence_index
+                    }).unwrap();
+                    return;
+                  }
+                  await triggerCreateCompletionForm({
+                    resourcetype: 'TaskCompletionForm',
+                    recurrence_index: scheduledTask.recurrence_index,
+                    task: task.id
+                  }).unwrap();
+
+                  if (FORM_REQUIRED_TAGS.includes(task.hidden_tag)) {
+                    setShowTaskCompletionForm(true);
+                  }
+                }}
+              />
+            )}
+          </TransparentView>
+          <TransparentView style={styles.bottomWrapper}>
+            <TransparentScrollView style={styles.tagsWrapper} horizontal>
+              <EntityTags entities={task.entities} />
+              <OptionTags tagNames={task.tags} />
+            </TransparentScrollView>
+            {memberColours}
+          </TransparentView>
+          <TaskCompletionForm
+            taskId={id}
+            title={t('components.task.scheduleNext', {
+              dueDateType: task.hidden_tag
+                ? t(`hiddenTags.${task.hidden_tag}`)
+                : ''
+            })}
+            onSubmitSuccess={() => {
+              setShowTaskCompletionForm(false);
+            }}
+            onRequestClose={() => {
+              setShowTaskCompletionForm(false);
+            }}
+            visible={showTaskCompletionForm}
+          />
         </TransparentView>
-        <TransparentView style={styles.bottomWrapper}>
-          <TransparentScrollView style={styles.tagsWrapper} horizontal>
-            <EntityTags entities={task.entities} />
-            <OptionTags tagNames={task.tags} />
-          </TransparentScrollView>
-          {memberColours}
-        </TransparentView>
-        <TaskCompletionForm
-          taskId={id}
-          title={t('components.task.scheduleNext', {
-            dueDateType: task.hidden_tag
-              ? t(`hiddenTags.${task.hidden_tag}`)
-              : ''
-          })}
-          onSubmitSuccess={() => {
-            setShowTaskCompletionForm(false);
-          }}
-          onRequestClose={() => {
-            setShowTaskCompletionForm(false);
-          }}
-          visible={showTaskCompletionForm}
-        />
-      </TransparentView>
+        {showUpdateRecurrenceModal && editRecurrenceModal}
+      </>
     );
   }, [
     scheduledTask,
@@ -406,7 +473,9 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     styles,
     id,
     showTaskCompletionForm,
-    createTaskActionCompletionForm
+    createTaskActionCompletionForm,
+    showUpdateRecurrenceModal,
+    editRecurrenceModal
   ]);
 
   return fullContent;

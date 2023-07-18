@@ -593,7 +593,8 @@
       "setupPending": "Setup Pending"
     },
     "listOfLists": {
-      "addList": "Add List"
+      "addList": "Add List",
+      "noLists": "No lists have been added here yet - go to your entities to add lists"
     },
     "entityPages": {
       "car": {
@@ -604,7 +605,9 @@
       }
     },
     "task": {
-      "scheduleNext": "Schedule next {{dueDateType}} due date"
+      "scheduleNext": "Schedule next {{dueDateType}} due date",
+      "editOccurrence": "Edit occurrence",
+      "editAll": "Edit all"
     },
     "actionSelector": {
       "placeholder": "Add Actions"
@@ -616,9 +619,6 @@
       "deletingGroup": "Delete reference group",
       "deletingGroupConfirmation": "Are you sure you would like to delete this reference group?",
       "noReferences": "No references have been added here yet - go to your entities to add references"
-    },
-    "listOfLists": {
-      "noLists": "No lists have been added here yet - go to your entities to add lists"
     }
   }
 }

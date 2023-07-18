@@ -65,7 +65,8 @@ export const useDueDateFieldTypes = (
       date: {
         type: 'Date',
         required: true,
-        displayName: t('tasks.due_date.date')
+        displayName: t('tasks.due_date.date'),
+        disabled: disabledRecurrenceFields
       },
       duration: {
         type: 'duration',
