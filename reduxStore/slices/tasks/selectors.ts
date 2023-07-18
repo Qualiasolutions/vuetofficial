@@ -12,6 +12,7 @@ import { HiddenTagType, ScheduledTaskResponseType } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import {
   selectFilteredEntities,
+  selectFilteredTags,
   selectFilteredUsers
 } from '../calendars/selectors';
 
@@ -295,8 +296,9 @@ export const selectScheduledTaskIdsByEntityTypes = (
 export const selectFilteredScheduledTaskIdsByDate = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(null as any),
   selectFilteredEntities,
+  selectFilteredTags,
   selectFilteredUsers,
-  (scheduledTasks, entities, users) => {
+  (scheduledTasks, entities, tags, users) => {
     if (!scheduledTasks.data) {
       return {};
     }
@@ -317,9 +319,13 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
         .filter(isTask)
         .filter(
           (task) =>
-            (!entities ||
-              entities.length === 0 ||
-              task.entities.some((ent) => entities?.includes(ent))) &&
+            ((!entities && !tags) ||
+              (entities &&
+                entities.length === 0 &&
+                tags &&
+                tags.length === 0) ||
+              task.entities.some((ent) => entities?.includes(ent)) ||
+              task.tags.some((tagName) => tags?.includes(tagName))) &&
             (!users ||
               users.length === 0 ||
               task.members.some((member) => users?.includes(member)))

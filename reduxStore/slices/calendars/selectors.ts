@@ -32,6 +32,11 @@ export const selectFilteredEntities = createSelector(
   (calendar: CalendarState | undefined) => calendar?.data?.filteredEntities
 );
 
+export const selectFilteredTags = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.data?.filteredTags
+);
+
 export const selectScheduledTaskIdsByDate = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(),
   (scheduledTasks) => {

@@ -17,5 +17,8 @@ export const setFilteredEntities = createAction(
 )<{
   entities: number[];
 }>();
+export const setFilteredTags = createAction('@calendars/setFilteredTags')<{
+  tags: string[];
+}>();
 
 export const deselectTasks = createAction('@calendars/deselectTasks')();

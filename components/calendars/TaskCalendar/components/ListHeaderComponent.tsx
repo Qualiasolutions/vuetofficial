@@ -15,10 +15,12 @@ import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setFilteredEntities,
+  setFilteredTags,
   setFilteredUsers
 } from 'reduxStore/slices/calendars/actions';
 import {
   selectFilteredEntities,
+  selectFilteredTags,
   selectFilteredUsers
 } from 'reduxStore/slices/calendars/selectors';
 
@@ -91,23 +93,35 @@ const EntityFilterSelector = () => {
     ...(filteredEntities || [])
   ]);
 
+  const filteredTags = useSelector(selectFilteredTags);
+  const [newFilteredTags, setNewFilteredTags] = useState<string[]>([
+    ...(filteredTags || [])
+  ]);
+
   const setFilteredEntityIds = (entities: number[]) => {
     dispatch(setFilteredEntities({ entities }));
+  };
+
+  const setFilteredTagNames = (tags: string[]) => {
+    dispatch(setFilteredTags({ tags }));
   };
 
   return (
     <TransparentView style={styles.checkboxContainer}>
       <TransparentScrollView>
         <EntityCheckboxes
-          value={{ entities: newFilteredEntities, tags: [] }}
+          value={{ entities: newFilteredEntities, tags: newFilteredTags }}
           setSelectedEntities={setNewFilteredEntities}
-          setSelectedTags={() => {}}
+          setSelectedTags={setNewFilteredTags}
         />
       </TransparentScrollView>
       <TransparentView style={styles.buttonWrapper}>
         <Button
           title={t('common.apply')}
-          onPress={() => setFilteredEntityIds(newFilteredEntities)}
+          onPress={() => {
+            setFilteredEntityIds(newFilteredEntities);
+            setFilteredTagNames(newFilteredTags);
+          }}
           style={styles.userFiltersApplyButton}
         />
       </TransparentView>
@@ -125,6 +139,7 @@ const FiltersModal = ({
   const { t } = useTranslation();
   const filteredUsers = useSelector(selectFilteredUsers);
   const filteredEntities = useSelector(selectFilteredEntities);
+  const filteredTags = useSelector(selectFilteredTags);
 
   const [shownFilters, setShownFilters] = useState<'' | 'USERS' | 'ENTITIES'>(
     ''
@@ -165,8 +180,10 @@ const FiltersModal = ({
           >
             <Text style={styles.userFiltersTitle}>
               {t('filters.entityFilters')}
-              {filteredEntities?.length && filteredEntities.length > 0
-                ? ` (${filteredEntities.length})`
+              {filteredEntities &&
+              filteredTags &&
+              filteredEntities.length + filteredTags.length > 0
+                ? ` (${filteredEntities.length + filteredTags.length})`
                 : ''}
             </Text>
             <Feather

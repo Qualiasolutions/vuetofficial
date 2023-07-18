@@ -7,7 +7,8 @@ export type CalendarAction = ActionType<typeof actions>;
 const INITIAL_CALENDAR_STATE: CalendarState = {
   data: {
     filteredUsers: [],
-    filteredEntities: []
+    filteredEntities: [],
+    filteredTags: []
   },
   ui: {
     listEnforcedDate: '',
@@ -63,6 +64,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         data: {
           ...state.data,
           filteredEntities: payload.entities
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setFilteredTags,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          filteredTags: payload.tags
         }
       };
     }
