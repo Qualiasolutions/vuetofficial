@@ -61,7 +61,7 @@ export default function EntityWithDateAndImageCard({
   return (
     <SafePressable
       onPress={() => {
-        (navigation as any).push('EntityScreen', { entityId: entity.id });
+        (navigation as any).navigate('EntityScreen', { entityId: entity.id });
       }}
     >
       <WhiteBox style={styles.card}>

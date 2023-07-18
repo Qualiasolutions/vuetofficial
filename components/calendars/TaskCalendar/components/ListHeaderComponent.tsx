@@ -1,12 +1,13 @@
 import { Feather } from '@expo/vector-icons';
-import EntityAndTagSelector from 'components/forms/components/TagSelector';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
+import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
 import { Text } from 'components/Themed';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,13 +24,11 @@ import {
 
 const styles = StyleSheet.create({
   modal: {
-    width: '100%'
+    width: '100%',
+    maxHeight: '100%'
   },
-  tagSelectorWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 20
-  },
+  entitiesSelector: { flexShrink: 1, overflow: 'hidden' },
+  checkboxContainer: { height: '100%', flexShrink: 1 },
   filterTypeHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -97,13 +96,14 @@ const EntityFilterSelector = () => {
   };
 
   return (
-    <TransparentView>
-      <TransparentView style={styles.tagSelectorWrapper}>
-        <EntityAndTagSelector
+    <TransparentView style={styles.checkboxContainer}>
+      <TransparentScrollView>
+        <EntityCheckboxes
           value={{ entities: newFilteredEntities, tags: [] }}
-          onChange={({ entities }) => setNewFilteredEntities(entities)}
+          setSelectedEntities={setNewFilteredEntities}
+          setSelectedTags={() => {}}
         />
-      </TransparentView>
+      </TransparentScrollView>
       <TransparentView style={styles.buttonWrapper}>
         <Button
           title={t('common.apply')}
@@ -155,7 +155,7 @@ const FiltersModal = ({
         </SafePressable>
         {shownFilters === 'USERS' && <UserFilterSelector />}
       </TransparentView>
-      <TransparentView>
+      <TransparentView style={styles.entitiesSelector}>
         <SafePressable onPress={() => setShownFilters('ENTITIES')}>
           <SafePressable
             onPress={() =>

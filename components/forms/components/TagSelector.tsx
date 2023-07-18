@@ -8,6 +8,7 @@ import {
   TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
+import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
 import { Text } from 'components/Themed';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +19,6 @@ import {
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
-import { CategoryName } from 'types/categories';
 
 const styles = StyleSheet.create({
   checkboxContainer: { flexGrow: 0 },
@@ -35,8 +35,6 @@ const styles = StyleSheet.create({
   },
   button: { marginHorizontal: 5 },
   requiredTagSection: { marginVertical: 10 },
-  categoryTitle: { fontSize: 22 },
-  categoryCheckboxes: { marginBottom: 20 },
   selectedEntitiesSummary: { marginBottom: 10 }
 });
 
@@ -213,17 +211,6 @@ const EntityAndTagSelectorModal = ({
   );
   const hasTravelTag = selectedTags.some((tag) => allTags.TRAVEL.includes(tag));
 
-  const infoCategoryTags: { [key in CategoryName]?: string } = {
-    TRAVEL: 'TRAVEL__INFORMATION__PUBLIC',
-    TRANSPORT: 'TRANSPORT__INFORMATION__PUBLIC',
-    CAREER: 'CAREER__INFORMATION__PUBLIC',
-    SOCIAL_INTERESTS: 'SOCIAL__INFORMATION__PUBLIC'
-  };
-
-  const infoCategoryIds = Object.keys(infoCategoryTags).map(
-    (categoryName) => allCategories.byName[categoryName].id
-  );
-
   return (
     <Modal visible={open} onRequestClose={onRequestClose}>
       {isSettingTags ? (
@@ -241,83 +228,14 @@ const EntityAndTagSelectorModal = ({
         </TransparentPaddedView>
       ) : (
         <TransparentScrollView style={styles.checkboxContainer}>
-          {Array(
-            ...new Set([
-              ...Object.keys(memberEntities.byCategory).map((key) =>
-                parseInt(key)
-              ),
-              ...infoCategoryIds
-            ])
-          ).map((categoryId) => {
-            const category = allCategories.byId[categoryId];
-            const entityIds = memberEntities.byCategory[category.id];
-            const infoTag = infoCategoryTags[category.name];
-            if (!entityIds && !infoTag) {
-              return null;
-            }
-
-            const entityCheckboxes = (entityIds || []).map(
-              (entityId: number) => {
-                const entity = memberEntities.byId[entityId];
-                return (
-                  <TransparentView
-                    style={styles.entityCheckboxPair}
-                    key={entity.id}
-                  >
-                    <TransparentView style={styles.entityCheckboxLabel}>
-                      <Text>{entity.name}</Text>
-                    </TransparentView>
-                    <Checkbox
-                      checked={selectedEntities.includes(entity.id)}
-                      onValueChange={async () => {
-                        if (selectedEntities.includes(entity.id)) {
-                          const newEntities = selectedEntities.filter(
-                            (id) => id !== entity.id
-                          );
-                          setSelectedEntities(newEntities);
-                        } else {
-                          setSelectedEntities([...selectedEntities, entity.id]);
-                        }
-                      }}
-                    />
-                  </TransparentView>
-                );
-              }
-            );
-
-            const tagCheckbox = infoTag ? (
-              <TransparentView style={styles.entityCheckboxPair} key={infoTag}>
-                <TransparentView style={styles.entityCheckboxLabel}>
-                  <Text>{t(`tags.${infoTag}`)}</Text>
-                </TransparentView>
-                <Checkbox
-                  checked={selectedTags.includes(infoTag)}
-                  onValueChange={async () => {
-                    if (selectedTags.includes(infoTag)) {
-                      const newTags = selectedTags.filter(
-                        (tag) => tag !== infoTag
-                      );
-                      setSelectedTags(newTags);
-                    } else {
-                      setSelectedTags([...selectedTags, infoTag]);
-                    }
-                  }}
-                />
-              </TransparentView>
-            ) : null;
-
-            return (
-              <TransparentView key={categoryId}>
-                <Text style={styles.categoryTitle}>
-                  {t(`categories.${category.name}`)}
-                </Text>
-                <TransparentView style={styles.categoryCheckboxes}>
-                  {entityCheckboxes}
-                  {tagCheckbox}
-                </TransparentView>
-              </TransparentView>
-            );
-          })}
+          <EntityCheckboxes
+            value={{
+              entities: selectedEntities,
+              tags: selectedTags
+            }}
+            setSelectedEntities={setSelectedEntities}
+            setSelectedTags={setSelectedTags}
+          />
         </TransparentScrollView>
       )}
       {isSettingTags ? (

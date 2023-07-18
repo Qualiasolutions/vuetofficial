@@ -297,6 +297,28 @@ function Calendar({
   }, [shownSections]);
 
   const PADDING_BOTTOM = 300;
+
+  const listHeaderComponent = (
+    <ListHeaderComponent
+      loading={rerenderingList}
+      showLoadMore={
+        pastMonthsToShow < 24 &&
+        pastSections.length > shownSections.length - futureSections.length
+      }
+      showFilters={!!showFilters}
+      onLoadMore={() => {
+        // Suuuuuuuper hacky way to make the button
+        // a little bit more responsive to clicks
+        setRerenderingList(true);
+        setTimeout(() => {
+          setPastMonthsToShow(pastMonthsToShow + 3);
+        }, 300);
+        setTimeout(() => {
+          setRerenderingList(false);
+        }, 2000);
+      }}
+    />
+  );
   return (
     <>
       <SectionList
@@ -318,27 +340,7 @@ function Calendar({
         }}
         renderItem={renderItem}
         contentContainerStyle={noTasks ? {} : { paddingBottom: PADDING_BOTTOM }}
-        ListHeaderComponent={
-          <ListHeaderComponent
-            loading={rerenderingList}
-            showLoadMore={
-              pastMonthsToShow < 24 &&
-              pastSections.length > shownSections.length - futureSections.length
-            }
-            showFilters={!!showFilters}
-            onLoadMore={() => {
-              // Suuuuuuuper hacky way to make the button
-              // a little bit more responsive to clicks
-              setRerenderingList(true);
-              setTimeout(() => {
-                setPastMonthsToShow(pastMonthsToShow + 3);
-              }, 300);
-              setTimeout(() => {
-                setRerenderingList(false);
-              }, 2000);
-            }}
-          />
-        }
+        ListHeaderComponent={listHeaderComponent}
         onViewableItemsChanged={onViewableItemsChanged}
         getItemLayout={(d, index) =>
           itemsLayout[index] ?? { length: 0, offset: 0, index }
@@ -349,6 +351,7 @@ function Calendar({
       />
       {noTasks && (
         <WhitePaddedView style={styles.noTasksContainer}>
+          {listHeaderComponent}
           <Text>{t('components.calendar.noTasks')}</Text>
         </WhitePaddedView>
       )}

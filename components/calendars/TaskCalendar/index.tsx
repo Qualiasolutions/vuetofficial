@@ -81,7 +81,7 @@ function Calendar({ filteredTasks, showFilters }: CalendarProps) {
         />
       </TransparentView>
     );
-  }, [JSON.stringify(filteredTasks), dispatch]);
+  }, [JSON.stringify(filteredTasks), dispatch, showFilters]);
 
   const calendarView = useMemo(() => {
     return () => (
