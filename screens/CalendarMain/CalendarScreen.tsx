@@ -4,7 +4,10 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
-import { selectFilteredScheduledTaskIdsByDate } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectFilteredScheduledEntityIdsByDate,
+  selectFilteredScheduledTaskIdsByDate
+} from 'reduxStore/slices/tasks/selectors';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +19,11 @@ const styles = StyleSheet.create({
 
 export default function CalendarScreen() {
   const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
+  const filteredEntities = useSelector(selectFilteredScheduledEntityIdsByDate);
   const { isLoading } = useGetAllScheduledTasksQuery(null as any);
+
+  // TODO  HANDLE THESE IN THE CALENDAR
+  console.log(filteredEntities);
 
   if (isLoading) {
     return <FullPageSpinner />;

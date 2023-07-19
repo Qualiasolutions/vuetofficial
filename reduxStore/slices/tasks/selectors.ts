@@ -8,8 +8,15 @@ import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms'
 import tasksApi from 'reduxStore/services/api/tasks';
 import { DayType } from 'types/datesAndTimes';
 import { EntityTypeName } from 'types/entities';
-import { HiddenTagType, ScheduledTaskResponseType } from 'types/tasks';
-import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
+import {
+  HiddenTagType,
+  ScheduledEntityResponseType,
+  ScheduledTaskResponseType
+} from 'types/tasks';
+import {
+  formatEntitiesPerDate,
+  formatTasksPerDate
+} from 'utils/formatTasksAndPeriods';
 import {
   selectFilteredEntities,
   selectFilteredTags,
@@ -247,6 +254,12 @@ const isTask = (
   return !!item;
 };
 
+const isEntity = (
+  item: ScheduledEntityResponseType | undefined
+): item is ScheduledEntityResponseType => {
+  return !!item;
+};
+
 export const selectScheduledTaskIdsByEntityTypes = (
   entityTypes: EntityTypeName[]
 ) =>
@@ -332,6 +345,41 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
         ) || [];
 
     const formatted = formatTasksPerDate(filteredTasks);
+
+    return formatted;
+  }
+);
+
+export const selectFilteredScheduledEntityIdsByDate = createSelector(
+  tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+  selectFilteredEntities,
+  selectFilteredTags,
+  selectFilteredUsers,
+  (scheduledTasks, entities, tags, users) => {
+    if (!scheduledTasks.data?.orderedEntities) {
+      return {};
+    }
+
+    const filteredEntities =
+      scheduledTasks.data.orderedEntities
+        .map(({ id }) => {
+          return scheduledTasks.data?.byEntityId[id];
+        })
+        .filter(isEntity)
+        .filter(
+          (entity) =>
+            ((!entities && !tags) ||
+              (entities &&
+                entities.length === 0 &&
+                tags &&
+                tags.length === 0) ||
+              entities?.includes(entity.id)) &&
+            (!users ||
+              users.length === 0 ||
+              entity.members.some((member) => users?.includes(member)))
+        ) || [];
+
+    const formatted = formatEntitiesPerDate(filteredEntities);
 
     return formatted;
   }

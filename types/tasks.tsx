@@ -1,4 +1,5 @@
 import { AlertName } from './alerts';
+import { EntityTypeName } from './entities';
 
 type RecurrenceType =
   | 'DAILY'
@@ -72,6 +73,14 @@ interface ScheduledTaskResponseType {
   end_datetime?: string;
 }
 
+interface ScheduledEntityResponseType {
+  id: number;
+  members: number[];
+  title: string;
+  resourcetype: EntityTypeName;
+  date: string;
+}
+
 interface BaseCreateTaskRequest {
   title: string;
   members: number[];
@@ -127,5 +136,6 @@ export {
   CreateFlexibleFixedTaskRequest,
   CreateRecurrentTaskOverwriteRequest,
   ScheduledTaskResponseType,
+  ScheduledEntityResponseType,
   HiddenTagType
 };

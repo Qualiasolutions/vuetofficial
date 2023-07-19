@@ -1,4 +1,8 @@
-import { ScheduledTaskResponseType, ScheduledTaskType } from 'types/tasks';
+import {
+  ScheduledEntityResponseType,
+  ScheduledTaskResponseType,
+  ScheduledTaskType
+} from 'types/tasks';
 import { getDateStringsBetween } from './datesAndTimes';
 
 export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
@@ -61,4 +65,27 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
   }
 
   return newTasksPerDate;
+};
+
+export const formatEntitiesPerDate = (
+  entities: ScheduledEntityResponseType[]
+) => {
+  const entitiesPerDate: {
+    [key: string]: number[];
+  } = {};
+  for (const entity of entities) {
+    if (!entity) {
+      continue;
+    }
+
+    [entity.date].forEach((entityDate) => {
+      if (!entitiesPerDate[entityDate]) {
+        entitiesPerDate[entityDate] = [];
+      }
+
+      entitiesPerDate[entityDate].push(entity.id);
+    });
+  }
+
+  return entitiesPerDate;
 };

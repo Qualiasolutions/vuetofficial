@@ -6,23 +6,36 @@ import {
   CreateFlexibleFixedTaskRequest,
   CreateFixedTaskRequest,
   ScheduledTaskResourceType,
-  CreateRecurrentTaskOverwriteRequest
+  CreateRecurrentTaskOverwriteRequest,
+  ScheduledEntityResponseType
 } from 'types/tasks';
-import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
+import {
+  formatEntitiesPerDate,
+  formatTasksPerDate
+} from 'utils/formatTasksAndPeriods';
 import { getDateStringsBetween } from 'utils/datesAndTimes';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
+import { EntityTypeName } from 'types/entities';
 
-const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
+const normalizeScheduledTaskData = ({
+  tasks: taskData,
+  entities: entityData
+}: {
+  tasks: ScheduledTaskResponseType[];
+  entities: ScheduledEntityResponseType[];
+}): AllScheduledTasks => {
   return {
-    ordered: data.map(({ id, recurrence_index, resourcetype, action_id }) => ({
-      id,
-      recurrence_index,
-      resourcetype,
-      action_id
-    })),
-    byDate: formatTasksPerDate(data),
-    byTaskId: data
+    ordered: taskData.map(
+      ({ id, recurrence_index, resourcetype, action_id }) => ({
+        id,
+        recurrence_index,
+        resourcetype,
+        action_id
+      })
+    ),
+    byDate: formatTasksPerDate(taskData),
+    byTaskId: taskData
       .filter((task) => ['FixedTask'].includes(task.resourcetype))
       .reduce<{ [key: number]: {} }>(
         (prev, next) => ({
@@ -34,7 +47,7 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
         }),
         {}
       ),
-    byActionId: data
+    byActionId: taskData
       .filter((task) => task.action_id)
       .reduce<{ [key: number]: {} }>(
         (prev, next) => ({
@@ -45,7 +58,19 @@ const normalizeScheduledTaskData = (data: ScheduledTaskResponseType[]) => {
           }
         }),
         {}
-      )
+      ),
+    orderedEntities: entityData.map(({ id, resourcetype }) => ({
+      id,
+      resourcetype
+    })),
+    byDateEntities: formatEntitiesPerDate(entityData),
+    byEntityId: entityData.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    )
   };
 };
 
@@ -156,6 +181,16 @@ type AllScheduledTasks = {
       [key: number]: ScheduledTaskResponseType;
     };
   };
+  orderedEntities: {
+    id: number;
+    resourcetype: EntityTypeName;
+  }[];
+  byDateEntities: {
+    [date: string]: number[];
+  };
+  byEntityId: {
+    [key: number]: ScheduledEntityResponseType;
+  };
 };
 
 const tasksApi = vuetApi.injectEndpoints({
@@ -165,8 +200,10 @@ const tasksApi = vuetApi.injectEndpoints({
         url: `core/scheduled_task/?earliest_datetime=2020-01-01T00:00:00Z&latest_datetime=2030-01-01T00:00:00Z`,
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: ScheduledTaskResponseType[] =
-              await response.json();
+            const responseJson: {
+              tasks: ScheduledTaskResponseType[];
+              entities: ScheduledEntityResponseType[];
+            } = await response.json();
             return normalizeScheduledTaskData(responseJson);
           } else {
             // Just return the error data
