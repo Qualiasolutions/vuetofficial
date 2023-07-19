@@ -9,6 +9,7 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import { PaddedSpinner, SmallSpinner } from 'components/molecules/Spinners';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
+import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import dayjs from 'dayjs';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useCallback, useEffect, useState } from 'react';
@@ -38,6 +39,7 @@ import {
   selectReferencesByGroupId
 } from 'reduxStore/slices/references/selectors';
 import { RootTabParamList } from 'types/base';
+import { EntityTypeName } from 'types/entities';
 import { Reference, ReferenceType } from 'types/references';
 
 const addReferenceStyles = StyleSheet.create({
@@ -765,30 +767,63 @@ export default function ReferencesList({
     tagsAndEntitiesToShowByCategory[catId].entities.push(entity);
   }
 
-  const content =
-    Object.keys(tagsAndEntitiesToShowByCategory).length > 0 ? (
-      Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => (
-        <TransparentView
-          key={categoryId}
-          style={referencesListStyles.categorySection}
-        >
-          {showCategoryHeaders && (
-            <Text style={referencesListStyles.categoryHeader}>
-              {t(`categories.${allCategories.byId[parseInt(categoryId)].name}`)}
-            </Text>
-          )}
-          <FlatReferencesList
-            entities={
-              tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
-            }
-            tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
-            tagsFirst={tagsFirst}
-          />
-        </TransparentView>
-      ))
-    ) : (
-      <Text>{t('components.referencesList.noReferences')}</Text>
+  let categoryName = '';
+  let entityNames = '';
+  if (categories) {
+    const categoryNames = categories.map(
+      (categoryId) => allCategories.byId[categoryId].name
     );
+
+    categoryName = categoryNames
+      .map((name) => t(`categories.${name}`))
+      .join(' and ');
+
+    entityNames = (Object.keys(ENTITY_TYPE_TO_CATEGORY) as EntityTypeName[])
+      .filter((entityTypeName) =>
+        categoryNames.includes(ENTITY_TYPE_TO_CATEGORY[entityTypeName])
+      )
+      .map((entityTypeName) => t(`addEntityHeaders.${entityTypeName}`))
+      .join(' or ');
+  } else if (entityTypes) {
+    categoryName = entityTypes
+      .map((entityType) => t(`addEntityHeaders.${entityType}`))
+      .join(' and ');
+
+    entityNames = categoryName;
+  }
+
+  const content =
+    Object.keys(tagsAndEntitiesToShowByCategory).length > 0
+      ? Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => (
+          <TransparentView
+            key={categoryId}
+            style={referencesListStyles.categorySection}
+          >
+            {showCategoryHeaders && (
+              <Text style={referencesListStyles.categoryHeader}>
+                {t(
+                  `categories.${allCategories.byId[parseInt(categoryId)].name}`
+                )}
+              </Text>
+            )}
+            <FlatReferencesList
+              entities={
+                tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
+              }
+              tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
+              tagsFirst={tagsFirst}
+            />
+          </TransparentView>
+        ))
+      : categoryName &&
+        entityNames && (
+          <Text>
+            {t('components.referencesList.noReferences', {
+              categoryName,
+              entityNames
+            })}
+          </Text>
+        );
 
   return (
     <TransparentFullPageScrollView style={referencesListStyles.container}>

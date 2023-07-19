@@ -654,7 +654,7 @@
     "referencesList": {
       "deletingGroup": "Delete reference group",
       "deletingGroupConfirmation": "Are you sure you would like to delete this reference group?",
-      "noReferences": "No references have been added here yet - go to your entities to add references"
+      "noReferences": "This screen is a list of all {{categoryName}} References. No References have been added yet. To add, choose the {{entityNames}} and then References from the QuickNav."
     }
   }
 }

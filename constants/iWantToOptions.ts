@@ -75,7 +75,10 @@ const iWantToOptions: {
   FOOD: [
     'Schedule a weekly meal planner',
     'Be reminded to prep and shop weekly ',
-    'Set up a cooking schedule to share with others',
+    'Schedule family members to be chef on certain days',
+    'Share menu plans with family members',
+    'Share grocery lists with family members',
+    'Allow family members to request menu changes',
     'Keep up with my shopping list',
     'Keep up with food spending',
     'I want to buy a database of recipes to use for menu planning and ordering (is there a free app somewhere?)'
@@ -86,7 +89,12 @@ const iWantToOptions: {
     'Remember to sort clothes around school terms',
     'Cull and sell clothes',
     'Keep up with shopping list and sizes needed',
-    'Source a laundry service'
+    'Source a laundry service',
+    'Task help at home to iron each week',
+    'Schedule family members to put away clothing on specific days',
+    'Schedule seasonal cleans of wardrobes',
+    'Schedule seasonal reminders to check closets',
+    'Schedule shopping for specific events or trips'
   ],
   FINANCE: [
     'Set a budget and review it monthly',
@@ -97,7 +105,11 @@ const iWantToOptions: {
     'Be reminded of deadlines for transferring money for bills or investments'
   ],
   FAMILY: [],
-  GARDEN: [],
+  GARDEN: [
+    'Plan regular grass cuts with a family member',
+    'Schedule Gardener visits weekly',
+    'Task gardener specific items'
+  ],
   REFERENCES: [
     'Remember when my electronic upgrade(s) are available',
     'Set house rules for screen usage and monitoring',

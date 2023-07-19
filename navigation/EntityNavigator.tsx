@@ -48,7 +48,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
       listsComponent={listsComponent}
       messagesComponent={messagesComponent}
       categoryName={category?.name || ''}
-      initialRouteName="Calendar"
+      initialRouteName={entity?.resourcetype === 'List' ? 'Home' : 'Calendar'}
     />
   );
 }
