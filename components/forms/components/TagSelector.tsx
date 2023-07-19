@@ -2,15 +2,9 @@ import { Button } from 'components/molecules/ButtonComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
-import {
-  TransparentFullPageScrollView,
-  TransparentScrollView
-} from 'components/molecules/ScrollViewComponents';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import {
-  TransparentPaddedView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
 import { Text } from 'components/Themed';
 import { useCallback, useEffect, useState } from 'react';

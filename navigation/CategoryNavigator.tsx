@@ -24,14 +24,6 @@ export default function CategoryNavigator({
 
   const { data: referenceGroups } = useGetAllReferenceGroupsQuery();
 
-  const categoryTags = useMemo(() => {
-    return referenceGroups && category
-      ? Object.keys(referenceGroups.byTagName).filter(
-          (tagName) => tagName.indexOf(category.name) === 0
-        )
-      : [];
-  }, [referenceGroups, category]);
-
   const homeComponent = useMemo(() => {
     return () => <CategoryHome categoryId={categoryId} />;
   }, [categoryId]);
@@ -41,10 +33,8 @@ export default function CategoryNavigator({
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {
-    return () => (
-      <ReferencesList categories={[categoryId]} tags={categoryTags} />
-    );
-  }, [categoryId, categoryTags]);
+    return () => <ReferencesList categories={[categoryId]} />;
+  }, [categoryId]);
 
   const listsComponent = useMemo(() => {
     return () => <ListOfLists categories={[categoryId]} />;

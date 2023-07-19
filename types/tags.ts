@@ -1,4 +1,5 @@
+import { CategoryName } from './categories';
+
 export type AllTags = {
-  PETS: string[];
-  TRAVEL: string[];
+  [key in CategoryName]?: string[];
 };

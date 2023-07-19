@@ -10,6 +10,7 @@ import { PaddedSpinner, SmallSpinner } from 'components/molecules/Spinners';
 import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
+import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import dayjs from 'dayjs';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useCallback, useEffect, useState } from 'react';
@@ -19,7 +20,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import {
+  useGetAllEntitiesQuery,
+  useGetMemberEntitiesQuery
+} from 'reduxStore/services/api/entities';
 import {
   useCreateReferenceGroupMutation,
   useCreateReferenceMutation,
@@ -31,6 +35,7 @@ import {
   useUpdateReferenceGroupMutation,
   useUpdateReferenceMutation
 } from 'reduxStore/services/api/references';
+import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   selectReferenceById,
@@ -692,7 +697,9 @@ export default function ReferencesList({
 }) {
   const { t } = useTranslation();
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: memberEntities } = useGetMemberEntitiesQuery(null as any);
   const { data: allCategories } = useGetAllCategoriesQuery();
+  const { data: allTags } = useGetAllTagsQuery();
   const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =
     useGetAllReferenceGroupsQuery();
   const { isLoading: isLoadingReferences } = useGetAllReferencesQuery(); // Pull refs
@@ -701,28 +708,46 @@ export default function ReferencesList({
     isLoadingReferenceGroups ||
     isLoadingReferences ||
     !allEntities ||
+    !memberEntities ||
     !allCategories ||
+    !allTags ||
     !allReferenceGroups
   ) {
     return <PaddedSpinner />;
   }
 
-  const tagsToShow = (tags || Object.keys(allReferenceGroups.byTagName)).filter(
-    (tagName) => {
-      if (tags && tags.includes(tagName)) {
-        return true;
-      }
-      if (!(categories || entities || entityTypes || tags)) {
-        // If no args are provided then we show everything
-        return true;
-      }
-      return false;
+  const tagsToShow = (
+    tags ||
+    Array(
+      ...new Set([
+        ...Object.keys(INFO_CATEGORY_TAGS),
+        ...Object.keys(allReferenceGroups.byTagName)
+      ])
+    )
+  ).filter((tagName) => {
+    if (tags && tags.includes(tagName)) {
+      return true;
     }
-  );
+    if (categories) {
+      for (const category of categories) {
+        const categoryObj = allCategories.byId[category];
+        if (INFO_CATEGORY_TAGS[tagName] === categoryObj.name) {
+          return true;
+        }
+        if (allTags[categoryObj.name]?.includes(tagName)) {
+          return true;
+        }
+      }
+    }
+    if (!(categories || entities || entityTypes || tags)) {
+      // If no args are provided then we show everything
+      return Object.keys(allReferenceGroups.byTagName).includes(tagName);
+    }
+    return false;
+  });
 
   const entitiesToShow: number[] = (
-    entities ||
-    Object.keys(allReferenceGroups.byEntity).map((id) => parseInt(id))
+    entities || Object.keys(memberEntities.byId).map((id) => parseInt(id))
   ).filter((entityId) => {
     if (
       categories &&
@@ -741,7 +766,9 @@ export default function ReferencesList({
     }
     if (!(categories || entities || entityTypes || tags)) {
       // If no args are provided then we show everything
-      return true;
+      return Object.keys(allReferenceGroups.byEntity)
+        .map((e) => parseInt(e))
+        .includes(entityId);
     }
     return false;
   });
@@ -818,10 +845,12 @@ export default function ReferencesList({
       : categoryName &&
         entityNames && (
           <Text>
-            {t('components.referencesList.noReferences', {
-              categoryName,
-              entityNames
-            })}
+            {categoryName && entityNames
+              ? t('components.referencesList.noReferences', {
+                  categoryName,
+                  entityNames
+                })
+              : t('components.referencesList.noReferencesDefault')}
           </Text>
         );
 

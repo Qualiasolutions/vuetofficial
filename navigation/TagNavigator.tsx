@@ -2,13 +2,13 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Calendar from 'components/calendars/TaskCalendar';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import ReferencesList from 'components/organisms/ReferencesList';
+import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { selectScheduledTaskIdsByTagNames } from 'reduxStore/slices/tasks/selectors';
 import { TagScreenTabParamList } from 'types/base';
-import { CategoryName } from 'types/categories';
 
 const TopTabs = createMaterialTopTabNavigator<TagScreenTabParamList>();
 
@@ -26,19 +26,8 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {
-    const infoCategoryTags: { [key: string]: CategoryName } = {
-      TRAVEL__INFORMATION__PUBLIC: 'TRAVEL',
-      TRANSPORT__INFORMATION__PUBLIC: 'TRANSPORT',
-      CAREER__INFORMATION__PUBLIC: 'CAREER',
-      SOCIAL__INFORMATION__PUBLIC: 'SOCIAL_INTERESTS',
-      HOME__INFORMATION__PUBLIC: 'HOME',
-      GARDEN__INFORMATION__PUBLIC: 'GARDEN',
-      FOOD__INFORMATION__PUBLIC: 'FOOD',
-      LAUNDRY__INFORMATION__PUBLIC: 'LAUNDRY'
-    };
-
-    if (Object.keys(infoCategoryTags).includes(tagName)) {
-      const category = allCategories?.byName[infoCategoryTags[tagName]];
+    if (Object.keys(INFO_CATEGORY_TAGS).includes(tagName)) {
+      const category = allCategories?.byName[INFO_CATEGORY_TAGS[tagName]];
 
       if (!category) {
         return () => null;

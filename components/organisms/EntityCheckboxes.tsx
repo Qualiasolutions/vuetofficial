@@ -1,8 +1,8 @@
 import Checkbox from 'components/molecules/Checkbox';
-import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
@@ -62,18 +62,7 @@ export default function EntityCheckboxes({
     return <PaddedSpinner />;
   }
 
-  const infoCategoryTags: { [key in CategoryName]?: string } = {
-    TRAVEL: 'TRAVEL__INFORMATION__PUBLIC',
-    TRANSPORT: 'TRANSPORT__INFORMATION__PUBLIC',
-    CAREER: 'CAREER__INFORMATION__PUBLIC',
-    SOCIAL_INTERESTS: 'SOCIAL__INFORMATION__PUBLIC',
-    HOME: 'HOME__INFORMATION__PUBLIC',
-    GARDEN: 'GARDEN__INFORMATION__PUBLIC',
-    FOOD: 'FOOD__INFORMATION__PUBLIC',
-    LAUNDRY: 'LAUNDRY__INFORMATION__PUBLIC'
-  };
-
-  const infoCategoryIds = Object.keys(infoCategoryTags).map(
+  const infoCategoryIds = Object.keys(INFO_CATEGORY_TAGS).map(
     (categoryName) => allCategories.byName[categoryName].id
   );
 
@@ -87,7 +76,7 @@ export default function EntityCheckboxes({
       ).map((categoryId) => {
         const category = allCategories.byId[categoryId];
         const entityIds = memberEntities.byCategory[category.id];
-        const infoTag = infoCategoryTags[category.name];
+        const infoTag = INFO_CATEGORY_TAGS[category.name];
         if (!entityIds && !infoTag) {
           return null;
         }
