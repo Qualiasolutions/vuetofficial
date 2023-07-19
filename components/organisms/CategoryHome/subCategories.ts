@@ -267,13 +267,70 @@ export default {
   ],
   HOME: [
     {
-      name: 'homeGarden.myHome',
+      name: 'home.myHomes',
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
         entityTypes: ['Home'],
         entityTypeName: 'homes'
       }
+    },
+    {
+      name: 'home.myHomeInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: { tagName: 'HOME__INFORMATION__PUBLIC' }
+    }
+  ],
+  GARDEN: [
+    {
+      name: 'garden.gardens',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['Garden'],
+        entityTypeName: 'gardens'
+      }
+    },
+    {
+      name: 'garden.myGardenInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: { tagName: 'GARDEN__INFORMATION__PUBLIC' }
+    }
+  ],
+  FOOD: [
+    {
+      name: 'food.foodPlans',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['FoodPlan'],
+        entityTypeName: 'foodPlans'
+      }
+    },
+    {
+      name: 'food.myFoodInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: { tagName: 'FOOD__INFORMATION__PUBLIC' }
+    }
+  ],
+  LAUNDRY: [
+    {
+      name: 'laundry.laundryPlans',
+      toScreen: 'EntityList',
+      navMethod: 'push',
+      toScreenParams: {
+        entityTypes: ['LaundryPlan'],
+        entityTypeName: 'laundryPlans'
+      }
+    },
+    {
+      name: 'laundry.myLaundryInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: { tagName: 'LAUNDRY__INFORMATION__PUBLIC' }
     }
   ],
   FINANCE: [

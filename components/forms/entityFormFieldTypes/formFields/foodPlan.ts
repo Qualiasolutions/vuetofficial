@@ -2,7 +2,7 @@ import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
 import { UserFullResponse } from 'types/users';
 
-export const foodForm = (
+export const foodPlanForm = (
   isEdit: boolean,
   userFullDetails: UserFullResponse,
   t: TFunction
@@ -12,11 +12,6 @@ export const foodForm = (
       type: 'string',
       required: true,
       displayName: t('entities.entity.name')
-    },
-    notes: {
-      type: 'TextArea',
-      required: true,
-      displayName: t('entities.entity.description')
     },
     members: {
       type: 'addMembers',

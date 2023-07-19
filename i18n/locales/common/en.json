@@ -58,7 +58,7 @@
     "CAREER": "Career",
     "TRAVEL": "Travel",
     "HEALTH_BEAUTY": "Health & Beauty",
-    "HOME_GARDEN": "Home, Food & Laundry",
+    "HOME_GARDEN": "Home & Garden, Food & Laundry",
     "HOME": "Home",
     "GARDEN": "Garden",
     "FOOD": "Food",
@@ -77,13 +77,17 @@
     "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
     "TRANSPORT__INFORMATION__PUBLIC": "My Transport Information",
     "SOCIAL__INFORMATION__PUBLIC": "My Social Information",
-    "CAREER__INFORMATION__PUBLIC": "My Career Information"
+    "CAREER__INFORMATION__PUBLIC": "My Career Information",
+    "HOME__INFORMATION__PUBLIC": "My Home Information",
+    "GARDEN__INFORMATION__PUBLIC": "My Garden Information",
+    "FOOD__INFORMATION__PUBLIC": "My Food Information",
+    "LAUNDRY__INFORMATION__PUBLIC": "My Laundry Information"
   },
   "linkTitles": {
     "EDUCATION": "Education",
     "CAREER": "Career",
-    "HOME": "Home",
-    "GARDEN": "Garden",
+    "HOME": "My Homes",
+    "GARDEN": "My Outdoor Spaces & Gardens",
     "FOOD": "Food",
     "LAUNDRY": "Laundry",
     "generic": {
@@ -127,10 +131,21 @@
       "goals": "Health & Beauty Goals",
       "patients": "Patients"
     },
-    "homeGarden": {
-      "myHome": "Home & Garden",
-      "food": "Food",
-      "clothing": "Laundry"
+    "home": {
+      "myHomes": "My Homes",
+      "myHomeInformation": "My Home Information"
+    },
+    "garden": {
+      "gardens": "My Outdoor Spaces & Gardens",
+      "myGardenInformation": "My Garden Information"
+    },
+    "food": {
+      "foodPlans": "My Food Plans",
+      "myFoodInformation": "My Food Information"
+    },
+    "laundry": {
+      "laundryPlans": "My Laundry Plans",
+      "myLaundryInformation": "My Laundry Information"
     },
     "finance": {
       "myFinances": "My Finances"
@@ -182,8 +197,10 @@
     "academic-plans": "Academic Plans",
     "extracurricular-plans": "Extracurricular Plans",
     "career-goals": "Career Planning & Goals",
-    "homes": "My Home(s)",
-    "food": "Food items",
+    "homes": "Homes",
+    "gardens": "Gardens",
+    "foodPlans": "My Food Plans",
+    "laundryPlans": "My Laundry Plans",
     "clothing": "Laundry items",
     "social-plans": "Social Plans",
     "social-media": "Social Media",
@@ -226,8 +243,12 @@
     "TRAVEL__ACCOMMODATION": "Accommodation",
     "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
     "TRANSPORT__INFORMATION__PUBLIC":"My Transport Information",
-    "SOCIAL__INFORMATION__PUBLIC":"My Social Information",
-    "CAREER__INFORMATION__PUBLIC":"My Career Information"
+    "SOCIAL__INFORMATION__PUBLIC": "My Social Information",
+    "CAREER__INFORMATION__PUBLIC": "My Career Information",
+    "HOME__INFORMATION__PUBLIC": "My Home Information",
+    "GARDEN__INFORMATION__PUBLIC": "My Garden Information",
+    "FOOD__INFORMATION__PUBLIC": "My Food Information",
+    "LAUNDRY__INFORMATION__PUBLIC": "My Laundry Information"
   },
   "hiddenTags": {
     "MOT_DUE": "MOT",
@@ -272,8 +293,9 @@
     "Student": "Student",
     "SchoolBreak": "School Break",
     "Home": "Home",
-    "Food": "Food",
-    "Clothing": "Laundry",
+    "Garden": "Garden",
+    "FoodPlan": "Food Plan",
+    "LaundryPlan": "Laundry Plan",
     "SocialMedia": "Social Media",
     "SocialPlan": "Social Plan",
     "HealthBeauty": "Health / Beauty",

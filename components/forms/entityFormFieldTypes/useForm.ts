@@ -8,14 +8,14 @@ import { academicPlanForm } from './formFields/academic-plan';
 import { birthdayForm } from './formFields/birthday';
 import { boatForm } from './formFields/boat';
 import { careerGoalForm } from './formFields/career-goals';
-import { clothingForm } from './formFields/clothing';
+import { laundryPlanForm } from './formFields/laundry-plan';
 import { daysOffForm } from './formFields/days-off';
 import { driveTimeForm } from './formFields/drive-time';
 import { eventForm } from './formFields/event';
 import { extracurricularPlanForm } from './formFields/extracurricular-plan';
 import { financeForm } from './formFields/finance';
 import { flightForm } from './formFields/flight';
-import { foodForm } from './formFields/food';
+import { foodPlanForm } from './formFields/foodPlan';
 import { healthBeautyForm } from './formFields/health-beauty';
 import { hobbyForm } from './formFields/hobby';
 import { holidayForm } from './formFields/holiday';
@@ -39,6 +39,7 @@ import { patientForm } from './formFields/patient';
 import { appointmentForm } from './formFields/appointment';
 import { studentForm } from './formFields/student';
 import { employeeForm } from './formFields/employee';
+import { gardenForm } from './formFields/garden';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -77,8 +78,8 @@ export default function useForm(
       return careerGoalForm(isEdit, userFullDetails, t);
     }
 
-    if (entityType === 'Clothing') {
-      return clothingForm(isEdit, userFullDetails, t);
+    if (entityType === 'LaundryPlan') {
+      return laundryPlanForm(isEdit, userFullDetails, t);
     }
 
     if (entityType === 'DaysOff') {
@@ -105,8 +106,8 @@ export default function useForm(
       return flightForm(isEdit, userFullDetails, t);
     }
 
-    if (entityType === 'Food') {
-      return foodForm(isEdit, userFullDetails, t);
+    if (entityType === 'FoodPlan') {
+      return foodPlanForm(isEdit, userFullDetails, t);
     }
 
     if (entityType === 'HealthBeauty') {
@@ -123,6 +124,10 @@ export default function useForm(
 
     if (entityType === 'Home') {
       return homeForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'Garden') {
+      return gardenForm(isEdit, userFullDetails, t);
     }
 
     if (entityType === 'HotelOrRental') {

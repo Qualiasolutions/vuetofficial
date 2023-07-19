@@ -30,7 +30,11 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
       TRAVEL__INFORMATION__PUBLIC: 'TRAVEL',
       TRANSPORT__INFORMATION__PUBLIC: 'TRANSPORT',
       CAREER__INFORMATION__PUBLIC: 'CAREER',
-      SOCIAL__INFORMATION__PUBLIC: 'SOCIAL_INTERESTS'
+      SOCIAL__INFORMATION__PUBLIC: 'SOCIAL_INTERESTS',
+      HOME__INFORMATION__PUBLIC: 'HOME',
+      GARDEN__INFORMATION__PUBLIC: 'GARDEN',
+      FOOD__INFORMATION__PUBLIC: 'FOOD',
+      LAUNDRY__INFORMATION__PUBLIC: 'LAUNDRY'
     };
 
     if (Object.keys(infoCategoryTags).includes(tagName)) {
