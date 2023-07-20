@@ -99,6 +99,7 @@ export default function ListOfLists({
     }
     if (
       entityTypes &&
+      allEntities.byId[entityId] &&
       entityTypes.includes(allEntities.byId[entityId].resourcetype)
     ) {
       return true;

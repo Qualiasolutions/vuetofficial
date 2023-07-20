@@ -82,7 +82,6 @@ const ListItem = React.memo(
       return <Routine id={data.id} date={date} />;
     }
     if (isEntity(data)) {
-      console.log('ENTITY');
       return <Task task={data} date={date} isEntity={true} />;
     }
     return null;
@@ -103,8 +102,6 @@ function Calendar({
   onChangeFirstDate?: (date: string) => void;
   showFilters?: boolean;
 }) {
-  console.log('entities');
-  console.log(entities);
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
@@ -128,7 +125,9 @@ function Calendar({
     [onChangeFirstDate]
   );
 
-  const noTasks = Object.keys(tasks).length === 0;
+  const noTasks =
+    Object.keys(tasks).length === 0 &&
+    (!entities || Object.keys(entities).length === 0);
 
   const [futureSections, pastSections] = useMemo(() => {
     const datesToShow = Array(

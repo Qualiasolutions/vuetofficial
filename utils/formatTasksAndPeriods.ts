@@ -78,7 +78,12 @@ export const formatEntitiesPerDate = (
       continue;
     }
 
-    [entity.date].forEach((entityDate) => {
+    const entityDates =
+      entity.start_date && entity.end_date
+        ? getDateStringsBetween(entity.start_date, entity.end_date)
+        : [];
+
+    entityDates.forEach((entityDate) => {
       if (!entitiesPerDate[entityDate]) {
         entitiesPerDate[entityDate] = [];
       }

@@ -22,9 +22,6 @@ export default function CalendarScreen() {
   const filteredEntities = useSelector(selectFilteredScheduledEntityIdsByDate);
   const { isLoading } = useGetAllScheduledTasksQuery(null as any);
 
-  // TODO  HANDLE THESE IN THE CALENDAR
-  console.log(filteredEntities);
-
   if (isLoading) {
     return <FullPageSpinner />;
   }

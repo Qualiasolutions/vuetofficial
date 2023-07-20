@@ -563,7 +563,11 @@ export const selectScheduledTask = ({
         return scheduledTasks.data?.byActionId[actionId][recIndex];
       }
       if (id) {
-        return scheduledTasks.data?.byTaskId[id][recIndex];
+        return (
+          scheduledTasks.data?.byTaskId &&
+          scheduledTasks.data?.byTaskId[id] &&
+          scheduledTasks.data?.byTaskId[id][recIndex]
+        );
       }
     }
   );

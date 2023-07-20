@@ -78,7 +78,8 @@ interface ScheduledEntityResponseType {
   members: number[];
   title: string;
   resourcetype: EntityTypeName;
-  date: string;
+  start_date: string;
+  end_date: string;
 }
 
 interface BaseCreateTaskRequest {
