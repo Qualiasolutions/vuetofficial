@@ -105,7 +105,7 @@ export default {
       navMethod: 'push',
       toScreen: 'TagScreen',
       toScreenParams: {
-        tagName: 'SOCIAL__INFORMATION__PUBLIC'
+        tagName: 'SOCIAL_INTERESTS__INFORMATION__PUBLIC'
       }
     }
   ],
