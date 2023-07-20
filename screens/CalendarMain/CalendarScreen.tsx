@@ -32,7 +32,11 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <SideDrawerButton />
-      <Calendar filteredTasks={filteredTasks} showFilters={true} />
+      <Calendar
+        filteredTasks={filteredTasks}
+        filteredEntities={filteredEntities}
+        showFilters={true}
+      />
     </SafeAreaView>
   );
 }

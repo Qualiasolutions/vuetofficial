@@ -42,6 +42,7 @@ import OutsidePressHandler from 'react-native-outside-press';
 import { LinkButton } from 'components/molecules/ButtonComponents';
 import { YesNoModal } from 'components/molecules/Modals';
 import { useCreateRecurrentTaskOverwriteMutation } from 'reduxStore/services/api/tasks';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 
 const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
@@ -133,26 +134,29 @@ export type MinimalScheduledTask = {
   id: number;
   recurrence_index: number | null;
   action_id: number | null;
-  type: ScheduledTaskType | 'ROUTINE';
+  type: ScheduledTaskType | 'ROUTINE' | 'ENTITY';
 };
 
 type PropTypes = {
   task: MinimalScheduledTask;
   date: string;
+  isEntity?: boolean;
 };
 
 const TimeText = ({
   scheduledTask,
   date
 }: {
-  scheduledTask: ScheduledTaskResponseType;
+  scheduledTask?: ScheduledTaskResponseType;
   date: string;
 }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
   let textContent = null;
-  if (scheduledTask.date && scheduledTask.duration) {
+  if (!scheduledTask) {
+    textContent = <Text>{t('common.allDay')}</Text>;
+  } else if (scheduledTask.date && scheduledTask.duration) {
     textContent = (
       <Text>
         {`${scheduledTask.duration} ${t('common.mins')}, ${t(
@@ -219,7 +223,11 @@ const TimeText = ({
   );
 };
 
-function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
+function Task({
+  task: { id, recurrence_index, action_id },
+  date,
+  isEntity
+}: PropTypes) {
   const { isComplete, isIgnored } = useSelector(
     selectIsComplete({
       id,
@@ -228,6 +236,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     })
   );
   const task = useSelector(selectTaskById(id));
+  const entity = useSelector(selectEntityById(id));
 
   const scheduledTask = useSelector(
     selectScheduledTask({
@@ -261,29 +270,30 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
     useCreateRecurrentTaskOverwriteMutation();
 
   const hasEditPerms = useMemo(() => {
-    if (userDetails && task?.members.includes(userDetails.id)) {
+    if (userDetails && (task || entity)?.members.includes(userDetails.id)) {
       return true;
     }
-    if (memberEntities) {
+    if (memberEntities && !isEntity) {
       if (task?.entities.some((entityId) => entityId in memberEntities.byId)) {
         return true;
       }
     }
     return false;
-  }, [memberEntities, userDetails, task]);
+  }, [memberEntities, userDetails, task, entity, isEntity]);
 
   const membersList = useMemo(() => {
-    if (!task) {
+    const taskOrEntity = task || entity;
+    if (!taskOrEntity) {
       return [];
     }
     const familyMembersList = userDetails?.family?.users?.filter((item: any) =>
-      task.members.includes(item.id)
+      taskOrEntity.members.includes(item.id)
     );
     const friendMembersList = userDetails?.friends?.filter((item: any) =>
-      task.members.includes(item.id)
+      taskOrEntity.members.includes(item.id)
     );
     return [...(familyMembersList || []), ...(friendMembersList || [])];
-  }, [userDetails, task]);
+  }, [userDetails, task, entity]);
 
   const editRecurrenceModal = useMemo(() => {
     if (!(task && recurrence_index !== null)) {
@@ -362,10 +372,17 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
         >
           <TransparentView style={[styles.containerWrapper]}>
             <TransparentView style={styles.container}>
-              <TimeText scheduledTask={scheduledTask} date={date} />
+              <TimeText
+                scheduledTask={isEntity ? undefined : scheduledTask}
+                date={date}
+              />
               <TransparentView style={styles.titleContainer}>
                 <BlackText
-                  text={`${action_id ? 'ACTION - ' : ''}${task.title}`}
+                  text={
+                    isEntity
+                      ? entity?.name || ''
+                      : `${action_id ? 'ACTION - ' : ''}${task.title}`
+                  }
                   style={[
                     styles.title,
                     isComplete && {
@@ -416,7 +433,7 @@ function Task({ task: { id, recurrence_index, action_id }, date }: PropTypes) {
                 style={styles.chatImage}
               />
             </SafePressable>
-            {userDetails?.is_premium && hasEditPerms && (
+            {userDetails?.is_premium && hasEditPerms && !isEntity && (
               <Checkbox
                 disabled={isComplete}
                 checked={isComplete}

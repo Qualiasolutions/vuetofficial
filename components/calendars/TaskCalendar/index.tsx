@@ -48,8 +48,13 @@ type CalendarProps = {
       type: ScheduledTaskType;
     })[];
   };
+  filteredEntities?: { [key: string]: number[] };
 };
-function Calendar({ filteredTasks, showFilters }: CalendarProps) {
+function Calendar({
+  filteredTasks,
+  filteredEntities,
+  showFilters
+}: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery(null as any);
@@ -73,6 +78,7 @@ function Calendar({ filteredTasks, showFilters }: CalendarProps) {
       >
         <CalendarTaskDisplay
           tasks={filteredTasks}
+          entities={filteredEntities}
           alwaysIncludeCurrentDate={true}
           onChangeFirstDate={(date) => {
             dispatch(setListEnforcedDate({ date }));

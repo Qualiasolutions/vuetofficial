@@ -64,6 +64,12 @@ const isRoutine = (
   return item.type === 'ROUTINE';
 };
 
+const isEntity = (
+  item: ItemData
+): item is MinimalScheduledTask & { type: 'ENTITY' } => {
+  return item.type === 'ENTITY';
+};
+
 const ListItem = React.memo(
   ({ data, date }: { data: ItemData; date: string }) => {
     if (isTask(data)) {
@@ -75,6 +81,10 @@ const ListItem = React.memo(
     if (isRoutine(data)) {
       return <Routine id={data.id} date={date} />;
     }
+    if (isEntity(data)) {
+      console.log('ENTITY');
+      return <Task task={data} date={date} isEntity={true} />;
+    }
     return null;
   }
 );
@@ -83,14 +93,18 @@ const SECTION_HEADER_HEIGHT = 40;
 
 function Calendar({
   tasks,
+  entities,
   onChangeFirstDate,
   showFilters
 }: {
   tasks: { [date: string]: MinimalScheduledTask[] };
+  entities?: { [date: string]: number[] };
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
   showFilters?: boolean;
 }) {
+  console.log('entities');
+  console.log(entities);
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
@@ -117,7 +131,9 @@ function Calendar({
   const noTasks = Object.keys(tasks).length === 0;
 
   const [futureSections, pastSections] = useMemo(() => {
-    const datesToShow = Object.keys(tasks).sort();
+    const datesToShow = Array(
+      ...new Set([...Object.keys(entities || {}), ...Object.keys(tasks)])
+    ).sort();
 
     if (!allRoutines) {
       return [[], []];
@@ -136,33 +152,36 @@ function Calendar({
 
       const dailyTasksPerRoutine = tasksPerRoutine[date];
 
-      if (!dailyTasksPerRoutine) {
+      if (!entities && !dailyTasksPerRoutine) {
         continue;
       }
 
-      // We want to only show the filtered tasks
+      // We want to only show the filtered tasks / entities
       const permittedTasksOnDate = tasks[date];
+      const permittedEntitiesOnDate = entities && entities[date];
 
-      if (!permittedTasksOnDate) {
+      if (!(permittedTasksOnDate || permittedEntitiesOnDate)) {
         continue;
       }
 
-      const routineIdsToShow = Object.keys(dailyTasksPerRoutine)
+      const routineIdsToShow = Object.keys(dailyTasksPerRoutine || {})
         .map((routineId) => parseInt(routineId))
         .filter(
           (routineId) =>
             routineId !== -1 &&
-            permittedTasksOnDate.some(({ id: taskId }) =>
+            permittedTasksOnDate?.some(({ id: taskId }) =>
               dailyTasksPerRoutine[routineId]
                 .map((tsk) => tsk.id)
                 .includes(taskId)
             )
         );
 
-      const tasksToShow = permittedTasksOnDate.filter(
+      const tasksToShow = (permittedTasksOnDate || []).filter(
         ({ id: taskId, action_id }) =>
           dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
       );
+
+      const entitiesToShow = permittedEntitiesOnDate || [];
 
       sectionsArray.push({
         title: dayName,
@@ -174,12 +193,18 @@ function Calendar({
             action_id: null,
             type: 'ROUTINE' as 'ROUTINE'
           })),
+          ...entitiesToShow.map((id) => ({
+            id,
+            recurrence_index: null,
+            action_id: null,
+            type: 'ENTITY' as 'ENTITY'
+          })),
           ...tasksToShow
         ]
       });
     }
     return [future, past];
-  }, [firstDate, tasks, allRoutines, tasksPerRoutine]);
+  }, [firstDate, tasks, allRoutines, tasksPerRoutine, entities]);
 
   useEffect(() => {
     if (monthEnforcedDate && sectionListRef?.current) {
