@@ -13,6 +13,16 @@ type Props = {
   disabled?: boolean;
 };
 
+const getTimezoneLabelFromTzName = (tzName: string) => {
+  // Etc/GMT-2 is actually 2 hours ahead i.e. East. This is weirdly counterintuitive
+  const timezoneOffset = parseInt(tzName.split('/GMT')[1]);
+  if (timezoneOffset > 0) {
+    return `GMT-${timezoneOffset}`;
+  } else {
+    return `GMT+${-timezoneOffset}`;
+  }
+};
+
 export default function TimezoneSelect({
   value,
   onSelectTimezone,
@@ -31,7 +41,10 @@ export default function TimezoneSelect({
         .sort(
           (a, b) => parseInt(a.split('/GMT')[1]) - parseInt(b.split('/GMT')[1])
         )
-        .map((tzName) => ({ label: tzName.split('/')[1], value: tzName }))}
+        .map((tzName) => ({
+          label: getTimezoneLabelFromTzName(tzName),
+          value: tzName
+        }))}
       setFormValues={onSelectTimezone}
       dropdownPlaceholder="Select"
       listMode="MODAL"

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { Recurrence } from 'types/tasks';
 import {
+  DateTimeField,
   FlatFormFieldTypes,
   MultiRecurrenceSelectorField,
   OptionalYearDate
@@ -22,7 +23,13 @@ const parseFormValues = (
   for (const field in parsedFormValues) {
     if (['DateTime'].includes(fields[field]?.type)) {
       if (parsedFormValues[field]) {
-        parsedFormValues[field] = parsedFormValues[field].toISOString();
+        const f = fields[field] as DateTimeField;
+        if (f.utc) {
+          parsedFormValues[field] =
+            dayjs(parsedFormValues[field]).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        } else {
+          parsedFormValues[field] = parsedFormValues[field].toISOString();
+        }
       } else {
         delete parsedFormValues[field];
       }

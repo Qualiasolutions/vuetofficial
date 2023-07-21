@@ -291,7 +291,8 @@ export default function EditTaskScreen({
         const body = {
           ...parsedFlightFieldValues,
           resourcetype: 'TransportTask' as 'TransportTask',
-          id: taskToEdit.id
+          id: taskToEdit.id,
+          type: taskToEdit.type
         };
         if (Object.keys(body as any).includes('recurrence')) {
           delete (body as any).recurrence;

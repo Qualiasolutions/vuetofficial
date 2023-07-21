@@ -55,6 +55,7 @@ export type OptionalYearDate = BaseField<'OptionalYearDate', Date> & {
 export type DateTimeField = BaseField<'DateTime', Date> & {
   associatedStartTimeField?: string;
   associatedEndTimeField?: string;
+  utc?: boolean;
 };
 export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];

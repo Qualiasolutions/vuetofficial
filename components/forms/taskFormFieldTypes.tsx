@@ -407,7 +407,8 @@ export const useTransportFieldTypes = (
       start_datetime: {
         type: 'DateTime',
         required: true,
-        displayName: t('tasks.task.start_datetime')
+        displayName: t('tasks.task.start_datetime'),
+        utc: true
       },
       start_timezone: {
         type: 'timezone',
@@ -417,7 +418,8 @@ export const useTransportFieldTypes = (
       end_datetime: {
         type: 'DateTime',
         required: true,
-        displayName: t('tasks.task.end_datetime')
+        displayName: t('tasks.task.end_datetime'),
+        utc: true
       },
       end_timezone: {
         type: 'timezone',

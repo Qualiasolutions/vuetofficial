@@ -3,7 +3,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { TextInput, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import React from 'react';
-import { Pressable, ViewStyle } from 'react-native';
+import { ViewStyle } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function DateTimeTextInput({

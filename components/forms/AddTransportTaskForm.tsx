@@ -145,12 +145,12 @@ export default function AddTransportTaskForm({
   }, [flightFields, flightFieldValues]);
 
   const submitForm = async () => {
-    const parsedFlightFieldValues = parseFormValues(
+    const parsedTransportTaskFieldValues = parseFormValues(
       flightFieldValues,
       flightFields
     );
     const parsedFieldValues: any = {
-      ...parsedFlightFieldValues,
+      ...parsedTransportTaskFieldValues,
       type,
       resourcetype: 'TransportTask'
     };

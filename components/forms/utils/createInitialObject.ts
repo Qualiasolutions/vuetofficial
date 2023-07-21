@@ -1,11 +1,16 @@
+import dayjs from 'dayjs';
 import { Recurrence, Reminder } from 'types/tasks';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { deepCopy } from 'utils/copy';
 import {
+  DateTimeField,
   Field,
   FormFieldTypes,
   MultiRecurrenceSelectorField
 } from '../formFieldTypes';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const createInitialObject = (
   fields: FormFieldTypes,
@@ -63,11 +68,27 @@ const createInitialObject = (
         }
         continue;
 
-      case 'DateTime':
-        initialObj[key] = formFields[key].initialValue
-          ? new Date(formFields[key].initialValue || '')
-          : null;
+      case 'DateTime': {
+        const f = formFields[key] as DateTimeField;
+        if (f.utc) {
+          if (formFields[key].initialValue) {
+            const dateObj = new Date(formFields[key].initialValue);
+            const tzDifference = dateObj.getTimezoneOffset();
+            initialObj[key] = new Date(
+              dateObj.getTime() + tzDifference * 60 * 1000
+            );
+          } else {
+            initialObj[key] = null;
+          }
+        } else {
+          if (formFields[key].initialValue) {
+            initialObj[key] = new Date(formFields[key].initialValue || '');
+          } else {
+            initialObj[key] = null;
+          }
+        }
         continue;
+      }
 
       case 'addMembers':
       case 'addFamilyMembers':
