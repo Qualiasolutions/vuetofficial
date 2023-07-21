@@ -6,7 +6,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 
 import {
   useDueDateFieldTypes,
-  useFlightFieldTypes,
+  useTransportFieldTypes,
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes
@@ -35,6 +35,7 @@ import { FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
+import { isTransportTaskType, TRANSPORT_TASK_TYPES } from 'constants/TaskTypes';
 
 const styles = StyleSheet.create({
   container: {
@@ -103,10 +104,9 @@ export default function EditTaskScreen({
     !!(taskToEdit && taskToEdit.recurrence)
   );
 
-  const flightFields = useFlightFieldTypes(
-    true,
-    taskToEdit?.hidden_tag,
-    !!(taskToEdit && taskToEdit.recurrence)
+  const taskType = taskToEdit?.type;
+  const flightFields = useTransportFieldTypes(
+    taskType && isTransportTaskType(taskType) ? taskType : 'FLIGHT'
   );
 
   useEffect(() => {
@@ -191,7 +191,7 @@ export default function EditTaskScreen({
       );
     } else if (taskToEdit.type === 'DUE_DATE') {
       return hasAllRequired(dueDateFieldValues, dueDateFields);
-    } else if (taskToEdit.type === 'TRANSPORT') {
+    } else if (isTransportTaskType(taskToEdit.type)) {
       return hasAllRequired(flightFieldValues, flightFields);
     } else {
       return false;
@@ -282,7 +282,7 @@ export default function EditTaskScreen({
         }
 
         updateTask(body);
-      } else if (taskToEdit.type === 'TRANSPORT') {
+      } else if (isTransportTaskType(taskToEdit.type)) {
         const parsedFlightFieldValues = parseFormValues(
           flightFieldValues,
           flightFields
@@ -290,7 +290,7 @@ export default function EditTaskScreen({
 
         const body = {
           ...parsedFlightFieldValues,
-          resourcetype: 'FlightTask' as 'FlightTask',
+          resourcetype: 'TransportTask' as 'TransportTask',
           id: taskToEdit.id
         };
         if (Object.keys(body as any).includes('recurrence')) {
@@ -364,7 +364,7 @@ export default function EditTaskScreen({
     );
   }
 
-  if (taskToEdit.type === 'TRANSPORT') {
+  if (isTransportTaskType(taskToEdit.type)) {
     formFields = (
       <TransparentView>
         <TypedForm

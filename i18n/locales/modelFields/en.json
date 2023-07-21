@@ -10,6 +10,8 @@
       "actions": "Actions",
       "start_datetime": "Starts",
       "end_datetime": "Ends",
+      "start_timezone": "Start Timezone",
+      "end_timezone": "End Timezone",
       "first_start_datetime": "First occurrence",
       "contact_name": "Name",
       "contact_email": "Email",
@@ -33,6 +35,14 @@
     },
     "due_date": {
       "date": "Date"
+    },
+    "transportTask": {
+      "flight_number": "Flight No.",
+      "booking_number": "Booking No.",
+      "start_location": "Start Location",
+      "end_location": "End Location",
+      "pickup_location": "Pickup Location",
+      "dropoff_location": "Dropoff Location"
     }
   },
   "entities": {

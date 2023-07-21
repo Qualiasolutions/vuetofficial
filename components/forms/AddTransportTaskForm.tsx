@@ -1,13 +1,14 @@
 import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
-import { useFlightFieldTypes } from './taskFormFieldTypes';
+import { useTransportFieldTypes } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   TransparentPaddedView,
-  TransparentView
+  TransparentView,
+  WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
@@ -25,6 +26,9 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import DropDown from './components/DropDown';
+import { elevation } from 'styles/elevation';
+import { TransportTaskType } from 'types/tasks';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   spinner: { marginTop: 20 },
-  hidden: { display: 'none' }
+  typeSelectorSection: { marginBottom: 50 }
 });
 
 type AddTransportTaskFormProps = {
@@ -63,6 +67,7 @@ export default function AddTransportTaskForm({
 }: AddTransportTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
+  const [type, setType] = useState<TransportTaskType>('FLIGHT');
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
@@ -86,12 +91,7 @@ export default function AddTransportTaskForm({
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const flightFields = useFlightFieldTypes(
-    false,
-    '',
-    false,
-    !recurrenceOverwrite
-  );
+  const flightFields = useTransportFieldTypes(type);
 
   const initialFlightFields = useMemo(() => {
     if (!userDetails) {
@@ -151,8 +151,8 @@ export default function AddTransportTaskForm({
     );
     const parsedFieldValues: any = {
       ...parsedFlightFieldValues,
-      type: 'TRANSPORT',
-      resourcetype: 'FlightTask'
+      type,
+      resourcetype: 'TransportTask'
     };
 
     try {
@@ -213,6 +213,35 @@ export default function AddTransportTaskForm({
 
   return (
     <TransparentView style={styles.container}>
+      <WhitePaddedView style={[styles.typeSelectorSection, elevation.elevated]}>
+        <DropDown
+          value={type}
+          items={[
+            {
+              value: 'FLIGHT',
+              label: 'Flight'
+            },
+            {
+              value: 'TRAIN',
+              label: 'Train / Public Transport'
+            },
+            {
+              value: 'RENTAL_CAR',
+              label: 'Rental Car'
+            },
+            {
+              value: 'TAXI',
+              label: 'Taxi'
+            },
+            {
+              value: 'DRIVE_TIME',
+              label: 'Drive Time'
+            }
+          ]}
+          setFormValues={setType}
+          listMode="MODAL"
+        />
+      </WhitePaddedView>
       {flightTypedForm}
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />

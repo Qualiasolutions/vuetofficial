@@ -47,7 +47,6 @@ type TagSelectorProps = {
   value: string[];
   requiredTags: {
     PET: boolean;
-    TRAVEL: boolean;
   };
   requiredEntityTypes: {
     name: string;
@@ -135,36 +134,21 @@ const StepTwoSelector = ({
       {requiredTags.PET && (
         <TransparentView style={styles.requiredTagSection}>
           <Text>{t('components.tagSelector.requiresPetTag')}:</Text>
-          {allTags.PETS.map((petTagName) => (
-            <TransparentView style={styles.entityCheckboxPair} key={petTagName}>
-              <TransparentView style={styles.entityCheckboxLabel}>
-                <Text>{t(`tags.${petTagName}`)}</Text>
+          {allTags.PETS &&
+            allTags.PETS.map((petTagName) => (
+              <TransparentView
+                style={styles.entityCheckboxPair}
+                key={petTagName}
+              >
+                <TransparentView style={styles.entityCheckboxLabel}>
+                  <Text>{t(`tags.${petTagName}`)}</Text>
+                </TransparentView>
+                <Checkbox
+                  checked={selectedTags.includes(petTagName)}
+                  onValueChange={checkboxOnValueChange(petTagName)}
+                />
               </TransparentView>
-              <Checkbox
-                checked={selectedTags.includes(petTagName)}
-                onValueChange={checkboxOnValueChange(petTagName)}
-              />
-            </TransparentView>
-          ))}
-        </TransparentView>
-      )}
-      {requiredTags.TRAVEL && (
-        <TransparentView style={styles.requiredTagSection}>
-          <Text>{t('components.tagSelector.requiresTravelTag')}:</Text>
-          {allTags.TRAVEL.map((travelTagName) => (
-            <TransparentView
-              style={styles.entityCheckboxPair}
-              key={travelTagName}
-            >
-              <TransparentView style={styles.entityCheckboxLabel}>
-                <Text>{t(`tags.${travelTagName}`)}</Text>
-              </TransparentView>
-              <Checkbox
-                checked={selectedTags.includes(travelTagName)}
-                onValueChange={checkboxOnValueChange(travelTagName)}
-              />
-            </TransparentView>
-          ))}
+            ))}
         </TransparentView>
       )}
       {requiredEntityTypes.map(({ name, resourceTypes }) => {
@@ -172,7 +156,7 @@ const StepTwoSelector = ({
           (entity) => resourceTypes.includes(entity.resourcetype)
         );
         return (
-          <TransparentView style={styles.requiredTagSection}>
+          <TransparentView style={styles.requiredTagSection} key={name}>
             <Text>
               {t('components.tagSelector.requiresTag', {
                 requirementName: name
@@ -261,15 +245,7 @@ const EntityAndTagSelectorModal = ({
     (ent) =>
       allEntities.byId[ent] && allEntities.byId[ent].category === petCategoryId
   );
-  const hasPetTag = selectedTags.some((tag) => allTags.PETS.includes(tag));
-
-  const travelCategoryId = allCategories.byName.TRAVEL.id;
-  const requiresTravelTag = selectedEntities.some(
-    (ent) =>
-      allEntities.byId[ent] &&
-      allEntities.byId[ent].category === travelCategoryId
-  );
-  const hasTravelTag = selectedTags.some((tag) => allTags.TRAVEL.includes(tag));
+  const hasPetTag = selectedTags.some((tag) => allTags.PETS?.includes(tag));
 
   const requiresAppointmentTag = selectedEntities.some(
     (ent) =>
@@ -372,8 +348,7 @@ const EntityAndTagSelectorModal = ({
             onChangeEntities={setSelectedEntities}
             value={selectedTags}
             requiredTags={{
-              PET: requiresPetTag,
-              TRAVEL: requiresTravelTag
+              PET: requiresPetTag
             }}
             requiredEntityTypes={requiredEntityTypes}
           />
@@ -407,11 +382,7 @@ const EntityAndTagSelectorModal = ({
               onRequestClose();
             }}
             style={styles.button}
-            disabled={
-              (requiresPetTag && !hasPetTag) ||
-              (requiresTravelTag && !hasTravelTag) ||
-              !hasRequiredEntityTags
-            }
+            disabled={(requiresPetTag && !hasPetTag) || !hasRequiredEntityTags}
           />
         </TransparentView>
       ) : (

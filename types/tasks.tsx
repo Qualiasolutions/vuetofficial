@@ -24,10 +24,16 @@ interface Reminder {
   timedelta: string;
 }
 
-type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction' | 'FlightTask';
-type TaskResourceType = 'FixedTask' | 'FlightTask';
-type TaskType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE' | 'TRANSPORT';
+type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction';
+type TaskResourceType = 'FixedTask' | 'TransportTask';
 type ScheduledTaskType = 'TASK' | 'ACTION';
+type TransportTaskType =
+  | 'FLIGHT'
+  | 'TRAIN'
+  | 'RENTAL_CAR'
+  | 'TAXI'
+  | 'DRIVE_TIME';
+type TaskType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE' | TransportTaskType;
 
 interface BaseTaskType {
   entities: number[];
@@ -126,6 +132,7 @@ type HiddenTagType =
   | 'TAX_DUE';
 
 export {
+  TransportTaskType,
   TaskType,
   ScheduledTaskResourceType,
   ScheduledTaskType,

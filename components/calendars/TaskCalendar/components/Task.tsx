@@ -51,6 +51,11 @@ const useStyles = () => {
       flex: 1,
       justifyContent: 'flex-start'
     },
+    iconAndTitle: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start'
+    },
     title: {
       fontSize: 14,
       textAlign: 'left',
@@ -122,10 +127,6 @@ const useStyles = () => {
     },
     editRecurrenceModalLink: {
       marginRight: 10
-    },
-    editRecurrenceModalButton: {
-      paddingVertical: 3,
-      paddingHorizontal: 6
     }
   });
 };
@@ -220,6 +221,36 @@ const TimeText = ({
 
   return (
     <TransparentView style={styles.leftInfo}>{textContent}</TransparentView>
+  );
+};
+
+const TaskIcon = ({
+  scheduledTask
+}: {
+  scheduledTask: ScheduledTaskResponseType;
+}) => {
+  const task = useSelector(selectTaskById(scheduledTask.id));
+
+  let icon = '';
+  if (task?.type === 'FLIGHT') {
+    icon = '✈️ ';
+  }
+  if (task?.type === 'TRAIN') {
+    icon = '🚟 ';
+  }
+  if (task?.type === 'RENTAL_CAR') {
+    icon = '🚙 ';
+  }
+  if (task?.type === 'TAXI') {
+    icon = '🚖 ';
+  }
+  if (task?.type === 'DRIVE_TIME') {
+    icon = '🚗 ';
+  }
+  return (
+    <TransparentView>
+      <Text>{icon}</Text>
+    </TransparentView>
   );
 };
 
@@ -377,25 +408,30 @@ function Task({
                 date={date}
               />
               <TransparentView style={styles.titleContainer}>
-                <BlackText
-                  text={
-                    isEntity
-                      ? entity?.name || ''
-                      : task
-                      ? `${action_id ? 'ACTION - ' : ''}${task.title}`
-                      : ''
-                  }
-                  style={[
-                    styles.title,
-                    isComplete && {
-                      color: isCompleteTextColor
+                <TransparentView style={styles.iconAndTitle}>
+                  {!isEntity && scheduledTask && (
+                    <TaskIcon scheduledTask={scheduledTask} />
+                  )}
+                  <BlackText
+                    text={
+                      isEntity
+                        ? entity?.name || ''
+                        : task
+                        ? `${action_id ? 'ACTION - ' : ''}${task.title}`
+                        : ''
                     }
-                  ]}
-                  bold={true}
-                />
+                    style={[
+                      styles.title,
+                      isComplete && {
+                        color: isCompleteTextColor
+                      }
+                    ]}
+                    bold={true}
+                  />
+                </TransparentView>
                 {!isEntity &&
                   task &&
-                  ['FixedTask', 'FlightTask'].includes(task.resourcetype) &&
+                  ['FixedTask', 'TransportTask'].includes(task.resourcetype) &&
                   hasEditPerms && (
                     <SafePressable
                       onPress={() => {

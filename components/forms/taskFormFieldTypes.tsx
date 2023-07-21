@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
+import { TransportTaskType } from 'types/tasks';
 
 export const useTaskTopFieldTypes = (
   isEdit: boolean = false,
@@ -354,11 +355,8 @@ export const useDueDateFieldTypes = (
   ]);
 };
 
-export const useFlightFieldTypes = (
-  isEdit: boolean = false,
-  taskHiddenTag: string = '',
-  disabledRecurrenceFields: boolean = false,
-  allowRecurrence: boolean = true
+export const useTransportFieldTypes = (
+  type?: TransportTaskType
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserDetails();
@@ -390,37 +388,46 @@ export const useFlightFieldTypes = (
       booking_number: {
         type: 'string',
         required: false,
-        displayName: t('entities.flight.booking_number')
+        displayName:
+          type === 'FLIGHT'
+            ? t('tasks.transportTask.flight_number')
+            : t('tasks.transportTask.booking_number')
       },
       start_location: {
         type: 'string',
         required: true,
-        displayName: t('entities.mode-of-transport.start_location')
+        displayName:
+          type === 'RENTAL_CAR'
+            ? t('tasks.transportTask.pickup_location')
+            : t('tasks.transportTask.start_location')
       },
       end_location: {
         type: 'string',
         required: true,
-        displayName: t('entities.mode-of-transport.end_location')
+        displayName:
+          type === 'RENTAL_CAR'
+            ? t('tasks.transportTask.dropoff_location')
+            : t('tasks.transportTask.end_location')
       },
       start_datetime: {
         type: 'DateTime',
         required: true,
-        displayName: t('entities.mode-of-transport.start_datetime')
+        displayName: t('tasks.task.start_datetime')
       },
       start_timezone: {
         type: 'timezone',
         required: true,
-        displayName: t('entities.mode-of-transport.start_timezone')
+        displayName: t('tasks.task.start_timezone')
       },
       end_datetime: {
         type: 'DateTime',
         required: true,
-        displayName: t('entities.mode-of-transport.end_datetime')
+        displayName: t('tasks.task.end_datetime')
       },
       end_timezone: {
         type: 'timezone',
         required: true,
-        displayName: t('entities.mode-of-transport.end_timezone')
+        displayName: t('tasks.task.end_timezone')
       },
       reminders: {
         type: 'reminderSelector',
@@ -454,5 +461,5 @@ export const useFlightFieldTypes = (
         listMode: 'MODAL'
       }
     };
-  }, [userFullDetails, t, allRoutines]);
+  }, [userFullDetails, t, allRoutines, type]);
 };
