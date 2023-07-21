@@ -364,11 +364,6 @@ export const useTransportFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
-      title: {
-        type: 'string',
-        required: true,
-        displayName: t('tasks.task.title')
-      },
       members: {
         type: 'addMembers',
         required: true,
