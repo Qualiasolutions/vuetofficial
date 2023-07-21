@@ -24,7 +24,14 @@ export default function TimezoneSelect({
   return (
     <DropDown
       value={value}
-      items={timeZonesList.map((tzName) => ({ label: tzName, value: tzName }))}
+      items={timeZonesList
+        .filter(
+          (tzName) => tzName.includes('/GMT+') || tzName.includes('/GMT-')
+        )
+        .sort(
+          (a, b) => parseInt(a.split('/GMT')[1]) - parseInt(b.split('/GMT')[1])
+        )
+        .map((tzName) => ({ label: tzName.split('/')[1], value: tzName }))}
       setFormValues={onSelectTimezone}
       dropdownPlaceholder="Select"
       listMode="MODAL"
