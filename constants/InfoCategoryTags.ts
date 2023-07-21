@@ -11,4 +11,13 @@ const INFO_CATEGORY_TAGS: { [key: string]: CategoryName } = {
   LAUNDRY__INFORMATION__PUBLIC: 'LAUNDRY'
 };
 
+const REVERSED_INFO_CATEGORY_TAGS: { [key in CategoryName]?: string } = {};
+for (const infoTag in INFO_CATEGORY_TAGS) {
+  REVERSED_INFO_CATEGORY_TAGS[INFO_CATEGORY_TAGS[infoTag]] = infoTag;
+}
+
+export function getTagFromCategory(cat: CategoryName) {
+  return REVERSED_INFO_CATEGORY_TAGS[cat];
+}
+
 export default INFO_CATEGORY_TAGS;

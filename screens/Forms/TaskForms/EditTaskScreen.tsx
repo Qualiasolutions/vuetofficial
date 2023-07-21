@@ -6,6 +6,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 
 import {
   useDueDateFieldTypes,
+  useFlightFieldTypes,
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes
@@ -83,6 +84,11 @@ export default function EditTaskScreen({
   const [dueDateFieldValues, setDueDateFieldValues] = useState<FieldValueTypes>(
     {}
   );
+
+  const [flightFieldValues, setFlightFieldValues] = useState<FieldValueTypes>(
+    {}
+  );
+
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = useTaskTopFieldTypes(true, taskToEdit?.hidden_tag);
@@ -92,6 +98,12 @@ export default function EditTaskScreen({
   );
   const taskBottomFields = useTaskBottomFieldTypes();
   const dueDateFields = useDueDateFieldTypes(
+    true,
+    taskToEdit?.hidden_tag,
+    !!(taskToEdit && taskToEdit.recurrence)
+  );
+
+  const flightFields = useFlightFieldTypes(
     true,
     taskToEdit?.hidden_tag,
     !!(taskToEdit && taskToEdit.recurrence)
@@ -139,6 +151,13 @@ export default function EditTaskScreen({
         );
         setDueDateFieldValues(initialDueDateFields);
 
+        const initialFlightFields = createInitialObject(
+          flightFields,
+          userDetails,
+          newTaskToEdit
+        );
+        setFlightFieldValues(initialFlightFields);
+
         setResetState(() => () => {
           setTaskTopFieldValues(initialTopFields);
           setTaskMiddleFieldValues(initialMiddleFields);
@@ -154,20 +173,28 @@ export default function EditTaskScreen({
     taskBottomFields,
     taskMiddleFields,
     taskTopFields,
-    dueDateFields
+    dueDateFields,
+    flightFields
   ]);
 
   useEntityHeader(0, false, t('pageTitles.editTask'));
 
   const hasRequired = useMemo(() => {
-    if (taskToEdit?.resourcetype === 'FixedTask') {
+    if (!taskToEdit) {
+      return false;
+    }
+    if (['TASK', 'APPOINTMENT'].includes(taskToEdit.type)) {
       return (
         hasAllRequired(taskTopFieldValues, taskTopFields) &&
         hasAllRequired(taskMiddleFieldValues, taskMiddleFields) &&
         hasAllRequired(taskBottomFieldValues, taskBottomFields)
       );
-    } else {
+    } else if (taskToEdit.type === 'DUE_DATE') {
       return hasAllRequired(dueDateFieldValues, dueDateFields);
+    } else if (taskToEdit.type === 'TRANSPORT') {
+      return hasAllRequired(flightFieldValues, flightFields);
+    } else {
+      return false;
     }
   }, [
     taskTopFieldValues,
@@ -178,7 +205,9 @@ export default function EditTaskScreen({
     taskBottomFields,
     taskToEdit,
     dueDateFields,
-    dueDateFieldValues
+    dueDateFieldValues,
+    flightFields,
+    flightFieldValues
   ]);
 
   useEffect(() => {
@@ -237,7 +266,7 @@ export default function EditTaskScreen({
         }
 
         updateTask(body);
-      } else {
+      } else if (taskToEdit.type === 'DUE_DATE') {
         const parsedDueDateFieldValues = parseFormValues(
           dueDateFieldValues,
           dueDateFields
@@ -253,6 +282,22 @@ export default function EditTaskScreen({
         }
 
         updateTask(body);
+      } else if (taskToEdit.type === 'TRANSPORT') {
+        const parsedFlightFieldValues = parseFormValues(
+          flightFieldValues,
+          flightFields
+        );
+
+        const body = {
+          ...parsedFlightFieldValues,
+          resourcetype: 'FlightTask' as 'FlightTask',
+          id: taskToEdit.id
+        };
+        if (Object.keys(body as any).includes('recurrence')) {
+          delete (body as any).recurrence;
+        }
+
+        updateTask(body);
       }
     }
   };
@@ -261,55 +306,79 @@ export default function EditTaskScreen({
     return <FullPageSpinner />;
   }
 
-  const formFields = ['TASK', 'APPOINTMENT'].includes(taskToEdit.type) ? (
-    <>
+  let formFields = null;
+
+  if (['TASK', 'APPOINTMENT'].includes(taskToEdit.type)) {
+    formFields = (
+      <>
+        <TransparentView>
+          <TypedForm
+            fields={taskTopFields}
+            formValues={taskTopFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskTopFieldValues(values);
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
+        </TransparentView>
+        <TransparentView>
+          <TypedForm
+            fields={taskMiddleFields}
+            formValues={taskMiddleFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskMiddleFieldValues(values);
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
+        </TransparentView>
+        <TransparentView>
+          <TypedForm
+            fields={taskBottomFields}
+            formValues={taskBottomFieldValues}
+            onFormValuesChange={(values: FieldValueTypes) => {
+              setTaskBottomFieldValues(values);
+            }}
+            inlineFields={true}
+            fieldColor={fieldColor}
+          />
+        </TransparentView>
+      </>
+    );
+  }
+
+  if (taskToEdit.type === 'DUE_DATE') {
+    formFields = (
       <TransparentView>
         <TypedForm
-          fields={taskTopFields}
-          formValues={taskTopFieldValues}
+          fields={dueDateFields}
+          formValues={dueDateFieldValues}
           onFormValuesChange={(values: FieldValueTypes) => {
-            setTaskTopFieldValues(values);
+            setDueDateFieldValues(values);
           }}
           inlineFields={true}
           fieldColor={fieldColor}
         />
       </TransparentView>
+    );
+  }
+
+  if (taskToEdit.type === 'TRANSPORT') {
+    formFields = (
       <TransparentView>
         <TypedForm
-          fields={taskMiddleFields}
-          formValues={taskMiddleFieldValues}
+          fields={flightFields}
+          formValues={flightFieldValues}
           onFormValuesChange={(values: FieldValueTypes) => {
-            setTaskMiddleFieldValues(values);
+            setFlightFieldValues(values);
           }}
           inlineFields={true}
           fieldColor={fieldColor}
         />
       </TransparentView>
-      <TransparentView>
-        <TypedForm
-          fields={taskBottomFields}
-          formValues={taskBottomFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setTaskBottomFieldValues(values);
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-        />
-      </TransparentView>
-    </>
-  ) : (
-    <TransparentView>
-      <TypedForm
-        fields={dueDateFields}
-        formValues={dueDateFieldValues}
-        onFormValuesChange={(values: FieldValueTypes) => {
-          setDueDateFieldValues(values);
-        }}
-        inlineFields={true}
-        fieldColor={fieldColor}
-      />
-    </TransparentView>
-  );
+    );
+  }
 
   return (
     <TransparentFullPageScrollView>

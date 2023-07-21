@@ -395,7 +395,7 @@ function Task({
                 />
                 {!isEntity &&
                   task &&
-                  ['FixedTask'].includes(task.resourcetype) &&
+                  ['FixedTask', 'FlightTask'].includes(task.resourcetype) &&
                   hasEditPerms && (
                     <SafePressable
                       onPress={() => {

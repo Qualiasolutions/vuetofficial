@@ -1,7 +1,7 @@
 import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
-import { useDueDateFieldTypes } from './taskFormFieldTypes';
+import { useFlightFieldTypes } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,6 @@ import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
-import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 
@@ -41,10 +40,11 @@ const styles = StyleSheet.create({
   hidden: { display: 'none' }
 });
 
-type AddDueDateFormProps = {
+type AddTransportTaskFormProps = {
   defaults: {
     title: string;
-    date: string;
+    start_datetime: Date;
+    end_datetime: Date;
     entities: number[];
     tags: string[];
   };
@@ -54,13 +54,13 @@ type AddDueDateFormProps = {
   taskId?: number;
 };
 
-export default function AddDueDateForm({
+export default function AddTransportTaskForm({
   defaults,
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
   taskId
-}: AddDueDateFormProps) {
+}: AddTransportTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
 
@@ -80,70 +80,79 @@ export default function AddDueDateForm({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [dueDateFieldValues, setDueDateFieldValues] = useState<FieldValueTypes>(
+  const [flightFieldValues, setFlightFieldValues] = useState<FieldValueTypes>(
     {}
   );
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const dueDateFields = useDueDateFieldTypes(
+  const flightFields = useFlightFieldTypes(
     false,
     '',
     false,
     !recurrenceOverwrite
   );
 
-  const initialDueDateFields = useMemo(() => {
+  const initialFlightFields = useMemo(() => {
     if (!userDetails) {
       return null;
     }
 
-    const nextWeek = new Date();
-    nextWeek.setDate(nextWeek.getDate() + 7);
-    const defaultDueDate =
-      defaults?.date || dayjs(nextWeek).format('YYYY-MM-DD');
+    const startTimeProp = defaults.start_datetime;
+    const endTimeProp = defaults.end_datetime;
+    const defaultStartTime = startTimeProp
+      ? new Date(startTimeProp)
+      : new Date();
 
-    return createInitialObject(dueDateFields, userDetails, {
-      date: defaultDueDate,
+    defaultStartTime.setMinutes(0);
+    defaultStartTime.setSeconds(0);
+    defaultStartTime.setMilliseconds(0);
+
+    let defaultEndTime = endTimeProp
+      ? new Date(endTimeProp)
+      : new Date(defaultStartTime);
+    defaultEndTime.setHours(defaultStartTime.getHours() + 1);
+
+    return createInitialObject(flightFields, userDetails, {
+      start_datetime: defaultStartTime,
+      end_datetime: defaultEndTime,
       title: defaults?.title || '',
-      duration: 15,
       tagsAndEntities: {
         entities: defaults?.entities || [],
         tags: defaults?.tags || []
       }
     });
-  }, [dueDateFields, userDetails, defaults]);
+  }, [flightFields, userDetails, defaults]);
 
   useEffect(() => {
     if (userDetails) {
-      if (initialDueDateFields) {
-        setDueDateFieldValues(initialDueDateFields);
+      if (initialFlightFields) {
+        setFlightFieldValues(initialFlightFields);
       }
 
-      if (initialDueDateFields) {
+      if (initialFlightFields) {
         setResetState(() => () => {
-          setDueDateFieldValues(initialDueDateFields);
+          setFlightFieldValues(initialFlightFields);
         });
       }
 
       setLoadedFields(true);
     }
-  }, [initialDueDateFields, userDetails, dueDateFields]);
+  }, [initialFlightFields, userDetails, flightFields]);
 
   const hasRequired = useMemo(() => {
-    return hasAllRequired(dueDateFieldValues, dueDateFields);
-  }, [dueDateFields, dueDateFieldValues]);
+    return hasAllRequired(flightFieldValues, flightFields);
+  }, [flightFields, flightFieldValues]);
 
   const submitForm = async () => {
-    const parsedDueDateFieldValues = parseFormValues(
-      dueDateFieldValues,
-      dueDateFields
+    const parsedFlightFieldValues = parseFormValues(
+      flightFieldValues,
+      flightFields
     );
     const parsedFieldValues: any = {
-      ...parsedDueDateFieldValues,
-      end_date: parsedDueDateFieldValues.start_date,
-      type: 'DUE_DATE',
-      resourcetype: 'FixedTask'
+      ...parsedFlightFieldValues,
+      type: 'TRANSPORT',
+      resourcetype: 'FlightTask'
     };
 
     try {
@@ -183,19 +192,19 @@ export default function AddDueDateForm({
     }
   };
 
-  const dueDateTypedForm = useMemo(
+  const flightTypedForm = useMemo(
     () => (
       <TypedForm
-        fields={dueDateFields}
-        formValues={dueDateFieldValues}
+        fields={flightFields}
+        formValues={flightFieldValues}
         onFormValuesChange={(values: FieldValueTypes) => {
-          setDueDateFieldValues(values);
+          setFlightFieldValues(values);
         }}
         inlineFields={true}
         fieldColor={fieldColor}
       />
     ),
-    [dueDateFields, dueDateFieldValues, fieldColor]
+    [flightFields, flightFieldValues, fieldColor]
   );
 
   if (!(userDetails && loadedFields)) {
@@ -204,7 +213,7 @@ export default function AddDueDateForm({
 
   return (
     <TransparentView style={styles.container}>
-      {dueDateTypedForm}
+      {flightTypedForm}
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
       ) : (

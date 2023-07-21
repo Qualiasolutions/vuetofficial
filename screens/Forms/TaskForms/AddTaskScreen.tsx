@@ -17,6 +17,8 @@ import dayjs from 'dayjs';
 import { RootTabScreenProps } from 'types/base';
 import AddDueDateForm from 'components/forms/AddDueDateForm';
 import AddTaskForm from 'components/forms/AddTaskForm';
+import { TaskType } from 'types/tasks';
+import AddTransportTaskForm from 'components/forms/AddTransportTaskForm';
 
 const formTypes = [
   {
@@ -36,9 +38,14 @@ const formTypes = [
       id: 'DUE_DATE'
     },
     label: 'Due Date'
+  },
+  {
+    value: {
+      id: 'TRANSPORT'
+    },
+    label: 'Transport'
   }
 ];
-export type AddTaskFormType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,7 +67,7 @@ export default function AddTaskScreen({
 }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
-  const [formType, setFormType] = useState<AddTaskFormType>(
+  const [formType, setFormType] = useState<TaskType>(
     route.params?.type || 'TASK'
   );
 
@@ -69,7 +76,8 @@ export default function AddTaskScreen({
   const headerTitle = {
     TASK: 'Add task',
     APPOINTMENT: 'Add Appointment',
-    DUE_DATE: 'Add Due Date'
+    DUE_DATE: 'Add Due Date',
+    TRANSPORT: 'Add Flight'
   }[formType];
 
   useColouredHeader(headerBackgroundColor, headerTintColor, headerTitle);
@@ -144,7 +152,7 @@ export default function AddTaskScreen({
               label={t('common.addNew')}
               permittedValues={formTypes}
               onValueChange={(value) => {
-                setFormType(value.id as AddTaskFormType);
+                setFormType(value.id as TaskType);
               }}
             />
           </WhiteView>
@@ -154,9 +162,21 @@ export default function AddTaskScreen({
               onSuccess={() => navigation.goBack()}
             />
           </TransparentView>
-          <TransparentView style={formType === 'DUE_DATE' && styles.hidden}>
+          <TransparentView style={formType !== 'TRANSPORT' && styles.hidden}>
+            <AddTransportTaskForm
+              defaults={taskDefaults}
+              onSuccess={() => navigation.goBack()}
+            />
+          </TransparentView>
+          <TransparentView
+            style={!['TASK', 'APPOINTMENT'].includes(formType) && styles.hidden}
+          >
             <AddTaskForm
-              formType={formType === 'DUE_DATE' ? 'TASK' : formType}
+              formType={
+                formType === 'TASK' || formType === 'APPOINTMENT'
+                  ? formType
+                  : 'TASK'
+              }
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />

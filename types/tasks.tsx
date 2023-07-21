@@ -24,9 +24,9 @@ interface Reminder {
   timedelta: string;
 }
 
-type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction';
-type TaskResourceType = 'FixedTask';
-type TaskType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE';
+type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction' | 'FlightTask';
+type TaskResourceType = 'FixedTask' | 'FlightTask';
+type TaskType = 'TASK' | 'APPOINTMENT' | 'DUE_DATE' | 'TRANSPORT';
 type ScheduledTaskType = 'TASK' | 'ACTION';
 
 interface BaseTaskType {
@@ -126,6 +126,7 @@ type HiddenTagType =
   | 'TAX_DUE';
 
 export {
+  TaskType,
   ScheduledTaskResourceType,
   ScheduledTaskType,
   RecurrenceType,

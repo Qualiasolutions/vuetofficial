@@ -111,7 +111,7 @@ const updateQueryDataForNewTask = (
                   recurrence: null,
                   recurrence_index: null,
                   alert: [], // Assume no alert - this will update when data is refetched
-                  resourcetype: newTask.resourcetype || 'FixedTask'
+                  resourcetype: 'FixedTask' // Tasks are always returned with the resource type even if not right
                 }
               };
 
@@ -142,7 +142,7 @@ const updateQueryDataForNewTask = (
               draft.ordered.push({
                 id: newTask.id,
                 recurrence_index: null,
-                resourcetype: newTask.resourcetype || 'FixedTask',
+                resourcetype: 'FixedTask', // Tasks are always returned with the resource type even if not right
                 action_id: null
               });
             }

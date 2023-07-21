@@ -2,7 +2,9 @@ import Checkbox from 'components/molecules/Checkbox';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
-import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
+import INFO_CATEGORY_TAGS, {
+  getTagFromCategory
+} from 'constants/InfoCategoryTags';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
@@ -62,7 +64,7 @@ export default function EntityCheckboxes({
     return <PaddedSpinner />;
   }
 
-  const infoCategoryIds = Object.keys(INFO_CATEGORY_TAGS).map(
+  const infoCategoryIds = Object.values(INFO_CATEGORY_TAGS).map(
     (categoryName) => allCategories.byName[categoryName].id
   );
 
@@ -76,7 +78,7 @@ export default function EntityCheckboxes({
       ).map((categoryId) => {
         const category = allCategories.byId[categoryId];
         const entityIds = memberEntities.byCategory[category.id];
-        const infoTag = INFO_CATEGORY_TAGS[category.name];
+        const infoTag = getTagFromCategory(category.name);
         if (!entityIds && !infoTag) {
           return null;
         }

@@ -34,97 +34,6 @@ export const useTaskTopFieldTypes = (
   }, [t, userFullDetails, isEdit, taskHiddenTag]);
 };
 
-export const useDueDateFieldTypes = (
-  isEdit: boolean = false,
-  taskHiddenTag: string = '',
-  disabledRecurrenceFields: boolean = false,
-  allowRecurrence: boolean = true
-): FlatFormFieldTypes => {
-  const { t } = useTranslation('modelFields');
-  const { data: userFullDetails } = useGetUserDetails();
-  const { data: allRoutines } = useGetAllRoutinesQuery();
-
-  return useMemo<FlatFormFieldTypes>(() => {
-    return {
-      title: {
-        type: 'string',
-        required: true,
-        displayName: t('tasks.task.title'),
-        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
-      },
-      members: {
-        type: 'addMembers',
-        required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
-        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-        displayName: t('tasks.task.members'),
-        changeMembersText: t('tasks.task.changeMembers')
-      },
-      date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.due_date.date'),
-        disabled: disabledRecurrenceFields
-      },
-      duration: {
-        type: 'duration',
-        required: true,
-        displayName: t('tasks.task.duration')
-      },
-      recurrence: {
-        type: 'recurrenceSelector',
-        required: false,
-        firstOccurrenceField: 'date',
-        displayName: t('tasks.task.recurrence'),
-        disabled: disabledRecurrenceFields,
-        hidden: !allowRecurrence
-      },
-      reminders: {
-        type: 'reminderSelector',
-        required: false,
-        reverse: true,
-        firstOccurrenceField: 'date',
-        displayName: t('tasks.task.reminders'),
-        max: 3
-      },
-      actions: {
-        type: 'actionsSelector',
-        required: false,
-        displayName: t('tasks.task.actions'),
-        max: 3
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags')
-      },
-      routine: {
-        type: 'dropDown',
-        required: false,
-        displayName: t('tasks.task.routine'),
-        permittedValues: allRoutines
-          ? Object.values(allRoutines.byId).map((routine) => ({
-              value: routine.id,
-              label: routine.name
-            }))
-          : [],
-        listMode: 'MODAL'
-      }
-    };
-  }, [
-    userFullDetails,
-    t,
-    isEdit,
-    taskHiddenTag,
-    allRoutines,
-    disabledRecurrenceFields,
-    allowRecurrence
-  ]);
-};
-
 export const useTaskMiddleFieldTypes = (
   disableFlexible: boolean = false,
   disabledRecurrenceFields: boolean = false,
@@ -352,4 +261,198 @@ export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {
       }
     };
   }, [t]);
+};
+
+export const useDueDateFieldTypes = (
+  isEdit: boolean = false,
+  taskHiddenTag: string = '',
+  disabledRecurrenceFields: boolean = false,
+  allowRecurrence: boolean = true
+): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const { data: userFullDetails } = useGetUserDetails();
+  const { data: allRoutines } = useGetAllRoutinesQuery();
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        required: true,
+        displayName: t('tasks.task.title'),
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
+      },
+      date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.due_date.date'),
+        disabled: disabledRecurrenceFields
+      },
+      duration: {
+        type: 'duration',
+        required: true,
+        displayName: t('tasks.task.duration')
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: false,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields,
+        hidden: !allowRecurrence
+      },
+      reminders: {
+        type: 'reminderSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
+      routine: {
+        type: 'dropDown',
+        required: false,
+        displayName: t('tasks.task.routine'),
+        permittedValues: allRoutines
+          ? Object.values(allRoutines.byId).map((routine) => ({
+              value: routine.id,
+              label: routine.name
+            }))
+          : [],
+        listMode: 'MODAL'
+      }
+    };
+  }, [
+    userFullDetails,
+    t,
+    isEdit,
+    taskHiddenTag,
+    allRoutines,
+    disabledRecurrenceFields,
+    allowRecurrence
+  ]);
+};
+
+export const useFlightFieldTypes = (
+  isEdit: boolean = false,
+  taskHiddenTag: string = '',
+  disabledRecurrenceFields: boolean = false,
+  allowRecurrence: boolean = true
+): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const { data: userFullDetails } = useGetUserDetails();
+  const { data: allRoutines } = useGetAllRoutinesQuery();
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        required: true,
+        displayName: t('tasks.task.title')
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
+      },
+      carrier: {
+        type: 'string',
+        required: true,
+        displayName: t('entities.mode-of-transport.carrier')
+      },
+      booking_number: {
+        type: 'string',
+        required: false,
+        displayName: t('entities.flight.booking_number')
+      },
+      start_location: {
+        type: 'string',
+        required: true,
+        displayName: t('entities.mode-of-transport.start_location')
+      },
+      end_location: {
+        type: 'string',
+        required: true,
+        displayName: t('entities.mode-of-transport.end_location')
+      },
+      start_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('entities.mode-of-transport.start_datetime')
+      },
+      start_timezone: {
+        type: 'timezone',
+        required: true,
+        displayName: t('entities.mode-of-transport.start_timezone')
+      },
+      end_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('entities.mode-of-transport.end_datetime')
+      },
+      end_timezone: {
+        type: 'timezone',
+        required: true,
+        displayName: t('entities.mode-of-transport.end_timezone')
+      },
+      reminders: {
+        type: 'reminderSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
+      routine: {
+        type: 'dropDown',
+        required: false,
+        displayName: t('tasks.task.routine'),
+        permittedValues: allRoutines
+          ? Object.values(allRoutines.byId).map((routine) => ({
+              value: routine.id,
+              label: routine.name
+            }))
+          : [],
+        listMode: 'MODAL'
+      }
+    };
+  }, [userFullDetails, t, allRoutines]);
 };
