@@ -35,10 +35,12 @@ type TransportTaskType =
   | 'DRIVE_TIME';
 
 type AccommodationTaskType = 'HOTEL' | 'STAY_WITH_FRIEND';
+type ActivityTaskType = 'ACTIVITY' | 'OTHER_ACTIVITY' | 'FOOD_ACTIVITY';
 type TaskType =
   | 'TASK'
   | 'APPOINTMENT'
   | 'DUE_DATE'
+  | ActivityTaskType
   | TransportTaskType
   | AccommodationTaskType;
 

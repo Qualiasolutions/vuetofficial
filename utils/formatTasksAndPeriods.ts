@@ -23,7 +23,7 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
     if (!task) {
       continue;
     }
-    let taskDates = [];
+    let taskDates: string[] = [];
     if (task.start_datetime && task.end_datetime) {
       taskDates = getDateStringsBetween(task.start_datetime, task.end_datetime);
     }

@@ -222,7 +222,15 @@ export default function EditTaskScreen({
     if (!taskToEdit) {
       return false;
     }
-    if (['TASK', 'APPOINTMENT'].includes(taskToEdit.type)) {
+    if (
+      [
+        'TASK',
+        'APPOINTMENT',
+        'ACTIVITY',
+        'FOOD_ACTIVITY',
+        'OTHER_ACTIVITY'
+      ].includes(taskToEdit.type)
+    ) {
       return (
         hasAllRequired(taskTopFieldValues, taskTopFields) &&
         hasAllRequired(taskMiddleFieldValues, taskMiddleFields) &&
@@ -281,7 +289,15 @@ export default function EditTaskScreen({
 
   const submitUpdateForm = () => {
     if (taskToEdit) {
-      if (['TASK', 'APPOINTMENT'].includes(taskToEdit.type)) {
+      if (
+        [
+          'TASK',
+          'APPOINTMENT',
+          'ACTIVITY',
+          'FOOD_ACTIVITY',
+          'OTHER_ACTIVITY'
+        ].includes(taskToEdit.type)
+      ) {
         const parsedTopFieldValues = parseFormValues(
           taskTopFieldValues,
           taskTopFields
@@ -369,7 +385,15 @@ export default function EditTaskScreen({
 
   let formFields = null;
 
-  if (['TASK', 'APPOINTMENT'].includes(taskToEdit.type)) {
+  if (
+    [
+      'TASK',
+      'APPOINTMENT',
+      'ACTIVITY',
+      'FOOD_ACTIVITY',
+      'OTHER_ACTIVITY'
+    ].includes(taskToEdit.type)
+  ) {
     formFields = (
       <>
         <TransparentView>

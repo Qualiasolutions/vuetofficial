@@ -36,6 +36,12 @@ const formTypes = [
   },
   {
     value: {
+      id: 'ACTIVITY'
+    },
+    label: 'Activity / Food'
+  },
+  {
+    value: {
       id: 'DUE_DATE'
     },
     label: 'Due Date'
@@ -72,6 +78,7 @@ type FormType =
   | 'TASK'
   | 'APPOINTMENT'
   | 'DUE_DATE'
+  | 'ACTIVITY'
   | 'TRANSPORT'
   | 'ACCOMMODATION';
 
@@ -90,6 +97,7 @@ export default function AddTaskScreen({
   const headerTitle = {
     TASK: 'Add task',
     APPOINTMENT: 'Add Appointment',
+    ACTIVITY: 'Add Activity',
     DUE_DATE: 'Add Due Date',
     TRANSPORT: 'Add Transport',
     ACCOMMODATION: 'Add Accommodation'
@@ -114,7 +122,7 @@ export default function AddTaskScreen({
     if (formType === 'TASK') {
       defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15);
     }
-    if (formType === 'APPOINTMENT') {
+    if (formType === 'APPOINTMENT' || formType === 'ACTIVITY') {
       defaultEndTime.setHours(defaultStartTime.getHours() + 1);
     }
 
@@ -192,11 +200,16 @@ export default function AddTaskScreen({
             />
           </TransparentView>
           <TransparentView
-            style={!['TASK', 'APPOINTMENT'].includes(formType) && styles.hidden}
+            style={
+              !['TASK', 'APPOINTMENT', 'ACTIVITY'].includes(formType) &&
+              styles.hidden
+            }
           >
             <AddTaskForm
               formType={
-                formType === 'TASK' || formType === 'APPOINTMENT'
+                formType === 'TASK' ||
+                formType === 'APPOINTMENT' ||
+                formType === 'ACTIVITY'
                   ? formType
                   : 'TASK'
               }

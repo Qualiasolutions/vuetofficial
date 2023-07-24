@@ -11,7 +11,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   TransparentPaddedView,
-  TransparentView
+  TransparentView,
+  WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
@@ -31,6 +32,8 @@ import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import DropDown from './components/DropDown';
+import { elevation } from 'styles/elevation';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,11 +46,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   spinner: { marginTop: 20 },
-  hidden: { display: 'none' }
+  hidden: { display: 'none' },
+  typeSelectorSection: { marginBottom: 50 }
 });
 
 type AddTaskFormProps = {
-  formType: 'TASK' | 'APPOINTMENT';
+  formType: 'TASK' | 'APPOINTMENT' | 'ACTIVITY';
   defaults: {
     title: string;
     entities: number[];
@@ -83,6 +87,8 @@ export default function AddTaskForm({
 
   const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
     useCreateRecurrentTaskOverwriteMutation();
+
+  const [activityType, setActivityType] = useState('ACTIVITY');
 
   const isSubmitting =
     createTaskResult.isLoading ||
@@ -148,7 +154,7 @@ export default function AddTaskForm({
       if (formType === 'TASK') {
         defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15);
       }
-      if (formType === 'APPOINTMENT') {
+      if (formType === 'APPOINTMENT' || formType === 'ACTIVITY') {
         defaultEndTime.setHours(defaultStartTime.getHours() + 1);
       }
     }
@@ -252,7 +258,7 @@ export default function AddTaskForm({
       ...parsedTopFieldValues,
       ...parsedMiddleFieldValues,
       ...parsedBottomFieldValues,
-      type: formType,
+      type: formType === 'ACTIVITY' ? activityType : formType,
       resourcetype: 'FixedTask'
     };
 
@@ -350,6 +356,31 @@ export default function AddTaskForm({
 
   return (
     <TransparentView style={styles.container}>
+      {formType === 'ACTIVITY' && (
+        <WhitePaddedView
+          style={[styles.typeSelectorSection, elevation.elevated]}
+        >
+          <DropDown
+            value={activityType}
+            items={[
+              {
+                value: 'ACTIVITY',
+                label: 'Activity'
+              },
+              {
+                value: 'FOOD_ACTIVITY',
+                label: 'Food'
+              },
+              {
+                value: 'OTHER_ACTIVITY',
+                label: 'Other'
+              }
+            ]}
+            setFormValues={setActivityType}
+            listMode="MODAL"
+          />
+        </WhitePaddedView>
+      )}
       <TransparentView>{topFieldsTypedForm}</TransparentView>
       <TransparentView>{middleFieldsTypedForm}</TransparentView>
       <TransparentView style={formType !== 'APPOINTMENT' && styles.hidden}>

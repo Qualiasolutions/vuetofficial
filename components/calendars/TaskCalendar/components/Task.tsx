@@ -261,6 +261,16 @@ const TaskIcon = ({
   if (task?.type === 'STAY_WITH_FRIEND') {
     icon = '🏠 ';
   }
+  if (task?.type === 'ACTIVITY') {
+    icon = '🎯 ';
+  }
+  if (task?.type === 'OTHER_ACTIVITY') {
+    icon = '🎯 ';
+  }
+  if (task?.type === 'FOOD_ACTIVITY') {
+    icon = '🍲 ';
+  }
+
   return (
     <TransparentView>
       <Text>{icon}</Text>
