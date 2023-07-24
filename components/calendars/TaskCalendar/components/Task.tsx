@@ -247,6 +247,12 @@ const TaskIcon = ({
   if (task?.type === 'DRIVE_TIME') {
     icon = '🚗 ';
   }
+  if (task?.type === 'HOTEL') {
+    icon = '🏨 ';
+  }
+  if (task?.type === 'STAY_WITH_FRIEND') {
+    icon = '🏠 ';
+  }
   return (
     <TransparentView>
       <Text>{icon}</Text>
@@ -431,7 +437,9 @@ function Task({
                 </TransparentView>
                 {!isEntity &&
                   task &&
-                  ['FixedTask', 'TransportTask'].includes(task.resourcetype) &&
+                  ['FixedTask', 'TransportTask', 'AccommodationTask'].includes(
+                    task.resourcetype
+                  ) &&
                   hasEditPerms && (
                     <SafePressable
                       onPress={() => {

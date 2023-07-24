@@ -43,6 +43,10 @@
       "end_location": "End Location",
       "pickup_location": "Pickup Location",
       "dropoff_location": "Dropoff Location"
+    },
+    "accommodationTask": {
+      "hotelName": "Hotel Name",
+      "friendName": "Friend Name"
     }
   },
   "entities": {

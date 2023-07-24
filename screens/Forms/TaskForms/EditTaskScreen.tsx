@@ -9,7 +9,8 @@ import {
   useTransportFieldTypes,
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
-  useTaskTopFieldTypes
+  useTaskTopFieldTypes,
+  useAccommodationFieldTypes
 } from 'components/forms/taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -35,7 +36,10 @@ import { FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
-import { isTransportTaskType } from 'constants/TaskTypes';
+import {
+  isAccommodationTaskType,
+  isTransportTaskType
+} from 'constants/TaskTypes';
 import { getTimeInTimezone } from 'utils/datesAndTimes';
 
 const styles = StyleSheet.create({
@@ -91,6 +95,9 @@ export default function EditTaskScreen({
     {}
   );
 
+  const [accommodationFieldValues, setAccommodationFieldValues] =
+    useState<FieldValueTypes>({});
+
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = useTaskTopFieldTypes(true, taskToEdit?.hidden_tag);
@@ -108,6 +115,10 @@ export default function EditTaskScreen({
   const taskType = taskToEdit?.type;
   const flightFields = useTransportFieldTypes(
     taskType && isTransportTaskType(taskType) ? taskType : 'FLIGHT'
+  );
+
+  const accommodationFields = useAccommodationFieldTypes(
+    taskType && isAccommodationTaskType(taskType) ? taskType : 'HOTEL'
   );
 
   useEffect(() => {
@@ -174,11 +185,20 @@ export default function EditTaskScreen({
         );
         setFlightFieldValues(initialFlightFields);
 
+        const initialAccommodationFields = createInitialObject(
+          accommodationFields,
+          userDetails,
+          newTaskToEdit
+        );
+        setAccommodationFieldValues(initialAccommodationFields);
+
         setResetState(() => () => {
           setTaskTopFieldValues(initialTopFields);
           setTaskMiddleFieldValues(initialMiddleFields);
           setTaskBottomFieldValues(initialBottomFields);
           setDueDateFieldValues(initialDueDateFields);
+          setFlightFieldValues(initialFlightFields);
+          setAccommodationFieldValues(initialAccommodationFields);
         });
       }
     }
@@ -190,7 +210,8 @@ export default function EditTaskScreen({
     taskMiddleFields,
     taskTopFields,
     dueDateFields,
-    flightFields
+    flightFields,
+    accommodationFields
   ]);
 
   useEntityHeader(0, false, t('pageTitles.editTask'));
@@ -209,6 +230,8 @@ export default function EditTaskScreen({
       return hasAllRequired(dueDateFieldValues, dueDateFields);
     } else if (isTransportTaskType(taskToEdit.type)) {
       return hasAllRequired(flightFieldValues, flightFields);
+    } else if (isAccommodationTaskType(taskToEdit.type)) {
+      return hasAllRequired(accommodationFieldValues, accommodationFields);
     } else {
       return false;
     }
@@ -223,7 +246,9 @@ export default function EditTaskScreen({
     dueDateFields,
     dueDateFieldValues,
     flightFields,
-    flightFieldValues
+    flightFieldValues,
+    accommodationFields,
+    accommodationFieldValues
   ]);
 
   useEffect(() => {
@@ -315,6 +340,23 @@ export default function EditTaskScreen({
         }
 
         updateTask(body);
+      } else if (isAccommodationTaskType(taskToEdit.type)) {
+        const parsedAccommodationFieldValues = parseFormValues(
+          accommodationFieldValues,
+          accommodationFields
+        );
+
+        const body = {
+          ...parsedAccommodationFieldValues,
+          resourcetype: 'AccommodationTask' as 'AccommodationTask',
+          id: taskToEdit.id,
+          type: taskToEdit.type
+        };
+        if (Object.keys(body as any).includes('recurrence')) {
+          delete (body as any).recurrence;
+        }
+
+        updateTask(body);
       }
     }
   };
@@ -389,6 +431,22 @@ export default function EditTaskScreen({
           formValues={flightFieldValues}
           onFormValuesChange={(values: FieldValueTypes) => {
             setFlightFieldValues(values);
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+        />
+      </TransparentView>
+    );
+  }
+
+  if (isAccommodationTaskType(taskToEdit.type)) {
+    formFields = (
+      <TransparentView>
+        <TypedForm
+          fields={accommodationFields}
+          formValues={accommodationFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setAccommodationFieldValues(values);
           }}
           inlineFields={true}
           fieldColor={fieldColor}

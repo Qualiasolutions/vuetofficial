@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
-import { TransportTaskType } from 'types/tasks';
+import { AccommodationTaskType, TransportTaskType } from 'types/tasks';
 
 export const useTaskTopFieldTypes = (
   isEdit: boolean = false,
@@ -402,6 +402,78 @@ export const useTransportFieldTypes = (
           type === 'RENTAL_CAR'
             ? t('tasks.transportTask.dropoff_location')
             : t('tasks.transportTask.end_location')
+      },
+      start_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('tasks.task.start_datetime'),
+        utc: true
+      },
+      start_timezone: {
+        type: 'timezone',
+        required: true,
+        displayName: t('tasks.task.start_timezone')
+      },
+      end_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('tasks.task.end_datetime'),
+        utc: true
+      },
+      end_timezone: {
+        type: 'timezone',
+        required: true,
+        displayName: t('tasks.task.end_timezone')
+      },
+      reminders: {
+        type: 'reminderSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      }
+    };
+  }, [userFullDetails, t, type]);
+};
+
+export const useAccommodationFieldTypes = (
+  type?: AccommodationTaskType
+): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const { data: userFullDetails } = useGetUserDetails();
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
+      },
+      accommodation_name: {
+        type: 'string',
+        required: true,
+        displayName:
+          type === 'HOTEL'
+            ? t('tasks.accommodationTask.hotelName')
+            : t('tasks.accommodationTask.friendName')
       },
       start_datetime: {
         type: 'DateTime',

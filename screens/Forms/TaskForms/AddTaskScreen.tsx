@@ -19,6 +19,7 @@ import AddDueDateForm from 'components/forms/AddDueDateForm';
 import AddTaskForm from 'components/forms/AddTaskForm';
 import { TaskType } from 'types/tasks';
 import AddTransportTaskForm from 'components/forms/AddTransportTaskForm';
+import AddAccommodationTaskForm from 'components/forms/AddAccommodationTaskForm';
 
 const formTypes = [
   {
@@ -44,6 +45,12 @@ const formTypes = [
       id: 'TRANSPORT'
     },
     label: 'Transport'
+  },
+  {
+    value: {
+      id: 'ACCOMMODATION'
+    },
+    label: 'Accommodation'
   }
 ];
 
@@ -61,13 +68,20 @@ const styles = StyleSheet.create({
 
 type AddTaskScreenProps = RootTabScreenProps<'AddTask'>;
 
+type FormType =
+  | 'TASK'
+  | 'APPOINTMENT'
+  | 'DUE_DATE'
+  | 'TRANSPORT'
+  | 'ACCOMMODATION';
+
 export default function AddTaskScreen({
   route,
   navigation
 }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
-  const [formType, setFormType] = useState<TaskType>(
+  const [formType, setFormType] = useState<FormType>(
     route.params?.type || 'TASK'
   );
 
@@ -77,7 +91,8 @@ export default function AddTaskScreen({
     TASK: 'Add task',
     APPOINTMENT: 'Add Appointment',
     DUE_DATE: 'Add Due Date',
-    TRANSPORT: 'Add Flight'
+    TRANSPORT: 'Add Transport',
+    ACCOMMODATION: 'Add Accommodation'
   }[formType];
 
   useColouredHeader(headerBackgroundColor, headerTintColor, headerTitle);
@@ -152,7 +167,7 @@ export default function AddTaskScreen({
               label={t('common.addNew')}
               permittedValues={formTypes}
               onValueChange={(value) => {
-                setFormType(value.id as TaskType);
+                setFormType(value.id as FormType);
               }}
             />
           </WhiteView>
@@ -164,6 +179,14 @@ export default function AddTaskScreen({
           </TransparentView>
           <TransparentView style={formType !== 'TRANSPORT' && styles.hidden}>
             <AddTransportTaskForm
+              defaults={taskDefaults}
+              onSuccess={() => navigation.goBack()}
+            />
+          </TransparentView>
+          <TransparentView
+            style={formType !== 'ACCOMMODATION' && styles.hidden}
+          >
+            <AddAccommodationTaskForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />
