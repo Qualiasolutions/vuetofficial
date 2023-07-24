@@ -403,27 +403,75 @@ export const useTransportFieldTypes = (
             ? t('tasks.transportTask.dropoff_location')
             : t('tasks.transportTask.end_location')
       },
+      is_any_time: {
+        type: 'checkbox',
+        required: false,
+        displayName: t('tasks.task.is_any_time'),
+        forceUnchecked: ['is_flexible']
+      },
       start_datetime: {
         type: 'DateTime',
         required: true,
         displayName: t('tasks.task.start_datetime'),
-        utc: true
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
       },
       start_timezone: {
         type: 'timezone',
         required: true,
-        displayName: t('tasks.task.start_timezone')
+        displayName: t('tasks.task.start_timezone'),
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
       },
       end_datetime: {
         type: 'DateTime',
         required: true,
         displayName: t('tasks.task.end_datetime'),
-        utc: true
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
       },
       end_timezone: {
         type: 'timezone',
         required: true,
-        displayName: t('tasks.task.end_timezone')
+        displayName: t('tasks.task.end_timezone'),
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
+      },
+      start_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.task.start_date'),
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
+      },
+      end_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.task.end_date'),
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
       },
       reminders: {
         type: 'reminderSelector',
@@ -475,27 +523,75 @@ export const useAccommodationFieldTypes = (
             ? t('tasks.accommodationTask.hotelName')
             : t('tasks.accommodationTask.friendName')
       },
+      is_any_time: {
+        type: 'checkbox',
+        required: false,
+        displayName: t('tasks.task.is_any_time'),
+        forceUnchecked: ['is_flexible']
+      },
       start_datetime: {
         type: 'DateTime',
         required: true,
         displayName: t('tasks.task.start_datetime'),
-        utc: true
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
       },
       start_timezone: {
         type: 'timezone',
         required: true,
-        displayName: t('tasks.task.start_timezone')
+        displayName: t('tasks.task.start_timezone'),
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
       },
       end_datetime: {
         type: 'DateTime',
         required: true,
         displayName: t('tasks.task.end_datetime'),
-        utc: true
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
       },
       end_timezone: {
         type: 'timezone',
         required: true,
-        displayName: t('tasks.task.end_timezone')
+        displayName: t('tasks.task.end_timezone'),
+        shownFields: [
+          {
+            is_any_time: false
+          }
+        ]
+      },
+      start_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.task.start_date'),
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
+      },
+      end_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.task.end_date'),
+        utc: true,
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
       },
       reminders: {
         type: 'reminderSelector',

@@ -48,6 +48,9 @@ const useStyles = () => {
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
   return StyleSheet.create({
     titleContainer: {
+      flex: 1
+    },
+    titleContentContainer: {
       flex: 1,
       justifyContent: 'flex-start'
     },
@@ -151,11 +154,16 @@ const TimeText = ({
   scheduledTask?: ScheduledTaskResponseType;
   date: string;
 }) => {
+  /*
+    If scheduledTask is undefined then this is an entity
+  */
   const { t } = useTranslation();
   const styles = useStyles();
 
   let textContent = null;
   if (!scheduledTask) {
+    textContent = <Text>{t('common.allDay')}</Text>;
+  } else if (scheduledTask.start_date && scheduledTask.end_date) {
     textContent = <Text>{t('common.allDay')}</Text>;
   } else if (scheduledTask.date && scheduledTask.duration) {
     textContent = (
@@ -414,7 +422,10 @@ function Task({
                 date={date}
               />
               <TransparentView style={styles.titleContainer}>
-                <TransparentView style={styles.iconAndTitle}>
+                <TransparentScrollView
+                  contentContainerStyle={styles.iconAndTitle}
+                  horizontal={true}
+                >
                   {!isEntity && scheduledTask && (
                     <TaskIcon scheduledTask={scheduledTask} />
                   )}
@@ -433,8 +444,9 @@ function Task({
                       }
                     ]}
                     bold={true}
+                    numberOfLines={1}
                   />
-                </TransparentView>
+                </TransparentScrollView>
                 {!isEntity &&
                   task &&
                   ['FixedTask', 'TransportTask', 'AccommodationTask'].includes(

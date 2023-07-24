@@ -39,26 +39,28 @@ export default function EditTaskOccurrenceScreen({
     );
   }
 
-  return (
-    <TransparentFullPageScrollView>
-      <AddTaskForm
-        defaults={{
-          ...taskObj,
-          start_datetime: scheduledTaskObj.start_datetime
-            ? new Date(scheduledTaskObj.start_datetime)
-            : undefined,
-          end_datetime: scheduledTaskObj.end_datetime
-            ? new Date(scheduledTaskObj.end_datetime)
-            : undefined,
-          date: scheduledTaskObj.date,
-          is_any_time: !!scheduledTaskObj.date
-        }}
-        onSuccess={() => navigation.goBack()}
-        taskId={taskObj.id}
-        recurrenceIndex={recurrenceIndex}
-        recurrenceOverwrite={true}
-        formType={taskObj.type}
-      />
-    </TransparentFullPageScrollView>
-  );
+  if (taskObj.type === 'TASK' || taskObj.type === 'APPOINTMENT') {
+    return (
+      <TransparentFullPageScrollView>
+        <AddTaskForm
+          defaults={{
+            ...taskObj,
+            start_datetime: scheduledTaskObj.start_datetime
+              ? new Date(scheduledTaskObj.start_datetime)
+              : undefined,
+            end_datetime: scheduledTaskObj.end_datetime
+              ? new Date(scheduledTaskObj.end_datetime)
+              : undefined,
+            date: scheduledTaskObj.date,
+            is_any_time: !!scheduledTaskObj.date
+          }}
+          onSuccess={() => navigation.goBack()}
+          taskId={taskObj.id}
+          recurrenceIndex={recurrenceIndex}
+          recurrenceOverwrite={true}
+          formType={taskObj.type}
+        />
+      </TransparentFullPageScrollView>
+    );
+  }
 }

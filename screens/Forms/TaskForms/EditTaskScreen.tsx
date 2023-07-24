@@ -141,7 +141,9 @@ export default function EditTaskScreen({
 
       const newTaskToEdit = {
         ...oldTask,
-        is_any_time: oldTask.date && oldTask.duration,
+        is_any_time:
+          (oldTask.date && oldTask.duration) ||
+          (oldTask.start_date && oldTask.end_date),
         tagsAndEntities: {
           entities: oldTask.entities,
           tags: oldTask.tags || []

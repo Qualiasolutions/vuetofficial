@@ -23,12 +23,16 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
     if (!task) {
       continue;
     }
-    const taskDates =
-      task.start_datetime && task.end_datetime
-        ? getDateStringsBetween(task.start_datetime, task.end_datetime)
-        : task.date
-        ? [task.date]
-        : [];
+    let taskDates = [];
+    if (task.start_datetime && task.end_datetime) {
+      taskDates = getDateStringsBetween(task.start_datetime, task.end_datetime);
+    }
+    if (task.start_date && task.end_date) {
+      taskDates = getDateStringsBetween(task.start_date, task.end_date);
+    }
+    if (task.date) {
+      taskDates = [task.date];
+    }
 
     taskDates.forEach((taskDate) => {
       const taskToPush = {

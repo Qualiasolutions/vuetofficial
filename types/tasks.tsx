@@ -64,6 +64,8 @@ interface BaseTaskType {
   end_datetime?: string;
   start_timezone?: string;
   end_timezone?: string;
+  start_date?: string;
+  end_date?: string;
   type: TaskType;
 }
 
@@ -86,6 +88,8 @@ interface ScheduledTaskResponseType {
   duration?: number;
   start_datetime?: string;
   end_datetime?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 interface ScheduledEntityResponseType {

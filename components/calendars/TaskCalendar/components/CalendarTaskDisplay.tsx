@@ -175,10 +175,11 @@ function Calendar({
             )
         );
 
-      const tasksToShow = (permittedTasksOnDate || []).filter(
-        ({ id: taskId, action_id }) =>
-          dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
-      );
+      const tasksToShow = dailyTasksPerRoutine
+        ? (permittedTasksOnDate || []).filter(({ id: taskId, action_id }) =>
+            dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
+          )
+        : [];
 
       const entitiesToShow = permittedEntitiesOnDate || [];
 

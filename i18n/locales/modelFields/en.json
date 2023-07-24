@@ -10,6 +10,8 @@
       "actions": "Actions",
       "start_datetime": "Starts",
       "end_datetime": "Ends",
+      "start_date": "Start Date",
+      "end_date": "End Date",
       "start_timezone": "Start Timezone",
       "end_timezone": "End Timezone",
       "first_start_datetime": "First occurrence",

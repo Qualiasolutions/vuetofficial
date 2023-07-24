@@ -739,6 +739,11 @@ export default function TypedForm({
             }
             case 'timezone': {
               const f = flatFields[field] as TimezoneField;
+
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
               return (
                 <InputPair
                   field={field}
