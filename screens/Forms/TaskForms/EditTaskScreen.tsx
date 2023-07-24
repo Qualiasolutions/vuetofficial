@@ -35,7 +35,8 @@ import { FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
-import { isTransportTaskType, TRANSPORT_TASK_TYPES } from 'constants/TaskTypes';
+import { isTransportTaskType } from 'constants/TaskTypes';
+import { getTimeInTimezone } from 'utils/datesAndTimes';
 
 const styles = StyleSheet.create({
   container: {
@@ -111,7 +112,22 @@ export default function EditTaskScreen({
 
   useEffect(() => {
     if (allTasks && userDetails) {
-      const oldTask = allTasks.byId[route.params.taskId];
+      const oldTask = { ...allTasks.byId[route.params.taskId] };
+      if (oldTask.start_timezone && oldTask.start_datetime) {
+        const newStart = getTimeInTimezone(
+          oldTask.start_datetime,
+          oldTask.start_timezone
+        );
+        oldTask.start_datetime = newStart;
+      }
+      if (oldTask.end_timezone && oldTask.end_datetime) {
+        const newEnd = getTimeInTimezone(
+          oldTask.end_datetime,
+          oldTask.end_timezone
+        );
+        oldTask.end_datetime = newEnd;
+      }
+
       const newTaskToEdit = {
         ...oldTask,
         is_any_time: oldTask.date && oldTask.duration,

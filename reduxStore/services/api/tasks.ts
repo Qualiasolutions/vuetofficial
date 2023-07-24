@@ -244,6 +244,7 @@ const tasksApi = vuetApi.injectEndpoints({
         { ...patch },
         { dispatch, queryFulfilled, getState }
       ) {
+        const { data: newTask } = await queryFulfilled;
         const patchResults = [];
         for (const {
           endpointName,
@@ -259,17 +260,7 @@ const tasksApi = vuetApi.injectEndpoints({
                 'getAllTasks',
                 originalArgs,
                 (draft) => {
-                  draft.byId[patch.id] = {
-                    ...draft.byId[patch.id],
-                    ...patch,
-                    start_datetime:
-                      patch.start_datetime ||
-                      draft.byId[patch.id].start_datetime,
-                    end_datetime:
-                      patch.end_datetime || draft.byId[patch.id].end_datetime,
-                    date: patch.date || draft.byId[patch.id].date,
-                    duration: patch.duration || draft.byId[patch.id].duration
-                  };
+                  draft.byId[newTask.id] = newTask;
                 }
               )
             );
@@ -283,19 +274,19 @@ const tasksApi = vuetApi.injectEndpoints({
                 (draft) => {
                   // If the task is recurrent then don't update
                   // its start and end times (they can't change)
-                  if (!draft.byTaskId[patch.id][-1]) return;
+                  if (!draft.byTaskId[newTask.id][-1]) return;
 
                   // Otherwise it is a single occurrence and we
                   // may want to update the start and end times
-                  const scheduledTask = draft.byTaskId[patch.id][-1];
-                  draft.byTaskId[patch.id][-1] = {
+                  const scheduledTask = draft.byTaskId[newTask.id][-1];
+                  draft.byTaskId[newTask.id][-1] = {
                     ...scheduledTask,
                     start_datetime:
-                      patch.start_datetime || scheduledTask.start_datetime,
+                      newTask.start_datetime || scheduledTask.start_datetime,
                     end_datetime:
-                      patch.end_datetime || scheduledTask.end_datetime,
-                    date: patch.date || scheduledTask.date,
-                    duration: patch.duration || scheduledTask.duration
+                      newTask.end_datetime || scheduledTask.end_datetime,
+                    date: newTask.date || scheduledTask.date,
+                    duration: newTask.duration || scheduledTask.duration
                   };
                 }
               )

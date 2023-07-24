@@ -1,7 +1,17 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const getTimeInTimezone = (datetime: string, tz: string) => {
+  return new Date(datetime).toLocaleString('en-GB', {
+    timeZone: tz
+  });
+};
 
 const getDateStringFromDateObject = (
   date: Date,
@@ -220,6 +230,7 @@ const parseSummaryTime = (datetimeString: string) => {
 };
 
 export {
+  getTimeInTimezone,
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
   getCurrentDateString,

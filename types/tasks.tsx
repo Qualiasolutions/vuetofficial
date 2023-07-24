@@ -55,6 +55,8 @@ interface BaseTaskType {
   duration?: number;
   start_datetime?: string;
   end_datetime?: string;
+  start_timezone?: string;
+  end_timezone?: string;
   type: TaskType;
 }
 
