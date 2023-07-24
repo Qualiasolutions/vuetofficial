@@ -360,7 +360,6 @@ export const useTransportFieldTypes = (
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserDetails();
-  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -444,19 +443,7 @@ export const useTransportFieldTypes = (
         type: 'tagSelector',
         required: true,
         displayName: t('tasks.task.tags')
-      },
-      routine: {
-        type: 'dropDown',
-        required: false,
-        displayName: t('tasks.task.routine'),
-        permittedValues: allRoutines
-          ? Object.values(allRoutines.byId).map((routine) => ({
-              value: routine.id,
-              label: routine.name
-            }))
-          : [],
-        listMode: 'MODAL'
       }
     };
-  }, [userFullDetails, t, allRoutines, type]);
+  }, [userFullDetails, t, type]);
 };
