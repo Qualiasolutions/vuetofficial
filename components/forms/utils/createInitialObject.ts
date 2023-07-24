@@ -90,8 +90,8 @@ const createInitialObject = (
         continue;
       }
 
-      case 'addMembers':
       case 'addFamilyMembers':
+      case 'addMembers':
         initialObj[key] =
           formFields[key].initialValue ||
           (userDetails ? [userDetails?.id] : []);

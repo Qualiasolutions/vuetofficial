@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     width: '100%'
   },
+  membersPair: { alignItems: 'flex-start' },
   calendarIcon: {
     position: 'absolute',
     right: 20,
@@ -235,13 +236,15 @@ export default function TypedForm({
       children,
       labelStyle,
       inlineFieldsOverride,
-      containerStyle
+      containerStyle,
+      pairStyle
     }: {
       field: string;
       children: ReactNode;
       labelStyle?: ViewStyle;
       inlineFieldsOverride?: boolean;
       containerStyle?: ViewStyle;
+      pairStyle?: ViewStyle;
     }) => {
       const fieldObj = flatFields[field];
       if (!isFieldShown(fieldObj)) {
@@ -261,6 +264,7 @@ export default function TypedForm({
           labelStyle={labelStyle}
           labelWrapperStyle={styles.inputLabel}
           style={containerStyle}
+          pairStyle={pairStyle}
         >
           {children}
         </InputWithLabel>
@@ -575,13 +579,13 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  pairStyle={styles.membersPair}
                 >
                   <MemberSelector
                     data={f.permittedValues}
                     values={formValues[field] || []}
                     onValueChange={(selectedMembers) => {
                       onFormValuesChange({
-                        ...formValues,
                         [field]: selectedMembers
                       });
                     }}

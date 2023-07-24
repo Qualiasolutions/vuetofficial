@@ -29,6 +29,7 @@ export default function InputWithLabel({
   inlineFields,
   labelStyle,
   labelWrapperStyle,
+  pairStyle,
   style
 }: {
   label: string;
@@ -37,12 +38,15 @@ export default function InputWithLabel({
   inlineFields?: boolean;
   labelStyle?: ViewStyle;
   labelWrapperStyle?: ViewStyle;
+  pairStyle?: ViewStyle;
   style?: ViewStyle;
 }) {
   return (
     <TransparentView style={style || {}}>
       {error ? <Text>{error}</Text> : null}
-      <TransparentView style={inlineFields ? styles.inlineInputPair : {}}>
+      <TransparentView
+        style={inlineFields ? [styles.inlineInputPair, pairStyle || {}] : {}}
+      >
         <TransparentView style={[labelWrapperStyle || {}]}>
           <AlmostBlackText
             text={label}

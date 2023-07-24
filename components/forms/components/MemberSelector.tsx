@@ -1,14 +1,29 @@
-import { ListingModal } from 'components/molecules/Modals';
-import { PrimaryText } from 'components/molecules/TextComponents';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { BlackText, PrimaryText } from 'components/molecules/TextComponents';
+import {
+  TransparentView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
 import UserWithColor from 'components/molecules/UserWithColor';
-import { useCallback, useState } from 'react';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Image, StyleSheet } from 'react-native';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { Text, View } from 'components/Themed';
 import Checkbox from 'components/molecules/Checkbox';
 import { useTranslation } from 'react-i18next';
 import SafePressable from 'components/molecules/SafePressable';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import PhoneNumberInput from './PhoneNumberInput';
+import { Button } from 'components/molecules/ButtonComponents';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
+import { Feather } from '@expo/vector-icons';
+import {
+  useGetUserMinimalDetailsFromIdQuery,
+  useGetUserMinimalDetailsQuery,
+  useLazyGetUserMinimalDetailsQuery
+} from 'reduxStore/services/api/user';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const styles = StyleSheet.create({
   addMemberButton: {
@@ -24,13 +39,50 @@ const styles = StyleSheet.create({
   membersItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingTop: 5,
+    paddingBottom: 15,
+    borderBottomWidth: 1
   },
   memberColour: {
     height: 9,
     width: 78,
     marginTop: 5
-  }
+  },
+  bottomContainer: {
+    width: '100%',
+    height: '100%',
+    padding: 23,
+    justifyContent: 'space-between'
+  },
+  phoneNumberInput: {
+    marginTop: 30
+  },
+  phoneNumberAddButton: {
+    flexDirection: 'row',
+    marginTop: 10,
+    alignItems: 'center'
+  },
+  externalNumberListing: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    borderBottomWidth: 1
+  },
+  externalNumberListingText: {
+    marginRight: 10
+  },
+  externalNumberSection: {
+    marginTop: 40
+  },
+  okButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderTopWidth: 2
+  },
+  externalMembersList: { marginTop: 30 },
+  selectedMemberListing: { marginTop: 11 }
 });
 
 export function ModalListing({
@@ -54,6 +106,23 @@ export function ModalListing({
   );
 }
 
+const ExternalListing = ({ memberId }: { memberId: number }) => {
+  const { data: memberDetails, isLoading } =
+    useGetUserMinimalDetailsFromIdQuery(memberId);
+
+  if (isLoading || !memberDetails) {
+    return <PaddedSpinner />;
+  }
+
+  return (
+    <BlackText
+      text={memberDetails.phone_number}
+      style={styles.externalNumberListingText}
+      bold={true}
+    />
+  );
+};
+
 export default function MemberSelector({
   data,
   values,
@@ -68,8 +137,13 @@ export default function MemberSelector({
   onValueChange: (val: number[]) => void;
   changeMembersText?: string;
 }) {
+  const bottomSheetRef = useRef<RBSheet>(null);
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
+  const [newExternalNumber, setNewExternalNumber] = useState('');
   const { t } = useTranslation();
+
+  const [getMinimalDetails, getMinimalDetailsResult, lastMinimalDetails] =
+    useLazyGetUserMinimalDetailsQuery();
 
   const onSelectMember = (member: UserResponse) => {
     if (values.includes(member.id)) {
@@ -90,12 +164,12 @@ export default function MemberSelector({
     }
   }
 
-  const selectedMembersList = useCallback(() => {
+  const selectedMembersList = useMemo(() => {
     return allMembers
       .filter((member) => values.includes(member.id))
       .map((member: any) => {
         return (
-          <TransparentView key={member.id} style={{ marginTop: 11 }}>
+          <TransparentView key={member.id} style={styles.selectedMemberListing}>
             <UserWithColor
               name={`${member.first_name} ${member.last_name}`}
               memberColour={member.member_colour}
@@ -106,36 +180,34 @@ export default function MemberSelector({
       });
   }, [values]);
 
-  const preparedData = useCallback(() => {
-    return {
-      [t('components.memberSelector.family')]: data.family.map(
-        (member: UserResponse) => ({
-          ...member,
-          selected: values.includes(member.id)
-        })
-      ),
-      [t('components.memberSelector.friends')]: data.friends.map(
-        (member: UserResponse) => ({
-          ...member,
-          selected: values.includes(member.id)
-        })
-      )
-    };
-  }, [values]);
+  const externalMembersList = useMemo(() => {
+    return (
+      <TransparentView style={styles.externalMembersList}>
+        {values
+          .filter(
+            (memberId) =>
+              !allMembers.map((member) => member.id).includes(memberId)
+          )
+          .map((memberId: number, i: number) => {
+            return (
+              <TransparentView key={i} style={styles.selectedMemberListing}>
+                <ExternalListing memberId={memberId} />
+              </TransparentView>
+            );
+          })}
+      </TransparentView>
+    );
+  }, [values, allMembers]);
 
-  const sectionSettings = {
-    [t('components.memberSelector.family')]: {
-      minimisable: false
-    },
-    [t('components.memberSelector.friends')]: {
-      minimisable: true,
-      initOpen: false
-    }
-  };
+  useEffect(() => {
+    if (showMembersList) bottomSheetRef?.current?.open();
+    else bottomSheetRef?.current?.close();
+  }, [showMembersList]);
 
   return (
     <TransparentView>
-      {selectedMembersList()}
+      {selectedMembersList}
+      {externalMembersList}
       <SafePressable
         onPress={() => setShowMembersList(true)}
         style={styles.addMemberButton}
@@ -150,14 +222,117 @@ export default function MemberSelector({
           }
         />
       </SafePressable>
-      <ListingModal
-        visible={showMembersList}
+      <RBSheet
+        ref={bottomSheetRef}
+        height={600}
         onClose={onCloseMembersList}
-        data={preparedData()}
-        sectionSettings={sectionSettings}
-        onSelect={onSelectMember}
-        ListItemComponent={ModalListing}
-      />
+        customStyles={{
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20
+          }
+        }}
+        dragFromTopOnly={true}
+        closeOnDragDown={true}
+      >
+        <WhiteView style={styles.bottomContainer}>
+          <TransparentScrollView>
+            <SafeAreaView>
+              {data.family.map((user) => (
+                <SafePressable
+                  onPress={() => onSelectMember(user)}
+                  key={user.id}
+                >
+                  <ModalListing
+                    item={{
+                      ...user,
+                      selected: values.includes(user.id)
+                    }}
+                  />
+                </SafePressable>
+              ))}
+              <TransparentView style={styles.externalNumberSection}>
+                {values
+                  .filter(
+                    (memberId) =>
+                      !allMembers.map((member) => member.id).includes(memberId)
+                  )
+                  .map((memberId: number, i) => (
+                    <TransparentView
+                      style={styles.externalNumberListing}
+                      key={i}
+                    >
+                      <ExternalListing memberId={memberId} />
+                      <SafePressable
+                        onPress={() => {
+                          onValueChange(
+                            values.filter((number) => number !== memberId)
+                          );
+                        }}
+                      >
+                        <Feather name="trash" size={20} color="red" />
+                      </SafePressable>
+                    </TransparentView>
+                  ))}
+                <TransparentView style={styles.phoneNumberInput}>
+                  <PhoneNumberInput
+                    onChangeFormattedText={(newPhoneNumber) => {
+                      setNewExternalNumber(newPhoneNumber);
+                    }}
+                  />
+                  <TransparentView style={styles.phoneNumberAddButton}>
+                    {getMinimalDetailsResult.isLoading ? (
+                      <PaddedSpinner />
+                    ) : (
+                      <>
+                        <Button
+                          onPress={async () => {
+                            try {
+                              const res = await getMinimalDetails(
+                                newExternalNumber
+                              ).unwrap();
+                              console.log(values);
+                              if (!values.includes(res.id)) {
+                                onValueChange([...values, res.id]);
+                              }
+                              // TODO - we want to put the
+                            } catch (err) {
+                              // This doesn't show under modal
+                              Toast.show({
+                                type: 'error',
+                                text1: t(
+                                  'components.memberSelector.noMemberError'
+                                )
+                              });
+                            }
+                          }}
+                          title={t('common.add')}
+                        />
+                        {getMinimalDetailsResult.isError && (
+                          <TransparentView style={styles.phoneNumberAddButton}>
+                            <Feather name="x" color="red" size={40} />
+                            <PrimaryText
+                              text={t(
+                                'components.memberSelector.noMemberError'
+                              )}
+                            />
+                          </TransparentView>
+                        )}
+                      </>
+                    )}
+                  </TransparentView>
+                </TransparentView>
+              </TransparentView>
+            </SafeAreaView>
+          </TransparentScrollView>
+          <TransparentView style={styles.okButton}>
+            <Button
+              title={t('common.ok')}
+              onPress={() => bottomSheetRef.current?.close()}
+            />
+          </TransparentView>
+        </WhiteView>
+      </RBSheet>
     </TransparentView>
   );
 }

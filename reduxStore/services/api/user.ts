@@ -21,6 +21,24 @@ const userApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['User']
     }),
+    getUserMinimalDetails: builder.query<
+      { id: number; phone_number: string; member_colour: string },
+      string
+    >({
+      query: (phone_number) => ({
+        url: `core/user-minimal/${phone_number}/`
+      }),
+      providesTags: ['User']
+    }),
+    getUserMinimalDetailsFromId: builder.query<
+      { id: number; phone_number: string; member_colour: string },
+      number
+    >({
+      query: (userId) => ({
+        url: `core/user-id-minimal/${userId}/`
+      }),
+      providesTags: ['User']
+    }),
     getUserDetails: builder.query<AuthDetails, void>({
       query: () => ({
         url: 'auth/details/'
@@ -130,7 +148,10 @@ export const {
   useUpdateUserInviteMutation,
   useDeleteUserInviteMutation,
   useGetCategorySetupCompletionsQuery,
-  useCreateCategorySetupCompletionMutation
+  useCreateCategorySetupCompletionMutation,
+  useGetUserMinimalDetailsQuery,
+  useLazyGetUserMinimalDetailsQuery,
+  useGetUserMinimalDetailsFromIdQuery
 } = userApi;
 
 export default userApi;
