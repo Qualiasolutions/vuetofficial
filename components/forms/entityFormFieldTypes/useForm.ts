@@ -40,6 +40,7 @@ import { appointmentForm } from './formFields/appointment';
 import { studentForm } from './formFields/student';
 import { employeeForm } from './formFields/employee';
 import { gardenForm } from './formFields/garden';
+import { travelPlanForm } from './formFields/travel-plan';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -200,6 +201,10 @@ export default function useForm(
 
     if (entityType === 'Employee') {
       return employeeForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'TravelPlan') {
+      return travelPlanForm(isEdit, userFullDetails, t);
     }
 
     return {};

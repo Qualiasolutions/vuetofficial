@@ -119,6 +119,7 @@
     },
     "travel": {
       "myTrips": "My Trips",
+      "myTravelPlans": "My Travel Plans",
       "activities": "Food & Activities",
       "accommodation": "Accommodation",
       "transportation": "Transportation",
@@ -189,6 +190,7 @@
     "anniversaries": "Birthdays & Anniversaries",
     "hobbies": "Interests & Hobbies",
     "trips": "Trips",
+    "travel-plans": "Travel Plans",
     "pets": "Pets",
     "patient": "Patients",
     "days-off": "Days Off",
@@ -269,6 +271,7 @@
     "Hobby": "Hobby",
     "Holiday": "Holiday",
     "Trip": "Trip",
+    "TravelPlan": "Travel Plan",
     "Flight": "Flight",
     "TrainBusFerry": "Train, Bus or Ferry",
     "TaxiOrTransfer": "Taxi or Transfer",

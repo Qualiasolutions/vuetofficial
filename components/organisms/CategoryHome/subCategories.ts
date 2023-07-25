@@ -195,27 +195,12 @@ export default {
       }
     },
     {
-      name: 'travel.transportation',
+      name: 'travel.myTravelPlans',
+      toScreen: 'EntityList',
       navMethod: 'push',
-      toScreen: 'TagScreen',
       toScreenParams: {
-        tagName: 'TRAVEL__TRANSPORT'
-      }
-    },
-    {
-      name: 'travel.activities',
-      navMethod: 'push',
-      toScreen: 'TagScreen',
-      toScreenParams: {
-        tagName: 'TRAVEL__ACTIVITY'
-      }
-    },
-    {
-      name: 'travel.accommodation',
-      navMethod: 'push',
-      toScreen: 'TagScreen',
-      toScreenParams: {
-        tagName: 'TRAVEL__ACCOMMODATION'
+        entityTypes: ['TravelPlan'],
+        entityTypeName: 'travel-plans'
       }
     },
     {
