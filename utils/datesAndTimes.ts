@@ -8,7 +8,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const getTimeInTimezone = (datetime: string, tz: string) => {
-  return new Date(datetime).toLocaleString('en-GB', {
+  return new Date(datetime).toLocaleString('en-US', {
     timeZone: tz
   });
 };

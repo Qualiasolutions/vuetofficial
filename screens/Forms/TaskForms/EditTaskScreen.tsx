@@ -129,6 +129,7 @@ export default function EditTaskScreen({
           oldTask.start_datetime,
           oldTask.start_timezone
         );
+
         oldTask.start_datetime = newStart;
       }
       if (oldTask.end_timezone && oldTask.end_datetime) {
