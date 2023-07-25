@@ -6,7 +6,8 @@ import {
   DateTimeField,
   Field,
   FormFieldTypes,
-  MultiRecurrenceSelectorField
+  MultiRecurrenceSelectorField,
+  OptionalYearDate
 } from '../formFieldTypes';
 import utc from 'dayjs/plugin/utc';
 
@@ -52,7 +53,9 @@ const createInitialObject = (
         continue;
 
       case 'Date':
-      case 'OptionalYearDate':
+      case 'OptionalYearDate': {
+        const f = formFields[key] as OptionalYearDate;
+
         if (formFields[key].initialValue) {
           const parsedDate = new Date(formFields[key].initialValue || '');
           // Date fields should be the same in all timezones
@@ -66,7 +69,16 @@ const createInitialObject = (
         } else {
           initialObj[key] = null;
         }
+
+        if (
+          f.knownYearField &&
+          initialOverrides &&
+          initialOverrides[f.knownYearField]
+        ) {
+          initialObj[f.knownYearField] = true;
+        }
         continue;
+      }
 
       case 'DateTime': {
         const f = formFields[key] as DateTimeField;

@@ -394,7 +394,10 @@ export default function TypedForm({
                         [field]: newValue
                       });
                     }}
-                    textInputStyle={textInputStyle}
+                    textInputStyle={StyleSheet.flatten([
+                      textInputStyle,
+                      { minWidth: 0 }
+                    ])}
                   />
                 </InputPair>
               );

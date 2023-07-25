@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
   },
   textInputWrapper: {
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
+    padding: 3
   },
   textInput: {
     marginRight: 10,

@@ -10,7 +10,8 @@ import {
   useTaskBottomFieldTypes,
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes,
-  useAccommodationFieldTypes
+  useAccommodationFieldTypes,
+  useAnniversaryFieldTypes
 } from 'components/forms/taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -38,6 +39,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import {
   isAccommodationTaskType,
+  isAnniversaryTaskType,
   isTransportTaskType
 } from 'constants/TaskTypes';
 import { getTimeInTimezone } from 'utils/datesAndTimes';
@@ -98,6 +100,9 @@ export default function EditTaskScreen({
   const [accommodationFieldValues, setAccommodationFieldValues] =
     useState<FieldValueTypes>({});
 
+  const [anniversaryFieldValues, setAnniversaryFieldValues] =
+    useState<FieldValueTypes>({});
+
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = useTaskTopFieldTypes(true, taskToEdit?.hidden_tag);
@@ -121,9 +126,15 @@ export default function EditTaskScreen({
     taskType && isAccommodationTaskType(taskType) ? taskType : 'HOTEL'
   );
 
+  const anniversaryFields = useAnniversaryFieldTypes(
+    taskType && isAnniversaryTaskType(taskType) ? taskType : 'BIRTHDAY',
+    true
+  );
+
   useEffect(() => {
     if (allTasks && userDetails) {
       const oldTask = { ...allTasks.byId[route.params.taskId] };
+
       if (oldTask.start_timezone && oldTask.start_datetime) {
         const newStart = getTimeInTimezone(
           oldTask.start_datetime,
@@ -195,6 +206,13 @@ export default function EditTaskScreen({
         );
         setAccommodationFieldValues(initialAccommodationFields);
 
+        const initialAnniversaryFields = createInitialObject(
+          anniversaryFields,
+          userDetails,
+          newTaskToEdit
+        );
+        setAnniversaryFieldValues(initialAnniversaryFields);
+
         setResetState(() => () => {
           setTaskTopFieldValues(initialTopFields);
           setTaskMiddleFieldValues(initialMiddleFields);
@@ -202,6 +220,7 @@ export default function EditTaskScreen({
           setDueDateFieldValues(initialDueDateFields);
           setFlightFieldValues(initialFlightFields);
           setAccommodationFieldValues(initialAccommodationFields);
+          setAnniversaryFieldValues(initialAnniversaryFields);
         });
       }
     }
@@ -214,7 +233,8 @@ export default function EditTaskScreen({
     taskTopFields,
     dueDateFields,
     flightFields,
-    accommodationFields
+    accommodationFields,
+    anniversaryFields
   ]);
 
   useEntityHeader(0, false, t('pageTitles.editTask'));
@@ -243,6 +263,8 @@ export default function EditTaskScreen({
       return hasAllRequired(flightFieldValues, flightFields);
     } else if (isAccommodationTaskType(taskToEdit.type)) {
       return hasAllRequired(accommodationFieldValues, accommodationFields);
+    } else if (isAnniversaryTaskType(taskToEdit.type)) {
+      return hasAllRequired(anniversaryFieldValues, anniversaryFields);
     } else {
       return false;
     }
@@ -259,7 +281,9 @@ export default function EditTaskScreen({
     flightFields,
     flightFieldValues,
     accommodationFields,
-    accommodationFieldValues
+    accommodationFieldValues,
+    anniversaryFields,
+    anniversaryFieldValues
   ]);
 
   useEffect(() => {
@@ -377,6 +401,26 @@ export default function EditTaskScreen({
         }
 
         updateTask(body);
+      } else if (isAnniversaryTaskType(taskToEdit.type)) {
+        const parsedAnniversaryFieldValues = parseFormValues(
+          anniversaryFieldValues,
+          anniversaryFields
+        );
+
+        const body = {
+          ...parsedAnniversaryFieldValues,
+          resourcetype: (taskToEdit.type === 'ANNIVERSARY'
+            ? 'AnniversaryTask'
+            : 'BirthdayTask') as 'AnniversaryTask' | 'BirthdayTask',
+          id: taskToEdit.id,
+          type: taskToEdit.type
+        };
+
+        if (Object.keys(body as any).includes('recurrence')) {
+          delete (body as any).recurrence;
+        }
+
+        updateTask(body);
       }
     }
   };
@@ -475,6 +519,22 @@ export default function EditTaskScreen({
           formValues={accommodationFieldValues}
           onFormValuesChange={(values: FieldValueTypes) => {
             setAccommodationFieldValues(values);
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+        />
+      </TransparentView>
+    );
+  }
+
+  if (isAnniversaryTaskType(taskToEdit.type)) {
+    formFields = (
+      <TransparentView>
+        <TypedForm
+          fields={anniversaryFields}
+          formValues={anniversaryFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setAnniversaryFieldValues(values);
           }}
           inlineFields={true}
           fieldColor={fieldColor}

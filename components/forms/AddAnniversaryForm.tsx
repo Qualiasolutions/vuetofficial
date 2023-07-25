@@ -1,10 +1,7 @@
 import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
-import {
-  useAccommodationFieldTypes,
-  useTransportFieldTypes
-} from './taskFormFieldTypes';
+import { useAnniversaryFieldTypes } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -27,11 +24,12 @@ import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
+import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import { AnniversaryTaskType } from 'types/tasks';
 import DropDown from './components/DropDown';
 import { elevation } from 'styles/elevation';
-import { AccommodationTaskType } from 'types/tasks';
 
 const styles = StyleSheet.create({
   container: {
@@ -44,14 +42,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   spinner: { marginTop: 20 },
+  hidden: { display: 'none' },
   typeSelectorSection: { marginBottom: 50 }
 });
 
-type AddTransportTaskFormProps = {
+type AddAnniversaryFormProps = {
   defaults: {
     title: string;
-    start_datetime: Date;
-    end_datetime: Date;
+    date: string;
     entities: number[];
     tags: string[];
   };
@@ -61,16 +59,16 @@ type AddTransportTaskFormProps = {
   taskId?: number;
 };
 
-export default function AddAccommodationTaskForm({
+export default function AddAnniversaryForm({
   defaults,
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
   taskId
-}: AddTransportTaskFormProps) {
+}: AddAnniversaryFormProps) {
   const { t } = useTranslation();
+  const [type, setType] = useState<AnniversaryTaskType>('BIRTHDAY');
   const { data: userDetails } = useGetUserDetails();
-  const [type, setType] = useState<AccommodationTaskType>('HOTEL');
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
@@ -88,73 +86,73 @@ export default function AddAccommodationTaskForm({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [accommodationFieldValues, setAccommodationFieldValues] =
+  const [anniversaryFieldValues, setAnniversaryFieldValues] =
     useState<FieldValueTypes>({});
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const accommodationFields = useAccommodationFieldTypes(type);
+  const anniversaryFields = useAnniversaryFieldTypes(type, false);
 
-  const initialAccommodationFields = useMemo(() => {
+  const initialAnniversaryFields = useMemo(() => {
     if (!userDetails) {
       return null;
     }
 
-    const startTimeProp = defaults.start_datetime;
-    const endTimeProp = defaults.end_datetime;
-    const defaultStartTime = startTimeProp
-      ? new Date(startTimeProp)
-      : new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const defaultDueDate =
+      defaults?.date || dayjs(nextWeek).format('YYYY-MM-DD');
 
-    defaultStartTime.setMinutes(0);
-    defaultStartTime.setSeconds(0);
-    defaultStartTime.setMilliseconds(0);
+    const defaultRecurrence = {
+      earliest_occurrence: defaultDueDate,
+      latest_occurrence: null,
+      interval_length: 1,
+      recurrence: 'YEARLY'
+    };
 
-    let defaultEndTime = endTimeProp
-      ? new Date(endTimeProp)
-      : new Date(defaultStartTime);
-    defaultEndTime.setHours(defaultStartTime.getHours() + 1);
-
-    return createInitialObject(accommodationFields, userDetails, {
-      start_datetime: defaultStartTime,
-      end_datetime: defaultEndTime,
+    return createInitialObject(anniversaryFields, userDetails, {
+      date: defaultDueDate,
       title: defaults?.title || '',
+      duration: 15,
       tagsAndEntities: {
         entities: defaults?.entities || [],
         tags: defaults?.tags || []
-      }
+      },
+      recurrence: defaultRecurrence
     });
-  }, [accommodationFields, userDetails, defaults]);
+  }, [anniversaryFields, userDetails, defaults]);
 
   useEffect(() => {
     if (userDetails) {
-      if (initialAccommodationFields) {
-        setAccommodationFieldValues(initialAccommodationFields);
+      if (initialAnniversaryFields) {
+        setAnniversaryFieldValues(initialAnniversaryFields);
       }
 
-      if (initialAccommodationFields) {
+      if (initialAnniversaryFields) {
         setResetState(() => () => {
-          setAccommodationFieldValues(initialAccommodationFields);
+          setAnniversaryFieldValues(initialAnniversaryFields);
         });
       }
 
       setLoadedFields(true);
     }
-  }, [initialAccommodationFields, userDetails, accommodationFields]);
+  }, [initialAnniversaryFields, userDetails, anniversaryFields]);
 
   const hasRequired = useMemo(() => {
-    return hasAllRequired(accommodationFieldValues, accommodationFields);
-  }, [accommodationFields, accommodationFieldValues]);
+    return hasAllRequired(anniversaryFieldValues, anniversaryFields);
+  }, [anniversaryFields, anniversaryFieldValues]);
 
   const submitForm = async () => {
-    const parsedTransportTaskFieldValues = parseFormValues(
-      accommodationFieldValues,
-      accommodationFields
+    const parsedDueDateFieldValues = parseFormValues(
+      anniversaryFieldValues,
+      anniversaryFields
     );
     const parsedFieldValues: any = {
-      ...parsedTransportTaskFieldValues,
+      ...parsedDueDateFieldValues,
+      end_date: parsedDueDateFieldValues.start_date,
       type,
-      resourcetype: 'AccommodationTask'
+      resourcetype: type === 'ANNIVERSARY' ? 'AnniversaryTask' : 'BirthdayTask',
+      duration: 15
     };
 
     try {
@@ -194,19 +192,19 @@ export default function AddAccommodationTaskForm({
     }
   };
 
-  const accommodationTypedForm = useMemo(
+  const anniversaryTypedForm = useMemo(
     () => (
       <TypedForm
-        fields={accommodationFields}
-        formValues={accommodationFieldValues}
+        fields={anniversaryFields}
+        formValues={anniversaryFieldValues}
         onFormValuesChange={(values: FieldValueTypes) => {
-          setAccommodationFieldValues(values);
+          setAnniversaryFieldValues(values);
         }}
         inlineFields={true}
         fieldColor={fieldColor}
       />
     ),
-    [accommodationFields, accommodationFieldValues, fieldColor]
+    [anniversaryFields, anniversaryFieldValues, fieldColor]
   );
 
   if (!(userDetails && loadedFields)) {
@@ -220,19 +218,19 @@ export default function AddAccommodationTaskForm({
           value={type}
           items={[
             {
-              value: 'HOTEL',
-              label: 'Hotel'
+              value: 'BIRTHDAY',
+              label: 'Birthday'
             },
             {
-              value: 'STAY_WITH_FRIEND',
-              label: 'Stay With Friend'
+              value: 'ANNIVERSARY',
+              label: 'Anniversary'
             }
           ]}
           setFormValues={setType}
           listMode="MODAL"
         />
       </WhitePaddedView>
-      {accommodationTypedForm}
+      {anniversaryTypedForm}
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
       ) : (

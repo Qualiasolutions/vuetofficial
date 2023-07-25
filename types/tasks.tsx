@@ -25,7 +25,12 @@ interface Reminder {
 }
 
 type ScheduledTaskResourceType = 'FixedTask' | 'TaskAction';
-type TaskResourceType = 'FixedTask' | 'TransportTask' | 'AccommodationTask';
+type TaskResourceType =
+  | 'FixedTask'
+  | 'TransportTask'
+  | 'AccommodationTask'
+  | 'AnniversaryTask'
+  | 'BirthdayTask';
 type ScheduledTaskType = 'TASK' | 'ACTION';
 type TransportTaskType =
   | 'FLIGHT'
@@ -36,13 +41,15 @@ type TransportTaskType =
 
 type AccommodationTaskType = 'HOTEL' | 'STAY_WITH_FRIEND';
 type ActivityTaskType = 'ACTIVITY' | 'OTHER_ACTIVITY' | 'FOOD_ACTIVITY';
+type AnniversaryTaskType = 'ANNIVERSARY' | 'BIRTHDAY';
 type TaskType =
   | 'TASK'
   | 'APPOINTMENT'
   | 'DUE_DATE'
   | ActivityTaskType
   | TransportTaskType
-  | AccommodationTaskType;
+  | AccommodationTaskType
+  | AnniversaryTaskType;
 
 interface BaseTaskType {
   entities: number[];
@@ -149,6 +156,7 @@ type HiddenTagType =
 export {
   TransportTaskType,
   AccommodationTaskType,
+  AnniversaryTaskType,
   TaskType,
   ScheduledTaskResourceType,
   ScheduledTaskType,

@@ -19,6 +19,7 @@ import AddDueDateForm from 'components/forms/AddDueDateForm';
 import AddTaskForm from 'components/forms/AddTaskForm';
 import AddTransportTaskForm from 'components/forms/AddTransportTaskForm';
 import AddAccommodationTaskForm from 'components/forms/AddAccommodationTaskForm';
+import AddAnniversaryForm from 'components/forms/AddAnniversaryForm';
 
 const formTypes = [
   {
@@ -56,6 +57,12 @@ const formTypes = [
       id: 'ACCOMMODATION'
     },
     label: 'Staying Overnight'
+  },
+  {
+    value: {
+      id: 'ANNIVERSARY'
+    },
+    label: 'Birthday / Anniversary'
   }
 ];
 
@@ -79,7 +86,8 @@ type FormType =
   | 'DUE_DATE'
   | 'ACTIVITY'
   | 'TRANSPORT'
-  | 'ACCOMMODATION';
+  | 'ACCOMMODATION'
+  | 'ANNIVERSARY';
 
 export default function AddTaskScreen({
   route,
@@ -99,7 +107,8 @@ export default function AddTaskScreen({
     ACTIVITY: 'Add Activity',
     DUE_DATE: 'Add Due Date',
     TRANSPORT: 'Add Transport',
-    ACCOMMODATION: 'Add Accommodation'
+    ACCOMMODATION: 'Add Accommodation',
+    ANNIVERSARY: 'Add Birthday / Anniversary'
   }[formType];
 
   useColouredHeader(headerBackgroundColor, headerTintColor, headerTitle);
@@ -212,6 +221,12 @@ export default function AddTaskScreen({
                   ? formType
                   : 'TASK'
               }
+              defaults={taskDefaults}
+              onSuccess={() => navigation.goBack()}
+            />
+          </TransparentView>
+          <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
+            <AddAnniversaryForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />

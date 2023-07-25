@@ -24,7 +24,11 @@ import {
   selectScheduledTask
 } from 'reduxStore/slices/tasks/selectors';
 import dayjs from 'dayjs';
-import { ScheduledTaskResponseType, ScheduledTaskType } from 'types/tasks';
+import {
+  ScheduledTaskResponseType,
+  ScheduledTaskType,
+  TaskType
+} from 'types/tasks';
 import SafePressable from 'components/molecules/SafePressable';
 import {
   selectCurrentUserId,
@@ -150,10 +154,12 @@ type PropTypes = {
 
 const TimeText = ({
   scheduledTask,
-  date
+  date,
+  type
 }: {
   scheduledTask?: ScheduledTaskResponseType;
   date: string;
+  type?: TaskType;
 }) => {
   /*
     If scheduledTask is undefined then this is an entity
@@ -163,6 +169,8 @@ const TimeText = ({
 
   let textContent = null;
   if (!scheduledTask) {
+    textContent = <Text>{t('common.allDay')}</Text>;
+  } else if (type && ['BIRTHDAY', 'ANNIVERSARY'].includes(type)) {
     textContent = <Text>{t('common.allDay')}</Text>;
   } else if (scheduledTask.start_date && scheduledTask.end_date) {
     textContent = <Text>{t('common.allDay')}</Text>;
@@ -240,43 +248,30 @@ const TaskIcon = ({
 }) => {
   const task = useSelector(selectTaskById(scheduledTask.id));
 
-  let icon = '';
-  if (task?.type === 'FLIGHT') {
-    icon = '✈️ ';
-  }
-  if (task?.type === 'TRAIN') {
-    icon = '🚟 ';
-  }
-  if (task?.type === 'RENTAL_CAR') {
-    icon = '🚙 ';
-  }
-  if (task?.type === 'TAXI') {
-    icon = '🚖 ';
-  }
-  if (task?.type === 'DRIVE_TIME') {
-    icon = '🚗 ';
-  }
-  if (task?.type === 'HOTEL') {
-    icon = '🏨 ';
-  }
-  if (task?.type === 'STAY_WITH_FRIEND') {
-    icon = '🏠 ';
-  }
-  if (task?.type === 'ACTIVITY') {
-    icon = '🎯 ';
-  }
-  if (task?.type === 'OTHER_ACTIVITY') {
-    icon = '🎯 ';
-  }
-  if (task?.type === 'FOOD_ACTIVITY') {
-    icon = '🍲 ';
-  }
+  const iconMappings: {
+    [key in TaskType]?: string;
+  } = {
+    FLIGHT: '✈️',
+    TRAIN: '🚟',
+    RENTAL_CAR: '🚙',
+    TAXI: '🚖',
+    DRIVE_TIME: '🚗',
+    HOTEL: '🏨',
+    STAY_WITH_FRIEND: '🏠',
+    ACTIVITY: '🎯',
+    OTHER_ACTIVITY: '🎯',
+    FOOD_ACTIVITY: '🍲',
+    BIRTHDAY: '🎂',
+    ANNIVERSARY: '🍾'
+  };
 
-  return (
+  const icon = (task?.type && iconMappings[task.type]) || '';
+
+  return icon ? (
     <TransparentView>
-      <Text>{icon}</Text>
+      <Text>{`${icon} `}</Text>
     </TransparentView>
-  );
+  ) : null;
 };
 
 function Task({
@@ -440,6 +435,7 @@ function Task({
               <TimeText
                 scheduledTask={isEntity ? undefined : scheduledTask}
                 date={date}
+                type={task?.type}
               />
               <TransparentView style={styles.titleContainer}>
                 <TransparentScrollView
@@ -469,9 +465,13 @@ function Task({
                 </TransparentScrollView>
                 {!isEntity &&
                   task &&
-                  ['FixedTask', 'TransportTask', 'AccommodationTask'].includes(
-                    task.resourcetype
-                  ) &&
+                  [
+                    'FixedTask',
+                    'TransportTask',
+                    'AccommodationTask',
+                    'BirthdayTask',
+                    'AnniversaryTask'
+                  ].includes(task.resourcetype) &&
                   hasEditPerms && (
                     <SafePressable
                       onPress={() => {

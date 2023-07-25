@@ -49,6 +49,15 @@
     "accommodationTask": {
       "hotelName": "Hotel Name",
       "friendName": "Friend Name"
+    },
+    "birthdayTask": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "dateOfBirth": "Date of Birth"
+    },
+    "anniversaryTask": {
+      "name": "Name",
+      "start": "Start Date"
     }
   },
   "entities": {

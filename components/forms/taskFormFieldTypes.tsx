@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
-import { AccommodationTaskType, TransportTaskType } from 'types/tasks';
+import {
+  AccommodationTaskType,
+  AnniversaryTaskType,
+  TransportTaskType
+} from 'types/tasks';
 
 export const useTaskTopFieldTypes = (
   isEdit: boolean = false,
@@ -619,4 +623,81 @@ export const useAccommodationFieldTypes = (
       }
     };
   }, [userFullDetails, t, type]);
+};
+
+export const useAnniversaryFieldTypes = (
+  type: AnniversaryTaskType,
+  disabledRecurrenceFields: boolean = false
+): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const { data: userFullDetails } = useGetUserDetails();
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        required: true,
+        hidden: type === 'BIRTHDAY',
+        displayName: t('tasks.anniversaryTask.name')
+      },
+      first_name: {
+        type: 'string',
+        required: true,
+        hidden: type !== 'BIRTHDAY',
+        displayName: t('tasks.birthdayTask.firstName')
+      },
+      last_name: {
+        type: 'string',
+        required: false,
+        hidden: type !== 'BIRTHDAY',
+        displayName: t('tasks.birthdayTask.lastName')
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
+      },
+      date: {
+        type: 'OptionalYearDate',
+        required: true,
+        displayName:
+          type === 'BIRTHDAY'
+            ? t('tasks.birthdayTask.dateOfBirth')
+            : t('tasks.anniversaryTask.start'),
+        knownYearField: 'known_year'
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields
+      },
+      reminders: {
+        type: 'reminderSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      }
+    };
+  }, [userFullDetails, t, disabledRecurrenceFields, type]);
 };
