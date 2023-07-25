@@ -198,7 +198,9 @@ export default function TypedForm({
 }) {
   const { t } = useTranslation();
 
-  const fieldSections = Array.isArray(fields) ? fields : [fields];
+  const fieldSections = useMemo(() => {
+    return Array.isArray(fields) ? fields : [fields];
+  }, [fields]);
 
   const flatFields = useMemo(() => {
     return Array.isArray(fields)
