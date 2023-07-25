@@ -157,8 +157,6 @@ export default function EditTaskScreen({
           userDetails,
           newTaskToEdit
         );
-        console.log('initialTopFields');
-        console.log(initialTopFields);
         setTaskTopFieldValues(initialTopFields);
 
         const initialMiddleFields = createInitialObject(
@@ -320,9 +318,6 @@ export default function EditTaskScreen({
           id: taskToEdit.id
         };
 
-        console.log('#######################');
-        console.log('body');
-        console.log(body);
         if (
           taskToEdit.recurrence &&
           Object.keys(body as any).includes('recurrence')

@@ -291,7 +291,6 @@ export default function MemberSelector({
                               const res = await getMinimalDetails(
                                 newExternalNumber
                               ).unwrap();
-                              console.log(values);
                               if (!values.includes(res.id)) {
                                 onValueChange([...values, res.id]);
                               }
