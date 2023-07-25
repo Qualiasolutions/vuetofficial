@@ -49,7 +49,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
     } else {
       if (firstInviteForUser) {
         navigatorComponent = <FamilyRequestNavigator />;
-      } else if (!userFullDetails?.has_done_setup) {
+      } else if (userFullDetails && !userFullDetails.has_done_setup) {
         if (!hasJustSignedUp) {
           setHasJustSignedUp(true);
         }
