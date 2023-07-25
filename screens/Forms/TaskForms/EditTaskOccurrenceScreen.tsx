@@ -63,4 +63,6 @@ export default function EditTaskOccurrenceScreen({
       </TransparentFullPageScrollView>
     );
   }
+
+  return null;
 }

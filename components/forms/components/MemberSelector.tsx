@@ -19,7 +19,6 @@ import { TransparentScrollView } from 'components/molecules/ScrollViewComponents
 import { Feather } from '@expo/vector-icons';
 import {
   useGetUserMinimalDetailsFromIdQuery,
-  useGetUserMinimalDetailsQuery,
   useLazyGetUserMinimalDetailsQuery
 } from 'reduxStore/services/api/user';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -180,24 +179,25 @@ export default function MemberSelector({
       });
   }, [values]);
 
+  const externalMembers = useMemo(() => {
+    return values.filter(
+      (memberId) => !allMembers.map((member) => member.id).includes(memberId)
+    );
+  }, [values, allMembers]);
+
   const externalMembersList = useMemo(() => {
     return (
       <TransparentView style={styles.externalMembersList}>
-        {values
-          .filter(
-            (memberId) =>
-              !allMembers.map((member) => member.id).includes(memberId)
-          )
-          .map((memberId: number, i: number) => {
-            return (
-              <TransparentView key={i} style={styles.selectedMemberListing}>
-                <ExternalListing memberId={memberId} />
-              </TransparentView>
-            );
-          })}
+        {externalMembers.map((memberId: number, i: number) => {
+          return (
+            <TransparentView key={i} style={styles.selectedMemberListing}>
+              <ExternalListing memberId={memberId} />
+            </TransparentView>
+          );
+        })}
       </TransparentView>
     );
-  }, [values, allMembers]);
+  }, [externalMembers]);
 
   useEffect(() => {
     if (showMembersList) bottomSheetRef?.current?.open();
@@ -207,7 +207,7 @@ export default function MemberSelector({
   return (
     <TransparentView>
       {selectedMembersList}
-      {externalMembersList}
+      {externalMembers.length > 0 && externalMembersList}
       <SafePressable
         onPress={() => setShowMembersList(true)}
         style={styles.addMemberButton}

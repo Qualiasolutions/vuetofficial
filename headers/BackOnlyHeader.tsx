@@ -1,16 +1,15 @@
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { StyleSheet } from 'react-native';
 import { HeaderBackButton } from '@react-navigation/elements';
 
 const styles = StyleSheet.create({
   container: {
-    height: 30,
     padding: 0,
     paddingLeft: 20,
-    marginBottom: 30
+    paddingTop: 30,
+    marginBottom: 20
   }
 });
 export default function BackOnlyHeader(
@@ -35,22 +34,17 @@ export default function BackOnlyHeader(
 export function BackOnlyHeaderWithSafeArea(
   props: NativeStackHeaderProps | BottomTabHeaderProps
 ) {
+  // This causes the error
+  // "Warning: React has detected a change in the order of Hooks called by BottomTabView"
+  // const insets = useSafeAreaInsets();
   const navigationState = props.navigation.getState();
-  const insets = useSafeAreaInsets();
 
   if (navigationState.index === 0) {
     return null;
   }
 
   return (
-    <TransparentView
-      style={[
-        styles.container,
-        {
-          paddingTop: insets.top + 5
-        }
-      ]}
-    >
+    <TransparentView style={styles.container}>
       <HeaderBackButton
         tintColor={props.options.headerTintColor}
         onPress={props.navigation.goBack}
