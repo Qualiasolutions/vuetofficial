@@ -2,13 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
 import ListLink from 'components/molecules/ListLink';
-import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import linkMapping from 'components/entityCards';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
 import {
   TransparentPaddedView,
-  TransparentView,
-  WhiteView
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';

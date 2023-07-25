@@ -106,6 +106,8 @@
     },
     "social": {
       "anniversaries": "Birthdays & Anniversaries",
+      "anniversaryDates": "Birthday & Anniversary Dates",
+      "anniversaryPlans": "Birthday & Anniversary Plans",
       "nationalHolidays": "Holidays I Celebrate",
       "events": "Celebration / Event Planning",
       "socialPlans": "My Social Plans",
@@ -197,6 +199,8 @@
     "holidays": "Holidays",
     "schools": "Schools",
     "academic-plans": "Academic Plans",
+    "anniversary-plans": "Birthday and Anniversary Plans",
+    "anniversary-dates": "Birthday and Anniversary Dates",
     "extracurricular-plans": "Extracurricular Plans",
     "career-goals": "Career Planning & Goals",
     "homes": "Homes",
@@ -304,7 +308,8 @@
     "HealthBeauty": "Health / Beauty",
     "Finance": "Finance",
     "Patient": "Patient",
-    "Appointment": "Appointment"
+    "Appointment": "Appointment",
+    "AnniversaryPlan": "Birthday / Anniversary Plan"
   },
   "filters": {
     "userFilters": "User filters",

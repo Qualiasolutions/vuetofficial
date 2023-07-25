@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
 
 type AddTaskScreenProps = RootTabScreenProps<'AddTask'>;
 
-type FormType =
+export type FormType =
   | 'TASK'
   | 'APPOINTMENT'
   | 'DUE_DATE'

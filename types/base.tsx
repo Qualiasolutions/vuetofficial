@@ -9,8 +9,7 @@ import {
   NavigatorScreenParams
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AddTaskFormType } from 'screens/Forms/TaskForms/AddTaskScreen';
-import { CategoryName } from './categories';
+import { FormType } from 'screens/Forms/TaskForms/AddTaskScreen';
 import { EntityTypeName } from './entities';
 
 declare global {
@@ -154,6 +153,7 @@ export type ContentTabParamList = {
   CategoryList: { categoryId: number };
   SubCategoryList: { categoryIds: number[] };
   BlockedDaysSettings: { categoryId: number };
+  AnniversaryDates: undefined;
   EntityList: {
     entityTypes: EntityTypeName[];
     entityTypeName: string;
@@ -215,7 +215,7 @@ export type RootTabParamList = {
   AddTask: {
     entities?: number[];
     tags?: string[];
-    type?: AddTaskFormType;
+    type?: FormType;
     title?: string;
     date?: string;
   };

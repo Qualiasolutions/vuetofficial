@@ -1,8 +1,30 @@
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { useThemeColor, View } from 'components/Themed';
-import { ImageBackground, ImageSourcePropType, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import {
+  ImageBackground,
+  ImageSourcePropType,
+  StyleSheet,
+  TextStyle,
+  ViewStyle
+} from 'react-native';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'space-between',
+    width: '100%',
+    height: '100%',
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  sideSections: {
+    width: 100,
+    backgroundColor: 'transparent'
+  }
+});
 
 export const headerWithBackgroundColor = (
   backgroundColor: string,
@@ -43,8 +65,8 @@ export const headerWithBackground = (
   backgroundImage: ImageSourcePropType,
   height: number = 150,
   customStyles?: {
-    header?: TextStyle,
-    overlay?: (overlayColour: string) => ViewStyle
+    header?: TextStyle;
+    overlay?: (overlayColour: string) => ViewStyle;
   }
 ) => {
   return (props: NativeStackHeaderProps) => {
@@ -63,13 +85,21 @@ export const headerWithBackground = (
           source={backgroundImage}
         >
           <View
-            style={[styles.overlay, { backgroundColor: `${overlayColor}99` }, (customStyles?.overlay && customStyles?.overlay(overlayColor)) || {}]}
+            style={[
+              styles.overlay,
+              { backgroundColor: `${overlayColor}99` },
+              (customStyles?.overlay && customStyles?.overlay(overlayColor)) ||
+                {}
+            ]}
           >
             <HeaderBackButton
               tintColor={props.options.headerTintColor}
               onPress={props.navigation.goBack}
             />
-            <HeaderTitle tintColor={props.options.headerTintColor} style={customStyles?.header || {}}>
+            <HeaderTitle
+              tintColor={props.options.headerTintColor}
+              style={customStyles?.header || {}}
+            >
               {props.options.title}
             </HeaderTitle>
             <View style={styles.sideSections}>
@@ -82,21 +112,14 @@ export const headerWithBackground = (
   };
 };
 
-export const entityTypeHeader = (
-  backgroundImage: ImageSourcePropType,
-) => headerWithBackground(
-  backgroundImage,
-  150,
-  { header: { fontSize: 22 }, overlay: (overlayColor) => ({ backgroundColor: `${overlayColor}dd` }) }
-)
+export const entityTypeHeader = (backgroundImage: ImageSourcePropType) =>
+  headerWithBackground(backgroundImage, 150, {
+    header: { fontSize: 22 },
+    overlay: (overlayColor) => ({ backgroundColor: `${overlayColor}dd` })
+  });
 
-export const categoryHeader = (
-  backgroundImage: ImageSourcePropType,
-) => headerWithBackground(
-  backgroundImage,
-  150,
-  { header: { fontSize: 28 } }
-)
+export const categoryHeader = (backgroundImage: ImageSourcePropType) =>
+  headerWithBackground(backgroundImage, 150, { header: { fontSize: 28 } });
 
 // TODO - set correct images
 export const headerMapping = {
@@ -108,7 +131,7 @@ export const headerMapping = {
   },
   entityTypes: {
     cars: entityTypeHeader(
-      require('assets/images/header-backgrounds/cars.png'),
+      require('assets/images/header-backgrounds/cars.png')
     ),
     boats: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
@@ -215,28 +238,28 @@ export const headerMapping = {
       { header: { fontSize: 28 } }
     ),
     PETS: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     SOCIAL_INTERESTS: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     EDUCATION_CAREER: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     TRAVEL: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     HEALTH_BEAUTY: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     HOME_GARDEN: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     FINANCE: categoryHeader(
-      require('assets/images/header-backgrounds/holidays.png'),
+      require('assets/images/header-backgrounds/holidays.png')
     ),
     TRANSPORT: categoryHeader(
-      require('assets/images/header-backgrounds/cars.png'),
+      require('assets/images/header-backgrounds/cars.png')
     ),
     default: headerWithBackgroundColor('#444444')
   }
@@ -245,19 +268,3 @@ export const headerMapping = {
   entityTypes: { [key: string]: React.ElementType | undefined };
   categories: { [key: string]: React.ElementType | undefined };
 };
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'space-between',
-    width: '100%',
-    height: '100%',
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  sideSections: {
-    width: 100,
-    backgroundColor: 'transparent'
-  }
-});

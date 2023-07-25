@@ -2,6 +2,7 @@ import { ListEntryResponse } from './lists';
 
 export type EntityTypeName =
   | 'Anniversary'
+  | 'AnniversaryPlan'
   | 'Car'
   | 'CareerGoal'
   | 'Clothing'

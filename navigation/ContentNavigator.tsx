@@ -21,6 +21,7 @@ import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
 import BlockedDaysSettingsScreen from 'screens/Categories/BlockedDaySettingsScreen';
 import TagScreen from 'screens/EntityPages/TagScreen';
 import AllReferencesScreen from 'screens/AllReferencesScreen';
+import AnniversaryDatesScreen from 'screens/EntityPages/AnniversaryDatesScreen';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
@@ -47,6 +48,13 @@ export function ContentNavigator() {
       <ContentStack.Screen
         name="EntityList"
         component={EntityListScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <ContentStack.Screen
+        name="AnniversaryDates"
+        component={AnniversaryDatesScreen}
         options={{
           headerShown: true
         }}

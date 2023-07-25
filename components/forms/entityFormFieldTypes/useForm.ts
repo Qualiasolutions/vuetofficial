@@ -41,6 +41,7 @@ import { studentForm } from './formFields/student';
 import { employeeForm } from './formFields/employee';
 import { gardenForm } from './formFields/garden';
 import { travelPlanForm } from './formFields/travel-plan';
+import { anniversaryPlanForm } from './formFields/anniversary-plan';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -205,6 +206,10 @@ export default function useForm(
 
     if (entityType === 'TravelPlan') {
       return travelPlanForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'AnniversaryPlan') {
+      return anniversaryPlanForm(isEdit, userFullDetails, t);
     }
 
     return {};

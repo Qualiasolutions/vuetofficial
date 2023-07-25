@@ -231,7 +231,13 @@ export const useTaskMiddleFieldTypes = (
         displayName: t('tasks.task.tags')
       }
     };
-  }, [t, disabledRecurrenceFields, disableFlexible, allRoutines]);
+  }, [
+    t,
+    disabledRecurrenceFields,
+    disableFlexible,
+    allRoutines,
+    allowRecurrence
+  ]);
 };
 
 export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {

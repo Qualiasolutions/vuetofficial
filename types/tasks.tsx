@@ -79,6 +79,15 @@ interface BaseTaskType {
 }
 
 interface FixedTaskResponseType extends BaseTaskType {}
+interface AnniversaryTaskResponseType extends FixedTaskResponseType {
+  known_year: boolean;
+}
+
+const isAnniversaryTask = (
+  task: FixedTaskResponseType
+): task is AnniversaryTaskResponseType => {
+  return Object.keys(task).includes('known_year');
+};
 
 interface ScheduledTaskResponseType {
   id: number;
@@ -164,11 +173,13 @@ export {
   Recurrence,
   Reminder,
   FixedTaskResponseType,
+  AnniversaryTaskResponseType,
   CreateTaskRequest,
   CreateFixedTaskRequest,
   CreateFlexibleFixedTaskRequest,
   CreateRecurrentTaskOverwriteRequest,
   ScheduledTaskResponseType,
   ScheduledEntityResponseType,
-  HiddenTagType
+  HiddenTagType,
+  isAnniversaryTask
 };

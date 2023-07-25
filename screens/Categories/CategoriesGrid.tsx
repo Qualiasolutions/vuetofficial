@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  ImageSourcePropType
-} from 'react-native';
+import { ImageBackground, StyleSheet, ImageSourcePropType } from 'react-native';
 
 import { Text, useThemeColor, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';

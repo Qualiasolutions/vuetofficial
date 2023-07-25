@@ -7,7 +7,8 @@ import {
   CreateFixedTaskRequest,
   ScheduledTaskResourceType,
   CreateRecurrentTaskOverwriteRequest,
-  ScheduledEntityResponseType
+  ScheduledEntityResponseType,
+  AnniversaryTaskResponseType
 } from 'types/tasks';
 import {
   formatEntitiesPerDate,
@@ -76,7 +77,7 @@ const normalizeScheduledTaskData = ({
 
 const updateQueryDataForNewTask = (
   api: any,
-  newTask: FixedTaskResponseType,
+  newTask: FixedTaskResponseType | AnniversaryTaskResponseType,
   dispatch: ThunkDispatch<any, any, AnyAction>,
   getState: () => RootState<any, any, 'vuetApi'>
 ) => {
