@@ -377,19 +377,24 @@ export const useTransportFieldTypes = (
       carrier: {
         type: 'string',
         required: true,
-        displayName: t('entities.mode-of-transport.carrier')
+        displayName: t('entities.mode-of-transport.carrier'),
+        hidden: type === 'DRIVE_TIME'
       },
       booking_number: {
         type: 'string',
         required: false,
-        displayName:
-          type === 'FLIGHT'
-            ? t('tasks.transportTask.flight_number')
-            : t('tasks.transportTask.booking_number')
+        displayName: t('tasks.transportTask.booking_number'),
+        hidden: type === 'DRIVE_TIME'
+      },
+      flight_number: {
+        type: 'string',
+        required: false,
+        hidden: type !== 'FLIGHT',
+        displayName: t('tasks.transportTask.flight_number')
       },
       start_location: {
         type: 'string',
-        required: true,
+        required: type !== 'DRIVE_TIME',
         displayName:
           type === 'RENTAL_CAR'
             ? t('tasks.transportTask.pickup_location')
@@ -397,7 +402,7 @@ export const useTransportFieldTypes = (
       },
       end_location: {
         type: 'string',
-        required: true,
+        required: type !== 'DRIVE_TIME',
         displayName:
           type === 'RENTAL_CAR'
             ? t('tasks.transportTask.dropoff_location')

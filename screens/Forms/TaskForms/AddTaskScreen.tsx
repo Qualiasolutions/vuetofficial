@@ -17,7 +17,6 @@ import dayjs from 'dayjs';
 import { RootTabScreenProps } from 'types/base';
 import AddDueDateForm from 'components/forms/AddDueDateForm';
 import AddTaskForm from 'components/forms/AddTaskForm';
-import { TaskType } from 'types/tasks';
 import AddTransportTaskForm from 'components/forms/AddTransportTaskForm';
 import AddAccommodationTaskForm from 'components/forms/AddAccommodationTaskForm';
 
@@ -36,27 +35,27 @@ const formTypes = [
   },
   {
     value: {
-      id: 'ACTIVITY'
-    },
-    label: 'Activity / Food'
-  },
-  {
-    value: {
       id: 'DUE_DATE'
     },
     label: 'Due Date'
   },
   {
     value: {
+      id: 'ACTIVITY'
+    },
+    label: 'Going Out'
+  },
+  {
+    value: {
       id: 'TRANSPORT'
     },
-    label: 'Transport'
+    label: 'Getting There'
   },
   {
     value: {
       id: 'ACCOMMODATION'
     },
-    label: 'Accommodation'
+    label: 'Staying Overnight'
   }
 ];
 
