@@ -19,6 +19,7 @@ export type EntityTypeName =
   | 'SocialPlan'
   | 'List'
   | 'Holiday'
+  | 'HolidayPlan'
   | 'Trip'
   | 'TravelPlan'
   | 'Flight'

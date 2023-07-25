@@ -5,8 +5,6 @@ import {
 } from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { headerMapping } from 'headers/utils/headerMappings';
-import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
-import { headerRightMapping } from 'headers/utils/headerRightMapping';
 import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
 
@@ -14,7 +12,7 @@ export default function useCategoryHeader(categoryName: string) {
   const navigation = useNavigation();
   const route = useRoute();
   const { t } = useTranslation();
-  const headerTintColor = useThemeColor({}, "white")
+  const headerTintColor = useThemeColor({}, 'white');
 
   useLayoutEffect(() => {
     if (categoryName) {

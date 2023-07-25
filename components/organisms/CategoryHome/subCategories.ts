@@ -61,23 +61,11 @@ export default {
       navMethod: 'push',
       toScreenParams: { listName: 'anniversaries' }
     },
-    // {
-    //   name: 'social.anniversaries',
-    //   toScreen: 'EntityList',
-    //   navMethod: 'push',
-    //   toScreenParams: {
-    //     entityTypes: ['Birthday', 'Anniversary'],
-    //     entityTypeName: 'anniversaries'
-    //   }
-    // },
     {
       name: 'social.nationalHolidays',
-      toScreen: 'EntityList',
+      toScreen: 'LinkList',
       navMethod: 'push',
-      toScreenParams: {
-        entityTypes: ['Holiday'],
-        entityTypeName: 'holidays'
-      }
+      toScreenParams: { listName: 'holidays' }
     },
     {
       name: 'social.events',

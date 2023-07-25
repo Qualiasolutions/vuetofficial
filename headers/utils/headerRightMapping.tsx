@@ -63,6 +63,14 @@ export const headerRightMapping = {
         </SafePressable>
       );
     },
+    'holiday-dates': ({ route, navigation }) => {
+      const { t } = useTranslation();
+      return (
+        <SafePressable onPress={() => navigation.navigate('HolidayList')}>
+          <WhiteText text={t('misc.editCountryList')} />
+        </SafePressable>
+      );
+    },
     default: () => null
   }
 } as {

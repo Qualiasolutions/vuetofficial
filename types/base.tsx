@@ -154,6 +154,8 @@ export type ContentTabParamList = {
   SubCategoryList: { categoryIds: number[] };
   BlockedDaysSettings: { categoryId: number };
   AnniversaryDates: undefined;
+  HolidayDates: undefined;
+  AddHolidayTask: undefined;
   EntityList: {
     entityTypes: EntityTypeName[];
     entityTypeName: string;

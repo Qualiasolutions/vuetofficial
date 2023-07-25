@@ -19,6 +19,7 @@ const ENTITY_TYPE_TO_CATEGORY: { [key in EntityTypeName]: CategoryName } = {
   Food: 'FOOD',
   FoodPlan: 'FOOD',
   Holiday: 'TRAVEL',
+  HolidayPlan: 'TRAVEL',
   Trip: 'TRAVEL',
   Flight: 'TRAVEL',
   TrainBusFerry: 'TRAVEL',

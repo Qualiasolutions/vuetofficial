@@ -113,7 +113,9 @@
       "socialPlans": "My Social Plans",
       "socialMedia": "Social Media",
       "hobbies": "Interests & Hobbies",
-      "mySocialInformation": "My Social Information"
+      "mySocialInformation": "My Social Information",
+      "holidayDates": "Holiday Dates to Remember",
+      "holidayPlans": "Holiday Plans"
     },
     "educationCareer": {
       "education": "Education",
@@ -197,6 +199,8 @@
     "patient": "Patients",
     "days-off": "Days Off",
     "holidays": "Holidays",
+    "holiday-plans": "Holiday Plans",
+    "holiday-dates": "Holiday Dates",
     "schools": "Schools",
     "academic-plans": "Academic Plans",
     "anniversary-plans": "Birthday and Anniversary Plans",
@@ -274,6 +278,7 @@
     "Anniversary": "Anniversary",
     "Hobby": "Hobby",
     "Holiday": "Holiday",
+    "HolidayPlan": "Holiday Plan",
     "Trip": "Trip",
     "TravelPlan": "Travel Plan",
     "Flight": "Flight",

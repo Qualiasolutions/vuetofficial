@@ -11,7 +11,8 @@ import {
   useTaskMiddleFieldTypes,
   useTaskTopFieldTypes,
   useAccommodationFieldTypes,
-  useAnniversaryFieldTypes
+  useAnniversaryFieldTypes,
+  useHolidayFieldTypes
 } from 'components/forms/taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -103,6 +104,10 @@ export default function EditTaskScreen({
   const [anniversaryFieldValues, setAnniversaryFieldValues] =
     useState<FieldValueTypes>({});
 
+  const [holidayFieldValues, setHolidayFieldValues] = useState<FieldValueTypes>(
+    {}
+  );
+
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskTopFields = useTaskTopFieldTypes(true, taskToEdit?.hidden_tag);
@@ -130,6 +135,8 @@ export default function EditTaskScreen({
     taskType && isAnniversaryTaskType(taskType) ? taskType : 'BIRTHDAY',
     true
   );
+
+  const holidayFields = useHolidayFieldTypes(true);
 
   useEffect(() => {
     if (allTasks && userDetails) {
@@ -213,6 +220,13 @@ export default function EditTaskScreen({
         );
         setAnniversaryFieldValues(initialAnniversaryFields);
 
+        const initialHolidayFields = createInitialObject(
+          holidayFields,
+          userDetails,
+          newTaskToEdit
+        );
+        setHolidayFieldValues(initialHolidayFields);
+
         setResetState(() => () => {
           setTaskTopFieldValues(initialTopFields);
           setTaskMiddleFieldValues(initialMiddleFields);
@@ -221,6 +235,7 @@ export default function EditTaskScreen({
           setFlightFieldValues(initialFlightFields);
           setAccommodationFieldValues(initialAccommodationFields);
           setAnniversaryFieldValues(initialAnniversaryFields);
+          setHolidayFieldValues(initialHolidayFields);
         });
       }
     }
@@ -234,7 +249,8 @@ export default function EditTaskScreen({
     dueDateFields,
     flightFields,
     accommodationFields,
-    anniversaryFields
+    anniversaryFields,
+    holidayFields
   ]);
 
   useEntityHeader(0, false, t('pageTitles.editTask'));
@@ -265,6 +281,8 @@ export default function EditTaskScreen({
       return hasAllRequired(accommodationFieldValues, accommodationFields);
     } else if (isAnniversaryTaskType(taskToEdit.type)) {
       return hasAllRequired(anniversaryFieldValues, anniversaryFields);
+    } else if (taskToEdit.type === 'HOLIDAY') {
+      return hasAllRequired(holidayFieldValues, holidayFields);
     } else {
       return false;
     }
@@ -283,7 +301,9 @@ export default function EditTaskScreen({
     accommodationFields,
     accommodationFieldValues,
     anniversaryFields,
-    anniversaryFieldValues
+    anniversaryFieldValues,
+    holidayFields,
+    holidayFieldValues
   ]);
 
   useEffect(() => {
@@ -421,6 +441,24 @@ export default function EditTaskScreen({
         }
 
         updateTask(body);
+      } else if (taskToEdit.type === 'HOLIDAY') {
+        const parsedHolidayFieldValues = parseFormValues(
+          holidayFieldValues,
+          holidayFields
+        );
+
+        const body = {
+          ...parsedHolidayFieldValues,
+          resourcetype: 'HolidayTask' as 'HolidayTask',
+          id: taskToEdit.id,
+          type: taskToEdit.type
+        };
+
+        if (Object.keys(body as any).includes('recurrence')) {
+          delete (body as any).recurrence;
+        }
+
+        updateTask(body);
       }
     }
   };
@@ -535,6 +573,22 @@ export default function EditTaskScreen({
           formValues={anniversaryFieldValues}
           onFormValuesChange={(values: FieldValueTypes) => {
             setAnniversaryFieldValues(values);
+          }}
+          inlineFields={true}
+          fieldColor={fieldColor}
+        />
+      </TransparentView>
+    );
+  }
+
+  if (taskToEdit.type === 'HOLIDAY') {
+    formFields = (
+      <TransparentView>
+        <TypedForm
+          fields={holidayFields}
+          formValues={holidayFieldValues}
+          onFormValuesChange={(values: FieldValueTypes) => {
+            setHolidayFieldValues(values);
           }}
           inlineFields={true}
           fieldColor={fieldColor}

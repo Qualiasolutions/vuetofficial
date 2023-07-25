@@ -10,16 +10,17 @@ import {
   WhiteBox
 } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
-import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
+import { getDateWithoutTimezone } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
 import SafePressable from 'components/molecules/SafePressable';
-import { AnniversaryTaskResponseType, isAnniversaryTask } from 'types/tasks';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
-function AnniversaryCard({ task }: { task: AnniversaryTaskResponseType }) {
-  const navigation = useNavigation();
+import { getLongDateFromDateObject } from 'utils/datesAndTimes';
+import { FixedTaskResponseType } from 'types/tasks';
 
+function HolidayCard({ task }: { task: FixedTaskResponseType }) {
+  const navigation = useNavigation();
   const styles = StyleSheet.create({
     card: {
       marginTop: 10,
@@ -27,18 +28,23 @@ function AnniversaryCard({ task }: { task: AnniversaryTaskResponseType }) {
       borderColor: useThemeColor({}, 'almostBlack')
     },
     listEntryText: {
-      fontSize: 20
+      fontSize: 16
     },
-    cardSubtitle: { fontSize: 18 }
+    datesText: {
+      fontSize: 14
+    }
   });
 
-  if (!task.date) {
+  if (!(task?.start_date && task?.end_date)) {
     return null;
   }
 
-  const startDate = getDateWithoutTimezone(task.date);
-
-  const { age, monthName, date } = getDaysToAge(startDate);
+  const startDateString = getLongDateFromDateObject(
+    getDateWithoutTimezone(task?.start_date)
+  );
+  const endDateString = getLongDateFromDateObject(
+    getDateWithoutTimezone(task?.end_date)
+  );
 
   return (
     <SafePressable
@@ -49,16 +55,18 @@ function AnniversaryCard({ task }: { task: AnniversaryTaskResponseType }) {
       <WhiteBox style={styles.card}>
         <LightBlackText text={task.title || ''} style={styles.listEntryText} />
         <AlmostBlackText
-          style={styles.cardSubtitle}
-          text={`${task?.known_year ? `${age} on ` : ''}${monthName} ${date}`}
+          style={styles.datesText}
+          text={`${startDateString}${
+            task.end_date !== task.start_date ? ` to ${endDateString}` : ''
+          }`}
         />
       </WhiteBox>
     </SafePressable>
   );
 }
 
-export default function AnniversaryDatesScreen() {
-  useEntityTypeHeader('anniversary-dates');
+export default function HolidayDatesScreen() {
+  useEntityTypeHeader('holiday-dates');
 
   const { data: allTasks, isLoading } = useGetAllTasksQuery();
 
@@ -66,15 +74,12 @@ export default function AnniversaryDatesScreen() {
     return <FullPageSpinner />;
   }
 
-  const birthdayTasks = allTasks?.ids
+  const holidayTasks = allTasks?.ids
     .map((id) => allTasks.byId[id])
-    .filter((task) => ['BIRTHDAY', 'ANNIVERSARY'].includes(task.type));
+    .filter((task) => ['HOLIDAY'].includes(task.type));
 
-  const cards = birthdayTasks?.map((task) => {
-    if (!isAnniversaryTask(task)) {
-      return null;
-    }
-    return <AnniversaryCard task={task} key={task.id} />;
+  const cards = holidayTasks?.map((task) => {
+    return <HolidayCard task={task} key={task.id} />;
   });
 
   return (

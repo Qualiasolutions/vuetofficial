@@ -109,7 +109,7 @@ export default function HolidayDetailScreen({
     (holiday: Holiday, selected: boolean) => {
       if (selected) {
         setSelectedHolidays(
-          selectedHolidays.filter((hol) => hol.string_id != holiday.id)
+          selectedHolidays.filter((hol) => hol.string_id !== holiday.id)
         );
       } else {
         setSelectedHolidays([
@@ -219,7 +219,7 @@ export default function HolidayDetailScreen({
   const sectionList = (
     <SectionList
       sections={Object.values(sectionDict)}
-      keyExtractor={(holiday, index) => holiday.id}
+      keyExtractor={(holiday) => holiday.id}
       renderItem={({ item: holiday }) => {
         return (
           <ListLinkWithCheckbox
@@ -236,7 +236,7 @@ export default function HolidayDetailScreen({
               onPress(holiday, !!selected);
             }}
             navMethod={undefined}
-            selected={selectedHolidays.some((cou) => cou.id == holiday.id)}
+            selected={selectedHolidays.some((cou) => cou.id === holiday.id)}
           />
         );
       }}

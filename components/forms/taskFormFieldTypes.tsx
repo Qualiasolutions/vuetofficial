@@ -707,3 +707,67 @@ export const useAnniversaryFieldTypes = (
     };
   }, [userFullDetails, t, disabledRecurrenceFields, type]);
 };
+
+export const useHolidayFieldTypes = (
+  disabledRecurrenceFields: boolean = false
+): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+  const { data: userFullDetails } = useGetUserDetails();
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        required: true,
+        displayName: t('tasks.anniversaryTask.name')
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        permittedValues: {
+          family: userFullDetails?.family?.users || [],
+          friends: userFullDetails?.friends || []
+        },
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
+      },
+      start_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.task.start_date')
+      },
+      end_date: {
+        type: 'Date',
+        required: true,
+        displayName: t('tasks.task.end_date')
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: true,
+        firstOccurrenceField: 'start_date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields
+      },
+      reminders: {
+        type: 'reminderSelector',
+        required: false,
+        reverse: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.reminders'),
+        max: 3
+      },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      }
+    };
+  }, [userFullDetails, t, disabledRecurrenceFields]);
+};

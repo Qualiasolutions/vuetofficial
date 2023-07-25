@@ -1,14 +1,13 @@
 import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
-import { useAccommodationFieldTypes } from './taskFormFieldTypes';
+import { useHolidayFieldTypes } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   TransparentPaddedView,
-  TransparentView,
-  WhitePaddedView
+  TransparentView
 } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
@@ -24,11 +23,9 @@ import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
+import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
-import DropDown from './components/DropDown';
-import { elevation } from 'styles/elevation';
-import { AccommodationTaskType } from 'types/tasks';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,33 +38,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   spinner: { marginTop: 20 },
+  hidden: { display: 'none' },
   typeSelectorSection: { marginBottom: 50 }
 });
 
-type AddTransportTaskFormProps = {
-  defaults: {
-    title: string;
-    start_datetime: Date;
-    end_datetime: Date;
-    entities: number[];
-    tags: string[];
-  };
+type AddHolidayTaskFormProps = {
   onSuccess: () => void;
   recurrenceOverwrite?: boolean;
   recurrenceIndex?: number;
   taskId?: number;
 };
 
-export default function AddAccommodationTaskForm({
-  defaults,
+export default function AddHolidayTaskForm({
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
   taskId
-}: AddTransportTaskFormProps) {
+}: AddHolidayTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
-  const [type, setType] = useState<AccommodationTaskType>('HOTEL');
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
@@ -85,73 +74,70 @@ export default function AddAccommodationTaskForm({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [accommodationFieldValues, setAccommodationFieldValues] =
+  const [holidayTaskFieldValues, setHolidayFieldValues] =
     useState<FieldValueTypes>({});
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const accommodationFields = useAccommodationFieldTypes(type);
+  const holidayFields = useHolidayFieldTypes(false);
 
-  const initialAccommodationFields = useMemo(() => {
+  const initialHolidayFields = useMemo(() => {
     if (!userDetails) {
       return null;
     }
 
-    const startTimeProp = defaults.start_datetime;
-    const endTimeProp = defaults.end_datetime;
-    const defaultStartTime = startTimeProp
-      ? new Date(startTimeProp)
-      : new Date();
+    const defaultDueDate = new Date();
+    const defaultRecurrence = {
+      earliest_occurrence: defaultDueDate,
+      latest_occurrence: null,
+      interval_length: 1,
+      recurrence: 'YEARLY'
+    };
 
-    defaultStartTime.setMinutes(0);
-    defaultStartTime.setSeconds(0);
-    defaultStartTime.setMilliseconds(0);
-
-    let defaultEndTime = endTimeProp
-      ? new Date(endTimeProp)
-      : new Date(defaultStartTime);
-    defaultEndTime.setHours(defaultStartTime.getHours() + 1);
-
-    return createInitialObject(accommodationFields, userDetails, {
-      start_datetime: defaultStartTime,
-      end_datetime: defaultEndTime,
-      title: defaults?.title || '',
+    return createInitialObject(holidayFields, userDetails, {
+      start_date: defaultDueDate,
+      end_date: defaultDueDate,
+      title: '',
+      duration: 15,
       tagsAndEntities: {
-        entities: defaults?.entities || [],
-        tags: defaults?.tags || []
-      }
+        entities: [],
+        tags: []
+      },
+      recurrence: defaultRecurrence
     });
-  }, [accommodationFields, userDetails, defaults]);
+  }, [holidayFields, userDetails]);
 
   useEffect(() => {
     if (userDetails) {
-      if (initialAccommodationFields) {
-        setAccommodationFieldValues(initialAccommodationFields);
+      if (initialHolidayFields) {
+        setHolidayFieldValues(initialHolidayFields);
       }
 
-      if (initialAccommodationFields) {
+      if (initialHolidayFields) {
         setResetState(() => () => {
-          setAccommodationFieldValues(initialAccommodationFields);
+          setHolidayFieldValues(initialHolidayFields);
         });
       }
 
       setLoadedFields(true);
     }
-  }, [initialAccommodationFields, userDetails, accommodationFields]);
+  }, [initialHolidayFields, userDetails, holidayFields]);
 
   const hasRequired = useMemo(() => {
-    return hasAllRequired(accommodationFieldValues, accommodationFields);
-  }, [accommodationFields, accommodationFieldValues]);
+    return hasAllRequired(holidayTaskFieldValues, holidayFields);
+  }, [holidayFields, holidayTaskFieldValues]);
 
   const submitForm = async () => {
-    const parsedTransportTaskFieldValues = parseFormValues(
-      accommodationFieldValues,
-      accommodationFields
+    const parsedDueDateFieldValues = parseFormValues(
+      holidayTaskFieldValues,
+      holidayFields
     );
     const parsedFieldValues: any = {
-      ...parsedTransportTaskFieldValues,
-      type,
-      resourcetype: 'AccommodationTask'
+      ...parsedDueDateFieldValues,
+      end_date: parsedDueDateFieldValues.start_date,
+      type: 'HOLIDAY',
+      resourcetype: 'HolidayTask',
+      duration: 15
     };
 
     try {
@@ -191,19 +177,19 @@ export default function AddAccommodationTaskForm({
     }
   };
 
-  const accommodationTypedForm = useMemo(
+  const holidayTypedForm = useMemo(
     () => (
       <TypedForm
-        fields={accommodationFields}
-        formValues={accommodationFieldValues}
+        fields={holidayFields}
+        formValues={holidayTaskFieldValues}
         onFormValuesChange={(values: FieldValueTypes) => {
-          setAccommodationFieldValues(values);
+          setHolidayFieldValues(values);
         }}
         inlineFields={true}
         fieldColor={fieldColor}
       />
     ),
-    [accommodationFields, accommodationFieldValues, fieldColor]
+    [holidayFields, holidayTaskFieldValues, fieldColor]
   );
 
   if (!(userDetails && loadedFields)) {
@@ -212,24 +198,7 @@ export default function AddAccommodationTaskForm({
 
   return (
     <TransparentView style={styles.container}>
-      <WhitePaddedView style={[styles.typeSelectorSection, elevation.elevated]}>
-        <DropDown
-          value={type}
-          items={[
-            {
-              value: 'HOTEL',
-              label: 'Hotel'
-            },
-            {
-              value: 'STAY_WITH_FRIEND',
-              label: 'Stay With Friend'
-            }
-          ]}
-          setFormValues={setType}
-          listMode="MODAL"
-        />
-      </WhitePaddedView>
-      {accommodationTypedForm}
+      {holidayTypedForm}
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
       ) : (
