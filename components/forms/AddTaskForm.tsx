@@ -383,7 +383,9 @@ export default function AddTaskForm({
       )}
       <TransparentView>{topFieldsTypedForm}</TransparentView>
       <TransparentView>{middleFieldsTypedForm}</TransparentView>
-      <TransparentView style={formType !== 'APPOINTMENT' && styles.hidden}>
+      <TransparentView
+        style={!['APPOINTMENT', 'ACTIVITY'].includes(formType) && styles.hidden}
+      >
         {bottomFieldsTypedForm}
       </TransparentView>
 
