@@ -130,7 +130,8 @@ const useStyles = () => {
     },
     editRecurrenceModalLink: {
       marginRight: 10
-    }
+    },
+    numExternalMembers: { marginLeft: 5 }
   });
 };
 
@@ -336,7 +337,7 @@ function Task({
     return false;
   }, [memberEntities, userDetails, task, entity, isEntity]);
 
-  const membersList = useMemo(() => {
+  const [membersList, numExternalMembers] = useMemo(() => {
     const taskOrEntity = isEntity ? entity : task;
     if (!taskOrEntity) {
       return [];
@@ -347,7 +348,10 @@ function Task({
     const friendMembersList = userDetails?.friends?.filter((item: any) =>
       taskOrEntity.members.includes(item.id)
     );
-    return [...(familyMembersList || []), ...(friendMembersList || [])];
+    const members = Array(
+      ...new Set([...(familyMembersList || []), ...(friendMembersList || [])])
+    );
+    return [members, taskOrEntity.members.length - members.length];
   }, [userDetails, task, entity, isEntity]);
 
   const editRecurrenceModal = useMemo(() => {
@@ -405,6 +409,12 @@ function Task({
             key={user.id}
           />
         )) || []}
+        {numExternalMembers ? (
+          <BlackText
+            text={`+${numExternalMembers}`}
+            style={styles.numExternalMembers}
+          />
+        ) : null}
       </TransparentView>
     ),
     [membersList, styles]
