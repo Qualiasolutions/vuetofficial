@@ -417,7 +417,7 @@ function Task({
         ) : null}
       </TransparentView>
     ),
-    [membersList, styles]
+    [membersList, styles, numExternalMembers]
   );
   const fullContent = useMemo(() => {
     if ((!scheduledTask || !task) && !entity) {
