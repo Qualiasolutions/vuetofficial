@@ -94,7 +94,8 @@ export function DropDownNavigator({
       <TransparentView style={[styles.screenContainer]}>
         {state.routes.map((route, i) => {
           const displayStyle = {
-            display: i === state.index ? 'flex' : ('none' as 'flex' | 'none')
+            height: i === state.index ? '100%' : 0,
+            overflow: 'hidden' as 'hidden'
           };
           return (
             <TransparentView
