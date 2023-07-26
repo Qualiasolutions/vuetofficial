@@ -81,7 +81,9 @@
     "HOME__INFORMATION__PUBLIC": "My Home Information",
     "GARDEN__INFORMATION__PUBLIC": "My Garden Information",
     "FOOD__INFORMATION__PUBLIC": "My Food Information",
-    "LAUNDRY__INFORMATION__PUBLIC": "My Laundry Information"
+    "LAUNDRY__INFORMATION__PUBLIC": "My Laundry Information",
+    "SOCIAL_INTERESTS__BIRTHDAY": "Birthday",
+    "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversary"
   },
   "linkTitles": {
     "EDUCATION": "Education",
@@ -254,6 +256,8 @@
     "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
     "TRANSPORT__INFORMATION__PUBLIC":"My Transport Information",
     "SOCIAL_INTERESTS__INFORMATION__PUBLIC": "My Social Information",
+    "SOCIAL_INTERESTS__BIRTHDAY": "Birthdays",
+    "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversaries",
     "CAREER__INFORMATION__PUBLIC": "My Career Information",
     "HOME__INFORMATION__PUBLIC": "My Home Information",
     "GARDEN__INFORMATION__PUBLIC": "My Garden Information",

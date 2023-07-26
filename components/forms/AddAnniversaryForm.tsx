@@ -100,8 +100,7 @@ export default function AddAnniversaryForm({
 
     const nextWeek = new Date();
     nextWeek.setDate(nextWeek.getDate() + 7);
-    const defaultDueDate =
-      defaults?.date || dayjs(nextWeek).format('YYYY-MM-DD');
+    const defaultDueDate = null;
 
     const defaultRecurrence = {
       earliest_occurrence: defaultDueDate,
@@ -115,12 +114,18 @@ export default function AddAnniversaryForm({
       title: defaults?.title || '',
       duration: 15,
       tagsAndEntities: {
-        entities: defaults?.entities || [],
-        tags: defaults?.tags || []
+        entities: defaults?.entities?.length ? defaults?.entities : [],
+        tags: defaults?.tags?.length
+          ? defaults?.tags
+          : [
+              type === 'BIRTHDAY'
+                ? 'SOCIAL_INTERESTS__BIRTHDAY'
+                : 'SOCIAL_INTERESTS__ANNIVERSARY'
+            ]
       },
       recurrence: defaultRecurrence
     });
-  }, [anniversaryFields, userDetails, defaults]);
+  }, [anniversaryFields, userDetails, defaults, type]);
 
   useEffect(() => {
     if (userDetails) {

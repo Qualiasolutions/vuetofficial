@@ -20,9 +20,10 @@ import { isHolidayTask } from 'types/tasks';
 export default function HolidayListScreen({
   navigation
 }: NativeStackScreenProps<any>) {
+  const backgroundColor = useThemeColor({}, 'buttonDefault');
   const styles = StyleSheet.create({
     nextButton: {
-      backgroundColor: useThemeColor({}, 'buttonDefault'),
+      backgroundColor,
       height: 58,
       borderRadius: 10,
       alignItems: 'center',

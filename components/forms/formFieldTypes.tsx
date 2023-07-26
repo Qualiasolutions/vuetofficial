@@ -1,5 +1,6 @@
 import { UseTranslationResponse } from 'react-i18next';
 import { ListModeType } from 'react-native-dropdown-picker';
+import { CategoryName } from 'types/categories';
 import { UserResponse } from 'types/users';
 
 export type PermittedTypes =
@@ -110,7 +111,11 @@ export type MultiRecurrenceSelectorField = BaseField<
 export type ActionsSelectorField = BaseField<'actionsSelector', any>;
 export type ReminderSelectorField = BaseField<'reminderSelector', any>;
 
-export type TagSelectorField = BaseField<'tagSelector', any>;
+export type TagSelectorField = BaseField<'tagSelector', any> & {
+  extraTagOptions?: {
+    [key in CategoryName]?: { value: string; label: string }[];
+  };
+};
 
 export type CalculatedDurationField = BaseField<'calculatedDuration', any> & {
   startFieldName: string;

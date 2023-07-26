@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
 export default function EntityCheckboxes({
   value,
   setSelectedEntities,
-  setSelectedTags
+  setSelectedTags,
+  extraTagOptions
 }: {
   value: {
     entities: number[];
@@ -40,6 +41,9 @@ export default function EntityCheckboxes({
   };
   setSelectedEntities: (entities: number[]) => void;
   setSelectedTags: (tags: string[]) => void;
+  extraTagOptions?: {
+    [key in CategoryName]?: { value: string; label: string }[];
+  };
 }) {
   const { t } = useTranslation();
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
@@ -79,7 +83,8 @@ export default function EntityCheckboxes({
         const category = allCategories.byId[categoryId];
         const entityIds = memberEntities.byCategory[category.id];
         const infoTag = getTagFromCategory(category.name);
-        if (!entityIds && !infoTag) {
+        const extraTags = extraTagOptions && extraTagOptions[category.name];
+        if (!entityIds && !infoTag && !extraTags) {
           return null;
         }
 
@@ -126,6 +131,29 @@ export default function EntityCheckboxes({
           </TransparentView>
         ) : null;
 
+        const extraTagCheckboxes = extraTags
+          ? extraTags.map((tagOptions) => (
+              <TransparentView style={styles.entityCheckboxPair} key={infoTag}>
+                <TransparentView style={styles.entityCheckboxLabel}>
+                  <Text>{tagOptions.label}</Text>
+                </TransparentView>
+                <Checkbox
+                  checked={value.tags.includes(tagOptions.value)}
+                  onValueChange={async () => {
+                    if (value.tags.includes(tagOptions.value)) {
+                      const newTags = value.tags.filter(
+                        (tag) => tag !== tagOptions.value
+                      );
+                      setSelectedTags(newTags);
+                    } else {
+                      setSelectedTags([...value.tags, tagOptions.value]);
+                    }
+                  }}
+                />
+              </TransparentView>
+            ))
+          : null;
+
         return (
           <TransparentView key={categoryId}>
             <Text style={styles.categoryTitle}>
@@ -134,6 +162,7 @@ export default function EntityCheckboxes({
             <TransparentView style={styles.categoryCheckboxes}>
               {entityCheckboxes}
               {tagCheckbox}
+              {extraTagCheckboxes}
             </TransparentView>
           </TransparentView>
         );

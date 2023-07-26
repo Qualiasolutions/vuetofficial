@@ -20,6 +20,7 @@ import {
   RadioField,
   RecurrenceSelectorField,
   StringField,
+  TagSelectorField,
   TimezoneField
 } from './formFieldTypes';
 import RadioInput from 'components/forms/components/RadioInput';
@@ -906,6 +907,8 @@ export default function TypedForm({
               );
             }
             case 'tagSelector': {
+              const f = flatFields[field] as TagSelectorField;
+
               return (
                 <InputPair
                   field={field}
@@ -921,6 +924,7 @@ export default function TypedForm({
                           [field]: value
                         });
                       }}
+                      extraTagOptions={f.extraTagOptions}
                     />
                   </TransparentView>
                 </InputPair>

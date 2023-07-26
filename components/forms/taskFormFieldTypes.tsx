@@ -636,6 +636,7 @@ export const useAnniversaryFieldTypes = (
   disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
+  const { t: baseT } = useTranslation();
   const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
@@ -667,7 +668,7 @@ export const useAnniversaryFieldTypes = (
         },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
-        changeMembersText: t('tasks.task.changeMembers')
+        changeMembersText: t('tasks.anniversaryTask.changeMembers')
       },
       date: {
         type: 'OptionalYearDate',
@@ -702,10 +703,28 @@ export const useAnniversaryFieldTypes = (
       tagsAndEntities: {
         type: 'tagSelector',
         required: true,
-        displayName: t('tasks.task.tags')
+        displayName: t('tasks.task.tags'),
+        extraTagOptions:
+          type === 'BIRTHDAY'
+            ? {
+                SOCIAL_INTERESTS: [
+                  {
+                    value: 'SOCIAL_INTERESTS__BIRTHDAY',
+                    label: baseT('tags.SOCIAL_INTERESTS__BIRTHDAY')
+                  }
+                ]
+              }
+            : {
+                SOCIAL_INTERESTS: [
+                  {
+                    value: 'SOCIAL_INTERESTS__ANNIVERSARY',
+                    label: baseT('tags.SOCIAL_INTERESTS__ANNIVERSARY')
+                  }
+                ]
+              }
       }
     };
-  }, [userFullDetails, t, disabledRecurrenceFields, type]);
+  }, [userFullDetails, t, baseT, disabledRecurrenceFields, type]);
 };
 
 export const useHolidayFieldTypes = (
@@ -719,7 +738,7 @@ export const useHolidayFieldTypes = (
       title: {
         type: 'string',
         required: true,
-        displayName: t('tasks.anniversaryTask.name')
+        displayName: t('tasks.task.title')
       },
       members: {
         type: 'addMembers',

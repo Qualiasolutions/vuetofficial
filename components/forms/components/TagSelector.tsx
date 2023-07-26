@@ -16,6 +16,7 @@ import {
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
+import { CategoryName } from 'types/categories';
 import { EntityTypeName } from 'types/entities';
 
 const styles = StyleSheet.create({
@@ -197,13 +198,17 @@ type EntityAndTagSelectorModalProps = {
   value: ValueType;
   onChange: (newValue: ValueType) => void;
   onRequestClose: () => void;
+  extraTagOptions?: {
+    [key in CategoryName]?: { value: string; label: string }[];
+  };
 };
 
 const EntityAndTagSelectorModal = ({
   open,
   value,
   onChange,
-  onRequestClose
+  onRequestClose,
+  extraTagOptions
 }: EntityAndTagSelectorModalProps) => {
   const [isSettingTags, setIsSettingTags] = useState(false);
   const [selectedEntities, setSelectedEntities] = useState(value.entities);
@@ -216,6 +221,11 @@ const EntityAndTagSelectorModal = ({
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
   const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
+
+  useEffect(() => {
+    setSelectedEntities(value.entities);
+    setSelectedTags(value.tags);
+  }, [value]);
 
   const resetValues = useCallback(() => {
     setSelectedEntities(value.entities);
@@ -362,6 +372,7 @@ const EntityAndTagSelectorModal = ({
             }}
             setSelectedEntities={setSelectedEntities}
             setSelectedTags={setSelectedTags}
+            extraTagOptions={extraTagOptions}
           />
         </TransparentScrollView>
       )}
@@ -405,8 +416,15 @@ const EntityAndTagSelectorModal = ({
 type Props = {
   value: ValueType;
   onChange: (value: ValueType) => void;
+  extraTagOptions?: {
+    [key in CategoryName]?: { value: string; label: string }[];
+  };
 };
-export default function EntityAndTagSelector({ value, onChange }: Props) {
+export default function EntityAndTagSelector({
+  value,
+  onChange,
+  extraTagOptions
+}: Props) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
   const { data: allEntities, isLoading: isLoadingAllEntities } =
@@ -441,6 +459,7 @@ export default function EntityAndTagSelector({ value, onChange }: Props) {
         onRequestClose={() => setOpen(false)}
         value={value}
         onChange={onChange}
+        extraTagOptions={extraTagOptions}
       />
     </TransparentView>
   );

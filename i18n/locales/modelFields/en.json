@@ -57,7 +57,8 @@
     },
     "anniversaryTask": {
       "name": "Name",
-      "start": "Start Date"
+      "start": "Start Date",
+      "changeMembers": "Show on Whose Calendar?"
     }
   },
   "entities": {
