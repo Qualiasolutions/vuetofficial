@@ -425,6 +425,14 @@ function Task({
       );
     }
 
+    const showCheckbox =
+      userDetails?.is_premium &&
+      hasEditPerms &&
+      scheduledTask &&
+      task &&
+      ['TASK', 'APPOINTMENT', 'DUE_DATE'].includes(task.type) &&
+      !isEntity;
+
     return (
       <>
         <TransparentView
@@ -516,35 +524,31 @@ function Task({
                 />
               </SafePressable>
             )}
-            {userDetails?.is_premium &&
-              hasEditPerms &&
-              scheduledTask &&
-              task &&
-              !isEntity && (
-                <Checkbox
-                  disabled={isComplete}
-                  checked={isComplete}
-                  color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
-                  onValueChange={async () => {
-                    if (action_id) {
-                      await createTaskActionCompletionForm({
-                        action: action_id,
-                        recurrence_index: scheduledTask.recurrence_index
-                      }).unwrap();
-                      return;
-                    }
-                    await triggerCreateCompletionForm({
-                      resourcetype: 'TaskCompletionForm',
-                      recurrence_index: scheduledTask.recurrence_index,
-                      task: task.id
+            {showCheckbox && (
+              <Checkbox
+                disabled={isComplete}
+                checked={isComplete}
+                color={isIgnored ? isIgnoredBoxColor : isCompleteBoxColor}
+                onValueChange={async () => {
+                  if (action_id) {
+                    await createTaskActionCompletionForm({
+                      action: action_id,
+                      recurrence_index: scheduledTask.recurrence_index
                     }).unwrap();
+                    return;
+                  }
+                  await triggerCreateCompletionForm({
+                    resourcetype: 'TaskCompletionForm',
+                    recurrence_index: scheduledTask.recurrence_index,
+                    task: task.id
+                  }).unwrap();
 
-                    if (FORM_REQUIRED_TAGS.includes(task.hidden_tag)) {
-                      setShowTaskCompletionForm(true);
-                    }
-                  }}
-                />
-              )}
+                  if (FORM_REQUIRED_TAGS.includes(task.hidden_tag)) {
+                    setShowTaskCompletionForm(true);
+                  }
+                }}
+              />
+            )}
           </TransparentView>
           <TransparentView style={styles.bottomWrapper}>
             <TransparentScrollView style={styles.tagsWrapper} horizontal>
