@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   spinner: { marginTop: 20 },
-  hidden: { display: 'none' },
   typeSelectorSection: { marginBottom: 50 }
 });
 

@@ -75,7 +75,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 20
   },
-  hidden: { display: 'none' }
+  hidden: {
+    height: 0,
+    overflow: 'hidden'
+  }
 });
 
 type AddTaskScreenProps = RootTabScreenProps<'AddTask'>;

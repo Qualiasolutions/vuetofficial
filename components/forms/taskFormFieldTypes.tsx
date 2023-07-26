@@ -18,6 +18,11 @@ export const useTaskTopFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
       title: {
         type: 'string',
         required: true,
@@ -224,11 +229,6 @@ export const useTaskMiddleFieldTypes = (
             is_flexible: true
           }
         ]
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags')
       }
     };
   }, [
@@ -286,6 +286,11 @@ export const useDueDateFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
       title: {
         type: 'string',
         required: true,
@@ -322,6 +327,12 @@ export const useDueDateFieldTypes = (
         disabled: disabledRecurrenceFields,
         hidden: !allowRecurrence
       },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
       reminders: {
         type: 'reminderSelector',
         required: false,
@@ -330,17 +341,7 @@ export const useDueDateFieldTypes = (
         displayName: t('tasks.task.reminders'),
         max: 3
       },
-      actions: {
-        type: 'actionsSelector',
-        required: false,
-        displayName: t('tasks.task.actions'),
-        max: 3
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags')
-      },
+
       routine: {
         type: 'dropDown',
         required: false,
@@ -373,6 +374,11 @@ export const useTransportFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
       members: {
         type: 'addMembers',
         required: true,
@@ -488,6 +494,12 @@ export const useTransportFieldTypes = (
           }
         ]
       },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
       reminders: {
         type: 'reminderSelector',
         required: false,
@@ -495,17 +507,6 @@ export const useTransportFieldTypes = (
         firstOccurrenceField: 'date',
         displayName: t('tasks.task.reminders'),
         max: 3
-      },
-      actions: {
-        type: 'actionsSelector',
-        required: false,
-        displayName: t('tasks.task.actions'),
-        max: 3
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags')
       }
     };
   }, [userFullDetails, t, type]);
@@ -519,6 +520,11 @@ export const useAccommodationFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
       members: {
         type: 'addMembers',
         required: true,
@@ -608,6 +614,12 @@ export const useAccommodationFieldTypes = (
           }
         ]
       },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
       reminders: {
         type: 'reminderSelector',
         required: false,
@@ -615,17 +627,6 @@ export const useAccommodationFieldTypes = (
         firstOccurrenceField: 'date',
         displayName: t('tasks.task.reminders'),
         max: 3
-      },
-      actions: {
-        type: 'actionsSelector',
-        required: false,
-        displayName: t('tasks.task.actions'),
-        max: 3
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags')
       }
     };
   }, [userFullDetails, t, type]);
@@ -641,6 +642,29 @@ export const useAnniversaryFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags'),
+        extraTagOptions:
+          type === 'BIRTHDAY'
+            ? {
+                SOCIAL_INTERESTS: [
+                  {
+                    value: 'SOCIAL_INTERESTS__BIRTHDAY',
+                    label: baseT('tags.SOCIAL_INTERESTS__BIRTHDAY')
+                  }
+                ]
+              }
+            : {
+                SOCIAL_INTERESTS: [
+                  {
+                    value: 'SOCIAL_INTERESTS__ANNIVERSARY',
+                    label: baseT('tags.SOCIAL_INTERESTS__ANNIVERSARY')
+                  }
+                ]
+              }
+      },
       title: {
         type: 'string',
         required: true,
@@ -686,6 +710,12 @@ export const useAnniversaryFieldTypes = (
         displayName: t('tasks.task.recurrence'),
         disabled: disabledRecurrenceFields
       },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
       reminders: {
         type: 'reminderSelector',
         required: false,
@@ -693,35 +723,6 @@ export const useAnniversaryFieldTypes = (
         firstOccurrenceField: 'date',
         displayName: t('tasks.task.reminders'),
         max: 3
-      },
-      actions: {
-        type: 'actionsSelector',
-        required: false,
-        displayName: t('tasks.task.actions'),
-        max: 3
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags'),
-        extraTagOptions:
-          type === 'BIRTHDAY'
-            ? {
-                SOCIAL_INTERESTS: [
-                  {
-                    value: 'SOCIAL_INTERESTS__BIRTHDAY',
-                    label: baseT('tags.SOCIAL_INTERESTS__BIRTHDAY')
-                  }
-                ]
-              }
-            : {
-                SOCIAL_INTERESTS: [
-                  {
-                    value: 'SOCIAL_INTERESTS__ANNIVERSARY',
-                    label: baseT('tags.SOCIAL_INTERESTS__ANNIVERSARY')
-                  }
-                ]
-              }
       }
     };
   }, [userFullDetails, t, baseT, disabledRecurrenceFields, type]);
@@ -735,6 +736,11 @@ export const useHolidayFieldTypes = (
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
+      tagsAndEntities: {
+        type: 'tagSelector',
+        required: true,
+        displayName: t('tasks.task.tags')
+      },
       title: {
         type: 'string',
         required: true,
@@ -768,6 +774,12 @@ export const useHolidayFieldTypes = (
         displayName: t('tasks.task.recurrence'),
         disabled: disabledRecurrenceFields
       },
+      actions: {
+        type: 'actionsSelector',
+        required: false,
+        displayName: t('tasks.task.actions'),
+        max: 3
+      },
       reminders: {
         type: 'reminderSelector',
         required: false,
@@ -775,17 +787,6 @@ export const useHolidayFieldTypes = (
         firstOccurrenceField: 'date',
         displayName: t('tasks.task.reminders'),
         max: 3
-      },
-      actions: {
-        type: 'actionsSelector',
-        required: false,
-        displayName: t('tasks.task.actions'),
-        max: 3
-      },
-      tagsAndEntities: {
-        type: 'tagSelector',
-        required: true,
-        displayName: t('tasks.task.tags')
       }
     };
   }, [userFullDetails, t, disabledRecurrenceFields]);

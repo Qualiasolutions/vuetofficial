@@ -70,19 +70,19 @@ const TIME_INTERVAL_ITEMS: {
 } = {
   MINUTE: {
     value: 'MINUTE',
-    label: 'Minutes'
+    label: 'Minutes Before'
   },
   HOUR: {
     value: 'HOUR',
-    label: 'Hours'
+    label: 'Hours Before'
   },
   DAY: {
     value: 'DAY',
-    label: 'Days'
+    label: 'Days Before'
   },
   WEEK: {
     value: 'WEEK',
-    label: 'Weeks'
+    label: 'Weeks Before'
   }
 };
 const TimeIntervalSelector = ({
