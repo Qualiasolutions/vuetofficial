@@ -378,6 +378,28 @@ const tasksApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction']
     }),
+    bulkCreateTasks: builder.mutation<
+      FixedTaskResponseType[],
+      CreateFixedTaskRequest[]
+    >({
+      query: (body) => ({
+        url: 'core/tasks/bulk_create/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['Task']
+    }),
+    bulkDeleteTasks: builder.mutation<
+      void,
+      Pick<FixedTaskResponseType, 'id'>[]
+    >({
+      query: (body) => ({
+        url: 'core/task/',
+        method: 'DELETE',
+        body: { pk_ids: body.map((task) => task.id) }
+      }),
+      invalidatesTags: ['Task']
+    }),
     createRecurrentTaskOverwrite: builder.mutation<
       {
         task: FixedTaskResponseType | null;
@@ -453,5 +475,7 @@ export const {
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation,
   useCreateFlexibleFixedTaskMutation,
-  useCreateRecurrentTaskOverwriteMutation
+  useCreateRecurrentTaskOverwriteMutation,
+  useBulkCreateTasksMutation,
+  useBulkDeleteTasksMutation
 } = tasksApi;

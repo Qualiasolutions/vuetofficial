@@ -84,11 +84,22 @@ interface FixedTaskResponseType extends BaseTaskType {}
 interface AnniversaryTaskResponseType extends FixedTaskResponseType {
   known_year: boolean;
 }
+interface HolidayTaskResponseType extends FixedTaskResponseType {
+  string_id: string;
+  country_code: string;
+  custom: boolean;
+}
 
 const isAnniversaryTask = (
   task: FixedTaskResponseType
 ): task is AnniversaryTaskResponseType => {
   return Object.keys(task).includes('known_year');
+};
+
+const isHolidayTask = (
+  task: FixedTaskResponseType
+): task is HolidayTaskResponseType => {
+  return Object.keys(task).includes('string_id');
 };
 
 interface ScheduledTaskResponseType {
@@ -135,9 +146,11 @@ interface BaseCreateTaskRequest {
 interface CreateFixedTaskRequest extends BaseCreateTaskRequest {
   start_datetime?: string;
   end_datetime?: string;
+  start_date?: string;
+  end_date?: string;
   date?: string;
   duration?: number;
-  resourcetype: 'FixedTask';
+  resourcetype: TaskResourceType;
 }
 
 interface CreateFlexibleFixedTaskRequest extends BaseCreateTaskRequest {
@@ -176,6 +189,7 @@ export {
   Reminder,
   FixedTaskResponseType,
   AnniversaryTaskResponseType,
+  HolidayTaskResponseType,
   CreateTaskRequest,
   CreateFixedTaskRequest,
   CreateFlexibleFixedTaskRequest,
@@ -183,5 +197,6 @@ export {
   ScheduledTaskResponseType,
   ScheduledEntityResponseType,
   HiddenTagType,
-  isAnniversaryTask
+  isAnniversaryTask,
+  isHolidayTask
 };

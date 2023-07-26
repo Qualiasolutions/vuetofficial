@@ -5,10 +5,7 @@ import {
   AlmostBlackText,
   LightBlackText
 } from 'components/molecules/TextComponents';
-import {
-  TransparentPaddedView,
-  WhiteBox
-} from 'components/molecules/ViewComponents';
+import { WhiteBox } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { getDateWithoutTimezone } from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
@@ -17,23 +14,26 @@ import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 import { getLongDateFromDateObject } from 'utils/datesAndTimes';
-import { FixedTaskResponseType } from 'types/tasks';
+import { FixedTaskResponseType, isHolidayTask } from 'types/tasks';
+import DatedTaskListPage from 'components/lists/DatedTaskListPage';
+
+const styles = StyleSheet.create({
+  container: { paddingBottom: 100 },
+  card: {
+    marginTop: 10,
+    alignItems: 'center'
+  },
+  listEntryText: {
+    fontSize: 16
+  },
+  datesText: {
+    fontSize: 14
+  }
+});
 
 function HolidayCard({ task }: { task: FixedTaskResponseType }) {
   const navigation = useNavigation();
-  const styles = StyleSheet.create({
-    card: {
-      marginTop: 10,
-      alignItems: 'center',
-      borderColor: useThemeColor({}, 'almostBlack')
-    },
-    listEntryText: {
-      fontSize: 16
-    },
-    datesText: {
-      fontSize: 14
-    }
-  });
+  const borderColor = useThemeColor({}, 'almostBlack');
 
   if (!(task?.start_date && task?.end_date)) {
     return null;
@@ -52,7 +52,7 @@ function HolidayCard({ task }: { task: FixedTaskResponseType }) {
         (navigation as any).navigate('EditTask', { taskId: task.id });
       }}
     >
-      <WhiteBox style={styles.card}>
+      <WhiteBox style={[styles.card, { borderColor }]}>
         <LightBlackText text={task.title || ''} style={styles.listEntryText} />
         <AlmostBlackText
           style={styles.datesText}
@@ -76,15 +76,18 @@ export default function HolidayDatesScreen() {
 
   const holidayTasks = allTasks?.ids
     .map((id) => allTasks.byId[id])
-    .filter((task) => ['HOLIDAY'].includes(task.type));
+    .filter(isHolidayTask)
+    .sort((a, b) =>
+      a.start_date && b.start_date && a.start_date < b.start_date ? -1 : 1
+    );
 
-  const cards = holidayTasks?.map((task) => {
-    return <HolidayCard task={task} key={task.id} />;
-  });
+  if (!holidayTasks) {
+    return null;
+  }
 
   return (
-    <TransparentFullPageScrollView>
-      <TransparentPaddedView>{cards}</TransparentPaddedView>
+    <TransparentFullPageScrollView contentContainerStyle={styles.container}>
+      <DatedTaskListPage tasks={holidayTasks} card={HolidayCard} />
     </TransparentFullPageScrollView>
   );
 }

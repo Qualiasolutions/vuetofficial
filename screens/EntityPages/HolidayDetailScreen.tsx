@@ -7,12 +7,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ContentTabParamList } from 'types/base';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import {
-  useGetAllEntitiesQuery,
-  useBulkCreateEntitiesMutation,
-  useBulkDeleteEntitiesMutation
-} from 'reduxStore/services/api/entities';
-import { HolidayResponseType } from 'types/entities';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   getDatesPeriodString,
@@ -20,8 +15,17 @@ import {
 } from 'utils/datesAndTimes';
 import { SectionList, StyleSheet } from 'react-native';
 import SafePressable from 'components/molecules/SafePressable';
+import {
+  useBulkCreateTasksMutation,
+  useBulkDeleteTasksMutation,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
+import { isHolidayTask } from 'types/tasks';
+
+const NUM_YEARS_TO_SHOW = 10;
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   loadMoreButton: {
     padding: 20
   },
@@ -57,7 +61,7 @@ export default function HolidayDetailScreen({
   }
 
   const currentYear = new Date().getFullYear();
-  for (let i = 0; i <= 4; i++) {
+  for (let i = 0; i <= NUM_YEARS_TO_SHOW; i++) {
     params = `${params}years=${currentYear + i}&`;
   }
 
@@ -67,19 +71,25 @@ export default function HolidayDetailScreen({
   const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
     skip: !userDetails?.id
   });
+  const { data: allTasks } = useGetAllTasksQuery(null as any, {
+    skip: !userDetails?.id
+  });
 
-  const previouslySelectedHolidays = (allEntities &&
-    Object.values(allEntities.byId).filter(
-      (ent) => ent.resourcetype === 'Holiday'
-    )) as HolidayResponseType[] | undefined;
+  const previouslySelectedHolidays = useMemo(() => {
+    return allTasks ? Object.values(allTasks.byId).filter(isHolidayTask) : [];
+  }, [allTasks]);
 
-  // TODO - do we want to allow settings holidays for other years too?
   const [selectedHolidays, setSelectedHolidays] = useState<
-    Omit<HolidayResponseType, 'id'>[]
+    {
+      title: string;
+      string_id: string;
+      country_code: string;
+    }[]
   >([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [createEntities] = useBulkCreateEntitiesMutation();
-  const [deleteEntities] = useBulkDeleteEntitiesMutation();
+
+  const [createTasks] = useBulkCreateTasksMutation();
+  const [deleteTasks] = useBulkDeleteTasksMutation();
 
   const { data: holidays } = useGetHolidaysQuery(`${params}`);
 
@@ -92,36 +102,51 @@ export default function HolidayDetailScreen({
       setSelectedHolidays(
         Object.values(holidays)
           .flat()
-          .filter((hol) =>
-            previouslySelectedHolidays
-              .map((holiday) => holiday.string_id)
-              .includes(hol.id)
+          .filter(
+            (hol) =>
+              previouslySelectedHolidays
+                .map((holiday) => holiday.string_id)
+                .includes(hol.id) ||
+              previouslySelectedHolidays
+                .map((holiday) => `${holiday.title}_${holiday.country_code}`)
+                .includes(`${hol.name}_${hol.country_code}`)
           )
           .map((hol) => ({
             ...hol,
-            string_id: hol.id
+            string_id: hol.id,
+            title: hol.name
           }))
       );
     }
-  }, [allEntities, holidays]);
+  }, [allEntities, holidays, previouslySelectedHolidays]);
 
   const onPress = useCallback(
     (holiday: Holiday, selected: boolean) => {
-      if (selected) {
-        setSelectedHolidays(
-          selectedHolidays.filter((hol) => hol.string_id !== holiday.id)
-        );
-      } else {
-        setSelectedHolidays([
-          ...selectedHolidays,
-          {
-            ...holiday,
-            string_id: holiday.id
-          }
-        ]);
+      if (holidays) {
+        if (selected) {
+          setSelectedHolidays(
+            selectedHolidays.filter(
+              (hol) =>
+                hol.title !== holiday.name ||
+                hol.country_code !== holiday.country_code
+            )
+          );
+        } else {
+          const newHolidays = holidays[holiday.country_code].filter(
+            (hol) => hol.name === holiday.name
+          );
+          setSelectedHolidays([
+            ...selectedHolidays,
+            ...newHolidays.map((hol) => ({
+              ...hol,
+              string_id: hol.id,
+              title: hol.name
+            }))
+          ]);
+        }
       }
     },
-    [setSelectedHolidays, selectedHolidays]
+    [setSelectedHolidays, selectedHolidays, holidays]
   );
 
   useEffect(() => {
@@ -145,23 +170,27 @@ export default function HolidayDetailScreen({
           ?.map((entity) => ({ ...entity, resourcetype: 'Holiday' }));
 
         if (holidaysToDelete.length > 0) {
-          await deleteEntities(holidaysToDelete);
+          await deleteTasks(holidaysToDelete);
         }
 
         // Nasty hack to ensure that the second cache update completes
         // before navigating to the next page
         setTimeout(async () => {
           if (holidaysToCreate.length > 0) {
-            await createEntities(holidaysToCreate);
+            await createTasks(
+              holidaysToCreate.map((holiday) => ({
+                ...holiday,
+                resourcetype: 'HolidayTask',
+                members: userDetails ? [userDetails.id] : [],
+                entities: [],
+                type: 'HOLIDAY'
+              }))
+            );
           }
 
           setTimeout(() => {
             setIsSaving(false);
-            navigation.navigate('EntityList', {
-              entityTypes: ['Holiday'],
-              entityTypeName: 'holidays',
-              showCreateForm: false
-            });
+            navigation.navigate('HolidayDates');
           }, 1000);
         }, 1000);
       }
@@ -170,7 +199,14 @@ export default function HolidayDetailScreen({
     navigation.setOptions({
       headerRight: () => <AlmostBlackText text="save" onPress={save} />
     });
-  }, [selectedHolidays, previouslySelectedHolidays]);
+  }, [
+    selectedHolidays,
+    previouslySelectedHolidays,
+    createTasks,
+    navigation,
+    deleteTasks,
+    userDetails
+  ]);
 
   const filteredHolidays = useMemo(() => {
     if (!holidays) {
@@ -224,7 +260,7 @@ export default function HolidayDetailScreen({
         return (
           <ListLinkWithCheckbox
             key={holiday.id}
-            text={holiday.name}
+            text={`${holiday.name} (${holiday.country_code})`}
             subText={`${getDatesPeriodString(
               new Date(holiday.start_date),
               new Date(holiday.end_date),
@@ -236,7 +272,9 @@ export default function HolidayDetailScreen({
               onPress(holiday, !!selected);
             }}
             navMethod={undefined}
-            selected={selectedHolidays.some((cou) => cou.id === holiday.id)}
+            selected={selectedHolidays.some(
+              (cou) => cou.string_id === holiday.id
+            )}
           />
         );
       }}
@@ -263,5 +301,5 @@ export default function HolidayDetailScreen({
     />
   );
 
-  return <WhiteView style={{ flex: 1 }}>{sectionList}</WhiteView>;
+  return <WhiteView style={styles.container}>{sectionList}</WhiteView>;
 }
