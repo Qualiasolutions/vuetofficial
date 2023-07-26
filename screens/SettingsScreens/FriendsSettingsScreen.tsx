@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +26,61 @@ import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 
+const styles = StyleSheet.create({
+  friendsHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20
+  },
+  friendsHeaderText: { fontSize: 22 },
+  scrollContainer: {
+    height: '100%'
+  },
+  colourBar: {
+    width: 70,
+    height: 6
+  },
+  listContainer: {
+    width: '100%',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    justifyContent: 'flex-start'
+  },
+  listHeader: {
+    borderBottomWidth: 1,
+    marginBottom: 10
+  },
+  headerText: {},
+  listElement: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 10
+  },
+  listElementText: {
+    fontSize: 18
+  },
+  listLeft: {
+    maxWidth: '80%'
+  },
+  listRight: {
+    flexDirection: 'row'
+  },
+  editIcon: {
+    width: 20,
+    height: 20,
+    margin: 5
+  },
+  plusIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 10
+  }
+});
+
 const FriendSettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'FriendSettings'>) => {
@@ -37,11 +92,9 @@ const FriendSettingsScreen = ({
 
   const { data: userInvites } = useActiveInvitesForUser(false);
 
-  const [deleteUserInvite, deleteUserInviteResult] =
-    useDeleteUserInviteMutation();
+  const [deleteUserInvite] = useDeleteUserInviteMutation();
 
-  const [deleteFriendship, deleteFriendshipResult] =
-    useDeleteFriendshipMutation();
+  const [deleteFriendship] = useDeleteFriendshipMutation();
 
   const { data: allFriendships, isLoading: isLoadingFriendships } =
     useGetAllFriendshipsQuery(userFullDetails?.id || -1, {
@@ -60,6 +113,7 @@ const FriendSettingsScreen = ({
   const friendInvites = userInvites?.filter(
     (invite) =>
       invite.family === null &&
+      invite.phone_number &&
       !friendPhoneNumbers.includes(invite.phone_number) &&
       !(invite.phone_number === userFullDetails.phone_number)
   );
@@ -87,7 +141,7 @@ const FriendSettingsScreen = ({
         <TransparentView style={styles.listRight}>
           <SafePressable
             onPress={() => {
-              const isUserInvite = (user: any): user is UserInviteResponse =>
+              const isUserInvite = (usr: any): usr is UserInviteResponse =>
                 isPending;
               if (isUserInvite(user)) {
                 setUserInviteToDelete(user);
@@ -173,60 +227,5 @@ const FriendSettingsScreen = ({
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  friendsHeader: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20
-  },
-  friendsHeaderText: { fontSize: 22 },
-  scrollContainer: {
-    height: '100%'
-  },
-  colourBar: {
-    width: 70,
-    height: 6
-  },
-  listContainer: {
-    width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    justifyContent: 'flex-start'
-  },
-  listHeader: {
-    borderBottomWidth: 1,
-    marginBottom: 10
-  },
-  headerText: {},
-  listElement: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 10
-  },
-  listElementText: {
-    fontSize: 18
-  },
-  listLeft: {
-    maxWidth: '80%'
-  },
-  listRight: {
-    flexDirection: 'row'
-  },
-  editIcon: {
-    width: 20,
-    height: 20,
-    margin: 5
-  },
-  plusIcon: {
-    width: 30,
-    height: 30,
-    marginLeft: 10
-  }
-});
 
 export default FriendSettingsScreen;

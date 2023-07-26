@@ -17,7 +17,6 @@ export type PermittedTypes =
   | 'addFamilyMembers'
   | 'dropDown'
   | 'recurrenceSelector'
-  | 'multiRecurrenceSelector'
   | 'actionsSelector'
   | 'reminderSelector'
   | 'tagSelector'
@@ -99,15 +98,6 @@ export type RecurrenceSelectorField = BaseField<'recurrenceSelector', any> & {
   reverse?: boolean;
 };
 
-export type MultiRecurrenceSelectorField = BaseField<
-  'multiRecurrenceSelector',
-  any
-> & {
-  firstOccurrenceField: string;
-  reverse?: boolean;
-  max?: number;
-};
-
 export type ActionsSelectorField = BaseField<'actionsSelector', any>;
 export type ReminderSelectorField = BaseField<'reminderSelector', any>;
 
@@ -154,7 +144,6 @@ export type Field =
   | DropDownField
   | DropDownWithOtherField
   | RecurrenceSelectorField
-  | MultiRecurrenceSelectorField
   | TagSelectorField
   | ActionsSelectorField
   | ReminderSelectorField

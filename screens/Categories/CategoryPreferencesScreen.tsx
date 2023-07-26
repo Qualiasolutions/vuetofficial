@@ -5,18 +5,19 @@ import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 import { useTranslation } from 'react-i18next';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { ContentTabScreenProps } from 'types/base';
+import { StyleSheet } from 'react-native';
 
 type CategoryPreferencesScreenProps =
   ContentTabScreenProps<'CategoryPreferences'>;
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     marginTop: 20
   },
   button: {}
-};
+});
 
 export default function CategoryPreferencesScreen({
   route,
@@ -24,7 +25,7 @@ export default function CategoryPreferencesScreen({
 }: CategoryPreferencesScreenProps) {
   const { t } = useTranslation();
 
-  const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
+  const { data: allCategories } = useGetAllCategoriesQuery();
   const categoryData = allCategories?.byId[route.params.categoryId];
 
   useEntityTypeHeader(categoryData?.name || '');

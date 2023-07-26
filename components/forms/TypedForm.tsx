@@ -15,7 +15,6 @@ import {
   FormFieldTypes,
   hasListMode,
   hasPlaceholder,
-  MultiRecurrenceSelectorField,
   OptionalYearDate,
   RadioField,
   RecurrenceSelectorField,
@@ -46,7 +45,6 @@ import { elevation } from '../../styles/elevation';
 import RecurrenceSelector from './components/RecurrenceSelector';
 import CalculatedDuration from './components/CalculatedDuration';
 import InputWithLabel from 'components/molecules/InputWithLabel';
-import MultipleRecurrenceSelector from './components/MultipleRecurrenceSelector';
 import EntityAndTagSelector from './components/TagSelector';
 import Checkbox from 'components/molecules/Checkbox';
 import Duration from './components/Duration';
@@ -823,42 +821,6 @@ export default function TypedForm({
                       firstOccurrence={firstOccurrence}
                       disabled={f.disabled || false}
                       reverse={f.reverse}
-                    />
-                  </TransparentView>
-                </InputPair>
-              );
-            }
-            case 'multiRecurrenceSelector': {
-              const f = flatFields[field] as MultiRecurrenceSelectorField;
-              const firstOccurrence: Date = formValues[f.firstOccurrenceField];
-
-              if (!firstOccurrence) {
-                return null;
-              }
-
-              if (!isFieldShown(f, formValues)) {
-                return null;
-              }
-
-              return (
-                <InputPair
-                  field={field}
-                  key={field}
-                  containerStyle={styles.inputPair}
-                >
-                  <TransparentView>
-                    <MultipleRecurrenceSelector
-                      value={formValues[field]}
-                      onChange={(value) => {
-                        onFormValuesChange({
-                          ...formValues,
-                          [field]: value
-                        });
-                      }}
-                      firstOccurrence={firstOccurrence}
-                      disabled={f.disabled || false}
-                      reverse={f.reverse}
-                      max={f.max}
                     />
                   </TransparentView>
                 </InputPair>

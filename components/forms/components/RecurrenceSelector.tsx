@@ -15,6 +15,8 @@ import { Recurrence, RecurrenceType } from 'types/tasks';
 import { getUTCValuesFromDateTimeString } from 'utils/datesAndTimes';
 import DateTimeTextInput from './DateTimeTextInput';
 
+type RecurrenceValue = Omit<Recurrence, 'id'>;
+
 const styles = StyleSheet.create({
   formContainer: { width: '100%' },
   formInnerContainer: { flexDirection: 'row' },
@@ -33,7 +35,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const getIntervalText = (recurrence: Recurrence) => {
+const getIntervalText = (recurrence: RecurrenceValue) => {
   const { interval_length: intervalLength } = recurrence;
   if (intervalLength === 1) {
     return `Every`;
@@ -44,7 +46,7 @@ const getIntervalText = (recurrence: Recurrence) => {
   return `Every ${ordinal(intervalLength)}`;
 };
 
-const getTypeText = (recurrence: Recurrence) => {
+const getTypeText = (recurrence: RecurrenceValue) => {
   const { recurrence: type } = recurrence;
 
   if (['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'WEEKDAILY'].includes(type)) {
@@ -84,7 +86,10 @@ const getWeekNumber = (firstOccurrence: Date) => {
   return weekNumber;
 };
 
-const getWeekNumberString = (recurrence: Recurrence, firstOccurrence: Date) => {
+const getWeekNumberString = (
+  recurrence: RecurrenceValue,
+  firstOccurrence: Date
+) => {
   if (recurrence.recurrence === 'MONTHLY_LAST_WEEK') {
     return 'last';
   }
@@ -107,7 +112,7 @@ const getMonthName = (firstOccurrence: Date) => {
 };
 
 const recurrenceToName = (
-  recurrence: Recurrence,
+  recurrence: RecurrenceValue,
   firstOccurrence: Date,
   reverse?: boolean
 ) => {
@@ -395,8 +400,8 @@ const getTypeOptions = (firstOccurrence: Date) => {
 };
 
 type RecurrenceFormProps = {
-  value: Recurrence;
-  onChange: (newValue: Recurrence) => void;
+  value: RecurrenceValue;
+  onChange: (newValue: RecurrenceValue) => void;
   onChangeFirstOccurrenceField: (newValue: Date) => void;
   firstOccurrence: Date;
   reverse?: boolean;
@@ -410,7 +415,7 @@ const RecurrenceForm = ({
 }: RecurrenceFormProps) => {
   const [choosing, setChoosing] = useState('');
 
-  const defaultValues: Recurrence = {
+  const defaultValues: RecurrenceValue = {
     earliest_occurrence: firstOccurrence.toISOString(),
     latest_occurrence: null,
     interval_length: 1,
@@ -680,8 +685,8 @@ const RecurrenceForm = ({
 };
 
 type RecurrenceSelectorProps = {
-  value: Recurrence | null;
-  onChange: (newValue: Recurrence | null) => void;
+  value: RecurrenceValue | null;
+  onChange: (newValue: RecurrenceValue | null) => void;
   onChangeFirstOccurrenceField: (newValue: Date) => void;
   firstOccurrence: Date | null;
   disabled?: boolean;
@@ -697,14 +702,16 @@ export default function RecurrenceSelector({
 }: RecurrenceSelectorProps) {
   const [editing, setEditing] = useState(false);
 
-  const defaultValue: Recurrence = {
+  const defaultValue: RecurrenceValue = {
     earliest_occurrence: (firstOccurrence || new Date()).toISOString(),
     latest_occurrence: null,
     interval_length: 1,
     recurrence: 'DAILY'
   };
 
-  const [newValue, setNewValue] = useState<Recurrence>(value || defaultValue);
+  const [newValue, setNewValue] = useState<RecurrenceValue>(
+    value || defaultValue
+  );
   const valueString =
     value && firstOccurrence
       ? recurrenceToName(value, firstOccurrence, reverse)

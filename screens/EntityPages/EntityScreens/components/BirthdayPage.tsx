@@ -97,7 +97,11 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
   );
 
   const phoneLink = (
-    <ListLinkWithCheckBox text="Phone or text" toScreen="" navMethod="push" />
+    <ListLinkWithCheckBox
+      text="Phone or text"
+      toScreen="NotFound"
+      navMethod="push"
+    /> //TODO
   );
 
   const eventLink = (

@@ -1,12 +1,10 @@
 import dayjs from 'dayjs';
-import { Recurrence, Reminder } from 'types/tasks';
 import { UserFullResponse, UserResponse } from 'types/users';
 import { deepCopy } from 'utils/copy';
 import {
   DateTimeField,
   Field,
   FormFieldTypes,
-  MultiRecurrenceSelectorField,
   OptionalYearDate
 } from '../formFieldTypes';
 import utc from 'dayjs/plugin/utc';
@@ -118,34 +116,6 @@ const createInitialObject = (
 
       case 'checkbox':
         initialObj[key] = formFields[key].initialValue || false;
-        continue;
-
-      case 'multiRecurrenceSelector':
-        const f = formFields[key] as MultiRecurrenceSelectorField;
-
-        if (f.initialValue) {
-          if (f.reverse) {
-            const taskStartTime = new Date(
-              formFields[f.firstOccurrenceField].initialValue
-            );
-            const timeDelta = f.initialValue.earliest_timedelta;
-
-            let latestOccurrence: null | Date = null;
-            if (timeDelta) {
-              latestOccurrence = new Date(taskStartTime);
-              const [days, time] = timeDelta.split(' ');
-              latestOccurrence.setDate(latestOccurrence.getDate() - days);
-            }
-
-            const initialValue = f.initialValue.map((rec: Recurrence) => ({
-              ...rec,
-              recurrence: rec.recurrence,
-              latest_occurrence: latestOccurrence
-            }));
-
-            initialObj[key] = initialValue;
-          }
-        }
         continue;
 
       case 'actionsSelector':

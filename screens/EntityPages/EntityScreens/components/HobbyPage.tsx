@@ -59,7 +59,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
   const scheduleLink = (
     <ListLink
       text="Create a schedule"
-      toScreen=""
+      toScreen="NotFound" //TODO
       toScreenParams={{}}
       style={styles.listLink}
       navMethod="push"
@@ -69,7 +69,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
   const travelLink = (
     <ListLink
       text={'Travel - Link to travel'}
-      toScreen=""
+      toScreen="NotFound" //TODO
       toScreenParams={{}}
       style={styles.listLink}
       navMethod="push"
@@ -79,7 +79,7 @@ export default function HobbyScreen({ entityId }: { entityId: number }) {
   const customLink = (
     <ListLink
       text={'Custom - Define later'}
-      toScreen=""
+      toScreen="NotFound" //TODO
       toScreenParams={{
         entityTypes: ['Event'],
         entityTypeName: 'events'

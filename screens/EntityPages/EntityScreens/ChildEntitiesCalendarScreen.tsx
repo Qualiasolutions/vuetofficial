@@ -53,8 +53,8 @@ export default function ChildEntitiesCalendarScreen({
 
   const entityTypes = route.params.entityTypes;
   if (entityTypes) {
-    childEntities = childEntities.filter((entity) =>
-      entityTypes.includes(entity.resourcetype)
+    childEntities = childEntities.filter((ent) =>
+      entityTypes.includes(ent.resourcetype)
     );
   }
 
@@ -62,20 +62,21 @@ export default function ChildEntitiesCalendarScreen({
     childEntities.push(entity);
   }
 
-  return (
-    <Calendar
-      taskFilters={[
-        (task) =>
-          childEntities
-            .map((ent) => ent.id)
-            .some((ent) => task.entities.includes(ent))
-      ]}
-      periodFilters={[
-        (period) =>
-          childEntities
-            .map((ent) => ent.id)
-            .some((ent) => period.entities.includes(ent))
-      ]}
-    />
-  );
+  return null;
+  // return (
+  //   <Calendar
+  //     taskFilters={[
+  //       (task) =>
+  //         childEntities
+  //           .map((ent) => ent.id)
+  //           .some((ent) => task.entities.includes(ent))
+  //     ]}
+  //     periodFilters={[
+  //       (period) =>
+  //         childEntities
+  //           .map((ent) => ent.id)
+  //           .some((ent) => period.entities.includes(ent))
+  //     ]}
+  //   />
+  // );
 }

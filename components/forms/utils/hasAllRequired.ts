@@ -19,14 +19,6 @@ const hasAllRequired = (
       continue;
     }
 
-    if (['multiRecurrenceSelector'].includes(f?.type)) {
-      const value = parsedFormValues[field] as Recurrence[];
-      if (value && value.filter((v) => v).length > 0) {
-        continue;
-      }
-      return false;
-    }
-
     if (['addMembers'].includes(f?.type)) {
       const value = parsedFormValues[field];
       if (value && value.length > 0) {

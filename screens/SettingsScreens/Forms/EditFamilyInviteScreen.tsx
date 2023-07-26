@@ -66,7 +66,8 @@ export default function EditEntityScreen({
     let fieldName: keyof typeof formFields;
     for (fieldName in formFields) {
       if (fieldName in familyInviteToEdit) {
-        formFields[fieldName].initialValue = familyInviteToEdit[fieldName];
+        formFields[fieldName].initialValue =
+          familyInviteToEdit[fieldName] || undefined;
       }
     }
 
