@@ -279,6 +279,7 @@ function Task({
   date,
   isEntity
 }: PropTypes) {
+  // return <TransparentView style={[{ height: ITEM_HEIGHT }]} />;
   const { isComplete, isIgnored } = useSelector(
     selectIsComplete({
       id,

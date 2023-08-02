@@ -42,6 +42,7 @@ const ENTITY_TYPE_TO_CATEGORY: { [key in EntityTypeName]: CategoryName } = {
   Finance: 'FINANCE',
   Garden: 'GARDEN',
   HealthBeauty: 'HEALTH_BEAUTY',
+  HealthGoal: 'HEALTH_BEAUTY',
   Patient: 'HEALTH_BEAUTY',
   Appointment: 'HEALTH_BEAUTY'
 };

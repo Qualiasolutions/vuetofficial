@@ -810,11 +810,11 @@ export default function ReferencesList({
       .filter((entityTypeName) =>
         categoryNames.includes(ENTITY_TYPE_TO_CATEGORY[entityTypeName])
       )
-      .map((entityTypeName) => t(`addEntityHeaders.${entityTypeName}`))
+      .map((entityTypeName) => t(`entityResourceTypeNames.${entityTypeName}`))
       .join(' or ');
   } else if (entityTypes) {
     categoryName = entityTypes
-      .map((entityType) => t(`addEntityHeaders.${entityType}`))
+      .map((entityType) => t(`entityResourceTypeNames.${entityType}`))
       .join(' and ');
 
     entityNames = categoryName;

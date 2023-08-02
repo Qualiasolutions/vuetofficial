@@ -42,7 +42,7 @@ export default function useAddEntityHeader(entityTypeName: string) {
         : null;
 
       const options: Partial<NativeStackNavigationOptions> = {
-        title: `Add ${t(`addEntityHeaders.${entityTypeName}`)}`,
+        title: `Add ${t(`entityResourceTypeNames.${entityTypeName}`)}`,
         headerRight,
         headerTintColor,
         headerShown: true

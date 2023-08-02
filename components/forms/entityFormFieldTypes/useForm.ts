@@ -43,6 +43,7 @@ import { gardenForm } from './formFields/garden';
 import { travelPlanForm } from './formFields/travel-plan';
 import { anniversaryPlanForm } from './formFields/anniversary-plan';
 import { holidayPlanForm } from './formFields/holiday-plan';
+import { healthGoal } from './formFields/health-goal';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -215,6 +216,10 @@ export default function useForm(
 
     if (entityType === 'HolidayPlan') {
       return holidayPlanForm(isEdit, userFullDetails, t);
+    }
+
+    if (entityType === 'HealthGoal') {
+      return healthGoal(isEdit, userFullDetails, t);
     }
 
     return {};

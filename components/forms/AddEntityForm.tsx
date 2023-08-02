@@ -94,7 +94,9 @@ export default function AddEntityForm({
         onSubmitSuccess={() => {
           Toast.show({
             type: 'success',
-            text1: t('screens.addEntity.createSuccess', { entityType })
+            text1: t('screens.addEntity.createSuccess', {
+              entityType: t(`entityResourceTypeNames.${entityType}`)
+            })
           });
           navigation.goBack();
         }}

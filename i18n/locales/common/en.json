@@ -196,6 +196,8 @@
     "events": "Celebration / Event Planning",
     "anniversaries": "Birthdays & Anniversaries",
     "hobbies": "Interests & Hobbies",
+    "health-measurement": "Measurements",
+    "health-goal": "Health & Beauty Goals",
     "trips": "Trips",
     "travel-plans": "Travel Plans",
     "pets": "Pets",
@@ -220,7 +222,7 @@
     "students": "Students",
     "school-breaks": "School Breaks",
     "health-beauty": "Health & Beauty",
-    "finance": "Finance",
+    "finance": "Finance Items",
     "SchoolBreak": "School Breaks",
     "TripActivity": "Food & Activities",
     "Flight": "Flights",
@@ -272,7 +274,7 @@
     "SERVICE_DUE": "Service",
     "TAX_DUE": "Tax"
   },
-  "addEntityHeaders": {
+  "entityResourceTypeNames": {
     "Car": "Vehicle",
     "Boat": "Boat or Other",
     "PublicTransport": "Public Transport",
@@ -284,6 +286,8 @@
     "Hobby": "Hobby",
     "Holiday": "Holiday",
     "HolidayPlan": "Holiday Plan",
+    "HealthGoal": "Health / Beauty Goal",
+    "HealthMeasurement": "Measurement",
     "Trip": "Trip",
     "TravelPlan": "Travel Plan",
     "Flight": "Flight",

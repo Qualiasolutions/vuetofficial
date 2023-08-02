@@ -38,6 +38,7 @@ export type EntityTypeName =
   | 'School'
   | 'SchoolBreak'
   | 'HealthBeauty'
+  | 'HealthGoal'
   | 'Patient'
   | 'Appointment'
   | 'Student'
