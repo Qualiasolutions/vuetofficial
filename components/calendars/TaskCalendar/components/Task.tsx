@@ -10,10 +10,7 @@ import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
 import OptionTags from 'components/molecules/OptionTags';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectIsComplete,
-  selectScheduledTask
-} from 'reduxStore/slices/tasks/selectors';
+import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import dayjs from 'dayjs';
 import {
   FixedTaskResponseType,
@@ -228,14 +225,6 @@ function Task({
   date,
   isEntity
 }: PropTypes) {
-  // return <TransparentView style={[{ height: ITEM_HEIGHT }]} />;
-  const { isComplete, isIgnored } = useSelector(
-    selectIsComplete({
-      id,
-      recurrenceIndex: recurrence_index,
-      actionId: action_id
-    })
-  );
   const task = useSelector(selectTaskById(id));
   const entity = useSelector(selectEntityById(id));
 
@@ -249,6 +238,8 @@ function Task({
       actionId: action_id
     })
   );
+
+  const isComplete = !!scheduledTask?.is_complete;
 
   const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
 

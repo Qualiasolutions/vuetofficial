@@ -1,4 +1,5 @@
 import { vuetApi } from './api';
+import tasksApi from './tasks';
 
 type TaskCompletionFormCreateRequest = {
   resourcetype: string;
@@ -187,6 +188,28 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           );
           patchResults.push(patchResult);
         }
+
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (endpointName !== 'getAllScheduledTasks') continue;
+          const patchResult = dispatch(
+            tasksApi.util.updateQueryData(
+              'getAllScheduledTasks',
+              originalArgs,
+              (draft) => {
+                draft.byTaskId[patch.task][
+                  patch.recurrence_index === null ? -1 : patch.recurrence_index
+                ].is_complete = true;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+
         try {
           await queryFulfilled;
         } catch {
@@ -245,6 +268,28 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           );
           patchResults.push(patchResult);
         }
+
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (endpointName !== 'getAllScheduledTasks') continue;
+          const patchResult = dispatch(
+            tasksApi.util.updateQueryData(
+              'getAllScheduledTasks',
+              originalArgs,
+              (draft) => {
+                draft.byActionId[patch.action][
+                  patch.recurrence_index === null ? -1 : patch.recurrence_index
+                ].is_complete = true;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+
         try {
           await queryFulfilled;
         } catch {
