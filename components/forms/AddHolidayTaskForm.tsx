@@ -5,10 +5,7 @@ import { useHolidayFieldTypes } from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import {
-  TransparentPaddedView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
+import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
@@ -23,9 +20,9 @@ import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
-import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   container: {
@@ -87,6 +84,7 @@ export default function AddHolidayTaskForm({
     }
 
     const defaultDueDate = new Date();
+    defaultDueDate.setFullYear(defaultDueDate.getFullYear() - 1);
     const defaultRecurrence = {
       earliest_occurrence: defaultDueDate,
       latest_occurrence: null,
@@ -101,7 +99,7 @@ export default function AddHolidayTaskForm({
       duration: 15,
       tagsAndEntities: {
         entities: [],
-        tags: []
+        tags: ['SOCIAL_INTERESTS__HOLIDAY']
       },
       recurrence: defaultRecurrence
     });
@@ -134,10 +132,9 @@ export default function AddHolidayTaskForm({
     );
     const parsedFieldValues: any = {
       ...parsedDueDateFieldValues,
-      end_date: parsedDueDateFieldValues.start_date,
+      // end_date: parsedDueDateFieldValues.start_date,
       type: 'HOLIDAY',
-      resourcetype: 'HolidayTask',
-      duration: 15
+      resourcetype: 'HolidayTask'
     };
 
     try {
@@ -197,7 +194,7 @@ export default function AddHolidayTaskForm({
   }
 
   return (
-    <TransparentView style={styles.container}>
+    <TransparentFullPageScrollView contentContainerStyle={styles.container}>
       {holidayTypedForm}
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
@@ -214,6 +211,6 @@ export default function AddHolidayTaskForm({
           />
         </TransparentPaddedView>
       )}
-    </TransparentView>
+    </TransparentFullPageScrollView>
   );
 }

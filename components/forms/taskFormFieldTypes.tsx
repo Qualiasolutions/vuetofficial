@@ -732,6 +732,7 @@ export const useHolidayFieldTypes = (
   disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
+  const { t: baseT } = useTranslation();
   const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
@@ -739,7 +740,15 @@ export const useHolidayFieldTypes = (
       tagsAndEntities: {
         type: 'tagSelector',
         required: true,
-        displayName: t('tasks.task.tags')
+        displayName: t('tasks.task.tags'),
+        extraTagOptions: {
+          SOCIAL_INTERESTS: [
+            {
+              value: 'SOCIAL_INTERESTS__HOLIDAY',
+              label: baseT('tags.SOCIAL_INTERESTS__HOLIDAY')
+            }
+          ]
+        }
       },
       title: {
         type: 'string',
@@ -769,7 +778,7 @@ export const useHolidayFieldTypes = (
       },
       recurrence: {
         type: 'recurrenceSelector',
-        required: true,
+        required: false,
         firstOccurrenceField: 'start_date',
         displayName: t('tasks.task.recurrence'),
         disabled: disabledRecurrenceFields
@@ -789,5 +798,5 @@ export const useHolidayFieldTypes = (
         max: 3
       }
     };
-  }, [userFullDetails, t, disabledRecurrenceFields]);
+  }, [userFullDetails, t, baseT, disabledRecurrenceFields]);
 };
