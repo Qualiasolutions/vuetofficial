@@ -8,12 +8,14 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
   data: {
     filteredUsers: [],
     filteredEntities: [],
-    filteredTags: []
+    filteredTags: [],
+    taskToAction: null
   },
   ui: {
     listEnforcedDate: '',
     monthEnforcedDate: '',
-    enforcedDate: ''
+    enforcedDate: '',
+    actionDrawerOpen: false
   }
 };
 
@@ -76,6 +78,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         data: {
           ...state.data,
           filteredTags: payload.tags
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setTaskToAction,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          taskToAction: payload
         }
       };
     }

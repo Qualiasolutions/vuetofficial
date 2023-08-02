@@ -56,7 +56,6 @@ type TaskType =
 interface BaseTaskType {
   entities: number[];
   id: number;
-  is_complete: boolean;
   location: string;
   polymorphic_ctype: number;
   resourcetype: TaskResourceType;

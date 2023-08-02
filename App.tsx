@@ -46,6 +46,7 @@ import '@formatjs/intl-relativetimeformat/locale-data/en'; // locale-data for en
 import '@formatjs/intl-datetimeformat/polyfill';
 import '@formatjs/intl-datetimeformat/locale-data/en'; // locale-data for en
 import '@formatjs/intl-datetimeformat/add-all-tz'; // Add ALL tz data
+import { Modal } from 'components/molecules/Modals';
 
 // @ts-ignore
 Date.prototype._toLocaleString = Date.prototype.toLocaleString;

@@ -664,9 +664,12 @@
     "task": {
       "scheduleNext": "Schedule next {{dueDateType}} due date",
       "editOccurrence": "Edit occurrence",
+      "editTask": "Edit Task",
       "editAll": "Edit all",
       "deleteOccurrence": "Delete occurrence",
-      "deleteOccurrenceConfirmation": "Are you sure you would like to delete this occurrence?"
+      "deleteOccurrenceConfirmation": "Are you sure you would like to delete this occurrence?",
+      "messages": "Messages",
+      "markComplete": "Mark Complete"
     },
     "actionSelector": {
       "placeholder": "Add Actions"

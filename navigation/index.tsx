@@ -19,6 +19,7 @@ import { SideNavigator } from './SideNavigator';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import TaskActionModal from 'components/molecules/TaskActionModal';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -68,6 +69,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
     >
       {navigatorComponent}
+      <TaskActionModal />
     </NavigationContainer>
   );
 };
