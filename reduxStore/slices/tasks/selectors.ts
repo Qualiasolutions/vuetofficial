@@ -297,7 +297,10 @@ export const selectScheduledTaskIdsByEntityTypes = (
                 (ent) =>
                   entitiesData.byId[ent] &&
                   entityTypes.includes(entitiesData.byId[ent].resourcetype)
-              )
+              ) ||
+              (entityTypes.includes('AnniversaryPlan') &&
+                (task.tags.includes('SOCIAL_INTERESTS__BIRTHDAY') ||
+                  task.tags.includes('SOCIAL_INTERESTS__ANNIVERSARY')))
           ) || [];
 
       const formatted = formatTasksPerDate(filteredTasks);

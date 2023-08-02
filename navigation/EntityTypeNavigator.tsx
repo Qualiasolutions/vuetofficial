@@ -3,7 +3,6 @@ import EntityListPage from 'components/lists/EntityListPage';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import ListOfLists from 'components/organisms/ListOfLists';
 import ReferencesList from 'components/organisms/ReferencesList';
-import { Text } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
