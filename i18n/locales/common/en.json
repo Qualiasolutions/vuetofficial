@@ -83,7 +83,8 @@
     "FOOD__INFORMATION__PUBLIC": "My Food Information",
     "LAUNDRY__INFORMATION__PUBLIC": "My Laundry Information",
     "SOCIAL_INTERESTS__BIRTHDAY": "Birthday",
-    "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversary"
+    "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversary",
+    "SOCIAL_INTERESTS__HOLIDAY": "Holiday I Celebrate"
   },
   "linkTitles": {
     "EDUCATION": "Education",

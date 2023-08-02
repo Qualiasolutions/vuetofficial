@@ -183,7 +183,8 @@ export default function HolidayDetailScreen({
                 resourcetype: 'HolidayTask',
                 members: userDetails ? [userDetails.id] : [],
                 entities: [],
-                type: 'HOLIDAY'
+                type: 'HOLIDAY',
+                tags: ['SOCIAL_INTERESTS__HOLIDAY']
               }))
             );
           }
