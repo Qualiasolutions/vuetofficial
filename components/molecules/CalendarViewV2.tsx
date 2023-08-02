@@ -11,9 +11,11 @@ import { ParsedPeriod } from 'types/periods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
 import SafePressable from './SafePressable';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 
 export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };
+  entities?: { [date: string]: number[] };
   periods: ParsedPeriod[];
   onChangeDate?: (date: string) => void;
   hidden?: boolean;
@@ -54,9 +56,19 @@ const ListedTask = ({
   return <Text style={styles.taskText}>{task.title}</Text>;
 };
 
+const ListedEntity = ({ id }: { id: number }) => {
+  const entity = useSelector(selectEntityById(id));
+  const styles = useStyle();
+  if (!entity) {
+    return null;
+  }
+  return <Text style={styles.taskText}>{entity.name}</Text>;
+};
+
 const CalendarContent = ({
   onChangeDate,
   tasks,
+  entities,
   periods
 }: CalendarViewProps) => {
   const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(
@@ -129,6 +141,11 @@ const CalendarContent = ({
                 <ScrollView>
                   <TransparentView style={styles.dayComponentInnerContainer}>
                     <Text style={[styles.date]}>{date.day}</Text>
+                    {entities &&
+                      entities[date.dateString] &&
+                      entities[date.dateString].map((entity) => (
+                        <ListedEntity id={entity} key={entity} />
+                      ))}
                     {tasks &&
                       tasks[date.dateString] &&
                       tasks[date.dateString].map((task) => (
@@ -153,6 +170,7 @@ const CalendarContent = ({
 export default function CalendarView({
   onChangeDate,
   tasks,
+  entities,
   periods,
   hidden
 }: CalendarViewProps) {
@@ -163,6 +181,7 @@ export default function CalendarView({
     <CalendarContent
       onChangeDate={onChangeDate}
       tasks={tasks}
+      entities={entities}
       periods={periods}
     />
   );

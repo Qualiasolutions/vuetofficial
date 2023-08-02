@@ -98,6 +98,7 @@ function Calendar({
     return () => (
       <CalendarView
         tasks={filteredTasks}
+        entities={filteredEntities}
         periods={[]}
         onChangeDate={(date) => {
           dispatch(setMonthEnforcedDate({ date }));
@@ -105,7 +106,7 @@ function Calendar({
         hidden={!responsiveCalendar}
       />
     );
-  }, [dispatch, filteredTasks, responsiveCalendar]);
+  }, [dispatch, filteredTasks, filteredEntities, responsiveCalendar]);
 
   const isLoading =
     isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;

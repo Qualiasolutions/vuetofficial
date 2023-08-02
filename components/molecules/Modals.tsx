@@ -184,6 +184,10 @@ export function YesNoModal(props: YesNoModalProps) {
   );
 }
 
+const defaultListItemStyles = StyleSheet.create({
+  container: { paddingVertical: 6 }
+});
+
 function DefaultListItemComponent({
   item,
   itemToName
@@ -193,7 +197,7 @@ function DefaultListItemComponent({
 }) {
   return (
     <TransparentView>
-      <TransparentView style={{ paddingVertical: 6 }}>
+      <TransparentView style={defaultListItemStyles.container}>
         <Text> {itemToName(item)} </Text>
       </TransparentView>
     </TransparentView>
@@ -267,7 +271,7 @@ export function ListingModal(props: ListingModalProps) {
           </TransparentView>
         </SafePressable>
       ) : null;
-    const memberRows = data[sectionName].map((item, index) => {
+    const memberRows = data[sectionName].map((item) => {
       return (
         <SafePressable
           style={listingModalStyles.listItem}
