@@ -223,6 +223,40 @@ const listsApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['PlanningList']
     }),
+    getAllPlanningListTemplates: builder.query<AllPlanningLists, void>({
+      query: () => ({
+        url: 'core/planning-list-template/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningList[] = await response.json();
+            return normalisePlanningLists(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['PlanningList']
+    }),
+    createPlanningListTemplate: builder.mutation<
+      {
+        id: number;
+      },
+      {
+        title: string;
+        list: number;
+        from_template?: boolean;
+      }
+    >({
+      query: (body) => {
+        return {
+          url: 'core/planning-lists/create_template/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningList', 'PlanningSublist', 'PlanningListItem']
+    }),
     createPlanningList: builder.mutation<
       PlanningList,
       Omit<PlanningList, 'id'>
@@ -1066,6 +1100,8 @@ export const {
   useDeleteListEntryMutation,
   useFormUpdateListEntryMutation,
   useGetAllPlanningListsQuery,
+  useGetAllPlanningListTemplatesQuery,
+  useCreatePlanningListTemplateMutation,
   useCreatePlanningListMutation,
   useDeletePlanningListMutation,
   useUpdatePlanningListMutation,

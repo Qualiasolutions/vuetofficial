@@ -191,7 +191,7 @@ export default function AddTaskScreen({
               }}
             />
           </WhiteView>
-          {/* <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
+          <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
             <AddDueDateForm
               defaults={dueDateDefaults}
               onSuccess={() => navigation.goBack()}
@@ -210,7 +210,7 @@ export default function AddTaskScreen({
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />
-          </TransparentView> */}
+          </TransparentView>
           <TransparentView
             style={
               !['TASK', 'APPOINTMENT', 'ACTIVITY'].includes(formType) &&
@@ -229,12 +229,12 @@ export default function AddTaskScreen({
               onSuccess={() => navigation.goBack()}
             />
           </TransparentView>
-          {/* <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
+          <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
             <AddAnniversaryForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />
-          </TransparentView> */}
+          </TransparentView>
         </TransparentView>
       </TransparentView>
     </TransparentFullPageScrollView>

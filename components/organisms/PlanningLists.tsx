@@ -10,12 +10,14 @@ import { useTranslation } from 'react-i18next';
 import {
   useCreatePlanningListItemMutation,
   useCreatePlanningListMutation,
+  useCreatePlanningListTemplateMutation,
   useCreatePlanningSublistMutation,
   useDeletePlanningListItemMutation,
   useDeletePlanningListMutation,
   useDeletePlanningSublistMutation,
   useGetAllPlanningListItemsQuery,
   useGetAllPlanningListsQuery,
+  useGetAllPlanningListTemplatesQuery,
   useGetAllPlanningSublistsQuery,
   useUpdatePlanningListItemMutation,
   useUpdatePlanningListMutation
@@ -34,55 +36,61 @@ import UserTags from 'components/molecules/UserTags';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import Checkbox from 'components/molecules/Checkbox';
 import { useNavigation } from '@react-navigation/native';
+import DropDown from 'components/forms/components/DropDown';
 
 const addListStyles = StyleSheet.create({
   listInputPair: { flexDirection: 'row', width: '100%', alignItems: 'center' },
   input: { marginVertical: 5, width: 150 },
   buttonWrapper: { alignItems: 'flex-start', flexDirection: 'row' },
-  button: { paddingVertical: 5, marginHorizontal: 5 }
+  button: { paddingVertical: 5, marginHorizontal: 5 },
+  selectTemplateDropdown: { marginBottom: 10 },
+  selectTemplateButtonWrapper: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    width: '100%'
+  },
+  createFromTemplateModalContent: {
+    alignItems: 'center',
+    width: 250,
+    maxWidth: '100%'
+  }
 });
 
 const AddList = ({ category }: { category: number }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
+  const [newListTemplateId, setNewListTemplateId] = useState('');
   const [addingNew, setAddingNew] = useState(false);
   const [addingNewFromTemplate, setAddingNewFromTemplate] = useState(false);
   const { data: userDetails, isLoading: isLoadingUserDetails } =
     useGetUserFullDetails();
-  const [createNewPlanningList, createNewPlanningListResult] =
-    useCreatePlanningListMutation();
+  const [createNewPlanningList] = useCreatePlanningListMutation();
+  const [createTemplate] = useCreatePlanningListTemplateMutation();
 
-  if (isLoadingUserDetails || !userDetails) {
+  const {
+    data: planningListTemplates,
+    isLoading: isLoadingPlanningListTemplates
+  } = useGetAllPlanningListTemplatesQuery();
+
+  const isLoading =
+    isLoadingUserDetails ||
+    !userDetails ||
+    isLoadingPlanningListTemplates ||
+    !planningListTemplates;
+
+  if (isLoading) {
     return null;
   }
 
   return (
     <TransparentView>
       <TransparentView style={addListStyles.listInputPair}>
-        {/* <TextInput
-          value={newName}
-          onChangeText={setNewName}
-          style={addListStyles.input}
-        /> */}
         <TransparentView style={addListStyles.buttonWrapper}>
           <Button
             style={addListStyles.button}
             title={t('components.planningLists.addList')}
             onPress={() => {
               setAddingNew(true);
-              // try {
-              //   setNewName('');
-              //   await createNewPlanningList({
-              //     category,
-              //     name: newName,
-              //     members: [userDetails.id]
-              //   }).unwrap();
-              // } catch (err) {
-              //   Toast.show({
-              //     type: 'error',
-              //     text1: t('common.errors.generic')
-              //   });
-              // }
             }}
           />
           <Button
@@ -90,19 +98,6 @@ const AddList = ({ category }: { category: number }) => {
             title={t('components.planningLists.addListFromTemplate')}
             onPress={async () => {
               setAddingNewFromTemplate(true);
-              // try {
-              //   setNewName('');
-              //   await createNewPlanningList({
-              //     category,
-              //     name: newName,
-              //     members: [userDetails.id]
-              //   }).unwrap();
-              // } catch (err) {
-              //   Toast.show({
-              //     type: 'error',
-              //     text1: t('common.errors.generic')
-              //   });
-              // }
             }}
           />
         </TransparentView>
@@ -113,6 +108,9 @@ const AddList = ({ category }: { category: number }) => {
           setAddingNew(false);
         }}
       >
+        <Text>
+          {t('components.planningLists.createFromTemplateModal.blurb')}
+        </Text>
         <TextInput
           value={newName}
           onChangeText={setNewName}
@@ -145,7 +143,61 @@ const AddList = ({ category }: { category: number }) => {
           setAddingNewFromTemplate(false);
         }}
       >
-        <Text>TODO</Text>
+        <TransparentView style={addListStyles.createFromTemplateModalContent}>
+          {planningListTemplates.ids.length > 0 ? (
+            <DropDown
+              value={newListTemplateId}
+              items={planningListTemplates.ids.map((templateId) => {
+                const template = planningListTemplates.byId[templateId];
+                return {
+                  value: templateId,
+                  label: template.name
+                };
+              })}
+              setFormValues={setNewListTemplateId}
+              listMode="MODAL"
+              style={addListStyles.selectTemplateDropdown}
+            />
+          ) : (
+            <Text>{t('components.planningLists.noTemplates')}</Text>
+          )}
+          <Text>
+            {t('components.planningLists.createFromTemplateModal.blurb')}
+          </Text>
+          <TextInput
+            value={newName}
+            onChangeText={setNewName}
+            style={addListStyles.input}
+          />
+          <TransparentView style={addListStyles.selectTemplateButtonWrapper}>
+            <Button
+              title={t('common.ok')}
+              disabled={!newListTemplateId || !newName}
+              onPress={async () => {
+                if (planningListTemplates.ids.length > 0) {
+                  try {
+                    setAddingNewFromTemplate(false);
+                    await createTemplate({
+                      title: newName,
+                      list: parseInt(newListTemplateId),
+                      from_template: true
+                    });
+                    setNewListTemplateId('');
+                    setNewName('');
+                  } catch (err) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('common.errors.generic')
+                    });
+                  }
+                } else {
+                  setAddingNewFromTemplate(false);
+                }
+              }}
+              style={addListStyles.button}
+            />
+          </TransparentView>
+        </TransparentView>
       </Modal>
     </TransparentView>
   );
@@ -256,7 +308,13 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   checkbox: { width: 16, height: 16 },
-  listItemCalendarLink: { marginLeft: 10 }
+  listItemCalendarLink: { marginLeft: 10 },
+  listTemplateLink: { marginLeft: 10 },
+  saveTemplateButtonWrapper: { flexDirection: 'row', justifyContent: 'center' },
+  saveTemplateModalContent: {
+    maxWidth: 250,
+    alignItems: 'center'
+  }
 });
 
 const PlanningSublistView = ({ sublist }: { sublist: PlanningSublist }) => {
@@ -357,8 +415,12 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
 
   const [deleteList] = useDeletePlanningListMutation();
   const [updateList, updateListResult] = useUpdatePlanningListMutation();
+  const [createTemplate] = useCreatePlanningListTemplateMutation();
   const [deleting, setDeleting] = useState(false);
   const [editingMembers, setEditingMembers] = useState(false);
+  const [savingAsTemplate, setSavingAsTemplate] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState('');
+
   const [newMembers, setNewMembers] = useState(list.members);
   const { t } = useTranslation();
 
@@ -380,6 +442,14 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
           }}
         >
           <Feather name="trash" size={20} color="red" />
+        </SafePressable>
+        <SafePressable
+          onPress={() => {
+            setSavingAsTemplate(true);
+          }}
+          style={styles.listTemplateLink}
+        >
+          <Feather name="save" size={20} color="green" />
         </SafePressable>
       </TransparentView>
       {sublists.map((sublistId) => {
@@ -436,6 +506,39 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
           />
         )}
       </Modal>
+      <Modal
+        visible={savingAsTemplate}
+        onRequestClose={() => setSavingAsTemplate(false)}
+      >
+        <TransparentView style={styles.saveTemplateModalContent}>
+          <Text>{t('components.planningLists.saveTemplateModal.blurb')}</Text>
+          <TextInput
+            value={newTemplateName}
+            onChangeText={setNewTemplateName}
+            style={addListStyles.input}
+          />
+          <TransparentView style={styles.saveTemplateButtonWrapper}>
+            <Button
+              title={t('common.save')}
+              onPress={async () => {
+                try {
+                  setSavingAsTemplate(false);
+                  await createTemplate({
+                    title: newTemplateName,
+                    list: list.id
+                  });
+                  setNewTemplateName('');
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+            />
+          </TransparentView>
+        </TransparentView>
+      </Modal>
     </WhiteBox>
   );
 };
@@ -471,7 +574,6 @@ export default function PlanningLists() {
           const list = planningLists.byId[listId];
           return <PlanningListView list={list} key={listId} />;
         })}
-      {/* <AddList category={category.id} /> */}
     </TransparentPaddedView>
   ));
 

@@ -657,6 +657,7 @@
     },
     "planningLists": {
       "addList": "+",
+      "noTemplates": "There are currently no templates from which to create planning lists",
       "addListFromTemplate": "+ From Template",
       "addSublist": "Add Sublist",
       "deleteListModal": {
@@ -669,6 +670,12 @@
       },
       "addListModal": {
         "add": "Add List"
+      },
+      "saveTemplateModal": {
+        "blurb": "What would you like to save your template as?"
+      },
+      "createFromTemplateModal": {
+        "blurb": "What would you like to name your new list?"
       }
     }, 
     "shoppingLists": {
