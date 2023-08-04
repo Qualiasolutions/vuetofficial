@@ -174,7 +174,10 @@ const AddList = ({ category }: { category: number }) => {
           <TransparentView style={addListStyles.selectTemplateButtonWrapper}>
             <Button
               title={t('common.ok')}
-              disabled={!newListTemplateId || !newName}
+              disabled={
+                planningListTemplates.ids.length > 0 &&
+                (!newListTemplateId || !newName)
+              }
               onPress={async () => {
                 if (planningListTemplates.ids.length > 0) {
                   try {
