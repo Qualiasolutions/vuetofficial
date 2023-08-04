@@ -73,6 +73,7 @@ export type PlanningListItem = {
   id: number;
   sublist: number;
   title: string;
+  checked: boolean;
 };
 
 export type AllPlanningListItems = {

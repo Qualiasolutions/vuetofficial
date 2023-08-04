@@ -8,17 +8,17 @@ import {
 import { Text, TextInput } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
-  useCreatePlanningListItemMutation,
-  useCreatePlanningListMutation,
-  useCreatePlanningSublistMutation,
-  useDeletePlanningListItemMutation,
-  useDeletePlanningListMutation,
-  useDeletePlanningSublistMutation,
-  useGetAllPlanningListItemsQuery,
-  useGetAllPlanningListsQuery,
-  useGetAllPlanningSublistsQuery,
-  useUpdatePlanningListItemMutation,
-  useUpdatePlanningListMutation
+  useCreateShoppingListItemMutation,
+  useCreateShoppingListMutation,
+  useCreateShoppingSublistMutation,
+  useDeleteShoppingListItemMutation,
+  useDeleteShoppingListMutation,
+  useDeleteShoppingSublistMutation,
+  useGetAllShoppingListItemsQuery,
+  useGetAllShoppingListsQuery,
+  useGetAllShoppingSublistsQuery,
+  useUpdateShoppingListItemMutation,
+  useUpdateShoppingListMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
@@ -33,128 +33,24 @@ import { Modal, YesNoModal } from 'components/molecules/Modals';
 import UserTags from 'components/molecules/UserTags';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import Checkbox from 'components/molecules/Checkbox';
-import { useNavigation } from '@react-navigation/native';
 
 const addListStyles = StyleSheet.create({
   listInputPair: { flexDirection: 'row', width: '100%', alignItems: 'center' },
-  input: { marginVertical: 5, width: 150 },
-  buttonWrapper: { alignItems: 'flex-start', flexDirection: 'row' },
-  button: { paddingVertical: 5, marginHorizontal: 5 }
+  input: { flex: 1, marginRight: 10, marginVertical: 5 },
+  buttonWrapper: { alignItems: 'flex-start' },
+  button: { paddingVertical: 5 }
 });
 
 const AddList = ({ category }: { category: number }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
-  const [addingNew, setAddingNew] = useState(false);
-  const [addingNewFromTemplate, setAddingNewFromTemplate] = useState(false);
   const { data: userDetails, isLoading: isLoadingUserDetails } =
     useGetUserFullDetails();
-  const [createNewPlanningList, createNewPlanningListResult] =
-    useCreatePlanningListMutation();
+  const [createNewShoppingList] = useCreateShoppingListMutation();
 
   if (isLoadingUserDetails || !userDetails) {
     return null;
   }
-
-  return (
-    <TransparentView>
-      <TransparentView style={addListStyles.listInputPair}>
-        {/* <TextInput
-          value={newName}
-          onChangeText={setNewName}
-          style={addListStyles.input}
-        /> */}
-        <TransparentView style={addListStyles.buttonWrapper}>
-          <Button
-            style={addListStyles.button}
-            title={t('components.planningLists.addList')}
-            onPress={() => {
-              setAddingNew(true);
-              // try {
-              //   setNewName('');
-              //   await createNewPlanningList({
-              //     category,
-              //     name: newName,
-              //     members: [userDetails.id]
-              //   }).unwrap();
-              // } catch (err) {
-              //   Toast.show({
-              //     type: 'error',
-              //     text1: t('common.errors.generic')
-              //   });
-              // }
-            }}
-          />
-          <Button
-            style={addListStyles.button}
-            title={t('components.planningLists.addListFromTemplate')}
-            onPress={async () => {
-              setAddingNewFromTemplate(true);
-              // try {
-              //   setNewName('');
-              //   await createNewPlanningList({
-              //     category,
-              //     name: newName,
-              //     members: [userDetails.id]
-              //   }).unwrap();
-              // } catch (err) {
-              //   Toast.show({
-              //     type: 'error',
-              //     text1: t('common.errors.generic')
-              //   });
-              // }
-            }}
-          />
-        </TransparentView>
-      </TransparentView>
-      <Modal
-        visible={addingNew}
-        onRequestClose={() => {
-          setAddingNew(false);
-        }}
-      >
-        <TextInput
-          value={newName}
-          onChangeText={setNewName}
-          style={addListStyles.input}
-        />
-        <Button
-          style={addListStyles.button}
-          title={t('components.planningLists.addListModal.add')}
-          onPress={async () => {
-            try {
-              setAddingNew(false);
-              await createNewPlanningList({
-                category,
-                name: newName,
-                members: [userDetails.id]
-              }).unwrap();
-              setNewName('');
-            } catch (err) {
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
-            }
-          }}
-        />
-      </Modal>
-      <Modal
-        visible={addingNewFromTemplate}
-        onRequestClose={() => {
-          setAddingNewFromTemplate(false);
-        }}
-      >
-        <Text>TODO</Text>
-      </Modal>
-    </TransparentView>
-  );
-};
-
-const AddSublist = ({ list }: { list: number }) => {
-  const { t } = useTranslation();
-  const [newName, setNewName] = useState('');
-  const [createPlanningSublist] = useCreatePlanningSublistMutation();
 
   return (
     <TransparentView>
@@ -168,11 +64,51 @@ const AddSublist = ({ list }: { list: number }) => {
           <Button
             style={addListStyles.button}
             disabled={!newName}
-            title={t('components.planningLists.addSublist')}
+            title={t('components.shoppingLists.addList')}
             onPress={async () => {
               try {
                 setNewName('');
-                await createPlanningSublist({
+                await createNewShoppingList({
+                  category,
+                  name: newName,
+                  members: [userDetails.id]
+                }).unwrap();
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+          />
+        </TransparentView>
+      </TransparentView>
+    </TransparentView>
+  );
+};
+
+const AddSublist = ({ list }: { list: number }) => {
+  const { t } = useTranslation();
+  const [newName, setNewName] = useState('');
+  const [createShoppingSublist] = useCreateShoppingSublistMutation();
+
+  return (
+    <TransparentView>
+      <TransparentView style={addListStyles.listInputPair}>
+        <TextInput
+          value={newName}
+          onChangeText={setNewName}
+          style={addListStyles.input}
+        />
+        <TransparentView style={addListStyles.buttonWrapper}>
+          <Button
+            style={addListStyles.button}
+            disabled={!newName}
+            title={t('components.shoppingLists.addSublist')}
+            onPress={async () => {
+              try {
+                setNewName('');
+                await createShoppingSublist({
                   list,
                   title: newName
                 }).unwrap();
@@ -204,7 +140,7 @@ const addListItemStyles = StyleSheet.create({
 const AddListItem = ({ sublist }: { sublist: number }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
-  const [createPlanningListItem] = useCreatePlanningListItemMutation();
+  const [createShoppingListItem] = useCreateShoppingListItemMutation();
 
   return (
     <TransparentView>
@@ -219,7 +155,7 @@ const AddListItem = ({ sublist }: { sublist: number }) => {
             onPress={async () => {
               try {
                 setNewName('');
-                await createPlanningListItem({
+                await createShoppingListItem({
                   sublist,
                   title: newName
                 }).unwrap();
@@ -241,10 +177,7 @@ const AddListItem = ({ sublist }: { sublist: number }) => {
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
-  categoryHeader: { fontSize: 22, marginRight: 20 },
-  categoryHeaderSection: {
-    marginBottom: 10
-  },
+  categoryHeader: { fontSize: 22 },
   listHeader: { fontSize: 18, marginRight: 10 },
   listHeaderSection: { flexDirection: 'row', alignItems: 'center' },
   sublistHeader: { fontSize: 16, marginRight: 10 },
@@ -255,35 +188,29 @@ const styles = StyleSheet.create({
   saveMembersButton: {
     marginTop: 20
   },
-  checkbox: { width: 16, height: 16 },
-  listItemCalendarLink: { marginLeft: 10 }
+  checkbox: { width: 16, height: 16 }
 });
 
-const PlanningSublistView = ({ sublist }: { sublist: PlanningSublist }) => {
+const ShoppingSublistView = ({ sublist }: { sublist: PlanningSublist }) => {
   const { data: allListItems, isLoading: isLoadingListItems } =
-    useGetAllPlanningListItemsQuery();
+    useGetAllShoppingListItemsQuery();
 
-  const { data: allLists, isLoading: isLoadingLists } =
-    useGetAllPlanningListsQuery();
+  const [deleteSublist] = useDeleteShoppingSublistMutation();
 
-  const [deleteSublist] = useDeletePlanningSublistMutation();
   const [deleting, setDeleting] = useState(false);
 
-  const [deleteListItem] = useDeletePlanningListItemMutation();
-  const [updateListItem] = useUpdatePlanningListItemMutation();
+  const [deleteListItem] = useDeleteShoppingListItemMutation();
+  const [updateListItem] = useUpdateShoppingListItemMutation();
 
   const { t } = useTranslation();
-  const navigation = useNavigation();
 
-  const isLoading =
-    isLoadingListItems || !allListItems || isLoadingLists || !allLists;
+  const isLoading = isLoadingListItems || !allListItems;
 
   if (isLoading) {
     return null;
   }
 
   const sublistItems = allListItems.bySublist[sublist.id] || [];
-  const parentList = allLists.byId[sublist.list];
 
   return (
     <TransparentView style={styles.sublistView}>
@@ -315,18 +242,6 @@ const PlanningSublistView = ({ sublist }: { sublist: PlanningSublist }) => {
             <SafePressable onPress={() => deleteListItem(itemId)}>
               <Feather name="minus" color="red" size={20} />
             </SafePressable>
-            <SafePressable
-              onPress={() => {
-                (navigation.navigate as any)('AddTask', {
-                  type: 'TASK',
-                  title: item.title,
-                  members: parentList.members
-                });
-              }}
-              style={styles.listItemCalendarLink}
-            >
-              <Feather name="calendar" size={16} color="green" />
-            </SafePressable>
           </TransparentView>
         );
       })}
@@ -334,8 +249,8 @@ const PlanningSublistView = ({ sublist }: { sublist: PlanningSublist }) => {
         <AddListItem sublist={sublist.id} />
       </TransparentView>
       <YesNoModal
-        title={t('components.planningLists.deleteSublistModal.title')}
-        question={t('components.planningLists.deleteSublistModal.blurb')}
+        title={t('components.shoppingLists.deleteSublistModal.title')}
+        question={t('components.shoppingLists.deleteSublistModal.blurb')}
         visible={deleting}
         onYes={() => {
           deleteSublist(sublist.id);
@@ -351,12 +266,12 @@ const PlanningSublistView = ({ sublist }: { sublist: PlanningSublist }) => {
   );
 };
 
-const PlanningListView = ({ list }: { list: PlanningList }) => {
+const ShoppingListView = ({ list }: { list: PlanningList }) => {
   const { data: allSublists, isLoading: isLoadingSublists } =
-    useGetAllPlanningSublistsQuery();
+    useGetAllShoppingSublistsQuery();
 
-  const [deleteList] = useDeletePlanningListMutation();
-  const [updateList, updateListResult] = useUpdatePlanningListMutation();
+  const [deleteList] = useDeleteShoppingListMutation();
+  const [updateList, updateListResult] = useUpdateShoppingListMutation();
   const [deleting, setDeleting] = useState(false);
   const [editingMembers, setEditingMembers] = useState(false);
   const [newMembers, setNewMembers] = useState(list.members);
@@ -384,7 +299,7 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
       </TransparentView>
       {sublists.map((sublistId) => {
         const sublist = allSublists.byId[sublistId];
-        return <PlanningSublistView sublist={sublist} key={sublistId} />;
+        return <ShoppingSublistView sublist={sublist} key={sublistId} />;
       })}
       <AddSublist list={list.id} />
       <SafePressable
@@ -395,8 +310,8 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
         <UserTags memberIds={list.members} />
       </SafePressable>
       <YesNoModal
-        title={t('components.planningLists.deleteListModal.title')}
-        question={t('components.planningLists.deleteListModal.blurb')}
+        title={t('components.shoppingLists.deleteListModal.title')}
+        question={t('components.shoppingLists.deleteListModal.blurb')}
         visible={deleting}
         onYes={() => {
           deleteList(list.id);
@@ -440,9 +355,9 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
   );
 };
 
-export default function PlanningLists() {
-  const { data: planningLists, isLoading: isLoadingPlanningLists } =
-    useGetAllPlanningListsQuery();
+export default function ShoppingLists() {
+  const { data: shoppingLists, isLoading: isLoadingShoppingLists } =
+    useGetAllShoppingListsQuery();
 
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
@@ -450,9 +365,9 @@ export default function PlanningLists() {
   const { t } = useTranslation();
 
   const isLoading =
-    isLoadingPlanningLists ||
+    isLoadingShoppingLists ||
     isLoadingCategories ||
-    !planningLists ||
+    !shoppingLists ||
     !allCategories;
   if (isLoading) {
     return <FullPageSpinner />;
@@ -460,18 +375,15 @@ export default function PlanningLists() {
 
   const categoryViews = Object.values(allCategories.byId).map((category) => (
     <TransparentPaddedView key={category.id}>
-      <TransparentView style={styles.categoryHeaderSection}>
-        <Text style={styles.categoryHeader}>
-          {t(`categories.${category.name}`)}
-        </Text>
-        <AddList category={category.id} />
-      </TransparentView>
-      {planningLists.byCategory[category.id] &&
-        planningLists.byCategory[category.id].map((listId) => {
-          const list = planningLists.byId[listId];
-          return <PlanningListView list={list} key={listId} />;
+      <Text style={styles.categoryHeader}>
+        {t(`categories.${category.name}`)}
+      </Text>
+      {shoppingLists.byCategory[category.id] &&
+        shoppingLists.byCategory[category.id].map((listId) => {
+          const list = shoppingLists.byId[listId];
+          return <ShoppingListView list={list} key={listId} />;
         })}
-      {/* <AddList category={category.id} /> */}
+      <AddList category={category.id} />
     </TransparentPaddedView>
   ));
 

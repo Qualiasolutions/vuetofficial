@@ -216,6 +216,7 @@ export type RootTabParamList = {
   SideNavigator: undefined;
   AddTask: {
     entities?: number[];
+    members?: number[];
     tags?: string[];
     type?: FormType;
     title?: string;

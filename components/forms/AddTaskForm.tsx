@@ -54,13 +54,14 @@ type AddTaskFormProps = {
   formType: 'TASK' | 'APPOINTMENT' | 'ACTIVITY';
   defaults: {
     title: string;
-    entities: number[];
     tags: string[];
     start_datetime?: Date;
     end_datetime?: Date;
     date?: string;
     duration?: number;
     is_any_time?: boolean;
+    entities?: number[];
+    members?: number[];
   };
   onSuccess: () => void;
   taskId?: number;
@@ -129,6 +130,15 @@ export default function AddTaskForm({
       topFieldsOverrides.title = defaults.title;
     }
 
+    if (defaults?.members) {
+      topFieldsOverrides.members = defaults.members;
+    }
+
+    topFieldsOverrides.tagsAndEntities = {
+      entities: defaults?.entities || [],
+      tags: defaults?.tags || []
+    };
+
     return createInitialObject(taskTopFields, userDetails, topFieldsOverrides);
   }, [taskTopFields, userDetails, defaults]);
 
@@ -176,11 +186,7 @@ export default function AddTaskForm({
       recurrence: null,
       earliest_action_date: defaultEarliestActionDate,
       due_date: defaultDueDate,
-      is_any_time: !!defaults.is_any_time,
-      tagsAndEntities: {
-        entities: defaults?.entities || [],
-        tags: defaults?.tags || []
-      }
+      is_any_time: !!defaults.is_any_time
     });
   }, [taskMiddleFields, userDetails, formType, defaults]);
 

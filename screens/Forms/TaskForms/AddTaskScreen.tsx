@@ -153,9 +153,10 @@ export default function AddTaskScreen({
       earliest_action_date: defaultEarliestActionDate,
       due_date: defaultDueDate,
       entities: route.params?.entities || [],
+      members: route.params?.members || (userDetails ? [userDetails.id] : []),
       tags: route.params?.tags || []
     };
-  }, [formType, route.params]);
+  }, [formType, route.params, userDetails]);
 
   const dueDateDefaults = useMemo(() => {
     const nextWeek = new Date();
@@ -190,7 +191,7 @@ export default function AddTaskScreen({
               }}
             />
           </WhiteView>
-          <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
+          {/* <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
             <AddDueDateForm
               defaults={dueDateDefaults}
               onSuccess={() => navigation.goBack()}
@@ -209,7 +210,7 @@ export default function AddTaskScreen({
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />
-          </TransparentView>
+          </TransparentView> */}
           <TransparentView
             style={
               !['TASK', 'APPOINTMENT', 'ACTIVITY'].includes(formType) &&
@@ -228,12 +229,12 @@ export default function AddTaskScreen({
               onSuccess={() => navigation.goBack()}
             />
           </TransparentView>
-          <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
+          {/* <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
             <AddAnniversaryForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
             />
-          </TransparentView>
+          </TransparentView> */}
         </TransparentView>
       </TransparentView>
     </TransparentFullPageScrollView>

@@ -586,10 +586,10 @@ export default function TypedForm({
                   pairStyle={styles.membersPair}
                 >
                   <MemberSelector
-                    data={f.permittedValues}
                     values={formValues[field] || []}
                     onValueChange={(selectedMembers) => {
                       onFormValuesChange({
+                        ...formValues,
                         [field]: selectedMembers
                       });
                     }}

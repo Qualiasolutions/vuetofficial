@@ -656,7 +656,8 @@
       "noLists": "No lists have been added here yet - go to your entities to add lists"
     },
     "planningLists": {
-      "addList": "Add List",
+      "addList": "+",
+      "addListFromTemplate": "+ From Template",
       "addSublist": "Add Sublist",
       "deleteListModal": {
         "title": "Delete list",
@@ -665,6 +666,21 @@
       "deleteSublistModal": {
         "title": "Delete sublist",
         "blurb": "Are you sure you would like to delete this sublist?"
+      },
+      "addListModal": {
+        "add": "Add List"
+      }
+    }, 
+    "shoppingLists": {
+      "addList": "Add List",
+      "addSublist": "Add Store",
+      "deleteListModal": {
+        "title": "Delete list",
+        "blurb": "Are you sure you would like to delete this list?"
+      },
+      "deleteSublistModal": {
+        "title": "Delete store list",
+        "blurb": "Are you sure you would like to delete this store list?"
       }
     }, 
     "entityPages": {

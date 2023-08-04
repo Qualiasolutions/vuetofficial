@@ -439,7 +439,8 @@ export default function EntityAndTagSelector({
   return (
     <TransparentView>
       <SafePressable onPress={() => setOpen(true)}>
-        {value.entities.length > 0 || value.tags.length > 0 ? (
+        {(value.entities && value.entities.length > 0) ||
+        (value.tags && value.tags.length > 0) ? (
           <TransparentView>
             {value.entities.map((entityId) =>
               allEntities.byId[entityId] ? (

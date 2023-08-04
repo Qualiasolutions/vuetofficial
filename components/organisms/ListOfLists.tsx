@@ -18,6 +18,7 @@ import {
 } from 'reduxStore/slices/entities/selectors';
 import { EntityResponseType } from 'types/entities';
 import PlanningLists from './PlanningLists';
+import ShoppingLists from './ShoppingLists';
 
 export type NavigatorParamList = {
   Home: undefined;
@@ -143,10 +144,6 @@ const ListOfLists = ({
       )}
     </WhiteFullPageScrollView>
   );
-};
-
-const ShoppingLists = () => {
-  return null;
 };
 
 export default function ListsNavigator({

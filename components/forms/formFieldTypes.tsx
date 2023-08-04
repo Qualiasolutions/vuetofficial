@@ -66,7 +66,7 @@ export type CheckboxField = BaseField<'checkbox', any> & {
 };
 
 export type AddMembersField = BaseField<'addMembers', any> & {
-  permittedValues: {
+  permittedValues?: {
     friends: UserResponse[];
     family: UserResponse[];
   };

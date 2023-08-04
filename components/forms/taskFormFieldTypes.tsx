@@ -14,7 +14,6 @@ export const useTaskTopFieldTypes = (
   taskHiddenTag: string = ''
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -32,16 +31,12 @@ export const useTaskTopFieldTypes = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
       }
     };
-  }, [t, userFullDetails, isEdit, taskHiddenTag]);
+  }, [t, isEdit, taskHiddenTag]);
 };
 
 export const useTaskMiddleFieldTypes = (
@@ -281,7 +276,6 @@ export const useDueDateFieldTypes = (
   allowRecurrence: boolean = true
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const { data: userFullDetails } = useGetUserDetails();
   const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo<FlatFormFieldTypes>(() => {
@@ -300,10 +294,6 @@ export const useDueDateFieldTypes = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
@@ -356,7 +346,6 @@ export const useDueDateFieldTypes = (
       }
     };
   }, [
-    userFullDetails,
     t,
     isEdit,
     taskHiddenTag,
@@ -370,7 +359,6 @@ export const useTransportFieldTypes = (
   type?: TransportTaskType
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -382,10 +370,6 @@ export const useTransportFieldTypes = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
@@ -509,14 +493,13 @@ export const useTransportFieldTypes = (
         max: 3
       }
     };
-  }, [userFullDetails, t, type]);
+  }, [t, type]);
 };
 
 export const useAccommodationFieldTypes = (
   type?: AccommodationTaskType
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -528,10 +511,6 @@ export const useAccommodationFieldTypes = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
@@ -629,7 +608,7 @@ export const useAccommodationFieldTypes = (
         max: 3
       }
     };
-  }, [userFullDetails, t, type]);
+  }, [t, type]);
 };
 
 export const useAnniversaryFieldTypes = (
@@ -638,7 +617,6 @@ export const useAnniversaryFieldTypes = (
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { t: baseT } = useTranslation();
-  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -686,10 +664,6 @@ export const useAnniversaryFieldTypes = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.anniversaryTask.changeMembers')
@@ -725,7 +699,7 @@ export const useAnniversaryFieldTypes = (
         max: 3
       }
     };
-  }, [userFullDetails, t, baseT, disabledRecurrenceFields, type]);
+  }, [t, baseT, disabledRecurrenceFields, type]);
 };
 
 export const useHolidayFieldTypes = (
@@ -733,7 +707,6 @@ export const useHolidayFieldTypes = (
 ): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { t: baseT } = useTranslation();
-  const { data: userFullDetails } = useGetUserDetails();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -758,10 +731,6 @@ export const useHolidayFieldTypes = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
@@ -798,5 +767,5 @@ export const useHolidayFieldTypes = (
         max: 3
       }
     };
-  }, [userFullDetails, t, baseT, disabledRecurrenceFields]);
+  }, [t, baseT, disabledRecurrenceFields]);
 };

@@ -490,7 +490,7 @@ const listsApi = vuetApi.injectEndpoints({
     }),
     createPlanningListItem: builder.mutation<
       PlanningListItem,
-      Omit<PlanningListItem, 'id'>
+      Omit<PlanningListItem, 'id' | 'checked'>
     >({
       query: (body) => {
         return {
@@ -519,7 +519,7 @@ const listsApi = vuetApi.injectEndpoints({
               (draft) => {
                 const mockId = Math.round(1000000 * Math.random() * 1e7);
                 draft.ids.push(mockId);
-                draft.byId[mockId] = { ...patch, id: mockId };
+                draft.byId[mockId] = { ...patch, id: mockId, checked: false };
 
                 const bySublist = draft.bySublist[patch.sublist];
                 draft.bySublist[patch.sublist] = bySublist
@@ -583,6 +583,476 @@ const listsApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    updatePlanningListItem: builder.mutation<
+      PlanningListItem,
+      Partial<PlanningListItem> & Pick<PlanningListItem, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/planning-list-item/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningListItem'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningListItem' }
+        ])) {
+          if (endpointName !== 'getAllPlanningListItems') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningListItems',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    getAllShoppingLists: builder.query<AllPlanningLists, void>({
+      query: () => ({
+        url: 'core/shopping-list/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningList[] = await response.json();
+            return normalisePlanningLists(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['ShoppingList']
+    }),
+    createShoppingList: builder.mutation<
+      PlanningList,
+      Omit<PlanningList, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/shopping-list/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingList'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingList' }
+        ])) {
+          if (endpointName !== 'getAllShoppingLists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingLists',
+              originalArgs,
+              (draft) => {
+                const mockId = Math.round(1000000 * Math.random() * 1e7);
+                draft.ids.push(mockId);
+                draft.byId[mockId] = { ...patch, id: mockId };
+
+                const byCat = draft.byCategory[patch.category];
+                draft.byCategory[patch.category] = byCat
+                  ? [...byCat, mockId]
+                  : [mockId];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    deleteShoppingList: builder.mutation<void, number>({
+      query: (listId) => {
+        return {
+          url: `core/shopping-list/${listId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['ShoppingList'],
+      async onQueryStarted(listId, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingList' }
+        ])) {
+          if (endpointName !== 'getAllShoppingLists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingLists',
+              originalArgs,
+              (draft) => {
+                const cat = draft.byId[listId].category;
+
+                draft.ids = draft.ids.filter((id) => id !== listId);
+                delete draft.byId[listId];
+
+                const byCat = draft.byCategory[cat];
+                draft.byCategory[cat] = byCat.filter((id) => id !== listId);
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    updateShoppingList: builder.mutation<
+      PlanningList,
+      Partial<PlanningList> & Pick<PlanningList, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/shopping-list/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingList'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingList' }
+        ])) {
+          if (endpointName !== 'getAllShoppingLists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingLists',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    getAllShoppingSublists: builder.query<AllPlanningSublists, void>({
+      query: () => ({
+        url: 'core/shopping-sublist/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningSublist[] = await response.json();
+            return normalisePlanningSublists(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['ShoppingSublist']
+    }),
+    createShoppingSublist: builder.mutation<
+      PlanningSublist,
+      Omit<PlanningSublist, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/shopping-sublist/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingSublist'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingSublist' }
+        ])) {
+          if (endpointName !== 'getAllShoppingSublists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingSublists',
+              originalArgs,
+              (draft) => {
+                const mockId = Math.round(1000000 * Math.random() * 1e7);
+                draft.ids.push(mockId);
+                draft.byId[mockId] = { ...patch, id: mockId };
+
+                const byList = draft.byList[patch.list];
+                draft.byList[patch.list] = byList
+                  ? [...byList, mockId]
+                  : [mockId];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    deleteShoppingSublist: builder.mutation<void, number>({
+      query: (sublistId) => {
+        return {
+          url: `core/shopping-sublist/${sublistId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['ShoppingSublist'],
+      async onQueryStarted(sublistId, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingSublist' }
+        ])) {
+          if (endpointName !== 'getAllShoppingSublists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingSublists',
+              originalArgs,
+              (draft) => {
+                const list = draft.byId[sublistId].list;
+
+                draft.ids = draft.ids.filter((id) => id !== sublistId);
+                delete draft.byId[sublistId];
+
+                const byList = draft.byList[list];
+                draft.byList[list] = byList.filter((id) => id !== sublistId);
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    getAllShoppingListItems: builder.query<AllPlanningListItems, void>({
+      query: () => ({
+        url: 'core/shopping-list-item/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningListItem[] = await response.json();
+            return normalisePlanningListItems(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['ShoppingListItem']
+    }),
+    createShoppingListItem: builder.mutation<
+      PlanningListItem,
+      Omit<PlanningListItem, 'id' | 'checked'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/shopping-list-item/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingListItem'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingListItem' }
+        ])) {
+          if (endpointName !== 'getAllShoppingListItems') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingListItems',
+              originalArgs,
+              (draft) => {
+                const mockId = Math.round(1000000 * Math.random() * 1e7);
+                draft.ids.push(mockId);
+                draft.byId[mockId] = { ...patch, id: mockId, checked: false };
+
+                const bySublist = draft.bySublist[patch.sublist];
+                draft.bySublist[patch.sublist] = bySublist
+                  ? [...bySublist, mockId]
+                  : [mockId];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    deleteShoppingListItem: builder.mutation<void, number>({
+      query: (itemId) => {
+        return {
+          url: `core/shopping-list-item/${itemId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['ShoppingListItem'],
+      async onQueryStarted(itemId, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingListItem' }
+        ])) {
+          if (endpointName !== 'getAllShoppingListItems') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingListItems',
+              originalArgs,
+              (draft) => {
+                const sublist = draft.byId[itemId].sublist;
+
+                draft.ids = draft.ids.filter((id) => id !== itemId);
+                delete draft.byId[itemId];
+
+                const bySublist = draft.bySublist[sublist];
+                draft.bySublist[sublist] = bySublist.filter(
+                  (id) => id !== itemId
+                );
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    updateShoppingListItem: builder.mutation<
+      PlanningListItem,
+      Partial<PlanningListItem> & Pick<PlanningListItem, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/shopping-list-item/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingListItem'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'ShoppingListItem' }
+        ])) {
+          if (endpointName !== 'getAllShoppingListItems') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllShoppingListItems',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
@@ -604,5 +1074,17 @@ export const {
   useDeletePlanningSublistMutation,
   useGetAllPlanningListItemsQuery,
   useCreatePlanningListItemMutation,
-  useDeletePlanningListItemMutation
+  useDeletePlanningListItemMutation,
+  useUpdatePlanningListItemMutation,
+  useGetAllShoppingListsQuery,
+  useCreateShoppingListMutation,
+  useDeleteShoppingListMutation,
+  useUpdateShoppingListMutation,
+  useGetAllShoppingSublistsQuery,
+  useCreateShoppingSublistMutation,
+  useDeleteShoppingSublistMutation,
+  useGetAllShoppingListItemsQuery,
+  useCreateShoppingListItemMutation,
+  useDeleteShoppingListItemMutation,
+  useUpdateShoppingListItemMutation
 } = listsApi;
