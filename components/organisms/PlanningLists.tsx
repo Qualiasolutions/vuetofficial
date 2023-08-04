@@ -145,30 +145,32 @@ const AddList = ({ category }: { category: number }) => {
       >
         <TransparentView style={addListStyles.createFromTemplateModalContent}>
           {planningListTemplates.ids.length > 0 ? (
-            <DropDown
-              value={newListTemplateId}
-              items={planningListTemplates.ids.map((templateId) => {
-                const template = planningListTemplates.byId[templateId];
-                return {
-                  value: templateId,
-                  label: template.name
-                };
-              })}
-              setFormValues={setNewListTemplateId}
-              listMode="MODAL"
-              style={addListStyles.selectTemplateDropdown}
-            />
+            <>
+              <DropDown
+                value={newListTemplateId}
+                items={planningListTemplates.ids.map((templateId) => {
+                  const template = planningListTemplates.byId[templateId];
+                  return {
+                    value: templateId,
+                    label: template.name
+                  };
+                })}
+                setFormValues={setNewListTemplateId}
+                listMode="MODAL"
+                style={addListStyles.selectTemplateDropdown}
+              />
+              <Text>
+                {t('components.planningLists.createFromTemplateModal.blurb')}
+              </Text>
+              <TextInput
+                value={newName}
+                onChangeText={setNewName}
+                style={addListStyles.input}
+              />
+            </>
           ) : (
             <Text>{t('components.planningLists.noTemplates')}</Text>
           )}
-          <Text>
-            {t('components.planningLists.createFromTemplateModal.blurb')}
-          </Text>
-          <TextInput
-            value={newName}
-            onChangeText={setNewName}
-            style={addListStyles.input}
-          />
           <TransparentView style={addListStyles.selectTemplateButtonWrapper}>
             <Button
               title={t('common.ok')}
