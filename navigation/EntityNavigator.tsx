@@ -1,5 +1,5 @@
 import Calendar from 'components/calendars/TaskCalendar';
-import ListOfLists from 'components/organisms/ListOfLists';
+import ListsNavigator from 'components/organisms/ListOfLists';
 import MessageThread from 'components/organisms/MessageThread';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
@@ -33,7 +33,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [entityId]);
 
   const listsComponent = useMemo(() => {
-    return () => <ListOfLists entities={[entityId]} />;
+    return () => <ListsNavigator entities={[entityId]} />;
   }, [entityId]);
 
   const messagesComponent = useMemo(() => {

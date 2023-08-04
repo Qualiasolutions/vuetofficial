@@ -64,7 +64,10 @@ export const vuetApi = createApi({
     'Reference',
     'Routine',
     'Tag',
-    'Message'
+    'Message',
+    'PlanningList',
+    'PlanningSublist',
+    'PlanningListItem'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({

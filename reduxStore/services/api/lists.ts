@@ -1,9 +1,81 @@
-import { ListResponseType } from 'types/entities';
-import { FormUpdateListEntryRequest, ListEntryResponse } from 'types/lists';
+import {
+  AllPlanningListItems,
+  AllPlanningLists,
+  AllPlanningSublists,
+  FormUpdateListEntryRequest,
+  ListEntryResponse,
+  PlanningList,
+  PlanningListItem,
+  PlanningSublist
+} from 'types/lists';
 import { vuetApi } from './api';
 import entitiesApi from './entities';
 
-const extendedApi = vuetApi.injectEndpoints({
+const normalisePlanningLists = (data: PlanningList[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byCategory: data.reduce<{ [key: number]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.category]: prev[next.category]
+          ? [...prev[next.category], next.id]
+          : [next.id]
+      }),
+      {}
+    )
+  };
+};
+
+const normalisePlanningSublists = (data: PlanningSublist[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byList: data.reduce<{ [key: number]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.list]: prev[next.list] ? [...prev[next.list], next.id] : [next.id]
+      }),
+      {}
+    )
+  };
+};
+
+const normalisePlanningListItems = (data: PlanningListItem[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    bySublist: data.reduce<{ [key: number]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.sublist]: prev[next.sublist]
+          ? [...prev[next.sublist], next.id]
+          : [next.id]
+      }),
+      {}
+    )
+  };
+};
+
+const listsApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     updateListEntry: builder.mutation<
       ListEntryResponse,
@@ -135,6 +207,382 @@ const extendedApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    getAllPlanningLists: builder.query<AllPlanningLists, void>({
+      query: () => ({
+        url: 'core/planning-list/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningList[] = await response.json();
+            return normalisePlanningLists(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['PlanningList']
+    }),
+    createPlanningList: builder.mutation<
+      PlanningList,
+      Omit<PlanningList, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/planning-list/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningList'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningList' }
+        ])) {
+          if (endpointName !== 'getAllPlanningLists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningLists',
+              originalArgs,
+              (draft) => {
+                const mockId = Math.round(1000000 * Math.random() * 1e7);
+                draft.ids.push(mockId);
+                draft.byId[mockId] = { ...patch, id: mockId };
+
+                const byCat = draft.byCategory[patch.category];
+                draft.byCategory[patch.category] = byCat
+                  ? [...byCat, mockId]
+                  : [mockId];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    deletePlanningList: builder.mutation<void, number>({
+      query: (listId) => {
+        return {
+          url: `core/planning-list/${listId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['PlanningList'],
+      async onQueryStarted(listId, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningList' }
+        ])) {
+          if (endpointName !== 'getAllPlanningLists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningLists',
+              originalArgs,
+              (draft) => {
+                const cat = draft.byId[listId].category;
+
+                draft.ids = draft.ids.filter((id) => id !== listId);
+                delete draft.byId[listId];
+
+                const byCat = draft.byCategory[cat];
+                draft.byCategory[cat] = byCat.filter((id) => id !== listId);
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    updatePlanningList: builder.mutation<
+      PlanningList,
+      Partial<PlanningList> & Pick<PlanningList, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/planning-list/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningList'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningList' }
+        ])) {
+          if (endpointName !== 'getAllPlanningLists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningLists',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    getAllPlanningSublists: builder.query<AllPlanningSublists, void>({
+      query: () => ({
+        url: 'core/planning-sublist/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningSublist[] = await response.json();
+            return normalisePlanningSublists(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['PlanningSublist']
+    }),
+    createPlanningSublist: builder.mutation<
+      PlanningSublist,
+      Omit<PlanningSublist, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/planning-sublist/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningSublist'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningSublist' }
+        ])) {
+          if (endpointName !== 'getAllPlanningSublists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningSublists',
+              originalArgs,
+              (draft) => {
+                const mockId = Math.round(1000000 * Math.random() * 1e7);
+                draft.ids.push(mockId);
+                draft.byId[mockId] = { ...patch, id: mockId };
+
+                const byList = draft.byList[patch.list];
+                draft.byList[patch.list] = byList
+                  ? [...byList, mockId]
+                  : [mockId];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    deletePlanningSublist: builder.mutation<void, number>({
+      query: (sublistId) => {
+        return {
+          url: `core/planning-sublist/${sublistId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['PlanningSublist'],
+      async onQueryStarted(sublistId, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningSublist' }
+        ])) {
+          if (endpointName !== 'getAllPlanningSublists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningSublists',
+              originalArgs,
+              (draft) => {
+                const list = draft.byId[sublistId].list;
+
+                draft.ids = draft.ids.filter((id) => id !== sublistId);
+                delete draft.byId[sublistId];
+
+                const byList = draft.byList[list];
+                draft.byList[list] = byList.filter((id) => id !== sublistId);
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    getAllPlanningListItems: builder.query<AllPlanningListItems, void>({
+      query: () => ({
+        url: 'core/planning-list-item/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: PlanningListItem[] = await response.json();
+            return normalisePlanningListItems(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['PlanningListItem']
+    }),
+    createPlanningListItem: builder.mutation<
+      PlanningListItem,
+      Omit<PlanningListItem, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/planning-list-item/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningListItem'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningListItem' }
+        ])) {
+          if (endpointName !== 'getAllPlanningListItems') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningListItems',
+              originalArgs,
+              (draft) => {
+                const mockId = Math.round(1000000 * Math.random() * 1e7);
+                draft.ids.push(mockId);
+                draft.byId[mockId] = { ...patch, id: mockId };
+
+                const bySublist = draft.bySublist[patch.sublist];
+                draft.bySublist[patch.sublist] = bySublist
+                  ? [...bySublist, mockId]
+                  : [mockId];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
+    deletePlanningListItem: builder.mutation<void, number>({
+      query: (itemId) => {
+        return {
+          url: `core/planning-list-item/${itemId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['PlanningListItem'],
+      async onQueryStarted(itemId, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningListItem' }
+        ])) {
+          if (endpointName !== 'getAllPlanningListItems') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningListItems',
+              originalArgs,
+              (draft) => {
+                const sublist = draft.byId[itemId].sublist;
+
+                draft.ids = draft.ids.filter((id) => id !== itemId);
+                delete draft.byId[itemId];
+
+                const bySublist = draft.bySublist[sublist];
+                draft.bySublist[sublist] = bySublist.filter(
+                  (id) => id !== itemId
+                );
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
@@ -146,5 +594,15 @@ export const {
   useUpdateListEntryMutation,
   useCreateListEntryMutation,
   useDeleteListEntryMutation,
-  useFormUpdateListEntryMutation
-} = extendedApi;
+  useFormUpdateListEntryMutation,
+  useGetAllPlanningListsQuery,
+  useCreatePlanningListMutation,
+  useDeletePlanningListMutation,
+  useUpdatePlanningListMutation,
+  useGetAllPlanningSublistsQuery,
+  useCreatePlanningSublistMutation,
+  useDeletePlanningSublistMutation,
+  useGetAllPlanningListItemsQuery,
+  useCreatePlanningListItemMutation,
+  useDeletePlanningListItemMutation
+} = listsApi;

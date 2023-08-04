@@ -1,6 +1,6 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import CategoryHome from 'components/organisms/CategoryHome';
-import ListOfLists from 'components/organisms/ListOfLists';
+import ListsNavigator from 'components/organisms/ListOfLists';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { Text } from 'components/Themed';
 import { useMemo } from 'react';
@@ -37,7 +37,7 @@ export default function CategoryNavigator({
   }, [categoryId]);
 
   const listsComponent = useMemo(() => {
-    return () => <ListOfLists categories={[categoryId]} />;
+    return () => <ListsNavigator categories={[categoryId]} />;
   }, [categoryId]);
 
   return (

@@ -19,17 +19,13 @@ import {
   TaskType
 } from 'types/tasks';
 import SafePressable from 'components/molecules/SafePressable';
-import {
-  selectCurrentUserId,
-  selectUserFromId
-} from 'reduxStore/slices/users/selectors';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
-import UserInitialsWithColor from 'components/molecules/UserInitialsWithColor';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { Feather } from '@expo/vector-icons';
 import { setTaskToAction } from 'reduxStore/slices/calendars/actions';
+import UserTags from 'components/molecules/UserTags';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -70,15 +66,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%'
   },
-  memberColor: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    marginTop: 2
-  },
-  userInitials: {
-    marginLeft: 2
-  },
   bottomWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -88,8 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '50%',
     flex: 0
-  },
-  numExternalMembers: { marginLeft: 5 }
+  }
 });
 
 export type MinimalScheduledTask = {
@@ -228,9 +214,6 @@ function Task({
   const task = useSelector(selectTaskById(id));
   const entity = useSelector(selectEntityById(id));
 
-  const currentUserId = useSelector(selectCurrentUserId);
-  const userDetails = useSelector(selectUserFromId(currentUserId || -1));
-
   const scheduledTask = useSelector(
     selectScheduledTask({
       id,
@@ -250,44 +233,9 @@ function Task({
     textDecorationLine: 'line-through' as 'line-through'
   };
 
-  const [membersList, numExternalMembers] = useMemo(() => {
-    const taskOrEntity = isEntity ? entity : task;
-    if (!taskOrEntity) {
-      return [];
-    }
-    const familyMembersList = userDetails?.family?.users?.filter((item: any) =>
-      taskOrEntity.members.includes(item.id)
-    );
-    const friendMembersList = userDetails?.friends?.filter((item: any) =>
-      taskOrEntity.members.includes(item.id)
-    );
-    const members = Array(
-      ...new Set([...(familyMembersList || []), ...(friendMembersList || [])])
-    );
-    return [members, taskOrEntity.members.length - members.length];
-  }, [userDetails, task, entity, isEntity]);
+  const taskOrEntity = task || entity;
 
-  const memberColours = useMemo(
-    () => (
-      <TransparentView pointerEvents="none" style={styles.memberColor}>
-        {membersList?.map((user) => (
-          <UserInitialsWithColor
-            user={user}
-            style={styles.userInitials}
-            key={user.id}
-          />
-        )) || []}
-        {numExternalMembers ? (
-          <BlackText
-            text={`+${numExternalMembers}`}
-            style={styles.numExternalMembers}
-          />
-        ) : null}
-      </TransparentView>
-    ),
-    [membersList, numExternalMembers]
-  );
-  if (!scheduledTask && !entity) {
+  if ((!isEntity && !scheduledTask) || !taskOrEntity) {
     return (
       <TransparentView style={[styles.outerContainer, { height: ITEM_HEIGHT }]}>
         <PaddedSpinner />
@@ -353,7 +301,7 @@ function Task({
               </>
             )}
           </TransparentScrollView>
-          {memberColours}
+          <UserTags memberIds={taskOrEntity.members} />
         </TransparentView>
       </TransparentView>
     </>

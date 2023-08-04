@@ -64,6 +64,8 @@ export const TransparentScrollView = ScrollViewWithColor(
   'transparent'
 );
 
+export const WhiteScrollView = ScrollViewWithColor('white', 'white');
+
 export const WhiteFullPageScrollView = FullPageScrollViewWithColor(
   'white',
   'grey'

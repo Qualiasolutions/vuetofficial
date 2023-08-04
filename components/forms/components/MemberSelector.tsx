@@ -23,6 +23,7 @@ import {
 } from 'reduxStore/services/api/user';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   addMemberButton: {
@@ -123,15 +124,10 @@ const ExternalListing = ({ memberId }: { memberId: number }) => {
 };
 
 export default function MemberSelector({
-  data,
   values,
   onValueChange,
   changeMembersText
 }: {
-  data: {
-    family: UserResponse[];
-    friends: UserResponse[];
-  };
   values: number[];
   onValueChange: (val: number[]) => void;
   changeMembersText?: string;
@@ -140,6 +136,9 @@ export default function MemberSelector({
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
   const [newExternalNumber, setNewExternalNumber] = useState('');
   const { t } = useTranslation();
+
+  const { data: userDetails, isLoading: isLoadingUserDetails } =
+    useGetUserFullDetails();
 
   const [getMinimalDetails, getMinimalDetailsResult, lastMinimalDetails] =
     useLazyGetUserMinimalDetailsQuery();
@@ -156,12 +155,20 @@ export default function MemberSelector({
     setShowMembersList(false);
   }, [setShowMembersList]);
 
-  const allMembers = [...data.family];
-  for (const member of data.friends) {
-    if (!data.family.map((user) => user.id).includes(member.id)) {
-      allMembers.push(member);
+  const allMembers = useMemo(() => {
+    if (!userDetails) {
+      return [];
     }
-  }
+    const members = [...userDetails.family.users];
+    for (const member of userDetails.friends) {
+      if (
+        !userDetails.family.users.map((user) => user.id).includes(member.id)
+      ) {
+        members.push(member);
+      }
+    }
+    return members;
+  }, [userDetails]);
 
   const selectedMembersList = useMemo(() => {
     return allMembers
@@ -204,6 +211,12 @@ export default function MemberSelector({
     else bottomSheetRef?.current?.close();
   }, [showMembersList]);
 
+  const isLoading = isLoadingUserDetails || !userDetails;
+
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <TransparentView>
       {selectedMembersList}
@@ -238,7 +251,7 @@ export default function MemberSelector({
         <WhiteView style={styles.bottomContainer}>
           <TransparentScrollView>
             <SafeAreaView>
-              {data.family.map((user) => (
+              {userDetails.family.users.map((user) => (
                 <SafePressable
                   onPress={() => onSelectMember(user)}
                   key={user.id}

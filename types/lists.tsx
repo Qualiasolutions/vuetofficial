@@ -35,3 +35,52 @@ export type FormUpdateListEntryRequest = {
   id: number;
   formData?: FormData;
 };
+
+export type PlanningList = {
+  id: number;
+  category: number;
+  name: string;
+  members: number[];
+};
+
+export type AllPlanningLists = {
+  ids: number[];
+  byId: {
+    [key: number]: PlanningList;
+  };
+  byCategory: {
+    [key: number]: number[];
+  };
+};
+
+export type PlanningSublist = {
+  id: number;
+  list: number;
+  title: string;
+};
+
+export type AllPlanningSublists = {
+  ids: number[];
+  byId: {
+    [key: number]: PlanningSublist;
+  };
+  byList: {
+    [key: number]: number[];
+  };
+};
+
+export type PlanningListItem = {
+  id: number;
+  sublist: number;
+  title: string;
+};
+
+export type AllPlanningListItems = {
+  ids: number[];
+  byId: {
+    [key: number]: PlanningListItem;
+  };
+  bySublist: {
+    [key: number]: number[];
+  };
+};

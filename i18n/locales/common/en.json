@@ -29,7 +29,9 @@
     "categoryPreferences": "Category Preferences",
     "taskLimits": "Task Limits",
     "flexibleTaskPreferences": "Flexible Tasks",
-    "routines": "Routines"
+    "routines": "Routines",
+    "myPlanningLists": "My Planning Lists",
+    "myShoppingLists": "My Shopping Lists"
   },
   "blockedCategories": {
     "instructions": {
@@ -653,6 +655,18 @@
       "addList": "Add List",
       "noLists": "No lists have been added here yet - go to your entities to add lists"
     },
+    "planningLists": {
+      "addList": "Add List",
+      "addSublist": "Add Sublist",
+      "deleteListModal": {
+        "title": "Delete list",
+        "blurb": "Are you sure you would like to delete this list?"
+      },
+      "deleteSublistModal": {
+        "title": "Delete sublist",
+        "blurb": "Are you sure you would like to delete this sublist?"
+      }
+    }, 
     "entityPages": {
       "car": {
         "addingDueDate": "Adding {{dueDateType}} due date",
