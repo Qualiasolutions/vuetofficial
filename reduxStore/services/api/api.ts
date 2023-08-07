@@ -70,7 +70,9 @@ export const vuetApi = createApi({
     'PlanningListItem',
     'ShoppingList',
     'ShoppingSublist',
-    'ShoppingListItem'
+    'ShoppingListItem',
+    'SchoolTerm',
+    'SchoolBreak'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({

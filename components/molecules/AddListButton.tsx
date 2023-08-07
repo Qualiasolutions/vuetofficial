@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useCreatePlanningListMutation,
   useCreatePlanningListTemplateMutation,
+  useCreateShoppingListMutation,
   useGetAllPlanningListTemplatesQuery
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
@@ -35,10 +36,12 @@ const addListStyles = StyleSheet.create({
 type AddListStep = 'TEMPLATE_SELECTION' | 'NAME';
 const AddListModal = ({
   category,
+  isShoppingList,
   visible,
   onRequestClose
 }: {
-  category: number;
+  category?: number;
+  isShoppingList?: boolean;
   visible: boolean;
   onRequestClose: () => void;
 }) => {
@@ -50,6 +53,7 @@ const AddListModal = ({
     useGetUserFullDetails();
   const { t } = useTranslation();
   const [createNewPlanningList] = useCreatePlanningListMutation();
+  const [createNewShoppingList] = useCreateShoppingListMutation();
   const [createTemplate] = useCreatePlanningListTemplateMutation();
 
   const {
@@ -67,44 +71,9 @@ const AddListModal = ({
     return null;
   }
 
-  const content =
-    step === 'TEMPLATE_SELECTION' ? (
-      <>
-        <Button
-          style={addListStyles.button}
-          title={t('components.planningLists.addListModal.createNew')}
-          onPress={async () => {
-            setNewListTemplateId('');
-            setStep('NAME');
-          }}
-        />
-        <TransparentView style={addListStyles.modalOr}>
-          <Text>{t('common.or')}</Text>
-        </TransparentView>
-        <DropDown
-          value={newListTemplateId}
-          items={planningListTemplates.ids
-            .map((templateId) => {
-              const template = planningListTemplates.byId[templateId];
-              return {
-                value: templateId,
-                label: template.name,
-                category: template.category
-              };
-            })
-            .filter((opt) => opt.category === category)}
-          setFormValues={(id) => {
-            setNewListTemplateId(id);
-            setStep('NAME');
-          }}
-          listMode="MODAL"
-          style={addListStyles.selectTemplateDropdown}
-          dropdownPlaceholder={t(
-            'components.planningLists.addListModal.selectTemplate'
-          )}
-        />
-      </>
-    ) : (
+  let content = null;
+  if (isShoppingList) {
+    content = (
       <>
         <Text>
           {t('components.planningLists.createFromTemplateModal.blurb')}
@@ -117,34 +86,15 @@ const AddListModal = ({
         <TransparentView style={addListStyles.buttonWrapper}>
           <Button
             style={addListStyles.button}
-            title={t('common.back')}
-            onPress={() => {
-              setNewListTemplateId('');
-              setStep('TEMPLATE_SELECTION');
-            }}
-          />
-          <Button
-            style={addListStyles.button}
             title={t('components.planningLists.addListModal.add')}
             onPress={async () => {
               try {
                 onRequestClose();
-                if (newListTemplateId) {
-                  await createTemplate({
-                    title: newName,
-                    list: parseInt(newListTemplateId),
-                    from_template: true
-                  });
-                } else {
-                  await createNewPlanningList({
-                    category,
-                    name: newName,
-                    members: [userDetails.id]
-                  }).unwrap();
-                }
+                await createNewShoppingList({
+                  name: newName,
+                  members: [userDetails.id]
+                }).unwrap();
                 setNewName('');
-                setStep('TEMPLATE_SELECTION');
-                setNewListTemplateId('');
               } catch (err) {
                 Toast.show({
                   type: 'error',
@@ -156,6 +106,101 @@ const AddListModal = ({
         </TransparentView>
       </>
     );
+  } else {
+    if (!category) {
+      content = null;
+    } else {
+      content =
+        step === 'TEMPLATE_SELECTION' ? (
+          <>
+            <Button
+              style={addListStyles.button}
+              title={t('components.planningLists.addListModal.createNew')}
+              onPress={async () => {
+                setNewListTemplateId('');
+                setStep('NAME');
+              }}
+            />
+            <TransparentView style={addListStyles.modalOr}>
+              <Text>{t('common.or')}</Text>
+            </TransparentView>
+            <DropDown
+              value={newListTemplateId}
+              items={planningListTemplates.ids
+                .map((templateId) => {
+                  const template = planningListTemplates.byId[templateId];
+                  return {
+                    value: templateId,
+                    label: template.name,
+                    category: template.category
+                  };
+                })
+                .filter((opt) => opt.category === category)}
+              setFormValues={(id) => {
+                setNewListTemplateId(id);
+                setStep('NAME');
+              }}
+              listMode="MODAL"
+              style={addListStyles.selectTemplateDropdown}
+              dropdownPlaceholder={t(
+                'components.planningLists.addListModal.selectTemplate'
+              )}
+            />
+          </>
+        ) : (
+          <>
+            <Text>
+              {t('components.planningLists.createFromTemplateModal.blurb')}
+            </Text>
+            <TextInput
+              value={newName}
+              onChangeText={setNewName}
+              style={addListStyles.input}
+            />
+            <TransparentView style={addListStyles.buttonWrapper}>
+              <Button
+                style={addListStyles.button}
+                title={t('common.back')}
+                onPress={() => {
+                  setNewListTemplateId('');
+                  setStep('TEMPLATE_SELECTION');
+                }}
+              />
+              <Button
+                style={addListStyles.button}
+                title={t('components.planningLists.addListModal.add')}
+                onPress={async () => {
+                  try {
+                    onRequestClose();
+                    if (newListTemplateId) {
+                      await createTemplate({
+                        title: newName,
+                        list: parseInt(newListTemplateId),
+                        from_template: true
+                      });
+                    } else {
+                      await createNewPlanningList({
+                        category,
+                        name: newName,
+                        members: [userDetails.id]
+                      }).unwrap();
+                    }
+                    setNewName('');
+                    setStep('TEMPLATE_SELECTION');
+                    setNewListTemplateId('');
+                  } catch (err) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('common.errors.generic')
+                    });
+                  }
+                }}
+              />
+            </TransparentView>
+          </>
+        );
+    }
+  }
 
   return (
     <Modal visible={visible} onRequestClose={onRequestClose}>
@@ -166,7 +211,13 @@ const AddListModal = ({
   );
 };
 
-export default function AddListButton({ category }: { category: number }) {
+export default function AddListButton({
+  category,
+  isShoppingList
+}: {
+  category?: number;
+  isShoppingList?: boolean;
+}) {
   const { t } = useTranslation();
   const [addingNew, setAddingNew] = useState(false);
 
@@ -184,6 +235,7 @@ export default function AddListButton({ category }: { category: number }) {
         </TransparentView>
       </TransparentView>
       <AddListModal
+        isShoppingList={isShoppingList}
         category={category}
         visible={addingNew}
         onRequestClose={() => {

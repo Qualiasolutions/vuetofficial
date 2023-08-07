@@ -53,6 +53,19 @@ export type AllPlanningLists = {
   };
 };
 
+export type ShoppingList = {
+  id: number;
+  name: string;
+  members: number[];
+};
+
+export type AllShoppingLists = {
+  ids: number[];
+  byId: {
+    [key: number]: ShoppingList;
+  };
+};
+
 export type PlanningSublist = {
   id: number;
   list: number;

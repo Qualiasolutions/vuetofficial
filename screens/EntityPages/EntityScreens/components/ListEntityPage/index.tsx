@@ -5,9 +5,7 @@ import {
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
-import {
-  useUpdateEntityMutation
-} from 'reduxStore/services/api/entities';
+import { useUpdateEntityMutation } from 'reduxStore/services/api/entities';
 
 import { TextInput } from 'components/Themed';
 import {
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
 
 export default function ListEntityPage({ entityId }: { entityId: number }) {
   const { data: userFullDetails } = useGetUserFullDetails();
-  const entityData = useSelector(selectEntityById(entityId))
+  const entityData = useSelector(selectEntityById(entityId));
   const { t } = useTranslation();
   const [newEntryTitle, setNewEntryTitle] = useState<string>('');
   const [createListEntry, createListEntryResult] = useCreateListEntryMutation();

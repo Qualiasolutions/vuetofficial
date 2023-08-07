@@ -9,7 +9,7 @@ import {
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
-import { PlanningList } from 'types/lists';
+import { PlanningList, ShoppingList } from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
 import { Modal, YesNoModal } from './Modals';
@@ -32,7 +32,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function PlanningListHeader({ list }: { list: PlanningList }) {
+export default function PlanningListHeader({
+  list
+}: {
+  list: PlanningList | ShoppingList;
+}) {
   const { data: allSublists, isLoading: isLoadingSublists } =
     useGetAllPlanningSublistsQuery();
 

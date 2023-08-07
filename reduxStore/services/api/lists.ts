@@ -2,13 +2,15 @@ import {
   AllPlanningListItems,
   AllPlanningLists,
   AllPlanningSublists,
+  AllShoppingLists,
   FormUpdateListEntryRequest,
   ListEntryResponse,
   PlanningList,
   PlanningListItem,
-  PlanningSublist
+  PlanningSublist,
+  ShoppingList
 } from 'types/lists';
-import { vuetApi } from './api';
+import { normalizeData, vuetApi } from './api';
 import entitiesApi from './entities';
 
 const normalisePlanningLists = (data: PlanningList[]) => {
@@ -712,13 +714,13 @@ const listsApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    getAllShoppingLists: builder.query<AllPlanningLists, void>({
+    getAllShoppingLists: builder.query<AllShoppingLists, void>({
       query: () => ({
         url: 'core/shopping-list/',
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: PlanningList[] = await response.json();
-            return normalisePlanningLists(responseJson);
+            const responseJson: ShoppingList[] = await response.json();
+            return normalizeData(responseJson);
           } else {
             // Just return the error data
             return response.json();
@@ -728,8 +730,8 @@ const listsApi = vuetApi.injectEndpoints({
       providesTags: ['ShoppingList']
     }),
     createShoppingList: builder.mutation<
-      PlanningList,
-      Omit<PlanningList, 'id'>
+      ShoppingList,
+      Omit<ShoppingList, 'id'>
     >({
       query: (body) => {
         return {
@@ -759,11 +761,6 @@ const listsApi = vuetApi.injectEndpoints({
                 const mockId = Math.round(1000000 * Math.random() * 1e7);
                 draft.ids.push(mockId);
                 draft.byId[mockId] = { ...patch, id: mockId };
-
-                const byCat = draft.byCategory[patch.category];
-                draft.byCategory[patch.category] = byCat
-                  ? [...byCat, mockId]
-                  : [mockId];
               }
             )
           );
@@ -800,13 +797,8 @@ const listsApi = vuetApi.injectEndpoints({
               'getAllShoppingLists',
               originalArgs,
               (draft) => {
-                const cat = draft.byId[listId].category;
-
                 draft.ids = draft.ids.filter((id) => id !== listId);
                 delete draft.byId[listId];
-
-                const byCat = draft.byCategory[cat];
-                draft.byCategory[cat] = byCat.filter((id) => id !== listId);
               }
             )
           );
