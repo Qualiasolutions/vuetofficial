@@ -1,6 +1,7 @@
 import {
   PrimaryColouredView,
   TransparentView,
+  WhiteBox,
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { useThemeColor } from 'components/Themed';
@@ -15,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
+import { Feather } from '@expo/vector-icons';
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     tintColor: '#fff'
   },
   addButtonWrapper: {
-    position: 'relative',
+    position: 'absolute',
     height: 60,
     width: 60,
     top: -50,
@@ -69,6 +71,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     top: -5
+  },
+  centralSection: {
+    alignItems: 'center'
+  },
+  chevronDown: {
+    marginBottom: 10,
+    marginTop: 30
+  },
+  chevronUpBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10
+  },
+  chevronUpWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'flex-end',
+    paddingRight: 10
   }
 });
 
@@ -92,6 +117,7 @@ export default function BottomNavBar({
   navigation
 }: BottomTabBarProps) {
   const [currentScreen, setCurrentScreen] = useState<string>('');
+  const [navbarHidden, setNavbarHidden] = useState(false);
   const [currentScreenParams, setCurrentScreenParams] = useState<{
     [key: string]: any;
   }>({});
@@ -154,6 +180,18 @@ export default function BottomNavBar({
     />
   );
 
+  if (navbarHidden) {
+    return (
+      <TransparentView style={styles.chevronUpWrapper}>
+        <SafePressable onPress={() => setNavbarHidden(false)}>
+          <WhiteBox style={styles.chevronUpBox}>
+            <Feather name="chevron-up" size={30} />
+          </WhiteBox>
+        </SafePressable>
+      </TransparentView>
+    );
+  }
+
   return (
     <WhiteView style={[{ borderTopColor: lightGreyColor }, styles.bar]}>
       {entityTypeSelector}
@@ -163,70 +201,79 @@ export default function BottomNavBar({
 
         if (route.name === 'PlusButton') {
           return (
-            <AddButton
-              key={index}
-              onPress={() => {
-                const ignoredScreens = ['AddTask'];
-                if (ignoredScreens.includes(currentScreen)) {
-                  return;
-                } else if (currentScreen === 'EntityScreen') {
-                  type RouteParams = ContentTabParamList['EntityScreen'];
-                  navigation.navigate('AddTask', {
-                    entities: [(currentScreenParams as RouteParams).entityId]
-                  });
-                } else if (
-                  [
-                    'ChildEntitiesScreen',
-                    'ChildEntitiesCalendarScreen'
-                  ].includes(currentScreen)
-                ) {
-                  type RouteParams = ContentTabParamList['ChildEntitiesScreen'];
-                  const entityTypes = (currentScreenParams as RouteParams)
-                    .entityTypes;
-                  if (entityTypes.length > 1) {
-                    setEntityTypeOptions(entityTypes);
-                    setShowingEntityTypeSelector(true);
-                  } else {
-                    navigation.navigate('AddEntity', {
-                      entityTypes: entityTypes[0],
-                      parentId: (currentScreenParams as RouteParams).entityId
+            <TransparentView key={index} style={styles.centralSection}>
+              <AddButton
+                onPress={() => {
+                  const ignoredScreens = ['AddTask'];
+                  if (ignoredScreens.includes(currentScreen)) {
+                    return;
+                  } else if (currentScreen === 'EntityScreen') {
+                    type RouteParams = ContentTabParamList['EntityScreen'];
+                    navigation.navigate('AddTask', {
+                      entities: [(currentScreenParams as RouteParams).entityId]
                     });
-                  }
-                } else if (
-                  [
-                    'EntityList',
-                    'EntityTypeHome',
-                    'EntityTypeCalendar',
-                    'EntityTypeReferences'
-                  ].includes(currentScreen)
-                ) {
-                  type RouteParams = ContentTabParamList['EntityList'];
-                  const entityTypes = (currentScreenParams as RouteParams)
-                    .entityTypes;
-                  if (entityTypes.length > 1) {
-                    setEntityTypeOptions(
-                      (currentScreenParams as RouteParams).entityTypes
-                    );
-                    setShowingEntityTypeSelector(true);
-                  } else {
-                    if (
-                      entityTypes[0] === 'Holiday' &&
-                      holidayEntities.length === 0
-                    ) {
-                      navigation.navigate('HolidayList');
+                  } else if (
+                    [
+                      'ChildEntitiesScreen',
+                      'ChildEntitiesCalendarScreen'
+                    ].includes(currentScreen)
+                  ) {
+                    type RouteParams =
+                      ContentTabParamList['ChildEntitiesScreen'];
+                    const entityTypes = (currentScreenParams as RouteParams)
+                      .entityTypes;
+                    if (entityTypes.length > 1) {
+                      setEntityTypeOptions(entityTypes);
+                      setShowingEntityTypeSelector(true);
                     } else {
                       navigation.navigate('AddEntity', {
-                        entityTypes: entityTypes[0]
+                        entityTypes: entityTypes[0],
+                        parentId: (currentScreenParams as RouteParams).entityId
                       });
                     }
+                  } else if (
+                    [
+                      'EntityList',
+                      'EntityTypeHome',
+                      'EntityTypeCalendar',
+                      'EntityTypeReferences'
+                    ].includes(currentScreen)
+                  ) {
+                    type RouteParams = ContentTabParamList['EntityList'];
+                    const entityTypes = (currentScreenParams as RouteParams)
+                      .entityTypes;
+                    if (entityTypes.length > 1) {
+                      setEntityTypeOptions(
+                        (currentScreenParams as RouteParams).entityTypes
+                      );
+                      setShowingEntityTypeSelector(true);
+                    } else {
+                      if (
+                        entityTypes[0] === 'Holiday' &&
+                        holidayEntities.length === 0
+                      ) {
+                        navigation.navigate('HolidayList');
+                      } else {
+                        navigation.navigate('AddEntity', {
+                          entityTypes: entityTypes[0]
+                        });
+                      }
+                    }
+                  } else if (currentScreen === 'HolidayDates') {
+                    navigation.navigate('AddHolidayTask');
+                  } else {
+                    navigation.navigate('AddTask');
                   }
-                } else if (currentScreen === 'HolidayDates') {
-                  navigation.navigate('AddHolidayTask');
-                } else {
-                  navigation.navigate('AddTask');
-                }
-              }}
-            />
+                }}
+              />
+              <SafePressable onPress={() => setNavbarHidden(true)}>
+                <Feather
+                  name="chevron-down"
+                  style={styles.chevronDown}
+                  size={30}
+                />
+              </SafePressable>
+            </TransparentView>
           );
         } else if (options.tabBarIcon) {
           const forcedScreen =
