@@ -97,7 +97,14 @@ const normaliseShoppingListItems = (data: ShoppingListItem[]) => {
         [next.list]: prev[next.list] ? [...prev[next.list], next.id] : [next.id]
       }),
       {}
-    )
+    ),
+    byStore: data.reduce<{ [key: number]: number[] }>((prev, next) => {
+      const storeId = next.store || -1;
+      return {
+        ...prev,
+        [storeId]: prev[storeId] ? [...prev[storeId], next.id] : [next.id]
+      };
+    }, {})
   };
 };
 
@@ -838,8 +845,8 @@ const listsApi = vuetApi.injectEndpoints({
       }
     }),
     updateShoppingList: builder.mutation<
-      PlanningList,
-      Partial<PlanningList> & Pick<PlanningList, 'id'>
+      ShoppingList,
+      Partial<ShoppingList> & Pick<ShoppingList, 'id'>
     >({
       query: (body) => {
         return {
@@ -936,6 +943,12 @@ const listsApi = vuetApi.injectEndpoints({
                 draft.byList[patch.list] = byList
                   ? [...byList, mockId]
                   : [mockId];
+
+                const store = patch.store || -1;
+                const byStore = draft.byStore[store];
+                draft.byStore[store] = byStore
+                  ? [...byStore, mockId]
+                  : [mockId];
               }
             )
           );
@@ -973,12 +986,16 @@ const listsApi = vuetApi.injectEndpoints({
               originalArgs,
               (draft) => {
                 const list = draft.byId[itemId].list;
+                const store = draft.byId[itemId].store || -1;
 
                 draft.ids = draft.ids.filter((id) => id !== itemId);
                 delete draft.byId[itemId];
 
                 const byList = draft.byList[list];
                 draft.byList[list] = byList.filter((id) => id !== itemId);
+
+                const byStore = draft.byStore[store];
+                draft.byStore[store] = byStore.filter((id) => id !== itemId);
               }
             )
           );
@@ -994,8 +1011,8 @@ const listsApi = vuetApi.injectEndpoints({
       }
     }),
     updateShoppingListItem: builder.mutation<
-      PlanningListItem,
-      Partial<PlanningListItem> & Pick<PlanningListItem, 'id'>
+      ShoppingListItem,
+      Partial<ShoppingListItem> & Pick<ShoppingListItem, 'id'>
     >({
       query: (body) => {
         return {

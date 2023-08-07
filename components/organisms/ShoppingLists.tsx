@@ -9,21 +9,22 @@ import { useTranslation } from 'react-i18next';
 import {
   useGetAllShoppingListItemsQuery,
   useGetAllShoppingListsQuery,
+  useGetAllShoppingListStoresQuery,
   useUpdateShoppingListMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { Button } from 'components/molecules/ButtonComponents';
-import { ShoppingList } from 'types/lists';
+import { ShoppingList, ShoppingListStore } from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
 import { Modal } from 'components/molecules/Modals';
 import UserTags from 'components/molecules/UserTags';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import AddListButton from 'components/molecules/AddListButton';
-import AddSublistInputPair from 'components/molecules/AddSublistInputPair';
 import PlanningListHeader from 'components/molecules/PlanningListHeader';
 import ListItemView from 'components/molecules/ListItemView';
 import AddListItemInputPair from 'components/molecules/AddListItemInputPair';
+import { Text } from 'components/Themed';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
@@ -40,7 +41,8 @@ const styles = StyleSheet.create({
   saveMembersButton: {
     marginTop: 20
   },
-  addListButtonWrapper: { marginBottom: 10 }
+  addListButtonWrapper: { marginBottom: 10, flexDirection: 'row' },
+  groupByStoreButton: { paddingVertical: 5, marginHorizontal: 5 }
 });
 
 const ShoppingListView = ({ list }: { list: ShoppingList }) => {
@@ -70,7 +72,6 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
             key={itemId}
             item={allItems.byId[itemId]}
             parentList={list}
-            isShoppingList={true}
           />
         ))}
         <AddListItemInputPair list={list.id} isShoppingList={true} />
@@ -114,25 +115,80 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
   );
 };
 
+const ShoppingStoreView = ({ store }: { store: ShoppingListStore }) => {
+  const { data: allItems, isLoading: isLoadingItems } =
+    useGetAllShoppingListItemsQuery();
+
+  const isLoading = isLoadingItems || !allItems;
+
+  if (isLoading) {
+    return null;
+  }
+
+  const items = allItems.byStore[store.id || -1] || [];
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <WhiteBox style={styles.listBox}>
+      <Text>{store.name}</Text>
+      <TransparentView style={styles.sublists}>
+        {items.map((itemId) => (
+          <ListItemView key={itemId} item={allItems.byId[itemId]} />
+        ))}
+      </TransparentView>
+    </WhiteBox>
+  );
+};
+
 export default function ShoppingLists() {
   const { data: shoppingLists, isLoading: isLoadingShoppingLists } =
     useGetAllShoppingListsQuery();
+  const { data: shoppingStores, isLoading: isLoadingShoppingStores } =
+    useGetAllShoppingListStoresQuery();
 
-  const isLoading = isLoadingShoppingLists || !shoppingLists;
+  const [groupByStore, setGroupByStore] = useState(false);
+  const { t } = useTranslation();
+
+  const isLoading =
+    isLoadingShoppingLists ||
+    !shoppingLists ||
+    isLoadingShoppingStores ||
+    !shoppingStores;
   if (isLoading) {
     return <FullPageSpinner />;
   }
+
+  const content = groupByStore
+    ? shoppingStores.ids.map((storeId) => {
+        const store = shoppingStores.byId[storeId];
+        return <ShoppingStoreView store={store} key={storeId} />;
+      })
+    : shoppingLists.ids.map((listId) => {
+        const list = shoppingLists.byId[listId];
+        return <ShoppingListView list={list} key={listId} />;
+      });
 
   return (
     <WhiteFullPageScrollView contentContainerStyle={styles.container}>
       <TransparentPaddedView>
         <TransparentView style={styles.addListButtonWrapper}>
           <AddListButton isShoppingList={true} />
+          <Button
+            title={
+              groupByStore
+                ? t('components.shoppingLists.groupByList')
+                : t('components.shoppingLists.groupByStore')
+            }
+            onPress={() => {
+              setGroupByStore(!groupByStore);
+            }}
+            style={styles.groupByStoreButton}
+          />
         </TransparentView>
-        {shoppingLists.ids.map((listId) => {
-          const list = shoppingLists.byId[listId];
-          return <ShoppingListView list={list} key={listId} />;
-        })}
+        {content}
       </TransparentPaddedView>
     </WhiteFullPageScrollView>
   );

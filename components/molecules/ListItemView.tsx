@@ -21,6 +21,7 @@ import Checkbox from 'components/molecules/Checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useTranslation } from 'react-i18next';
+import StoreSelector from './StoreSelector';
 
 const styles = StyleSheet.create({
   sublistHeader: {
@@ -32,7 +33,8 @@ const styles = StyleSheet.create({
   listItemView: {
     paddingLeft: 10,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 2
   },
   listItemTitle: {
     paddingVertical: 0,
@@ -45,14 +47,18 @@ const styles = StyleSheet.create({
   actionButton: { marginLeft: 10 }
 });
 
+const isShoppingListItem = (
+  item: PlanningListItem | ShoppingListItem
+): item is ShoppingListItem => {
+  return 'store' in item;
+};
+
 export default function ListItemView({
   item,
-  parentList,
-  isShoppingList
+  parentList
 }: {
   item: PlanningListItem | ShoppingListItem;
-  parentList: PlanningList | ShoppingList;
-  isShoppingList?: boolean;
+  parentList?: PlanningList | ShoppingList;
 }) {
   const { data: allLists, isLoading: isLoadingLists } =
     useGetAllPlanningListsQuery();
@@ -65,6 +71,8 @@ export default function ListItemView({
 
   const [editingName, setEditingName] = useState(false);
   const [newItemName, setNewItemName] = useState(item.title);
+
+  const isShoppingList = isShoppingListItem(item);
 
   const { t } = useTranslation();
 
@@ -129,6 +137,17 @@ export default function ListItemView({
       >
         <Text>{item.title}</Text>
       </SafePressable>
+      {isShoppingList && (
+        <StoreSelector
+          onSelect={(storeId) => {
+            updateShoppingListItem({
+              id: item.id,
+              store: storeId
+            });
+          }}
+          value={item.store}
+        />
+      )}
       <SafePressable
         onPress={() => {
           if (isShoppingList) {
@@ -152,7 +171,7 @@ export default function ListItemView({
           (navigation.navigate as any)('AddTask', {
             type: 'TASK',
             title: item.title,
-            members: parentList.members
+            members: parentList ? parentList.members : null
           });
         }}
         style={styles.listItemCalendarLink}

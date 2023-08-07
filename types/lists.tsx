@@ -115,6 +115,9 @@ export type AllShoppingListItems = {
   byList: {
     [key: number]: number[];
   };
+  byStore: {
+    [key: number]: number[];
+  };
 };
 
 export type ShoppingListStore = {

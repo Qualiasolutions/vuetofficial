@@ -1,21 +1,16 @@
 import { Feather } from '@expo/vector-icons';
-import { Text, TextInput } from 'components/Themed';
+import { TextInput } from 'components/Themed';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import {
   useCreatePlanningListItemMutation,
-  useCreateShoppingListItemMutation,
-  useCreateShoppingListStoreMutation,
-  useGetAllShoppingListStoresQuery
+  useCreateShoppingListItemMutation
 } from 'reduxStore/services/api/lists';
 import SafePressable from './SafePressable';
 import { TransparentView } from './ViewComponents';
 import { StyleSheet } from 'react-native';
-import DropDown from 'components/forms/components/DropDown';
-import { Modal } from './Modals';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { Button } from './ButtonComponents';
+import StoreSelector from './StoreSelector';
 
 const addListItemStyles = StyleSheet.create({
   listInputPair: {
@@ -30,104 +25,8 @@ const addListItemStyles = StyleSheet.create({
     borderBottomWidth: 1,
     width: 150
   },
-  buttonWrapper: { alignItems: 'flex-start', flexDirection: 'row' },
-  storeSelectorDropdown: { flexShrink: 1 },
-  addStoreNameInput: {
-    marginBottom: 10,
-    width: '100%'
-  },
-  addStoreModalContent: { alignItems: 'center' }
+  buttonWrapper: { alignItems: 'flex-start', flexDirection: 'row' }
 });
-
-const StoreSelector = ({
-  onSelect,
-  value
-}: {
-  onSelect: (storeId: number) => void;
-  value: number | null;
-}) => {
-  const { data: shoppingListStores, isLoading: isLoadingStores } =
-    useGetAllShoppingListStoresQuery(null as any);
-
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
-
-  const [createStore] = useCreateShoppingListStoreMutation();
-
-  const { t } = useTranslation();
-  const [addingNew, setAddingNew] = useState(false);
-  const [newStoreName, setNewStoreName] = useState('');
-
-  const isLoading =
-    isLoadingStores ||
-    !shoppingListStores ||
-    isLoadingUserDetails ||
-    !userDetails;
-  if (isLoading) {
-    return null;
-  }
-
-  const dropDownItems = shoppingListStores.ids.map((storeId) => {
-    const store = shoppingListStores.byId[storeId];
-    return {
-      value: `${storeId}`,
-      label: store.name
-    };
-  });
-
-  dropDownItems.push({
-    value: 'NEW',
-    label: t('components.planningLists.storeSelector.addNew')
-  });
-
-  return (
-    <TransparentView style={addListItemStyles.storeSelectorDropdown}>
-      <DropDown
-        value={`${value}`}
-        items={dropDownItems}
-        setFormValues={(val) => {
-          if (val === 'NEW') {
-            setAddingNew(true);
-          } else {
-            onSelect(val);
-          }
-        }}
-        listMode="MODAL"
-        dropdownPlaceholder={t('components.planningLists.storeSelector.store')}
-      />
-      <Modal visible={addingNew}>
-        <TransparentView style={addListItemStyles.addStoreModalContent}>
-          <Text>{t('components.planningLists.storeSelector.nameBlurb')}</Text>
-          <TextInput
-            value={newStoreName}
-            onChangeText={setNewStoreName}
-            style={addListItemStyles.addStoreNameInput}
-          />
-          <TransparentView style={addListItemStyles.buttonWrapper}>
-            <Button
-              title={t('common.add')}
-              onPress={async () => {
-                try {
-                  await createStore({
-                    name: newStoreName,
-                    created_by: userDetails.id
-                  }).unwrap;
-                  setNewStoreName('');
-                  setAddingNew(false);
-                } catch (err) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.generic')
-                  });
-                }
-              }}
-            />
-          </TransparentView>
-        </TransparentView>
-      </Modal>
-    </TransparentView>
-  );
-};
 
 export default function AddListItemInputPair({
   sublist,

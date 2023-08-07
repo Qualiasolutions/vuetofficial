@@ -696,7 +696,9 @@
       "deleteSublistModal": {
         "title": "Delete store list",
         "blurb": "Are you sure you would like to delete this store list?"
-      }
+      },
+      "groupByStore": "Group by store",
+      "groupByList": "Group by list"
     }, 
     "entityPages": {
       "car": {

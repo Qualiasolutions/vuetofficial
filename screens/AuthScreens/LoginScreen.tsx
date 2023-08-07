@@ -31,7 +31,6 @@ import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
-import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -52,7 +51,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%'
   },
-  usernameInput: { marginBottom: 10, width: '100%' }
+  usernameInput: { marginBottom: 10, width: '100%' },
+  passwordInput: { width: '100%' }
 });
 
 const LoginScreen = ({
@@ -141,6 +141,7 @@ const LoginScreen = ({
         value={password}
         secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
+        style={styles.passwordInput}
       />
       <TransparentView style={styles.otherOptsWrapper}>
         <SafePressable
