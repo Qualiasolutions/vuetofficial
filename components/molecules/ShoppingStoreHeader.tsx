@@ -2,24 +2,21 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
-  useCreatePlanningListTemplateMutation,
-  useDeletePlanningListMutation,
-  useUpdatePlanningListMutation
+  useDeleteShoppingListStoreMutation,
+  useUpdateShoppingListStoreMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
-import { PlanningList, ShoppingList } from 'types/lists';
+import { ShoppingListStore } from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
-import { Modal, YesNoModal } from './Modals';
-import { Button } from './ButtonComponents';
+import { YesNoModal } from './Modals';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const styles = StyleSheet.create({
   listHeader: {
     height: 40,
     textAlignVertical: 'center',
-    textAlign: 'center',
     justifyContent: 'center'
   },
   listHeaderText: { fontSize: 18 },
@@ -33,21 +30,16 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function PlanningListHeader({
-  list,
-  isShoppingList
+export default function ShoppingStoreHeader({
+  store
 }: {
-  list: PlanningList | ShoppingList;
-  isShoppingList?: boolean;
+  store: ShoppingListStore;
 }) {
-  const [deleteList] = useDeletePlanningListMutation();
-  const [createTemplate] = useCreatePlanningListTemplateMutation();
-  const [updateList] = useUpdatePlanningListMutation();
+  const [deleteStore] = useDeleteShoppingListStoreMutation();
+  const [updateStore] = useUpdateShoppingListStoreMutation();
   const [deleting, setDeleting] = useState(false);
-  const [savingAsTemplate, setSavingAsTemplate] = useState(false);
-  const [newTemplateName, setNewTemplateName] = useState('');
   const [editingName, setEditingName] = useState(false);
-  const [newListName, setNewListName] = useState(list.name);
+  const [newStoreName, setNewStoreName] = useState(store.name);
 
   const { t } = useTranslation();
 
@@ -56,12 +48,12 @@ export default function PlanningListHeader({
       <TransparentView style={styles.listHeaderSection}>
         <TextInput
           style={[styles.listHeader, styles.listHeaderText]}
-          value={newListName}
-          onChangeText={setNewListName}
+          value={newStoreName}
+          onChangeText={setNewStoreName}
           autoFocus={true}
           onBlur={() => {
             setEditingName(false);
-            setNewListName(list.name);
+            setNewStoreName(store.name);
           }}
         />
         <SafePressable
@@ -76,9 +68,9 @@ export default function PlanningListHeader({
           onPress={async () => {
             try {
               setEditingName(false);
-              await updateList({
-                id: list.id,
-                name: newListName
+              await updateStore({
+                id: store.id,
+                name: newStoreName
               }).unwrap();
             } catch (err) {
               Toast.show({
@@ -103,7 +95,7 @@ export default function PlanningListHeader({
         }}
         style={styles.listHeader}
       >
-        <Text style={styles.listHeaderText}>{list.name}</Text>
+        <Text style={styles.listHeaderText}>{store.name}</Text>
       </SafePressable>
       <SafePressable
         onPress={() => {
@@ -121,22 +113,12 @@ export default function PlanningListHeader({
       >
         <Feather name="edit" size={20} color="orange" />
       </SafePressable>
-      {!isShoppingList && (
-        <SafePressable
-          onPress={() => {
-            setSavingAsTemplate(true);
-          }}
-          style={styles.listTemplateLink}
-        >
-          <Feather name="save" size={20} color="green" />
-        </SafePressable>
-      )}
       <YesNoModal
-        title={t('components.planningLists.deleteListModal.title')}
-        question={t('components.planningLists.deleteListModal.blurb')}
+        title={t('components.planningLists.deleteStoreModal.title')}
+        question={t('components.planningLists.deleteStoreModal.blurb')}
         visible={deleting}
         onYes={() => {
-          deleteList(list.id);
+          deleteStore(store.id);
         }}
         onNo={() => {
           setDeleting(false);
@@ -145,38 +127,6 @@ export default function PlanningListHeader({
           setDeleting(false);
         }}
       />
-      <Modal
-        visible={savingAsTemplate}
-        onRequestClose={() => setSavingAsTemplate(false)}
-      >
-        <TransparentView style={styles.saveTemplateModalContent}>
-          <Text>{t('components.planningLists.saveTemplateModal.blurb')}</Text>
-          <TextInput
-            value={newTemplateName}
-            onChangeText={setNewTemplateName}
-          />
-          <TransparentView style={styles.saveTemplateButtonWrapper}>
-            <Button
-              title={t('common.save')}
-              onPress={async () => {
-                try {
-                  setSavingAsTemplate(false);
-                  await createTemplate({
-                    title: newTemplateName,
-                    list: list.id
-                  });
-                  setNewTemplateName('');
-                } catch (err) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.generic')
-                  });
-                }
-              }}
-            />
-          </TransparentView>
-        </TransparentView>
-      </Modal>
     </TransparentView>
   );
 }

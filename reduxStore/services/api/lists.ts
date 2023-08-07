@@ -1076,9 +1076,18 @@ const listsApi = vuetApi.injectEndpoints({
     >({
       query: (body) => {
         return {
-          url: 'core/shopping-list-store/',
+          url: `core/shopping-list-store/${body.id}/`,
           method: 'PATCH',
           body
+        };
+      },
+      invalidatesTags: ['ShoppingListStore']
+    }),
+    deleteShoppingListStore: builder.mutation<void, number>({
+      query: (itemId) => {
+        return {
+          url: `core/shopping-list-store/${itemId}/`,
+          method: 'DELETE'
         };
       },
       invalidatesTags: ['ShoppingListStore']
@@ -1133,5 +1142,7 @@ export const {
   useDeleteShoppingListItemMutation,
   useUpdateShoppingListItemMutation,
   useGetAllShoppingListStoresQuery,
-  useCreateShoppingListStoreMutation
+  useCreateShoppingListStoreMutation,
+  useUpdateShoppingListStoreMutation,
+  useDeleteShoppingListStoreMutation
 } = listsApi;

@@ -23,16 +23,22 @@ const styles = StyleSheet.create({
   sideSections: {
     width: 100,
     backgroundColor: 'transparent'
+  },
+  imageBackground: {
+    width: '100%',
+    height: '100%',
+    borderBottomWidth: 4
   }
 });
 
 export const headerWithBackgroundColor = (
   backgroundColor: string,
-  height: number = 150
+  height: number = 100
 ) => {
   return (props: NativeStackHeaderProps) => {
     const headerRight = props.options.headerRight;
     const borderColor = useThemeColor({}, 'grey');
+    const borderBottomWidth = 4;
     return (
       <TransparentView style={{ height: height }}>
         <View
@@ -40,7 +46,7 @@ export const headerWithBackgroundColor = (
             styles.overlay,
             {
               backgroundColor: backgroundColor || '#444444',
-              borderBottomWidth: 4,
+              borderBottomWidth: borderBottomWidth,
               borderBottomColor: borderColor
             }
           ]}
@@ -63,7 +69,7 @@ export const headerWithBackgroundColor = (
 
 export const headerWithBackground = (
   backgroundImage: ImageSourcePropType,
-  height: number = 150,
+  height: number = 100,
   customStyles?: {
     header?: TextStyle;
     overlay?: (overlayColour: string) => ViewStyle;
@@ -76,12 +82,12 @@ export const headerWithBackground = (
     return (
       <TransparentView style={{ height: height }}>
         <ImageBackground
-          style={{
-            width: '100%',
-            height: '100%',
-            borderBottomWidth: 4,
-            borderBottomColor: borderColor
-          }}
+          style={[
+            styles.imageBackground,
+            {
+              borderBottomColor: borderColor
+            }
+          ]}
           source={backgroundImage}
         >
           <View
@@ -113,13 +119,13 @@ export const headerWithBackground = (
 };
 
 export const entityTypeHeader = (backgroundImage: ImageSourcePropType) =>
-  headerWithBackground(backgroundImage, 150, {
+  headerWithBackground(backgroundImage, 100, {
     header: { fontSize: 22 },
     overlay: (overlayColor) => ({ backgroundColor: `${overlayColor}dd` })
   });
 
 export const categoryHeader = (backgroundImage: ImageSourcePropType) =>
-  headerWithBackground(backgroundImage, 150, { header: { fontSize: 28 } });
+  headerWithBackground(backgroundImage, 100, { header: { fontSize: 28 } });
 
 // TODO - set correct images
 export const headerMapping = {
@@ -234,7 +240,7 @@ export const headerMapping = {
   categories: {
     FAMILY: headerWithBackground(
       require('assets/images/header-backgrounds/holidays.png'),
-      150,
+      100,
       { header: { fontSize: 28 } }
     ),
     PETS: categoryHeader(
