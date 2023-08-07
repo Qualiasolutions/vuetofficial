@@ -83,13 +83,16 @@ const AddListModal = ({
         </TransparentView>
         <DropDown
           value={newListTemplateId}
-          items={planningListTemplates.ids.map((templateId) => {
-            const template = planningListTemplates.byId[templateId];
-            return {
-              value: templateId,
-              label: template.name
-            };
-          })}
+          items={planningListTemplates.ids
+            .map((templateId) => {
+              const template = planningListTemplates.byId[templateId];
+              return {
+                value: templateId,
+                label: template.name,
+                category: template.category
+              };
+            })
+            .filter((opt) => opt.category === category)}
           setFormValues={(id) => {
             setNewListTemplateId(id);
             setStep('NAME');

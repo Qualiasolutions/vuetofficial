@@ -464,6 +464,53 @@ const listsApi = vuetApi.injectEndpoints({
         }
       }
     }),
+    updatePlanningSublist: builder.mutation<
+      PlanningSublist,
+      Partial<PlanningSublist> & Pick<PlanningSublist, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/planning-sublist/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningSublist'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of listsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'PlanningSublist' }
+        ])) {
+          if (endpointName !== 'getAllPlanningSublists') continue;
+          const patchResult = dispatch(
+            listsApi.util.updateQueryData(
+              'getAllPlanningSublists',
+              originalArgs,
+              (draft) => {
+                draft.byId[patch.id] = {
+                  ...draft.byId[patch.id],
+                  ...patch
+                };
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
     deletePlanningSublist: builder.mutation<void, number>({
       query: (sublistId) => {
         return {
@@ -1108,6 +1155,7 @@ export const {
   useGetAllPlanningSublistsQuery,
   useCreatePlanningSublistMutation,
   useDeletePlanningSublistMutation,
+  useUpdatePlanningSublistMutation,
   useGetAllPlanningListItemsQuery,
   useCreatePlanningListItemMutation,
   useDeletePlanningListItemMutation,

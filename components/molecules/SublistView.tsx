@@ -1,12 +1,11 @@
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { Text } from 'components/Themed';
+import { Text, TextInput } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
-  useDeletePlanningListItemMutation,
   useDeletePlanningSublistMutation,
   useGetAllPlanningListItemsQuery,
   useGetAllPlanningListsQuery,
-  useUpdatePlanningListItemMutation
+  useUpdatePlanningSublistMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { useState } from 'react';
@@ -14,100 +13,99 @@ import { PlanningSublist } from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
 import { YesNoModal } from 'components/molecules/Modals';
-import Checkbox from 'components/molecules/Checkbox';
-import { useNavigation } from '@react-navigation/native';
 import AddListItemInputPair from 'components/molecules/AddListItemInputPair';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import ListItemView from './ListItemView';
 
 const styles = StyleSheet.create({
-  listHeader: { fontSize: 18, marginRight: 10 },
   listHeaderSection: { flexDirection: 'row', alignItems: 'center' },
-  sublistHeader: { fontSize: 16, marginRight: 10 },
+  sublistHeader: {
+    fontSize: 16,
+    height: 28,
+    paddingVertical: 0,
+    paddingHorizontal: 5
+  },
   listItemView: { paddingLeft: 10, flexDirection: 'row', alignItems: 'center' },
-  listItemTitle: { marginRight: 10 },
-  checkbox: { width: 16, height: 16 },
-  listItemCalendarLink: { marginLeft: 10 }
+  actionButton: { marginLeft: 10 }
 });
 
-export default function SublistView({
-  sublist,
-  style
-}: {
-  sublist: PlanningSublist;
-  style?: ViewStyle;
-}) {
-  const { data: allListItems, isLoading: isLoadingListItems } =
-    useGetAllPlanningListItemsQuery();
-
-  const { data: allLists, isLoading: isLoadingLists } =
-    useGetAllPlanningListsQuery();
-
-  const [deleteSublist] = useDeletePlanningSublistMutation();
+const SublistHeader = ({ sublist }: { sublist: PlanningSublist }) => {
   const [deleting, setDeleting] = useState(false);
-
-  const [deleteListItem] = useDeletePlanningListItemMutation();
-  const [updateListItem] = useUpdatePlanningListItemMutation();
-
+  const [deleteSublist] = useDeletePlanningSublistMutation();
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const [editingName, setEditingName] = useState(false);
+  const [newSublistName, setNewSublistName] = useState(sublist.title);
+  const [updateSublist] = useUpdatePlanningSublistMutation();
 
-  const isLoading =
-    isLoadingListItems || !allListItems || isLoadingLists || !allLists;
-
-  if (isLoading) {
-    return null;
-  }
-
-  const sublistItems = allListItems.bySublist[sublist.id] || [];
-  const parentList = allLists.byId[sublist.list];
-
-  return (
-    <TransparentView style={style || {}}>
+  if (editingName) {
+    return (
       <TransparentView style={styles.listHeaderSection}>
-        <Text style={styles.sublistHeader}>{sublist.title}</Text>
+        <TextInput
+          style={styles.sublistHeader}
+          value={newSublistName}
+          onChangeText={setNewSublistName}
+          autoFocus={true}
+          onBlur={() => {
+            setEditingName(false);
+            setNewSublistName(sublist.title);
+          }}
+        />
         <SafePressable
           onPress={() => {
-            setDeleting(true);
+            setEditingName(false);
           }}
+          style={styles.actionButton}
         >
-          <Feather name="trash" size={16} color="red" />
+          <Feather name="x" size={20} color="red" />
+        </SafePressable>
+        <SafePressable
+          onPress={async () => {
+            try {
+              setEditingName(false);
+              await updateSublist({
+                id: sublist.id,
+                title: newSublistName
+              }).unwrap();
+            } catch (err) {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }}
+          style={styles.actionButton}
+        >
+          <Feather name="check" size={20} color="green" />
         </SafePressable>
       </TransparentView>
-      {sublistItems.map((itemId) => {
-        const item = allListItems.byId[itemId];
-        return (
-          <TransparentView key={itemId} style={styles.listItemView}>
-            <Checkbox
-              checked={item.checked}
-              onValueChange={async () => {
-                updateListItem({
-                  id: item.id,
-                  checked: !item.checked
-                });
-              }}
-              style={styles.checkbox}
-            />
-            <Text style={styles.listItemTitle}>{item.title}</Text>
-            <SafePressable onPress={() => deleteListItem(itemId)}>
-              <Feather name="minus" color="red" size={20} />
-            </SafePressable>
-            <SafePressable
-              onPress={() => {
-                (navigation.navigate as any)('AddTask', {
-                  type: 'TASK',
-                  title: item.title,
-                  members: parentList.members
-                });
-              }}
-              style={styles.listItemCalendarLink}
-            >
-              <Feather name="calendar" size={16} color="green" />
-            </SafePressable>
-          </TransparentView>
-        );
-      })}
-      <TransparentView style={styles.listItemView}>
-        <AddListItemInputPair sublist={sublist.id} />
-      </TransparentView>
+    );
+  }
+
+  return (
+    <TransparentView style={styles.listHeaderSection}>
+      <SafePressable
+        onPress={() => {
+          setEditingName(true);
+        }}
+      >
+        <Text style={styles.sublistHeader}>{sublist.title}</Text>
+      </SafePressable>
+      <SafePressable
+        onPress={() => {
+          setDeleting(true);
+        }}
+        style={styles.actionButton}
+      >
+        <Feather name="trash" size={16} color="red" />
+      </SafePressable>
+      <SafePressable
+        onPress={() => {
+          setEditingName(true);
+        }}
+        style={styles.actionButton}
+      >
+        <Feather name="edit" size={16} color="orange" />
+      </SafePressable>
       <YesNoModal
         title={t('components.planningLists.deleteSublistModal.title')}
         question={t('components.planningLists.deleteSublistModal.blurb')}
@@ -122,6 +120,45 @@ export default function SublistView({
           setDeleting(false);
         }}
       />
+    </TransparentView>
+  );
+};
+
+export default function SublistView({
+  sublist,
+  style
+}: {
+  sublist: PlanningSublist;
+  style?: ViewStyle;
+}) {
+  const { data: allListItems, isLoading: isLoadingListItems } =
+    useGetAllPlanningListItemsQuery();
+
+  const { data: allLists, isLoading: isLoadingLists } =
+    useGetAllPlanningListsQuery();
+
+  const isLoading =
+    isLoadingListItems || !allListItems || isLoadingLists || !allLists;
+
+  if (isLoading) {
+    return null;
+  }
+
+  const sublistItems = allListItems.bySublist[sublist.id] || [];
+  const parentList = allLists.byId[sublist.list];
+
+  return (
+    <TransparentView style={style || {}}>
+      <SublistHeader sublist={sublist} />
+      {sublistItems.map((itemId) => {
+        const item = allListItems.byId[itemId];
+        return (
+          <ListItemView item={item} parentList={parentList} key={item.id} />
+        );
+      })}
+      <TransparentView style={styles.listItemView}>
+        <AddListItemInputPair sublist={sublist.id} />
+      </TransparentView>
     </TransparentView>
   );
 }

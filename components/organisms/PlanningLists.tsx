@@ -5,11 +5,9 @@ import {
   TransparentView,
   WhiteBox
 } from 'components/molecules/ViewComponents';
-import { Text, TextInput } from 'components/Themed';
+import { Text } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
-  useCreatePlanningListTemplateMutation,
-  useDeletePlanningListMutation,
   useGetAllPlanningListsQuery,
   useGetAllPlanningSublistsQuery,
   useUpdatePlanningListMutation
@@ -17,17 +15,16 @@ import {
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { Button } from 'components/molecules/ButtonComponents';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { PlanningList } from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
-import { Feather } from '@expo/vector-icons';
-import { Modal, YesNoModal } from 'components/molecules/Modals';
+import { Modal } from 'components/molecules/Modals';
 import UserTags from 'components/molecules/UserTags';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import AddListButton from 'components/molecules/AddListButton';
 import AddSublistInputPair from 'components/molecules/AddSublistInputPair';
 import SublistView from 'components/molecules/SublistView';
+import PlanningListHeader from 'components/molecules/PlanningListHeader';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
@@ -43,12 +40,6 @@ const styles = StyleSheet.create({
   sublistView: { marginBottom: 20 },
   saveMembersButton: {
     marginTop: 20
-  },
-  listTemplateLink: { marginLeft: 10 },
-  saveTemplateButtonWrapper: { flexDirection: 'row', justifyContent: 'center' },
-  saveTemplateModalContent: {
-    maxWidth: 250,
-    alignItems: 'center'
   }
 });
 
@@ -56,13 +47,8 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
   const { data: allSublists, isLoading: isLoadingSublists } =
     useGetAllPlanningSublistsQuery();
 
-  const [deleteList] = useDeletePlanningListMutation();
   const [updateList, updateListResult] = useUpdatePlanningListMutation();
-  const [createTemplate] = useCreatePlanningListTemplateMutation();
-  const [deleting, setDeleting] = useState(false);
   const [editingMembers, setEditingMembers] = useState(false);
-  const [savingAsTemplate, setSavingAsTemplate] = useState(false);
-  const [newTemplateName, setNewTemplateName] = useState('');
 
   const [newMembers, setNewMembers] = useState(list.members);
   const { t } = useTranslation();
@@ -77,24 +63,7 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
 
   return (
     <WhiteBox style={styles.listBox}>
-      <TransparentView style={styles.listHeaderSection}>
-        <Text style={styles.listHeader}>{list.name}</Text>
-        <SafePressable
-          onPress={() => {
-            setDeleting(true);
-          }}
-        >
-          <Feather name="trash" size={20} color="red" />
-        </SafePressable>
-        <SafePressable
-          onPress={() => {
-            setSavingAsTemplate(true);
-          }}
-          style={styles.listTemplateLink}
-        >
-          <Feather name="save" size={20} color="green" />
-        </SafePressable>
-      </TransparentView>
+      <PlanningListHeader list={list} />
       <TransparentView style={styles.sublists}>
         {sublists.map((sublistId) => {
           const sublist = allSublists.byId[sublistId];
@@ -115,20 +84,6 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
       >
         <UserTags memberIds={list.members} />
       </SafePressable>
-      <YesNoModal
-        title={t('components.planningLists.deleteListModal.title')}
-        question={t('components.planningLists.deleteListModal.blurb')}
-        visible={deleting}
-        onYes={() => {
-          deleteList(list.id);
-        }}
-        onNo={() => {
-          setDeleting(false);
-        }}
-        onRequestClose={() => {
-          setDeleting(false);
-        }}
-      />
       <Modal
         visible={editingMembers}
         onRequestClose={() => {
@@ -156,38 +111,6 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
             style={styles.saveMembersButton}
           />
         )}
-      </Modal>
-      <Modal
-        visible={savingAsTemplate}
-        onRequestClose={() => setSavingAsTemplate(false)}
-      >
-        <TransparentView style={styles.saveTemplateModalContent}>
-          <Text>{t('components.planningLists.saveTemplateModal.blurb')}</Text>
-          <TextInput
-            value={newTemplateName}
-            onChangeText={setNewTemplateName}
-          />
-          <TransparentView style={styles.saveTemplateButtonWrapper}>
-            <Button
-              title={t('common.save')}
-              onPress={async () => {
-                try {
-                  setSavingAsTemplate(false);
-                  await createTemplate({
-                    title: newTemplateName,
-                    list: list.id
-                  });
-                  setNewTemplateName('');
-                } catch (err) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.generic')
-                  });
-                }
-              }}
-            />
-          </TransparentView>
-        </TransparentView>
       </Modal>
     </WhiteBox>
   );
