@@ -98,3 +98,32 @@ export type AllPlanningListItems = {
     [key: number]: number[];
   };
 };
+
+export type ShoppingListItem = {
+  id: number;
+  list: number;
+  store: number | null;
+  title: string;
+  checked: boolean;
+};
+
+export type AllShoppingListItems = {
+  ids: number[];
+  byId: {
+    [key: number]: ShoppingListItem;
+  };
+  byList: {
+    [key: number]: number[];
+  };
+};
+
+export type ShoppingListStore = {
+  id: number;
+  name: string;
+  created_by: number;
+};
+
+export type AllShoppingListStores = {
+  ids: number[];
+  byId: { [key: number]: ShoppingListStore };
+};

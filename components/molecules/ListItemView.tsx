@@ -2,13 +2,19 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
 import {
   useDeletePlanningListItemMutation,
-  useGetAllPlanningListItemsQuery,
+  useDeleteShoppingListItemMutation,
   useGetAllPlanningListsQuery,
-  useUpdatePlanningListItemMutation
+  useUpdatePlanningListItemMutation,
+  useUpdateShoppingListItemMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
-import { PlanningList, PlanningListItem } from 'types/lists';
+import {
+  PlanningList,
+  PlanningListItem,
+  ShoppingList,
+  ShoppingListItem
+} from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
 import Checkbox from 'components/molecules/Checkbox';
@@ -41,19 +47,20 @@ const styles = StyleSheet.create({
 
 export default function ListItemView({
   item,
-  parentList
+  parentList,
+  isShoppingList
 }: {
-  item: PlanningListItem;
-  parentList: PlanningList;
+  item: PlanningListItem | ShoppingListItem;
+  parentList: PlanningList | ShoppingList;
+  isShoppingList?: boolean;
 }) {
-  const { data: allListItems, isLoading: isLoadingListItems } =
-    useGetAllPlanningListItemsQuery();
-
   const { data: allLists, isLoading: isLoadingLists } =
     useGetAllPlanningListsQuery();
 
   const [deleteListItem] = useDeletePlanningListItemMutation();
   const [updateListItem] = useUpdatePlanningListItemMutation();
+  const [deleteShoppingListItem] = useDeleteShoppingListItemMutation();
+  const [updateShoppingListItem] = useUpdateShoppingListItemMutation();
   const navigation = useNavigation();
 
   const [editingName, setEditingName] = useState(false);
@@ -61,8 +68,7 @@ export default function ListItemView({
 
   const { t } = useTranslation();
 
-  const isLoading =
-    isLoadingListItems || !allListItems || isLoadingLists || !allLists;
+  const isLoading = isLoadingLists || !allLists;
 
   if (isLoading) {
     return null;
@@ -92,10 +98,17 @@ export default function ListItemView({
         onPress={async () => {
           try {
             setEditingName(false);
-            await updateListItem({
-              id: item.id,
-              title: newItemName
-            }).unwrap();
+            if (isShoppingList) {
+              await updateShoppingListItem({
+                id: item.id,
+                title: newItemName
+              }).unwrap();
+            } else {
+              await updateListItem({
+                id: item.id,
+                title: newItemName
+              }).unwrap();
+            }
           } catch (err) {
             Toast.show({
               type: 'error',
@@ -117,7 +130,13 @@ export default function ListItemView({
         <Text>{item.title}</Text>
       </SafePressable>
       <SafePressable
-        onPress={() => deleteListItem(item.id)}
+        onPress={() => {
+          if (isShoppingList) {
+            deleteShoppingListItem(item.id);
+          } else {
+            deleteListItem(item.id);
+          }
+        }}
         style={styles.actionButton}
       >
         <Feather name="minus" color="red" size={16} />
@@ -148,10 +167,17 @@ export default function ListItemView({
       <Checkbox
         checked={item.checked}
         onValueChange={async () => {
-          updateListItem({
-            id: item.id,
-            checked: !item.checked
-          });
+          if (isShoppingList) {
+            updateShoppingListItem({
+              id: item.id,
+              checked: !item.checked
+            });
+          } else {
+            updateListItem({
+              id: item.id,
+              checked: !item.checked
+            });
+          }
         }}
         style={styles.checkbox}
       />

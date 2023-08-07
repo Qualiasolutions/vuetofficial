@@ -674,6 +674,11 @@
         "selectTemplate": "Select Template",
         "createNew": "Create New"
       },
+      "storeSelector": {
+        "store": "Store",
+        "addNew": "Add new",
+        "nameBlurb": "What would you like to name your new store?"
+      },
       "saveTemplateModal": {
         "blurb": "What would you like to save your template as?"
       },

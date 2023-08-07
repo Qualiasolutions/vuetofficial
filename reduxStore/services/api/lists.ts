@@ -2,13 +2,17 @@ import {
   AllPlanningListItems,
   AllPlanningLists,
   AllPlanningSublists,
+  AllShoppingListItems,
   AllShoppingLists,
+  AllShoppingListStores,
   FormUpdateListEntryRequest,
   ListEntryResponse,
   PlanningList,
   PlanningListItem,
   PlanningSublist,
-  ShoppingList
+  ShoppingList,
+  ShoppingListItem,
+  ShoppingListStore
 } from 'types/lists';
 import { normalizeData, vuetApi } from './api';
 import entitiesApi from './entities';
@@ -71,6 +75,26 @@ const normalisePlanningListItems = (data: PlanningListItem[]) => {
         [next.sublist]: prev[next.sublist]
           ? [...prev[next.sublist], next.id]
           : [next.id]
+      }),
+      {}
+    )
+  };
+};
+
+const normaliseShoppingListItems = (data: ShoppingListItem[]) => {
+  return {
+    ids: data.map(({ id }) => id),
+    byId: data.reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.id]: next
+      }),
+      {}
+    ),
+    byList: data.reduce<{ [key: number]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.list]: prev[next.list] ? [...prev[next.list], next.id] : [next.id]
       }),
       {}
     )
@@ -860,122 +884,13 @@ const listsApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    getAllShoppingSublists: builder.query<AllPlanningSublists, void>({
-      query: () => ({
-        url: 'core/shopping-sublist/',
-        responseHandler: async (response) => {
-          if (response.ok) {
-            const responseJson: PlanningSublist[] = await response.json();
-            return normalisePlanningSublists(responseJson);
-          } else {
-            // Just return the error data
-            return response.json();
-          }
-        }
-      }),
-      providesTags: ['ShoppingSublist']
-    }),
-    createShoppingSublist: builder.mutation<
-      PlanningSublist,
-      Omit<PlanningSublist, 'id'>
-    >({
-      query: (body) => {
-        return {
-          url: 'core/shopping-sublist/',
-          method: 'POST',
-          body
-        };
-      },
-      invalidatesTags: ['ShoppingSublist'],
-      async onQueryStarted(
-        { ...patch },
-        { dispatch, queryFulfilled, getState }
-      ) {
-        const patchResults = [];
-        for (const {
-          endpointName,
-          originalArgs
-        } of listsApi.util.selectInvalidatedBy(getState(), [
-          { type: 'ShoppingSublist' }
-        ])) {
-          if (endpointName !== 'getAllShoppingSublists') continue;
-          const patchResult = dispatch(
-            listsApi.util.updateQueryData(
-              'getAllShoppingSublists',
-              originalArgs,
-              (draft) => {
-                const mockId = Math.round(1000000 * Math.random() * 1e7);
-                draft.ids.push(mockId);
-                draft.byId[mockId] = { ...patch, id: mockId };
-
-                const byList = draft.byList[patch.list];
-                draft.byList[patch.list] = byList
-                  ? [...byList, mockId]
-                  : [mockId];
-              }
-            )
-          );
-          patchResults.push(patchResult);
-        }
-        try {
-          await queryFulfilled;
-        } catch {
-          for (const patchResult of patchResults) {
-            patchResult.undo();
-          }
-        }
-      }
-    }),
-    deleteShoppingSublist: builder.mutation<void, number>({
-      query: (sublistId) => {
-        return {
-          url: `core/shopping-sublist/${sublistId}/`,
-          method: 'DELETE'
-        };
-      },
-      invalidatesTags: ['ShoppingSublist'],
-      async onQueryStarted(sublistId, { dispatch, queryFulfilled, getState }) {
-        const patchResults = [];
-        for (const {
-          endpointName,
-          originalArgs
-        } of listsApi.util.selectInvalidatedBy(getState(), [
-          { type: 'ShoppingSublist' }
-        ])) {
-          if (endpointName !== 'getAllShoppingSublists') continue;
-          const patchResult = dispatch(
-            listsApi.util.updateQueryData(
-              'getAllShoppingSublists',
-              originalArgs,
-              (draft) => {
-                const list = draft.byId[sublistId].list;
-
-                draft.ids = draft.ids.filter((id) => id !== sublistId);
-                delete draft.byId[sublistId];
-
-                const byList = draft.byList[list];
-                draft.byList[list] = byList.filter((id) => id !== sublistId);
-              }
-            )
-          );
-          patchResults.push(patchResult);
-        }
-        try {
-          await queryFulfilled;
-        } catch {
-          for (const patchResult of patchResults) {
-            patchResult.undo();
-          }
-        }
-      }
-    }),
-    getAllShoppingListItems: builder.query<AllPlanningListItems, void>({
+    getAllShoppingListItems: builder.query<AllShoppingListItems, void>({
       query: () => ({
         url: 'core/shopping-list-item/',
         responseHandler: async (response) => {
           if (response.ok) {
-            const responseJson: PlanningListItem[] = await response.json();
-            return normalisePlanningListItems(responseJson);
+            const responseJson: ShoppingListItem[] = await response.json();
+            return normaliseShoppingListItems(responseJson);
           } else {
             // Just return the error data
             return response.json();
@@ -985,8 +900,8 @@ const listsApi = vuetApi.injectEndpoints({
       providesTags: ['ShoppingListItem']
     }),
     createShoppingListItem: builder.mutation<
-      PlanningListItem,
-      Omit<PlanningListItem, 'id' | 'checked'>
+      ShoppingListItem,
+      Omit<ShoppingListItem, 'id' | 'checked'>
     >({
       query: (body) => {
         return {
@@ -1017,9 +932,9 @@ const listsApi = vuetApi.injectEndpoints({
                 draft.ids.push(mockId);
                 draft.byId[mockId] = { ...patch, id: mockId, checked: false };
 
-                const bySublist = draft.bySublist[patch.sublist];
-                draft.bySublist[patch.sublist] = bySublist
-                  ? [...bySublist, mockId]
+                const byList = draft.byList[patch.list];
+                draft.byList[patch.list] = byList
+                  ? [...byList, mockId]
                   : [mockId];
               }
             )
@@ -1057,15 +972,13 @@ const listsApi = vuetApi.injectEndpoints({
               'getAllShoppingListItems',
               originalArgs,
               (draft) => {
-                const sublist = draft.byId[itemId].sublist;
+                const list = draft.byId[itemId].list;
 
                 draft.ids = draft.ids.filter((id) => id !== itemId);
                 delete draft.byId[itemId];
 
-                const bySublist = draft.bySublist[sublist];
-                draft.bySublist[sublist] = bySublist.filter(
-                  (id) => id !== itemId
-                );
+                const byList = draft.byList[list];
+                draft.byList[list] = byList.filter((id) => id !== itemId);
               }
             )
           );
@@ -1126,6 +1039,48 @@ const listsApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    createShoppingListStore: builder.mutation<
+      ShoppingListStore,
+      Omit<ShoppingListStore, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/shopping-list-store/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingListStore']
+    }),
+    updateShoppingListStore: builder.mutation<
+      ShoppingListStore,
+      Partial<ShoppingListStore> & Pick<ShoppingListStore, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: 'core/shopping-list-store/',
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingListStore']
+    }),
+    getAllShoppingListStores: builder.query<AllShoppingListStores, void>({
+      query: () => ({
+        url: 'core/shopping-list-store/',
+        method: 'GET',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: ShoppingListStore[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['ShoppingListStore']
     })
   }),
   overrideExisting: true
@@ -1156,11 +1111,10 @@ export const {
   useCreateShoppingListMutation,
   useDeleteShoppingListMutation,
   useUpdateShoppingListMutation,
-  useGetAllShoppingSublistsQuery,
-  useCreateShoppingSublistMutation,
-  useDeleteShoppingSublistMutation,
   useGetAllShoppingListItemsQuery,
   useCreateShoppingListItemMutation,
   useDeleteShoppingListItemMutation,
-  useUpdateShoppingListItemMutation
+  useUpdateShoppingListItemMutation,
+  useGetAllShoppingListStoresQuery,
+  useCreateShoppingListStoreMutation
 } = listsApi;

@@ -7,8 +7,8 @@ import {
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
 import {
+  useGetAllShoppingListItemsQuery,
   useGetAllShoppingListsQuery,
-  useGetAllShoppingSublistsQuery,
   useUpdateShoppingListMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
@@ -21,8 +21,9 @@ import UserTags from 'components/molecules/UserTags';
 import MemberSelector from 'components/forms/components/MemberSelector';
 import AddListButton from 'components/molecules/AddListButton';
 import AddSublistInputPair from 'components/molecules/AddSublistInputPair';
-import SublistView from 'components/molecules/SublistView';
 import PlanningListHeader from 'components/molecules/PlanningListHeader';
+import ListItemView from 'components/molecules/ListItemView';
+import AddListItemInputPair from 'components/molecules/AddListItemInputPair';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
@@ -43,8 +44,8 @@ const styles = StyleSheet.create({
 });
 
 const ShoppingListView = ({ list }: { list: ShoppingList }) => {
-  const { data: allSublists, isLoading: isLoadingSublists } =
-    useGetAllShoppingSublistsQuery();
+  const { data: allItems, isLoading: isLoadingItems } =
+    useGetAllShoppingListItemsQuery();
 
   const [updateList, updateListResult] = useUpdateShoppingListMutation();
   const [editingMembers, setEditingMembers] = useState(false);
@@ -52,29 +53,27 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
   const [newMembers, setNewMembers] = useState(list.members);
   const { t } = useTranslation();
 
-  const isLoading = isLoadingSublists || !allSublists;
+  const isLoading = isLoadingItems || !allItems;
 
   if (isLoading) {
     return null;
   }
 
-  const sublists = allSublists.byList[list.id] || [];
+  const items = allItems.byList[list.id] || [];
 
   return (
     <WhiteBox style={styles.listBox}>
       <PlanningListHeader list={list} />
       <TransparentView style={styles.sublists}>
-        {sublists.map((sublistId) => {
-          const sublist = allSublists.byId[sublistId];
-          return (
-            <SublistView
-              sublist={sublist}
-              key={sublistId}
-              style={styles.sublistView}
-            />
-          );
-        })}
-        <AddSublistInputPair list={list.id} />
+        {items.map((itemId) => (
+          <ListItemView
+            key={itemId}
+            item={allItems.byId[itemId]}
+            parentList={list}
+            isShoppingList={true}
+          />
+        ))}
+        <AddListItemInputPair list={list.id} isShoppingList={true} />
       </TransparentView>
       <SafePressable
         onPress={() => {
