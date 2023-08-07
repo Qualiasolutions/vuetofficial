@@ -123,6 +123,11 @@ export default {
       }
     },
     {
+      name: 'education.schoolTerms',
+      toScreen: 'SchoolTerms',
+      navMethod: 'push'
+    },
+    {
       name: 'education.academicPlans',
       toScreen: 'EntityList',
       navMethod: 'push',

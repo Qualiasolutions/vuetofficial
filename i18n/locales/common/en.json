@@ -182,6 +182,7 @@
       "schools": "Schools",
       "academicPlans": "Academic Plans",
       "extracurricularPlans": "Extracurricular Plans",
+      "schoolTerms": "School Terms",
       "school": {
         "schoolBreaks": "School Breaks"
       }

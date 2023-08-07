@@ -189,6 +189,7 @@ export type ContentTabParamList = {
     entityTypes: EntityTypeName[];
     parentId?: number | string;
   };
+  SchoolTerms: {};
 };
 
 // Side Drawer Stack

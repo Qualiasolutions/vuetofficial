@@ -24,6 +24,7 @@ import AllReferencesScreen from 'screens/AllReferencesScreen';
 import AnniversaryDatesScreen from 'screens/EntityPages/AnniversaryDatesScreen';
 import HolidayDatesScreen from 'screens/EntityPages/HolidayDatesScreen';
 import AddHolidayTaskScreen from 'screens/Forms/TaskForms/AddHolidayTaskScreen';
+import SchoolTermsScreen from 'screens/SchoolTermsScreen';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
@@ -179,6 +180,13 @@ export function ContentNavigator() {
         component={AddHolidayTaskScreen}
         options={{
           title: 'Add Holiday'
+        }}
+      />
+      <ContentStack.Screen
+        name="SchoolTerms"
+        component={SchoolTermsScreen}
+        options={{
+          headerShown: true
         }}
       />
     </ContentStack.Navigator>
