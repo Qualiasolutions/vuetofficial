@@ -360,6 +360,7 @@
     "save": "Save",
     "submit": "Submit",
     "ok": "OK",
+    "or": "or",
     "show": "Show",
     "cancel": "Cancel",
     "tasks": "Tasks",
@@ -669,7 +670,9 @@
         "blurb": "Are you sure you would like to delete this sublist?"
       },
       "addListModal": {
-        "add": "Add List"
+        "add": "Add List",
+        "selectTemplate": "Select Template",
+        "createNew": "Create New"
       },
       "saveTemplateModal": {
         "blurb": "What would you like to save your template as?"

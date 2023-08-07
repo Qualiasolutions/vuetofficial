@@ -268,7 +268,7 @@ const listsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['PlanningList'],
+      invalidatesTags: ['PlanningList', 'PlanningSublist'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
