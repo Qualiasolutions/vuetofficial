@@ -165,12 +165,15 @@ export default function ListsNavigator({
     );
   }, [entities, entityTypes, categories, showCategoryHeaders]);
   return (
-    <TopTabs.Navigator initialRouteName="Home">
+    <TopTabs.Navigator
+      initialRouteName="Home"
+      screenOptions={{ tabBarLabelStyle: { fontSize: 11 } }}
+    >
       <TopTabs.Screen
         name="Home"
         component={listOfListsComponent}
         options={{
-          title: t('pageTitles.home')
+          title: t('pageTitles.listsHome')
         }}
       />
       <TopTabs.Screen

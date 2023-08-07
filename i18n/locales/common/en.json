@@ -31,7 +31,8 @@
     "flexibleTaskPreferences": "Flexible Tasks",
     "routines": "Routines",
     "myPlanningLists": "My Planning Lists",
-    "myShoppingLists": "My Shopping Lists"
+    "myShoppingLists": "My Shopping & Selling Lists",
+    "listsHome": "Lists Home"
   },
   "blockedCategories": {
     "instructions": {
