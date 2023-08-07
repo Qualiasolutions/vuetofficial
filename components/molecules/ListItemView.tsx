@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     flexShrink: 1
   },
+  editTextInput: { height: 26 },
   checkbox: { width: 16, height: 16 },
   listItemCalendarLink: { marginLeft: 10 },
   actionButton: { marginLeft: 10 }
@@ -68,9 +69,9 @@ export default function ListItemView({
   }
 
   const content = editingName ? (
-    <TransparentView style={styles.listItemView}>
+    <>
       <TextInput
-        style={styles.listItemTitle}
+        style={[styles.listItemTitle, styles.editTextInput]}
         value={newItemName}
         onChangeText={setNewItemName}
         autoFocus={true}
@@ -106,7 +107,7 @@ export default function ListItemView({
       >
         <Feather name="check" size={20} color="green" />
       </SafePressable>
-    </TransparentView>
+    </>
   ) : (
     <>
       <SafePressable
