@@ -13,7 +13,7 @@ dayjs.extend(utc);
 
 const createInitialObject = (
   fields: FormFieldTypes,
-  userDetails: UserFullResponse | UserResponse,
+  userDetails?: UserFullResponse | UserResponse,
   initialOverrides?: {
     [key: string]: any;
   }

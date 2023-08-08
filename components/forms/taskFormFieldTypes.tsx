@@ -1,6 +1,5 @@
 import { FlatFormFieldTypes } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
-import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import {

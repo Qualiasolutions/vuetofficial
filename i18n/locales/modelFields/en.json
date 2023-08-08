@@ -208,5 +208,16 @@
     "dob": "Date of birth",
     "member_colour": "Member colour",
     "phone_number": "Phone number"
+  },
+  "schoolTerm": {
+    "year": "School Year",
+    "school": "School",
+    "start_date": "First Day of School",
+    "end_date": "Last Day of School"
+  },
+  "schoolBreak": {
+    "name": "Name",
+    "start_date": "Start Date",
+    "end_date": "End Date"
   }
 }

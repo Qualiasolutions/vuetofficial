@@ -130,7 +130,6 @@ export default function ListEntry({
               <Checkbox
                 checked={listEntry.selected}
                 onValueChange={async (val) => {
-                  console.log(val);
                   updateSelected(!val);
                 }}
               />
