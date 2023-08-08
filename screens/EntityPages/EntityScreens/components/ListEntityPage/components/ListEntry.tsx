@@ -16,6 +16,7 @@ import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useTranslation } from 'react-i18next';
+import { Modal } from 'components/molecules/Modals';
 
 export default function ListEntry({
   listEntry
@@ -27,6 +28,7 @@ export default function ListEntry({
   const primaryColor = useThemeColor({}, 'primary');
   const [updatingText, setUpdatingText] = useState(false);
   const [newTitle, setNewTitle] = useState(listEntry.title);
+  const [fullPageImage, setFullPageImage] = useState(false);
   const trashImage = require('assets/images/icons/trash.png');
 
   const { t } = useTranslation();
@@ -77,7 +79,11 @@ export default function ListEntry({
       width: 35
     },
     actionButton: { marginLeft: 10 },
-    deleteButtonImage: { margin: 'auto' }
+    deleteButtonImage: { margin: 'auto' },
+    fullPageImage: {
+      width: '100%',
+      height: '100%'
+    }
   });
 
   const updateSelected = useCallback(
@@ -91,6 +97,9 @@ export default function ListEntry({
   );
 
   const imageSource = parsePresignedUrl(listEntry?.presigned_image_url);
+  const imageSourceLarge = parsePresignedUrl(
+    listEntry?.presigned_image_url_large
+  );
 
   const renderRightActions = () => {
     return (
@@ -179,12 +188,30 @@ export default function ListEntry({
                   </SafePressable>
                 )
               ) : imageSource ? (
-                <Image source={{ uri: imageSource }} style={styles.image} />
+                <SafePressable
+                  onPress={() => {
+                    setFullPageImage(true);
+                  }}
+                >
+                  <Image source={{ uri: imageSource }} style={styles.image} />
+                </SafePressable>
               ) : null}
             </TransparentView>
           </TransparentView>
         </>
       </Swipeable>
+      <Modal
+        visible={fullPageImage}
+        onRequestClose={() => {
+          setFullPageImage(false);
+        }}
+        boxStyle={styles.fullPageImage}
+      >
+        <Image
+          source={{ uri: imageSourceLarge }}
+          style={styles.fullPageImage}
+        />
+      </Modal>
     </TransparentView>
   );
 }

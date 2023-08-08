@@ -10,6 +10,7 @@ export type ListEntryResponse = {
   phone_number: string;
   image_200_200: string;
   presigned_image_url: string;
+  presigned_image_url_large: string;
 };
 
 export type ListEntryCreateRequest = {
