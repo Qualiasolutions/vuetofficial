@@ -153,6 +153,12 @@ export default function BottomNavBar({
     setCurrentScreenParams(params);
   }, [state, getCurrentScreenAndParams]);
 
+  useEffect(() => {
+    if (['Lists', 'PlanningLists', 'ShoppingLists'].includes(currentScreen)) {
+      setNavbarHidden(true);
+    }
+  }, [currentScreen]);
+
   const [showingEntityTypeSelector, setShowingEntityTypeSelector] =
     useState(false);
   const [entityTypeOptions, setEntityTypeOptions] = useState<EntityTypeName[]>(
