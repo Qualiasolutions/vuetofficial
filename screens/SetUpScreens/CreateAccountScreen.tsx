@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
-  }
+  },
+  textInput: { width: '100%', zIndex: -1 }
 });
 
 const CreateAccountScreen = ({
@@ -132,6 +133,7 @@ const CreateAccountScreen = ({
           value={firstName}
           onChangeText={(text) => onChangeFirstName(text)}
           accessibilityLabel="first-name-input"
+          style={styles.textInput}
         />
         <TransparentView style={styles.inputLabelWrapper}>
           <AlmostBlackText
@@ -143,6 +145,7 @@ const CreateAccountScreen = ({
           value={lastName}
           onChangeText={(text) => onChangeLastName(text)}
           accessibilityLabel="last-name-input"
+          style={styles.textInput}
         />
         <TransparentView style={styles.inputLabelWrapper}>
           <AlmostBlackText

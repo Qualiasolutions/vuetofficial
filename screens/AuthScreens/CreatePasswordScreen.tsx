@@ -43,6 +43,9 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 30,
     marginBottom: 15
+  },
+  passwordInput: {
+    width: '100%'
   }
 });
 
@@ -92,6 +95,7 @@ const CreatePasswordScreen = ({
           value={password}
           onChangeText={(text) => onChangePassword(text)}
           secureTextEntry={true}
+          style={styles.passwordInput}
         />
         <TransparentView style={styles.inputLabelWrapper}>
           <AlmostBlackText
@@ -104,6 +108,7 @@ const CreatePasswordScreen = ({
           value={passwordConfirm}
           onChangeText={(text) => onChangePasswordConfirm(text)}
           secureTextEntry={true}
+          style={styles.passwordInput}
         />
         {createAccountResult.isLoading ? (
           <PaddedSpinner />
