@@ -2,6 +2,7 @@ import { useThemeColor } from 'components/Themed';
 import { GestureResponderEvent, StyleSheet } from 'react-native';
 import SafePressable from './SafePressable';
 import { BlackText } from './TextComponents';
+import { TouchableOpacity } from './TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   button: {
@@ -57,12 +58,12 @@ export function LinkButton(props: {
   const textColor = useThemeColor({}, 'secondary');
 
   return (
-    <SafePressable
+    <TouchableOpacity
       style={[styles.linkButton, style]}
       disabled={disabled}
       {...otherProps}
     >
       <BlackText style={[{ color: textColor }]} text={title} bold={true} />
-    </SafePressable>
+    </TouchableOpacity>
   );
 }

@@ -1,8 +1,6 @@
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
 import {
-  useDeletePlanningListItemMutation,
-  useDeleteShoppingListItemMutation,
   useGetAllPlanningListsQuery,
   useUpdatePlanningListItemMutation,
   useUpdateShoppingListItemMutation
@@ -18,18 +16,13 @@ import {
 import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
 import Checkbox from 'components/molecules/Checkbox';
-import { useNavigation } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useTranslation } from 'react-i18next';
 import StoreSelector from './StoreSelector';
+import { useDispatch } from 'react-redux';
+import { setListItemToAction } from 'reduxStore/slices/lists/actions';
 
 const styles = StyleSheet.create({
-  sublistHeader: {
-    fontSize: 16,
-    height: 28,
-    paddingVertical: 0,
-    paddingHorizontal: 5
-  },
   listItemView: {
     paddingLeft: 10,
     flexDirection: 'row',
@@ -41,9 +34,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     flexShrink: 1
   },
+  listItemTitleText: {
+    fontSize: 11
+  },
   editTextInput: { height: 26 },
   checkbox: { width: 16, height: 16 },
-  listItemCalendarLink: { marginLeft: 10 },
   actionButton: { marginLeft: 10 }
 });
 
@@ -54,8 +49,7 @@ const isShoppingListItem = (
 };
 
 export default function ListItemView({
-  item,
-  parentList
+  item
 }: {
   item: PlanningListItem | ShoppingListItem;
   parentList?: PlanningList | ShoppingList;
@@ -63,11 +57,8 @@ export default function ListItemView({
   const { data: allLists, isLoading: isLoadingLists } =
     useGetAllPlanningListsQuery();
 
-  const [deleteListItem] = useDeletePlanningListItemMutation();
   const [updateListItem] = useUpdatePlanningListItemMutation();
-  const [deleteShoppingListItem] = useDeleteShoppingListItemMutation();
   const [updateShoppingListItem] = useUpdateShoppingListItemMutation();
-  const navigation = useNavigation();
 
   const [editingName, setEditingName] = useState(false);
   const [newItemName, setNewItemName] = useState(item.title);
@@ -75,6 +66,7 @@ export default function ListItemView({
   const isShoppingList = isShoppingListItem(item);
 
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const isLoading = isLoadingLists || !allLists;
 
@@ -135,7 +127,7 @@ export default function ListItemView({
         onPress={() => setEditingName(true)}
         style={styles.listItemTitle}
       >
-        <Text>{item.title}</Text>
+        <Text style={styles.listItemTitleText}>{item.title}</Text>
       </SafePressable>
       {isShoppingList && (
         <StoreSelector
@@ -150,33 +142,12 @@ export default function ListItemView({
       )}
       <SafePressable
         onPress={() => {
-          if (isShoppingList) {
-            deleteShoppingListItem(item.id);
-          } else {
-            deleteListItem(item.id);
-          }
+          dispatch(setListItemToAction(item));
+          // setActionModalVisible(true);
         }}
         style={styles.actionButton}
       >
-        <Feather name="minus" color="red" size={16} />
-      </SafePressable>
-      <SafePressable
-        onPress={() => setEditingName(true)}
-        style={styles.actionButton}
-      >
-        <Feather name="edit" color="orange" size={16} />
-      </SafePressable>
-      <SafePressable
-        onPress={() => {
-          (navigation.navigate as any)('AddTask', {
-            type: 'TASK',
-            title: item.title,
-            members: parentList ? parentList.members : null
-          });
-        }}
-        style={styles.listItemCalendarLink}
-      >
-        <Feather name="calendar" size={16} color="green" />
+        <Feather name="more-horizontal" size={24} />
       </SafePressable>
     </>
   );

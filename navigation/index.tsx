@@ -20,6 +20,7 @@ import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import TaskActionModal from 'components/molecules/TaskActionModal';
+import ListItemActionModal from 'components/molecules/ListItemActionModal';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -70,6 +71,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
     >
       {navigatorComponent}
       <TaskActionModal />
+      <ListItemActionModal />
     </NavigationContainer>
   );
 };

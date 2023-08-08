@@ -700,6 +700,10 @@
       },
       "createFromTemplateModal": {
         "blurb": "What would you like to name your new list?"
+      },
+      "itemActionModal": {
+        "deleteItem": "Delete Item",
+        "createTask": "Create Task"
       }
     }, 
     "shoppingLists": {

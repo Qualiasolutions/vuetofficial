@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
