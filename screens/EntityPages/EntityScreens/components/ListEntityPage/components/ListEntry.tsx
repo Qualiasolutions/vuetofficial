@@ -127,11 +127,13 @@ export default function ListEntry({
         <>
           <TransparentView style={styles.content}>
             <TransparentView style={styles.titleWrapper}>
-              <SafePressable
-                onPress={() => updateSelected(!listEntry.selected)}
-              >
-                <Checkbox checked={listEntry.selected} />
-              </SafePressable>
+              <Checkbox
+                checked={listEntry.selected}
+                onValueChange={async (val) => {
+                  console.log(val);
+                  updateSelected(!val);
+                }}
+              />
               {listEntry.title ? (
                 updatingText ? (
                   <>

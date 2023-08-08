@@ -230,11 +230,13 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
   };
 
   const createEntry = () => {
-    createListEntry({
-      list: entityData.id,
-      title: newEntryTitle
-    });
-    setNewEntryTitle('');
+    if (newEntryTitle) {
+      createListEntry({
+        list: entityData.id,
+        title: newEntryTitle
+      });
+      setNewEntryTitle('');
+    }
   };
 
   const createImageEntry = (image: PickedFile) => {
