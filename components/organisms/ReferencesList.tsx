@@ -751,7 +751,7 @@ export default function ReferencesList({
   ).filter((entityId) => {
     if (
       categories &&
-      categories.includes(allEntities.byId[entityId].category)
+      categories.includes(allEntities.byId[entityId]?.category)
     ) {
       return true;
     }
@@ -761,7 +761,7 @@ export default function ReferencesList({
     if (
       entityTypes &&
       allEntities.byId[entityId] &&
-      entityTypes.includes(allEntities.byId[entityId].resourcetype)
+      entityTypes.includes(allEntities.byId[entityId]?.resourcetype)
     ) {
       return true;
     }

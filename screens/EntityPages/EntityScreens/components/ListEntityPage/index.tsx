@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import {
   TransparentPaddedView,
@@ -6,18 +6,19 @@ import {
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { useTranslation } from 'react-i18next';
-import { useUpdateEntityMutation } from 'reduxStore/services/api/entities';
+import {
+  useDeleteEntityMutation,
+  useUpdateEntityMutation
+} from 'reduxStore/services/api/entities';
 
 import { TextInput } from 'components/Themed';
 import {
   useCreateListEntryMutation,
-  useDeleteListEntryMutation,
   useFormCreateListEntryMutation
 } from 'reduxStore/services/api/lists';
-import { isListEntity } from 'types/entities';
+import { EntityResponseType, isListEntity } from 'types/entities';
 import { userService } from 'utils/userService';
 import { UserResponse } from 'types/users';
-import MemberList from 'components/molecules/MemberList';
 import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
@@ -26,9 +27,13 @@ import { useSelector } from 'react-redux';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   ImagePicker,
-  PickedFile,
-  SmallImagePicker
+  PickedFile
 } from 'components/forms/components/ImagePicker';
+import { Text } from 'components/Themed';
+import SafePressable from 'components/molecules/SafePressable';
+import { Feather } from '@expo/vector-icons';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { YesNoModal } from 'components/molecules/Modals';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -57,20 +62,146 @@ const styles = StyleSheet.create({
   bottomActions: {
     alignItems: 'flex-end',
     marginBottom: 100
+  },
+  listHeader: {
+    height: 40,
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    justifyContent: 'center'
+  },
+  listHeaderText: { fontSize: 18 },
+  listHeaderSection: { flexDirection: 'row', alignItems: 'center' },
+  sublists: { paddingLeft: 10 },
+  listTemplateLink: { marginLeft: 10 },
+  saveTemplateButtonWrapper: { flexDirection: 'row', justifyContent: 'center' },
+  saveTemplateModalContent: {
+    maxWidth: 250,
+    alignItems: 'center'
   }
 });
+
+const ListHeader = ({ list }: { list: EntityResponseType }) => {
+  const [deleteList] = useDeleteEntityMutation();
+  const [updateList] = useUpdateEntityMutation();
+  const [deleting, setDeleting] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [newListName, setNewListName] = useState(list.name);
+
+  const { t } = useTranslation();
+
+  if (editingName) {
+    return (
+      <TransparentView style={styles.listHeaderSection}>
+        <TextInput
+          style={[styles.listHeader, styles.listHeaderText]}
+          value={newListName}
+          onChangeText={setNewListName}
+          autoFocus={true}
+          onBlur={() => {
+            // Set a timeout because otherwise the update is sometimes not processed
+            setTimeout(() => {
+              setEditingName(false);
+              setNewListName(list.name);
+            }, 100);
+          }}
+        />
+        <SafePressable
+          onPress={() => {
+            setEditingName(false);
+          }}
+          style={styles.listTemplateLink}
+        >
+          <Feather name="x" size={20} color="red" />
+        </SafePressable>
+        <SafePressable
+          onPress={async () => {
+            try {
+              setEditingName(false);
+              await updateList({
+                id: list.id,
+                name: newListName
+              }).unwrap();
+            } catch (err) {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }}
+          style={styles.listTemplateLink}
+        >
+          <Feather name="check" size={20} color="green" />
+        </SafePressable>
+      </TransparentView>
+    );
+  }
+
+  return (
+    <TransparentView style={styles.listHeaderSection}>
+      <SafePressable
+        onPress={() => {
+          setEditingName(true);
+        }}
+        style={styles.listHeader}
+      >
+        <Text style={styles.listHeaderText}>{list.name}</Text>
+      </SafePressable>
+      <SafePressable
+        onPress={() => {
+          setDeleting(true);
+        }}
+        style={styles.listTemplateLink}
+      >
+        <Feather name="trash" size={20} color="red" />
+      </SafePressable>
+      <SafePressable
+        onPress={() => {
+          setEditingName(true);
+        }}
+        style={styles.listTemplateLink}
+      >
+        <Feather name="edit" size={20} color="orange" />
+      </SafePressable>
+      <YesNoModal
+        title={t('components.planningLists.deleteListModal.title')}
+        question={t('components.planningLists.deleteListModal.blurb')}
+        visible={deleting}
+        onYes={() => {
+          deleteList({ id: list.id });
+        }}
+        onNo={() => {
+          setDeleting(false);
+        }}
+        onRequestClose={() => {
+          setDeleting(false);
+        }}
+      />
+    </TransparentView>
+  );
+};
 
 export default function ListEntityPage({ entityId }: { entityId: number }) {
   const { data: userFullDetails } = useGetUserFullDetails();
   const entityData = useSelector(selectEntityById(entityId));
   const { t } = useTranslation();
   const [newEntryTitle, setNewEntryTitle] = useState<string>('');
-  const [createListEntry, createListEntryResult] = useCreateListEntryMutation();
-  const [formCreateListEntry, formCreateListEntryResult] =
-    useFormCreateListEntryMutation();
-  const [deleteListEntry, deleteListEntryResult] = useDeleteListEntryMutation();
+  const [createListEntry] = useCreateListEntryMutation();
+  const [formCreateListEntry] = useFormCreateListEntryMutation();
 
-  const [updateEntity, updateEntityResult] = useUpdateEntityMutation();
+  const [updateEntity] = useUpdateEntityMutation();
+
+  const listEntryComponents = useMemo(() => {
+    if (!(entityData && isListEntity(entityData))) {
+      return null;
+    }
+    const sortedListEntries = entityData.list_entries
+      .slice()
+      .sort((a, b) => a.id - b.id);
+
+    return sortedListEntries.map((listEntry) => (
+      <ListEntry listEntry={listEntry} key={listEntry.id} />
+    ));
+  }, [entityData]);
 
   if (!isListEntity(entityData)) {
     return null;
@@ -98,14 +229,6 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
       .then((res: any) => console.log(res)); //this won't work if there are no members assigned to the entity!!!!
   };
 
-  const sortedListEntries = entityData.list_entries
-    .slice()
-    .sort((a, b) => a.id - b.id);
-
-  const listEntryComponents = sortedListEntries.map((listEntry) => (
-    <ListEntry listEntry={listEntry} key={listEntry.id} />
-  ));
-
   const createEntry = () => {
     createListEntry({
       list: entityData.id,
@@ -129,6 +252,9 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
           members={members}
           onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
         /> */}
+        <TransparentPaddedView>
+          <ListHeader list={entityData} />
+        </TransparentPaddedView>
         {listEntryComponents}
         <TransparentPaddedView style={styles.bottomActions}>
           <TransparentView style={styles.newItemInputWrapper}>
@@ -144,6 +270,7 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
               title={t('common.add')}
               onPress={createEntry}
               style={styles.submitButton}
+              disabled={!newEntryTitle}
             />
           </TransparentView>
           <TransparentView style={styles.newItemInputWrapper}>

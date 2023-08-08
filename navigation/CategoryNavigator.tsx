@@ -1,6 +1,6 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import CategoryHome from 'components/organisms/CategoryHome';
-import ListsNavigator from 'components/organisms/ListOfLists';
+import ListsNavigator from 'components/organisms/ListsNavigator';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { Text } from 'components/Themed';
 import { useMemo } from 'react';

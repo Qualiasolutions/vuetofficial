@@ -104,12 +104,16 @@ const ListOfLists = ({
   const entitiesToShow: number[] = (
     entities ||
     Array.from(
-      new Set(listEntities.map((list) => allEntities.byId[list].parent))
+      new Set(
+        listEntities
+          .map((list) => allEntities.byId[list]?.parent)
+          .filter((listEntity) => !!listEntity)
+      )
     )
   ).filter((entityId) => {
     if (
       categories &&
-      categories.includes(allEntities.byId[entityId].category)
+      categories.includes(allEntities.byId[entityId]?.category)
     ) {
       return true;
     }
@@ -119,7 +123,7 @@ const ListOfLists = ({
     if (
       entityTypes &&
       allEntities.byId[entityId] &&
-      entityTypes.includes(allEntities.byId[entityId].resourcetype)
+      entityTypes.includes(allEntities.byId[entityId]?.resourcetype)
     ) {
       return true;
     }

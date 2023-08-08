@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import {
   useCreatePlanningListTemplateMutation,
   useDeletePlanningListMutation,
-  useUpdatePlanningListMutation
+  useDeleteShoppingListMutation,
+  useUpdatePlanningListMutation,
+  useUpdateShoppingListMutation
 } from 'reduxStore/services/api/lists';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
@@ -41,8 +43,10 @@ export default function PlanningListHeader({
   isShoppingList?: boolean;
 }) {
   const [deleteList] = useDeletePlanningListMutation();
+  const [deleteShoppingList] = useDeleteShoppingListMutation();
   const [createTemplate] = useCreatePlanningListTemplateMutation();
   const [updateList] = useUpdatePlanningListMutation();
+  const [updateShoppingList] = useUpdateShoppingListMutation();
   const [deleting, setDeleting] = useState(false);
   const [savingAsTemplate, setSavingAsTemplate] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState('');
@@ -79,10 +83,17 @@ export default function PlanningListHeader({
           onPress={async () => {
             try {
               setEditingName(false);
-              await updateList({
-                id: list.id,
-                name: newListName
-              }).unwrap();
+              if (isShoppingList) {
+                await updateShoppingList({
+                  id: list.id,
+                  name: newListName
+                }).unwrap();
+              } else {
+                await updateList({
+                  id: list.id,
+                  name: newListName
+                }).unwrap();
+              }
             } catch (err) {
               Toast.show({
                 type: 'error',
@@ -139,7 +150,11 @@ export default function PlanningListHeader({
         question={t('components.planningLists.deleteListModal.blurb')}
         visible={deleting}
         onYes={() => {
-          deleteList(list.id);
+          if (isShoppingList) {
+            deleteShoppingList(list.id);
+          } else {
+            deleteList(list.id);
+          }
         }}
         onNo={() => {
           setDeleting(false);

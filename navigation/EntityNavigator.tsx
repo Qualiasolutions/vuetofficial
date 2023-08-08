@@ -1,5 +1,5 @@
 import Calendar from 'components/calendars/TaskCalendar';
-import ListsNavigator from 'components/organisms/ListOfLists';
+import ListsNavigator from 'components/organisms/ListsNavigator';
 import MessageThread from 'components/organisms/MessageThread';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
