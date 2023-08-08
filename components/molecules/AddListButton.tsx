@@ -2,6 +2,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
+  useCreatePlanningListFromDefaultTemplateMutation,
   useCreatePlanningListMutation,
   useCreatePlanningListTemplateMutation,
   useCreateShoppingListMutation,
@@ -14,6 +15,8 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { Modal } from 'components/molecules/Modals';
 import DropDown from 'components/forms/components/DropDown';
+import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
+import { useSelector } from 'react-redux';
 
 const addListStyles = StyleSheet.create({
   listInputPair: { flexDirection: 'row', width: '100%', alignItems: 'center' },
@@ -55,6 +58,10 @@ const AddListModal = ({
   const [createNewPlanningList] = useCreatePlanningListMutation();
   const [createNewShoppingList] = useCreateShoppingListMutation();
   const [createTemplate] = useCreatePlanningListTemplateMutation();
+  const [createTemplateFromDefault] =
+    useCreatePlanningListFromDefaultTemplateMutation();
+
+  const categoryObj = useSelector(selectCategoryById(category || -1));
 
   const {
     data: planningListTemplates,
@@ -110,6 +117,42 @@ const AddListModal = ({
     if (!category) {
       content = null;
     } else {
+      const templateOptions = planningListTemplates.ids
+        .map((templateId) => {
+          const template = planningListTemplates.byId[templateId];
+          return {
+            value: templateId,
+            label: template.name,
+            category: template.category
+          };
+        })
+        .filter((opt) => opt.category === category);
+
+      const defaultTemplates: { [key: string]: string[] } = {
+        EDUCATION: ['BEFORE_AFTER_TERM_TIME'],
+        TRAVEL: ['PLAN_TRIP', 'PACKING_LIST'],
+        SOCIAL_INTERESTS: [
+          'PLAN_BIRTHDAY_ANNIVERSARY',
+          'PLAN_HOLIDAY',
+          'PLAN_EVENT'
+        ]
+      };
+      let defaultTemplateNames: string[] = [];
+      for (const cat in defaultTemplates) {
+        if (defaultTemplates[cat]) {
+          defaultTemplateNames = defaultTemplateNames.concat(
+            defaultTemplates[cat]
+          );
+        }
+      }
+
+      const defaultTemplateOptions = categoryObj
+        ? (defaultTemplates[categoryObj.name] || []).map((templateName) => ({
+            label: t(`templates.planningLists.${templateName}`),
+            value: templateName
+          }))
+        : [];
+
       content =
         step === 'TEMPLATE_SELECTION' ? (
           <>
@@ -126,16 +169,7 @@ const AddListModal = ({
             </TransparentView>
             <DropDown
               value={newListTemplateId}
-              items={planningListTemplates.ids
-                .map((templateId) => {
-                  const template = planningListTemplates.byId[templateId];
-                  return {
-                    value: templateId,
-                    label: template.name,
-                    category: template.category
-                  };
-                })
-                .filter((opt) => opt.category === category)}
+              items={[...templateOptions, ...defaultTemplateOptions]}
               setFormValues={(id) => {
                 setNewListTemplateId(id);
                 setStep('NAME');
@@ -173,11 +207,18 @@ const AddListModal = ({
                   try {
                     onRequestClose();
                     if (newListTemplateId) {
-                      await createTemplate({
-                        title: newName,
-                        list: parseInt(newListTemplateId),
-                        from_template: true
-                      });
+                      if (defaultTemplateNames.includes(newListTemplateId)) {
+                        await createTemplateFromDefault({
+                          title: newName,
+                          list_template: newListTemplateId
+                        });
+                      } else {
+                        await createTemplate({
+                          title: newName,
+                          list: parseInt(newListTemplateId),
+                          from_template: true
+                        });
+                      }
                     } else {
                       await createNewPlanningList({
                         category,

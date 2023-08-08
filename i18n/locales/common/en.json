@@ -89,6 +89,16 @@
     "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversary",
     "SOCIAL_INTERESTS__HOLIDAY": "Holiday I Celebrate"
   },
+  "templates": {
+    "planningLists": {
+      "BEFORE_AFTER_TERM_TIME": "Before and After Term Time",
+      "PLAN_TRIP": "Plan a Trip",
+      "PACKING_LIST": "Packing List",
+      "PLAN_BIRTHDAY_ANNIVERSARY": "Celebrating Birthdays and Anniversaries",
+      "PLAN_HOLIDAY": "Celebrating Holidays",
+      "PLAN_EVENT": "Plan Event"
+    }
+  },
   "linkTitles": {
     "EDUCATION": "Education",
     "CAREER": "Career",

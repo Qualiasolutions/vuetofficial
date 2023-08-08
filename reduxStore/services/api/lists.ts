@@ -290,6 +290,24 @@ const listsApi = vuetApi.injectEndpoints({
       },
       invalidatesTags: ['PlanningList', 'PlanningSublist', 'PlanningListItem']
     }),
+    createPlanningListFromDefaultTemplate: builder.mutation<
+      {
+        id: number;
+      },
+      {
+        title: string;
+        list_template: string;
+      }
+    >({
+      query: (body) => {
+        return {
+          url: 'core/planning-lists/create_from_default_template/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['PlanningList', 'PlanningSublist', 'PlanningListItem']
+    }),
     createPlanningList: builder.mutation<
       PlanningList,
       Omit<PlanningList, 'id'>
@@ -1122,6 +1140,7 @@ export const {
   useGetAllPlanningListsQuery,
   useGetAllPlanningListTemplatesQuery,
   useCreatePlanningListTemplateMutation,
+  useCreatePlanningListFromDefaultTemplateMutation,
   useCreatePlanningListMutation,
   useDeletePlanningListMutation,
   useUpdatePlanningListMutation,
