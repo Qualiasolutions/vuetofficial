@@ -52,8 +52,11 @@ export default function ShoppingStoreHeader({
           onChangeText={setNewStoreName}
           autoFocus={true}
           onBlur={() => {
-            setEditingName(false);
-            setNewStoreName(store.name);
+            // Set a timeout because otherwise the update is sometimes not processed
+            setTimeout(() => {
+              setEditingName(false);
+              setNewStoreName(store.name);
+            }, 100);
           }}
         />
         <SafePressable

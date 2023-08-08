@@ -46,8 +46,11 @@ const SublistHeader = ({ sublist }: { sublist: PlanningSublist }) => {
           onChangeText={setNewSublistName}
           autoFocus={true}
           onBlur={() => {
-            setEditingName(false);
-            setNewSublistName(sublist.title);
+            // Set a timeout because otherwise the update is sometimes not processed
+            setTimeout(() => {
+              setEditingName(false);
+              setNewSublistName(sublist.title);
+            }, 100);
           }}
         />
         <SafePressable

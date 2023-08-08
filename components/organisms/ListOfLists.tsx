@@ -103,7 +103,9 @@ const ListOfLists = ({
 
   const entitiesToShow: number[] = (
     entities ||
-    Array(...new Set(listEntities.map((list) => allEntities.byId[list].parent)))
+    Array.from(
+      new Set(listEntities.map((list) => allEntities.byId[list].parent))
+    )
   ).filter((entityId) => {
     if (
       categories &&

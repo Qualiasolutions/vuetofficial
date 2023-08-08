@@ -189,6 +189,24 @@ const listsApi = vuetApi.injectEndpoints({
         }
       }
     }),
+    formCreateListEntry: builder.mutation<
+      ListEntryResponse,
+      {
+        formData?: FormData;
+      }
+    >({
+      query: (payload) => {
+        return {
+          url: 'core/list-entry/',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data;'
+          },
+          body: payload.formData
+        };
+      },
+      invalidatesTags: ['Entity']
+    }),
     deleteListEntry: builder.mutation<void, number>({
       query: (id) => {
         return {
@@ -1135,6 +1153,7 @@ const listsApi = vuetApi.injectEndpoints({
 export const {
   useUpdateListEntryMutation,
   useCreateListEntryMutation,
+  useFormCreateListEntryMutation,
   useDeleteListEntryMutation,
   useFormUpdateListEntryMutation,
   useGetAllPlanningListsQuery,

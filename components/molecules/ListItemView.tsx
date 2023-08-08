@@ -82,8 +82,11 @@ export default function ListItemView({
         onChangeText={setNewItemName}
         autoFocus={true}
         onBlur={() => {
-          setEditingName(false);
-          setNewItemName(item.title);
+          // Set a timeout because otherwise the update is sometimes not processed
+          setTimeout(() => {
+            setEditingName(false);
+            setNewItemName(item.title);
+          }, 100);
         }}
       />
       <SafePressable
@@ -143,7 +146,6 @@ export default function ListItemView({
       <SafePressable
         onPress={() => {
           dispatch(setListItemToAction(item));
-          // setActionModalVisible(true);
         }}
         style={styles.actionButton}
       >

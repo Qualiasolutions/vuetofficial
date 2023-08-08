@@ -60,8 +60,11 @@ export default function PlanningListHeader({
           onChangeText={setNewListName}
           autoFocus={true}
           onBlur={() => {
-            setEditingName(false);
-            setNewListName(list.name);
+            // Set a timeout because otherwise the update is sometimes not processed
+            setTimeout(() => {
+              setEditingName(false);
+              setNewListName(list.name);
+            }, 100);
           }}
         />
         <SafePressable

@@ -48,8 +48,7 @@ const styles = StyleSheet.create({
   },
   photoTypeModalBox: {
     position: 'absolute',
-    left: 50,
-    top: 50
+    width: 150
   },
   photoTypeModalLink: {
     marginBottom: 10
@@ -84,6 +83,10 @@ type ImagePickerProps = {
   displayInternalImage?: boolean;
   aspect?: [number, number];
   PressableComponent?: React.ElementType;
+  modalOffsets?: {
+    left: number;
+    top: number;
+  };
 };
 
 export function ImagePicker({
@@ -93,7 +96,11 @@ export function ImagePicker({
   style = {},
   displayInternalImage = true,
   aspect = undefined,
-  PressableComponent = undefined
+  PressableComponent = undefined,
+  modalOffsets = {
+    left: 50,
+    top: 50
+  }
 }: ImagePickerProps) {
   /*
 
@@ -192,7 +199,7 @@ export function ImagePicker({
       <OutsidePressHandler
         onOutsidePress={() => setShowPhotoTypeModal(false)}
         disabled={false}
-        style={styles.photoTypeModalBox}
+        style={[styles.photoTypeModalBox, modalOffsets]}
       >
         <WhiteBox>
           <LinkButton
@@ -212,7 +219,7 @@ export function ImagePicker({
         </WhiteBox>
       </OutsidePressHandler>
     );
-  }, [t, chooseImage, takePhoto]);
+  }, [t, chooseImage, takePhoto, modalOffsets]);
 
   const imageSource =
     (displayInternalImage &&
@@ -226,7 +233,16 @@ export function ImagePicker({
     require('assets/images/icons/camera.png');
 
   if (PressableComponent) {
-    return <PressableComponent onPress={() => setShowPhotoTypeModal(true)} />;
+    return (
+      <TransparentView>
+        <PressableComponent
+          onPress={() => {
+            setShowPhotoTypeModal(true);
+          }}
+        />
+        {showPhotoTypeModal && photoTypeModal}
+      </TransparentView>
+    );
   }
 
   return (
@@ -278,7 +294,7 @@ export function FullWidthImagePicker(
 export function SmallImagePicker(
   props: Omit<ImagePickerProps, 'PressableComponent' | 'backgroundColor'>
 ) {
-  const { style, ...otherProps } = props;
+  const { style, modalOffsets, ...otherProps } = props;
   const backgroundColor = useThemeColor({}, 'transparent');
 
   const PressableComponent = (pressableProps: {
@@ -293,6 +309,10 @@ export function SmallImagePicker(
     style: [style] as ViewStyle,
     backgroundColor,
     PressableComponent,
+    modalOffsets: {
+      top: 10,
+      left: 10
+    },
     ...otherProps
   });
 }

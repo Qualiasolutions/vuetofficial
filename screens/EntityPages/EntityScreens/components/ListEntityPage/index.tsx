@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import {
+  TransparentPaddedView,
   TransparentView,
   WhiteView
 } from 'components/molecules/ViewComponents';
@@ -10,7 +11,8 @@ import { useUpdateEntityMutation } from 'reduxStore/services/api/entities';
 import { TextInput } from 'components/Themed';
 import {
   useCreateListEntryMutation,
-  useDeleteListEntryMutation
+  useDeleteListEntryMutation,
+  useFormCreateListEntryMutation
 } from 'reduxStore/services/api/lists';
 import { isListEntity } from 'types/entities';
 import { userService } from 'utils/userService';
@@ -22,6 +24,11 @@ import { Button } from 'components/molecules/ButtonComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useSelector } from 'react-redux';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import {
+  ImagePicker,
+  PickedFile,
+  SmallImagePicker
+} from 'components/forms/components/ImagePicker';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -31,11 +38,9 @@ const styles = StyleSheet.create({
   },
   listEntryText: {},
   newItemInputWrapper: {
-    padding: 10,
-    marginBottom: 100,
-    height: 75,
     flexDirection: 'row',
-    width: '100%'
+    height: 40,
+    marginVertical: 10
   },
   newItemInput: {
     height: '100%',
@@ -45,7 +50,13 @@ const styles = StyleSheet.create({
   submitButton: {
     height: '100%',
     marginLeft: 10,
-    width: 130
+    paddingHorizontal: 10,
+    paddingVertical: 0,
+    justifyContent: 'center'
+  },
+  bottomActions: {
+    alignItems: 'flex-end',
+    marginBottom: 100
   }
 });
 
@@ -55,6 +66,8 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
   const [newEntryTitle, setNewEntryTitle] = useState<string>('');
   const [createListEntry, createListEntryResult] = useCreateListEntryMutation();
+  const [formCreateListEntry, formCreateListEntryResult] =
+    useFormCreateListEntryMutation();
   const [deleteListEntry, deleteListEntryResult] = useDeleteListEntryMutation();
 
   const [updateEntity, updateEntityResult] = useUpdateEntityMutation();
@@ -101,6 +114,13 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
     setNewEntryTitle('');
   };
 
+  const createImageEntry = (image: PickedFile) => {
+    const data = new FormData();
+    data.append('image', image as any);
+    data.append('list', `${entityData.id}`);
+    formCreateListEntry({ formData: data });
+  };
+
   return (
     <WhiteFullPageScrollView>
       <WhiteView>
@@ -110,21 +130,42 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
           onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
         /> */}
         {listEntryComponents}
-        <TransparentView style={styles.newItemInputWrapper}>
-          <TextInput
-            value={newEntryTitle}
-            onChangeText={(value) => setNewEntryTitle(value)}
-            blurOnSubmit={false}
-            onSubmitEditing={createEntry}
-            placeholder={t('screens.listEntity.typeOrUpload')}
-            style={styles.newItemInput}
-          />
-          <Button
-            title={t('common.add')}
-            onPress={createEntry}
-            style={styles.submitButton}
-          />
-        </TransparentView>
+        <TransparentPaddedView style={styles.bottomActions}>
+          <TransparentView style={styles.newItemInputWrapper}>
+            <TextInput
+              value={newEntryTitle}
+              onChangeText={(value) => setNewEntryTitle(value)}
+              blurOnSubmit={false}
+              onSubmitEditing={createEntry}
+              placeholder={t('screens.listEntity.typeOrUpload')}
+              style={styles.newItemInput}
+            />
+            <Button
+              title={t('common.add')}
+              onPress={createEntry}
+              style={styles.submitButton}
+            />
+          </TransparentView>
+          <TransparentView style={styles.newItemInputWrapper}>
+            <ImagePicker
+              onImageSelect={(image: PickedFile) => {
+                createImageEntry(image);
+              }}
+              backgroundColor="transparent"
+              PressableComponent={({ onPress }: { onPress: () => void }) => (
+                <Button
+                  title="Add Image"
+                  onPress={onPress}
+                  style={styles.submitButton}
+                />
+              )}
+              modalOffsets={{
+                top: 30,
+                left: -50
+              }}
+            />
+          </TransparentView>
+        </TransparentPaddedView>
       </WhiteView>
     </WhiteFullPageScrollView>
   );
