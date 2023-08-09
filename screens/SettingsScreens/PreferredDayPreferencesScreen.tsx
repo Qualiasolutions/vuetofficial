@@ -23,6 +23,7 @@ import { capitalize } from 'lodash';
 import Checkbox from 'components/molecules/Checkbox';
 import SafePressable from 'components/molecules/SafePressable';
 import { DayType } from 'types/datesAndTimes';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 const styles = StyleSheet.create({
   tableText: {
@@ -144,7 +145,7 @@ const EditPreferredDaysModal = ({
               .then(() => {
                 onRequestClose();
               })
-              .catch((err) => {
+              .catch(() => {
                 Toast.show({
                   type: 'error',
                   text1: t('common.errors.generic')
@@ -161,7 +162,7 @@ const EditPreferredDaysModal = ({
               .then(() => {
                 onRequestClose();
               })
-              .catch((err) => {
+              .catch(() => {
                 Toast.show({
                   type: 'error',
                   text1: t('common.errors.generic')
@@ -233,37 +234,41 @@ export default function PreferredDayPreferencesScreen() {
   const headerHeight = 60;
 
   return (
-    <TransparentPaddedView style={{ flex: 1 }}>
-      <Table borderStyle={{ borderWidth: 1 }}>
-        <Row
-          data={['', 'Preferred days']}
-          style={{ width: '100%', height: headerHeight }}
-          textStyle={StyleSheet.flatten([
-            styles.tableText,
-            styles.tableHeaderText
-          ])}
-        />
-        <TableWrapper style={{ flexDirection: 'row' }}>
-          <Col
-            heightArr={categoryIds.map((id) => rowHeight)}
-            data={categoryIds.map((id) => allCategories.byId[id].readable_name)}
+    <TransparentFullPageScrollView>
+      <TransparentPaddedView style={{ flex: 1 }}>
+        <Table borderStyle={{ borderWidth: 1 }}>
+          <Row
+            data={['', 'Preferred days']}
+            style={{ width: '100%', height: headerHeight }}
             textStyle={StyleSheet.flatten([
               styles.tableText,
               styles.tableHeaderText
             ])}
           />
-          <Col
-            heightArr={categoryIds.map((id) => rowHeight)}
-            data={categoryIds.map((id) => preferenceCells[id])}
-            textStyle={styles.tableText}
-          />
-        </TableWrapper>
-      </Table>
-      <EditPreferredDaysModal
-        visible={!!categoryToEdit}
-        categoryId={categoryToEdit || 0}
-        onRequestClose={() => setCategoryToEdit(null)}
-      />
-    </TransparentPaddedView>
+          <TableWrapper style={{ flexDirection: 'row' }}>
+            <Col
+              heightArr={categoryIds.map((id) => rowHeight)}
+              data={categoryIds.map(
+                (id) => allCategories.byId[id].readable_name
+              )}
+              textStyle={StyleSheet.flatten([
+                styles.tableText,
+                styles.tableHeaderText
+              ])}
+            />
+            <Col
+              heightArr={categoryIds.map((id) => rowHeight)}
+              data={categoryIds.map((id) => preferenceCells[id])}
+              textStyle={styles.tableText}
+            />
+          </TableWrapper>
+        </Table>
+        <EditPreferredDaysModal
+          visible={!!categoryToEdit}
+          categoryId={categoryToEdit || 0}
+          onRequestClose={() => setCategoryToEdit(null)}
+        />
+      </TransparentPaddedView>
+    </TransparentFullPageScrollView>
   );
 }
