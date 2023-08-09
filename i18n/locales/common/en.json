@@ -751,7 +751,8 @@
       "noReferencesDefault": "No references have been added here yet - go to your entities to add references"
     },
     "schoolTerms": {
-      "addBreak": "Add Break"
+      "addBreak": "Add Break",
+      "breaks": "Breaks"
     }
   }
 }

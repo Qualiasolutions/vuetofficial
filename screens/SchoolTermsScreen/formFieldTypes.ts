@@ -69,13 +69,15 @@ export const useSchoolBreakFieldTypes = () => {
       },
       start_date: {
         type: 'Date',
-        required: false,
-        displayName: t('schoolBreak.start_date')
+        required: true,
+        displayName: t('schoolBreak.start_date'),
+        associatedEndDateField: 'end_date'
       },
       end_date: {
         type: 'Date',
-        required: false,
-        displayName: t('schoolBreak.end_date')
+        required: true,
+        displayName: t('schoolBreak.end_date'),
+        associatedStartDateField: 'start_date'
       }
     };
   }, [t]);

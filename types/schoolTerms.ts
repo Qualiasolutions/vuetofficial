@@ -14,6 +14,7 @@ export type AllSchoolTerms = {
 
 export type SchoolBreak = {
   id: number;
+  name: string;
   start_date: string;
   end_date: string;
   school_term: number;

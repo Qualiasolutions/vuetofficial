@@ -14,6 +14,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
 import SafePressable from 'components/molecules/SafePressable';
 import SideDrawerButton from 'components/molecules/SideDrawerButton';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 type CategoryGroupName =
   | 'PETS'
@@ -140,7 +141,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       ) : null;
 
       return (
-        <SafePressable
+        <TouchableOpacity
           onPress={() => {
             if (categoryGroup.length === 1) {
               navigation.navigate('CategoryList', {
@@ -170,7 +171,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
               {/* {isPremiumTag} */}
             </View>
           </ImageBackground>
-        </SafePressable>
+        </TouchableOpacity>
       );
     }
   );
