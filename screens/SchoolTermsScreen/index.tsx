@@ -4,7 +4,7 @@ import { FieldValueTypes } from 'components/forms/types';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import { Button } from 'components/molecules/ButtonComponents';
-import { Modal } from 'components/molecules/Modals';
+import { Modal, YesNoModal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import {
   TransparentFullPageScrollView,
@@ -26,6 +26,9 @@ import {
   useCreateSchoolBreakMutation,
   useCreateSchoolTermMutation,
   useCreateSchoolYearMutation,
+  useDeleteSchoolBreakMutation,
+  useDeleteSchoolTermMutation,
+  useDeleteSchoolYearMutation,
   useGetAllSchoolBreaksQuery,
   useGetAllSchoolTermsQuery,
   useGetAllSchoolYearsQuery,
@@ -75,12 +78,16 @@ const yearCardStyles = StyleSheet.create({
 const SectionModal = ({
   visible,
   onRequestClose,
-  onSubmit,
+  onCreate,
+  onUpdate,
+  onDelete,
   section
 }: {
   visible: boolean;
   onRequestClose: () => void;
-  onSubmit: (values: any) => Promise<void>;
+  onCreate: (values: any) => Promise<void>;
+  onUpdate: (values: any) => Promise<void>;
+  onDelete: () => Promise<void>;
   section?: SchoolTerm | SchoolBreak;
 }) => {
   const formFields = useSchoolBreakFieldTypes();
@@ -93,7 +100,7 @@ const SectionModal = ({
       ? createInitialObject(formFields, undefined, section)
       : createInitialObject(formFields);
     setFormValues(initialFormValues);
-  }, [formFields]);
+  }, [formFields, section, visible]); // Include visible here so that it clears on close
 
   return (
     <Modal
@@ -123,27 +130,52 @@ const SectionModal = ({
           {submitting ? (
             <PaddedSpinner />
           ) : (
-            <Button
-              title={section ? t('common.update') : t('common.add')}
-              onPress={async () => {
-                setSubmitting(true);
-                try {
-                  const parsedValues: any = parseFormValues(
-                    formValues,
-                    formFields
-                  );
-                  await onSubmit(parsedValues);
-                  onRequestClose();
-                } catch (err) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.generic')
-                  });
-                }
-                setSubmitting(false);
-              }}
-              style={yearCardStyles.termBreakModalButton}
-            />
+            <>
+              <Button
+                title={section ? t('common.update') : t('common.add')}
+                onPress={async () => {
+                  setSubmitting(true);
+                  try {
+                    const parsedValues: any = parseFormValues(
+                      formValues,
+                      formFields
+                    );
+
+                    if (section) {
+                      await onUpdate(parsedValues);
+                    } else {
+                      await onCreate(parsedValues);
+                    }
+                    onRequestClose();
+                  } catch (err) {
+                    Toast.show({
+                      type: 'error',
+                      text1: t('common.errors.generic')
+                    });
+                  }
+                  setSubmitting(false);
+                }}
+                style={yearCardStyles.termBreakModalButton}
+              />
+              {section && (
+                <Button
+                  title={t('common.delete')}
+                  onPress={async () => {
+                    setSubmitting(true);
+                    try {
+                      await onDelete();
+                    } catch (err) {
+                      Toast.show({
+                        type: 'error',
+                        text1: t('common.errors.generic')
+                      });
+                    }
+                    setSubmitting(false);
+                  }}
+                  style={yearCardStyles.termBreakModalButton}
+                />
+              )}
+            </>
           )}
         </TransparentView>
       </TransparentScrollView>
@@ -164,18 +196,29 @@ const SchoolBreakModal = ({
 }) => {
   const [createBreak] = useCreateSchoolBreakMutation();
   const [updateBreak] = useUpdateSchoolBreakMutation();
+  const [deleteBreak] = useDeleteSchoolBreakMutation();
 
-  const onSubmit = async (parsedValues: any) => {
+  const onCreate = async (parsedValues: any) => {
+    await createBreak({
+      ...parsedValues,
+      school_year: yearId
+    }).unwrap();
+  };
+
+  const onUpdate = async (parsedValues: any) => {
     if (schoolBreak) {
       await updateBreak({
         ...parsedValues,
         school_year: yearId,
         id: schoolBreak.id
       }).unwrap();
-    } else {
-      await createBreak({
-        ...parsedValues,
-        school_year: yearId
+    }
+  };
+
+  const onDelete = async () => {
+    if (schoolBreak) {
+      await deleteBreak({
+        id: schoolBreak.id
       }).unwrap();
     }
   };
@@ -184,7 +227,9 @@ const SchoolBreakModal = ({
     <SectionModal
       visible={visible}
       onRequestClose={onRequestClose}
-      onSubmit={onSubmit}
+      onCreate={onCreate}
+      onUpdate={onUpdate}
+      onDelete={onDelete}
       section={schoolBreak}
     />
   );
@@ -203,18 +248,29 @@ const SchoolTermModal = ({
 }) => {
   const [createTerm] = useCreateSchoolTermMutation();
   const [updateTerm] = useUpdateSchoolTermMutation();
+  const [deleteTerm] = useDeleteSchoolTermMutation();
 
-  const onSubmit = async (parsedValues: any) => {
+  const onCreate = async (parsedValues: any) => {
+    await createTerm({
+      ...parsedValues,
+      school_year: yearId
+    }).unwrap();
+  };
+
+  const onUpdate = async (parsedValues: any) => {
     if (term) {
       await updateTerm({
         ...parsedValues,
         school_year: yearId,
         id: term.id
       }).unwrap();
-    } else {
-      await createTerm({
-        ...parsedValues,
-        school_year: yearId
+    }
+  };
+
+  const onDelete = async () => {
+    if (term) {
+      await deleteTerm({
+        id: term.id
       }).unwrap();
     }
   };
@@ -223,13 +279,15 @@ const SchoolTermModal = ({
     <SectionModal
       visible={visible}
       onRequestClose={onRequestClose}
-      onSubmit={onSubmit}
+      onCreate={onCreate}
+      onUpdate={onUpdate}
+      onDelete={onDelete}
       section={term}
     />
   );
 };
 
-const EditYearModal = ({
+const YearModal = ({
   visible,
   onRequestClose,
   year
@@ -241,6 +299,8 @@ const EditYearModal = ({
   const formFields = useSchoolYearFieldTypes();
   const [formValues, setFormValues] = useState({});
   const [updateYear, updateYearResult] = useUpdateSchoolYearMutation();
+  const [deleteYear, deleteYearResult] = useDeleteSchoolYearMutation();
+  const [deletingYear, setDeletingYear] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -266,33 +326,67 @@ const EditYearModal = ({
         }}
       />
       <TransparentView style={yearCardStyles.termBreakModalButtonWrapper}>
-        {updateYearResult.isLoading ? (
+        {updateYearResult.isLoading || deleteYearResult.isLoading ? (
           <PaddedSpinner />
         ) : (
-          <Button
-            title={t('common.update')}
-            onPress={async () => {
-              try {
-                const parsedValues: any = parseFormValues(
-                  formValues,
-                  formFields
-                );
-                await updateYear({
-                  ...parsedValues,
-                  id: year.id
-                });
-                onRequestClose();
-              } catch (err) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
-              }
-            }}
-            style={yearCardStyles.termBreakModalButton}
-          />
+          <>
+            <Button
+              title={t('common.update')}
+              onPress={async () => {
+                try {
+                  const parsedValues: any = parseFormValues(
+                    formValues,
+                    formFields
+                  );
+                  await updateYear({
+                    ...parsedValues,
+                    id: year.id
+                  });
+                  onRequestClose();
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+              style={yearCardStyles.termBreakModalButton}
+            />
+            <Button
+              title={t('common.delete')}
+              onPress={() => {
+                setDeletingYear(true);
+              }}
+              style={yearCardStyles.termBreakModalButton}
+            />
+          </>
         )}
       </TransparentView>
+      <YesNoModal
+        visible={deletingYear}
+        title={t('components.schoolTerms.deleteYearConfirmationTitle')}
+        question={t('components.schoolTerms.deleteYearConfirmationQuestion')}
+        onYes={async () => {
+          try {
+            await deleteYear({
+              id: year.id
+            });
+            onRequestClose();
+            setDeletingYear(false);
+          } catch (err) {
+            Toast.show({
+              type: 'error',
+              text1: t('common.errors.generic')
+            });
+          }
+        }}
+        onNo={() => {
+          setDeletingYear(false);
+        }}
+        onRequestClose={() => {
+          setDeletingYear(false);
+        }}
+      />
     </Modal>
   );
 };
@@ -460,7 +554,7 @@ const SchoolYearCard = ({
         onRequestClose={() => setShowTermModal(false)}
         yearId={year.id}
       />
-      <EditYearModal
+      <YearModal
         visible={showEditYearModal}
         onRequestClose={() => setShowEditYearModal(false)}
         year={year}
@@ -566,7 +660,10 @@ export default function SchoolTermsScreen() {
           );
         })}
         <TransparentView style={styles.buttonWrapper}>
-          <Button title={t('common.add')} onPress={() => setAddingTerm(true)} />
+          <Button
+            title={t('components.schoolTerms.addSchoolYear')}
+            onPress={() => setAddingTerm(true)}
+          />
         </TransparentView>
       </TransparentPaddedView>
     </TransparentFullPageScrollView>

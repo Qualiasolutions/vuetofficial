@@ -753,8 +753,11 @@
     "schoolTerms": {
       "addBreak": "Add Break",
       "addTerm": "Add Term",
+      "addSchoolYear": "Add School Year",
       "breaks": "Breaks",
-      "terms": "Terms"
+      "terms": "Terms",
+      "deleteYearConfirmationTitle": "Delete School Year",
+      "deleteYearConfirmationQuestion": "Are you sure you would like to permanently delete this school year?"
     }
   }
 }
