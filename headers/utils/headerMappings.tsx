@@ -5,9 +5,11 @@ import {
   ImageBackground,
   ImageSourcePropType,
   StyleSheet,
+  StatusBar,
   TextStyle,
   ViewStyle
 } from 'react-native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { HeaderTitle, HeaderBackButton } from '@react-navigation/elements';
 
 const styles = StyleSheet.create({
@@ -39,8 +41,15 @@ export const headerWithBackgroundColor = (
     const headerRight = props.options.headerRight;
     const borderColor = useThemeColor({}, 'grey');
     const borderBottomWidth = 4;
+    const statusBarHeight = getStatusBarHeight();
+
     return (
-      <TransparentView style={{ height: height }}>
+      <TransparentView
+        style={{
+          height: height + statusBarHeight,
+          paddingTop: statusBarHeight
+        }}
+      >
         <View
           style={[
             styles.overlay,
@@ -79,8 +88,15 @@ export const headerWithBackground = (
     const overlayColor = useThemeColor({}, 'overlay');
     const borderColor = useThemeColor({}, 'grey');
     const headerRight = props.options.headerRight;
+    const statusBarHeight = getStatusBarHeight();
+
     return (
-      <TransparentView style={{ height: height }}>
+      <TransparentView
+        style={{
+          height: height + statusBarHeight,
+          paddingTop: statusBarHeight
+        }}
+      >
         <ImageBackground
           style={[
             styles.imageBackground,
