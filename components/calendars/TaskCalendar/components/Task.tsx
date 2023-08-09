@@ -10,7 +10,10 @@ import { ITEM_HEIGHT } from './shared';
 import EntityTags from 'components/molecules/EntityTags';
 import OptionTags from 'components/molecules/OptionTags';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectScheduledEntity,
+  selectScheduledTask
+} from 'reduxStore/slices/tasks/selectors';
 import dayjs from 'dayjs';
 import {
   FixedTaskResponseType,
@@ -212,7 +215,6 @@ function Task({
   isEntity
 }: PropTypes) {
   const task = useSelector(selectTaskById(id));
-  const entity = useSelector(selectEntityById(id));
 
   const scheduledTask = useSelector(
     selectScheduledTask({
@@ -221,6 +223,7 @@ function Task({
       actionId: action_id
     })
   );
+  const scheduledEntity = useSelector(selectScheduledEntity(id));
 
   const isComplete = !!scheduledTask?.is_complete;
 
@@ -233,7 +236,7 @@ function Task({
     textDecorationLine: 'line-through' as 'line-through'
   };
 
-  const taskOrEntity = task || entity;
+  const taskOrEntity = task || scheduledEntity;
 
   if ((!isEntity && !scheduledTask) || !taskOrEntity) {
     return (
@@ -251,7 +254,6 @@ function Task({
             <TimeText
               scheduledTask={isEntity ? undefined : scheduledTask}
               date={date}
-              // type={task?.type}
             />
             <TransparentView style={styles.titleContainer}>
               <TransparentScrollView
@@ -262,7 +264,7 @@ function Task({
                 <BlackText
                   text={
                     isEntity
-                      ? entity?.name || ''
+                      ? scheduledEntity?.title || ''
                       : task
                       ? `${action_id ? 'ACTION - ' : ''}${task.title}`
                       : ''

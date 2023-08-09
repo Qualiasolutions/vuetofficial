@@ -4,6 +4,7 @@ export type SchoolYear = {
   end_date: string;
   school: number;
   year: string;
+  show_on_calendars: boolean;
 };
 
 export type AllSchoolYears = {
@@ -18,6 +19,7 @@ export type SchoolBreak = {
   start_date: string;
   end_date: string;
   school_year: number;
+  show_on_calendars: boolean;
 };
 
 export type AllSchoolBreaks = {
@@ -32,6 +34,7 @@ export type SchoolTerm = {
   start_date: string;
   end_date: string;
   school_year: number;
+  show_on_calendars: boolean;
 };
 
 export type AllSchoolTerms = {

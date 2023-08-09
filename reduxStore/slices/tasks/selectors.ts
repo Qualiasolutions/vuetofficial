@@ -575,6 +575,18 @@ export const selectScheduledTask = ({
     }
   );
 
+export const selectScheduledEntity = (id: number) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    (scheduledTasks) => {
+      if (id) {
+        return (
+          scheduledTasks.data?.byEntityId && scheduledTasks.data?.byEntityId[id]
+        );
+      }
+    }
+  );
+
 export const selectTasksFromEntityAndHiddenTag = (
   entityId: number,
   tagName: HiddenTagType

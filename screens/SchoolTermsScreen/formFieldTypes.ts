@@ -32,24 +32,29 @@ export const useSchoolYearFieldTypes = () => {
       year: {
         type: 'string',
         required: true,
-        displayName: t('schoolTerm.year')
+        displayName: t('schoolYear.year')
       },
       school: {
         type: 'dropDown',
         required: true,
-        displayName: t('schoolTerm.school'),
+        displayName: t('schoolYear.school'),
         permittedValues: schoolOptions,
         listMode: 'MODAL'
       },
       start_date: {
         type: 'Date',
         required: false,
-        displayName: t('schoolTerm.start_date')
+        displayName: t('schoolYear.start_date')
       },
       end_date: {
         type: 'Date',
         required: false,
-        displayName: t('schoolTerm.end_date')
+        displayName: t('schoolYear.end_date')
+      },
+      show_on_calendars: {
+        type: 'checkbox',
+        required: true,
+        displayName: t('schoolYear.show_on_calendars')
       }
     };
   }, [schoolOptions, t]);
@@ -78,6 +83,11 @@ export const useSchoolBreakFieldTypes = () => {
         required: true,
         displayName: t('schoolBreak.end_date'),
         associatedStartDateField: 'start_date'
+      },
+      show_on_calendars: {
+        type: 'checkbox',
+        required: true,
+        displayName: t('schoolBreak.show_on_calendars')
       }
     };
   }, [t]);

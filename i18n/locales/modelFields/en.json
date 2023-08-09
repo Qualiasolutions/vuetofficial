@@ -209,15 +209,17 @@
     "member_colour": "Member colour",
     "phone_number": "Phone number"
   },
-  "schoolTerm": {
+  "schoolYear": {
     "year": "School Year",
     "school": "School",
     "start_date": "First Day of School",
-    "end_date": "Last Day of School"
+    "end_date": "Last Day of School",
+    "show_on_calendars": "Show on Calendars"
   },
   "schoolBreak": {
     "name": "Name",
     "start_date": "Start Date",
-    "end_date": "End Date"
+    "end_date": "End Date",
+    "show_on_calendars": "Show on Calendars"
   }
 }
