@@ -13,7 +13,7 @@ import { Modal } from './Modals';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Button } from './ButtonComponents';
 
-const addListItemStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   buttonWrapper: { alignItems: 'flex-start', flexDirection: 'row' },
   storeSelectorDropdown: { flexShrink: 1 },
   addStoreNameInput: {
@@ -21,7 +21,8 @@ const addListItemStyles = StyleSheet.create({
     width: '100%'
   },
   addStoreModalContent: { alignItems: 'center' },
-  dropdownContainer: { maxWidth: 120 }
+  dropdownContainer: { maxWidth: 120 },
+  dropdownText: { fontSize: 11 }
 });
 
 export default function StoreSelector({
@@ -66,9 +67,9 @@ export default function StoreSelector({
   });
 
   return (
-    <TransparentView style={addListItemStyles.storeSelectorDropdown}>
+    <TransparentView style={styles.storeSelectorDropdown}>
       <DropDown
-        containerStyle={addListItemStyles.dropdownContainer}
+        containerStyle={styles.dropdownContainer}
         value={`${value}`}
         items={dropDownItems}
         setFormValues={(val) => {
@@ -80,16 +81,17 @@ export default function StoreSelector({
         }}
         listMode="MODAL"
         dropdownPlaceholder={t('components.planningLists.storeSelector.store')}
+        labelStyle={styles.dropdownText}
       />
       <Modal visible={addingNew}>
-        <TransparentView style={addListItemStyles.addStoreModalContent}>
+        <TransparentView style={styles.addStoreModalContent}>
           <Text>{t('components.planningLists.storeSelector.nameBlurb')}</Text>
           <TextInput
             value={newStoreName}
             onChangeText={setNewStoreName}
-            style={addListItemStyles.addStoreNameInput}
+            style={styles.addStoreNameInput}
           />
-          <TransparentView style={addListItemStyles.buttonWrapper}>
+          <TransparentView style={styles.buttonWrapper}>
             <Button
               title={t('common.add')}
               onPress={async () => {

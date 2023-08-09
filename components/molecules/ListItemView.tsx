@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flexShrink: 1
   },
   listItemTitleText: {
-    fontSize: 11
+    fontSize: 14
   },
   editTextInput: { height: 26 },
   checkbox: { width: 16, height: 16 },

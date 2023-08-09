@@ -1,6 +1,6 @@
 import { TextInput, useThemeColor, View } from 'components/Themed';
 import { useState } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import DropDownPicker, { ListModeType } from 'react-native-dropdown-picker';
 
 const otherKey = '%%%%%%OTHER%%%%%%';
@@ -29,6 +29,8 @@ export default function DropDown({
   listMode = 'SCROLLVIEW',
   style = {},
   textInputStyle = {},
+  textStyle = {},
+  labelStyle = {},
   containerStyle = {},
   allowOther = false,
   disabled = false
@@ -40,6 +42,8 @@ export default function DropDown({
   listMode?: ListModeType;
   style?: ViewStyle;
   textInputStyle?: ViewStyle;
+  textStyle?: TextStyle;
+  labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   allowOther?: boolean;
   disabled?: boolean;
@@ -75,8 +79,10 @@ export default function DropDown({
             ? {
                 color: disabledTextColor
               }
-            : {}
+            : {},
+          textStyle
         ]}
+        labelStyle={labelStyle}
         disabled={disabled}
       />
       {showOther && (
