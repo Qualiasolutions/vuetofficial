@@ -90,6 +90,11 @@ export default function EntityCheckboxes({
 
         const entityCheckboxes = (entityIds || []).map((entityId: number) => {
           const entity = memberEntities.byId[entityId];
+          if (entity.resourcetype === 'List') {
+            // Don't want to show list entities here
+            return null;
+          }
+
           return (
             <TransparentView style={styles.entityCheckboxPair} key={entity.id}>
               <TransparentView style={styles.entityCheckboxLabel}>
