@@ -234,6 +234,7 @@ export type RootTabParamList = {
     endDate: Date;
   };
   Calendar: {};
+  Lists: {};
   Chat: undefined;
   RoutineTasks: {
     id: number;

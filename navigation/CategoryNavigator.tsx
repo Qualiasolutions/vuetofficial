@@ -1,5 +1,6 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import CategoryHome from 'components/organisms/CategoryHome';
+import ListOfLists from 'components/organisms/ListOfLists';
 import ListsNavigator from 'components/organisms/ListsNavigator';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { Text } from 'components/Themed';
@@ -22,8 +23,6 @@ export default function CategoryNavigator({
   const filteredTasks = useSelector(taskSelector);
   const category = useSelector(selectCategoryById(categoryId));
 
-  const { data: referenceGroups } = useGetAllReferenceGroupsQuery();
-
   const homeComponent = useMemo(() => {
     return () => <CategoryHome categoryId={categoryId} />;
   }, [categoryId]);
@@ -37,7 +36,7 @@ export default function CategoryNavigator({
   }, [categoryId]);
 
   const listsComponent = useMemo(() => {
-    return () => <ListsNavigator categories={[categoryId]} />;
+    return () => <ListOfLists categories={[categoryId]} />;
   }, [categoryId]);
 
   return (

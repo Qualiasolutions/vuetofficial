@@ -41,6 +41,7 @@ import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import MessagesNavigator from './MessagesNavigator';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
 import EditTaskOccurrenceScreen from 'screens/Forms/TaskForms/EditTaskOccurrenceScreen';
+import ListsNavigator from 'components/organisms/ListsNavigator';
 
 const styles = StyleSheet.create({
   icon: {
@@ -175,14 +176,14 @@ export function BottomTabNavigator({
       />
       <BottomTab.Screen name="PlusButton" component={CalendarScreen} />
       <BottomTab.Screen
-        name="Calendar"
-        component={PeriodCalendar}
+        name="Lists"
+        component={ListsNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <BarIcon
               focused={focused}
-              imageSource={require('../assets/images/Calendar.png')}
-              title={t('pageTitles.calendar')}
+              imageSource={require('../assets/images/List.png')}
+              title={t('pageTitles.lists')}
             />
           )
         }}

@@ -1,6 +1,7 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import EntityListPage from 'components/lists/EntityListPage';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import ListOfLists from 'components/organisms/ListOfLists';
 import ListsNavigator from 'components/organisms/ListsNavigator';
 import ReferencesList from 'components/organisms/ReferencesList';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
@@ -43,7 +44,7 @@ export default function EntityTypeNavigator({
   }, [entityTypes]);
 
   const listsComponent = useMemo(() => {
-    return () => <ListsNavigator entityTypes={entityTypes} />;
+    return () => <ListOfLists entityTypes={entityTypes} />;
   }, [entityTypes]);
 
   const categoryName = ENTITY_TYPE_TO_CATEGORY[entityTypes[0]];
