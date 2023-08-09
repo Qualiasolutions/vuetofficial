@@ -1,4 +1,4 @@
-export type SchoolTerm = {
+export type SchoolYear = {
   id: number;
   start_date: string;
   end_date: string;
@@ -6,9 +6,9 @@ export type SchoolTerm = {
   year: string;
 };
 
-export type AllSchoolTerms = {
+export type AllSchoolYears = {
   ids: number[];
-  byId: { [key: number]: SchoolTerm };
+  byId: { [key: number]: SchoolYear };
   bySchool: { [key: number]: number[] };
 };
 
@@ -17,11 +17,11 @@ export type SchoolBreak = {
   name: string;
   start_date: string;
   end_date: string;
-  school_term: number;
+  school_year: number;
 };
 
 export type AllSchoolBreaks = {
   ids: number[];
   byId: { [key: number]: SchoolBreak };
-  byTerm: { [key: number]: number[] };
+  byYear: { [key: number]: number[] };
 };

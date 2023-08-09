@@ -71,6 +71,7 @@ export const vuetApi = createApi({
     'ShoppingList',
     'ShoppingListItem',
     'ShoppingListStore',
+    'SchoolYear',
     'SchoolTerm',
     'SchoolBreak'
   ],

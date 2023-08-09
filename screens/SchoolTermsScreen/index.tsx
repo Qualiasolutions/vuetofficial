@@ -19,19 +19,19 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   useCreateSchoolBreakMutation,
-  useCreateSchoolTermMutation,
+  useCreateSchoolYearMutation,
   useGetAllSchoolBreaksQuery,
-  useGetAllSchoolTermsQuery
+  useGetAllSchoolYearsQuery
 } from 'reduxStore/services/api/schoolTerms';
 import { elevation } from 'styles/elevation';
 import { EntityResponseType } from 'types/entities';
-import { SchoolTerm } from 'types/schoolTerms';
+import { SchoolYear } from 'types/schoolTerms';
 import {
   useSchoolBreakFieldTypes,
-  useSchoolTermFieldTypes
+  useSchoolYearFieldTypes
 } from './formFieldTypes';
 
-const termCardStyles = StyleSheet.create({
+const yearCardStyles = StyleSheet.create({
   title: { fontSize: 18, marginBottom: 5 },
   datesText: { fontSize: 12, marginBottom: 5 },
   addBreakButtonWrapper: {
@@ -59,11 +59,11 @@ const termCardStyles = StyleSheet.create({
 const TermBreakModal = ({
   visible,
   onRequestClose,
-  termId
+  yearId
 }: {
   visible: boolean;
   onRequestClose: () => void;
-  termId: number;
+  yearId: number;
 }) => {
   const formFields = useSchoolBreakFieldTypes();
   const [formValues, setFormValues] = useState({});
@@ -77,7 +77,7 @@ const TermBreakModal = ({
 
   return (
     <Modal visible={visible} onRequestClose={onRequestClose}>
-      <TransparentView style={termCardStyles.termBreakModalContent}>
+      <TransparentView style={yearCardStyles.termBreakModalContent}>
         <TypedForm
           fields={formFields}
           formValues={formValues}
@@ -87,14 +87,14 @@ const TermBreakModal = ({
           inlineFields={true}
           sectionStyle={StyleSheet.flatten([
             elevation.unelevated,
-            termCardStyles.termBreakForm
+            yearCardStyles.termBreakForm
           ])}
         />
-        <TransparentView style={termCardStyles.termBreakModalButtonWrapper}>
+        <TransparentView style={yearCardStyles.termBreakModalButtonWrapper}>
           <Button
             title={t('common.cancel')}
             onPress={onRequestClose}
-            style={termCardStyles.termBreakModalButton}
+            style={yearCardStyles.termBreakModalButton}
           />
           {createBreakResult.isLoading ? (
             <PaddedSpinner />
@@ -109,7 +109,7 @@ const TermBreakModal = ({
                   );
                   await createBreak({
                     ...parsedValues,
-                    school_term: termId
+                    school_year: yearId
                   }).unwrap();
                   onRequestClose();
                 } catch (err) {
@@ -119,7 +119,7 @@ const TermBreakModal = ({
                   });
                 }
               }}
-              style={termCardStyles.termBreakModalButton}
+              style={yearCardStyles.termBreakModalButton}
             />
           )}
         </TransparentView>
@@ -128,12 +128,12 @@ const TermBreakModal = ({
   );
 };
 
-const SchoolTermCard = ({
-  term,
+const SchoolYearCard = ({
+  year,
   school,
   style
 }: {
-  term: SchoolTerm;
+  year: SchoolYear;
   school: EntityResponseType;
   style?: ViewStyle;
 }) => {
@@ -150,7 +150,7 @@ const SchoolTermCard = ({
     return null;
   }
 
-  const termBreaks = schoolBreaks.byTerm[term.id] || null;
+  const termBreaks = schoolBreaks.byYear[year.id] || null;
 
   const termBreakComponents = termBreaks
     ? termBreaks.map((breakId) => {
@@ -168,39 +168,42 @@ const SchoolTermCard = ({
 
   return (
     <WhiteBox style={style}>
-      <Text style={termCardStyles.title}>
-        {term.year} {school.name}
+      <Text style={yearCardStyles.title}>
+        {year.year} {school.name}
       </Text>
-      <Text style={termCardStyles.datesText}>
-        {term.start_date} - {term.end_date}
+      <Text style={yearCardStyles.datesText}>
+        {year.start_date} - {year.end_date}
       </Text>
       {termBreaks && (
         <TransparentPaddedView>
-          <Text style={termCardStyles.breaksHeader}>
+          <Text style={yearCardStyles.breaksHeader}>
             {t('components.schoolTerms.breaks')}
           </Text>
           {termBreakComponents}
         </TransparentPaddedView>
       )}
-      <TransparentView style={termCardStyles.addBreakButtonWrapper}>
+      <TransparentView style={yearCardStyles.addBreakButtonWrapper}>
         <Button
           title={t('components.schoolTerms.addBreak')}
           onPress={() => {
             setShowBreakModal(true);
           }}
-          style={termCardStyles.addBreakButton}
+          style={yearCardStyles.addBreakButton}
         />
       </TransparentView>
       <TermBreakModal
         visible={showBreakModal}
         onRequestClose={() => setShowBreakModal(false)}
-        termId={term.id}
+        yearId={year.id}
       />
     </WhiteBox>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 100
+  },
   button: {
     marginHorizontal: 5
   },
@@ -212,14 +215,14 @@ const styles = StyleSheet.create({
 });
 
 export default function SchoolTermsScreen() {
-  const { data: schoolTerms, isLoading: isLoadingSchoolTerms } =
-    useGetAllSchoolTermsQuery();
-  const [createSchoolTerm] = useCreateSchoolTermMutation();
+  const { data: schoolYears, isLoading: isLoadingSchoolYears } =
+    useGetAllSchoolYearsQuery();
+  const [createSchoolYear] = useCreateSchoolYearMutation();
   const { data: allEntities, isLoading: isLoadingEntities } =
     useGetAllEntitiesQuery();
   const [addingTerm, setAddingTerm] = useState(false);
   const { t } = useTranslation();
-  const formFields = useSchoolTermFieldTypes();
+  const formFields = useSchoolYearFieldTypes();
 
   const [formValues, setFormValues] = useState({});
 
@@ -229,7 +232,7 @@ export default function SchoolTermsScreen() {
   }, [formFields]);
 
   const isLoading =
-    isLoadingSchoolTerms || !schoolTerms || isLoadingEntities || !allEntities;
+    isLoadingSchoolYears || !schoolYears || isLoadingEntities || !allEntities;
   if (isLoading) {
     return <FullPageSpinner />;
   }
@@ -256,7 +259,7 @@ export default function SchoolTermsScreen() {
                 );
 
                 try {
-                  await createSchoolTerm(parsedFieldValues).unwrap();
+                  await createSchoolYear(parsedFieldValues).unwrap();
                   setAddingTerm(false);
                 } catch (err) {
                   Toast.show({
@@ -279,15 +282,15 @@ export default function SchoolTermsScreen() {
   }
 
   return (
-    <TransparentFullPageScrollView>
+    <TransparentFullPageScrollView contentContainerStyle={styles.container}>
       <TransparentPaddedView>
-        {schoolTerms.ids.map((schoolTermId) => {
-          const schoolTerm = schoolTerms.byId[schoolTermId];
+        {schoolYears.ids.map((schoolYearId) => {
+          const schoolTerm = schoolYears.byId[schoolYearId];
           const school = allEntities.byId[schoolTerm.school];
           return (
-            <SchoolTermCard
-              key={schoolTermId}
-              term={schoolTerms.byId[schoolTermId]}
+            <SchoolYearCard
+              key={schoolYearId}
+              year={schoolYears.byId[schoolYearId]}
               school={school}
               style={styles.schoolTermCard}
             />

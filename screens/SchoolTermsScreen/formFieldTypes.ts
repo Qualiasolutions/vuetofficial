@@ -7,7 +7,7 @@ import { selectEntitiesByEntityTypes } from 'reduxStore/slices/entities/selector
 
 const schoolsSelector = selectEntitiesByEntityTypes(['School']);
 
-export const useSchoolTermFieldTypes = () => {
+export const useSchoolYearFieldTypes = () => {
   const { t } = useTranslation('modelFields');
   const schoolEntities = useSelector(schoolsSelector);
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
