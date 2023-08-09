@@ -5,7 +5,6 @@ import {
   ImageBackground,
   ImageSourcePropType,
   StyleSheet,
-  StatusBar,
   TextStyle,
   ViewStyle
 } from 'react-native';
