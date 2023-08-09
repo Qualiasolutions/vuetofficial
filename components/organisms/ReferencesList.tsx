@@ -12,6 +12,7 @@ import { Text, TextInput, useThemeColor } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import dayjs from 'dayjs';
+import useEntities from 'hooks/useEntities';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -689,7 +690,7 @@ export default function ReferencesList({
   showCategoryHeaders
 }: {
   entities?: number[];
-  entityTypes?: string[];
+  entityTypes?: EntityTypeName[];
   tags?: string[];
   tagsFirst?: boolean;
   categories?: number[];
@@ -703,6 +704,13 @@ export default function ReferencesList({
   const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =
     useGetAllReferenceGroupsQuery();
   const { isLoading: isLoadingReferences } = useGetAllReferencesQuery(); // Pull refs
+
+  const relevantEntities = useEntities({
+    entities,
+    entityTypes,
+    tags,
+    categories
+  });
 
   if (
     isLoadingReferenceGroups ||
@@ -746,33 +754,16 @@ export default function ReferencesList({
     return false;
   });
 
-  const entitiesToShow: number[] = (
-    entities || Object.keys(memberEntities.byId).map((id) => parseInt(id))
-  ).filter((entityId) => {
-    if (
-      categories &&
-      categories.includes(allEntities.byId[entityId]?.category)
-    ) {
-      return true;
-    }
-    if (entities && entities.includes(entityId)) {
-      return true;
-    }
-    if (
-      entityTypes &&
-      allEntities.byId[entityId] &&
-      entityTypes.includes(allEntities.byId[entityId]?.resourcetype)
-    ) {
-      return true;
-    }
-    if (!(categories || entities || entityTypes || tags)) {
-      // If no args are provided then we show everything
-      return Object.keys(allReferenceGroups.byEntity)
-        .map((e) => parseInt(e))
-        .includes(entityId);
-    }
-    return false;
-  });
+  const entitiesToShow: number[] =
+    categories || entities || entityTypes || tags
+      ? relevantEntities
+      : Object.keys(memberEntities.byId)
+          .map((id) => parseInt(id))
+          .filter((entityId) => {
+            return Object.keys(allReferenceGroups.byEntity)
+              .map((e) => parseInt(e))
+              .includes(entityId);
+          });
 
   const tagsAndEntitiesToShowByCategory: {
     [key: number]: { tags: string[]; entities: number[] };

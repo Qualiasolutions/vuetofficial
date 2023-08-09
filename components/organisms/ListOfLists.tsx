@@ -3,8 +3,12 @@ import EntityListPage from 'components/lists/EntityListPage';
 import { Button } from 'components/molecules/ButtonComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import { TransparentPaddedView } from 'components/molecules/ViewComponents';
+import {
+  TransparentPaddedView,
+  TransparentView
+} from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import useEntities from 'hooks/useEntities';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -14,11 +18,11 @@ import {
   selectEntitiesByEntityTypes,
   selectEntityById
 } from 'reduxStore/slices/entities/selectors';
-import { EntityResponseType } from 'types/entities';
+import { EntityResponseType, EntityTypeName } from 'types/entities';
 
 type Props = {
   entities?: number[];
-  entityTypes?: string[];
+  entityTypes?: EntityTypeName[];
   tags?: string[];
   tagsFirst?: boolean;
   categories?: number[];
@@ -27,7 +31,8 @@ type Props = {
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100, width: '100%' },
-  entityTitle: { fontSize: 22 }
+  entityTitle: { fontSize: 22 },
+  buttonWrapper: { flexDirection: 'row', justifyContent: 'flex-start' }
 });
 
 const FlatList = ({ entityId }: { entityId: number }) => {
@@ -58,15 +63,17 @@ const FlatList = ({ entityId }: { entityId: number }) => {
     <TransparentPaddedView>
       <Text style={styles.entityTitle}>{parentEntity.name}</Text>
       {existingLists}
-      <Button
-        title={t('components.listOfLists.addList')}
-        onPress={() => {
-          (navigation.navigate as any)('AddEntity', {
-            entityTypes: 'List',
-            parentId: entityId
-          });
-        }}
-      />
+      <TransparentView style={styles.buttonWrapper}>
+        <Button
+          title={t('components.listOfLists.addList')}
+          onPress={() => {
+            (navigation.navigate as any)('AddEntity', {
+              entityTypes: 'List',
+              parentId: entityId
+            });
+          }}
+        />
+      </TransparentView>
     </TransparentPaddedView>
   );
 };
@@ -82,42 +89,26 @@ export default function ListOfLists({
   const { data: allCategories } = useGetAllCategoriesQuery();
   const listEntities = useSelector(selectEntitiesByEntityTypes(['List']));
 
+  const relevantEntities = useEntities({
+    entities,
+    entityTypes,
+    categories
+  });
+
   if (!allEntities || !allCategories) {
     return <PaddedSpinner />;
   }
 
-  const entitiesToShow: number[] = (
-    entities ||
-    Array.from(
-      new Set(
-        listEntities
-          .map((list) => allEntities.byId[list]?.parent)
-          .filter((listEntity) => !!listEntity)
-      )
-    )
-  ).filter((entityId) => {
-    if (
-      categories &&
-      categories.includes(allEntities.byId[entityId]?.category)
-    ) {
-      return true;
-    }
-    if (entities && entities.includes(entityId)) {
-      return true;
-    }
-    if (
-      entityTypes &&
-      allEntities.byId[entityId] &&
-      entityTypes.includes(allEntities.byId[entityId]?.resourcetype)
-    ) {
-      return true;
-    }
-    if (!(categories || entities || entityTypes)) {
-      // If no args are provided then we show everything
-      return true;
-    }
-    return false;
-  });
+  const entitiesToShow: number[] =
+    categories || entities || entityTypes
+      ? relevantEntities
+      : Array.from(
+          new Set(
+            listEntities
+              .map((list) => allEntities.byId[list]?.parent)
+              .filter((listEntity) => !!listEntity)
+          )
+        );
 
   return (
     <WhiteFullPageScrollView
