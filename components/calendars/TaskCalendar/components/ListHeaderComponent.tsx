@@ -1,26 +1,26 @@
-import { Feather } from '@expo/vector-icons';
+// import { Feather } from '@expo/vector-icons';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
-import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
+// import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
-import { Text } from 'components/Themed';
+// import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
+// import { Text } from 'components/Themed';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  setFilteredEntities,
-  setFilteredTags,
+  // setFilteredEntities,
+  // setFilteredTags,
   setFilteredUsers
 } from 'reduxStore/slices/calendars/actions';
 import {
-  selectFilteredEntities,
-  selectFilteredTags,
+  // selectFilteredEntities,
+  // selectFilteredTags,
   selectFilteredUsers
 } from 'reduxStore/slices/calendars/selectors';
 
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   buttonWrapper: { flexDirection: 'row', justifyContent: 'center' }
 });
 
-const UserFilterSelector = () => {
+const UserFilterSelector = ({ onApply }: { onApply: () => void }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -76,51 +76,9 @@ const UserFilterSelector = () => {
       <TransparentView style={styles.buttonWrapper}>
         <Button
           title={t('common.apply')}
-          onPress={() => setFilteredUserIds(newFilteredUsers)}
-          style={styles.userFiltersApplyButton}
-        />
-      </TransparentView>
-    </TransparentView>
-  );
-};
-
-const EntityFilterSelector = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-
-  const filteredEntities = useSelector(selectFilteredEntities);
-  const [newFilteredEntities, setNewFilteredEntities] = useState<number[]>([
-    ...(filteredEntities || [])
-  ]);
-
-  const filteredTags = useSelector(selectFilteredTags);
-  const [newFilteredTags, setNewFilteredTags] = useState<string[]>([
-    ...(filteredTags || [])
-  ]);
-
-  const setFilteredEntityIds = (entities: number[]) => {
-    dispatch(setFilteredEntities({ entities }));
-  };
-
-  const setFilteredTagNames = (tags: string[]) => {
-    dispatch(setFilteredTags({ tags }));
-  };
-
-  return (
-    <TransparentView style={styles.checkboxContainer}>
-      <TransparentScrollView>
-        <EntityCheckboxes
-          value={{ entities: newFilteredEntities, tags: newFilteredTags }}
-          setSelectedEntities={setNewFilteredEntities}
-          setSelectedTags={setNewFilteredTags}
-        />
-      </TransparentScrollView>
-      <TransparentView style={styles.buttonWrapper}>
-        <Button
-          title={t('common.apply')}
           onPress={() => {
-            setFilteredEntityIds(newFilteredEntities);
-            setFilteredTagNames(newFilteredTags);
+            setFilteredUserIds(newFilteredUsers);
+            onApply();
           }}
           style={styles.userFiltersApplyButton}
         />
@@ -129,6 +87,51 @@ const EntityFilterSelector = () => {
   );
 };
 
+// const EntityFilterSelector = () => {
+//   const { t } = useTranslation();
+//   const dispatch = useDispatch();
+
+//   const filteredEntities = useSelector(selectFilteredEntities);
+//   const [newFilteredEntities, setNewFilteredEntities] = useState<number[]>([
+//     ...(filteredEntities || [])
+//   ]);
+
+//   const filteredTags = useSelector(selectFilteredTags);
+//   const [newFilteredTags, setNewFilteredTags] = useState<string[]>([
+//     ...(filteredTags || [])
+//   ]);
+
+//   const setFilteredEntityIds = (entities: number[]) => {
+//     dispatch(setFilteredEntities({ entities }));
+//   };
+
+//   const setFilteredTagNames = (tags: string[]) => {
+//     dispatch(setFilteredTags({ tags }));
+//   };
+
+//   return (
+//     <TransparentView style={styles.checkboxContainer}>
+//       <TransparentScrollView>
+//         <EntityCheckboxes
+//           value={{ entities: newFilteredEntities, tags: newFilteredTags }}
+//           setSelectedEntities={setNewFilteredEntities}
+//           setSelectedTags={setNewFilteredTags}
+//         />
+//       </TransparentScrollView>
+//       <TransparentView style={styles.buttonWrapper}>
+//         <Button
+//           title={t('common.apply')}
+//           onPress={() => {
+//             setFilteredEntityIds(newFilteredEntities);
+//             setFilteredTagNames(newFilteredTags);
+//           }}
+//           style={styles.userFiltersApplyButton}
+//         />
+//       </TransparentView>
+//     </TransparentView>
+//   );
+// };
+
 const FiltersModal = ({
   visible,
   onRequestClose
@@ -136,14 +139,14 @@ const FiltersModal = ({
   visible: boolean;
   onRequestClose: () => void;
 }) => {
-  const { t } = useTranslation();
-  const filteredUsers = useSelector(selectFilteredUsers);
-  const filteredEntities = useSelector(selectFilteredEntities);
-  const filteredTags = useSelector(selectFilteredTags);
+  // const { t } = useTranslation();
+  // const filteredUsers = useSelector(selectFilteredUsers);
+  // const filteredEntities = useSelector(selectFilteredEntities);
+  // const filteredTags = useSelector(selectFilteredTags);
 
-  const [shownFilters, setShownFilters] = useState<'' | 'USERS' | 'ENTITIES'>(
-    ''
-  );
+  // const [shownFilters, setShownFilters] = useState<'' | 'USERS' | 'ENTITIES'>(
+  //   ''
+  // );
   return (
     <Modal
       visible={visible}
@@ -151,7 +154,7 @@ const FiltersModal = ({
       boxStyle={styles.modal}
     >
       <TransparentView>
-        <SafePressable
+        {/* <SafePressable
           onPress={() =>
             setShownFilters(shownFilters === 'USERS' ? '' : 'USERS')
           }
@@ -168,9 +171,10 @@ const FiltersModal = ({
             size={25}
           />
         </SafePressable>
-        {shownFilters === 'USERS' && <UserFilterSelector />}
+        {shownFilters === 'USERS' && <UserFilterSelector />} */}
+        <UserFilterSelector onApply={onRequestClose} />
       </TransparentView>
-      <TransparentView style={styles.entitiesSelector}>
+      {/* <TransparentView style={styles.entitiesSelector}>
         <SafePressable onPress={() => setShownFilters('ENTITIES')}>
           <SafePressable
             onPress={() =>
@@ -193,7 +197,7 @@ const FiltersModal = ({
           </SafePressable>
         </SafePressable>
         {shownFilters === 'ENTITIES' && <EntityFilterSelector />}
-      </TransparentView>
+      </TransparentView> */}
     </Modal>
   );
 };

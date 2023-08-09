@@ -335,16 +335,16 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
         .filter(isTask)
         .filter(
           (task) =>
-            ((!entities && !tags) ||
-              (entities &&
-                entities.length === 0 &&
-                tags &&
-                tags.length === 0) ||
-              task.entities.some((ent) => entities?.includes(ent)) ||
-              task.tags.some((tagName) => tags?.includes(tagName))) &&
-            (!users ||
-              users.length === 0 ||
-              task.members.some((member) => users?.includes(member)))
+            // ((!entities && !tags) ||
+            //   (entities &&
+            //     entities.length === 0 &&
+            //     tags &&
+            //     tags.length === 0) ||
+            //   task.entities.some((ent) => entities?.includes(ent)) ||
+            //   task.tags.some((tagName) => tags?.includes(tagName))) &&
+            !users ||
+            users.length === 0 ||
+            task.members.some((member) => users?.includes(member))
         ) || [];
 
     const formatted = formatTasksPerDate(filteredTasks);
@@ -371,15 +371,15 @@ export const selectFilteredScheduledEntityIdsByDate = createSelector(
         .filter(isEntity)
         .filter(
           (entity) =>
-            ((!entities && !tags) ||
-              (entities &&
-                entities.length === 0 &&
-                tags &&
-                tags.length === 0) ||
-              entities?.includes(entity.id)) &&
-            (!users ||
-              users.length === 0 ||
-              entity.members.some((member) => users?.includes(member)))
+            // ((!entities && !tags) ||
+            //   (entities &&
+            //     entities.length === 0 &&
+            //     tags &&
+            //     tags.length === 0) ||
+            //   entities?.includes(entity.id)) &&
+            !users ||
+            users.length === 0 ||
+            entity.members.some((member) => users?.includes(member))
         ) || [];
 
     const formatted = formatEntitiesPerDate(filteredEntities);
