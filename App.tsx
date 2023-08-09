@@ -22,7 +22,12 @@ import './i18n/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { enableFreeze } from 'react-native-screens';
-import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Dimensions
+} from 'react-native';
 import { EventProvider } from 'react-native-outside-press';
 
 import '@formatjs/intl-getcanonicallocales/polyfill';
@@ -107,6 +112,8 @@ export default function App() {
   const loadedCachedResources = useCachedResources();
   const colorScheme = useColorScheme();
 
+  const windowHeight = Dimensions.get('window').height;
+
   if (!loadedCachedResources) {
     return null;
   } else {
@@ -123,7 +130,7 @@ export default function App() {
                 </GestureHandlerRootView>
               </KeyboardAvoidingView>
               <StatusBar translucent={true} />
-              <Toast position="top" />
+              <Toast position="bottom" bottomOffset={windowHeight / 2 - 20} />
             </EventProvider>
           </SafeAreaProvider>
         </PersistGate>
