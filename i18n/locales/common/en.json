@@ -752,7 +752,9 @@
     },
     "schoolTerms": {
       "addBreak": "Add Break",
-      "breaks": "Breaks"
+      "addTerm": "Add Term",
+      "breaks": "Breaks",
+      "terms": "Terms"
     }
   }
 }

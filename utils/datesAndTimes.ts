@@ -229,6 +229,10 @@ const parseSummaryTime = (datetimeString: string) => {
   return `${day}/${month}/${year}`;
 };
 
+const getHumanReadableDate = (dateString: string) => {
+  return getLongDateFromDateObject(getDateWithoutTimezone(dateString));
+};
+
 export {
   getTimeInTimezone,
   getDateStringFromDateObject,
@@ -246,5 +250,6 @@ export {
   getOffsetMonthStartDateString,
   getEndOfDay,
   getStartOfDay,
-  parseSummaryTime
+  parseSummaryTime,
+  getHumanReadableDate
 };

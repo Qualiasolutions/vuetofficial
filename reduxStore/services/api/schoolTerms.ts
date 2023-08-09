@@ -1,14 +1,16 @@
 import { vuetApi } from './api';
 import {
   AllSchoolBreaks,
+  AllSchoolTerms,
   AllSchoolYears,
   SchoolBreak,
+  SchoolTerm,
   SchoolYear
 } from 'types/schoolTerms';
 
 const normaliseSchoolYears = (data: SchoolYear[]) => {
   return {
-    ids: data.map(({ id }) => id),
+    ids: data.map(({ id }) => id).sort(),
     byId: data.reduce(
       (prev, next) => ({
         ...prev,
@@ -28,7 +30,9 @@ const normaliseSchoolYears = (data: SchoolYear[]) => {
   };
 };
 
-const normaliseSchoolBreaks = (data: SchoolBreak[]) => {
+function normaliseByYear<T extends { id: number; school_year: number }>(
+  data: T[]
+) {
   return {
     ids: data.map(({ id }) => id),
     byId: data.reduce(
@@ -48,7 +52,7 @@ const normaliseSchoolBreaks = (data: SchoolBreak[]) => {
       {}
     )
   };
-};
+}
 
 const schoolTermsApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -105,7 +109,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: SchoolBreak[] = await response.json();
-            return normaliseSchoolBreaks(responseJson);
+            return normaliseByYear<SchoolBreak>(responseJson);
           } else {
             // Just return the error data
             return response.json();
@@ -145,6 +149,53 @@ const schoolTermsApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['SchoolBreak']
+    }),
+    getAllSchoolTerms: builder.query<AllSchoolTerms, void>({
+      query: () => ({
+        url: 'core/school-term/',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: SchoolTerm[] = await response.json();
+            return normaliseByYear<SchoolTerm>(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['SchoolTerm']
+    }),
+    createSchoolTerm: builder.mutation<SchoolTerm, Omit<SchoolTerm, 'id'>>({
+      query: (body) => {
+        return {
+          url: 'core/school-term/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['SchoolTerm']
+    }),
+    updateSchoolTerm: builder.mutation<
+      SchoolTerm,
+      Partial<SchoolTerm> & Pick<SchoolTerm, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/school-term/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['SchoolTerm']
+    }),
+    deleteSchoolTerm: builder.mutation<SchoolTerm, Pick<SchoolTerm, 'id'>>({
+      query: (body) => {
+        return {
+          url: `core/school-term/${body.id}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['SchoolTerm']
     })
   }),
   overrideExisting: true
@@ -162,5 +213,9 @@ export const {
   useGetAllSchoolBreaksQuery,
   useUpdateSchoolBreakMutation,
   useCreateSchoolBreakMutation,
-  useDeleteSchoolBreakMutation
+  useDeleteSchoolBreakMutation,
+  useGetAllSchoolTermsQuery,
+  useUpdateSchoolTermMutation,
+  useCreateSchoolTermMutation,
+  useDeleteSchoolTermMutation
 } = schoolTermsApi;

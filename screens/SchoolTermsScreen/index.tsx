@@ -1,10 +1,15 @@
+import { Feather } from '@expo/vector-icons';
 import TypedForm from 'components/forms/TypedForm';
 import { FieldValueTypes } from 'components/forms/types';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import { Button } from 'components/molecules/ButtonComponents';
 import { Modal } from 'components/molecules/Modals';
-import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import SafePressable from 'components/molecules/SafePressable';
+import {
+  TransparentFullPageScrollView,
+  TransparentScrollView
+} from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   TransparentPaddedView,
@@ -19,21 +24,29 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   useCreateSchoolBreakMutation,
+  useCreateSchoolTermMutation,
   useCreateSchoolYearMutation,
   useGetAllSchoolBreaksQuery,
-  useGetAllSchoolYearsQuery
+  useGetAllSchoolTermsQuery,
+  useGetAllSchoolYearsQuery,
+  useUpdateSchoolBreakMutation,
+  useUpdateSchoolTermMutation,
+  useUpdateSchoolYearMutation
 } from 'reduxStore/services/api/schoolTerms';
 import { elevation } from 'styles/elevation';
 import { EntityResponseType } from 'types/entities';
-import { SchoolYear } from 'types/schoolTerms';
+import { SchoolBreak, SchoolTerm, SchoolYear } from 'types/schoolTerms';
+import { getHumanReadableDate } from 'utils/datesAndTimes';
 import {
   useSchoolBreakFieldTypes,
   useSchoolYearFieldTypes
 } from './formFieldTypes';
 
 const yearCardStyles = StyleSheet.create({
-  title: { fontSize: 18, marginBottom: 5 },
-  datesText: { fontSize: 12, marginBottom: 5 },
+  titleSection: { flexDirection: 'row' },
+  title: { fontSize: 18, marginRight: 10 },
+  itemNameText: { marginRight: 6 },
+  datesText: { fontSize: 14, marginBottom: 5 },
   addBreakButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center'
@@ -53,38 +66,49 @@ const yearCardStyles = StyleSheet.create({
   termBreakModalButton: {
     margin: 5
   },
-  termBreakForm: { marginBottom: 0 }
+  termBreakForm: { marginBottom: 0 },
+  breaksOrTermsWrapper: { marginTop: 10 },
+  modalBox: { width: '100%' },
+  schoolSection: { marginBottom: 5 }
 });
 
-const TermBreakModal = ({
+const SectionModal = ({
   visible,
   onRequestClose,
-  yearId
+  onSubmit,
+  section
 }: {
   visible: boolean;
   onRequestClose: () => void;
-  yearId: number;
+  onSubmit: (values: any) => Promise<void>;
+  section?: SchoolTerm | SchoolBreak;
 }) => {
   const formFields = useSchoolBreakFieldTypes();
   const [formValues, setFormValues] = useState({});
   const { t } = useTranslation();
-  const [createBreak, createBreakResult] = useCreateSchoolBreakMutation();
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const initialFormValues = createInitialObject(formFields);
+    const initialFormValues = section
+      ? createInitialObject(formFields, undefined, section)
+      : createInitialObject(formFields);
     setFormValues(initialFormValues);
   }, [formFields]);
 
   return (
-    <Modal visible={visible} onRequestClose={onRequestClose}>
-      <TransparentView style={yearCardStyles.termBreakModalContent}>
+    <Modal
+      visible={visible}
+      onRequestClose={onRequestClose}
+      boxStyle={yearCardStyles.modalBox}
+    >
+      <TransparentScrollView style={yearCardStyles.termBreakModalContent}>
         <TypedForm
           fields={formFields}
           formValues={formValues}
           onFormValuesChange={(values: FieldValueTypes) => {
             setFormValues(values);
           }}
-          inlineFields={true}
+          inlineFields={false}
           sectionStyle={StyleSheet.flatten([
             elevation.unelevated,
             yearCardStyles.termBreakForm
@@ -96,21 +120,19 @@ const TermBreakModal = ({
             onPress={onRequestClose}
             style={yearCardStyles.termBreakModalButton}
           />
-          {createBreakResult.isLoading ? (
+          {submitting ? (
             <PaddedSpinner />
           ) : (
             <Button
-              title={t('common.add')}
+              title={section ? t('common.update') : t('common.add')}
               onPress={async () => {
+                setSubmitting(true);
                 try {
                   const parsedValues: any = parseFormValues(
                     formValues,
                     formFields
                   );
-                  await createBreak({
-                    ...parsedValues,
-                    school_year: yearId
-                  }).unwrap();
+                  await onSubmit(parsedValues);
                   onRequestClose();
                 } catch (err) {
                   Toast.show({
@@ -118,13 +140,201 @@ const TermBreakModal = ({
                     text1: t('common.errors.generic')
                   });
                 }
+                setSubmitting(false);
               }}
               style={yearCardStyles.termBreakModalButton}
             />
           )}
         </TransparentView>
+      </TransparentScrollView>
+    </Modal>
+  );
+};
+
+const SchoolBreakModal = ({
+  visible,
+  onRequestClose,
+  yearId,
+  schoolBreak
+}: {
+  visible: boolean;
+  onRequestClose: () => void;
+  yearId: number;
+  schoolBreak?: SchoolBreak;
+}) => {
+  const [createBreak] = useCreateSchoolBreakMutation();
+  const [updateBreak] = useUpdateSchoolBreakMutation();
+
+  const onSubmit = async (parsedValues: any) => {
+    if (schoolBreak) {
+      await updateBreak({
+        ...parsedValues,
+        school_year: yearId,
+        id: schoolBreak.id
+      }).unwrap();
+    } else {
+      await createBreak({
+        ...parsedValues,
+        school_year: yearId
+      }).unwrap();
+    }
+  };
+
+  return (
+    <SectionModal
+      visible={visible}
+      onRequestClose={onRequestClose}
+      onSubmit={onSubmit}
+      section={schoolBreak}
+    />
+  );
+};
+
+const SchoolTermModal = ({
+  visible,
+  onRequestClose,
+  yearId,
+  term
+}: {
+  visible: boolean;
+  onRequestClose: () => void;
+  yearId: number;
+  term?: SchoolTerm;
+}) => {
+  const [createTerm] = useCreateSchoolTermMutation();
+  const [updateTerm] = useUpdateSchoolTermMutation();
+
+  const onSubmit = async (parsedValues: any) => {
+    if (term) {
+      await updateTerm({
+        ...parsedValues,
+        school_year: yearId,
+        id: term.id
+      }).unwrap();
+    } else {
+      await createTerm({
+        ...parsedValues,
+        school_year: yearId
+      }).unwrap();
+    }
+  };
+
+  return (
+    <SectionModal
+      visible={visible}
+      onRequestClose={onRequestClose}
+      onSubmit={onSubmit}
+      section={term}
+    />
+  );
+};
+
+const EditYearModal = ({
+  visible,
+  onRequestClose,
+  year
+}: {
+  visible: boolean;
+  onRequestClose: () => void;
+  year: SchoolYear;
+}) => {
+  const formFields = useSchoolYearFieldTypes();
+  const [formValues, setFormValues] = useState({});
+  const [updateYear, updateYearResult] = useUpdateSchoolYearMutation();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const initialValues = createInitialObject(formFields, undefined, year);
+    setFormValues(initialValues);
+  }, [formFields, year]);
+
+  return (
+    <Modal
+      visible={visible}
+      onRequestClose={onRequestClose}
+      boxStyle={yearCardStyles.modalBox}
+    >
+      <TypedForm
+        fields={formFields}
+        formValues={formValues}
+        sectionStyle={StyleSheet.flatten([
+          elevation.unelevated,
+          yearCardStyles.termBreakForm
+        ])}
+        onFormValuesChange={(values: FieldValueTypes) => {
+          setFormValues(values);
+        }}
+      />
+      <TransparentView style={yearCardStyles.termBreakModalButtonWrapper}>
+        {updateYearResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <Button
+            title={t('common.update')}
+            onPress={async () => {
+              try {
+                const parsedValues: any = parseFormValues(
+                  formValues,
+                  formFields
+                );
+                await updateYear({
+                  ...parsedValues,
+                  id: year.id
+                });
+                onRequestClose();
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+            style={yearCardStyles.termBreakModalButton}
+          />
+        )}
       </TransparentView>
     </Modal>
+  );
+};
+
+const SchoolSection = ({
+  item,
+  style,
+  isBreak
+}: {
+  item: SchoolBreak | SchoolTerm;
+  style?: ViewStyle;
+  isBreak?: boolean;
+}) => {
+  const [showEditModal, setShowEditModal] = useState(false);
+  return (
+    <>
+      <SafePressable style={style || {}} onPress={() => setShowEditModal(true)}>
+        <TransparentView style={yearCardStyles.titleSection}>
+          <Text style={yearCardStyles.itemNameText}>{item.name}</Text>
+          <Feather name="edit" size={16} color="orange" />
+        </TransparentView>
+        <Text>
+          ({getHumanReadableDate(item.start_date)} -{' '}
+          {getHumanReadableDate(item.end_date)})
+        </Text>
+      </SafePressable>
+      {isBreak ? (
+        <SchoolBreakModal
+          visible={showEditModal}
+          onRequestClose={() => setShowEditModal(false)}
+          yearId={item.school_year}
+          schoolBreak={item}
+        />
+      ) : (
+        <SchoolTermModal
+          visible={showEditModal}
+          onRequestClose={() => setShowEditModal(false)}
+          yearId={item.school_year}
+          term={item}
+        />
+      )}
+    </>
   );
 };
 
@@ -140,61 +350,120 @@ const SchoolYearCard = ({
   const { data: schoolBreaks, isLoading: isLoadingSchoolBreaks } =
     useGetAllSchoolBreaksQuery();
 
+  const { data: schoolTerms, isLoading: isLoadingSchoolTerms } =
+    useGetAllSchoolTermsQuery();
+
   const { t } = useTranslation();
 
   const [showBreakModal, setShowBreakModal] = useState(false);
+  const [showTermModal, setShowTermModal] = useState(false);
+  const [showEditYearModal, setShowEditYearModal] = useState(false);
 
-  const isLoading = isLoadingSchoolBreaks || !schoolBreaks;
+  const isLoading =
+    isLoadingSchoolBreaks ||
+    !schoolBreaks ||
+    isLoadingSchoolTerms ||
+    !schoolTerms;
 
   if (isLoading) {
     return null;
   }
 
   const termBreaks = schoolBreaks.byYear[year.id] || null;
-
   const termBreakComponents = termBreaks
     ? termBreaks.map((breakId) => {
         const schoolBreak = schoolBreaks.byId[breakId];
         return (
-          <TransparentView key={schoolBreak.id}>
-            <Text>
-              {schoolBreak.name} ({schoolBreak.start_date} -{' '}
-              {schoolBreak.end_date})
-            </Text>
-          </TransparentView>
+          <SchoolSection
+            item={schoolBreak}
+            key={breakId}
+            style={yearCardStyles.schoolSection}
+            isBreak={true}
+          />
+        );
+      })
+    : [];
+
+  const terms = schoolTerms.byYear[year.id] || null;
+  const termComponents = terms
+    ? terms.map((termId) => {
+        const term = schoolTerms.byId[termId];
+        return (
+          <SchoolSection
+            item={term}
+            key={termId}
+            style={yearCardStyles.schoolSection}
+          />
         );
       })
     : [];
 
   return (
     <WhiteBox style={style}>
-      <Text style={yearCardStyles.title}>
-        {year.year} {school.name}
-      </Text>
-      <Text style={yearCardStyles.datesText}>
-        {year.start_date} - {year.end_date}
-      </Text>
-      {termBreaks && (
-        <TransparentPaddedView>
-          <Text style={yearCardStyles.breaksHeader}>
-            {t('components.schoolTerms.breaks')}
+      <SafePressable onPress={() => setShowEditYearModal(true)}>
+        <TransparentView style={yearCardStyles.titleSection}>
+          <Text style={yearCardStyles.title}>
+            {year.year} {school.name}
           </Text>
-          {termBreakComponents}
-        </TransparentPaddedView>
-      )}
-      <TransparentView style={yearCardStyles.addBreakButtonWrapper}>
-        <Button
-          title={t('components.schoolTerms.addBreak')}
-          onPress={() => {
-            setShowBreakModal(true);
-          }}
-          style={yearCardStyles.addBreakButton}
-        />
+          <Feather name="edit" size={20} color="orange" />
+        </TransparentView>
+        <Text style={yearCardStyles.datesText}>
+          {getHumanReadableDate(year.start_date)} -{' '}
+          {getHumanReadableDate(year.end_date)}
+        </Text>
+      </SafePressable>
+      <TransparentView style={yearCardStyles.breaksOrTermsWrapper}>
+        {terms && (
+          <TransparentPaddedView>
+            <Text style={yearCardStyles.breaksHeader}>
+              {t('components.schoolTerms.terms')}
+            </Text>
+            {termComponents}
+          </TransparentPaddedView>
+        )}
+        <TransparentView style={yearCardStyles.addBreakButtonWrapper}>
+          <Button
+            title={t('components.schoolTerms.addTerm')}
+            onPress={() => {
+              setShowTermModal(true);
+            }}
+            style={yearCardStyles.addBreakButton}
+          />
+        </TransparentView>
       </TransparentView>
-      <TermBreakModal
+      <TransparentView style={yearCardStyles.breaksOrTermsWrapper}>
+        {termBreaks && (
+          <TransparentPaddedView>
+            <Text style={yearCardStyles.breaksHeader}>
+              {t('components.schoolTerms.breaks')}
+            </Text>
+            {termBreakComponents}
+          </TransparentPaddedView>
+        )}
+        <TransparentView style={yearCardStyles.addBreakButtonWrapper}>
+          <Button
+            title={t('components.schoolTerms.addBreak')}
+            onPress={() => {
+              setShowBreakModal(true);
+            }}
+            style={yearCardStyles.addBreakButton}
+          />
+        </TransparentView>
+      </TransparentView>
+      <SchoolBreakModal
         visible={showBreakModal}
         onRequestClose={() => setShowBreakModal(false)}
         yearId={year.id}
+      />
+      <SchoolTermModal
+        visible={showTermModal}
+        onRequestClose={() => setShowTermModal(false)}
+        yearId={year.id}
+      />
+      <EditYearModal
+        visible={showEditYearModal}
+        onRequestClose={() => setShowEditYearModal(false)}
+        year={year}
       />
     </WhiteBox>
   );

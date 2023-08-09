@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30
   },
   flex: {
-    flex: 1
+    flexGrow: 1
   },
   inputLabel: {
     minWidth: 110
