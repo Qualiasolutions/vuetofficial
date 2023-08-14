@@ -16,7 +16,6 @@ import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
-  useCreateRecurrentTaskOverwriteMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
@@ -29,6 +28,7 @@ import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import DropDown from './components/DropDown';
 import { elevation } from 'styles/elevation';
 import { TransportTaskType } from 'types/tasks';
+import RecurrentUpdateModal from './RecurrentUpdateModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -73,15 +73,15 @@ export default function AddTransportTaskForm({
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
 
-  const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
-    useCreateRecurrentTaskOverwriteMutation();
-
   const taskObj = useSelector(selectTaskById(taskId || -1));
 
+  const [showRecurrentUpdateModal, setShowRecurrentUpdateModal] =
+    useState(false);
+
+  const [fieldValues, setFieldValues] = useState<any>({});
+
   const isSubmitting =
-    createTaskResult.isLoading ||
-    createTaskWithoutMutationResult.isLoading ||
-    createRecurrentOverwriteResult.isLoading;
+    createTaskResult.isLoading || createTaskWithoutMutationResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
@@ -155,19 +155,11 @@ export default function AddTransportTaskForm({
       resourcetype: 'TransportTask'
     };
 
+    setFieldValues(parsedFieldValues);
+
     try {
-      if (
-        recurrenceOverwrite &&
-        recurrenceIndex !== undefined &&
-        taskObj &&
-        taskObj.recurrence
-      ) {
-        await createRecurrentOverwrite({
-          task: parsedFieldValues,
-          recurrence: taskObj.recurrence.id,
-          recurrence_index: recurrenceIndex,
-          baseTaskId: taskObj.id
-        }).unwrap();
+      if (recurrenceOverwrite) {
+        setShowRecurrentUpdateModal(true);
       } else {
         if (
           parsedFieldValues.recurrence ||
@@ -177,13 +169,13 @@ export default function AddTransportTaskForm({
         } else {
           await createTaskWithoutCacheInvalidation(parsedFieldValues).unwrap();
         }
+        Toast.show({
+          type: 'success',
+          text1: t('screens.addTask.createSuccess')
+        });
+        resetState();
+        onSuccess();
       }
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-      onSuccess();
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -258,6 +250,14 @@ export default function AddTransportTaskForm({
           />
         </TransparentPaddedView>
       )}
+      <RecurrentUpdateModal
+        visible={showRecurrentUpdateModal}
+        onRequestClose={() => setShowRecurrentUpdateModal(false)}
+        recurrence={taskObj?.recurrence?.id || -1}
+        recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
+        taskId={taskId || -1}
+        parsedFieldValues={fieldValues}
+      />
     </TransparentView>
   );
 }

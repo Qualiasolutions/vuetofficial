@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectTaskToAction } from 'reduxStore/slices/calendars/selectors';
 import { RootTabParamList } from 'types/base';
 import { LinkButton } from './ButtonComponents';
-import { YesNoModal } from './Modals';
 import Modal from 'react-native-modal';
 
 import { setTaskToAction } from 'reduxStore/slices/calendars/actions';
@@ -22,13 +21,16 @@ import {
 import TaskCompletionForm, {
   FORM_REQUIRED_TAGS
 } from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useCreateRecurrentTaskOverwriteMutation } from 'reduxStore/services/api/tasks';
 import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
 import { WhiteBox } from './ViewComponents';
+import DeleteTaskModal from './DeleteTaskModal';
+import { YesNoModal } from './Modals';
+import { useDeleteTaskMutation } from 'reduxStore/services/api/tasks';
 
 export default function TaskActionModal() {
   const [showTaskCompletionForm, setShowTaskCompletionForm] = useState(false);
   const [deletingOccurrence, setDeletingOccurrence] = useState(false);
+  const [deletingTask, setDeletingTask] = useState(false);
 
   const navigation = useNavigation<StackNavigationProp<RootTabParamList>>();
   const { t } = useTranslation();
@@ -42,8 +44,7 @@ export default function TaskActionModal() {
   const [createTaskActionCompletionForm] =
     useCreateTaskActionCompletionFormMutation();
 
-  const [createRecurrentTaskOverwrite] =
-    useCreateRecurrentTaskOverwriteMutation();
+  const [deleteTask] = useDeleteTaskMutation();
 
   const taskToAction = useSelector(selectTaskToAction);
   const task = useSelector(selectTaskById(taskToAction?.taskId || -1));
@@ -97,24 +98,35 @@ export default function TaskActionModal() {
               <LinkButton
                 onPress={() => {
                   if (taskToAction) {
-                    navigation.navigate('EditTaskOccurrence', {
-                      taskId: taskToAction.taskId,
-                      recurrenceIndex:
-                        taskToAction.recurrenceIndex === null
-                          ? -1
-                          : taskToAction.recurrenceIndex
-                    });
+                    // We don't need to be able to edit specific instances
+                    // of birthdays
+                    if (['BIRTHDAY', 'ANNIVERSARY'].includes(task.type)) {
+                      navigation.navigate('EditTask', {
+                        taskId: taskToAction.taskId
+                      });
+                    } else {
+                      navigation.navigate('EditTaskOccurrence', {
+                        taskId: taskToAction.taskId,
+                        recurrenceIndex:
+                          taskToAction.recurrenceIndex === null
+                            ? -1
+                            : taskToAction.recurrenceIndex
+                      });
+                    }
                     dispatch(setTaskToAction(null));
                   }
                 }}
-                title={t('components.task.editOccurrence')}
+                title={t('components.task.editTask')}
               />
               <LinkButton
                 onPress={() => {
                   setDeletingOccurrence(true);
                 }}
-                title={t('components.task.deleteOccurrence')}
+                title={t('common.delete')}
               />
+            </>
+          ) : (
+            <>
               <LinkButton
                 onPress={() => {
                   if (taskToAction) {
@@ -124,21 +136,15 @@ export default function TaskActionModal() {
                     dispatch(setTaskToAction(null));
                   }
                 }}
-                title={t('components.task.editAll')}
+                title={t('components.task.editTask')}
+              />
+              <LinkButton
+                onPress={() => {
+                  setDeletingTask(true);
+                }}
+                title={t('common.delete')}
               />
             </>
-          ) : (
-            <LinkButton
-              onPress={() => {
-                if (taskToAction) {
-                  navigation.navigate('EditTask', {
-                    taskId: taskToAction.taskId
-                  });
-                  dispatch(setTaskToAction(null));
-                }
-              }}
-              title={t('components.task.editTask')}
-            />
           )
         ) : null}
         {taskToAction && (
@@ -202,26 +208,31 @@ export default function TaskActionModal() {
           />
         )}
       </WhiteBox>
-      <YesNoModal
-        title={t('components.task.deleteOccurrence')}
-        question={t('components.task.deleteOccurrenceConfirmation')}
+      <DeleteTaskModal
         visible={deletingOccurrence}
+        onRequestClose={() => setDeletingOccurrence(false)}
+        recurrence={task?.recurrence?.id || -1}
+        recurrenceIndex={
+          taskToAction?.recurrenceIndex === null ||
+          taskToAction?.recurrenceIndex === undefined
+            ? -1
+            : taskToAction?.recurrenceIndex
+        }
+        taskId={task?.id || -1}
+      />
+      <YesNoModal
+        title={t('common.delete')}
+        question={t('components.task.deleteConfirmation')}
+        visible={deletingTask}
         onYes={() => {
-          if (
-            task?.recurrence?.id &&
-            taskToAction &&
-            taskToAction.recurrenceIndex !== null
-          ) {
-            createRecurrentTaskOverwrite({
-              task: null,
-              recurrence_index: taskToAction.recurrenceIndex,
-              recurrence: task.recurrence.id,
-              baseTaskId: task.id
-            });
+          if (task?.id) {
+            deleteTask({ id: task.id });
+            setDeletingTask(false);
+            dispatch(setTaskToAction(null));
           }
         }}
         onNo={() => {
-          setDeletingOccurrence(false);
+          setDeletingTask(false);
         }}
       />
     </Modal>

@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import AddAnniversaryForm from 'components/forms/AddAnniversaryForm';
 import AddDueDateForm from 'components/forms/AddDueDateForm';
 import AddTaskForm from 'components/forms/AddTaskForm';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -8,13 +9,16 @@ import {
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
 import { RootTabParamList } from 'types/base';
+import { AnniversaryTaskResponseType } from 'types/tasks';
 
 export default function EditTaskOccurrenceScreen({
   route,
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'EditTaskOccurrence'>) {
   const { taskId, recurrenceIndex } = route.params;
-  const taskObj = useSelector(selectTaskById(taskId));
+  const taskObj = useSelector(
+    selectTaskById(taskId)
+  ) as AnniversaryTaskResponseType;
   const scheduledTaskObj = useSelector(
     selectScheduledTask({ id: taskId, recurrenceIndex })
   );
@@ -30,6 +34,23 @@ export default function EditTaskOccurrenceScreen({
           defaults={{
             ...taskObj,
             date: scheduledTaskObj.date as string
+          }}
+          onSuccess={() => navigation.goBack()}
+          taskId={taskObj.id}
+          recurrenceIndex={recurrenceIndex}
+          recurrenceOverwrite={true}
+        />
+      </TransparentFullPageScrollView>
+    );
+  }
+
+  if (['ANNIVERSARY', 'BIRTHDAY'].includes(taskObj.type)) {
+    return (
+      <TransparentFullPageScrollView>
+        <AddAnniversaryForm
+          defaults={{
+            ...taskObj,
+            date: taskObj.date as string
           }}
           onSuccess={() => navigation.goBack()}
           taskId={taskObj.id}

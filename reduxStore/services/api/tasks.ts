@@ -465,6 +465,23 @@ const tasksApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    updateRecurrentTaskAfter: builder.mutation<
+      {
+        task: FixedTaskResponseType | null;
+        recurrence: number;
+        recurrence_index: number;
+      },
+      CreateRecurrentTaskOverwriteRequest
+    >({
+      query: (body) => {
+        return {
+          url: 'core/recurrent_task_update_after/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction']
     })
   }),
   overrideExisting: true
@@ -483,6 +500,7 @@ export const {
   useCreateTaskWithoutCacheInvalidationMutation,
   useCreateFlexibleFixedTaskMutation,
   useCreateRecurrentTaskOverwriteMutation,
+  useUpdateRecurrentTaskAfterMutation,
   useBulkCreateTasksMutation,
   useBulkDeleteTasksMutation
 } = tasksApi;

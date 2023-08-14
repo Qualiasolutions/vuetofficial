@@ -16,7 +16,6 @@ import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
-  useCreateRecurrentTaskOverwriteMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
@@ -24,12 +23,12 @@ import parseFormValues from 'components/forms/utils/parseFormValues';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import hasAllRequired from 'components/forms/utils/hasAllRequired';
-import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { AnniversaryTaskType } from 'types/tasks';
 import DropDown from './components/DropDown';
 import { elevation } from 'styles/elevation';
+import RecurrentUpdateModal from './RecurrentUpdateModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,8 +48,11 @@ type AddAnniversaryFormProps = {
   defaults: {
     title: string;
     date: string;
+    known_year?: boolean;
     entities: number[];
     tags: string[];
+    first_name?: string;
+    last_name?: string;
   };
   onSuccess: () => void;
   recurrenceOverwrite?: boolean;
@@ -73,15 +75,10 @@ export default function AddAnniversaryForm({
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
 
-  const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
-    useCreateRecurrentTaskOverwriteMutation();
-
   const taskObj = useSelector(selectTaskById(taskId || -1));
 
   const isSubmitting =
-    createTaskResult.isLoading ||
-    createTaskWithoutMutationResult.isLoading ||
-    createRecurrentOverwriteResult.isLoading;
+    createTaskResult.isLoading || createTaskWithoutMutationResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
@@ -90,7 +87,12 @@ export default function AddAnniversaryForm({
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const anniversaryFields = useAnniversaryFieldTypes(type, false);
+  const anniversaryFields = useAnniversaryFieldTypes(type, recurrenceOverwrite);
+
+  const [fieldValues, setFieldValues] = useState<any>({});
+
+  const [showRecurrentUpdateModal, setShowRecurrentUpdateModal] =
+    useState(false);
 
   const initialAnniversaryFields = useMemo(() => {
     if (!userDetails) {
@@ -99,17 +101,17 @@ export default function AddAnniversaryForm({
 
     const nextWeek = new Date();
     nextWeek.setDate(nextWeek.getDate() + 7);
-    const defaultDueDate = null;
 
     const defaultRecurrence = {
-      earliest_occurrence: defaultDueDate,
+      earliest_occurrence: null,
       latest_occurrence: null,
       interval_length: 1,
       recurrence: 'YEARLY'
     };
 
     return createInitialObject(anniversaryFields, userDetails, {
-      date: defaultDueDate,
+      date: defaults.date || null,
+      known_year: defaults.known_year || null,
       title: defaults?.title || '',
       duration: 15,
       tagsAndEntities: {
@@ -122,7 +124,9 @@ export default function AddAnniversaryForm({
                 : 'SOCIAL_INTERESTS__ANNIVERSARY'
             ]
       },
-      recurrence: defaultRecurrence
+      recurrence: defaultRecurrence,
+      first_name: defaults.first_name,
+      last_name: defaults.last_name
     });
   }, [anniversaryFields, userDetails, defaults, type]);
 
@@ -159,19 +163,11 @@ export default function AddAnniversaryForm({
       duration: 15
     };
 
+    setFieldValues(parsedFieldValues);
+
     try {
-      if (
-        recurrenceOverwrite &&
-        recurrenceIndex !== undefined &&
-        taskObj &&
-        taskObj.recurrence
-      ) {
-        await createRecurrentOverwrite({
-          task: parsedFieldValues,
-          recurrence: taskObj.recurrence.id,
-          recurrence_index: recurrenceIndex,
-          baseTaskId: taskObj.id
-        }).unwrap();
+      if (recurrenceOverwrite) {
+        setShowRecurrentUpdateModal(true);
       } else {
         if (
           parsedFieldValues.recurrence ||
@@ -181,13 +177,13 @@ export default function AddAnniversaryForm({
         } else {
           await createTaskWithoutCacheInvalidation(parsedFieldValues).unwrap();
         }
+        Toast.show({
+          type: 'success',
+          text1: t('screens.addTask.createSuccess')
+        });
+        resetState();
+        onSuccess();
       }
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-      onSuccess();
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -250,6 +246,14 @@ export default function AddAnniversaryForm({
           />
         </TransparentPaddedView>
       )}
+      <RecurrentUpdateModal
+        visible={showRecurrentUpdateModal}
+        onRequestClose={() => setShowRecurrentUpdateModal(false)}
+        recurrence={taskObj?.recurrence?.id || -1}
+        recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
+        taskId={taskId || -1}
+        parsedFieldValues={fieldValues}
+      />
     </TransparentView>
   );
 }

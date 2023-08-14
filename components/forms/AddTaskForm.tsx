@@ -21,7 +21,6 @@ import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateFlexibleFixedTaskMutation,
-  useCreateRecurrentTaskOverwriteMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
@@ -34,6 +33,8 @@ import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import DropDown from './components/DropDown';
 import { elevation } from 'styles/elevation';
+import RecurrentUpdateModal from './RecurrentUpdateModal';
+import { Recurrence, Reminder } from 'types/tasks';
 
 const styles = StyleSheet.create({
   container: {
@@ -62,6 +63,8 @@ type AddTaskFormProps = {
     is_any_time?: boolean;
     entities?: number[];
     members?: number[];
+    recurrence?: Recurrence | null;
+    reminders?: Reminder[];
   };
   onSuccess: () => void;
   taskId?: number;
@@ -86,16 +89,15 @@ export default function AddTaskForm({
   const [createFlexibleTask, createFlexibleTaskResult] =
     useCreateFlexibleFixedTaskMutation();
 
-  const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
-    useCreateRecurrentTaskOverwriteMutation();
-
   const [activityType, setActivityType] = useState('ACTIVITY');
+
+  const [showRecurrentUpdateModal, setShowRecurrentUpdateModal] =
+    useState(false);
 
   const isSubmitting =
     createTaskResult.isLoading ||
     createFlexibleTaskResult.isLoading ||
-    createTaskWithoutMutationResult.isLoading ||
-    createRecurrentOverwriteResult.isLoading;
+    createTaskWithoutMutationResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
@@ -111,12 +113,10 @@ export default function AddTaskForm({
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
+  const [fieldValues, setFieldValues] = useState<any>({});
+
   const taskTopFields = useTaskTopFieldTypes();
-  const taskMiddleFields = useTaskMiddleFieldTypes(
-    !!recurrenceOverwrite,
-    false,
-    !recurrenceOverwrite
-  );
+  const taskMiddleFields = useTaskMiddleFieldTypes(!!recurrenceOverwrite);
   const taskBottomFields = useTaskBottomFieldTypes();
   const taskObj = useSelector(selectTaskById(taskId || -1));
 
@@ -183,10 +183,11 @@ export default function AddTaskForm({
       end_datetime: defaultEndTime,
       date: defaultDueDate,
       duration: defaultDuration,
-      recurrence: null,
       earliest_action_date: defaultEarliestActionDate,
       due_date: defaultDueDate,
-      is_any_time: !!defaults.is_any_time
+      is_any_time: !!defaults.is_any_time,
+      recurrence: defaults.recurrence,
+      reminders: defaults.reminders
     });
   }, [taskMiddleFields, userDetails, formType, defaults]);
 
@@ -268,19 +269,11 @@ export default function AddTaskForm({
       resourcetype: 'FixedTask'
     };
 
+    setFieldValues(parsedFieldValues);
+
     try {
-      if (
-        recurrenceOverwrite &&
-        recurrenceIndex !== undefined &&
-        taskObj &&
-        taskObj.recurrence
-      ) {
-        await createRecurrentOverwrite({
-          task: parsedFieldValues,
-          recurrence: taskObj.recurrence.id,
-          recurrence_index: recurrenceIndex,
-          baseTaskId: taskObj.id
-        }).unwrap();
+      if (recurrenceOverwrite) {
+        setShowRecurrentUpdateModal(true);
       } else {
         if (parsedFieldValues.is_flexible) {
           await createFlexibleTask(parsedFieldValues).unwrap();
@@ -296,13 +289,13 @@ export default function AddTaskForm({
             ).unwrap();
           }
         }
+        Toast.show({
+          type: 'success',
+          text1: t('screens.addTask.createSuccess')
+        });
+        resetState();
+        onSuccess();
       }
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-      onSuccess();
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -410,6 +403,14 @@ export default function AddTaskForm({
           />
         </TransparentPaddedView>
       )}
+      <RecurrentUpdateModal
+        visible={showRecurrentUpdateModal}
+        onRequestClose={() => setShowRecurrentUpdateModal(false)}
+        recurrence={taskObj?.recurrence?.id || -1}
+        recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
+        taskId={taskId || -1}
+        parsedFieldValues={fieldValues}
+      />
     </TransparentView>
   );
 }

@@ -16,7 +16,6 @@ import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
-  useCreateRecurrentTaskOverwriteMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
@@ -29,6 +28,7 @@ import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import DropDown from './components/DropDown';
 import { elevation } from 'styles/elevation';
 import { AccommodationTaskType } from 'types/tasks';
+import RecurrentUpdateModal from './RecurrentUpdateModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -72,16 +72,15 @@ export default function AddAccommodationTaskForm({
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
-
-  const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
-    useCreateRecurrentTaskOverwriteMutation();
-
   const taskObj = useSelector(selectTaskById(taskId || -1));
 
+  const [showRecurrentUpdateModal, setShowRecurrentUpdateModal] =
+    useState(false);
+
+  const [fieldValues, setFieldValues] = useState<any>({});
+
   const isSubmitting =
-    createTaskResult.isLoading ||
-    createTaskWithoutMutationResult.isLoading ||
-    createRecurrentOverwriteResult.isLoading;
+    createTaskResult.isLoading || createTaskWithoutMutationResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
@@ -154,19 +153,11 @@ export default function AddAccommodationTaskForm({
       resourcetype: 'AccommodationTask'
     };
 
+    setFieldValues(parsedFieldValues);
+
     try {
-      if (
-        recurrenceOverwrite &&
-        recurrenceIndex !== undefined &&
-        taskObj &&
-        taskObj.recurrence
-      ) {
-        await createRecurrentOverwrite({
-          task: parsedFieldValues,
-          recurrence: taskObj.recurrence.id,
-          recurrence_index: recurrenceIndex,
-          baseTaskId: taskObj.id
-        }).unwrap();
+      if (recurrenceOverwrite) {
+        setShowRecurrentUpdateModal(true);
       } else {
         if (
           parsedFieldValues.recurrence ||
@@ -245,6 +236,14 @@ export default function AddAccommodationTaskForm({
           />
         </TransparentPaddedView>
       )}
+      <RecurrentUpdateModal
+        visible={showRecurrentUpdateModal}
+        onRequestClose={() => setShowRecurrentUpdateModal(false)}
+        recurrence={taskObj?.recurrence?.id || -1}
+        recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
+        taskId={taskId || -1}
+        parsedFieldValues={fieldValues}
+      />
     </TransparentView>
   );
 }

@@ -416,7 +416,7 @@ const RecurrenceForm = ({
   const [choosing, setChoosing] = useState('');
 
   const defaultValues: RecurrenceValue = {
-    earliest_occurrence: firstOccurrence.toISOString(),
+    earliest_occurrence: null,
     latest_occurrence: null,
     interval_length: 1,
     recurrence: 'DAILY'
@@ -703,7 +703,7 @@ export default function RecurrenceSelector({
   const [editing, setEditing] = useState(false);
 
   const defaultValue: RecurrenceValue = {
-    earliest_occurrence: (firstOccurrence || new Date()).toISOString(),
+    earliest_occurrence: null,
     latest_occurrence: null,
     interval_length: 1,
     recurrence: 'DAILY'

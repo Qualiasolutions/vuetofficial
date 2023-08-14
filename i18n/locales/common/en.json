@@ -346,6 +346,7 @@
   "common": {
     "start": "Start",
     "end": "End",
+    "edit": "Edit",
     "name": "Name",
     "value": "Value",
     "members": "Members",
@@ -735,6 +736,7 @@
       "editAll": "Edit all",
       "deleteOccurrence": "Delete occurrence",
       "deleteOccurrenceConfirmation": "Are you sure you would like to delete this occurrence?",
+      "deleteConfirmation": "Are you sure you would like to delete this task?",
       "messages": "Messages",
       "markComplete": "Mark Complete"
     },
@@ -758,6 +760,14 @@
       "terms": "Terms",
       "deleteYearConfirmationTitle": "Delete School Year",
       "deleteYearConfirmationQuestion": "Are you sure you would like to permanently delete this school year?"
+    },
+    "recurrentUpdateModal": {
+      "updateOccurrence": "Update occurrence",
+      "updateAfter": "Update all going forward"
+    },
+    "deleteTaskModal": {
+      "deleteOccurrence": "Delete occurrence",
+      "deleteAfter": "Delete all going forward"
     }
   }
 }

@@ -86,7 +86,7 @@ export default function AddHolidayTaskForm({
     const defaultDueDate = new Date();
     defaultDueDate.setFullYear(defaultDueDate.getFullYear() - 1);
     const defaultRecurrence = {
-      earliest_occurrence: defaultDueDate,
+      earliest_occurrence: null,
       latest_occurrence: null,
       interval_length: 1,
       recurrence: 'YEARLY'

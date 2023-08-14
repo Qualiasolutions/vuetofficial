@@ -369,6 +369,7 @@ export default function TypedForm({
             case 'OptionalYearDate': {
               const f = flatFields[field];
               const knownYearField = (f as OptionalYearDate).knownYearField;
+
               return (
                 <InputPair
                   field={field}

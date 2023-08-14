@@ -13,7 +13,7 @@ type RecurrenceType =
 
 interface Recurrence {
   id: number;
-  earliest_occurrence: string;
+  earliest_occurrence: string | null;
   latest_occurrence: string | null;
   interval_length: number;
   recurrence: RecurrenceType;
@@ -163,6 +163,7 @@ interface CreateRecurrentTaskOverwriteRequest {
   recurrence: number;
   recurrence_index: number;
   baseTaskId: number;
+  change_datetime?: string;
 }
 
 type CreateTaskRequest =
