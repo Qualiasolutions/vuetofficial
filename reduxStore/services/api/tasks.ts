@@ -69,7 +69,6 @@ const normalizeScheduledTaskData = ({
     byDateEntities: formatEntitiesPerDate(entityData),
     byEntityId: entityData.reduce<{ [key: string]: {} }>((prev, next) => {
       const type = RESOURCE_TYPE_TO_TYPE[next.resourcetype] || 'ENTITY';
-      console.log(next);
       return {
         ...prev,
         [type]: {

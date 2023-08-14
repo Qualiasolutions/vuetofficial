@@ -3,7 +3,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { TextInput, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import React from 'react';
-import { ViewStyle } from 'react-native';
+import { Platform, ViewStyle } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function DateTimeTextInput({
@@ -61,6 +61,7 @@ export default function DateTimeTextInput({
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode={mode}
+        display={Platform.OS === 'ios' ? 'inline' : undefined}
         date={value || undefined}
         onConfirm={(newValue) => {
           setIsDatePickerVisible(false);
