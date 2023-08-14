@@ -18,6 +18,7 @@ export default function EditTaskOccurrenceScreen({
   const scheduledTaskObj = useSelector(
     selectScheduledTask({ id: taskId, recurrenceIndex })
   );
+
   if (!(taskObj && scheduledTaskObj && taskObj.recurrence)) {
     return null;
   }

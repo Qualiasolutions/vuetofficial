@@ -99,7 +99,10 @@ export default function TaskActionModal() {
                   if (taskToAction) {
                     navigation.navigate('EditTaskOccurrence', {
                       taskId: taskToAction.taskId,
-                      recurrenceIndex: taskToAction.recurrenceIndex || -1
+                      recurrenceIndex:
+                        taskToAction.recurrenceIndex === null
+                          ? -1
+                          : taskToAction.recurrenceIndex
                     });
                     dispatch(setTaskToAction(null));
                   }
