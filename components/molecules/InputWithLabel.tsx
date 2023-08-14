@@ -1,6 +1,9 @@
+import { Feather } from '@expo/vector-icons';
 import { Text } from 'components/Themed';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
+import { Modal } from './Modals';
+import SafePressable from './SafePressable';
 import { AlmostBlackText } from './TextComponents';
 import { TransparentView } from './ViewComponents';
 
@@ -19,6 +22,9 @@ const styles = StyleSheet.create({
   },
   inlineChildrenWrapper: {
     flex: 1
+  },
+  labelWrapper: {
+    flexDirection: 'row'
   }
 });
 
@@ -30,7 +36,8 @@ export default function InputWithLabel({
   labelStyle,
   labelWrapperStyle,
   pairStyle,
-  style
+  style,
+  helpText
 }: {
   label: string;
   children: ReactNode;
@@ -40,18 +47,25 @@ export default function InputWithLabel({
   labelWrapperStyle?: ViewStyle;
   pairStyle?: ViewStyle;
   style?: ViewStyle;
+  helpText?: string;
 }) {
+  const [showInfoModal, setShowInfoModal] = useState(false);
   return (
     <TransparentView style={style || {}}>
       {error ? <Text>{error}</Text> : null}
       <TransparentView
         style={inlineFields ? [styles.inlineInputPair, pairStyle || {}] : {}}
       >
-        <TransparentView style={[labelWrapperStyle || {}]}>
+        <TransparentView style={[labelWrapperStyle || {}, styles.labelWrapper]}>
           <AlmostBlackText
             text={label}
             style={[styles.inputLabel, labelStyle || {}]}
           />
+          {helpText && (
+            <SafePressable onPress={() => setShowInfoModal(true)}>
+              <Feather name="info" size={20} />
+            </SafePressable>
+          )}
         </TransparentView>
         <TransparentView
           style={inlineFields ? styles.inlineChildrenWrapper : {}}
@@ -59,6 +73,14 @@ export default function InputWithLabel({
           {children}
         </TransparentView>
       </TransparentView>
+      {helpText && (
+        <Modal
+          visible={showInfoModal}
+          onRequestClose={() => setShowInfoModal(false)}
+        >
+          <Text>{helpText}</Text>
+        </Modal>
+      )}
     </TransparentView>
   );
 }

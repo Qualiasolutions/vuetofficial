@@ -266,6 +266,7 @@ export default function TypedForm({
           labelWrapperStyle={styles.inputLabel}
           style={containerStyle}
           pairStyle={pairStyle}
+          helpText={fieldObj.helpText}
         >
           {children}
         </InputWithLabel>

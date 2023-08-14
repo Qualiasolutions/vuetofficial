@@ -39,6 +39,7 @@ export type BaseField<TypeName extends PermittedTypes, ValueType> = {
   hidden?: boolean;
   sourceField?: string;
   targetField?: string;
+  helpText?: string;
 };
 
 export type StringField = BaseField<'string', string> & {

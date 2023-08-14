@@ -28,6 +28,14 @@
       "tags": "Tags",
       "changeMembers": "Who is doing?"
     },
+    "helpText": {
+      "tags": "Every Task should be tagged for easy reference later",
+      "is_flexible": "The scheduling algorithm will find the earliest time to complete a task using the preferences set by Premium Users.",
+      "is_any_time": "Anytime during a day. There is no set time for this Task",
+      "actions": "Task yourself to work on a task or due date days or weeks before it occurs. There can be multiple Actions for a task.",
+      "reminders": "Remind yourself of a task",
+      "routine": "To include a task within a Routine window, set up Routines in Settings and when adding a Task the Routine can be chosen. These allows tasks to be set within certain windows of time."
+    },
     "fixedTask": {
       "start_datetime": "Start Datetime",
       "end_datetime": "End Datetime"
