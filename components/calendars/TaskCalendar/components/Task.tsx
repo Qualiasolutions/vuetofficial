@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -81,12 +81,20 @@ const styles = StyleSheet.create({
   }
 });
 
+export type SchoolTermItemType =
+  | 'SCHOOL_TERM'
+  | 'SCHOOL_BREAK'
+  | 'SCHOOL_YEAR_START'
+  | 'SCHOOL_YEAR_END';
+
 export type MinimalScheduledTask = {
   id: number;
   recurrence_index: number | null;
   action_id: number | null;
-  type: ScheduledTaskType | 'ROUTINE' | 'ENTITY';
+  type: ScheduledTaskType | SchoolTermItemType | 'ROUTINE' | 'ENTITY';
 };
+
+export type ScheduledEntity = { id: number; resourcetype: string };
 
 type PropTypes = {
   task: MinimalScheduledTask;
@@ -210,7 +218,7 @@ const TaskIcon = ({ task }: { task: FixedTaskResponseType }) => {
 };
 
 function Task({
-  task: { id, recurrence_index, action_id },
+  task: { id, recurrence_index, action_id, type },
   date,
   isEntity
 }: PropTypes) {
@@ -223,7 +231,7 @@ function Task({
       actionId: action_id
     })
   );
-  const scheduledEntity = useSelector(selectScheduledEntity(id));
+  const scheduledEntity = useSelector(selectScheduledEntity(id, type));
 
   const isComplete = !!scheduledTask?.is_complete;
 

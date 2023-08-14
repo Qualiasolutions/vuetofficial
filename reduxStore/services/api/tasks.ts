@@ -18,6 +18,8 @@ import { getDateStringsBetween } from 'utils/datesAndTimes';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
 import { EntityTypeName } from 'types/entities';
+import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
+import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 
 const normalizeScheduledTaskData = ({
   tasks: taskData,
@@ -65,13 +67,17 @@ const normalizeScheduledTaskData = ({
       resourcetype
     })),
     byDateEntities: formatEntitiesPerDate(entityData),
-    byEntityId: entityData.reduce(
-      (prev, next) => ({
+    byEntityId: entityData.reduce<{ [key: string]: {} }>((prev, next) => {
+      const type = RESOURCE_TYPE_TO_TYPE[next.resourcetype] || 'ENTITY';
+      console.log(next);
+      return {
         ...prev,
-        [next.id]: next
-      }),
-      {}
-    )
+        [type]: {
+          ...(prev[type] || {}),
+          [next.id]: next
+        }
+      };
+    }, {})
   };
 };
 
@@ -187,10 +193,12 @@ type AllScheduledTasks = {
     resourcetype: EntityTypeName;
   }[];
   byDateEntities: {
-    [date: string]: number[];
+    [date: string]: ScheduledEntity[];
   };
   byEntityId: {
-    [key: number]: ScheduledEntityResponseType;
+    [resourcetype: string]: {
+      [key: number]: ScheduledEntityResponseType;
+    };
   };
 };
 

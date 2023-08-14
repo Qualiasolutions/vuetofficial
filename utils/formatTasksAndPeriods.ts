@@ -1,3 +1,4 @@
+import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
 import {
   ScheduledEntityResponseType,
   ScheduledTaskResponseType,
@@ -75,7 +76,7 @@ export const formatEntitiesPerDate = (
   entities: ScheduledEntityResponseType[]
 ) => {
   const entitiesPerDate: {
-    [key: string]: number[];
+    [key: string]: ScheduledEntity[];
   } = {};
   for (const entity of entities) {
     if (!entity) {
@@ -92,7 +93,10 @@ export const formatEntitiesPerDate = (
         entitiesPerDate[entityDate] = [];
       }
 
-      entitiesPerDate[entityDate].push(entity.id);
+      entitiesPerDate[entityDate].push({
+        id: entity.id,
+        resourcetype: entity.resourcetype
+      });
     });
   }
 

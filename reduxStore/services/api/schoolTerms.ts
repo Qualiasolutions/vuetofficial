@@ -79,7 +79,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['SchoolYear']
+      invalidatesTags: ['SchoolYear', 'Task']
     }),
     updateSchoolYear: builder.mutation<
       SchoolYear,
@@ -92,7 +92,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['SchoolYear']
+      invalidatesTags: ['SchoolYear', 'Task']
     }),
     deleteSchoolYear: builder.mutation<SchoolYear, Pick<SchoolYear, 'id'>>({
       query: (body) => {
@@ -101,7 +101,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['SchoolYear']
+      invalidatesTags: ['SchoolYear', 'Task']
     }),
     getAllSchoolBreaks: builder.query<AllSchoolBreaks, void>({
       query: () => ({
@@ -126,7 +126,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['SchoolBreak']
+      invalidatesTags: ['SchoolBreak', 'Task']
     }),
     updateSchoolBreak: builder.mutation<
       SchoolBreak,
@@ -139,7 +139,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['SchoolBreak']
+      invalidatesTags: ['SchoolBreak', 'Task']
     }),
     deleteSchoolBreak: builder.mutation<SchoolBreak, Pick<SchoolBreak, 'id'>>({
       query: (body) => {
@@ -148,7 +148,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['SchoolBreak']
+      invalidatesTags: ['SchoolBreak', 'Task']
     }),
     getAllSchoolTerms: builder.query<AllSchoolTerms, void>({
       query: () => ({
@@ -173,7 +173,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['SchoolTerm']
+      invalidatesTags: ['SchoolTerm', 'Task']
     }),
     updateSchoolTerm: builder.mutation<
       SchoolTerm,
@@ -186,7 +186,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['SchoolTerm']
+      invalidatesTags: ['SchoolTerm', 'Task']
     }),
     deleteSchoolTerm: builder.mutation<SchoolTerm, Pick<SchoolTerm, 'id'>>({
       query: (body) => {
@@ -195,7 +195,7 @@ const schoolTermsApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['SchoolTerm']
+      invalidatesTags: ['SchoolTerm', 'Task']
     })
   }),
   overrideExisting: true

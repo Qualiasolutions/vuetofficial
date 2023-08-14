@@ -21,13 +21,18 @@ import {
 } from 'components/molecules/ViewComponents';
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
-import Task, { MinimalScheduledTask } from './Task';
+import Task, {
+  MinimalScheduledTask,
+  ScheduledEntity,
+  SchoolTermItemType
+} from './Task';
 import { ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import Routine from './Routine';
 import { selectTasksInDailyRoutines } from 'reduxStore/slices/tasks/selectors';
+import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -67,7 +72,13 @@ const isRoutine = (
 const isEntity = (
   item: ItemData
 ): item is MinimalScheduledTask & { type: 'ENTITY' } => {
-  return item.type === 'ENTITY';
+  return [
+    'ENTITY',
+    'SCHOOL_TERM',
+    'SCHOOL_BREAK',
+    'SCHOOL_YEAR_START',
+    'SCHOOL_YEAR_END'
+  ].includes(item.type);
 };
 
 const ListItem = React.memo(
@@ -97,7 +108,7 @@ function Calendar({
   showFilters
 }: {
   tasks: { [date: string]: MinimalScheduledTask[] };
-  entities?: { [date: string]: number[] };
+  entities?: { [date: string]: ScheduledEntity[] };
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
   showFilters?: boolean;
@@ -193,11 +204,11 @@ function Calendar({
             action_id: null,
             type: 'ROUTINE' as 'ROUTINE'
           })),
-          ...entitiesToShow.map((id) => ({
+          ...entitiesToShow.map(({ id, resourcetype }) => ({
             id,
             recurrence_index: null,
             action_id: null,
-            type: 'ENTITY' as 'ENTITY'
+            type: RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY'
           })),
           ...tasksToShow
         ]

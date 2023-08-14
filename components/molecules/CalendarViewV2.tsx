@@ -6,7 +6,10 @@ import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { useSelector } from 'react-redux';
 import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
-import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
+import {
+  MinimalScheduledTask,
+  ScheduledEntity
+} from 'components/calendars/TaskCalendar/components/Task';
 import { ParsedPeriod } from 'types/periods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -15,7 +18,7 @@ import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 
 export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };
-  entities?: { [date: string]: number[] };
+  entities?: { [date: string]: ScheduledEntity[] };
   periods: ParsedPeriod[];
   onChangeDate?: (date: string) => void;
   hidden?: boolean;
@@ -144,7 +147,10 @@ const CalendarContent = ({
                     {entities &&
                       entities[date.dateString] &&
                       entities[date.dateString].map((entity) => (
-                        <ListedEntity id={entity} key={entity} />
+                        <ListedEntity
+                          id={entity.id}
+                          key={`${entity.id}_${entity.resourcetype}`}
+                        />
                       ))}
                     {tasks &&
                       tasks[date.dateString] &&

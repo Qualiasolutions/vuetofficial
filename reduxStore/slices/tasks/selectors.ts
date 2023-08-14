@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
+import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import dayjs from 'dayjs';
 import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
@@ -365,8 +366,12 @@ export const selectFilteredScheduledEntityIdsByDate = createSelector(
 
     const filteredEntities =
       scheduledTasks.data.orderedEntities
-        .map(({ id }) => {
-          return scheduledTasks.data?.byEntityId[id];
+        .map(({ id, resourcetype }) => {
+          const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
+          return (
+            scheduledTasks.data?.byEntityId[type] &&
+            scheduledTasks.data?.byEntityId[type][id]
+          );
         })
         .filter(isEntity)
         .filter(
@@ -575,13 +580,15 @@ export const selectScheduledTask = ({
     }
   );
 
-export const selectScheduledEntity = (id: number) =>
+export const selectScheduledEntity = (id: number, type: string) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(null as any),
     (scheduledTasks) => {
       if (id) {
         return (
-          scheduledTasks.data?.byEntityId && scheduledTasks.data?.byEntityId[id]
+          scheduledTasks.data?.byEntityId &&
+          scheduledTasks.data?.byEntityId[type] &&
+          scheduledTasks.data?.byEntityId[type][id]
         );
       }
     }

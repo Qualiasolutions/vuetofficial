@@ -19,7 +19,7 @@ import {
 } from 'reduxStore/slices/calendars/actions';
 import MonthSelector from './components/MonthSelector';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
-import { MinimalScheduledTask } from './components/Task';
+import { MinimalScheduledTask, ScheduledEntity } from './components/Task';
 import AlertsList from 'components/organisms/AlertsList';
 import NewItemsList from 'components/organisms/NewItemsList';
 import {
@@ -48,7 +48,7 @@ type CalendarProps = {
       type: ScheduledTaskType;
     })[];
   };
-  filteredEntities?: { [key: string]: number[] };
+  filteredEntities?: { [key: string]: ScheduledEntity[] };
 };
 function Calendar({
   filteredTasks,
