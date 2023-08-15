@@ -4,10 +4,12 @@ import { Modal } from 'components/molecules/Modals';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import {
   useCreateRecurrentTaskOverwriteMutation,
   useUpdateRecurrentTaskAfterMutation
 } from 'reduxStore/services/api/tasks';
+import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 
 const styles = StyleSheet.create({
   button: {
@@ -37,6 +39,10 @@ export default function RecurrentUpdateModal({
 
   const [updateAfter, updateAfterResult] =
     useUpdateRecurrentTaskAfterMutation();
+
+  const oldScheduledTask = useSelector(
+    selectScheduledTask({ id: taskId, recurrenceIndex })
+  );
 
   const isUpdating =
     createRecurrentOverwriteResult.isLoading || updateAfterResult.isLoading;
@@ -68,7 +74,9 @@ export default function RecurrentUpdateModal({
                 task: parsedFieldValues,
                 recurrence,
                 recurrence_index: recurrenceIndex,
-                baseTaskId: taskId
+                baseTaskId: taskId,
+                change_datetime:
+                  oldScheduledTask?.start_datetime || oldScheduledTask?.date
               }).unwrap();
               onRequestClose();
               navigation.goBack();
