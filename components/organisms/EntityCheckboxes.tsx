@@ -15,6 +15,14 @@ import {
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import { CategoryName } from 'types/categories';
 
+const HIDDEN_ENTITY_TYPES = [
+  'List',
+  'School',
+  'AcademicPlan',
+  'ExtracurricularPlan',
+  'DaysOff',
+  'CareerGoal'
+];
 const styles = StyleSheet.create({
   checkboxContainer: { flexGrow: 0 },
   entityCheckboxPair: {
@@ -90,7 +98,7 @@ export default function EntityCheckboxes({
 
         const entityCheckboxes = (entityIds || []).map((entityId: number) => {
           const entity = memberEntities.byId[entityId];
-          if (entity.resourcetype === 'List') {
+          if (HIDDEN_ENTITY_TYPES.includes(entity.resourcetype)) {
             // Don't want to show list entities here
             return null;
           }
@@ -105,11 +113,22 @@ export default function EntityCheckboxes({
                 onValueChange={async () => {
                   if (value.entities.includes(entity.id)) {
                     const newEntities = value.entities.filter(
-                      (id) => id !== entity.id
+                      (id) =>
+                        id !== entity.id &&
+                        !HIDDEN_ENTITY_TYPES.includes(
+                          memberEntities.byId[id].resourcetype
+                        )
                     );
                     setSelectedEntities(newEntities);
                   } else {
-                    setSelectedEntities([...value.entities, entity.id]);
+                    setSelectedEntities(
+                      [...value.entities, entity.id].filter(
+                        (id) =>
+                          !HIDDEN_ENTITY_TYPES.includes(
+                            memberEntities.byId[id].resourcetype
+                          )
+                      )
+                    );
                   }
                 }}
               />

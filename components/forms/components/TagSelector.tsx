@@ -53,6 +53,10 @@ type TagSelectorProps = {
     name: string;
     resourceTypes: EntityTypeName[];
   }[];
+  permittedEntityTypes: {
+    name: string;
+    resourceTypes: EntityTypeName[];
+  }[];
   onChange: (tags: string[]) => void;
   onChangeEntities: (entities: number[]) => void;
 };
@@ -62,6 +66,7 @@ const StepTwoSelector = ({
   selectedTags,
   requiredTags,
   requiredEntityTypes,
+  permittedEntityTypes,
   onChange,
   onChangeEntities
 }: TagSelectorProps) => {
@@ -152,16 +157,23 @@ const StepTwoSelector = ({
             ))}
         </TransparentView>
       )}
-      {requiredEntityTypes.map(({ name, resourceTypes }) => {
+      {[
+        ...requiredEntityTypes.map((opts) => ({ ...opts, type: 'REQUIRED' })),
+        ...permittedEntityTypes.map((opts) => ({ ...opts, type: 'PERMITTED' }))
+      ].map(({ name, resourceTypes, type }) => {
         const matchingEntities = Object.values(memberEntities.byId).filter(
           (entity) => resourceTypes.includes(entity.resourcetype)
         );
         return (
           <TransparentView style={styles.requiredTagSection} key={name}>
             <Text>
-              {t('components.tagSelector.requiresTag', {
-                requirementName: name
-              })}
+              {type === 'REQUIRED'
+                ? t('components.tagSelector.requiresTag', {
+                    requirementName: name
+                  })
+                : t('components.tagSelector.allowedTag', {
+                    requirementName: name
+                  })}
               :
             </Text>
             {matchingEntities.length > 0 ? (
@@ -210,7 +222,7 @@ const EntityAndTagSelectorModal = ({
   onRequestClose,
   extraTagOptions
 }: EntityAndTagSelectorModalProps) => {
-  const [isSettingTags, setIsSettingTags] = useState(false);
+  const [isStepTwo, setIsStepTwo] = useState(false);
   const [selectedEntities, setSelectedEntities] = useState(value.entities);
   const [selectedTags, setSelectedTags] = useState(value.tags);
   const { t } = useTranslation();
@@ -229,7 +241,7 @@ const EntityAndTagSelectorModal = ({
 
   const resetValues = useCallback(() => {
     setSelectedEntities(value.entities);
-    setIsSettingTags(false);
+    setIsStepTwo(false);
   }, [value]);
 
   useEffect(() => {
@@ -266,25 +278,25 @@ const EntityAndTagSelectorModal = ({
       allEntities.byId[ent] &&
       allEntities.byId[ent].resourcetype === 'Appointment'
   );
-  const requiresStudentTag = selectedEntities.some(
-    (ent) =>
-      allEntities.byId[ent] &&
-      ['School', 'AcademicPlan', 'ExtracurricularPlan'].includes(
-        allEntities.byId[ent].resourcetype
-      )
-  );
+  // const requiresStudentTag = selectedEntities.some(
+  //   (ent) =>
+  //     allEntities.byId[ent] &&
+  //     ['School', 'AcademicPlan', 'ExtracurricularPlan'].includes(
+  //       allEntities.byId[ent].resourcetype
+  //     )
+  // );
   const requiresMatchingStudentTag = selectedEntities.some(
     (ent) =>
       allEntities.byId[ent] &&
       ['Student'].includes(allEntities.byId[ent].resourcetype)
   );
 
-  const requiresEmployeeTag = selectedEntities.some(
-    (ent) =>
-      allEntities.byId[ent] &&
-      ['DaysOff', 'CareerGoal'].includes(allEntities.byId[ent].resourcetype)
-  );
-  const requiresMatchingEmployeeTag = selectedEntities.some(
+  // const requiresEmployeeTag = selectedEntities.some(
+  //   (ent) =>
+  //     allEntities.byId[ent] &&
+  //     ['DaysOff', 'CareerGoal'].includes(allEntities.byId[ent].resourcetype)
+  // );
+  const allowedMatchingEmployeeTag = selectedEntities.some(
     (ent) =>
       allEntities.byId[ent] &&
       ['Employee'].includes(allEntities.byId[ent].resourcetype)
@@ -306,26 +318,31 @@ const EntityAndTagSelectorModal = ({
       resourceTypes: ['Patient']
     });
   }
-  if (requiresStudentTag) {
-    requiredEntityTypes.push({
-      name: 'Student',
-      resourceTypes: ['Student']
-    });
-  }
+  // if (requiresStudentTag) {
+  //   requiredEntityTypes.push({
+  //     name: 'Student',
+  //     resourceTypes: ['Student']
+  //   });
+  // }
   if (requiresMatchingStudentTag) {
     requiredEntityTypes.push({
       name: 'School, Extracurricular or Academic Plan',
       resourceTypes: ['School', 'ExtracurricularPlan', 'AcademicPlan']
     });
   }
-  if (requiresEmployeeTag) {
-    requiredEntityTypes.push({
-      name: 'Employee',
-      resourceTypes: ['Employee']
-    });
-  }
-  if (requiresMatchingEmployeeTag) {
-    requiredEntityTypes.push({
+  // if (requiresEmployeeTag) {
+  //   requiredEntityTypes.push({
+  //     name: 'Employee',
+  //     resourceTypes: ['Employee']
+  //   });
+  // }
+
+  const permittedEntityTypes: {
+    name: string;
+    resourceTypes: EntityTypeName[];
+  }[] = [];
+  if (allowedMatchingEmployeeTag) {
+    permittedEntityTypes.push({
       name: 'Days off or Career goal',
       resourceTypes: ['DaysOff', 'CareerGoal']
     });
@@ -349,7 +366,7 @@ const EntityAndTagSelectorModal = ({
 
   return (
     <Modal visible={open} onRequestClose={onRequestClose}>
-      {isSettingTags ? (
+      {isStepTwo ? (
         <TransparentScrollView style={styles.checkboxContainer}>
           <StepTwoSelector
             selectedEntities={selectedEntities}
@@ -361,6 +378,7 @@ const EntityAndTagSelectorModal = ({
               PET: requiresPetTag
             }}
             requiredEntityTypes={requiredEntityTypes}
+            permittedEntityTypes={permittedEntityTypes}
           />
         </TransparentScrollView>
       ) : (
@@ -376,11 +394,11 @@ const EntityAndTagSelectorModal = ({
           />
         </TransparentScrollView>
       )}
-      {isSettingTags ? (
+      {isStepTwo ? (
         <TransparentView style={styles.buttonWrapper}>
           <Button
             title={t('common.back')}
-            onPress={() => setIsSettingTags(false)}
+            onPress={() => setIsStepTwo(false)}
             style={styles.button}
           />
           <Button
@@ -400,7 +418,7 @@ const EntityAndTagSelectorModal = ({
         <TransparentView style={styles.buttonWrapper}>
           <Button
             title={t('common.next')}
-            onPress={() => setIsSettingTags(true)}
+            onPress={() => setIsStepTwo(true)}
             style={styles.button}
             disabled={
               !(selectedEntities && selectedEntities.length > 0) &&
