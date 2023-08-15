@@ -49,7 +49,7 @@ const yearCardStyles = StyleSheet.create({
   titleSection: { flexDirection: 'row' },
   title: { fontSize: 18, marginRight: 10 },
   itemNameText: { marginRight: 6 },
-  datesText: { fontSize: 14, marginBottom: 5 },
+  datesText: { fontSize: 14, marginRight: 5 },
   addBreakButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center'
@@ -72,7 +72,10 @@ const yearCardStyles = StyleSheet.create({
   termBreakForm: { marginBottom: 0 },
   breaksOrTermsWrapper: { marginTop: 10 },
   modalBox: { width: '100%' },
-  schoolSection: { marginBottom: 5 }
+  schoolSection: { marginBottom: 5 },
+  datePair: {
+    flexDirection: 'row'
+  }
 });
 
 const SectionModal = ({
@@ -501,10 +504,22 @@ const SchoolYearCard = ({
           </Text>
           <Feather name="edit" size={20} color="orange" />
         </TransparentView>
-        <Text style={yearCardStyles.datesText}>
-          {getHumanReadableDate(year.start_date)} -{' '}
-          {getHumanReadableDate(year.end_date)}
-        </Text>
+        <TransparentView style={yearCardStyles.datePair}>
+          <Text style={yearCardStyles.datesText} bold={true}>
+            {t('components.schoolTerms.firstDay')}
+          </Text>
+          <Text style={yearCardStyles.datesText}>
+            {getHumanReadableDate(year.start_date)}
+          </Text>
+        </TransparentView>
+        <TransparentView style={yearCardStyles.datePair}>
+          <Text style={yearCardStyles.datesText} bold={true}>
+            {t('components.schoolTerms.lastDay')}
+          </Text>
+          <Text style={yearCardStyles.datesText}>
+            {getHumanReadableDate(year.end_date)}
+          </Text>
+        </TransparentView>
       </SafePressable>
       <TransparentView style={yearCardStyles.breaksOrTermsWrapper}>
         {terms && (

@@ -760,7 +760,9 @@
       "breaks": "Breaks",
       "terms": "Terms",
       "deleteYearConfirmationTitle": "Delete School Year",
-      "deleteYearConfirmationQuestion": "Are you sure you would like to permanently delete this school year?"
+      "deleteYearConfirmationQuestion": "Are you sure you would like to permanently delete this school year?",
+      "firstDay": "First Day",
+      "lastDay": "Last Day"
     },
     "recurrentUpdateModal": {
       "updateOccurrence": "Update occurrence",
