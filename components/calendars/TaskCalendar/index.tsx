@@ -20,8 +20,6 @@ import {
 import MonthSelector from './components/MonthSelector';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 import { MinimalScheduledTask, ScheduledEntity } from './components/Task';
-import AlertsList from 'components/organisms/AlertsList';
-import NewItemsList from 'components/organisms/NewItemsList';
 import {
   useGetAllScheduledTasksQuery,
   useGetAllTasksQuery
@@ -124,16 +122,6 @@ function Calendar({
       title: 'Month',
       // component: () => null
       component: calendarView
-    },
-    {
-      title: 'Alerts',
-      // component: () => null
-      component: AlertsList
-    },
-    {
-      title: 'New',
-      // component: () => null
-      component: NewItemsList
     }
   ];
   const calendarIndex = 1;

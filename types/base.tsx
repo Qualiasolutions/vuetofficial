@@ -240,6 +240,8 @@ export type RootTabParamList = {
     id: number;
     date: string;
   };
+  Alerts: undefined;
+  NewItems: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

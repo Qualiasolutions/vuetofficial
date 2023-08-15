@@ -13,7 +13,7 @@ import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
 import SafePressable from 'components/molecules/SafePressable';
-import SideDrawerButton from 'components/molecules/SideDrawerButton';
+import TopNav from 'components/molecules/TopNav';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 type CategoryGroupName =
@@ -205,7 +205,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SideDrawerButton />
+      <TopNav />
       <View style={styles.container}>{categoriesPage}</View>
     </SafeAreaView>
   );

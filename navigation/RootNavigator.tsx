@@ -42,6 +42,8 @@ import MessagesNavigator from './MessagesNavigator';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
 import EditTaskOccurrenceScreen from 'screens/Forms/TaskForms/EditTaskOccurrenceScreen';
 import ListsNavigator from 'components/organisms/ListsNavigator';
+import AlertsList from 'components/organisms/AlertsList';
+import NewItemsList from 'components/organisms/NewItemsList';
 
 const styles = StyleSheet.create({
   icon: {
@@ -239,6 +241,24 @@ export function BottomTabNavigator({
       <BottomTab.Screen
         name="RoutineTasks"
         component={RoutineTasksScreen}
+        options={{
+          tabBarButton: () => null,
+          title: '',
+          header: BackOnlyHeaderWithSafeArea
+        }}
+      />
+      <BottomTab.Screen
+        name="Alerts"
+        component={AlertsList}
+        options={{
+          tabBarButton: () => null,
+          title: '',
+          header: BackOnlyHeaderWithSafeArea
+        }}
+      />
+      <BottomTab.Screen
+        name="NewItems"
+        component={NewItemsList}
         options={{
           tabBarButton: () => null,
           title: '',
