@@ -605,7 +605,10 @@ export default function SchoolTermsScreen() {
   const [formValues, setFormValues] = useState({});
 
   useEffect(() => {
-    const initialValues = createInitialObject(formFields);
+    const currentYear = new Date().getFullYear();
+    const initialValues = createInitialObject(formFields, undefined, {
+      year: `${currentYear}/${currentYear + 1}`
+    });
     setFormValues(initialValues);
   }, [formFields]);
 
