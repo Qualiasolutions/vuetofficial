@@ -218,7 +218,7 @@ function Calendar({
       });
     }
     return [future, past];
-  }, [firstDate, tasks, allRoutines, tasksPerRoutine, entities]);
+  }, [firstDate, tasks, allRoutines, tasksPerRoutine, entities, currentDate]);
 
   useEffect(() => {
     if (monthEnforcedDate && sectionListRef?.current) {

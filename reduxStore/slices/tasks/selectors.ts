@@ -2,11 +2,13 @@ import { createSelector } from '@reduxjs/toolkit';
 import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import dayjs from 'dayjs';
+import { vuetApi } from 'reduxStore/services/api/api';
 import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
 import taskActionsApi from 'reduxStore/services/api/taskActions';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
+import { CategoryName } from 'types/categories';
 import { DayType } from 'types/datesAndTimes';
 import { EntityTypeName } from 'types/entities';
 import {
@@ -261,6 +263,22 @@ const isEntity = (
   return !!item;
 };
 
+const EXTRA_ENTITY_TYPE_ITEMS: {
+  [key in EntityTypeName]?: {
+    tags?: string[];
+    types?: string[];
+  };
+} = {
+  AnniversaryPlan: {
+    tags: ['SOCIAL_INTERESTS__BIRTHDAY', 'SOCIAL_INTERESTS__ANNIVERSARY'],
+    types: ['BIRTHDAY', 'ANNIVERSARY']
+  },
+  HolidayPlan: {
+    tags: ['SOCIAL_INTERESTS__HOLIDAY'],
+    types: ['HOLIDAY']
+  }
+};
+
 export const selectScheduledTaskIdsByEntityTypes = (
   entityTypes: EntityTypeName[]
 ) =>
@@ -299,9 +317,20 @@ export const selectScheduledTaskIdsByEntityTypes = (
                   entitiesData.byId[ent] &&
                   entityTypes.includes(entitiesData.byId[ent].resourcetype)
               ) ||
-              (entityTypes.includes('AnniversaryPlan') &&
-                (task.tags.includes('SOCIAL_INTERESTS__BIRTHDAY') ||
-                  task.tags.includes('SOCIAL_INTERESTS__ANNIVERSARY')))
+              entityTypes.some((entityType) => {
+                const extraItems = EXTRA_ENTITY_TYPE_ITEMS[entityType];
+                if (!extraItems) {
+                  return false;
+                }
+                return (
+                  (extraItems.tags &&
+                    task.tags.some((tag) => extraItems?.tags?.includes(tag))) ||
+                  (extraItems.types && extraItems.types.includes(task.type))
+                );
+              })
+            // (entityTypes.includes('AnniversaryPlan') &&
+            //   (task.tags.includes('SOCIAL_INTERESTS__BIRTHDAY') ||
+            //     task.tags.includes('SOCIAL_INTERESTS__ANNIVERSARY')))
           ) || [];
 
       const formatted = formatTasksPerDate(filteredTasks);
@@ -476,13 +505,31 @@ export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
     }
   );
 
+const EXTRA_CATEGORY_ITEMS: {
+  [key in CategoryName]?: {
+    tags?: string[];
+    types?: string[];
+  };
+} = {
+  SOCIAL_INTERESTS: {
+    tags: [
+      'SOCIAL_INTERESTS__BIRTHDAY',
+      'SOCIAL_INTERESTS__ANNIVERSARY',
+      'SOCIAL_INTERESTS__HOLIDAY'
+    ],
+    types: ['BIRTHDAY', 'ANNIVERSARY', 'HOLIDAY']
+  }
+};
+
 export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(null as any),
     entitiesApi.endpoints.getAllEntities.select(null as any),
-    (scheduledTasks, allEntities) => {
+    vuetApi.endpoints.getAllCategories.select(),
+    (scheduledTasks, allEntities, allCategories) => {
       const entitiesData = allEntities.data;
       const taskData = scheduledTasks.data;
+      const allCategoriesData = allCategories.data;
       if (!taskData || !entitiesData) {
         return {};
       }
@@ -513,7 +560,22 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
                     entitiesData.byId[ent] &&
                     entitiesData.byId[ent].category === cat
                 )
-              )
+              ) ||
+              categories.some((category) => {
+                const categoryName = allCategoriesData?.byId[category]?.name;
+                if (!categoryName) {
+                  return false;
+                }
+                const extraItems = EXTRA_CATEGORY_ITEMS[categoryName];
+                if (!extraItems) {
+                  return false;
+                }
+                return (
+                  (extraItems.tags &&
+                    task.tags.some((tag) => extraItems?.tags?.includes(tag))) ||
+                  (extraItems.types && extraItems.types.includes(task.type))
+                );
+              })
           ) || [];
 
       const formatted = formatTasksPerDate(filteredTasks);

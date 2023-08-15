@@ -113,6 +113,7 @@ interface ScheduledTaskResponseType {
   routine: number | null;
   title: string;
   resourcetype: ScheduledTaskResourceType;
+  type: TaskType;
   alert: AlertName[];
   date?: string;
   duration?: number;

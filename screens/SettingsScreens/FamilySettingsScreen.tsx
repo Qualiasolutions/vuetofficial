@@ -21,7 +21,6 @@ import { useUpdateFamilyDetailsMutation } from 'reduxStore/services/api/family';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { UserInviteResponse, UserResponse } from 'types/users';
 import { YesNoModal } from 'components/molecules/Modals';
-import UserWithColor from 'components/molecules/UserWithColor';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';

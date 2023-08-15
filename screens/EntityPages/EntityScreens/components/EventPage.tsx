@@ -24,22 +24,56 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import SafePressable from 'components/molecules/SafePressable';
 
+const useStyle = function () {
+  return StyleSheet.create({
+    container: {
+      paddingTop: 10
+    },
+    addNewContainer: {
+      height: 198,
+      width: Layout.window.width - 120,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    addNewHeader: {
+      fontSize: 18
+    },
+    addNewButton: {
+      backgroundColor: useThemeColor({}, 'buttonDefault'),
+      height: 37,
+      width: 152,
+      borderRadius: 10,
+      marginTop: 26,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    input: { width: '100%', flex: 0 },
+    info: {
+      fontSize: 16
+    },
+    infoContainer: {
+      flexDirection: 'row',
+      paddingHorizontal: 10,
+      paddingVertical: 20
+    },
+    rightContainer: {
+      marginLeft: 20
+    }
+  });
+};
+
 export default function EventScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
   const [itemName, setItemName] = useState('');
-  const [createTrigger, result] = useCreateEntityMutation();
+  const [createTrigger] = useCreateEntityMutation();
   const [updateTrigger] = useUpdateEntityMutation();
 
   const { t } = useTranslation();
 
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
   const entityData = allEntities?.byId[entityId];
 
-  const styles = style();
+  const styles = useStyle();
 
   const childEntityIds = entityData?.child_entities || [];
   const childEntityList = childEntityIds.map((id) => {
@@ -85,7 +119,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
       name: itemName,
       parent: entityId
     });
-  }, [useCreateEntityMutation, setAddNewModal, itemName]);
+  }, [setAddNewModal, createTrigger, entityId, itemName]);
 
   const closeAddNewModal = useCallback(() => {
     setAddNewModal(false);
@@ -144,41 +178,3 @@ export default function EventScreen({ entityId }: { entityId: number }) {
     </WhiteFullPageScrollView>
   );
 }
-
-const style = function () {
-  return StyleSheet.create({
-    container: {
-      paddingTop: 10
-    },
-    addNewContainer: {
-      height: 198,
-      width: Layout.window.width - 120,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    addNewHeader: {
-      fontSize: 18
-    },
-    addNewButton: {
-      backgroundColor: useThemeColor({}, 'buttonDefault'),
-      height: 37,
-      width: 152,
-      borderRadius: 10,
-      marginTop: 26,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    input: { width: '100%', flex: 0 },
-    info: {
-      fontSize: 16
-    },
-    infoContainer: {
-      flexDirection: 'row',
-      paddingHorizontal: 10,
-      paddingVertical: 20
-    },
-    rightContainer: {
-      marginLeft: 20
-    }
-  });
-};
