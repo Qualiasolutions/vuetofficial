@@ -354,44 +354,53 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
   }
 );
 
-export const selectFilteredScheduledEntityIdsByDate = createSelector(
-  tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-  selectFilteredEntities,
-  selectFilteredTags,
-  selectFilteredUsers,
-  (scheduledTasks, entities, tags, users) => {
-    if (!scheduledTasks.data?.orderedEntities) {
-      return {};
+export const selectFilteredScheduledEntityIds = (
+  resourceTypes?: EntityTypeName[],
+  entityIds?: number[]
+) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    selectFilteredEntities,
+    selectFilteredTags,
+    selectFilteredUsers,
+    (scheduledTasks, entities, tags, users) => {
+      if (!scheduledTasks.data?.orderedEntities) {
+        return {};
+      }
+
+      const filteredEntities =
+        scheduledTasks.data.orderedEntities
+          .filter(
+            ({ resourcetype }) =>
+              !resourceTypes || resourceTypes.includes(resourcetype)
+          )
+          .filter(({ id }) => !entityIds || entityIds.includes(id))
+          .map(({ id, resourcetype }) => {
+            const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
+            return (
+              scheduledTasks.data?.byEntityId[type] &&
+              scheduledTasks.data?.byEntityId[type][id]
+            );
+          })
+          .filter(isEntity)
+          .filter(
+            (entity) =>
+              // ((!entities && !tags) ||
+              //   (entities &&
+              //     entities.length === 0 &&
+              //     tags &&
+              //     tags.length === 0) ||
+              //   entities?.includes(entity.id)) &&
+              !users ||
+              users.length === 0 ||
+              entity.members.some((member) => users?.includes(member))
+          ) || [];
+
+      const formatted = formatEntitiesPerDate(filteredEntities);
+
+      return formatted;
     }
-
-    const filteredEntities =
-      scheduledTasks.data.orderedEntities
-        .map(({ id, resourcetype }) => {
-          const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
-          return (
-            scheduledTasks.data?.byEntityId[type] &&
-            scheduledTasks.data?.byEntityId[type][id]
-          );
-        })
-        .filter(isEntity)
-        .filter(
-          (entity) =>
-            // ((!entities && !tags) ||
-            //   (entities &&
-            //     entities.length === 0 &&
-            //     tags &&
-            //     tags.length === 0) ||
-            //   entities?.includes(entity.id)) &&
-            !users ||
-            users.length === 0 ||
-            entity.members.some((member) => users?.includes(member))
-        ) || [];
-
-    const formatted = formatEntitiesPerDate(filteredEntities);
-
-    return formatted;
-  }
-);
+  );
 
 export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
   createSelector(

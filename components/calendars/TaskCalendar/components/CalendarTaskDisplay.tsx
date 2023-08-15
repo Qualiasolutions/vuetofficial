@@ -156,9 +156,12 @@ function Calendar({
       const sectionsArray = new Date(date) < firstDate ? past : future;
 
       const dayJsDate = dayjs(date);
-      const dayName = `${dayJsDate.format('dd')} ${dayJsDate.format(
-        'DD'
-      )} ${dayJsDate.format('MMM')}`;
+
+      const format =
+        dayJsDate.year() === currentDate.getFullYear()
+          ? 'dd DD MMM'
+          : 'dd DD MMM YYYY';
+      const dayName = dayJsDate.format(format);
 
       const dailyTasksPerRoutine = tasksPerRoutine[date];
 

@@ -1,13 +1,14 @@
 import Calendar from 'components/calendars/TaskCalendar';
 import EntityListPage from 'components/lists/EntityListPage';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import ListOfLists from 'components/organisms/ListOfLists';
-import ListsNavigator from 'components/organisms/ListsNavigator';
 import ReferencesList from 'components/organisms/ReferencesList';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectScheduledTaskIdsByEntityTypes } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectFilteredScheduledEntityIds,
+  selectScheduledTaskIdsByEntityTypes
+} from 'reduxStore/slices/tasks/selectors';
 import { EntityTypeName } from 'types/entities';
 import QuickNavigator from './base/QuickNavigator';
 
@@ -24,6 +25,10 @@ export default function EntityTypeNavigator({
   );
   const filteredTasks = useSelector(taskSelector);
 
+  const filteredEntities = useSelector(
+    selectFilteredScheduledEntityIds(entityTypes)
+  );
+
   const homeComponent = useMemo(() => {
     return () => (
       <TransparentFullPageScrollView>
@@ -36,8 +41,14 @@ export default function EntityTypeNavigator({
   }, [entityTypes, entityTypeName]);
 
   const calendarComponent = useMemo(() => {
-    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
-  }, [filteredTasks]);
+    return () => (
+      <Calendar
+        showFilters={false}
+        filteredTasks={filteredTasks}
+        filteredEntities={filteredEntities}
+      />
+    );
+  }, [filteredTasks, filteredEntities]);
 
   const referencesComponent = useMemo(() => {
     return () => <ReferencesList entityTypes={entityTypes} />;

@@ -1,12 +1,14 @@
 import Calendar from 'components/calendars/TaskCalendar';
-import ListOfLists from 'components/organisms/ListOfLists';
 import MessageThread from 'components/organisms/MessageThread';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
-import { selectScheduledTaskIdsByEntityIds } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectFilteredScheduledEntityIds,
+  selectScheduledTaskIdsByEntityIds
+} from 'reduxStore/slices/tasks/selectors';
 import EntityHome from 'screens/EntityPages/EntityHome';
 import QuickNavigator from './base/QuickNavigator';
 
@@ -20,13 +22,23 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const entity = useSelector(selectEntityById(entityId));
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
+  const filteredEntities = useSelector(
+    selectFilteredScheduledEntityIds(undefined, [entityId])
+  );
+
   const homeComponent = useMemo(() => {
     return () => <EntityHome entityId={entityId} />;
   }, [entityId]);
 
   const calendarComponent = useMemo(() => {
-    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
-  }, [filteredTasks]);
+    return () => (
+      <Calendar
+        showFilters={false}
+        filteredTasks={filteredTasks}
+        filteredEntities={filteredEntities}
+      />
+    );
+  }, [filteredTasks, filteredEntities]);
 
   const referencesComponent = useMemo(() => {
     return () => <ReferencesList entities={[entityId]} />;

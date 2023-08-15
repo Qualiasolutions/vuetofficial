@@ -5,7 +5,7 @@ import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
 import {
-  selectFilteredScheduledEntityIdsByDate,
+  selectFilteredScheduledEntityIds,
   selectFilteredScheduledTaskIdsByDate
 } from 'reduxStore/slices/tasks/selectors';
 
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 
 export default function CalendarScreen() {
   const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
-  const filteredEntities = useSelector(selectFilteredScheduledEntityIdsByDate);
+  const filteredEntities = useSelector(selectFilteredScheduledEntityIds());
   const { isLoading } = useGetAllScheduledTasksQuery(null as any);
 
   if (isLoading) {

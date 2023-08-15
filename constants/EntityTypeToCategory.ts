@@ -1,7 +1,13 @@
 import { CategoryName } from 'types/categories';
 import { EntityTypeName } from 'types/entities';
 
-const ENTITY_TYPE_TO_CATEGORY: { [key in EntityTypeName]: CategoryName } = {
+const ENTITY_TYPE_TO_CATEGORY: {
+  [key in
+    | EntityTypeName
+    | 'SchoolTerm'
+    | 'SchoolYearStart'
+    | 'SchoolYearEnd']: CategoryName;
+} = {
   Anniversary: 'SOCIAL_INTERESTS',
   Birthday: 'SOCIAL_INTERESTS',
   Event: 'SOCIAL_INTERESTS',
@@ -39,6 +45,9 @@ const ENTITY_TYPE_TO_CATEGORY: { [key in EntityTypeName]: CategoryName } = {
   School: 'EDUCATION',
   Student: 'EDUCATION',
   SchoolBreak: 'EDUCATION',
+  SchoolTerm: 'EDUCATION',
+  SchoolYearStart: 'EDUCATION',
+  SchoolYearEnd: 'EDUCATION',
   Finance: 'FINANCE',
   Garden: 'GARDEN',
   HealthBeauty: 'HEALTH_BEAUTY',

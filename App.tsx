@@ -130,7 +130,11 @@ export default function App() {
                 </GestureHandlerRootView>
               </KeyboardAvoidingView>
               <StatusBar translucent={true} />
-              <Toast position="bottom" bottomOffset={windowHeight / 2 - 20} />
+              <Toast
+                position="bottom"
+                bottomOffset={windowHeight / 2 - 20}
+                visibilityTime={2000}
+              />
             </EventProvider>
           </SafeAreaProvider>
         </PersistGate>
