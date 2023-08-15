@@ -3,7 +3,7 @@
 */
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import {
@@ -34,6 +34,8 @@ import { useThemeColor } from 'components/Themed';
 import { ScheduledTask } from 'types/tasks';
 
 dayjs.extend(utc);
+
+const MARGIN_BOTTOM = 0;
 
 const styles = StyleSheet.create({
   container: {
@@ -73,7 +75,36 @@ function Calendar({
   const primaryColor = useThemeColor({}, 'primary');
   const [showCalendar, setShowCalendar] = useState(false);
 
-  const MARGIN_BOTTOM = 0;
+  const calendarView = useMemo(() => {
+    return (
+      <CalendarView
+        tasks={filteredTasks}
+        entities={filteredEntities}
+        periods={[]}
+        onChangeDate={(date) => {
+          dispatch(setMonthEnforcedDate({ date }));
+        }}
+      />
+    );
+  }, [filteredTasks, filteredEntities, dispatch]);
+
+  const listView = useMemo(() => {
+    return (
+      <TransparentView
+        style={[styles.container, { marginBottom: MARGIN_BOTTOM }]}
+      >
+        <CalendarTaskDisplay
+          tasks={filteredTasks}
+          entities={filteredEntities}
+          alwaysIncludeCurrentDate={true}
+          onChangeFirstDate={(date) => {
+            dispatch(setListEnforcedDate({ date }));
+          }}
+          showFilters={showFilters}
+        />
+      </TransparentView>
+    );
+  }, [filteredTasks, filteredEntities, showFilters, dispatch]);
 
   const isLoading =
     isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;
@@ -111,32 +142,7 @@ function Calendar({
           }
         </WhitePaddedView>
       </TransparentView>
-      <WhiteView>
-        {showCalendar ? (
-          <CalendarView
-            tasks={filteredTasks}
-            entities={filteredEntities}
-            periods={[]}
-            onChangeDate={(date) => {
-              dispatch(setMonthEnforcedDate({ date }));
-            }}
-          />
-        ) : (
-          <TransparentView
-            style={[styles.container, { marginBottom: MARGIN_BOTTOM }]}
-          >
-            <CalendarTaskDisplay
-              tasks={filteredTasks}
-              entities={filteredEntities}
-              alwaysIncludeCurrentDate={true}
-              onChangeFirstDate={(date) => {
-                dispatch(setListEnforcedDate({ date }));
-              }}
-              showFilters={showFilters}
-            />
-          </TransparentView>
-        )}
-      </WhiteView>
+      <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>
     </TransparentView>
   );
 }

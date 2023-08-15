@@ -200,6 +200,7 @@ export default function TaskActionModal() {
             })}
             onSubmitSuccess={() => {
               setShowTaskCompletionForm(false);
+              dispatch(setTaskToAction(null));
             }}
             onRequestClose={() => {
               setShowTaskCompletionForm(false);
