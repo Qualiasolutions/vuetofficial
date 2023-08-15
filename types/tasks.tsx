@@ -178,6 +178,27 @@ type HiddenTagType =
   | 'SERVICE_DUE'
   | 'TAX_DUE';
 
+type SchoolTermItemType =
+  | 'SCHOOL_TERM'
+  | 'SCHOOL_BREAK'
+  | 'SCHOOL_YEAR_START'
+  | 'SCHOOL_YEAR_END';
+
+type MinimalScheduledTask = {
+  id: number;
+  recurrence_index: number | null;
+  action_id: number | null;
+  type: ScheduledTaskType | SchoolTermItemType | 'ROUTINE' | 'ENTITY';
+};
+
+type ScheduledTask = MinimalScheduledTask & {
+  start_datetime?: string;
+  end_datetime?: string;
+  date?: string;
+  duration?: number;
+  routine?: number | null;
+};
+
 export {
   TransportTaskType,
   AccommodationTaskType,
@@ -198,6 +219,9 @@ export {
   ScheduledTaskResponseType,
   ScheduledEntityResponseType,
   HiddenTagType,
+  SchoolTermItemType,
+  MinimalScheduledTask,
+  ScheduledTask,
   isAnniversaryTask,
   isHolidayTask
 };

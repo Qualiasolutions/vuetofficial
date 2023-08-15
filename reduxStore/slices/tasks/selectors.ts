@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { MinimalScheduledTask } from 'components/calendars/TaskCalendar/components/Task';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import dayjs from 'dayjs';
 import { vuetApi } from 'reduxStore/services/api/api';
@@ -14,6 +13,7 @@ import { EntityTypeName } from 'types/entities';
 import {
   HiddenTagType,
   ScheduledEntityResponseType,
+  ScheduledTask,
   ScheduledTaskResponseType
 } from 'types/tasks';
 import {
@@ -144,7 +144,7 @@ export const selectTasksInDailyRoutines = createSelector(
 
     const dateTasksPerRoutine: {
       [date: string]: {
-        [routine: number]: MinimalScheduledTask[];
+        [routine: number]: ScheduledTask[];
       };
     } = {};
 
@@ -157,12 +157,12 @@ export const selectTasksInDailyRoutines = createSelector(
           .filter((id) => routinesData.byId[id][weekdayName])
           .map((id) => routinesData.byId[id]) || [];
 
-      const routineTasks: { [key: number]: MinimalScheduledTask[] } = {};
+      const routineTasks: { [key: number]: ScheduledTask[] } = {};
       for (const routine of dayRoutines) {
         routineTasks[routine.id] = [];
       }
 
-      const nonRoutineTasks: MinimalScheduledTask[] = [];
+      const nonRoutineTasks: ScheduledTask[] = [];
 
       const taskObjects = taskData.byDate[date].map((task) => {
         const recurrenceIndex =
@@ -176,13 +176,6 @@ export const selectTasksInDailyRoutines = createSelector(
       const formattedTaskObjects = formatTasksPerDate(taskObjects);
       if (formattedTaskObjects[date]) {
         for (const taskObj of formattedTaskObjects[date]) {
-          const task = {
-            id: taskObj.id,
-            recurrence_index: taskObj.recurrence_index,
-            action_id: taskObj.action_id,
-            type: taskObj.type
-          };
-
           if (taskObj.start_datetime && taskObj.end_datetime) {
             // In this case the task is a fixed task
             const startTime = new Date(taskObj.start_datetime || '');
@@ -192,7 +185,7 @@ export const selectTasksInDailyRoutines = createSelector(
             const multiDay = startDate !== endDate;
 
             if (multiDay) {
-              nonRoutineTasks.push(task);
+              nonRoutineTasks.push(taskObj);
               continue;
             }
 
@@ -204,21 +197,21 @@ export const selectTasksInDailyRoutines = createSelector(
                 dayjs(taskObj.end_datetime).format('HH:mm:dd') <=
                   routine.end_time
               ) {
-                routineTasks[routine.id].push(task);
+                routineTasks[routine.id].push(taskObj);
                 addedToRoutine = true;
               }
             }
             if (!addedToRoutine) {
-              nonRoutineTasks.push(task);
+              nonRoutineTasks.push(taskObj);
             }
           } else {
             // Otherwise it is a due date and we place
             // it in a routine if it is assigned to one
             if (taskObj.routine) {
-              routineTasks[taskObj.routine].push(task);
+              routineTasks[taskObj.routine].push(taskObj);
               continue;
             }
-            nonRoutineTasks.push(task);
+            nonRoutineTasks.push(taskObj);
           }
         }
       }

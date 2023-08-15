@@ -187,7 +187,8 @@ export function BottomTabNavigator({
               imageSource={require('../assets/images/List.png')}
               title={t('pageTitles.lists')}
             />
-          )
+          ),
+          header: BackOnlyHeaderWithSafeArea
         }}
       />
       <BottomTab.Screen

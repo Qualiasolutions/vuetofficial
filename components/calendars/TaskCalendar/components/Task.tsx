@@ -17,6 +17,7 @@ import {
 import dayjs from 'dayjs';
 import {
   FixedTaskResponseType,
+  MinimalScheduledTask,
   ScheduledTaskResponseType,
   ScheduledTaskType,
   TaskType
@@ -80,19 +81,6 @@ const styles = StyleSheet.create({
     flex: 0
   }
 });
-
-export type SchoolTermItemType =
-  | 'SCHOOL_TERM'
-  | 'SCHOOL_BREAK'
-  | 'SCHOOL_YEAR_START'
-  | 'SCHOOL_YEAR_END';
-
-export type MinimalScheduledTask = {
-  id: number;
-  recurrence_index: number | null;
-  action_id: number | null;
-  type: ScheduledTaskType | SchoolTermItemType | 'ROUTINE' | 'ENTITY';
-};
 
 export type ScheduledEntity = { id: number; resourcetype: string };
 

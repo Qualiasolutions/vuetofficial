@@ -6,15 +6,13 @@ import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { useSelector } from 'react-redux';
 import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
-import {
-  MinimalScheduledTask,
-  ScheduledEntity
-} from 'components/calendars/TaskCalendar/components/Task';
+import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
 import { ParsedPeriod } from 'types/periods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
 import SafePressable from './SafePressable';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import { MinimalScheduledTask } from 'types/tasks';
 
 export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };

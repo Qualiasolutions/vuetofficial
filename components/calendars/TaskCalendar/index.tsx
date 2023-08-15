@@ -22,16 +22,16 @@ import {
 } from 'reduxStore/slices/calendars/actions';
 import MonthSelector from './components/MonthSelector';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
-import { MinimalScheduledTask, ScheduledEntity } from './components/Task';
+import { ScheduledEntity } from './components/Task';
 import {
   useGetAllScheduledTasksQuery,
   useGetAllTasksQuery
 } from 'reduxStore/services/api/tasks';
-import { ScheduledTaskType } from 'types/tasks';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import { Feather } from '@expo/vector-icons';
 import { elevation } from 'styles/elevation';
 import { useThemeColor } from 'components/Themed';
+import { ScheduledTask } from 'types/tasks';
 
 dayjs.extend(utc);
 
@@ -52,13 +52,7 @@ const styles = StyleSheet.create({
 type CalendarProps = {
   showFilters?: boolean;
   filteredTasks: {
-    [key: string]: (MinimalScheduledTask & {
-      start_datetime?: string | undefined;
-      end_datetime?: string | undefined;
-      date?: string | undefined;
-      duration?: number | undefined;
-      type: ScheduledTaskType;
-    })[];
+    [key: string]: ScheduledTask[];
   };
   filteredEntities?: { [key: string]: ScheduledEntity[] };
 };

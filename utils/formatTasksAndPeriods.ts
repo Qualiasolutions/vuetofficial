@@ -1,6 +1,7 @@
 import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
 import {
   ScheduledEntityResponseType,
+  ScheduledTask,
   ScheduledTaskResponseType,
   ScheduledTaskType
 } from 'types/tasks';
@@ -8,17 +9,7 @@ import { getDateStringsBetween } from './datesAndTimes';
 
 export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
   const newTasksPerDate: {
-    [key: string]: {
-      id: number;
-      recurrence_index: number | null;
-      start_datetime?: string;
-      end_datetime?: string;
-      date?: string;
-      duration?: number;
-      routine: number | null;
-      type: ScheduledTaskType;
-      action_id: number | null;
-    }[];
+    [key: string]: ScheduledTask[];
   } = {};
   for (const task of tasks) {
     if (!task) {

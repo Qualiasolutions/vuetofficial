@@ -21,11 +21,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
-import Task, {
-  MinimalScheduledTask,
-  ScheduledEntity,
-  SchoolTermItemType
-} from './Task';
+import Task, { ScheduledEntity } from './Task';
 import { ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +29,7 @@ import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import Routine from './Routine';
 import { selectTasksInDailyRoutines } from 'reduxStore/slices/tasks/selectors';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
+import { MinimalScheduledTask, ScheduledTask } from 'types/tasks';
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -107,7 +104,7 @@ function Calendar({
   onChangeFirstDate,
   showFilters
 }: {
-  tasks: { [date: string]: MinimalScheduledTask[] };
+  tasks: { [date: string]: ScheduledTask[] };
   entities?: { [date: string]: ScheduledEntity[] };
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
@@ -177,7 +174,7 @@ function Calendar({
         continue;
       }
 
-      const routineIdsToShow = Object.keys(dailyTasksPerRoutine || {})
+      const routinesToShow = Object.keys(dailyTasksPerRoutine || {})
         .map((routineId) => parseInt(routineId))
         .filter(
           (routineId) =>
@@ -187,34 +184,68 @@ function Calendar({
                 .map((tsk) => tsk.id)
                 .includes(taskId)
             )
-        );
+        )
+        .map((routineId) => {
+          const routine = allRoutines.byId[routineId];
+          const startDatetime = `${date}T${routine.start_time}`;
+          return {
+            ...routine,
+            start_datetime: startDatetime,
+            type: 'ROUTINE' as 'ROUTINE'
+          };
+        });
 
       const tasksToShow = dailyTasksPerRoutine
-        ? (permittedTasksOnDate || []).filter(({ id: taskId, action_id }) =>
-            dailyTasksPerRoutine[-1].map((tsk) => tsk.id).includes(taskId)
-          )
+        ? (permittedTasksOnDate || []).filter(({ id: taskId, action_id }) => {
+            if (action_id) {
+              return dailyTasksPerRoutine[-1]
+                .map((tsk) => tsk.action_id)
+                .includes(action_id);
+            }
+            return dailyTasksPerRoutine[-1]
+              .map((tsk) => tsk.id)
+              .includes(taskId);
+          })
         : [];
 
       const entitiesToShow = permittedEntitiesOnDate || [];
 
+      const routineAndTaskData = [...routinesToShow, ...tasksToShow]
+        .sort((a, b) => {
+          if (!a.start_datetime) {
+            return -1;
+          }
+          if (!b.start_datetime) {
+            return 1;
+          }
+          return a.start_datetime < b.start_datetime ? -1 : 1;
+        })
+        .map((routineOrTask) => {
+          if (routineOrTask.type === 'ROUTINE') {
+            return {
+              id: routineOrTask.id,
+              recurrence_index: null,
+              action_id: null,
+              type: 'ROUTINE' as 'ROUTINE'
+            };
+          }
+          return routineOrTask;
+        });
+
+      const sectionData = [
+        ...entitiesToShow.map(({ id, resourcetype }) => ({
+          id,
+          recurrence_index: null,
+          action_id: null,
+          type: RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY'
+        })),
+        ...routineAndTaskData
+      ];
+
       sectionsArray.push({
         title: dayName,
         key: dayJsDate.format('YYYY-MM-DD'),
-        data: [
-          ...routineIdsToShow.map((id) => ({
-            id: id,
-            recurrence_index: null,
-            action_id: null,
-            type: 'ROUTINE' as 'ROUTINE'
-          })),
-          ...entitiesToShow.map(({ id, resourcetype }) => ({
-            id,
-            recurrence_index: null,
-            action_id: null,
-            type: RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY'
-          })),
-          ...tasksToShow
-        ]
+        data: sectionData
       });
     }
     return [future, past];
