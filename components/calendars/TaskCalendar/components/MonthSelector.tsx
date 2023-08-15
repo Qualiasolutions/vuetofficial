@@ -28,8 +28,7 @@ const styles = StyleSheet.create({
   monthPressable: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%'
+    justifyContent: 'center'
   },
   monthText: { fontWeight: 'bold', fontSize: 20, marginRight: 10 }
 });
@@ -52,7 +51,7 @@ export default function MonthSelector({
     return null;
   }
   return (
-    <WhitePaddedView style={[styles.container, elevation.elevated]}>
+    <>
       <SafePressable
         onPress={() => {
           setIsDatePickerVisible(true);
@@ -78,6 +77,6 @@ export default function MonthSelector({
           setIsDatePickerVisible(false);
         }}
       />
-    </WhitePaddedView>
+    </>
   );
 }

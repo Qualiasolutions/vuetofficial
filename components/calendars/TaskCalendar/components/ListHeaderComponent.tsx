@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   loadMoreButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
-    height: 60,
+    height: 40,
     alignItems: 'center'
   },
   loadMoreButton: { marginRight: 30 },

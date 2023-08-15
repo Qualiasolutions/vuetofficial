@@ -3,15 +3,18 @@
 */
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import {
+  TransparentView,
+  WhitePaddedView,
+  WhiteView
+} from 'components/molecules/ViewComponents';
 import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import CalendarView from 'components/molecules/CalendarViewV2';
-import Tabs from 'components/molecules/Tabs';
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 import {
   setListEnforcedDate,
@@ -25,6 +28,10 @@ import {
   useGetAllTasksQuery
 } from 'reduxStore/services/api/tasks';
 import { ScheduledTaskType } from 'types/tasks';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import { Feather } from '@expo/vector-icons';
+import { elevation } from 'styles/elevation';
+import { useThemeColor } from 'components/Themed';
 
 dayjs.extend(utc);
 
@@ -32,6 +39,13 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%'
+  },
+  monthSelectorSection: {
+    paddingVertical: 12,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginBottom: 3
   }
 });
 
@@ -62,49 +76,10 @@ function Calendar({
   const { isLoading: isLoadingTasks } = useGetAllTasksQuery(null as any);
   const dispatch = useDispatch();
 
-  const [responsiveCalendar, setResponsiveCalendar] = useState(false);
+  const primaryColor = useThemeColor({}, 'primary');
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const MARGIN_BOTTOM = 0;
-  const listView = useMemo(() => {
-    if (!filteredTasks) {
-      return () => null;
-    }
-
-    return () => (
-      <TransparentView
-        style={[styles.container, { marginBottom: MARGIN_BOTTOM }]}
-      >
-        <CalendarTaskDisplay
-          tasks={filteredTasks}
-          entities={filteredEntities}
-          alwaysIncludeCurrentDate={true}
-          onChangeFirstDate={(date) => {
-            dispatch(setListEnforcedDate({ date }));
-          }}
-          showFilters={showFilters}
-        />
-      </TransparentView>
-    );
-  }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredEntities),
-    dispatch,
-    showFilters
-  ]);
-
-  const calendarView = useMemo(() => {
-    return () => (
-      <CalendarView
-        tasks={filteredTasks}
-        entities={filteredEntities}
-        periods={[]}
-        onChangeDate={(date) => {
-          dispatch(setMonthEnforcedDate({ date }));
-        }}
-        hidden={!responsiveCalendar}
-      />
-    );
-  }, [dispatch, filteredTasks, filteredEntities, responsiveCalendar]);
 
   const isLoading =
     isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;
@@ -112,41 +87,62 @@ function Calendar({
     return <FullPageSpinner />;
   }
 
-  const tabs = [
-    {
-      title: 'List',
-      // component: () => null
-      component: listView
-    },
-    {
-      title: 'Month',
-      // component: () => null
-      component: calendarView
-    }
-  ];
-  const calendarIndex = 1;
-
   return (
     <TransparentView style={styles.container}>
-      <MonthSelector
-        onValueChange={(date) => {
-          if (date) {
-            const dateString = getDateStringFromDateObject(date);
-            dispatch(setMonthEnforcedDate({ date: dateString }));
-            dispatch(setListEnforcedDate({ date: dateString }));
+      <TransparentView>
+        <WhitePaddedView
+          style={[styles.monthSelectorSection, elevation.elevated]}
+        >
+          <MonthSelector
+            onValueChange={(date) => {
+              if (date) {
+                const dateString = getDateStringFromDateObject(date);
+                dispatch(setMonthEnforcedDate({ date: dateString }));
+                dispatch(setListEnforcedDate({ date: dateString }));
+              }
+            }}
+          />
+          {
+            <TouchableOpacity
+              onPress={() => {
+                setShowCalendar(!showCalendar);
+              }}
+            >
+              <Feather
+                name={showCalendar ? 'list' : 'calendar'}
+                size={24}
+                color={primaryColor}
+              />
+            </TouchableOpacity>
           }
-        }}
-      />
-      <Tabs
-        tabs={tabs}
-        onChangeIndex={(index) => {
-          if (index === calendarIndex) {
-            setResponsiveCalendar(true);
-          } else {
-            setResponsiveCalendar(false);
-          }
-        }}
-      />
+        </WhitePaddedView>
+      </TransparentView>
+      <WhiteView>
+        {showCalendar ? (
+          <CalendarView
+            tasks={filteredTasks}
+            entities={filteredEntities}
+            periods={[]}
+            onChangeDate={(date) => {
+              dispatch(setMonthEnforcedDate({ date }));
+            }}
+          />
+        ) : (
+          <TransparentView
+            style={[styles.container, { marginBottom: MARGIN_BOTTOM }]}
+          >
+            <CalendarTaskDisplay
+              tasks={filteredTasks}
+              entities={filteredEntities}
+              alwaysIncludeCurrentDate={true}
+              onChangeFirstDate={(date) => {
+                dispatch(setListEnforcedDate({ date }));
+              }}
+              showFilters={showFilters}
+            />
+          </TransparentView>
+        )}
+      </WhiteView>
     </TransparentView>
   );
 }
