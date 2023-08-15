@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     overflow: 'visible',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 3
   },
   rightButtons: {
     flexDirection: 'row',
@@ -95,6 +96,14 @@ export default function TopNav() {
           style={styles.button}
         >
           <Feather name="bell" size={32} color={primaryColor} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('QuickJot');
+          }}
+          style={styles.button}
+        >
+          <Feather name="edit" size={32} color={primaryColor} />
         </TouchableOpacity>
       </TransparentView>
     </WhitePaddedView>

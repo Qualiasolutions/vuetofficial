@@ -43,9 +43,9 @@ export default function EntityTypeNavigator({
     return () => <ReferencesList entityTypes={entityTypes} />;
   }, [entityTypes]);
 
-  const listsComponent = useMemo(() => {
-    return () => <ListOfLists entityTypes={entityTypes} />;
-  }, [entityTypes]);
+  // const listsComponent = useMemo(() => {
+  //   return () => <ListOfLists entityTypes={entityTypes} />;
+  // }, [entityTypes]);
 
   const categoryName = ENTITY_TYPE_TO_CATEGORY[entityTypes[0]];
 
@@ -54,7 +54,7 @@ export default function EntityTypeNavigator({
       homeComponent={homeComponent}
       calendarComponent={calendarComponent}
       referencesComponent={referencesComponent}
-      listsComponent={listsComponent}
+      // listsComponent={listsComponent}
       categoryName={categoryName || ''}
     />
   );

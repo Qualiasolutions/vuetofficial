@@ -180,7 +180,13 @@ const ListHeader = ({ list }: { list: EntityResponseType }) => {
   );
 };
 
-export default function ListEntityPage({ entityId }: { entityId: number }) {
+export default function ListEntityPage({
+  entityId,
+  hideHeader
+}: {
+  entityId: number;
+  hideHeader?: boolean;
+}) {
   const { data: userFullDetails } = useGetUserFullDetails();
   const entityData = useSelector(selectEntityById(entityId));
   const { t } = useTranslation();
@@ -254,9 +260,11 @@ export default function ListEntityPage({ entityId }: { entityId: number }) {
           members={members}
           onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
         /> */}
-        <TransparentPaddedView>
-          <ListHeader list={entityData} />
-        </TransparentPaddedView>
+        {!hideHeader && (
+          <TransparentPaddedView>
+            <ListHeader list={entityData} />
+          </TransparentPaddedView>
+        )}
         {listEntryComponents}
         <TransparentPaddedView style={styles.bottomActions}>
           <TransparentView style={styles.newItemInputWrapper}>

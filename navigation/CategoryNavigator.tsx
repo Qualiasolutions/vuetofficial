@@ -35,16 +35,16 @@ export default function CategoryNavigator({
     return () => <ReferencesList categories={[categoryId]} />;
   }, [categoryId]);
 
-  const listsComponent = useMemo(() => {
-    return () => <ListOfLists categories={[categoryId]} />;
-  }, [categoryId]);
+  // const listsComponent = useMemo(() => {
+  //   return () => <ListOfLists categories={[categoryId]} />;
+  // }, [categoryId]);
 
   return (
     <QuickNavigator
       homeComponent={homeComponent}
       calendarComponent={calendarComponent}
       referencesComponent={referencesComponent}
-      listsComponent={listsComponent}
+      // listsComponent={listsComponent}
       categoryName={category?.name || ''}
     />
   );

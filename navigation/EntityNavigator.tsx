@@ -32,9 +32,9 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return () => <ReferencesList entities={[entityId]} />;
   }, [entityId]);
 
-  const listsComponent = useMemo(() => {
-    return () => <ListOfLists entities={[entityId]} />;
-  }, [entityId]);
+  // const listsComponent = useMemo(() => {
+  //   return () => <ListOfLists entities={[entityId]} />;
+  // }, [entityId]);
 
   const messagesComponent = useMemo(() => {
     return () => <MessageThread entityId={entityId} />;
@@ -45,7 +45,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
       homeComponent={homeComponent}
       calendarComponent={calendarComponent}
       referencesComponent={referencesComponent}
-      listsComponent={listsComponent}
+      // listsComponent={listsComponent}
       messagesComponent={messagesComponent}
       categoryName={category?.name || ''}
       initialRouteName={entity?.resourcetype === 'List' ? 'Home' : 'Calendar'}

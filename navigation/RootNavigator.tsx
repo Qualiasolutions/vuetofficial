@@ -24,7 +24,6 @@ import {
 import useSetupPushNotifications from 'hooks/setupPushNotifications';
 import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
-import PeriodCalendar from 'screens/PeriodCalendar/PeriodCalendar';
 import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
 import {
   useGetTaskActionCompletionFormsQuery,
@@ -44,6 +43,7 @@ import EditTaskOccurrenceScreen from 'screens/Forms/TaskForms/EditTaskOccurrence
 import ListsNavigator from 'components/organisms/ListsNavigator';
 import AlertsList from 'components/organisms/AlertsList';
 import NewItemsList from 'components/organisms/NewItemsList';
+import QuickJot from 'components/organisms/QuickJot';
 
 const styles = StyleSheet.create({
   icon: {
@@ -259,6 +259,15 @@ export function BottomTabNavigator({
       <BottomTab.Screen
         name="NewItems"
         component={NewItemsList}
+        options={{
+          tabBarButton: () => null,
+          title: '',
+          header: BackOnlyHeaderWithSafeArea
+        }}
+      />
+      <BottomTab.Screen
+        name="QuickJot"
+        component={QuickJot}
         options={{
           tabBarButton: () => null,
           title: '',

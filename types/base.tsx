@@ -242,6 +242,7 @@ export type RootTabParamList = {
   };
   Alerts: undefined;
   NewItems: undefined;
+  QuickJot: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
