@@ -179,7 +179,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const categoriesPage = (
     <View style={styles.gridContainer}>
       {categoriesContent}
-      <SafePressable
+      <TouchableOpacity
         onPress={() => {
           navigation.navigate('AllReferences');
         }}
@@ -199,7 +199,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
             />
           </View>
         </ImageBackground>
-      </SafePressable>
+      </TouchableOpacity>
     </View>
   );
 
