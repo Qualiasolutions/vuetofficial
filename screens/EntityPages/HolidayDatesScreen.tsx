@@ -1,5 +1,8 @@
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import {
+  useGetAllScheduledTasksQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   AlmostBlackText,
@@ -14,7 +17,7 @@ import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 
 import { getLongDateFromDateObject } from 'utils/datesAndTimes';
-import { FixedTaskResponseType, isHolidayTask } from 'types/tasks';
+import { isHolidayTask, ScheduledTaskResponseType } from 'types/tasks';
 import DatedTaskListPage from 'components/lists/DatedTaskListPage';
 
 const styles = StyleSheet.create({
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
   }
 });
 
-function HolidayCard({ task }: { task: FixedTaskResponseType }) {
+function HolidayCard({ task }: { task: ScheduledTaskResponseType }) {
   const navigation = useNavigation();
   const borderColor = useThemeColor({}, 'almostBlack');
 
@@ -68,18 +71,25 @@ function HolidayCard({ task }: { task: FixedTaskResponseType }) {
 export default function HolidayDatesScreen() {
   useEntityTypeHeader('holiday-dates');
 
-  const { data: allTasks, isLoading } = useGetAllTasksQuery();
-
-  if (isLoading) {
-    return <FullPageSpinner />;
-  }
+  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery();
+  const { data: allScheduledTasks, isLoading: isLoadingScheduledTasks } =
+    useGetAllScheduledTasksQuery();
 
   const holidayTasks = allTasks?.ids
     .map((id) => allTasks.byId[id])
     .filter(isHolidayTask)
+    .map(({ id }: { id: number }) =>
+      Object.values(allScheduledTasks?.byTaskId[id] || {})
+    )
+    .flat()
     .sort((a, b) =>
       a.start_date && b.start_date && a.start_date < b.start_date ? -1 : 1
     );
+
+  const isLoading = isLoadingTasks || isLoadingScheduledTasks;
+  if (isLoading) {
+    return <FullPageSpinner />;
+  }
 
   if (!holidayTasks) {
     return null;

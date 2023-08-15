@@ -8,7 +8,7 @@ import {
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';
 import SafePressable from 'components/molecules/SafePressable';
-import { FixedTaskResponseType } from 'types/tasks';
+import { FixedTaskResponseType, ScheduledTaskResponseType } from 'types/tasks';
 import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 
 const styles = StyleSheet.create({
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   }
 });
 
-function DefaultLink({ task }: { task: FixedTaskResponseType }) {
+function DefaultLink({ task }: { task: ScheduledTaskResponseType }) {
   return (
     <ListLink
       text={task.title || ''}
@@ -49,8 +49,8 @@ function DefaultLink({ task }: { task: FixedTaskResponseType }) {
 }
 
 type DatedTaskListPageProps = {
-  tasks: FixedTaskResponseType[];
-  card?: ({ task }: { task: FixedTaskResponseType }) => JSX.Element | null;
+  tasks: ScheduledTaskResponseType[];
+  card?: ({ task }: { task: ScheduledTaskResponseType }) => JSX.Element | null;
 };
 
 export default function DatedTaskListPage({
@@ -79,16 +79,13 @@ export default function DatedTaskListPage({
       });
 
       const datetimeFiltered = tasks.filter((task) => {
-        return ![
-          ...prev.map((tsk) => tsk.id),
-          ...future.map((tsk) => tsk.id)
-        ].includes(task.id);
+        return ![...prev, ...future].includes(task);
       });
 
       return [prev, datetimeFiltered, future];
     }, [monthsBack, monthsAhead, tasks]);
 
-  const sections = {} as { [key: string]: FixedTaskResponseType[] };
+  const sections = {} as { [key: string]: ScheduledTaskResponseType[] };
 
   for (const task of datetimeFilteredEntityData) {
     const taskStartDate = task.date || task.start_date;
@@ -110,9 +107,7 @@ export default function DatedTaskListPage({
       <TransparentView key={i}>
         <AlmostBlackText style={styles.sectionTitle} text={sectionTitle} />
         {sectionTasks.map((task) => {
-          const resourceType = task.resourcetype;
           const Link = card || DefaultLink;
-          // const Link = linkMapping[resourceType] || DefaultLink;
           return <Link key={task.id} task={task} />;
         })}
       </TransparentView>
