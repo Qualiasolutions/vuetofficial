@@ -59,10 +59,6 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
   const navigation =
     useNavigation<BottomTabNavigationProp<MessagesTabParamList>>();
 
-  if (!scheduledTask) {
-    return null;
-  }
-
   let title = '';
   if (entity) {
     title = entity.name;
@@ -111,7 +107,8 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
       <Text style={listingStyles.lastMessage}>
         {thread.name}: {thread.text}
       </Text>
-      <UserTags memberIds={scheduledTask.members} />
+      {scheduledTask && <UserTags memberIds={scheduledTask.members} />}
+      {entity && <UserTags memberIds={entity.members} />}
     </TouchableOpacity>
   );
 };

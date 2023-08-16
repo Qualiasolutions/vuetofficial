@@ -19,6 +19,7 @@ import {
   useGetMessagesForActionIdQuery,
   useGetMessagesForEntityIdQuery
 } from 'reduxStore/services/api/messages';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import { elevation } from 'styles/elevation';
 import { MessageResponse } from 'types/messages';
@@ -170,6 +171,7 @@ export default function MessageThread({
   const scheduledTask = useSelector(
     selectScheduledTask({ actionId, id: taskId, recurrenceIndex })
   );
+  const entity = useSelector(selectEntityById(entityId || -1));
 
   const [createMessage, createMessageResult] = useCreateMessageMutation();
 
@@ -177,10 +179,6 @@ export default function MessageThread({
 
   const [newMessage, setNewMessage] = useState('');
   const { t } = useTranslation();
-
-  if (!scheduledTask) {
-    return null;
-  }
 
   const messages =
     (entityId && entityMessages) ||
@@ -206,7 +204,8 @@ export default function MessageThread({
   return (
     <TransparentContainerView style={styles.container}>
       <WhiteView style={[styles.topWrapper, elevation.elevated]}>
-        <UserTags memberIds={scheduledTask.members} />
+        {scheduledTask && <UserTags memberIds={scheduledTask.members} />}
+        {entity && <UserTags memberIds={entity.members} />}
       </WhiteView>
       <TransparentFullPageScrollView
         contentContainerStyle={[
