@@ -39,8 +39,16 @@ export const petForm = (
       required: false,
       displayName: t('entities.entity.image'),
       sourceField: 'presigned_image_url'
+    },
+    members: {
+      type: 'addMembers',
+      required: true,
+      permittedValues: {
+        family: userFullDetails?.family?.users || [],
+        friends: userFullDetails?.friends || []
+      },
+      valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+      displayName: t('entities.entity.members')
     }
-    // TODO - add foreign key picker so that we can pick
-    // a vet, walker, grommer, sitter, insurance policy
   };
 };
