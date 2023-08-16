@@ -68,6 +68,15 @@ export const selectNewTaskIds = createSelector(
   }
 );
 
+const ALERTABLE_TYPES = [
+  'ACTIVITY',
+  'OTHER_ACTIVITY',
+  'FOOD_ACTIVITY',
+  'TASK',
+  'APPOINTMENT',
+  'DUE_DATE'
+];
+
 export const selectOverdueTasks = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(null as any),
   taskActionsApi.endpoints.getAllTaskActions.select(null as any),
@@ -100,6 +109,10 @@ export const selectOverdueTasks = createSelector(
       const task = actionId
         ? tasksData.byActionId[actionId][recurrenceIndex]
         : tasksData.byTaskId[id][recurrenceIndex];
+
+      if (!ALERTABLE_TYPES.includes(task.type)) {
+        continue;
+      }
 
       const taskDatetimeString = task?.start_datetime || task?.date;
       if (!taskDatetimeString) {
