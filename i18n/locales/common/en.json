@@ -771,6 +771,10 @@
     "deleteTaskModal": {
       "deleteOccurrence": "Delete occurrence",
       "deleteAfter": "Delete all going forward"
+    },
+    "newItemsList": {
+      "newEntity": "New Entity",
+      "newTask": "New Task"
     }
   }
 }
