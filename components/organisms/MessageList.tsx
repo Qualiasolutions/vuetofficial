@@ -17,6 +17,7 @@ import {
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
 import UserTags from 'components/molecules/UserTags';
+import { t } from 'i18next';
 
 const useListingStyles = () => {
   const greyColor = useThemeColor({}, 'mediumLightGrey');
@@ -118,6 +119,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 50,
     paddingBottom: 100
+  },
+  horizontalPadding: {
+    paddingHorizontal: 10
   }
 });
 export default function MessageList() {
@@ -130,6 +134,16 @@ export default function MessageList() {
 
   if (isLoading || !messageThreads) {
     return <FullPageSpinner />;
+  }
+
+  if (messageThreads.length === 0) {
+    return (
+      <TransparentFullPageScrollView
+        contentContainerStyle={[styles.container, styles.horizontalPadding]}
+      >
+        <Text>{t('components.messageList.noMessages')}</Text>
+      </TransparentFullPageScrollView>
+    );
   }
 
   return (

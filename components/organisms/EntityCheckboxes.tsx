@@ -21,7 +21,10 @@ const HIDDEN_ENTITY_TYPES = [
   'AcademicPlan',
   'ExtracurricularPlan',
   'DaysOff',
-  'CareerGoal'
+  'CareerGoal',
+  'Appointment',
+  'HealthBeauty',
+  'HealthGoal'
 ];
 const styles = StyleSheet.create({
   checkboxContainer: { flexGrow: 0 },

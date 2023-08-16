@@ -273,11 +273,11 @@ const EntityAndTagSelectorModal = ({
     (ent) =>
       allEntities.byId[ent] && allEntities.byId[ent].resourcetype === 'Patient'
   );
-  const requiresPatientTag = selectedEntities.some(
-    (ent) =>
-      allEntities.byId[ent] &&
-      allEntities.byId[ent].resourcetype === 'Appointment'
-  );
+  // const requiresPatientTag = selectedEntities.some(
+  //   (ent) =>
+  //     allEntities.byId[ent] &&
+  //     allEntities.byId[ent].resourcetype === 'Appointment'
+  // );
   // const requiresStudentTag = selectedEntities.some(
   //   (ent) =>
   //     allEntities.byId[ent] &&
@@ -308,16 +308,16 @@ const EntityAndTagSelectorModal = ({
   }[] = [];
   if (requiresAppointmentTag) {
     requiredEntityTypes.push({
-      name: 'Appointment',
-      resourceTypes: ['Appointment']
+      name: 'Appointment or Health Goal',
+      resourceTypes: ['Appointment', 'HealthGoal']
     });
   }
-  if (requiresPatientTag) {
-    requiredEntityTypes.push({
-      name: 'Patient',
-      resourceTypes: ['Patient']
-    });
-  }
+  // if (requiresPatientTag) {
+  //   requiredEntityTypes.push({
+  //     name: 'Patient',
+  //     resourceTypes: ['Patient']
+  //   });
+  // }
   // if (requiresStudentTag) {
   //   requiredEntityTypes.push({
   //     name: 'Student',

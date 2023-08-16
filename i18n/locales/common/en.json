@@ -775,6 +775,9 @@
     "newItemsList": {
       "newEntity": "New Entity",
       "newTask": "New Task"
+    },
+    "messageList": {
+      "noMessages": "You haven't sent or received any messages yet"
     }
   }
 }
