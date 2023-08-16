@@ -16,6 +16,7 @@ import {
   selectScheduledTask,
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
+import UserTags from 'components/molecules/UserTags';
 
 const useListingStyles = () => {
   const greyColor = useThemeColor({}, 'mediumLightGrey');
@@ -57,6 +58,10 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
 
   const navigation =
     useNavigation<BottomTabNavigationProp<MessagesTabParamList>>();
+
+  if (!scheduledTask) {
+    return null;
+  }
 
   let title = '';
   if (entity) {
@@ -106,6 +111,7 @@ const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
       <Text style={listingStyles.lastMessage}>
         {thread.name}: {thread.text}
       </Text>
+      <UserTags memberIds={scheduledTask.members} />
     </TouchableOpacity>
   );
 };

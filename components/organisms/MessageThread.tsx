@@ -2,20 +2,25 @@ import { useIsFocused } from '@react-navigation/native';
 import { Button } from 'components/molecules/ButtonComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import UserTags from 'components/molecules/UserTags';
 import {
   TransparentContainerView,
-  TransparentView
+  TransparentView,
+  WhiteView
 } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import {
   useCreateMessageMutation,
   useGetMessagesForActionIdQuery,
   useGetMessagesForEntityIdQuery
 } from 'reduxStore/services/api/messages';
+import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
+import { elevation } from 'styles/elevation';
 import { MessageResponse } from 'types/messages';
 import { useGetMessagesForTaskIdQuery } from '../../reduxStore/services/api/messages';
 
@@ -106,13 +111,21 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 0,
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
     width: '100%'
   },
   containerScrollView: {
     paddingBottom: 100,
     paddingTop: 20,
     paddingHorizontal: 5
+  },
+  topWrapper: {
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    width: '100%'
+  },
+  horizontalPadding: {
+    paddingHorizontal: 10
   }
 });
 
@@ -154,12 +167,20 @@ export default function MessageThread({
     }
   );
 
+  const scheduledTask = useSelector(
+    selectScheduledTask({ actionId, id: taskId, recurrenceIndex })
+  );
+
   const [createMessage, createMessageResult] = useCreateMessageMutation();
 
   const { data: userDetails } = useGetUserFullDetails();
 
   const [newMessage, setNewMessage] = useState('');
   const { t } = useTranslation();
+
+  if (!scheduledTask) {
+    return null;
+  }
 
   const messages =
     (entityId && entityMessages) ||
@@ -184,12 +205,18 @@ export default function MessageThread({
 
   return (
     <TransparentContainerView style={styles.container}>
+      <WhiteView style={[styles.topWrapper, elevation.elevated]}>
+        <UserTags memberIds={scheduledTask.members} />
+      </WhiteView>
       <TransparentFullPageScrollView
-        contentContainerStyle={styles.containerScrollView}
+        contentContainerStyle={[
+          styles.containerScrollView,
+          styles.horizontalPadding
+        ]}
       >
         {messageViews}
       </TransparentFullPageScrollView>
-      <TransparentView style={styles.sendInputPair}>
+      <TransparentView style={[styles.sendInputPair, styles.horizontalPadding]}>
         <TextInput
           value={newMessage}
           onChangeText={setNewMessage}
