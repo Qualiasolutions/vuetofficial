@@ -2,9 +2,10 @@
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { Modal } from 'components/molecules/Modals';
-import SafePressable from 'components/molecules/SafePressable';
 // import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import { PrimaryText } from 'components/molecules/TextComponents';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 // import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
@@ -39,13 +40,15 @@ const styles = StyleSheet.create({
   loadMoreButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
-    height: 40,
+    height: 54,
     alignItems: 'center'
   },
   loadMoreButton: { marginRight: 30 },
   userFiltersTitle: { fontSize: 20, margin: 10 },
   userFiltersApplyButton: { marginTop: 10 },
-  buttonWrapper: { flexDirection: 'row', justifyContent: 'center' }
+  buttonWrapper: { flexDirection: 'row', justifyContent: 'center' },
+  filtersButton: { alignItems: 'center' },
+  filtersButtonText: { fontSize: 11 }
 });
 
 const UserFilterSelector = ({ onApply }: { onApply: () => void }) => {
@@ -233,13 +236,18 @@ export default function ListHeaderComponent({
         />
       )}
       {showFilters && (
-        <SafePressable
+        <TouchableOpacity
           onPress={() => {
             setFiltersModalOpen(true);
           }}
+          style={styles.filtersButton}
         >
           <Image source={require('assets/images/icons/filter.png')} />
-        </SafePressable>
+          <PrimaryText
+            style={styles.filtersButtonText}
+            text={t('components.calendar.filters')}
+          />
+        </TouchableOpacity>
       )}
       <FiltersModal
         visible={filtersModalOpen}

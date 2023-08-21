@@ -633,7 +633,8 @@
       },
       "showOlderEvents": "Show older events",
       "showNewerEvents": "Show more",
-      "noTasks": "No tasks or deadlines to show - you may need to add tasks or adjust your filter settings"
+      "noTasks": "No tasks or deadlines to show - you may need to add tasks or adjust your filter settings",
+      "filters": "Filters"
     },
     "logOutModal": {
       "logOut": "Log Out",
