@@ -127,7 +127,12 @@ interface ScheduledEntityResponseType {
   id: number;
   members: number[];
   title: string;
-  resourcetype: EntityTypeName;
+  resourcetype:
+    | EntityTypeName
+    | 'SchoolTerm'
+    | 'SchoolBreak'
+    | 'SchoolYearStart'
+    | 'SchoolYearEnd';
   start_date: string;
   end_date: string;
 }

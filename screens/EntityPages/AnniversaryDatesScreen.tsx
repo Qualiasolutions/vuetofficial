@@ -60,7 +60,7 @@ function AnniversaryCard({ task }: { task: AnniversaryTaskResponseType }) {
 export default function AnniversaryDatesScreen() {
   useEntityTypeHeader('anniversary-dates');
 
-  const { data: allTasks, isLoading } = useGetAllTasksQuery();
+  const { data: allTasks, isLoading } = useGetAllTasksQuery(null as any);
 
   if (isLoading) {
     return <FullPageSpinner />;

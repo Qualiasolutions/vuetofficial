@@ -1,4 +1,4 @@
-import { SchoolTermItemType } from 'components/calendars/TaskCalendar/components/Task';
+import { SchoolTermItemType } from 'types/tasks';
 
 export const RESOURCE_TYPE_TO_TYPE: { [key: string]: SchoolTermItemType } = {
   SchoolTerm: 'SCHOOL_TERM',

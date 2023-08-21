@@ -5,6 +5,7 @@ const ENTITY_TYPE_TO_CATEGORY: {
   [key in
     | EntityTypeName
     | 'SchoolTerm'
+    | 'SchoolBreak'
     | 'SchoolYearStart'
     | 'SchoolYearEnd']: CategoryName;
 } = {

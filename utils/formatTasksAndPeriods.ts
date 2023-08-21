@@ -36,7 +36,9 @@ export const formatTasksPerDate = (tasks: ScheduledTaskResponseType[]) => {
           : 'TASK') as ScheduledTaskType,
         end_datetime: task.end_datetime,
         routine: task.routine,
-        action_id: task.action_id
+        action_id: task.action_id,
+        date: task.date,
+        duration: task.duration
       };
       if (newTasksPerDate[taskDate]) {
         let spliceIndex = 0;

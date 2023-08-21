@@ -29,7 +29,13 @@ import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import Routine from './Routine';
 import { selectTasksInDailyRoutines } from 'reduxStore/slices/tasks/selectors';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
-import { MinimalScheduledTask, ScheduledTask } from 'types/tasks';
+import {
+  MinimalScheduledTask,
+  ScheduledTask,
+  SchoolTermItemType
+} from 'types/tasks';
+import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -117,6 +123,8 @@ function Calendar({
   const sectionListRef = useRef<any>(null);
   const { t } = useTranslation();
   const { data: allRoutines } = useGetAllRoutinesQuery(null as any);
+  const { data: allTasks } = useGetAllTasksQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
 
   const currentDate = useMemo(() => {
     return new Date(getCurrentDateString());
@@ -232,14 +240,86 @@ function Calendar({
           return routineOrTask;
         });
 
+      const hoistedTasks = routineAndTaskData
+        .filter((task) => {
+          return (
+            task.type === 'TASK' &&
+            allTasks?.byId[task.id].type &&
+            ['HOLIDAY', 'ANNIVERSARY', 'BIRTHDAY'].includes(
+              allTasks?.byId[task.id].type
+            )
+          );
+        })
+        .sort((taskA, taskB) => {
+          if (allTasks?.byId[taskA.id].type === 'HOLIDAY') {
+            return -1;
+          }
+          return 1;
+        });
+      const nonHoistedTasks = routineAndTaskData
+        .filter((task) => {
+          return !hoistedTasks.includes(task);
+        })
+        .sort((taskA, taskB) => {
+          if (
+            taskA.type === 'TASK' &&
+            allTasks?.byId[taskA.id]?.type === 'DUE_DATE'
+          ) {
+            return -1;
+          }
+          if (
+            taskB.type === 'TASK' &&
+            allTasks?.byId[taskB.id]?.type === 'DUE_DATE'
+          ) {
+            return 1;
+          }
+          if (taskA.date) {
+            return 1;
+          }
+          if (taskB.date) {
+            return -1;
+          }
+          return taskA.start_datetime &&
+            taskB.start_datetime &&
+            taskA.start_datetime < taskB.start_datetime
+            ? -1
+            : 1;
+        });
+
       const sectionData = [
-        ...entitiesToShow.map(({ id, resourcetype }) => ({
-          id,
-          recurrence_index: null,
-          action_id: null,
-          type: RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY'
-        })),
-        ...routineAndTaskData
+        ...hoistedTasks,
+        ...entitiesToShow
+          .map(({ id, resourcetype }) => ({
+            id,
+            recurrence_index: null,
+            action_id: null,
+            type: (RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY') as
+              | SchoolTermItemType
+              | 'ENTITY'
+          }))
+          .sort((entityA, entityB) => {
+            if (
+              entityA.type === 'ENTITY' &&
+              allEntities?.byId[entityA.id]?.resourcetype === 'DaysOff'
+            ) {
+              return -1;
+            }
+            if (
+              entityA.type === 'ENTITY' &&
+              allEntities?.byId[entityA.id]?.resourcetype === 'Trip' &&
+              !(
+                entityB.type === 'ENTITY' &&
+                allEntities?.byId[entityB.id]?.resourcetype === 'DaysOff'
+              )
+            ) {
+              return -1;
+            }
+            if (entityA.type !== 'ENTITY') {
+              return 1;
+            }
+            return 1;
+          }),
+        ...nonHoistedTasks
       ];
 
       sectionsArray.push({

@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import {
   FixedTaskResponseType,
   MinimalScheduledTask,
+  ScheduledEntityResponseType,
   ScheduledTaskResponseType,
   ScheduledTaskType,
   TaskType
@@ -33,6 +34,8 @@ import UserTags from 'components/molecules/UserTags';
 import useCanMarkComplete from 'hooks/useCanMarkComplete';
 import TaskCompletionPressable from 'components/molecules/TaskCompletionPressable';
 import Checkbox from 'components/molecules/Checkbox';
+import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
+import { EntityTypeName } from 'types/entities';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -196,10 +199,37 @@ const TaskIcon = ({ task }: { task: FixedTaskResponseType }) => {
     OTHER_ACTIVITY: '🎯',
     FOOD_ACTIVITY: '🍲',
     BIRTHDAY: '🎂',
-    ANNIVERSARY: '🍾'
+    ANNIVERSARY: '🍾',
+    HOLIDAY: '🎆'
   };
 
   const icon = (task?.type && iconMappings[task.type]) || '';
+
+  return icon ? (
+    <TransparentView>
+      <Text>{`${icon} `}</Text>
+    </TransparentView>
+  ) : null;
+};
+
+const EntityIcon = ({ entity }: { entity: ScheduledEntityResponseType }) => {
+  const iconMappings: {
+    [key in
+      | EntityTypeName
+      | 'SchoolTerm'
+      | 'SchoolBreak'
+      | 'SchoolYearStart'
+      | 'SchoolYearEnd']?: string;
+  } = {
+    SchoolTerm: '📚',
+    SchoolBreak: '📚',
+    SchoolYearStart: '🏫',
+    SchoolYearEnd: '🏫',
+    Trip: '🏝️',
+    DaysOff: '🌄'
+  };
+
+  const icon = (entity.resourcetype && iconMappings[entity.resourcetype]) || '';
 
   return icon ? (
     <TransparentView>
@@ -266,6 +296,9 @@ function Task({
                 horizontal={true}
               >
                 {!isEntity && task && <TaskIcon task={task} />}
+                {isEntity && scheduledEntity && (
+                  <EntityIcon entity={scheduledEntity} />
+                )}
                 <BlackText
                   text={
                     isEntity
