@@ -8,9 +8,10 @@ import { PrimaryText } from 'components/molecules/TextComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 // import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
 // import { Text } from 'components/Themed';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -54,15 +55,22 @@ const styles = StyleSheet.create({
 const UserFilterSelector = ({ onApply }: { onApply: () => void }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const filteredUsers = useSelector(selectFilteredUsers);
-  const [newFilteredUsers, setNewFilteredUsers] = useState<number[]>([
-    ...(filteredUsers || [])
-  ]);
+  const [newFilteredUsers, setNewFilteredUsers] = useState<number[]>(
+    filteredUsers || []
+  );
 
   const setFilteredUserIds = (users: number[]) => {
     dispatch(setFilteredUsers({ users }));
   };
+
+  useEffect(() => {
+    if (userDetails && newFilteredUsers.length === 0) {
+      setNewFilteredUsers(userDetails.family.users.map((user) => user.id));
+    }
+  }, [newFilteredUsers, userDetails]);
 
   return (
     <TransparentView>
