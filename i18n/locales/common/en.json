@@ -32,7 +32,10 @@
     "routines": "Routines",
     "myPlanningLists": "My Planning Lists",
     "myShoppingLists": "My Shopping & Selling Lists",
-    "listsHome": "Lists Home"
+    "listsHome": "Lists Home",
+    "alerts": "Alerts",
+    "newItems": "New Items",
+    "quickJot": "QuickJot"
   },
   "blockedCategories": {
     "instructions": {
