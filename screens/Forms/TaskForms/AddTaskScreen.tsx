@@ -10,7 +10,6 @@ import {
 } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import RadioInput from 'components/forms/components/RadioInput';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
 import dayjs from 'dayjs';
@@ -20,48 +19,36 @@ import AddTaskForm from 'components/forms/AddTaskForm';
 import AddTransportTaskForm from 'components/forms/AddTransportTaskForm';
 import AddAccommodationTaskForm from 'components/forms/AddAccommodationTaskForm';
 import AddAnniversaryForm from 'components/forms/AddAnniversaryForm';
+import DropDown from 'components/forms/components/DropDown';
+import { BlackText } from 'components/molecules/TextComponents';
 
 const formTypes = [
   {
-    value: {
-      id: 'TASK'
-    },
+    value: 'TASK',
     label: 'Task'
   },
   {
-    value: {
-      id: 'APPOINTMENT'
-    },
+    value: 'APPOINTMENT',
     label: 'Appointment'
   },
   {
-    value: {
-      id: 'DUE_DATE'
-    },
+    value: 'DUE_DATE',
     label: 'Due Date'
   },
   {
-    value: {
-      id: 'ACTIVITY'
-    },
+    value: 'ACTIVITY',
     label: 'Going Out'
   },
   {
-    value: {
-      id: 'TRANSPORT'
-    },
+    value: 'TRANSPORT',
     label: 'Getting There'
   },
   {
-    value: {
-      id: 'ACCOMMODATION'
-    },
+    value: 'ACCOMMODATION',
     label: 'Staying Overnight'
   },
   {
-    value: {
-      id: 'ANNIVERSARY'
-    },
+    value: 'ANNIVERSARY',
     label: 'Birthday / Anniversary'
   }
 ];
@@ -73,11 +60,19 @@ const styles = StyleSheet.create({
   typeSelector: {
     paddingHorizontal: 30,
     paddingVertical: 20,
-    marginBottom: 20
+    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   hidden: {
     height: 0,
     overflow: 'hidden'
+  },
+  addNewLabel: {
+    marginRight: 10
+  },
+  dropdownContainer: {
+    flex: 1
   }
 });
 
@@ -182,13 +177,15 @@ export default function AddTaskScreen({
       <TransparentView style={styles.container}>
         <TransparentView>
           <WhiteView style={styles.typeSelector}>
-            <RadioInput
+            <BlackText text={t('common.addNew')} style={styles.addNewLabel} />
+            <DropDown
               value={formType}
-              label={t('common.addNew')}
-              permittedValues={formTypes}
-              onValueChange={(value) => {
-                setFormType(value.id as FormType);
+              items={formTypes}
+              setFormValues={(value) => {
+                setFormType(value as FormType);
               }}
+              listMode="MODAL"
+              containerStyle={styles.dropdownContainer}
             />
           </WhiteView>
           <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
