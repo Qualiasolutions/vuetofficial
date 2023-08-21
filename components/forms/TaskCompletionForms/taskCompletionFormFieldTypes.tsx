@@ -1,18 +1,25 @@
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HiddenTagType } from 'types/tasks';
+import { FixedTaskResponseType, HiddenTagType } from 'types/tasks';
 import dueDateMembershipField from '../entityFormFieldTypes/utils/dueDateMembershipField';
 import reminderDropDownField from '../entityFormFieldTypes/utils/reminderDropDownField';
+import { useDueDateFieldTypes } from '../taskFormFieldTypes';
 import { FieldValueTypes } from '../types';
 
 export default function useCompletionFormFieldTypes(
-  hiddenTag: HiddenTagType | ''
+  task: FixedTaskResponseType | null
 ) {
   const { t: modelFieldTranslations } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserFullDetails();
 
+  const dueDateFields = useDueDateFieldTypes();
+
   return useMemo(() => {
+    if (!task) {
+      return {} as FieldValueTypes;
+    }
+
     if (!userFullDetails) {
       return {} as FieldValueTypes;
     }
@@ -24,7 +31,7 @@ export default function useCompletionFormFieldTypes(
         'SERVICE_DUE',
         'WARRANTY_DUE',
         'TAX_DUE'
-      ].includes(hiddenTag)
+      ].includes(task.hidden_tag)
     ) {
       return {
         date: {
@@ -46,5 +53,9 @@ export default function useCompletionFormFieldTypes(
         )
       };
     }
-  }, [userFullDetails, modelFieldTranslations, hiddenTag]);
+
+    if (task.type === 'DUE_DATE' && !task.recurrence) {
+      return dueDateFields;
+    }
+  }, [userFullDetails, modelFieldTranslations, task, dueDateFields]);
 }

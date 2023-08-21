@@ -49,5 +49,16 @@ export default function useCompletionCallback(taskId: number) {
     };
   }
 
-  return () => {};
+  if (task?.type === 'DUE_DATE' && !task.recurrence) {
+    return async (parsedFormValues: FieldValueTypes) => {
+      const body: any = {
+        resourcetype: 'FixedTask',
+        type: 'DUE_DATE',
+        ...parsedFormValues
+      };
+      await createTask(body).unwrap();
+    };
+  }
+
+  return null;
 }

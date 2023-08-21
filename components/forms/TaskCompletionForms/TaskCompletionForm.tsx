@@ -21,8 +21,6 @@ import parseFormValues from '../utils/parseFormValues';
 import hasAllRequired from '../utils/hasAllRequired';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
-export const FORM_REQUIRED_TAGS = ['MOT_DUE', 'INSURANCE_DUE'];
-
 const styles = StyleSheet.create({
   buttons: { alignItems: 'flex-end' },
   skipButton: { marginTop: 5 },
@@ -48,14 +46,15 @@ export default function TaskCompletionForm({
   const [fieldValues, setFieldValues] = useState<FieldValueTypes>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const completionFields = useCompletionFormFieldTypes(
-    taskObj?.hidden_tag || ''
-  );
+  const completionFields = useCompletionFormFieldTypes(taskObj || null);
   const completionCallback = useCompletionCallback(taskId);
 
   const initialFieldValues = useMemo(() => {
     if (userDetails && completionFields && taskObj) {
-      const initialFields: { [key: string]: any } = { ...taskObj };
+      const initialFields: { [key: string]: any } = {
+        ...taskObj,
+        tagsAndEntities: { entities: taskObj.entities, tags: taskObj.tags }
+      };
       if (taskObj.date) {
         const nextYear = new Date(taskObj.date);
         nextYear.setFullYear(nextYear.getFullYear() + 1);
@@ -80,7 +79,8 @@ export default function TaskCompletionForm({
     ? hasAllRequired(fieldValues, completionFields)
     : false;
 
-  if (FORM_REQUIRED_TAGS.includes(taskObj.hidden_tag) && completionFields) {
+  if (completionCallback && completionFields) {
+    console.log('PROPER TASKL COMPETRIONOISAND');
     return (
       <Modal onRequestClose={() => {}} visible={visible}>
         <TransparentScrollView style={styles.modalFormContainer}>

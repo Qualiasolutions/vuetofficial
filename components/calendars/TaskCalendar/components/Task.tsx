@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
 import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -30,6 +30,9 @@ import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { Feather } from '@expo/vector-icons';
 import { setTaskToAction } from 'reduxStore/slices/calendars/actions';
 import UserTags from 'components/molecules/UserTags';
+import useCanMarkComplete from 'hooks/useCanMarkComplete';
+import TaskCompletionPressable from 'components/molecules/TaskCompletionPressable';
+import Checkbox from 'components/molecules/Checkbox';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -227,6 +230,12 @@ function Task({
 
   const dispatch = useDispatch();
 
+  // const canMarkComplete = useCanMarkComplete({
+  //   taskId: id,
+  //   recurrenceIndex: recurrence_index,
+  //   actionId: action_id
+  // });
+
   const isCompleteStyle = {
     color: isCompleteTextColor,
     textDecorationLine: 'line-through' as 'line-through'
@@ -272,6 +281,16 @@ function Task({
               </TransparentScrollView>
             </TransparentView>
           </TransparentView>
+          {/* {canMarkComplete && (
+            <TaskCompletionPressable
+              useSafePressable={true}
+              taskId={id}
+              recurrenceIndex={recurrence_index}
+              actionId={action_id}
+            >
+              <Checkbox checked={isComplete} />
+            </TaskCompletionPressable>
+          )} */}
           {!isEntity && (
             <SafePressable
               onPress={() => {

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTaskToAction } from 'reduxStore/slices/calendars/selectors';
@@ -13,37 +13,22 @@ import {
   selectScheduledTask,
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import {
-  useCreateTaskActionCompletionFormMutation,
-  useCreateTaskCompletionFormMutation
-} from 'reduxStore/services/api/taskCompletionForms';
-import TaskCompletionForm, {
-  FORM_REQUIRED_TAGS
-} from 'components/forms/TaskCompletionForms/TaskCompletionForm';
-import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
+
 import { WhiteBox } from './ViewComponents';
 import DeleteTaskModal from './DeleteTaskModal';
 import { YesNoModal } from './Modals';
 import { useDeleteTaskMutation } from 'reduxStore/services/api/tasks';
+import TaskCompletionPressable from './TaskCompletionPressable';
+import useCanMarkComplete from 'hooks/useCanMarkComplete';
+import useHasEditPerms from 'hooks/useHasEditPerms';
 
 export default function TaskActionModal() {
-  const [showTaskCompletionForm, setShowTaskCompletionForm] = useState(false);
   const [deletingOccurrence, setDeletingOccurrence] = useState(false);
   const [deletingTask, setDeletingTask] = useState(false);
 
   const navigation = useNavigation<StackNavigationProp<RootTabParamList>>();
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { data: userDetails } = useGetUserFullDetails();
-
-  // const currentUserId = useSelector(selectCurrentUserId);
-  const { data: memberEntities } = useGetMemberEntitiesQuery(null as any);
-
-  const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
-  const [createTaskActionCompletionForm] =
-    useCreateTaskActionCompletionFormMutation();
-
   const [deleteTask] = useDeleteTaskMutation();
 
   const taskToAction = useSelector(selectTaskToAction);
@@ -60,24 +45,13 @@ export default function TaskActionModal() {
     )
   );
 
-  const hasEditPerms = useMemo(() => {
-    if (userDetails && task?.members.includes(userDetails.id)) {
-      return true;
-    }
-    if (memberEntities) {
-      if (task?.entities.some((entityId) => entityId in memberEntities.byId)) {
-        return true;
-      }
-    }
-    return false;
-  }, [memberEntities, userDetails, task]);
+  const canMarkComplete = useCanMarkComplete({
+    taskId: task?.id || -1,
+    recurrenceIndex: taskToAction?.recurrenceIndex,
+    actionId: taskToAction?.actionId
+  });
 
-  const showCheckbox =
-    userDetails?.is_premium &&
-    hasEditPerms &&
-    taskToAction &&
-    task &&
-    ['TASK', 'APPOINTMENT', 'DUE_DATE'].includes(task.type);
+  const hasEditPerms = useHasEditPerms(task?.id || -1);
 
   return (
     <Modal
@@ -162,51 +136,21 @@ export default function TaskActionModal() {
             title={t('components.task.messages')}
           />
         )}
-        {showCheckbox && scheduledTask && !scheduledTask.is_complete && (
-          <LinkButton
-            onPress={async () => {
-              if (taskToAction) {
-                if (taskToAction.actionId) {
-                  await createTaskActionCompletionForm({
-                    action: taskToAction.actionId,
-                    recurrence_index: taskToAction.recurrenceIndex
-                  }).unwrap();
-                  dispatch(setTaskToAction(null));
-                  return;
-                }
-                await triggerCreateCompletionForm({
-                  resourcetype: 'TaskCompletionForm',
-                  recurrence_index: taskToAction.recurrenceIndex,
-                  task: task.id
-                }).unwrap();
-
-                if (FORM_REQUIRED_TAGS.includes(task.hidden_tag)) {
-                  setShowTaskCompletionForm(true);
-                } else {
-                  dispatch(setTaskToAction(null));
-                }
-              }
-            }}
-            title={t('components.task.markComplete')}
-          />
-        )}
-        {task && taskToAction && (
-          <TaskCompletionForm
-            taskId={taskToAction.taskId}
-            title={t('components.task.scheduleNext', {
-              dueDateType: task.hidden_tag
-                ? t(`hiddenTags.${task.hidden_tag}`)
-                : ''
-            })}
-            onSubmitSuccess={() => {
-              setShowTaskCompletionForm(false);
-              dispatch(setTaskToAction(null));
-            }}
-            onRequestClose={() => {
-              setShowTaskCompletionForm(false);
-            }}
-            visible={showTaskCompletionForm}
-          />
+        {canMarkComplete && task && taskToAction && scheduledTask && (
+          <TaskCompletionPressable
+            taskId={task.id}
+            recurrenceIndex={taskToAction.recurrenceIndex}
+            actionId={taskToAction.actionId}
+            onSuccess={() => dispatch(setTaskToAction(null))}
+          >
+            {scheduledTask.is_complete ? null : (
+              <LinkButton
+                onPress={() => {}}
+                title={t('components.task.markComplete')}
+                disabled={true}
+              />
+            )}
+          </TaskCompletionPressable>
         )}
       </WhiteBox>
       <DeleteTaskModal
