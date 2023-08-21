@@ -1,5 +1,5 @@
-import useCompletionCallback from 'components/forms/TaskCompletionForms/taskCompletionCallbacks';
-import TaskCompletionForm from 'components/forms/TaskCompletionForms/TaskCompletionForm';
+import useCompletionCallback from 'components/forms/TaskCompletionModal/taskCompletionCallbacks';
+import TaskCompletionModal from 'components/forms/TaskCompletionModal/TaskCompletionModal';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -23,7 +23,7 @@ export default function TaskCompletionPressable({
   useSafePressable = false
 }: {
   taskId: number;
-  recurrenceIndex: number | null;
+  recurrenceIndex?: number;
   actionId: number | null;
   onSuccess?: () => void;
   children: ReactNode;
@@ -38,11 +38,7 @@ export default function TaskCompletionPressable({
   const [createTaskActionCompletionForm] =
     useCreateTaskActionCompletionFormMutation();
   const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
-  const { t } = useTranslation();
-  const completionCallback = useCompletionCallback(taskId);
-
-  console.log('completionCallback');
-  console.log(completionCallback);
+  const completionCallback = useCompletionCallback(taskId, recurrenceIndex);
 
   if (!scheduledTask || !taskObj) {
     return null;
@@ -80,13 +76,9 @@ export default function TaskCompletionPressable({
         {children}
       </PressableComp>
       {scheduledTask && taskObj && (
-        <TaskCompletionForm
+        <TaskCompletionModal
           taskId={taskId}
-          title={t('components.task.scheduleNext', {
-            dueDateType: taskObj.hidden_tag
-              ? t(`hiddenTags.${taskObj.hidden_tag}`)
-              : ''
-          })}
+          recurrenceIndex={recurrenceIndex}
           onSubmitSuccess={() => {
             setShowTaskCompletionForm(false);
             onSuccess();

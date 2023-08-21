@@ -153,7 +153,10 @@ export default function MessageThread({
   );
 
   const { data: taskMessages } = useGetMessagesForTaskIdQuery(
-    { taskId: taskId || -1, recurrenceIndex: recurrenceIndex || null },
+    {
+      taskId: taskId || -1,
+      recurrenceIndex: recurrenceIndex === undefined ? null : recurrenceIndex
+    },
     {
       skip: !taskId || !isFocused,
       pollingInterval: 3000
@@ -235,7 +238,8 @@ export default function MessageThread({
                 entity: entityId || null,
                 task: taskId || null,
                 action: actionId || null,
-                recurrence_index: recurrenceIndex || null
+                recurrence_index:
+                  recurrenceIndex === undefined ? null : recurrenceIndex
               }).unwrap();
             }}
           />

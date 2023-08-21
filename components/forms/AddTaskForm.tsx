@@ -1,11 +1,6 @@
 import { useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
-import {
-  useTaskBottomFieldTypes,
-  useTaskMiddleFieldTypes,
-  useTaskTopFieldTypes
-} from './taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -17,7 +12,7 @@ import {
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateFlexibleFixedTaskMutation,
@@ -35,6 +30,7 @@ import DropDown from './components/DropDown';
 import { elevation } from 'styles/elevation';
 import RecurrentUpdateModal from './RecurrentUpdateModal';
 import { Recurrence, Reminder } from 'types/tasks';
+import { useTaskFieldTypes } from './taskFormFieldTypes';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +66,8 @@ type AddTaskFormProps = {
   taskId?: number;
   recurrenceIndex?: number;
   recurrenceOverwrite?: boolean;
+  inlineFields?: boolean;
+  sectionStyle?: ViewStyle;
 };
 
 export default function AddTaskForm({
@@ -78,7 +76,9 @@ export default function AddTaskForm({
   onSuccess,
   taskId,
   recurrenceIndex,
-  recurrenceOverwrite
+  recurrenceOverwrite,
+  inlineFields,
+  sectionStyle
 }: AddTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
@@ -101,48 +101,19 @@ export default function AddTaskForm({
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
-  const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
-    {}
-  );
-  useState<FieldValueTypes>({});
-  const [taskMiddleFieldValues, setTaskMiddleFieldValues] =
-    useState<FieldValueTypes>({});
-  const [taskBottomFieldValues, setTaskBottomFieldValues] =
-    useState<FieldValueTypes>({});
+  const [taskFieldValues, setTaskFieldValues] = useState<FieldValueTypes>({});
 
   const [loadedFields, setLoadedFields] = useState<boolean>(false);
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const [fieldValues, setFieldValues] = useState<any>({});
 
-  const taskTopFields = useTaskTopFieldTypes();
-  const taskMiddleFields = useTaskMiddleFieldTypes(!!recurrenceOverwrite);
-  const taskBottomFields = useTaskBottomFieldTypes();
+  const taskFields = useTaskFieldTypes({
+    disableFlexible: !!recurrenceOverwrite
+  });
   const taskObj = useSelector(selectTaskById(taskId || -1));
 
-  const initialTopFields = useMemo(() => {
-    if (!userDetails) {
-      return null;
-    }
-
-    const topFieldsOverrides: { [key: string]: any } = {};
-    if (defaults?.title) {
-      topFieldsOverrides.title = defaults.title;
-    }
-
-    if (defaults?.members) {
-      topFieldsOverrides.members = defaults.members;
-    }
-
-    topFieldsOverrides.tagsAndEntities = {
-      entities: defaults?.entities || [],
-      tags: defaults?.tags || []
-    };
-
-    return createInitialObject(taskTopFields, userDetails, topFieldsOverrides);
-  }, [taskTopFields, userDetails, defaults]);
-
-  const initialMiddleFields = useMemo(() => {
+  const initialTaskFields = useMemo(() => {
     if (!userDetails) {
       return null;
     }
@@ -178,7 +149,13 @@ export default function AddTaskForm({
     }
     const defaultDueDate = dayjs(defaultDate).format('YYYY-MM-DD');
 
-    return createInitialObject(taskMiddleFields, userDetails, {
+    return createInitialObject(taskFields, userDetails, {
+      title: defaults.title,
+      members: defaults.members,
+      tagsAndEntities: {
+        entities: defaults?.entities || [],
+        tags: defaults?.tags || []
+      },
       start_datetime: defaultStartTime,
       end_datetime: defaultEndTime,
       date: defaultDueDate,
@@ -189,82 +166,33 @@ export default function AddTaskForm({
       recurrence: defaults.recurrence,
       reminders: defaults.reminders
     });
-  }, [taskMiddleFields, userDetails, formType, defaults]);
-
-  const initialBottomFields = useMemo(() => {
-    if (!userDetails) {
-      return null;
-    }
-
-    return createInitialObject(taskBottomFields, userDetails);
-  }, [taskBottomFields, userDetails]);
+  }, [taskFields, userDetails, defaults, formType]);
 
   useEffect(() => {
     if (userDetails) {
-      if (initialTopFields) {
-        setTaskTopFieldValues(initialTopFields);
+      if (initialTaskFields) {
+        setTaskFieldValues(initialTaskFields);
       }
 
-      if (initialMiddleFields) {
-        setTaskMiddleFieldValues(initialMiddleFields);
-      }
-
-      if (initialBottomFields) {
-        setTaskBottomFieldValues(initialBottomFields);
-      }
-
-      if (initialTopFields && initialMiddleFields && initialBottomFields) {
+      if (initialTaskFields) {
         setResetState(() => () => {
-          setTaskTopFieldValues(initialTopFields);
-          setTaskMiddleFieldValues(initialMiddleFields);
-          setTaskBottomFieldValues(initialBottomFields);
+          setTaskFieldValues(initialTaskFields);
         });
       }
 
       setLoadedFields(true);
     }
-  }, [
-    initialTopFields,
-    initialMiddleFields,
-    initialBottomFields,
-    userDetails,
-    formType,
-    taskBottomFields
-  ]);
+  }, [initialTaskFields, userDetails, formType, taskFields]);
 
   const hasRequired = useMemo(() => {
-    return (
-      hasAllRequired(taskTopFieldValues, taskTopFields) &&
-      hasAllRequired(taskMiddleFieldValues, taskMiddleFields) &&
-      hasAllRequired(taskBottomFieldValues, taskBottomFields)
-    );
-  }, [
-    taskTopFieldValues,
-    taskMiddleFieldValues,
-    taskBottomFieldValues,
-    taskTopFields,
-    taskMiddleFields,
-    taskBottomFields
-  ]);
+    return hasAllRequired(taskFieldValues, taskFields);
+  }, [taskFieldValues, taskFields]);
 
   const submitForm = async () => {
-    const parsedTopFieldValues = parseFormValues(
-      taskTopFieldValues,
-      taskTopFields
-    );
-    const parsedMiddleFieldValues = parseFormValues(
-      taskMiddleFieldValues,
-      taskMiddleFields
-    );
-    const parsedBottomFieldValues = parseFormValues(
-      taskBottomFieldValues,
-      taskBottomFields
-    );
+    const parsedTaskFieldValues = parseFormValues(taskFieldValues, taskFields);
 
     const parsedFieldValues: any = {
-      ...parsedTopFieldValues,
-      ...parsedMiddleFieldValues,
-      ...parsedBottomFieldValues,
+      ...parsedTaskFieldValues,
       type: formType === 'ACTIVITY' ? activityType : formType,
       resourcetype: 'FixedTask'
     };
@@ -304,49 +232,20 @@ export default function AddTaskForm({
     }
   };
 
-  const topFieldsTypedForm = useMemo(
+  const taskTypedForm = useMemo(
     () => (
       <TypedForm
-        fields={taskTopFields}
-        formValues={taskTopFieldValues}
+        fields={taskFields}
+        formValues={taskFieldValues}
         onFormValuesChange={(values: FieldValueTypes) => {
-          setTaskTopFieldValues(values);
+          setTaskFieldValues(values);
         }}
-        inlineFields={true}
+        inlineFields={!!inlineFields}
+        sectionStyle={sectionStyle}
         fieldColor={fieldColor}
       />
     ),
-    [taskTopFields, taskTopFieldValues, fieldColor]
-  );
-
-  const middleFieldsTypedForm = useMemo(
-    () => (
-      <TypedForm
-        fields={taskMiddleFields}
-        formValues={taskMiddleFieldValues}
-        onFormValuesChange={(values: FieldValueTypes) => {
-          setTaskMiddleFieldValues(values);
-        }}
-        inlineFields={true}
-        fieldColor={fieldColor}
-      />
-    ),
-    [taskMiddleFields, taskMiddleFieldValues, fieldColor]
-  );
-
-  const bottomFieldsTypedForm = useMemo(
-    () => (
-      <TypedForm
-        fields={taskBottomFields}
-        formValues={taskBottomFieldValues}
-        onFormValuesChange={(values: FieldValueTypes) => {
-          setTaskBottomFieldValues(values);
-        }}
-        inlineFields={true}
-        fieldColor={fieldColor}
-      />
-    ),
-    [taskBottomFields, taskBottomFieldValues, fieldColor]
+    [taskFields, taskFieldValues, fieldColor, inlineFields, sectionStyle]
   );
 
   if (!(userDetails && loadedFields)) {
@@ -380,13 +279,7 @@ export default function AddTaskForm({
           />
         </WhitePaddedView>
       )}
-      <TransparentView>{topFieldsTypedForm}</TransparentView>
-      <TransparentView>{middleFieldsTypedForm}</TransparentView>
-      <TransparentView
-        style={!['APPOINTMENT', 'ACTIVITY'].includes(formType) && styles.hidden}
-      >
-        {bottomFieldsTypedForm}
-      </TransparentView>
+      <TransparentView>{taskTypedForm}</TransparentView>
 
       {isSubmitting ? (
         <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />

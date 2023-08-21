@@ -9,7 +9,11 @@ function MessageThreadScreen({ route }: MessageThreadScreenProps) {
       entityId={route.params.entityId || undefined}
       taskId={route.params.taskId || undefined}
       actionId={route.params.actionId || undefined}
-      recurrenceIndex={route.params.recurrenceIndex || undefined}
+      recurrenceIndex={
+        route.params.recurrenceIndex === null
+          ? undefined
+          : route.params.recurrenceIndex
+      }
     />
   );
 }

@@ -139,7 +139,11 @@ export default function TaskActionModal() {
         {canMarkComplete && task && taskToAction && scheduledTask && (
           <TaskCompletionPressable
             taskId={task.id}
-            recurrenceIndex={taskToAction.recurrenceIndex}
+            recurrenceIndex={
+              taskToAction.recurrenceIndex === null
+                ? undefined
+                : taskToAction.recurrenceIndex
+            }
             actionId={taskToAction.actionId}
             onSuccess={() => dispatch(setTaskToAction(null))}
           >

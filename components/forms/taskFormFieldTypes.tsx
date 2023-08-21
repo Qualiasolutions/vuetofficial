@@ -48,11 +48,21 @@ const defaultReminders = (t: TFunction): Field => ({
   helpText: t('tasks.helpText.reminders')
 });
 
-export const useTaskTopFieldTypes = (
-  isEdit: boolean = false,
-  taskHiddenTag: string = ''
-): FlatFormFieldTypes => {
+export const useTaskFieldTypes = ({
+  isEdit = false,
+  taskHiddenTag = '',
+  disableFlexible = false,
+  disabledRecurrenceFields = false,
+  allowRecurrence = true
+}: {
+  isEdit?: boolean;
+  taskHiddenTag?: string;
+  disableFlexible?: boolean;
+  disabledRecurrenceFields?: boolean;
+  allowRecurrence?: boolean;
+}): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
+  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -69,21 +79,7 @@ export const useTaskTopFieldTypes = (
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
-      }
-    };
-  }, [t, isEdit, taskHiddenTag]);
-};
-
-export const useTaskMiddleFieldTypes = (
-  disableFlexible: boolean = false,
-  disabledRecurrenceFields: boolean = false,
-  allowRecurrence: boolean = true
-): FlatFormFieldTypes => {
-  const { t } = useTranslation('modelFields');
-  const { data: allRoutines } = useGetAllRoutinesQuery();
-
-  return useMemo(() => {
-    return {
+      },
       is_flexible: defaultIsFlexible(t, disableFlexible),
       is_any_time: defaultIsAnyTime(t, disabledRecurrenceFields),
       start_datetime: {
@@ -243,45 +239,13 @@ export const useTaskMiddleFieldTypes = (
     };
   }, [
     t,
-    disabledRecurrenceFields,
-    disableFlexible,
+    isEdit,
+    taskHiddenTag,
     allRoutines,
-    allowRecurrence
+    allowRecurrence,
+    disableFlexible,
+    disabledRecurrenceFields
   ]);
-};
-
-export const useTaskBottomFieldTypes = (): FlatFormFieldTypes => {
-  const { t } = useTranslation('modelFields');
-
-  return useMemo(() => {
-    return {
-      location: {
-        type: 'string',
-        required: false,
-        displayName: t('tasks.task.location')
-      },
-      contact_name: {
-        type: 'string',
-        required: false,
-        displayName: t('tasks.task.contact_name')
-      },
-      contact_email: {
-        type: 'string',
-        required: false,
-        displayName: t('tasks.task.contact_email')
-      },
-      contact_number: {
-        type: 'phoneNumber',
-        required: false,
-        displayName: t('tasks.task.contact_number')
-      },
-      notes: {
-        type: 'TextArea',
-        required: false,
-        displayName: t('tasks.task.notes')
-      }
-    };
-  }, [t]);
 };
 
 export const useDueDateFieldTypes = (

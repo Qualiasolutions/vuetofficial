@@ -778,6 +778,14 @@
     },
     "messageList": {
       "noMessages": "You haven't sent or received any messages yet"
+    },
+    "taskCompletionModal": {
+      "finalOccurrence": {
+        "wouldYouLikeToExtend": "This was the final occurrence in this series, would you like to extend the series?"
+      },
+      "dueDate": {
+        "wouldYouLikeToReschedule": "Would you like to schedule another due date?"
+      }
     }
   }
 }

@@ -7,12 +7,10 @@ import { Button } from 'components/molecules/ButtonComponents';
 import {
   useDueDateFieldTypes,
   useTransportFieldTypes,
-  useTaskBottomFieldTypes,
-  useTaskMiddleFieldTypes,
-  useTaskTopFieldTypes,
   useAccommodationFieldTypes,
   useAnniversaryFieldTypes,
-  useHolidayFieldTypes
+  useHolidayFieldTypes,
+  useTaskFieldTypes
 } from 'components/forms/taskFormFieldTypes';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -82,13 +80,7 @@ export default function EditTaskScreen({
   const [taskToEdit, setTaskToEdit] = useState<FixedTaskResponseType | null>(
     null
   );
-  const [taskTopFieldValues, setTaskTopFieldValues] = useState<FieldValueTypes>(
-    {}
-  );
-  const [taskMiddleFieldValues, setTaskMiddleFieldValues] =
-    useState<FieldValueTypes>({});
-  const [taskBottomFieldValues, setTaskBottomFieldValues] =
-    useState<FieldValueTypes>({});
+  const [taskFieldValues, setTaskFieldValues] = useState<FieldValueTypes>({});
 
   const [dueDateFieldValues, setDueDateFieldValues] = useState<FieldValueTypes>(
     {}
@@ -110,12 +102,14 @@ export default function EditTaskScreen({
 
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
-  const taskTopFields = useTaskTopFieldTypes(true, taskToEdit?.hidden_tag);
-  const taskMiddleFields = useTaskMiddleFieldTypes(
-    true,
-    !!(taskToEdit && taskToEdit.recurrence)
-  );
-  const taskBottomFields = useTaskBottomFieldTypes();
+  const taskFields = useTaskFieldTypes({
+    isEdit: true,
+    allowRecurrence: true,
+    taskHiddenTag: taskToEdit?.hidden_tag,
+    disableFlexible: true,
+    disabledRecurrenceFields: !!(taskToEdit && taskToEdit.recurrence)
+  });
+
   const dueDateFields = useDueDateFieldTypes(
     true,
     taskToEdit?.hidden_tag,
@@ -171,26 +165,12 @@ export default function EditTaskScreen({
       if (newTaskToEdit) {
         setTaskToEdit(newTaskToEdit);
 
-        const initialTopFields = createInitialObject(
-          taskTopFields,
+        const initialTaskFields = createInitialObject(
+          taskFields,
           userDetails,
           newTaskToEdit
         );
-        setTaskTopFieldValues(initialTopFields);
-
-        const initialMiddleFields = createInitialObject(
-          taskMiddleFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setTaskMiddleFieldValues(initialMiddleFields);
-
-        const initialBottomFields = createInitialObject(
-          taskBottomFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setTaskBottomFieldValues(initialBottomFields);
+        setTaskFieldValues(initialTaskFields);
 
         const initialDueDateFields = createInitialObject(
           dueDateFields,
@@ -228,9 +208,7 @@ export default function EditTaskScreen({
         setHolidayFieldValues(initialHolidayFields);
 
         setResetState(() => () => {
-          setTaskTopFieldValues(initialTopFields);
-          setTaskMiddleFieldValues(initialMiddleFields);
-          setTaskBottomFieldValues(initialBottomFields);
+          setTaskFieldValues(initialTaskFields);
           setDueDateFieldValues(initialDueDateFields);
           setFlightFieldValues(initialFlightFields);
           setAccommodationFieldValues(initialAccommodationFields);
@@ -243,9 +221,7 @@ export default function EditTaskScreen({
     allTasks,
     userDetails,
     route.params.taskId,
-    taskBottomFields,
-    taskMiddleFields,
-    taskTopFields,
+    taskFields,
     dueDateFields,
     flightFields,
     accommodationFields,
@@ -268,11 +244,7 @@ export default function EditTaskScreen({
         'OTHER_ACTIVITY'
       ].includes(taskToEdit.type)
     ) {
-      return (
-        hasAllRequired(taskTopFieldValues, taskTopFields) &&
-        hasAllRequired(taskMiddleFieldValues, taskMiddleFields) &&
-        hasAllRequired(taskBottomFieldValues, taskBottomFields)
-      );
+      return hasAllRequired(taskFieldValues, taskFields);
     } else if (taskToEdit.type === 'DUE_DATE') {
       return hasAllRequired(dueDateFieldValues, dueDateFields);
     } else if (isTransportTaskType(taskToEdit.type)) {
@@ -287,12 +259,8 @@ export default function EditTaskScreen({
       return false;
     }
   }, [
-    taskTopFieldValues,
-    taskMiddleFieldValues,
-    taskBottomFieldValues,
-    taskTopFields,
-    taskMiddleFields,
-    taskBottomFields,
+    taskFieldValues,
+    taskFields,
     taskToEdit,
     dueDateFields,
     dueDateFieldValues,
@@ -343,22 +311,12 @@ export default function EditTaskScreen({
           'OTHER_ACTIVITY'
         ].includes(taskToEdit.type)
       ) {
-        const parsedTopFieldValues = parseFormValues(
-          taskTopFieldValues,
-          taskTopFields
-        );
-        const parsedMiddleFieldValues = parseFormValues(
-          taskMiddleFieldValues,
-          taskMiddleFields
-        );
-        const parsedBottomFieldValues = parseFormValues(
-          taskBottomFieldValues,
-          taskBottomFields
+        const parsedTaskFieldValues = parseFormValues(
+          taskFieldValues,
+          taskFields
         );
         const body = {
-          ...parsedTopFieldValues,
-          ...parsedMiddleFieldValues,
-          ...parsedBottomFieldValues,
+          ...parsedTaskFieldValues,
           resourcetype: 'FixedTask' as 'FixedTask',
           id: taskToEdit.id
         };
@@ -482,32 +440,10 @@ export default function EditTaskScreen({
       <>
         <TransparentView>
           <TypedForm
-            fields={taskTopFields}
-            formValues={taskTopFieldValues}
+            fields={taskFields}
+            formValues={taskFieldValues}
             onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskTopFieldValues(values);
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </TransparentView>
-        <TransparentView>
-          <TypedForm
-            fields={taskMiddleFields}
-            formValues={taskMiddleFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskMiddleFieldValues(values);
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </TransparentView>
-        <TransparentView>
-          <TypedForm
-            fields={taskBottomFields}
-            formValues={taskBottomFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskBottomFieldValues(values);
+              setTaskFieldValues(values);
             }}
             inlineFields={true}
             fieldColor={fieldColor}

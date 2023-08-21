@@ -13,7 +13,7 @@ import {
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateTaskMutation,
@@ -56,6 +56,8 @@ type AddTransportTaskFormProps = {
   recurrenceOverwrite?: boolean;
   recurrenceIndex?: number;
   taskId?: number;
+  inlineFields?: boolean;
+  sectionStyle?: ViewStyle;
 };
 
 export default function AddTransportTaskForm({
@@ -63,7 +65,9 @@ export default function AddTransportTaskForm({
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
-  taskId
+  taskId,
+  inlineFields,
+  sectionStyle
 }: AddTransportTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
@@ -192,11 +196,12 @@ export default function AddTransportTaskForm({
         onFormValuesChange={(values: FieldValueTypes) => {
           setFlightFieldValues(values);
         }}
-        inlineFields={true}
+        inlineFields={!!inlineFields}
+        sectionStyle={sectionStyle}
         fieldColor={fieldColor}
       />
     ),
-    [flightFields, flightFieldValues, fieldColor]
+    [flightFields, flightFieldValues, fieldColor, inlineFields, sectionStyle]
   );
 
   if (!(userDetails && loadedFields)) {

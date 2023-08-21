@@ -13,7 +13,7 @@ import {
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateTaskMutation,
@@ -58,6 +58,8 @@ type AddAnniversaryFormProps = {
   recurrenceOverwrite?: boolean;
   recurrenceIndex?: number;
   taskId?: number;
+  inlineFields?: boolean;
+  sectionStyle?: ViewStyle;
 };
 
 export default function AddAnniversaryForm({
@@ -65,7 +67,9 @@ export default function AddAnniversaryForm({
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
-  taskId
+  taskId,
+  inlineFields,
+  sectionStyle
 }: AddAnniversaryFormProps) {
   const { t } = useTranslation();
   const [type, setType] = useState<AnniversaryTaskType>('BIRTHDAY');
@@ -200,11 +204,18 @@ export default function AddAnniversaryForm({
         onFormValuesChange={(values: FieldValueTypes) => {
           setAnniversaryFieldValues(values);
         }}
-        inlineFields={true}
+        inlineFields={!!inlineFields}
         fieldColor={fieldColor}
+        sectionStyle={sectionStyle}
       />
     ),
-    [anniversaryFields, anniversaryFieldValues, fieldColor]
+    [
+      anniversaryFields,
+      anniversaryFieldValues,
+      fieldColor,
+      inlineFields,
+      sectionStyle
+    ]
   );
 
   if (!(userDetails && loadedFields)) {

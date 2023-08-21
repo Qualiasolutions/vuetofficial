@@ -1,12 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
-import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import {
+  selectScheduledTask,
+  selectTaskById
+} from 'reduxStore/slices/tasks/selectors';
 import { FieldValueTypes } from '../types';
 
-export default function useCompletionCallback(taskId: number) {
+export default function useCompletionCallback(
+  taskId: number,
+  recurrenceIndex?: number
+) {
   const [createTask] = useCreateTaskMutation();
   const task = useSelector(selectTaskById(taskId));
+  const scheduledTask = useSelector(
+    selectScheduledTask({ id: taskId, recurrenceIndex })
+  );
+  const nextScheduledTask = useSelector(
+    selectScheduledTask({
+      id: taskId,
+      recurrenceIndex: recurrenceIndex ? recurrenceIndex + 1 : undefined
+    })
+  );
 
   const { t } = useTranslation();
 
@@ -54,6 +69,17 @@ export default function useCompletionCallback(taskId: number) {
       const body: any = {
         resourcetype: 'FixedTask',
         type: 'DUE_DATE',
+        ...parsedFormValues
+      };
+      await createTask(body).unwrap();
+    };
+  }
+
+  if (task?.recurrence && scheduledTask && !nextScheduledTask) {
+    return async (parsedFormValues: FieldValueTypes) => {
+      const body: any = {
+        resourcetype: 'FixedTask',
+        type: task.type,
         ...parsedFormValues
       };
       await createTask(body).unwrap();

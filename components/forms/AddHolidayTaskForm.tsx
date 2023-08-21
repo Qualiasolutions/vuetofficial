@@ -9,7 +9,7 @@ import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateRecurrentTaskOverwriteMutation,
@@ -44,13 +44,17 @@ type AddHolidayTaskFormProps = {
   recurrenceOverwrite?: boolean;
   recurrenceIndex?: number;
   taskId?: number;
+  sectionStyle?: ViewStyle;
+  inlineFields?: boolean;
 };
 
 export default function AddHolidayTaskForm({
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
-  taskId
+  taskId,
+  sectionStyle,
+  inlineFields
 }: AddHolidayTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
@@ -182,11 +186,18 @@ export default function AddHolidayTaskForm({
         onFormValuesChange={(values: FieldValueTypes) => {
           setHolidayFieldValues(values);
         }}
-        inlineFields={true}
+        inlineFields={!!inlineFields}
+        sectionStyle={sectionStyle}
         fieldColor={fieldColor}
       />
     ),
-    [holidayFields, holidayTaskFieldValues, fieldColor]
+    [
+      holidayFields,
+      holidayTaskFieldValues,
+      fieldColor,
+      inlineFields,
+      sectionStyle
+    ]
   );
 
   if (!(userDetails && loadedFields)) {

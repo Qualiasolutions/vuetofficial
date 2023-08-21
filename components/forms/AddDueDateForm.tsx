@@ -12,7 +12,7 @@ import {
 import TypedForm from 'components/forms/TypedForm';
 import createInitialObject from 'components/forms/utils/createInitialObject';
 import { FieldValueTypes } from 'components/forms/types';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   useCreateTaskMutation,
@@ -55,6 +55,8 @@ type AddDueDateFormProps = {
   recurrenceOverwrite?: boolean;
   recurrenceIndex?: number;
   taskId?: number;
+  inlineFields?: boolean;
+  sectionStyle?: ViewStyle;
 };
 
 export default function AddDueDateForm({
@@ -62,7 +64,9 @@ export default function AddDueDateForm({
   onSuccess,
   recurrenceOverwrite,
   recurrenceIndex,
-  taskId
+  taskId,
+  inlineFields,
+  sectionStyle
 }: AddDueDateFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
@@ -183,11 +187,12 @@ export default function AddDueDateForm({
         onFormValuesChange={(values: FieldValueTypes) => {
           setDueDateFieldValues(values);
         }}
-        inlineFields={true}
+        inlineFields={!!inlineFields}
         fieldColor={fieldColor}
+        sectionStyle={sectionStyle}
       />
     ),
-    [dueDateFields, dueDateFieldValues, fieldColor]
+    [dueDateFields, dueDateFieldValues, fieldColor, inlineFields, sectionStyle]
   );
 
   if (!(userDetails && loadedFields)) {
