@@ -221,8 +221,10 @@ export const selectTasksInDailyRoutines = createSelector(
             // Otherwise it is a due date and we place
             // it in a routine if it is assigned to one
             if (taskObj.routine) {
-              routineTasks[taskObj.routine].push(taskObj);
-              continue;
+              if (taskObj.routine in routineTasks) {
+                routineTasks[taskObj.routine].push(taskObj);
+                continue;
+              }
             }
             nonRoutineTasks.push(taskObj);
           }
