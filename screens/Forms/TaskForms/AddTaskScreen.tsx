@@ -93,13 +93,14 @@ export default function AddTaskScreen({
 }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
-  const [formType, setFormType] = useState<FormType>(
-    route.params?.type || 'TASK'
+  const [formType, setFormType] = useState<FormType | ''>(
+    route.params?.type || ''
   );
 
   const headerBackgroundColor = useThemeColor({}, 'secondary');
   const headerTintColor = useThemeColor({}, 'white');
   const headerTitle = {
+    '': 'Add task',
     TASK: 'Add task',
     APPOINTMENT: 'Add Appointment',
     ACTIVITY: 'Add Activity',
@@ -112,7 +113,7 @@ export default function AddTaskScreen({
   useColouredHeader(headerBackgroundColor, headerTintColor, headerTitle);
 
   useEffect(() => {
-    setFormType(route.params?.type || 'TASK');
+    setFormType(route.params?.type || '');
   }, [route]);
 
   const taskDefaults = useMemo(() => {

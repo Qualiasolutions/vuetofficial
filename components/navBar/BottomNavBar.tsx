@@ -262,7 +262,7 @@ export default function BottomNavBar({
                   } else if (currentScreen === 'HolidayDates') {
                     navigation.navigate('AddHolidayTask');
                   } else {
-                    navigation.navigate('AddTask');
+                    navigation.navigate('AddTask', { type: '' });
                   }
                 }}
               />
