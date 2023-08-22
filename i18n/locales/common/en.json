@@ -150,7 +150,7 @@
     },
     "healthBeauty": {
       "foodExercise": "Food & Exercise",
-      "appointments": "Appointments",
+      "appointments": "Appointment Type",
       "measurements": "Measurements",
       "goals": "Health & Beauty Goals",
       "patients": "Patients"
@@ -203,7 +203,7 @@
   },
   "entityTypes": {
     "annualDates": "Annual Dates to Remember",
-    "appointment": "Appointments",
+    "appointment": "Appointment Type",
     "career": "Career",
     "education": "Education",
     "employees": "Employees",

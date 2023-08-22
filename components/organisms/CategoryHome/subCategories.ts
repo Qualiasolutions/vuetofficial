@@ -238,15 +238,6 @@ export default {
         entityTypes: ['HealthGoal'],
         entityTypeName: 'health-goal'
       }
-    },
-    {
-      name: 'healthBeauty.measurements',
-      toScreen: 'EntityList',
-      navMethod: 'push',
-      toScreenParams: {
-        entityTypes: ['HealthMeasurement'],
-        entityTypeName: 'health-measurement'
-      }
     }
   ],
   HOME: [
