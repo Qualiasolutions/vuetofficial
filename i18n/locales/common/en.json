@@ -405,6 +405,7 @@
     "pending": "pending",
     "markDone": "Mark as done",
     "ignore": "Ignore",
+    "emailAddress": "Email address",
     "errors": {
       "generic": "Oops, something went wrong. Please try again later.",
       "invalidPhone": "That doesn't seem to be a valid phone number.",
