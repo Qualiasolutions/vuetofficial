@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   spinner: { marginTop: 20 },
   hidden: { display: 'none' },
-  typeSelectorSection: { marginBottom: 50 }
+  typeSelectorSection: {}
 });
 
 type AddTaskFormProps = {

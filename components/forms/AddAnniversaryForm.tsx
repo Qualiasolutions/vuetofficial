@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   spinner: { marginTop: 20 },
-  typeSelectorSection: { marginBottom: 50 }
+  typeSelectorSection: {}
 });
 
 type AddAnniversaryFormProps = {

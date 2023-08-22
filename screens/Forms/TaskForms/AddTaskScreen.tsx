@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   typeSelector: {
     paddingHorizontal: 30,
     paddingVertical: 20,
-    marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center'
   },
