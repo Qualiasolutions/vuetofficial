@@ -128,7 +128,8 @@ const modalStyles = StyleSheet.create({
   selectionRow: { width: '100%', flexDirection: 'row', alignItems: 'center' },
   exisitingValueRow: { flexDirection: 'row' },
   deleteActionCross: { marginLeft: 10 },
-  buttonWrapper: { flexDirection: 'row', marginTop: 10 }
+  buttonWrapper: { flexDirection: 'row', marginTop: 10 },
+  addButton: { paddingVertical: 5, paddingHorizontal: 10, marginLeft: 5 }
 });
 
 const TimedeltaSelectorModal = ({
@@ -194,7 +195,7 @@ const TimedeltaSelectorModal = ({
                 intervalTypes={intervalTypes}
               />
             </TransparentView>
-            <SafePressable
+            <Button
               onPress={() => {
                 if (newNumIntervals) {
                   if (newIntervalType === 'MINUTE') {
@@ -241,14 +242,14 @@ const TimedeltaSelectorModal = ({
                   }
                 }
               }}
-            >
-              <Feather name="check" color={'green'} size={25} />
-            </SafePressable>
+              title={t('common.add')}
+              style={modalStyles.addButton}
+            />
           </TransparentView>
         )}
       </TransparentView>
       <TransparentView style={modalStyles.buttonWrapper}>
-        <Button title={t('common.ok')} onPress={onRequestClose} />
+        <Button title={t('common.finish')} onPress={onRequestClose} />
       </TransparentView>
     </Modal>
   );

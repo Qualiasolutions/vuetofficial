@@ -19,7 +19,7 @@
       "contact_email": "Email",
       "contact_number": "Contact no.",
       "notes": "Notes",
-      "is_flexible": "Flexible",
+      "is_flexible": "Add this to my calendar anytime between the dates below",
       "is_any_time": "Any time",
       "earliest_action_date": "Earliest occurrence",
       "due_date": "Due date",

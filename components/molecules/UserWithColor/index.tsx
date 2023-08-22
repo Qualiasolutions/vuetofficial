@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     height: '60%'
   },
   usernameAndColor: { justifyContent: 'center' },
-  nameText: { fontSize: 16 }
+  nameText: { fontSize: 14 }
 });
 
 export default function UserWithColor({

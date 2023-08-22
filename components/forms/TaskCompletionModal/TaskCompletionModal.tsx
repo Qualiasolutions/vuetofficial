@@ -25,7 +25,7 @@ export default function TaskCompletionModal({
 
   if (modalContent) {
     return (
-      <Modal onRequestClose={() => {}} visible={visible}>
+      <Modal onRequestClose={onRequestClose} visible={visible}>
         {modalContent}
       </Modal>
     );

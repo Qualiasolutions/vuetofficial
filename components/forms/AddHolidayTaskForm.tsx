@@ -12,7 +12,6 @@ import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
-  useCreateRecurrentTaskOverwriteMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
@@ -23,6 +22,8 @@ import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { Recurrence, Reminder } from 'types/tasks';
+import RecurrentUpdateModal from './RecurrentUpdateModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,6 +47,16 @@ type AddHolidayTaskFormProps = {
   taskId?: number;
   sectionStyle?: ViewStyle;
   inlineFields?: boolean;
+  defaults: {
+    title: string;
+    start_date: string;
+    end_date: string;
+    entities: number[];
+    members: number[];
+    tags: string[];
+    recurrence?: Recurrence | null;
+    reminders?: Reminder[];
+  };
 };
 
 export default function AddHolidayTaskForm({
@@ -54,7 +65,8 @@ export default function AddHolidayTaskForm({
   recurrenceIndex,
   taskId,
   sectionStyle,
-  inlineFields
+  inlineFields,
+  defaults
 }: AddHolidayTaskFormProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
@@ -63,15 +75,13 @@ export default function AddHolidayTaskForm({
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
 
-  const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
-    useCreateRecurrentTaskOverwriteMutation();
-
   const taskObj = useSelector(selectTaskById(taskId || -1));
 
+  const [showRecurrentUpdateModal, setShowRecurrentUpdateModal] =
+    useState(false);
+
   const isSubmitting =
-    createTaskResult.isLoading ||
-    createTaskWithoutMutationResult.isLoading ||
-    createRecurrentOverwriteResult.isLoading;
+    createTaskResult.isLoading || createTaskWithoutMutationResult.isLoading;
 
   const fieldColor = useThemeColor({}, 'almostWhite');
 
@@ -81,6 +91,8 @@ export default function AddHolidayTaskForm({
   const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const holidayFields = useHolidayFieldTypes(false);
+
+  const [fieldValues, setFieldValues] = useState<any>({});
 
   const initialHolidayFields = useMemo(() => {
     if (!userDetails) {
@@ -97,17 +109,16 @@ export default function AddHolidayTaskForm({
     };
 
     return createInitialObject(holidayFields, userDetails, {
-      start_date: defaultDueDate,
-      end_date: defaultDueDate,
-      title: '',
-      duration: 15,
+      start_date: defaults.start_date || defaultDueDate,
+      end_date: defaults.end_date || defaultDueDate,
+      title: defaults.title || '',
       tagsAndEntities: {
-        entities: [],
-        tags: ['SOCIAL_INTERESTS__HOLIDAY']
+        entities: defaults.entities || [],
+        tags: defaults.tags || ['SOCIAL_INTERESTS__HOLIDAY']
       },
-      recurrence: defaultRecurrence
+      recurrence: defaults.recurrence || defaultRecurrence
     });
-  }, [holidayFields, userDetails]);
+  }, [holidayFields, userDetails, defaults]);
 
   useEffect(() => {
     if (userDetails) {
@@ -130,30 +141,22 @@ export default function AddHolidayTaskForm({
   }, [holidayFields, holidayTaskFieldValues]);
 
   const submitForm = async () => {
-    const parsedDueDateFieldValues = parseFormValues(
+    const parsedHolidayFieldValues = parseFormValues(
       holidayTaskFieldValues,
       holidayFields
     );
     const parsedFieldValues: any = {
-      ...parsedDueDateFieldValues,
+      ...parsedHolidayFieldValues,
       // end_date: parsedDueDateFieldValues.start_date,
       type: 'HOLIDAY',
       resourcetype: 'HolidayTask'
     };
 
+    setFieldValues(parsedFieldValues);
+
     try {
-      if (
-        recurrenceOverwrite &&
-        recurrenceIndex !== undefined &&
-        taskObj &&
-        taskObj.recurrence
-      ) {
-        await createRecurrentOverwrite({
-          task: parsedFieldValues,
-          recurrence: taskObj.recurrence.id,
-          recurrence_index: recurrenceIndex,
-          baseTaskId: taskObj.id
-        }).unwrap();
+      if (recurrenceOverwrite) {
+        setShowRecurrentUpdateModal(true);
       } else {
         if (
           parsedFieldValues.recurrence ||
@@ -163,13 +166,13 @@ export default function AddHolidayTaskForm({
         } else {
           await createTaskWithoutCacheInvalidation(parsedFieldValues).unwrap();
         }
+        Toast.show({
+          type: 'success',
+          text1: t('screens.addTask.createSuccess')
+        });
+        resetState();
+        onSuccess();
       }
-      Toast.show({
-        type: 'success',
-        text1: t('screens.addTask.createSuccess')
-      });
-      resetState();
-      onSuccess();
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -222,6 +225,14 @@ export default function AddHolidayTaskForm({
           />
         </TransparentPaddedView>
       )}
+      <RecurrentUpdateModal
+        visible={showRecurrentUpdateModal}
+        onRequestClose={() => setShowRecurrentUpdateModal(false)}
+        recurrence={taskObj?.recurrence?.id || -1}
+        recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
+        taskId={taskId || -1}
+        parsedFieldValues={fieldValues}
+      />
     </TransparentFullPageScrollView>
   );
 }

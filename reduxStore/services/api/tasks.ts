@@ -128,6 +128,8 @@ const updateQueryDataForNewTask = (
                     newTask.start_datetime,
                     newTask.end_datetime
                   )
+                : newTask.start_date && newTask.end_date
+                ? getDateStringsBetween(newTask.start_date, newTask.end_date)
                 : [];
 
               for (const date of taskDates) {

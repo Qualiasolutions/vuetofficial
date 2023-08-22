@@ -1,10 +1,8 @@
 import { useSelector } from 'react-redux';
-import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
 import {
   selectScheduledTask,
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
-import { FieldValueTypes } from '../types';
 import DueDateRescheduler from './DueDateRescheduler';
 import FinalOccurrenceRescheduler from './FinalOccurrenceRescheduler';
 import MOTTypeRescheduler from './MOTTypeRescheduler';
@@ -20,7 +18,6 @@ export default function ModalContent({
   onDismiss: () => void;
   onSubmitSuccess: () => void;
 }) {
-  const [createTask] = useCreateTaskMutation();
   const task = useSelector(selectTaskById(taskId));
 
   const scheduledTask = useSelector(

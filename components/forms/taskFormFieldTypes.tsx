@@ -22,7 +22,12 @@ const defaultIsFlexible = (t: TFunction, disableFlexible?: boolean): Field => ({
   displayName: t('tasks.task.is_flexible'),
   hidden: !!disableFlexible,
   forceUnchecked: ['is_any_time'],
-  helpText: t('tasks.helpText.is_flexible')
+  helpText: t('tasks.helpText.is_flexible'),
+  shownFields: [
+    {
+      is_any_time: false
+    }
+  ]
 });
 
 const defaultIsAnyTime = (t: TFunction, disabled?: boolean): Field => ({
@@ -31,7 +36,12 @@ const defaultIsAnyTime = (t: TFunction, disabled?: boolean): Field => ({
   displayName: t('tasks.task.is_any_time'),
   disabled: !!disabled,
   forceUnchecked: ['is_flexible'],
-  helpText: t('tasks.helpText.is_any_time')
+  helpText: t('tasks.helpText.is_any_time'),
+  shownFields: [
+    {
+      is_flexible: false
+    }
+  ]
 });
 
 const defaultActions = (t: TFunction): Field => ({
@@ -198,12 +208,20 @@ export const useTaskFieldTypes = ({
         ],
         hidden: !allowRecurrence
       },
-      actions: defaultActions(t),
+      actions: {
+        ...defaultActions(t),
+        shownFields: [
+          {
+            is_flexible: false
+          }
+        ]
+      },
       reminders: {
         ...defaultReminders(t),
         shownFields: [
           {
-            is_any_time: false
+            is_any_time: false,
+            is_flexible: false
           }
         ]
       },
@@ -211,7 +229,8 @@ export const useTaskFieldTypes = ({
         ...defaultReminders(t),
         shownFields: [
           {
-            is_any_time: true
+            is_any_time: true,
+            is_flexible: false
           }
         ]
       },
