@@ -1,4 +1,8 @@
-import { Field, FlatFormFieldTypes } from 'components/forms/formFieldTypes';
+import {
+  DateField,
+  Field,
+  FlatFormFieldTypes
+} from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
@@ -56,6 +60,20 @@ const defaultReminders = (t: TFunction): Field => ({
   required: false,
   displayName: t('tasks.task.reminders'),
   helpText: t('tasks.helpText.reminders')
+});
+
+const defaultStartDate = (t: TFunction): DateField => ({
+  type: 'Date',
+  required: true,
+  displayName: t('tasks.task.start_date'),
+  associatedEndDateField: 'end_date'
+});
+
+const defaultEndDate = (t: TFunction): DateField => ({
+  type: 'Date',
+  required: true,
+  displayName: t('tasks.task.end_date'),
+  associatedStartDateField: 'start_date'
 });
 
 export const useTaskFieldTypes = ({
@@ -430,10 +448,7 @@ export const useTransportFieldTypes = (
         ]
       },
       start_date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.task.start_date'),
-        utc: true,
+        ...defaultStartDate(t),
         shownFields: [
           {
             is_any_time: true
@@ -441,10 +456,7 @@ export const useTransportFieldTypes = (
         ]
       },
       end_date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.task.end_date'),
-        utc: true,
+        ...defaultEndDate(t),
         shownFields: [
           {
             is_any_time: true
@@ -524,24 +536,18 @@ export const useAccommodationFieldTypes = (
         ]
       },
       start_date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.task.start_date'),
-        utc: true,
+        ...defaultStartDate(t),
         shownFields: [
           {
-            is_any_time: true
+            is_any_time: false
           }
         ]
       },
       end_date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.task.end_date'),
-        utc: true,
+        ...defaultEndDate(t),
         shownFields: [
           {
-            is_any_time: true
+            is_any_time: false
           }
         ]
       },
@@ -659,16 +665,8 @@ export const useHolidayFieldTypes = (
         displayName: t('tasks.task.members'),
         changeMembersText: t('tasks.task.changeMembers')
       },
-      start_date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.task.start_date')
-      },
-      end_date: {
-        type: 'Date',
-        required: true,
-        displayName: t('tasks.task.end_date')
-      },
+      start_date: defaultStartDate(t),
+      end_date: defaultEndDate(t),
       recurrence: {
         type: 'recurrenceSelector',
         required: false,
