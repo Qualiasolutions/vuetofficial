@@ -2,8 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import ListEntityPage from './EntityScreens/components/ListEntityPage';
 import BirthdayPage from './EntityScreens/components/BirthdayPage';
-import SchoolPage from './EntityScreens/components/SchoolPage';
-import TripPage from './EntityScreens/components/TripPage';
+// import SchoolPage from './EntityScreens/components/SchoolPage';
+// import TripPage from './EntityScreens/components/TripPage';
 import EventPage from './EntityScreens/components/EventPage';
 import HolidayPage from './EntityScreens/components/HolidayPage';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
@@ -28,10 +28,8 @@ const resourceTypeToComponent = {
   List: ListEntityPage,
   Car: CarPage,
   Birthday: BirthdayPage,
-  Trip: TripPage,
   Event: EventPage,
   Holiday: HolidayPage,
-  School: SchoolPage,
   default: DefaultHome
 } as {
   default: React.ElementType;
