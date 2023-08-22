@@ -12,7 +12,7 @@ import {
   useHolidayFieldTypes,
   useTaskFieldTypes
 } from 'components/forms/taskFormFieldTypes';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -99,8 +99,6 @@ export default function EditTaskScreen({
   const [holidayFieldValues, setHolidayFieldValues] = useState<FieldValueTypes>(
     {}
   );
-
-  const [resetState, setResetState] = useState<() => void>(() => () => {});
 
   const taskFields = useTaskFieldTypes({
     isEdit: true,
@@ -206,15 +204,6 @@ export default function EditTaskScreen({
           newTaskToEdit
         );
         setHolidayFieldValues(initialHolidayFields);
-
-        setResetState(() => () => {
-          setTaskFieldValues(initialTaskFields);
-          setDueDateFieldValues(initialDueDateFields);
-          setFlightFieldValues(initialFlightFields);
-          setAccommodationFieldValues(initialAccommodationFields);
-          setAnniversaryFieldValues(initialAnniversaryFields);
-          setHolidayFieldValues(initialHolidayFields);
-        });
       }
     }
   }, [
@@ -274,20 +263,26 @@ export default function EditTaskScreen({
     holidayFieldValues
   ]);
 
-  useEffect(() => {
-    if (updateTaskResult.isSuccess) {
-      Toast.show({
-        type: 'success',
-        text1: t('screens.editTask.updateSuccess')
-      });
-      resetState();
-    } else if (updateTaskResult.isError) {
-      Toast.show({
-        type: 'error',
-        text1: t('common.errors.generic')
-      });
-    }
-  }, [updateTaskResult, resetState, t]);
+  const updateTaskAndCallbacks = useCallback(
+    async (
+      body: Partial<FixedTaskResponseType> & Pick<FixedTaskResponseType, 'id'>
+    ) => {
+      try {
+        await updateTask(body).unwrap();
+        Toast.show({
+          type: 'success',
+          text1: t('screens.editTask.updateSuccess')
+        });
+        navigation.goBack();
+      } catch (e) {
+        Toast.show({
+          type: 'error',
+          text1: t('common.errors.generic')
+        });
+      }
+    },
+    [navigation, t, updateTask]
+  );
 
   useEffect(() => {
     if (deleteTaskResult.isSuccess) {
@@ -328,7 +323,7 @@ export default function EditTaskScreen({
           delete (body as any).recurrence;
         }
 
-        updateTask(body);
+        updateTaskAndCallbacks(body);
       } else if (taskToEdit.type === 'DUE_DATE') {
         const parsedDueDateFieldValues = parseFormValues(
           dueDateFieldValues,
@@ -344,7 +339,7 @@ export default function EditTaskScreen({
           delete (body as any).recurrence;
         }
 
-        updateTask(body);
+        updateTaskAndCallbacks(body);
       } else if (isTransportTaskType(taskToEdit.type)) {
         const parsedFlightFieldValues = parseFormValues(
           flightFieldValues,
@@ -361,7 +356,7 @@ export default function EditTaskScreen({
           delete (body as any).recurrence;
         }
 
-        updateTask(body);
+        updateTaskAndCallbacks(body);
       } else if (isAccommodationTaskType(taskToEdit.type)) {
         const parsedAccommodationFieldValues = parseFormValues(
           accommodationFieldValues,
@@ -378,7 +373,7 @@ export default function EditTaskScreen({
           delete (body as any).recurrence;
         }
 
-        updateTask(body);
+        updateTaskAndCallbacks(body);
       } else if (isAnniversaryTaskType(taskToEdit.type)) {
         const parsedAnniversaryFieldValues = parseFormValues(
           anniversaryFieldValues,
@@ -398,7 +393,7 @@ export default function EditTaskScreen({
           delete (body as any).recurrence;
         }
 
-        updateTask(body);
+        updateTaskAndCallbacks(body);
       } else if (taskToEdit.type === 'HOLIDAY') {
         const parsedHolidayFieldValues = parseFormValues(
           holidayFieldValues,
@@ -416,7 +411,7 @@ export default function EditTaskScreen({
           delete (body as any).recurrence;
         }
 
-        updateTask(body);
+        updateTaskAndCallbacks(body);
       }
     }
   };
