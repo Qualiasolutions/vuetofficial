@@ -280,12 +280,14 @@ export default function TypedForm({
       field,
       children,
       values,
-      labelStyle
+      labelStyle,
+      inlineFieldsOverride
     }: {
       field: string;
       children: ReactNode;
       values: FieldValueTypes;
       labelStyle?: ViewStyle;
+      inlineFieldsOverride?: boolean;
     }) => {
       /*
         Some fields depend on the values of other fields - we use
@@ -304,6 +306,7 @@ export default function TypedForm({
           children={children}
           labelStyle={labelStyle}
           containerStyle={styles.inputPair}
+          inlineFieldsOverride={inlineFieldsOverride}
         />
       );
     },
@@ -315,6 +318,7 @@ export default function TypedForm({
       fieldSections.map((section, i) => {
         const sectionFields = Object.keys(section).map((field: string) => {
           const fieldType = flatFields[field];
+          const inlineOverride = fieldType.inlineOverride;
 
           switch (fieldType.type) {
             case 'string': {
@@ -324,6 +328,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <TextInput
                     value={formValues[field]}
@@ -348,6 +353,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <PhoneNumberInput
                     defaultValue={formValues[field]}
@@ -376,6 +382,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <OptionalYearDateInput
                     value={formValues[field]}
@@ -421,6 +428,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <DateTimeTextInput
                     value={formValues[field]}
@@ -455,6 +463,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <DateTimeTextInput
                     value={formValues[field]}
@@ -501,6 +510,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <RadioInput
                     value={formValues[field]}
@@ -518,11 +528,14 @@ export default function TypedForm({
             }
             case 'checkbox': {
               const f = flatFields[field] as CheckboxField;
+              console.log(f);
+              console.log(inlineOverride);
               return (
                 <ValueDependentInputPair
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <Checkbox
                     smoothChecking={false}
@@ -586,6 +599,7 @@ export default function TypedForm({
                   key={field}
                   containerStyle={styles.inputPair}
                   pairStyle={styles.membersPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <MemberSelector
                     values={formValues[field] || []}
@@ -606,6 +620,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <TransparentView style={styles.flex}>
                     <TextInput
@@ -639,6 +654,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <FamilySelector
                     data={f.permittedValues}
@@ -665,6 +681,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <DropDown
                     value={formValues[field]}
@@ -695,6 +712,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <DropDown
                     value={formValues[field]}
@@ -728,6 +746,7 @@ export default function TypedForm({
                     styles.inputPair,
                     { zIndex: 10 }
                   ])}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <WhiteImagePicker
                     onImageSelect={(image) => {
@@ -759,6 +778,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <TimezoneSelect
                     value={formValues[field]}
@@ -795,6 +815,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <TransparentView>
                     <RecurrenceSelector
@@ -834,6 +855,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={false}
                 >
                   <TransparentView>
                     <ActionSelector
@@ -855,6 +877,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={false}
                 >
                   <TransparentView>
                     <ReminderSelector
@@ -878,6 +901,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <TransparentView>
                     <EntityAndTagSelector
@@ -908,6 +932,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   values={formValues}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <CalculatedDuration
                     startDatetime={startDatetime}
@@ -930,6 +955,7 @@ export default function TypedForm({
                   field={field}
                   key={field}
                   containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
                 >
                   <Duration
                     value={formValues[field]}

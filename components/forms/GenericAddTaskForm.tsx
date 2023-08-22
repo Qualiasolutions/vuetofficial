@@ -20,7 +20,7 @@ export default function GenericAddTaskForm({
   recurrenceOverwrite,
   recurrenceIndex,
   taskId,
-  inlineFields,
+  inlineFields = true,
   sectionStyle
 }: {
   type: TaskType;

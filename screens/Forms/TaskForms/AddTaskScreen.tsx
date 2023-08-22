@@ -190,12 +190,14 @@ export default function AddTaskScreen({
             <AddDueDateForm
               defaults={dueDateDefaults}
               onSuccess={() => navigation.goBack()}
+              inlineFields={true}
             />
           </TransparentView>
           <TransparentView style={formType !== 'TRANSPORT' && styles.hidden}>
             <AddTransportTaskForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
+              inlineFields={true}
             />
           </TransparentView>
           <TransparentView
@@ -204,6 +206,7 @@ export default function AddTaskScreen({
             <AddAccommodationTaskForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
+              inlineFields={true}
             />
           </TransparentView>
           <TransparentView
@@ -222,12 +225,14 @@ export default function AddTaskScreen({
               }
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
+              inlineFields={true}
             />
           </TransparentView>
           <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
             <AddAnniversaryForm
               defaults={taskDefaults}
               onSuccess={() => navigation.goBack()}
+              inlineFields={true}
             />
           </TransparentView>
         </TransparentView>

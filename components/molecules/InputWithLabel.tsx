@@ -11,7 +11,11 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     marginRight: 10,
-    flexShrink: 1
+    flexShrink: 1,
+    maxWidth: '85%'
+  },
+  helpButton: {
+    marginRight: 10
   },
   inlineInputPair: {
     flexDirection: 'row',
@@ -62,7 +66,10 @@ export default function InputWithLabel({
             style={[styles.inputLabel, labelStyle || {}]}
           />
           {helpText && (
-            <SafePressable onPress={() => setShowInfoModal(true)}>
+            <SafePressable
+              onPress={() => setShowInfoModal(true)}
+              style={styles.helpButton}
+            >
               <Feather name="info" size={20} />
             </SafePressable>
           )}

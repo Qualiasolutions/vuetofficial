@@ -40,6 +40,7 @@ export type BaseField<TypeName extends PermittedTypes, ValueType> = {
   sourceField?: string;
   targetField?: string;
   helpText?: string;
+  inlineOverride?: boolean;
 };
 
 export type StringField = BaseField<'string', string> & {
