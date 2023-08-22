@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import ListEntityPage from './EntityScreens/components/ListEntityPage';
 import BirthdayPage from './EntityScreens/components/BirthdayPage';
-import HobbyPage from './EntityScreens/components/HobbyPage';
 import SchoolPage from './EntityScreens/components/SchoolPage';
 import TripPage from './EntityScreens/components/TripPage';
 import EventPage from './EntityScreens/components/EventPage';
@@ -29,7 +28,6 @@ const resourceTypeToComponent = {
   List: ListEntityPage,
   Car: CarPage,
   Birthday: BirthdayPage,
-  Hobby: HobbyPage,
   Trip: TripPage,
   Event: EventPage,
   Holiday: HolidayPage,
