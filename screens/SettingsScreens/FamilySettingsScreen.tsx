@@ -25,7 +25,7 @@ import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import UserInitialsWithImage from 'components/molecules/UserInitialsWithImage';
+import UserWithColor from 'components/molecules/UserWithColor';
 
 const styles = StyleSheet.create({
   familyHeader: {
@@ -134,29 +134,38 @@ const FamilySettingsScreen = ({
   const userToListElement = (
     user: UserResponse | UserInviteResponse,
     isPending: boolean = false
-  ) => (
-    <TransparentView style={styles.listElement} key={user.id}>
-      <UserInitialsWithImage user={user} isPending={isPending} />
-      <TransparentView style={styles.listRight}>
-        <SafePressable
-          onPress={() => {
-            const isUserInvite = (usr: any): usr is UserInviteResponse =>
-              isPending;
-            if (isUserInvite(user)) {
-              setUserInviteToDelete(user);
-            } else {
-              setUserToDelete(user);
-            }
-          }}
-        >
-          <Image
-            style={styles.editIcon}
-            source={require('../../assets/images/icons/remove-circle.png')}
-          />
-        </SafePressable>
+  ) => {
+    const isUserInvite = (usr: any): usr is UserInviteResponse => isPending;
+    return (
+      <TransparentView style={styles.listElement} key={user.id}>
+        <UserWithColor
+          name={
+            isUserInvite(user)
+              ? `${user.phone_number || user.email} (${t('common.pending')})`
+              : `${user.first_name} ${user.last_name}`
+          }
+          memberColour={isUserInvite(user) ? '' : user.member_colour}
+          userImage={isUserInvite(user) ? '' : user.presigned_profile_image_url}
+        />
+        <TransparentView style={styles.listRight}>
+          <SafePressable
+            onPress={() => {
+              if (isUserInvite(user)) {
+                setUserInviteToDelete(user);
+              } else {
+                setUserToDelete(user);
+              }
+            }}
+          >
+            <Image
+              style={styles.editIcon}
+              source={require('../../assets/images/icons/remove-circle.png')}
+            />
+          </SafePressable>
+        </TransparentView>
       </TransparentView>
-    </TransparentView>
-  );
+    );
+  };
 
   const familyMemberList = userFullDetails?.family.users.map((user) =>
     userToListElement(user)
