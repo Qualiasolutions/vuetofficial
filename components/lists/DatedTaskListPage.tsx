@@ -8,7 +8,7 @@ import {
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { StyleSheet } from 'react-native';
 import SafePressable from 'components/molecules/SafePressable';
-import { FixedTaskResponseType, ScheduledTaskResponseType } from 'types/tasks';
+import { ScheduledTaskResponseType } from 'types/tasks';
 import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 
 const styles = StyleSheet.create({
@@ -90,8 +90,7 @@ export default function DatedTaskListPage({
   for (const task of datetimeFilteredEntityData) {
     const taskStartDate = task.date || task.start_date;
     if (taskStartDate) {
-      const { monthName, year } = getUTCValuesFromDateString(taskStartDate);
-      const sectionName = `${monthName} ${year}`;
+      const sectionName = taskStartDate.slice(0, 7);
       if (sections[sectionName]) {
         sections[sectionName].push(task);
       } else {
@@ -100,19 +99,27 @@ export default function DatedTaskListPage({
     }
   }
 
-  const listLinks = Object.entries(sections).map((entry, i) => {
-    const sectionTitle = entry[0];
-    const sectionTasks = entry[1];
-    return (
-      <TransparentView key={i}>
-        <AlmostBlackText style={styles.sectionTitle} text={sectionTitle} />
-        {sectionTasks.map((task) => {
-          const Link = card || DefaultLink;
-          return <Link key={task.id} task={task} />;
-        })}
-      </TransparentView>
-    );
-  });
+  const listLinks = Object.keys(sections)
+    .sort()
+    .map((key, i) => {
+      const { monthName, year } = getUTCValuesFromDateString(`${key}-01`);
+      const sectionTitle = `${monthName} ${year}`;
+      const sectionTasks = sections[key].sort((a, b) => {
+        const aDate = a.date || a.start_date || '1000-01-01';
+        const bDate = b.date || b.start_date || '1000-01-01';
+
+        return aDate < bDate ? -1 : 1;
+      });
+      return (
+        <TransparentView key={i}>
+          <AlmostBlackText style={styles.sectionTitle} text={sectionTitle} />
+          {sectionTasks.map((task) => {
+            const Link = card || DefaultLink;
+            return <Link key={task.id} task={task} />;
+          })}
+        </TransparentView>
+      );
+    });
 
   const showPreviousButton = monthsBack < 24 &&
     previousEntityData.length > 0 && (

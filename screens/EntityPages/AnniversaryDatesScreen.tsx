@@ -1,23 +1,35 @@
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
-import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
+import {
+  useGetAllScheduledTasksQuery,
+  useGetAllTasksQuery
+} from 'reduxStore/services/api/tasks';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   AlmostBlackText,
   LightBlackText
 } from 'components/molecules/TextComponents';
-import {
-  TransparentPaddedView,
-  WhiteBox
-} from 'components/molecules/ViewComponents';
+import { WhiteBox } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
-import { getDateWithoutTimezone, getDaysToAge } from 'utils/datesAndTimes';
+import {
+  getDateWithoutTimezone,
+  getUTCValuesFromDateString
+} from 'utils/datesAndTimes';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColor } from 'components/Themed';
-import SafePressable from 'components/molecules/SafePressable';
-import { AnniversaryTaskResponseType, isAnniversaryTask } from 'types/tasks';
+import {
+  AnniversaryTaskResponseType,
+  ScheduledTaskResponseType
+} from 'types/tasks';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import DatedTaskListPage from 'components/lists/DatedTaskListPage';
+import { useSelector } from 'react-redux';
+import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
-function AnniversaryCard({ task }: { task: AnniversaryTaskResponseType }) {
+function AnniversaryCard({ task }: { task: ScheduledTaskResponseType }) {
+  const baseTask = useSelector(
+    selectTaskById(task.id)
+  ) as AnniversaryTaskResponseType;
   const navigation = useNavigation();
 
   const styles = StyleSheet.create({
@@ -32,54 +44,71 @@ function AnniversaryCard({ task }: { task: AnniversaryTaskResponseType }) {
     cardSubtitle: { fontSize: 18 }
   });
 
-  if (!task.date) {
+  if (!baseTask?.date || !task?.date) {
     return null;
   }
 
-  const startDate = getDateWithoutTimezone(task.date);
+  const { monthName, day } = getUTCValuesFromDateString(baseTask.date);
 
-  const { age, monthName, date } = getDaysToAge(startDate);
+  const startDate = getDateWithoutTimezone(baseTask.date);
+  const instanceDate = getDateWithoutTimezone(task.date);
+  const yearsOffset = instanceDate.getFullYear() - startDate.getFullYear();
 
   return (
-    <SafePressable
-      onPress={() => {
-        (navigation as any).navigate('EditTask', { taskId: task.id });
-      }}
-    >
-      <WhiteBox style={styles.card}>
-        <LightBlackText text={task.title || ''} style={styles.listEntryText} />
+    <WhiteBox style={styles.card}>
+      <TouchableOpacity
+        onPress={() => {
+          (navigation as any).navigate('EditTask', { taskId: baseTask.id });
+        }}
+      >
+        <LightBlackText
+          text={baseTask.title || ''}
+          style={styles.listEntryText}
+        />
         <AlmostBlackText
           style={styles.cardSubtitle}
-          text={`${task?.known_year ? `${age} on ` : ''}${monthName} ${date}`}
+          text={`${
+            baseTask?.known_year ? `${yearsOffset} on ` : ''
+          }${monthName} ${day}`}
         />
-      </WhiteBox>
-    </SafePressable>
+      </TouchableOpacity>
+    </WhiteBox>
   );
 }
 
 export default function AnniversaryDatesScreen() {
   useEntityTypeHeader('anniversary-dates');
 
-  const { data: allTasks, isLoading } = useGetAllTasksQuery(null as any);
+  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery(
+    null as any
+  );
+  const { data: allScheduledTasks, isLoading: isLoadingScheduledTasks } =
+    useGetAllScheduledTasksQuery(null as any);
 
-  if (isLoading) {
+  if (isLoadingTasks || isLoadingScheduledTasks || !allTasks) {
     return <FullPageSpinner />;
   }
 
-  const birthdayTasks = allTasks?.ids
+  const birthdayTasks = allTasks.ids
     .map((id) => allTasks.byId[id])
     .filter((task) => ['BIRTHDAY', 'ANNIVERSARY'].includes(task.type));
 
-  const cards = birthdayTasks?.map((task) => {
-    if (!isAnniversaryTask(task)) {
-      return null;
-    }
-    return <AnniversaryCard task={task} key={task.id} />;
-  });
+  const birthdayIds = birthdayTasks.map((task) => task.id);
+
+  let birthdayScheduledTasks: ScheduledTaskResponseType[] = [];
+  for (const taskId of birthdayIds) {
+    birthdayScheduledTasks = [
+      ...birthdayScheduledTasks,
+      ...Object.values(allScheduledTasks?.byTaskId[taskId] || {})
+    ];
+  }
 
   return (
     <TransparentFullPageScrollView>
-      <TransparentPaddedView>{cards}</TransparentPaddedView>
+      <DatedTaskListPage
+        tasks={birthdayScheduledTasks}
+        card={AnniversaryCard}
+      />
     </TransparentFullPageScrollView>
   );
 }
