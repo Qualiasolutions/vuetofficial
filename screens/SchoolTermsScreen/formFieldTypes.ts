@@ -94,7 +94,7 @@ export const useSchoolBreakFieldTypes = (isTerm: boolean) => {
         displayName: t('schoolBreak.show_on_calendars')
       }
     };
-  }, [t]);
+  }, [t, isTerm]);
 
   return fields;
 };

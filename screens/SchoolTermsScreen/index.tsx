@@ -103,7 +103,7 @@ const SectionModal = ({
   useEffect(() => {
     const initialFormValues = section
       ? createInitialObject(formFields, undefined, section)
-      : createInitialObject(formFields);
+      : createInitialObject(formFields, undefined, { show_on_calendars: true });
     setFormValues(initialFormValues);
   }, [formFields, section, visible]); // Include visible here so that it clears on close
 
@@ -610,7 +610,8 @@ export default function SchoolTermsScreen() {
   useEffect(() => {
     const currentYear = new Date().getFullYear();
     const initialValues = createInitialObject(formFields, undefined, {
-      year: `${currentYear}/${currentYear + 1}`
+      year: `${currentYear}/${currentYear + 1}`,
+      show_on_calendars: true
     });
     setFormValues(initialValues);
   }, [formFields]);
