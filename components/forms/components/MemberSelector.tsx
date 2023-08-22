@@ -24,6 +24,7 @@ import {
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   addMemberButton: {
@@ -55,13 +56,15 @@ const styles = StyleSheet.create({
     padding: 23,
     justifyContent: 'space-between'
   },
-  phoneNumberInput: {
+  phoneNumberInputWrapper: {
     marginTop: 30
   },
+  phoneNumberInput: { flex: 1, marginRight: 10 },
+  phoneNumberInputPair: {
+    flexDirection: 'row'
+  },
   phoneNumberAddButton: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center'
+    alignItems: 'flex-end'
   },
   externalNumberListing: {
     flexDirection: 'row',
@@ -73,16 +76,16 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   externalNumberSection: {
-    marginTop: 40
+    marginTop: 20
   },
   okButton: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 10,
-    borderTopWidth: 2
+    paddingVertical: 10
   },
   externalMembersList: { marginTop: 30 },
-  selectedMemberListing: { marginTop: 11 }
+  selectedMemberListing: { marginTop: 11 },
+  cancelButton: { marginHorizontal: 10 }
 });
 
 export function ModalListing({
@@ -135,6 +138,7 @@ export default function MemberSelector({
   const bottomSheetRef = useRef<RBSheet>(null);
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
   const [newExternalNumber, setNewExternalNumber] = useState('');
+  const [addingNew, setAddingNew] = useState(false);
   const { t } = useTranslation();
 
   const { data: userDetails, isLoading: isLoadingUserDetails } =
@@ -287,39 +291,54 @@ export default function MemberSelector({
                       </SafePressable>
                     </TransparentView>
                   ))}
-                <TransparentView style={styles.phoneNumberInput}>
-                  <PhoneNumberInput
-                    onChangeFormattedText={(newPhoneNumber) => {
-                      setNewExternalNumber(newPhoneNumber);
-                    }}
-                  />
-                  <TransparentView style={styles.phoneNumberAddButton}>
-                    {getMinimalDetailsResult.isLoading ? (
-                      <PaddedSpinner />
-                    ) : (
-                      <>
-                        <Button
-                          onPress={async () => {
-                            try {
-                              const res = await getMinimalDetails(
-                                newExternalNumber
-                              ).unwrap();
-                              if (!values.includes(res.id)) {
-                                onValueChange([...values, res.id]);
-                              }
-                              // TODO - we want to put the
-                            } catch (err) {
-                              // This doesn't show under modal
-                              Toast.show({
-                                type: 'error',
-                                text1: t(
-                                  'components.memberSelector.noMemberError'
-                                )
-                              });
-                            }
+                <TransparentView style={styles.phoneNumberInputWrapper}>
+                  {addingNew ? (
+                    <>
+                      <TransparentView style={styles.phoneNumberInputPair}>
+                        <PhoneNumberInput
+                          onChangeFormattedText={(newPhoneNumber) => {
+                            setNewExternalNumber(newPhoneNumber);
                           }}
-                          title={t('common.add')}
+                          containerStyle={styles.phoneNumberInput}
                         />
+                        <TransparentView style={styles.phoneNumberAddButton}>
+                          {getMinimalDetailsResult.isLoading ? (
+                            <PaddedSpinner />
+                          ) : (
+                            <>
+                              <Button
+                                onPress={async () => {
+                                  try {
+                                    const res = await getMinimalDetails(
+                                      newExternalNumber
+                                    ).unwrap();
+                                    if (!values.includes(res.id)) {
+                                      onValueChange([...values, res.id]);
+                                    }
+                                    // TODO - we want to put the
+                                  } catch (err) {
+                                    // This doesn't show under modal
+                                    Toast.show({
+                                      type: 'error',
+                                      text1: t(
+                                        'components.memberSelector.noMemberError'
+                                      )
+                                    });
+                                  }
+                                }}
+                                title={t('common.add')}
+                              />
+                            </>
+                          )}
+                        </TransparentView>
+                      </TransparentView>
+                      <>
+                        <TouchableOpacity
+                          onPress={() => setAddingNew(false)}
+                          style={styles.cancelButton}
+                        >
+                          <PrimaryText text={t('common.cancel')} />
+                        </TouchableOpacity>
                         {getMinimalDetailsResult.isError && (
                           <TransparentView style={styles.phoneNumberAddButton}>
                             <Feather name="x" color="red" size={40} />
@@ -331,18 +350,22 @@ export default function MemberSelector({
                           </TransparentView>
                         )}
                       </>
-                    )}
-                  </TransparentView>
+                    </>
+                  ) : (
+                    <SafePressable onPress={() => setAddingNew(true)}>
+                      <PrimaryText text={t('common.addNew')} />
+                    </SafePressable>
+                  )}
                 </TransparentView>
               </TransparentView>
             </SafeAreaView>
+            <TransparentView style={styles.okButton}>
+              <Button
+                title={t('common.ok')}
+                onPress={() => bottomSheetRef.current?.close()}
+              />
+            </TransparentView>
           </TransparentScrollView>
-          <TransparentView style={styles.okButton}>
-            <Button
-              title={t('common.ok')}
-              onPress={() => bottomSheetRef.current?.close()}
-            />
-          </TransparentView>
         </WhiteView>
       </RBSheet>
     </TransparentView>
