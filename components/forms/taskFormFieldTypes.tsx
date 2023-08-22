@@ -170,6 +170,34 @@ export const useTaskFieldTypes = ({
         ]
       },
       is_any_time: defaultIsAnyTime(t, disabledRecurrenceFields),
+      is_all_day: {
+        type: 'checkbox',
+        required: false,
+        displayName: t('tasks.task.is_all_day'),
+        shownFields: [
+          {
+            is_any_time: true
+          }
+        ]
+      },
+      start_date: {
+        ...defaultStartDate(t),
+        shownFields: [
+          {
+            is_any_time: true,
+            is_all_day: true
+          }
+        ]
+      },
+      end_date: {
+        ...defaultEndDate(t),
+        shownFields: [
+          {
+            is_any_time: true,
+            is_all_day: true
+          }
+        ]
+      },
       date: {
         type: 'Date',
         displayName: t('tasks.task.date'),
@@ -178,7 +206,8 @@ export const useTaskFieldTypes = ({
         shownFields: [
           {
             is_flexible: false,
-            is_any_time: true
+            is_any_time: true,
+            is_all_day: false
           }
         ]
       },
@@ -192,7 +221,8 @@ export const useTaskFieldTypes = ({
             is_flexible: true
           },
           {
-            is_any_time: true
+            is_any_time: true,
+            is_all_day: false
           }
         ]
       },

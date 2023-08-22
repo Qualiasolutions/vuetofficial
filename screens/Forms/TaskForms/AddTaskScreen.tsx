@@ -134,9 +134,8 @@ export default function AddTaskScreen({
 
     const defaultDuration = 15;
     const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
-    const nextWeek = new Date();
-    nextWeek.setDate(nextWeek.getDate() + 7);
-    const defaultDueDate = dayjs(nextWeek).format('YYYY-MM-DD');
+    const dateNow = new Date();
+    const defaultDueDate = dayjs(dateNow).format('YYYY-MM-DD');
 
     return {
       title: route.params?.title || '',
@@ -154,10 +153,9 @@ export default function AddTaskScreen({
   }, [formType, route.params, userDetails]);
 
   const dueDateDefaults = useMemo(() => {
-    const nextWeek = new Date();
-    nextWeek.setDate(nextWeek.getDate() + 7);
+    const dateNow = new Date();
     const defaultDueDate =
-      route.params?.date || dayjs(nextWeek).format('YYYY-MM-DD');
+      route.params?.date || dayjs(dateNow).format('YYYY-MM-DD');
 
     return {
       date: defaultDueDate,

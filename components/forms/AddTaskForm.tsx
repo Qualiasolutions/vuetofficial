@@ -144,9 +144,6 @@ export default function AddTaskForm({
     const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
 
     const defaultDate = defaults.date ? new Date(defaults.date) : new Date();
-    if (!defaults.date) {
-      defaultDate.setDate(defaultDate.getDate() + 7);
-    }
     const defaultDueDate = dayjs(defaultDate).format('YYYY-MM-DD');
 
     return createInitialObject(taskFields, userDetails, {
@@ -159,6 +156,8 @@ export default function AddTaskForm({
       start_datetime: defaultStartTime,
       end_datetime: defaultEndTime,
       date: defaultDueDate,
+      start_date: defaultDueDate,
+      end_date: defaultDueDate,
       duration: defaultDuration,
       earliest_action_date: defaultEarliestActionDate,
       due_date: defaultDueDate,
