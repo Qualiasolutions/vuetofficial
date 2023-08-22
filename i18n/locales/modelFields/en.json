@@ -160,6 +160,9 @@
       "phone_number": "Phone Number",
       "email": "Email"
     },
+    "student": {
+      "school_attended": "School"
+    },
     "school-break": {
       "name": "Break name",
       "start_date": "First day of break",

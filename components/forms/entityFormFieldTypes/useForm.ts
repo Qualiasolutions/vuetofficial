@@ -44,6 +44,9 @@ import { travelPlanForm } from './formFields/travel-plan';
 import { anniversaryPlanForm } from './formFields/anniversary-plan';
 import { holidayPlanForm } from './formFields/holiday-plan';
 import { healthGoal } from './formFields/health-goal';
+import { useSelector } from 'react-redux';
+import { selectEntitiesByEntityTypes } from 'reduxStore/slices/entities/selectors';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 
 export default function useForm(
   entityType: EntityTypeName,
@@ -52,6 +55,9 @@ export default function useForm(
   const { t } = useTranslation('modelFields');
   const { data: userFullDetails, isLoading: isLoadingFullDetails } =
     useGetUserDetails();
+
+  const allSchoolIds = useSelector(selectEntitiesByEntityTypes(['School']));
+  const { data: allEntities } = useGetAllEntitiesQuery();
 
   const form = useMemo(() => {
     if (isLoadingFullDetails || !userFullDetails) {
@@ -199,7 +205,12 @@ export default function useForm(
     }
 
     if (entityType === 'Student') {
-      return studentForm(isEdit, userFullDetails, t);
+      if (!allEntities) {
+        return {};
+      }
+      const allSchools = allSchoolIds.map((id) => allEntities.byId[id]);
+
+      return studentForm(isEdit, userFullDetails, allSchools, t);
     }
 
     if (entityType === 'Employee') {
@@ -223,7 +234,15 @@ export default function useForm(
     }
 
     return {};
-  }, [entityType, isEdit, isLoadingFullDetails, t, userFullDetails]);
+  }, [
+    entityType,
+    isEdit,
+    isLoadingFullDetails,
+    t,
+    userFullDetails,
+    allEntities,
+    allSchoolIds
+  ]);
 
   return form;
 }
