@@ -131,7 +131,12 @@ export default function AddAnniversaryForm({
       recurrence: defaultRecurrence,
       first_name: defaults.first_name,
       last_name: defaults.last_name,
-      members: userDetails.family.users.map((user) => user.id)
+      members: userDetails.family.users.map((user) => user.id),
+      actions: [
+        {
+          action_timedelta: '14 days'
+        }
+      ]
     });
   }, [anniversaryFields, userDetails, defaults, type]);
 
