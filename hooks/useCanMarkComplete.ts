@@ -27,14 +27,18 @@ export default function useCanMarkComplete({
     })
   );
 
+  if (actionId) {
+    console.log(taskToAction);
+  }
+
   const hasEditPerms = useHasEditPerms(taskId);
 
   const canMarkComplete =
     userDetails?.is_premium &&
     hasEditPerms &&
     taskToAction &&
-    task &&
-    ['TASK', 'APPOINTMENT', 'DUE_DATE'].includes(task.type);
+    (actionId ||
+      (task && ['TASK', 'APPOINTMENT', 'DUE_DATE'].includes(task.type)));
 
   return canMarkComplete;
 }

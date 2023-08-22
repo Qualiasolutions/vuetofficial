@@ -136,9 +136,9 @@ export default function TaskActionModal() {
             title={t('components.task.messages')}
           />
         )}
-        {canMarkComplete && task && taskToAction && scheduledTask && (
+        {canMarkComplete && taskToAction && scheduledTask && (
           <TaskCompletionPressable
-            taskId={task.id}
+            taskId={taskToAction.taskId}
             recurrenceIndex={
               taskToAction.recurrenceIndex === null
                 ? undefined

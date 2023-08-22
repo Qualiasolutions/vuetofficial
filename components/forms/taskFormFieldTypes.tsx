@@ -109,7 +109,6 @@ export const useTaskFieldTypes = ({
         changeMembersText: t('tasks.task.changeMembers')
       },
       is_flexible: defaultIsFlexible(t, disableFlexible),
-      is_any_time: defaultIsAnyTime(t, disabledRecurrenceFields),
       start_datetime: {
         type: 'DateTime',
         required: true,
@@ -170,6 +169,7 @@ export const useTaskFieldTypes = ({
           }
         ]
       },
+      is_any_time: defaultIsAnyTime(t, disabledRecurrenceFields),
       date: {
         type: 'Date',
         displayName: t('tasks.task.date'),
@@ -404,7 +404,6 @@ export const useTransportFieldTypes = (
             ? t('tasks.transportTask.dropoff_location')
             : t('tasks.transportTask.end_location')
       },
-      is_any_time: defaultIsAnyTime(t),
       start_datetime: {
         type: 'DateTime',
         required: true,
@@ -447,6 +446,7 @@ export const useTransportFieldTypes = (
           }
         ]
       },
+      is_any_time: defaultIsAnyTime(t),
       start_date: {
         ...defaultStartDate(t),
         shownFields: [
@@ -492,7 +492,6 @@ export const useAccommodationFieldTypes = (
             ? t('tasks.accommodationTask.hotelName')
             : t('tasks.accommodationTask.friendName')
       },
-      is_any_time: defaultIsAnyTime(t),
       start_datetime: {
         type: 'DateTime',
         required: true,
@@ -535,11 +534,12 @@ export const useAccommodationFieldTypes = (
           }
         ]
       },
+      is_any_time: defaultIsAnyTime(t),
       start_date: {
         ...defaultStartDate(t),
         shownFields: [
           {
-            is_any_time: false
+            is_any_time: true
           }
         ]
       },
@@ -547,7 +547,7 @@ export const useAccommodationFieldTypes = (
         ...defaultEndDate(t),
         shownFields: [
           {
-            is_any_time: false
+            is_any_time: true
           }
         ]
       },

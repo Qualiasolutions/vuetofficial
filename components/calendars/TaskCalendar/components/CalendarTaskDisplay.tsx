@@ -244,7 +244,7 @@ function Calendar({
         .filter((task) => {
           return (
             task.type === 'TASK' &&
-            allTasks?.byId[task.id].type &&
+            allTasks?.byId[task.id]?.type &&
             ['HOLIDAY', 'ANNIVERSARY', 'BIRTHDAY'].includes(
               allTasks?.byId[task.id].type
             )
@@ -329,7 +329,16 @@ function Calendar({
       });
     }
     return [future, past];
-  }, [firstDate, tasks, allRoutines, tasksPerRoutine, entities, currentDate]);
+  }, [
+    firstDate,
+    tasks,
+    allRoutines,
+    tasksPerRoutine,
+    entities,
+    currentDate,
+    allEntities,
+    allTasks
+  ]);
 
   useEffect(() => {
     if (monthEnforcedDate && sectionListRef?.current) {
