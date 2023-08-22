@@ -35,7 +35,7 @@ import useCanMarkComplete from 'hooks/useCanMarkComplete';
 import TaskCompletionPressable from 'components/molecules/TaskCompletionPressable';
 import Checkbox from 'components/molecules/Checkbox';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
-import { EntityTypeName } from 'types/entities';
+import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: '100%'
   },
   bottomWrapper: {
@@ -117,12 +117,14 @@ const TimeText = ({
     textContent = <Text>{t('common.allDay')}</Text>;
   } else if (scheduledTask.start_date && scheduledTask.end_date) {
     textContent = <Text>{t('common.allDay')}</Text>;
-  } else if (scheduledTask.date && scheduledTask.duration) {
+  } else if (scheduledTask.date) {
     textContent = (
       <Text>
-        {`${scheduledTask.duration} ${t('common.mins')}, ${t(
-          'common.anyTime'
-        )}`}
+        {`${
+          scheduledTask.duration
+            ? `${scheduledTask.duration} ${t('common.mins')}, `
+            : ' '
+        }${t('common.anyTime')}`}
       </Text>
     );
   } else if (scheduledTask.start_datetime && scheduledTask.end_datetime) {
@@ -214,12 +216,7 @@ const TaskIcon = ({ task }: { task: FixedTaskResponseType }) => {
 
 const EntityIcon = ({ entity }: { entity: ScheduledEntityResponseType }) => {
   const iconMappings: {
-    [key in
-      | EntityTypeName
-      | 'SchoolTerm'
-      | 'SchoolBreak'
-      | 'SchoolYearStart'
-      | 'SchoolYearEnd']?: string;
+    [key in EntityTypeName | SchoolTermTypeName]?: string;
   } = {
     SchoolTerm: '📚',
     SchoolBreak: '📚',

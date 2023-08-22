@@ -17,7 +17,7 @@ import {
 import { getDateStringsBetween } from 'utils/datesAndTimes';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
-import { EntityTypeName } from 'types/entities';
+import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
 import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 
@@ -191,7 +191,7 @@ type AllScheduledTasks = {
   };
   orderedEntities: {
     id: number;
-    resourcetype: EntityTypeName;
+    resourcetype: EntityTypeName | SchoolTermTypeName;
   }[];
   byDateEntities: {
     [date: string]: ScheduledEntity[];

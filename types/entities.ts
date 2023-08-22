@@ -45,6 +45,12 @@ export type EntityTypeName =
   | 'Employee'
   | 'Finance';
 
+export type SchoolTermTypeName =
+  | 'SchoolTerm'
+  | 'SchoolBreak'
+  | 'SchoolYearStart'
+  | 'SchoolYearEnd';
+
 export interface BaseEntityType {
   id: number;
   name: string;

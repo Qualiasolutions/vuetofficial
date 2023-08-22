@@ -9,7 +9,7 @@ import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms'
 import tasksApi from 'reduxStore/services/api/tasks';
 import { CategoryName } from 'types/categories';
 import { DayType } from 'types/datesAndTimes';
-import { EntityTypeName } from 'types/entities';
+import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
 import {
   HiddenTagType,
   ScheduledEntityResponseType,
@@ -114,7 +114,8 @@ export const selectOverdueTasks = createSelector(
         continue;
       }
 
-      const taskDatetimeString = task?.start_datetime || task?.date;
+      const taskDatetimeString =
+        task?.start_datetime || task?.start_date || task?.date;
       if (!taskDatetimeString) {
         continue;
       }
@@ -392,7 +393,7 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
 );
 
 export const selectFilteredScheduledEntityIds = (
-  resourceTypes?: EntityTypeName[],
+  resourceTypes?: (EntityTypeName | SchoolTermTypeName)[],
   entityIds?: number[]
 ) =>
   createSelector(

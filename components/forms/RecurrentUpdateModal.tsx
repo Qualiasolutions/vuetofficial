@@ -76,7 +76,9 @@ export default function RecurrentUpdateModal({
                 recurrence_index: recurrenceIndex,
                 baseTaskId: taskId,
                 change_datetime:
-                  oldScheduledTask?.start_datetime || oldScheduledTask?.date
+                  oldScheduledTask?.start_datetime ||
+                  oldScheduledTask?.start_date ||
+                  oldScheduledTask?.date
               }).unwrap();
               onRequestClose();
               navigation.goBack();

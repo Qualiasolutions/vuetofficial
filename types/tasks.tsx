@@ -1,5 +1,5 @@
 import { AlertName } from './alerts';
-import { EntityTypeName } from './entities';
+import { EntityTypeName, SchoolTermTypeName } from './entities';
 
 type RecurrenceType =
   | 'DAILY'
@@ -127,12 +127,7 @@ interface ScheduledEntityResponseType {
   id: number;
   members: number[];
   title: string;
-  resourcetype:
-    | EntityTypeName
-    | 'SchoolTerm'
-    | 'SchoolBreak'
-    | 'SchoolYearStart'
-    | 'SchoolYearEnd';
+  resourcetype: EntityTypeName | SchoolTermTypeName;
   start_date: string;
   end_date: string;
 }

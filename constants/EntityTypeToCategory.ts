@@ -1,13 +1,8 @@
 import { CategoryName } from 'types/categories';
-import { EntityTypeName } from 'types/entities';
+import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
 
 const ENTITY_TYPE_TO_CATEGORY: {
-  [key in
-    | EntityTypeName
-    | 'SchoolTerm'
-    | 'SchoolBreak'
-    | 'SchoolYearStart'
-    | 'SchoolYearEnd']: CategoryName;
+  [key in EntityTypeName | SchoolTermTypeName]: CategoryName;
 } = {
   Anniversary: 'SOCIAL_INTERESTS',
   Birthday: 'SOCIAL_INTERESTS',
