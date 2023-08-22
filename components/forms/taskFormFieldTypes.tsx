@@ -640,7 +640,7 @@ export const useAnniversaryFieldTypes = (
         required: true,
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
-        changeMembersText: t('tasks.anniversaryTask.changeMembers')
+        changeMembersText: t('tasks.task.showOnWhoseCalendar')
       },
       date: {
         type: 'OptionalYearDate',
@@ -693,7 +693,7 @@ export const useHolidayFieldTypes = (
         required: true,
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('tasks.task.members'),
-        changeMembersText: t('tasks.task.changeMembers')
+        changeMembersText: t('tasks.task.showOnWhoseCalendar')
       },
       start_date: defaultStartDate(t),
       end_date: defaultEndDate(t),

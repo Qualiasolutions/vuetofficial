@@ -48,14 +48,15 @@ type AddHolidayTaskFormProps = {
   sectionStyle?: ViewStyle;
   inlineFields?: boolean;
   defaults: {
-    title: string;
-    start_date: string;
-    end_date: string;
-    entities: number[];
-    members: number[];
-    tags: string[];
+    title?: string;
+    start_date?: string;
+    end_date?: string;
+    entities?: number[];
+    members?: number[];
+    tags?: string[];
     recurrence?: Recurrence | null;
     reminders?: Reminder[];
+    actions?: { action_timedelta: string }[];
   };
 };
 
@@ -68,6 +69,8 @@ export default function AddHolidayTaskForm({
   inlineFields,
   defaults
 }: AddHolidayTaskFormProps) {
+  console.log('defaults');
+  console.log(defaults);
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
 
@@ -116,7 +119,9 @@ export default function AddHolidayTaskForm({
         entities: defaults.entities || [],
         tags: defaults.tags || ['SOCIAL_INTERESTS__HOLIDAY']
       },
-      recurrence: defaults.recurrence || defaultRecurrence
+      recurrence: defaults.recurrence || defaultRecurrence,
+      actions: defaults.actions || [],
+      members: defaults.members || []
     });
   }, [holidayFields, userDetails, defaults]);
 

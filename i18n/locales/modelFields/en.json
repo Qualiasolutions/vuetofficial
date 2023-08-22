@@ -27,7 +27,8 @@
       "date": "Date",
       "routine": "Routine",
       "tags": "Tags",
-      "changeMembers": "Who is doing?"
+      "changeMembers": "Who is doing?",
+      "showOnWhoseCalendar": "Show on Whose Calendar?"
     },
     "helpText": {
       "tags": "Every Task should be tagged for easy reference later",
@@ -66,8 +67,7 @@
     },
     "anniversaryTask": {
       "name": "Name",
-      "start": "Start Date",
-      "changeMembers": "Show on Whose Calendar?"
+      "start": "Start Date"
     }
   },
   "entities": {
