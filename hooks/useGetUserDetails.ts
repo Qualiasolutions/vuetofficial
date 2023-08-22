@@ -12,14 +12,17 @@ export default function useGetUserFullDetails() {
     data: userDetails,
     isLoading: isLoadingUserDetails,
     error: userDetailsError
-  } = useGetUserDetailsQuery(null as any, { skip: !jwtAccessToken });
+  } = useGetUserDetailsQuery(null as any, {
+    skip: !jwtAccessToken
+  });
 
   const {
     data: userFullDetails,
     isLoading: isLoadingFullDetails,
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-    skip: !userDetails?.user_id
+    skip: !userDetails?.user_id,
+    pollingInterval: 30000
   });
 
   return {
