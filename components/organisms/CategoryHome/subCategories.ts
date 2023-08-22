@@ -317,6 +317,12 @@ export default {
         entityTypes: ['Finance'],
         entityTypeName: 'finance'
       }
+    },
+    {
+      name: 'finance.myFinanceInformation',
+      toScreen: 'TagScreen',
+      navMethod: 'push',
+      toScreenParams: { tagName: 'FINANCE__INFORMATION__PUBLIC' }
     }
   ],
   TRANSPORT: [

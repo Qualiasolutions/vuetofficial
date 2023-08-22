@@ -82,6 +82,7 @@
     "TRAVEL__ACCOMMODATION": "Accommodation",
     "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
     "TRANSPORT__INFORMATION__PUBLIC": "My Transport Information",
+    "FINANCE__INFORMATION__PUBLIC": "My Finance Information",
     "SOCIAL_INTERESTS__INFORMATION__PUBLIC": "My Social Information",
     "CAREER__INFORMATION__PUBLIC": "My Career Information",
     "HOME__INFORMATION__PUBLIC": "My Home Information",
@@ -172,7 +173,8 @@
       "myLaundryInformation": "My Laundry Information"
     },
     "finance": {
-      "myFinances": "My Finances"
+      "myFinances": "My Finances",
+      "myFinanceInformation": "My Finance Information"
     },
     "transport": {
       "cars": "Cars & Motorcycles",
@@ -275,6 +277,7 @@
     "TRAVEL__ACCOMMODATION": "Accommodation",
     "TRAVEL__INFORMATION__PUBLIC": "My Travel Information",
     "TRANSPORT__INFORMATION__PUBLIC":"My Transport Information",
+    "FINANCE__INFORMATION__PUBLIC": "My Finance Information",
     "SOCIAL_INTERESTS__INFORMATION__PUBLIC": "My Social Information",
     "SOCIAL_INTERESTS__BIRTHDAY": "Birthdays",
     "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversaries",
