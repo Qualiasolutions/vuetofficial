@@ -1,7 +1,9 @@
+import SafePressable from 'components/molecules/SafePressable';
 import { Text } from 'components/Themed';
 import iWantToOptions from 'constants/iWantToOptions';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Linking } from 'react-native';
 import { useGetAllReferenceGroupsQuery } from 'reduxStore/services/api/references';
 import { QuickNavTabParamList } from 'types/base';
 import { CategoryName } from 'types/categories';
@@ -37,7 +39,17 @@ export default function QuickNavigator({
     }
     const comps: { [key: string]: () => JSX.Element } = {};
     for (const opt of iWantToOptions[categoryName]) {
-      comps[opt] = () => <Text>{opt}</Text>;
+      comps[opt.title] = () => (
+        <SafePressable
+          onPress={() => {
+            if (opt.link) {
+              Linking.openURL(opt.link);
+            }
+          }}
+        >
+          <Text>{opt.link || opt.title}</Text>
+        </SafePressable>
+      );
     }
     return comps;
   }, [categoryName]);
