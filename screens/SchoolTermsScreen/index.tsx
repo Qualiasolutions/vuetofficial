@@ -84,7 +84,8 @@ const SectionModal = ({
   onCreate,
   onUpdate,
   onDelete,
-  section
+  section,
+  isTerm
 }: {
   visible: boolean;
   onRequestClose: () => void;
@@ -92,8 +93,9 @@ const SectionModal = ({
   onUpdate: (values: any) => Promise<void>;
   onDelete: () => Promise<void>;
   section?: SchoolTerm | SchoolBreak;
+  isTerm?: boolean;
 }) => {
-  const formFields = useSchoolBreakFieldTypes();
+  const formFields = useSchoolBreakFieldTypes(!!isTerm);
   const [formValues, setFormValues] = useState({});
   const { t } = useTranslation();
   const [submitting, setSubmitting] = useState(false);
@@ -286,6 +288,7 @@ const SchoolTermModal = ({
       onUpdate={onUpdate}
       onDelete={onDelete}
       section={term}
+      isTerm={true}
     />
   );
 };

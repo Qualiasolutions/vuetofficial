@@ -230,5 +230,9 @@
     "start_date": "Start Date",
     "end_date": "End Date",
     "show_on_calendars": "Show on Calendars"
+  },
+  "schoolTerm": {
+    "start_date": "First Day of Term",
+    "end_date": "Last Day of Term"
   }
 }

@@ -62,7 +62,7 @@ export const useSchoolYearFieldTypes = () => {
   return fields;
 };
 
-export const useSchoolBreakFieldTypes = () => {
+export const useSchoolBreakFieldTypes = (isTerm: boolean) => {
   const { t } = useTranslation('modelFields');
 
   const fields = useMemo<FlatFormFieldTypes>(() => {
@@ -75,13 +75,17 @@ export const useSchoolBreakFieldTypes = () => {
       start_date: {
         type: 'Date',
         required: true,
-        displayName: t('schoolBreak.start_date'),
+        displayName: isTerm
+          ? t('schoolTerm.start_date')
+          : t('schoolBreak.start_date'),
         associatedEndDateField: 'end_date'
       },
       end_date: {
         type: 'Date',
         required: true,
-        displayName: t('schoolBreak.end_date'),
+        displayName: isTerm
+          ? t('schoolTerm.end_date')
+          : t('schoolBreak.end_date'),
         associatedStartDateField: 'start_date'
       },
       show_on_calendars: {
