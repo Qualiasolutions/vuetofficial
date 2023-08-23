@@ -7,6 +7,7 @@ const ENTITY_TYPE_TO_CATEGORY: {
   Anniversary: 'SOCIAL_INTERESTS',
   Birthday: 'SOCIAL_INTERESTS',
   Event: 'SOCIAL_INTERESTS',
+  EventSubentity: 'SOCIAL_INTERESTS',
   Hobby: 'SOCIAL_INTERESTS',
   SocialMedia: 'SOCIAL_INTERESTS',
   SocialPlan: 'SOCIAL_INTERESTS',
