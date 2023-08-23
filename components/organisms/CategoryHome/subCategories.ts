@@ -118,7 +118,13 @@ export default {
       toScreen: 'EntityList',
       navMethod: 'push',
       toScreenParams: {
-        entityTypes: ['School'],
+        entityTypes: [
+          'School',
+          'SchoolYearStart',
+          'SchoolYearEnd',
+          'SchoolTerm',
+          'SchoolBreak'
+        ],
         entityTypeName: 'schools'
       }
     },
