@@ -3,15 +3,10 @@ import {
   FormFieldTypes
 } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
-import { UserFullResponse } from 'types/users';
 import dueDateMembershipField from '../utils/dueDateMembershipField';
 import reminderDropDownField from '../utils/reminderDropDownField';
 
-export const boatForm = (
-  isEdit: boolean,
-  userFullDetails: UserFullResponse,
-  t: TFunction
-): FormFieldTypes => {
+export const boatForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
   const fields: FlatFormFieldTypes[] = [
     {
       image: {
@@ -49,10 +44,6 @@ export const boatForm = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('entities.entity.members')
       }
@@ -92,7 +83,6 @@ export const boatForm = (
       ),
       service_due_date_members: dueDateMembershipField(
         'service_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')
@@ -112,7 +102,6 @@ export const boatForm = (
       ),
       insurance_due_date_members: dueDateMembershipField(
         'insurance_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')

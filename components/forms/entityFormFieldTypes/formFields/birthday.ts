@@ -1,12 +1,7 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
-import { UserFullResponse } from 'types/users';
 
-export const birthdayForm = (
-  isEdit: boolean,
-  userFullDetails: UserFullResponse,
-  t: TFunction
-): FormFieldTypes => {
+export const birthdayForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
   return {
     first_name: {
       type: 'string',
@@ -25,9 +20,8 @@ export const birthdayForm = (
       knownYearField: 'known_year'
     },
     members: {
-      type: 'addFamilyMembers',
+      type: 'addMembers',
       required: true,
-      permittedValues: userFullDetails?.family?.users || [],
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.birthday.members')
     }

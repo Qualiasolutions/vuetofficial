@@ -21,10 +21,12 @@ import { ViewStyle } from 'react-native';
 
 export default function EditEntityForm({
   entityId,
-  style
+  style,
+  onSubmitSuccess
 }: {
   entityId: number;
   style?: ViewStyle;
+  onSubmitSuccess?: () => void;
 }) {
   const navigation = useNavigation();
 
@@ -95,7 +97,9 @@ export default function EditEntityForm({
               type: 'success',
               text1: `Succesfully updated ${entityToEdit.name}`
             });
-            navigation.goBack();
+            if (onSubmitSuccess) {
+              onSubmitSuccess();
+            }
           }}
           onDeleteSuccess={onDeleteSuccess}
           clearOnSubmit={false}

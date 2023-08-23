@@ -101,7 +101,10 @@ export default function EntityCheckboxes({
 
         const entityCheckboxes = (entityIds || []).map((entityId: number) => {
           const entity = memberEntities.byId[entityId];
-          if (HIDDEN_ENTITY_TYPES.includes(entity.resourcetype)) {
+          if (
+            HIDDEN_ENTITY_TYPES.includes(entity.resourcetype) ||
+            entity.hidden
+          ) {
             // Don't want to show list entities here
             return null;
           }
@@ -109,7 +112,10 @@ export default function EntityCheckboxes({
           return (
             <TransparentView style={styles.entityCheckboxPair} key={entity.id}>
               <TransparentView style={styles.entityCheckboxLabel}>
-                <Text>{entity.name}</Text>
+                <Text>
+                  {entity.name}
+                  {entity.parent_name && ` (${entity.parent_name})`}
+                </Text>
               </TransparentView>
               <Checkbox
                 checked={value.entities.includes(entity.id)}

@@ -1,10 +1,8 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
-import { UserFullResponse } from 'types/users';
 
 export const schoolBreakForm = (
   isEdit: boolean,
-  userFullDetails: UserFullResponse,
   t: TFunction
 ): FormFieldTypes => {
   return {

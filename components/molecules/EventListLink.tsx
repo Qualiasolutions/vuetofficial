@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Image, Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { Image, StyleSheet, ViewStyle } from 'react-native';
 import {
   ContentTabParamList,
   RootTabParamList,
@@ -15,7 +15,7 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useTranslation } from 'react-i18next';
-import SafePressable from './SafePressable';
+import { TouchableOpacity } from './TouchableOpacityComponents';
 
 // We will need to add more types here as we use
 // this for more sub-navigators
@@ -60,12 +60,15 @@ export default function EventListLink({
     listEntry: {
       width: Layout.window.width - 35,
       paddingHorizontal: 24,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
       marginTop: 10,
       borderRadius: 10,
       borderWidth: 1
+    },
+    listEntryInner: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      alignItems: 'center'
     },
     listEntryText: {
       fontSize: 18,
@@ -85,7 +88,8 @@ export default function EventListLink({
       marginLeft: -10,
       justifyContent: 'center',
       alignItems: 'center'
-    }
+    },
+    faded: { opacity: 0.3 }
   });
 
   function returnEventImage() {
@@ -124,14 +128,14 @@ export default function EventListLink({
 
   const renderRightActions = useCallback(() => {
     return (
-      <SafePressable
+      <TouchableOpacity
         onPress={() => onSelect && onSelect(selected)}
         style={styles.hideTab}
       >
         <WhiteText text={t('common.hide')} />
-      </SafePressable>
+      </TouchableOpacity>
     );
-  }, [selected, onSelect]);
+  }, [selected, onSelect, styles, t]);
 
   const Wrapper = selected ? Swipeable : TransparentView;
 
@@ -142,21 +146,29 @@ export default function EventListLink({
       renderRightActions={renderRightActions}
       containerStyle={{ overflow: 'visible' }}
     >
-      <SafePressable
-        onPress={() => {
-          if (onPressContainer) {
-            return onPressContainer();
-          }
-          !selected && onSelect && onSelect(selected);
-        }}
+      <WhiteBox
+        style={[
+          styles.listEntry,
+          selected && { backgroundColor: greyColor },
+          !selected && subType !== 'add' && styles.faded,
+          style
+        ]}
       >
-        <WhiteBox
-          style={[
-            styles.listEntry,
-            style,
-            selected && { backgroundColor: greyColor },
-            !selected && subType !== 'add' && { opacity: 0.3 }
-          ]}
+        <TouchableOpacity
+          onPress={() => {
+            if (onPressContainer) {
+              return onPressContainer();
+            }
+            if (!selected && onSelect) {
+              return onSelect(selected);
+            }
+            if (navMethod === 'push') {
+              (navigation as any).push(toScreen, toScreenParams);
+            } else {
+              (navigation.navigate as any)(toScreen, toScreenParams);
+            }
+          }}
+          style={[styles.listEntryInner]}
         >
           <TransparentView style={styles.row}>
             {returnEventImage()}
@@ -169,8 +181,8 @@ export default function EventListLink({
               size={!selected ? 25 : 30}
             />
           )}
-        </WhiteBox>
-      </SafePressable>
+        </TouchableOpacity>
+      </WhiteBox>
     </Wrapper>
   );
 }

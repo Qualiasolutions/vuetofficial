@@ -6,6 +6,25 @@ import {
 } from 'types/entities';
 import { vuetApi } from './api';
 
+const ARRAY_FIELDS = ['members'];
+const entityFormToObj = (formData: any) => {
+  let output: { [key: string]: any } = {};
+  formData._parts.forEach(([key, value]: any[]) => {
+    // Check if property already exist
+    if (Object.prototype.hasOwnProperty.call(output, key)) {
+      let current = output[key];
+      if (!Array.isArray(current)) {
+        // If it's not an array, convert it to an array.
+        current = output[key] = [current];
+      }
+      current.push(value); // Add the new value to the array.
+    } else {
+      output[key] = ARRAY_FIELDS.includes(key) ? [value] : value;
+    }
+  });
+  return output;
+};
+
 const normalizeEntityData = (data: { id: number; category: number }[]) => {
   return {
     ids: data.map(({ id }) => id),
@@ -71,7 +90,7 @@ const entitiesApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity'],
+      // invalidatesTags: ['Entity'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -254,7 +273,7 @@ const entitiesApi = vuetApi.injectEndpoints({
               (draft) => {
                 draft.byId[patch.id] = {
                   ...draft.byId[patch.id],
-                  ...patch
+                  ...entityFormToObj(patch.formData)
                 };
               }
             )

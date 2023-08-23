@@ -1,10 +1,7 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
 
-export const holidayPlanForm = (
-  isEdit: boolean,
-  t: TFunction
-): FormFieldTypes => {
+export const defaultForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
   return {
     name: {
       type: 'string',

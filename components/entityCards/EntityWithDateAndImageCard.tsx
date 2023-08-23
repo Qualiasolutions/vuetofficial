@@ -10,7 +10,7 @@ import { useThemeColor } from 'components/Themed';
 import { EntityResponseType } from 'types/entities';
 import { parsePresignedUrl } from 'utils/urls';
 import { Feather } from '@expo/vector-icons';
-import SafePressable from 'components/molecules/SafePressable';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 type Props = {
   entity: EntityResponseType;
@@ -27,13 +27,14 @@ export default function EntityWithDateAndImageCard({
   const styles = StyleSheet.create({
     card: {
       marginTop: 10,
-      alignItems: 'center',
-      borderColor: useThemeColor({}, 'almostBlack'),
-      flexDirection: 'row'
+      borderColor: useThemeColor({}, 'almostBlack')
+    },
+    cardInner: {
+      flexDirection: 'row',
+      alignItems: 'center'
     },
     listEntryText: {
       fontSize: 20
-      // width: 200
     },
     imageOrPlaceholder: {
       marginRight: 20
@@ -59,12 +60,13 @@ export default function EntityWithDateAndImageCard({
   const imageSource = parsePresignedUrl(entity.presigned_image_url);
 
   return (
-    <SafePressable
-      onPress={() => {
-        (navigation as any).navigate('EntityScreen', { entityId: entity.id });
-      }}
-    >
-      <WhiteBox style={styles.card}>
+    <WhiteBox style={styles.card}>
+      <TouchableOpacity
+        onPress={() => {
+          (navigation as any).navigate('EntityScreen', { entityId: entity.id });
+        }}
+        style={styles.cardInner}
+      >
         {imageSource ? (
           <Image
             source={{ uri: imageSource }}
@@ -93,7 +95,7 @@ export default function EntityWithDateAndImageCard({
             text={getDatesPeriodString(startDate, endDate, utc)}
           />
         </TransparentView>
-      </WhiteBox>
-    </SafePressable>
+      </TouchableOpacity>
+    </WhiteBox>
   );
 }

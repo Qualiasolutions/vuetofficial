@@ -4,7 +4,6 @@ import { UserFullResponse } from 'types/users';
 
 export const academicPlanForm = (
   isEdit: boolean,
-  userFullDetails: UserFullResponse,
   t: TFunction
 ): FormFieldTypes => {
   return {
@@ -16,10 +15,6 @@ export const academicPlanForm = (
     members: {
       type: 'addMembers',
       required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
-      },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.academic-plan.members')
     }

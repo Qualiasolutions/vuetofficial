@@ -84,13 +84,13 @@ export default function EventScreen({ entityId }: { entityId: number }) {
         toScreen="EntityScreen"
         toScreenParams={{ entityId: id }}
         navMethod="push"
-        selected={allEntities?.byId[id].selected}
+        selected={!allEntities?.byId[id].hidden}
         subType={allEntities?.byId[id].subtype}
         onSelect={async () => {
           const res = (await updateTrigger({
             resourcetype: allEntities?.byId[id].resourcetype,
             id,
-            selected: !allEntities?.byId[id].selected
+            hidden: !allEntities?.byId[id].hidden
           })) as any;
 
           if (res && res?.error && res?.error.status >= 400) {

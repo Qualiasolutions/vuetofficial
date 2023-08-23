@@ -1,12 +1,7 @@
 import { FormFieldTypes } from 'components/forms/formFieldTypes';
 import { TFunction } from 'i18next';
-import { UserFullResponse } from 'types/users';
 
-export const petForm = (
-  isEdit: boolean,
-  userFullDetails: UserFullResponse,
-  t: TFunction
-): FormFieldTypes => {
+export const petForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
   return {
     name: {
       type: 'string',
@@ -43,10 +38,6 @@ export const petForm = (
     members: {
       type: 'addMembers',
       required: true,
-      permittedValues: {
-        family: userFullDetails?.family?.users || [],
-        friends: userFullDetails?.friends || []
-      },
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
       displayName: t('entities.entity.members')
     }

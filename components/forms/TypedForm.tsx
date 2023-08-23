@@ -528,8 +528,6 @@ export default function TypedForm({
             }
             case 'checkbox': {
               const f = flatFields[field] as CheckboxField;
-              console.log(f);
-              console.log(inlineOverride);
               return (
                 <ValueDependentInputPair
                   field={field}

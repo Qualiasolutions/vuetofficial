@@ -69,8 +69,6 @@ export default function AddHolidayTaskForm({
   inlineFields,
   defaults
 }: AddHolidayTaskFormProps) {
-  console.log('defaults');
-  console.log(defaults);
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
 

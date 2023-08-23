@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { EntityTypeName } from 'types/entities';
-import useGetUserDetails from 'hooks/useGetUserDetails';
 import { FormFieldTypes } from '../formFieldTypes';
 import { carForm } from './formFields/car';
 import { anniversaryForm } from './formFields/anniversary';
@@ -47,161 +46,160 @@ import { healthGoal } from './formFields/health-goal';
 import { useSelector } from 'react-redux';
 import { selectEntitiesByEntityTypes } from 'reduxStore/slices/entities/selectors';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import { defaultForm } from './formFields/default';
 
 export default function useForm(
   entityType: EntityTypeName,
   isEdit: boolean
 ): FormFieldTypes {
   const { t } = useTranslation('modelFields');
-  const { data: userFullDetails, isLoading: isLoadingFullDetails } =
-    useGetUserDetails();
 
   const allSchoolIds = useSelector(selectEntitiesByEntityTypes(['School']));
   const { data: allEntities } = useGetAllEntitiesQuery();
 
   const form = useMemo(() => {
-    if (isLoadingFullDetails || !userFullDetails) {
-      return {};
-    }
-
     if (entityType === 'Car') {
-      return carForm(isEdit, userFullDetails, t);
+      return carForm(isEdit, t);
     }
 
     if (entityType === 'Boat') {
-      return boatForm(isEdit, userFullDetails, t);
+      return boatForm(isEdit, t);
     }
 
     if (entityType === 'Anniversary') {
-      return anniversaryForm(isEdit, userFullDetails, t);
+      return anniversaryForm(isEdit, t);
     }
 
     if (entityType === 'Birthday') {
-      return birthdayForm(isEdit, userFullDetails, t);
+      return birthdayForm(isEdit, t);
     }
 
     if (entityType === 'AcademicPlan') {
-      return academicPlanForm(isEdit, userFullDetails, t);
+      return academicPlanForm(isEdit, t);
     }
 
     if (entityType === 'CareerGoal') {
-      return careerGoalForm(isEdit, userFullDetails, t);
+      return careerGoalForm(isEdit, t);
     }
 
     if (entityType === 'LaundryPlan') {
-      return laundryPlanForm(isEdit, userFullDetails, t);
+      return laundryPlanForm(isEdit, t);
     }
 
     if (entityType === 'DaysOff') {
-      return daysOffForm(isEdit, userFullDetails, t);
+      return daysOffForm(isEdit, t);
     }
 
     if (entityType === 'DriveTime') {
-      return driveTimeForm(isEdit, userFullDetails, t);
+      return driveTimeForm(isEdit, t);
     }
 
     if (entityType === 'Event') {
-      return eventForm(isEdit, userFullDetails, t);
+      return eventForm(isEdit, t);
+    }
+
+    if (entityType === 'EventSubentity') {
+      return defaultForm(isEdit, t);
     }
 
     if (entityType === 'ExtracurricularPlan') {
-      return extracurricularPlanForm(isEdit, userFullDetails, t);
+      return extracurricularPlanForm(isEdit, t);
     }
 
     if (entityType === 'Finance') {
-      return financeForm(isEdit, userFullDetails, t);
+      return financeForm(isEdit, t);
     }
 
     if (entityType === 'Flight') {
-      return flightForm(isEdit, userFullDetails, t);
+      return flightForm(isEdit, t);
     }
 
     if (entityType === 'FoodPlan') {
-      return foodPlanForm(isEdit, userFullDetails, t);
+      return foodPlanForm(isEdit, t);
     }
 
     if (entityType === 'HealthBeauty') {
-      return healthBeautyForm(isEdit, userFullDetails, t);
+      return healthBeautyForm(isEdit, t);
     }
 
     if (entityType === 'Hobby') {
-      return hobbyForm(isEdit, userFullDetails, t);
+      return hobbyForm(isEdit, t);
     }
 
     if (entityType === 'Holiday') {
-      return holidayForm(isEdit, userFullDetails, t);
+      return holidayForm(isEdit, t);
     }
 
     if (entityType === 'Home') {
-      return homeForm(isEdit, userFullDetails, t);
+      return homeForm(isEdit, t);
     }
 
     if (entityType === 'Garden') {
-      return gardenForm(isEdit, userFullDetails, t);
+      return gardenForm(isEdit, t);
     }
 
     if (entityType === 'HotelOrRental') {
-      return hotelForm(isEdit, userFullDetails, t);
+      return hotelForm(isEdit, t);
     }
 
     if (entityType === 'List') {
-      return listForm(isEdit, userFullDetails, t);
+      return listForm(isEdit, t);
     }
 
     if (entityType === 'Pet') {
-      return petForm(isEdit, userFullDetails, t);
+      return petForm(isEdit, t);
     }
 
     if (entityType === 'PublicTransport') {
-      return publicTransportForm(isEdit, userFullDetails, t);
+      return publicTransportForm(isEdit, t);
     }
 
     if (entityType === 'RentalCar') {
-      return rentalCarForm(isEdit, userFullDetails, t);
+      return rentalCarForm(isEdit, t);
     }
 
     if (entityType === 'SchoolBreak') {
-      return schoolBreakForm(isEdit, userFullDetails, t);
+      return schoolBreakForm(isEdit, t);
     }
 
     if (entityType === 'School') {
-      return schoolForm(isEdit, userFullDetails, t);
+      return schoolForm(isEdit, t);
     }
 
     if (entityType === 'SocialMedia') {
-      return socialMediaForm(isEdit, userFullDetails, t);
+      return socialMediaForm(isEdit, t);
     }
 
     if (entityType === 'SocialPlan') {
-      return socialPlanForm(isEdit, userFullDetails, t);
+      return socialPlanForm(isEdit, t);
     }
 
     if (entityType === 'StayWithFriend') {
-      return stayWithFriendForm(isEdit, userFullDetails, t);
+      return stayWithFriendForm(isEdit, t);
     }
 
     if (entityType === 'TaxiOrTransfer') {
-      return taxiTransferForm(isEdit, userFullDetails, t);
+      return taxiTransferForm(isEdit, t);
     }
 
     if (entityType === 'TrainBusFerry') {
-      return trainBusFerryForm(isEdit, userFullDetails, t);
+      return trainBusFerryForm(isEdit, t);
     }
 
     if (entityType === 'TripActivity') {
-      return tripActivityForm(isEdit, userFullDetails, t);
+      return tripActivityForm(isEdit, t);
     }
 
     if (entityType === 'Trip') {
-      return tripForm(isEdit, userFullDetails, t);
+      return tripForm(isEdit, t);
     }
 
     if (entityType === 'Patient') {
-      return patientForm(isEdit, userFullDetails, t);
+      return patientForm(isEdit, t);
     }
 
     if (entityType === 'Appointment') {
-      return appointmentForm(isEdit, userFullDetails, t);
+      return appointmentForm(isEdit, t);
     }
 
     if (entityType === 'Student') {
@@ -210,39 +208,31 @@ export default function useForm(
       }
       const allSchools = allSchoolIds.map((id) => allEntities.byId[id]);
 
-      return studentForm(isEdit, userFullDetails, allSchools, t);
+      return studentForm(isEdit, allSchools, t);
     }
 
     if (entityType === 'Employee') {
-      return employeeForm(isEdit, userFullDetails, t);
+      return employeeForm(isEdit, t);
     }
 
     if (entityType === 'TravelPlan') {
-      return travelPlanForm(isEdit, userFullDetails, t);
+      return travelPlanForm(isEdit, t);
     }
 
     if (entityType === 'AnniversaryPlan') {
-      return anniversaryPlanForm(isEdit, userFullDetails, t);
+      return anniversaryPlanForm(isEdit, t);
     }
 
     if (entityType === 'HolidayPlan') {
-      return holidayPlanForm(isEdit, userFullDetails, t);
+      return holidayPlanForm(isEdit, t);
     }
 
     if (entityType === 'HealthGoal') {
-      return healthGoal(isEdit, userFullDetails, t);
+      return healthGoal(isEdit, t);
     }
 
     return {};
-  }, [
-    entityType,
-    isEdit,
-    isLoadingFullDetails,
-    t,
-    userFullDetails,
-    allEntities,
-    allSchoolIds
-  ]);
+  }, [entityType, isEdit, t, allEntities, allSchoolIds]);
 
   return form;
 }

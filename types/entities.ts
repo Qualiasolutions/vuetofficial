@@ -9,6 +9,7 @@ export type EntityTypeName =
   | 'Boat'
   | 'Birthday'
   | 'Event'
+  | 'EventSubentity'
   | 'Hobby'
   | 'Home'
   | 'Garden'
@@ -57,8 +58,10 @@ export interface BaseEntityType {
   category: number;
   created_at: string;
   resourcetype: EntityTypeName;
+  hidden: boolean;
   child_entities: number[];
   members: number[];
+  parent_name: string | null;
   [key: string]: any;
 }
 

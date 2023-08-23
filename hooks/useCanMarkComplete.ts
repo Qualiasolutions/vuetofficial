@@ -27,10 +27,6 @@ export default function useCanMarkComplete({
     })
   );
 
-  if (actionId) {
-    console.log(taskToAction);
-  }
-
   const hasEditPerms = useHasEditPerms(taskId);
 
   const canMarkComplete =

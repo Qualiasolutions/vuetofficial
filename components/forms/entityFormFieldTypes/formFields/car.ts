@@ -2,16 +2,11 @@ import {
   FlatFormFieldTypes,
   FormFieldTypes
 } from 'components/forms/formFieldTypes';
-import { UserFullResponse } from 'types/users';
 import { TFunction } from 'i18next';
 import reminderDropDownField from '../utils/reminderDropDownField';
 import dueDateMembershipField from '../utils/dueDateMembershipField';
 
-export const carForm = (
-  isEdit: boolean,
-  userFullDetails: UserFullResponse,
-  t: TFunction
-): FormFieldTypes => {
+export const carForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
   const fields: FlatFormFieldTypes[] = [
     {
       image: {
@@ -49,10 +44,6 @@ export const carForm = (
       members: {
         type: 'addMembers',
         required: true,
-        permittedValues: {
-          family: userFullDetails?.family?.users || [],
-          friends: userFullDetails?.friends || []
-        },
         valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
         displayName: t('entities.entity.members')
       }
@@ -93,7 +84,6 @@ export const carForm = (
       ),
       mot_due_date_members: dueDateMembershipField(
         'mot_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')
@@ -113,7 +103,6 @@ export const carForm = (
       ),
       tax_due_date_members: dueDateMembershipField(
         'tax_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')
@@ -133,7 +122,6 @@ export const carForm = (
       ),
       service_due_date_members: dueDateMembershipField(
         'service_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')
@@ -153,7 +141,6 @@ export const carForm = (
       ),
       insurance_due_date_members: dueDateMembershipField(
         'insurance_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')
@@ -173,7 +160,6 @@ export const carForm = (
       ),
       warranty_due_date_members: dueDateMembershipField(
         'warranty_due_date',
-        userFullDetails,
         isEdit,
         t('entities.entity.taskMembers'),
         t('tasks.task.changeMembers')
