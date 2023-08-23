@@ -43,17 +43,17 @@ export const useSchoolYearFieldTypes = () => {
       },
       start_date: {
         type: 'Date',
-        required: false,
+        required: true,
         displayName: t('schoolYear.start_date')
       },
       end_date: {
         type: 'Date',
-        required: false,
+        required: true,
         displayName: t('schoolYear.end_date')
       },
       show_on_calendars: {
         type: 'checkbox',
-        required: true,
+        required: false,
         displayName: t('schoolYear.show_on_calendars')
       }
     };

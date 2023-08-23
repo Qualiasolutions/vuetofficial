@@ -114,13 +114,16 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   );
 
   const onAddNew = useCallback(() => {
-    setAddNewModal(false);
-    createTrigger({
-      resourcetype: 'List',
-      name: itemName,
-      parent: entityId
-    });
-  }, [setAddNewModal, createTrigger, entityId, itemName]);
+    if (entityData) {
+      setAddNewModal(false);
+      createTrigger({
+        resourcetype: 'EventSubentity',
+        name: itemName,
+        parent: entityId,
+        members: entityData.members
+      });
+    }
+  }, [setAddNewModal, createTrigger, entityId, itemName, entityData]);
 
   const closeAddNewModal = useCallback(() => {
     setAddNewModal(false);
@@ -153,7 +156,11 @@ export default function EventScreen({ entityId }: { entityId: number }) {
         {customLink}
       </TransparentPaddedView>
 
-      <Modal visible={addNewModal}>
+      <Modal
+        visible={addNewModal}
+        boxStyle={styles.addNewContainer}
+        onRequestClose={() => setAddNewModal(false)}
+      >
         <TransparentView style={styles.addNewContainer}>
           <Ionicons
             name="close-circle"
@@ -168,7 +175,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
             placeholder={t('common.addTitle')}
           />
           <SafePressable
-            disabled={itemName == ''}
+            disabled={itemName === ''}
             onPress={onAddNew}
             style={styles.addNewButton}
           >

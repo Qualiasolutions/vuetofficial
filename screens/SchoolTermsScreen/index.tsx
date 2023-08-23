@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import TypedForm from 'components/forms/TypedForm';
 import { FieldValueTypes } from 'components/forms/types';
 import createInitialObject from 'components/forms/utils/createInitialObject';
+import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import parseFormValues from 'components/forms/utils/parseFormValues';
 import { Button } from 'components/molecules/ButtonComponents';
 import { Modal, YesNoModal } from 'components/molecules/Modals';
@@ -623,6 +624,8 @@ export default function SchoolTermsScreen() {
   }
 
   if (addingTerm) {
+    const allRequired = hasAllRequired(formValues, formFields);
+
     return (
       <TransparentFullPageScrollView>
         <TransparentPaddedView>
@@ -654,6 +657,7 @@ export default function SchoolTermsScreen() {
                 }
               }}
               style={styles.button}
+              disabled={!allRequired}
             />
             <Button
               title={t('common.back')}
