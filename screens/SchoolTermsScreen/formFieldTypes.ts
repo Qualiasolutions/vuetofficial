@@ -92,6 +92,12 @@ export const useSchoolBreakFieldTypes = (isTerm: boolean) => {
         type: 'checkbox',
         required: true,
         displayName: t('schoolBreak.show_on_calendars')
+      },
+      show_only_start_and_end: {
+        type: 'checkbox',
+        required: true,
+        displayName: t('schoolBreak.show_only_start_and_end'),
+        helpText: t('tasks.helpText.show_only_start_and_end')
       }
     };
   }, [t, isTerm]);

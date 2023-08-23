@@ -78,6 +78,8 @@ const isEntity = (
   return [
     'ENTITY',
     'SCHOOL_TERM',
+    'SCHOOL_TERM_START',
+    'SCHOOL_TERM_END',
     'SCHOOL_BREAK',
     'SCHOOL_YEAR_START',
     'SCHOOL_YEAR_END'

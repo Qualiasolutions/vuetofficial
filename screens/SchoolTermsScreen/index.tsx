@@ -104,7 +104,10 @@ const SectionModal = ({
   useEffect(() => {
     const initialFormValues = section
       ? createInitialObject(formFields, undefined, section)
-      : createInitialObject(formFields, undefined, { show_on_calendars: true });
+      : createInitialObject(formFields, undefined, {
+          show_on_calendars: true,
+          show_only_start_and_end: true
+        });
     setFormValues(initialFormValues);
   }, [formFields, section, visible]); // Include visible here so that it clears on close
 

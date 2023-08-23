@@ -123,6 +123,8 @@ export default {
           'SchoolYearStart',
           'SchoolYearEnd',
           'SchoolTerm',
+          'SchoolTermStart',
+          'SchoolTermEnd',
           'SchoolBreak'
         ],
         entityTypeName: 'schools'

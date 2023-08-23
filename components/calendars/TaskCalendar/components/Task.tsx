@@ -219,6 +219,8 @@ const EntityIcon = ({ entity }: { entity: ScheduledEntityResponseType }) => {
     [key in EntityTypeName | SchoolTermTypeName]?: string;
   } = {
     SchoolTerm: '📚',
+    SchoolTermStart: '📚',
+    SchoolTermEnd: '📚',
     SchoolBreak: '📚',
     SchoolYearStart: '🏫',
     SchoolYearEnd: '🏫',

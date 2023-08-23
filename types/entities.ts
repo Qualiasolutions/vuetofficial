@@ -48,6 +48,8 @@ export type EntityTypeName =
 
 export type SchoolTermTypeName =
   | 'SchoolTerm'
+  | 'SchoolTermStart'
+  | 'SchoolTermEnd'
   | 'SchoolBreak'
   | 'SchoolYearStart'
   | 'SchoolYearEnd';

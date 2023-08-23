@@ -36,7 +36,8 @@
       "is_any_time": "Anytime during a day. There is no set time for this Task",
       "actions": "Task yourself to work on a task or due date days or weeks before it occurs. There can be multiple Actions for a task.",
       "reminders": "Remind yourself of a task",
-      "routine": "To include a task within a Routine window, set up Routines in Settings and when adding a Task the Routine can be chosen. These allows tasks to be set within certain windows of time."
+      "routine": "To include a task within a Routine window, set up Routines in Settings and when adding a Task the Routine can be chosen. These allows tasks to be set within certain windows of time.",
+      "show_only_start_and_end": "If checked then only the start and end of term will show on your calendars. If unchecked then we will display every day of the term."
     },
     "fixedTask": {
       "start_datetime": "Start Datetime",
@@ -232,7 +233,8 @@
     "name": "Name",
     "start_date": "Start Date",
     "end_date": "End Date",
-    "show_on_calendars": "Show on Calendars"
+    "show_on_calendars": "Show on Calendars",
+    "show_only_start_and_end": "Show only first and last days"
   },
   "schoolTerm": {
     "start_date": "First Day of Term",

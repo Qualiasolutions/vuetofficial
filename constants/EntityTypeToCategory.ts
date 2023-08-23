@@ -42,6 +42,8 @@ const ENTITY_TYPE_TO_CATEGORY: {
   Student: 'EDUCATION',
   SchoolBreak: 'EDUCATION',
   SchoolTerm: 'EDUCATION',
+  SchoolTermStart: 'EDUCATION',
+  SchoolTermEnd: 'EDUCATION',
   SchoolYearStart: 'EDUCATION',
   SchoolYearEnd: 'EDUCATION',
   Finance: 'FINANCE',
