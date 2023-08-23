@@ -76,6 +76,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   const styles = useStyle();
 
   const childEntityIds = entityData?.child_entities || [];
+
   const childEntityList = childEntityIds.map((id) => {
     return (
       <EventListLink
