@@ -69,7 +69,7 @@
     "HOME": "Home",
     "GARDEN": "Garden",
     "FOOD": "Food",
-    "LAUNDRY": "Laundry",
+    "LAUNDRY": "Clothing & Laundry",
     "FINANCE": "Finance",
     "TRANSPORT": "Transport"
   },
@@ -110,7 +110,7 @@
     "HOME": "My Homes",
     "GARDEN": "My Outdoor Spaces & Gardens",
     "FOOD": "Food",
-    "LAUNDRY": "Laundry",
+    "LAUNDRY": "Clothing & Laundry",
     "generic": {
       "calendar": "Calendar",
       "lists": "Lists"
@@ -266,7 +266,7 @@
     "HOME": "Home",
     "GARDEN": "Garden",
     "FOOD": "Food",
-    "LAUNDRY": "Laundry",
+    "LAUNDRY": "Clothing & Laundry",
     "EDUCATION": "Education",
     "CAREER": "Career",
     "PETS__FEEDING": "Feeding",
