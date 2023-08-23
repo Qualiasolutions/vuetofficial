@@ -22,7 +22,7 @@ export default function useGetUserFullDetails() {
     error: fullDetailsError
   } = useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
     skip: !userDetails?.user_id,
-    pollingInterval: 30_000
+    pollingInterval: 1000
   });
 
   return {

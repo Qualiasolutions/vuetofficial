@@ -1,115 +1,103 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useThemeColor } from 'components/Themed';
-import RTKForm, { FormDataType } from 'components/forms/RTKForm';
 import { useNavigation } from '@react-navigation/native';
-import GenericError from 'components/molecules/GenericError';
-import {
-  useCreateEntityMutation,
-  useFormCreateEntityMutation,
-  useGetAllEntitiesQuery
-} from 'reduxStore/services/api/entities';
+import { useFormCreateEntityMutation } from 'reduxStore/services/api/entities';
 import { useTranslation } from 'react-i18next';
-import { EntityResponseType, EntityTypeName } from 'types/entities';
-import { TransparentView } from 'components/molecules/ViewComponents';
-import { inlineFieldsMapping } from './utils/inlineFieldsMapping';
+import { EntityTypeName } from 'types/entities';
+import {
+  TransparentPaddedView,
+  TransparentView
+} from 'components/molecules/ViewComponents';
 import { fieldColorMapping } from './utils/fieldColorMapping';
-import { dataTypeMapping } from './utils/dataTypeMapping';
-import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useForm from './entityFormFieldTypes/useForm';
-
-type FieldsMapping = {
-  [key in EntityTypeName]?: (parent: EntityResponseType | null) => any;
-};
-
-const extraFieldsMapping = {
-  Holiday: () => ({
-    custom: true
-  })
-} as FieldsMapping;
+import TypedForm from './TypedForm';
+import { FieldValueTypes } from './types';
+import { Button } from 'components/molecules/ButtonComponents';
+import { parseFormDataFormValues } from './utils/parseFormValues';
+import createInitialObject from './utils/createInitialObject';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import hasAllRequired from './utils/hasAllRequired';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 export default function AddEntityForm({
-  entityType,
-  parentId
+  entityType
 }: {
   entityType: EntityTypeName;
-  parentId?: number;
 }) {
   const navigation = useNavigation();
 
   const entityForm = useForm(entityType, false);
   const { t } = useTranslation();
+  const [formValues, setFormValues] = useState<FieldValueTypes>({});
+  const [formCreateEntity, formCreateEntityResult] =
+    useFormCreateEntityMutation();
+  const { data: userDetails } = useGetUserFullDetails();
 
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any);
+  const flatFields = useMemo(() => {
+    return Array.isArray(entityForm)
+      ? entityForm.reduce((a, b) => ({ ...a, ...b }))
+      : entityForm;
+  }, [entityForm]);
 
   const fieldColor = useThemeColor(
     {},
     fieldColorMapping[entityType] || fieldColorMapping.default
   );
 
-  const dataType =
-    entityType &&
-    ((dataTypeMapping[entityType] || dataTypeMapping.default) as FormDataType);
+  useEffect(() => {
+    if (userDetails && !formCreateEntityResult.isLoading) {
+      const initialValues = createInitialObject(flatFields, userDetails, {});
+      setFormValues(initialValues);
+    }
+  }, [flatFields, userDetails, formCreateEntityResult]);
 
-  if (isLoading || !allEntities) {
-    return null;
-  }
-
-  if (error) {
-    return <GenericError />;
-  }
-
-  const parentEntity = parentId ? allEntities.byId[parentId] : null;
-
-  const extraFieldsFunction = extraFieldsMapping[entityType];
-  const computedExtraFields = extraFieldsFunction
-    ? extraFieldsFunction(parentEntity)
-    : {};
-  const extraFields = {
-    ...computedExtraFields,
-    resourcetype: entityType
-  } as any;
-
-  if (parentId) {
-    extraFields.parent = parentId;
-  }
+  const allRequired = hasAllRequired(formValues, flatFields);
 
   return (
     <TransparentView>
-      <RTKForm
+      <TypedForm
         fields={entityForm || {}}
-        methodHooks={{
-          POST:
-            dataType === 'form'
-              ? useFormCreateEntityMutation
-              : useCreateEntityMutation
-        }}
-        formType="CREATE"
-        extraFields={extraFields}
-        derivedFieldsFunction={derivedFieldsMapping[entityType]}
-        onSubmitSuccess={() => {
-          Toast.show({
-            type: 'success',
-            text1: t('screens.addEntity.createSuccess', {
-              entityType: t(`entityResourceTypeNames.${entityType}`)
-            })
-          });
-          navigation.goBack();
-        }}
-        clearOnSubmit={true}
-        inlineFields={
-          (entityType in inlineFieldsMapping
-            ? inlineFieldsMapping[entityType]
-            : inlineFieldsMapping.default) as boolean
-        }
-        createTextOverride={t('common.save')}
+        formValues={formValues}
+        onFormValuesChange={setFormValues}
         fieldColor={fieldColor}
-        formDataType={dataType}
       />
+      <TransparentPaddedView>
+        {formCreateEntityResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <Button
+            title={t('common.create')}
+            onPress={async () => {
+              try {
+                const parsedFormData = parseFormDataFormValues(
+                  formValues,
+                  flatFields
+                );
+                parsedFormData.append('resourcetype', entityType);
+
+                await formCreateEntity({
+                  formData: parsedFormData
+                }).unwrap();
+
+                Toast.show({
+                  type: 'success',
+                  text1: t('screens.addEntity.createSuccess', {
+                    entityType: t(`entityResourceTypeNames.${entityType}`)
+                  })
+                });
+                navigation.goBack();
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+            disabled={!allRequired}
+          />
+        )}
+      </TransparentPaddedView>
     </TransparentView>
   );
 }

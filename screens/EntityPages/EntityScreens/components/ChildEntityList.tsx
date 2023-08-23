@@ -125,10 +125,7 @@ export default function ChildEntityList({
     <TransparentView>
       {childEntityList}
       {showCreateForm && entityTypes?.length === 1 && (
-        <AddEntityForm
-          entityType={entityTypes && entityTypes[0]}
-          parentId={entityId}
-        />
+        <AddEntityForm entityType={entityTypes && entityTypes[0]} />
       )}
     </TransparentView>
   );

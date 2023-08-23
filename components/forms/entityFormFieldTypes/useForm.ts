@@ -28,14 +28,16 @@ import { selectEntitiesByEntityTypes } from 'reduxStore/slices/entities/selector
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { defaultForm } from './formFields/default';
 
+const schoolSelector = selectEntitiesByEntityTypes(['School']);
+
 export default function useForm(
   entityType: EntityTypeName,
   isEdit: boolean
 ): FormFieldTypes {
   const { t } = useTranslation('modelFields');
 
-  const allSchoolIds = useSelector(selectEntitiesByEntityTypes(['School']));
-  const { data: allEntities } = useGetAllEntitiesQuery();
+  const allSchoolIds = useSelector(schoolSelector);
+  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
 
   const form = useMemo(() => {
     if (entityType === 'Car') {

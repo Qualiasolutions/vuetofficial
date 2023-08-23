@@ -26,13 +26,7 @@ export default function AddEntityScreen({
   route,
   navigation
 }: NativeStackScreenProps<ContentTabParamList, 'AddEntity'>) {
-  const parentId = route.params.parentId;
   const rawEntityTypes = route.params.entityTypes;
-  const parsedParentId = parentId
-    ? typeof parentId === 'number'
-      ? parentId
-      : parseInt(parentId)
-    : undefined;
 
   const entityTypes: EntityTypeName[] =
     typeof rawEntityTypes === 'string' ? [rawEntityTypes] : rawEntityTypes;
@@ -75,10 +69,7 @@ export default function AddEntityScreen({
     <TransparentFullPageScrollView>
       {entityTypeSelector}
       <TransparentView style={styles.formContainer}>
-        <AddEntityForm
-          entityType={selectedEntityType}
-          parentId={parsedParentId}
-        />
+        <AddEntityForm entityType={selectedEntityType} />
       </TransparentView>
     </TransparentFullPageScrollView>
   );
