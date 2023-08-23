@@ -253,7 +253,7 @@ function Task({
 
   const isComplete = !!scheduledTask?.is_complete;
 
-  const isCompleteTextColor = useThemeColor({}, 'mediumGrey');
+  const isCompleteTextColor = useThemeColor({}, 'grey');
 
   const dispatch = useDispatch();
 

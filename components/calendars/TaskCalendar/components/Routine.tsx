@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectRoutineById } from 'reduxStore/slices/routines/selectors';
 import SafePressable from 'components/molecules/SafePressable';
 import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   leftInfo: {
@@ -40,7 +41,8 @@ type PropTypes = {
 export default function Routine({ id, date }: PropTypes) {
   const routine = useSelector(selectRoutineById(id));
   const navigation = useNavigation();
-  const backgroundColor = useThemeColor({}, 'lightYellow');
+  const backgroundColor = useThemeColor({}, 'almostWhite');
+  const borderColor = useThemeColor({}, 'almostBlack');
   if (!routine) {
     return (
       <TransparentView
@@ -50,21 +52,21 @@ export default function Routine({ id, date }: PropTypes) {
   }
   return (
     <TransparentView style={[styles.outerContainer, { height: ITEM_HEIGHT }]}>
-      <SafePressable
+      <TouchableOpacity
         onPress={() => {
           (navigation.navigate as any)('RoutineTasks', {
             id,
             date
           });
         }}
-        style={[styles.container, { backgroundColor }]}
+        style={[styles.container, { backgroundColor, borderColor }]}
       >
         <TransparentView style={styles.leftInfo}>
           <Text>{routine.start_time.slice(0, 5)}</Text>
           <Text>{routine.end_time.slice(0, 5)}</Text>
         </TransparentView>
         <Text style={styles.routineName}>{routine.name}</Text>
-      </SafePressable>
+      </TouchableOpacity>
     </TransparentView>
   );
 }

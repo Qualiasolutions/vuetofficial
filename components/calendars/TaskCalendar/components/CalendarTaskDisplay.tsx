@@ -12,7 +12,7 @@ import {
   getDateStringFromDateObject
 } from 'utils/datesAndTimes';
 
-import { Text } from 'components/Themed';
+import { Text, useThemeColor } from 'components/Themed';
 import dayjs from 'dayjs';
 import {
   AlmostWhiteView,
@@ -125,6 +125,8 @@ function Calendar({
   const { data: allRoutines } = useGetAllRoutinesQuery(null as any);
   const { data: allTasks } = useGetAllTasksQuery(null as any);
   const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const lightYellowColor = useThemeColor({}, 'lightYellow');
+  const blackColor = useThemeColor({}, 'black');
 
   const currentDate = useMemo(() => {
     return new Date(getCurrentDateString());
@@ -487,7 +489,14 @@ function Calendar({
         renderSectionHeader={({ section }) => {
           return (
             <AlmostWhiteView
-              style={[styles.sectionHeader, { height: SECTION_HEADER_HEIGHT }]}
+              style={[
+                styles.sectionHeader,
+                {
+                  height: SECTION_HEADER_HEIGHT,
+                  backgroundColor: lightYellowColor,
+                  borderColor: blackColor
+                }
+              ]}
             >
               <Text style={styles.sectionHeaderText}>{section.title}</Text>
             </AlmostWhiteView>
