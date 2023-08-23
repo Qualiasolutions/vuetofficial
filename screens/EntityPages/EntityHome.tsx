@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ListEntityPage from './EntityScreens/components/ListEntityPage';
-import BirthdayPage from './EntityScreens/components/BirthdayPage';
+// import BirthdayPage from './EntityScreens/components/BirthdayPage';
 // import SchoolPage from './EntityScreens/components/SchoolPage';
 // import TripPage from './EntityScreens/components/TripPage';
-import EventPage from './EntityScreens/components/EventPage';
-import HolidayPage from './EntityScreens/components/HolidayPage';
+// import EventPage from './EntityScreens/components/EventPage';
+// import HolidayPage from './EntityScreens/components/HolidayPage';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import EditEntityForm from 'components/forms/EditEntityForm';
@@ -27,9 +27,9 @@ const DefaultHome = ({ entityId }: { entityId: number }) => {
 const resourceTypeToComponent = {
   List: ListEntityPage,
   Car: CarPage,
-  Birthday: BirthdayPage,
-  Event: EventPage,
-  Holiday: HolidayPage,
+  // Birthday: BirthdayPage,
+  // Event: EventPage,
+  // Holiday: HolidayPage,
   default: DefaultHome
 } as {
   default: React.ElementType;

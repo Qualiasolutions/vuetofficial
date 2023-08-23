@@ -19,6 +19,7 @@ export default function QuickNavigator({
   referencesComponent,
   listsComponent,
   messagesComponent,
+  overviewComponent,
   initialRouteName,
   categoryName
 }: {
@@ -27,6 +28,7 @@ export default function QuickNavigator({
   referencesComponent?: (() => JSX.Element | null) | null;
   listsComponent?: (() => JSX.Element | null) | null;
   messagesComponent?: (() => JSX.Element | null) | null;
+  overviewComponent?: (() => JSX.Element | null) | null;
   initialRouteName?: string;
   categoryName: CategoryName | '';
 }) {
@@ -69,6 +71,16 @@ export default function QuickNavigator({
           component={homeComponent}
           options={{
             title: t('pageTitles.home'),
+            dropDownId: QUICK_NAV_ID
+          }}
+        />
+      )}
+      {overviewComponent && (
+        <TopTabs.Screen
+          name="Overview"
+          component={overviewComponent}
+          options={{
+            title: t('pageTitles.overview'),
             dropDownId: QUICK_NAV_ID
           }}
         />

@@ -10,6 +10,9 @@ import {
   selectScheduledTaskIdsByEntityIds
 } from 'reduxStore/slices/tasks/selectors';
 import EntityHome from 'screens/EntityPages/EntityHome';
+import EntityOverview, {
+  RESOURCE_TYPE_TO_COMPONENT
+} from 'screens/EntityPages/EntityOverview';
 import QuickNavigator from './base/QuickNavigator';
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
@@ -29,6 +32,13 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const homeComponent = useMemo(() => {
     return () => <EntityHome entityId={entityId} />;
   }, [entityId]);
+
+  const overviewComponent = useMemo(() => {
+    if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
+      return () => <EntityOverview entityId={entityId} />;
+    }
+    return null;
+  }, [entityId, entity]);
 
   const calendarComponent = useMemo(() => {
     return () => (
@@ -55,6 +65,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   return (
     <QuickNavigator
       homeComponent={homeComponent}
+      overviewComponent={overviewComponent}
       calendarComponent={calendarComponent}
       referencesComponent={referencesComponent}
       // listsComponent={listsComponent}
