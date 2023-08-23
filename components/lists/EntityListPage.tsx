@@ -21,7 +21,8 @@ import SafePressable from 'components/molecules/SafePressable';
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 0
+    marginBottom: 0,
+    paddingBottom: 100
   },
   noEntitiesText: {
     fontSize: 20,
