@@ -29,7 +29,8 @@ export const daysOffForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
       type: 'addMembers',
       required: true,
       valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
-      displayName: t('entities.entity.members')
+      displayName: t('entities.entity.members'),
+      changeMembersText: t('tasks.task.showOnWhoseCalendar')
     }
   };
 };
