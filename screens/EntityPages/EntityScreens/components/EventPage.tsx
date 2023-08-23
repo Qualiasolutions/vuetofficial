@@ -4,7 +4,7 @@ import {
   useUpdateEntityMutation
 } from 'reduxStore/services/api/entities';
 import {
-  TransparentContainerView,
+  TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -16,7 +16,6 @@ import {
   WhiteText
 } from 'components/molecules/TextComponents';
 import { TextInput, useThemeColor } from 'components/Themed';
-import Layout from 'constants/Layout';
 import EventListLink from 'components/molecules/EventListLink';
 import { Modal } from 'components/molecules/Modals';
 import { useCallback, useState } from 'react';
@@ -27,11 +26,12 @@ import SafePressable from 'components/molecules/SafePressable';
 const useStyle = function () {
   return StyleSheet.create({
     container: {
-      paddingTop: 10
+      paddingTop: 10,
+      paddingBottom: 100
     },
     addNewContainer: {
       height: 198,
-      width: Layout.window.width - 120,
+      width: '100%',
       justifyContent: 'center',
       alignItems: 'center'
     },
@@ -147,10 +147,10 @@ export default function EventScreen({ entityId }: { entityId: number }) {
           />
         </TransparentView>
       </TransparentView>
-      <TransparentContainerView style={styles.container}>
+      <TransparentPaddedView style={styles.container}>
         {childEntityList}
         {customLink}
-      </TransparentContainerView>
+      </TransparentPaddedView>
 
       <Modal visible={addNewModal}>
         <TransparentView style={styles.addNewContainer}>

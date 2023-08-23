@@ -10,7 +10,6 @@ import { BlackText, WhiteText } from 'components/molecules/TextComponents';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import Layout from 'constants/Layout';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -58,7 +57,6 @@ export default function EventListLink({
 
   const styles = StyleSheet.create({
     listEntry: {
-      width: Layout.window.width - 35,
       paddingHorizontal: 24,
       marginTop: 10,
       borderRadius: 10,
@@ -176,10 +174,7 @@ export default function EventListLink({
           </TransparentView>
 
           {subType !== 'add' && (
-            <Feather
-              name={!selected ? 'eye-off' : 'chevron-right'}
-              size={!selected ? 25 : 30}
-            />
+            <Feather name={!selected ? 'eye-off' : 'chevron-right'} size={25} />
           )}
         </TouchableOpacity>
       </WhiteBox>

@@ -4,7 +4,10 @@ import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import {
+  selectEntityById,
+  selectMemberEntityById
+} from 'reduxStore/slices/entities/selectors';
 import {
   selectFilteredScheduledEntityIds,
   selectScheduledTaskIdsByEntityIds
@@ -13,8 +16,13 @@ import EntityHome from 'screens/EntityPages/EntityHome';
 import EntityOverview, {
   RESOURCE_TYPE_TO_COMPONENT
 } from 'screens/EntityPages/EntityOverview';
+import { EntityTypeName } from 'types/entities';
 import QuickNavigator from './base/QuickNavigator';
 
+const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
+  List: 'Home',
+  Event: 'Overview'
+};
 export default function EntityNavigator({ entityId }: { entityId: number }) {
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByEntityIds([entityId]),
@@ -25,13 +33,18 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const entity = useSelector(selectEntityById(entityId));
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
+  const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
+
   const filteredEntities = useSelector(
     selectFilteredScheduledEntityIds(undefined, [entityId])
   );
 
   const homeComponent = useMemo(() => {
-    return () => <EntityHome entityId={entityId} />;
-  }, [entityId]);
+    if (isMemberEntity) {
+      return () => <EntityHome entityId={entityId} />;
+    }
+    return null;
+  }, [entityId, isMemberEntity]);
 
   const overviewComponent = useMemo(() => {
     if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
@@ -51,16 +64,22 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [filteredTasks, filteredEntities]);
 
   const referencesComponent = useMemo(() => {
-    return () => <ReferencesList entities={[entityId]} />;
-  }, [entityId]);
+    if (isMemberEntity) {
+      return () => <ReferencesList entities={[entityId]} />;
+    }
+    return null;
+  }, [entityId, isMemberEntity]);
 
   // const listsComponent = useMemo(() => {
   //   return () => <ListOfLists entities={[entityId]} />;
   // }, [entityId]);
 
   const messagesComponent = useMemo(() => {
-    return () => <MessageThread entityId={entityId} />;
-  }, [entityId]);
+    if (isMemberEntity) {
+      return () => <MessageThread entityId={entityId} />;
+    }
+    return null;
+  }, [entityId, isMemberEntity]);
 
   return (
     <QuickNavigator
@@ -71,7 +90,11 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
       // listsComponent={listsComponent}
       messagesComponent={messagesComponent}
       categoryName={category?.name || ''}
-      initialRouteName={entity?.resourcetype === 'List' ? 'Home' : 'Calendar'}
+      initialRouteName={
+        entity?.resourcetype
+          ? INITIAL_ROUTE_NAME_MAPPINGS[entity?.resourcetype] || 'Calendar'
+          : 'Calendar'
+      }
     />
   );
 }

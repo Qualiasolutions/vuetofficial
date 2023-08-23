@@ -276,6 +276,7 @@ const EXTRA_ENTITY_TYPE_ITEMS: {
   [key in EntityTypeName]?: {
     tags?: string[];
     types?: string[];
+    entityTypes?: EntityTypeName[];
   };
 } = {
   AnniversaryPlan: {
@@ -285,6 +286,9 @@ const EXTRA_ENTITY_TYPE_ITEMS: {
   HolidayPlan: {
     tags: ['SOCIAL_INTERESTS__HOLIDAY'],
     types: ['HOLIDAY']
+  },
+  Event: {
+    entityTypes: ['EventSubentity']
   }
 };
 
@@ -334,12 +338,18 @@ export const selectScheduledTaskIdsByEntityTypes = (
                 return (
                   (extraItems.tags &&
                     task.tags.some((tag) => extraItems?.tags?.includes(tag))) ||
-                  (extraItems.types && extraItems.types.includes(task.type))
+                  (extraItems.types && extraItems.types.includes(task.type)) ||
+                  (extraItems.entityTypes &&
+                    task.entities.some(
+                      (entityId) =>
+                        extraItems.entityTypes &&
+                        entitiesData.byId[entityId] &&
+                        extraItems.entityTypes.includes(
+                          entitiesData.byId[entityId].resourcetype
+                        )
+                    ))
                 );
               })
-            // (entityTypes.includes('AnniversaryPlan') &&
-            //   (task.tags.includes('SOCIAL_INTERESTS__BIRTHDAY') ||
-            //     task.tags.includes('SOCIAL_INTERESTS__ANNIVERSARY')))
           ) || [];
 
       const formatted = formatTasksPerDate(filteredTasks);
@@ -443,10 +453,17 @@ export const selectFilteredScheduledEntityIds = (
 export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-    (scheduledTasks) => {
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    (scheduledTasks, allEntities) => {
       if (!scheduledTasks.data) {
         return {};
       }
+
+      if (!allEntities.data) {
+        return {};
+      }
+
+      const entitiesData = allEntities.data;
 
       const filteredTasks =
         scheduledTasks.data.ordered
@@ -468,7 +485,24 @@ export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
             (task) =>
               !entities ||
               entities.length === 0 ||
-              task.entities.some((ent) => entities?.includes(ent))
+              task.entities.some((ent) => {
+                if (entities?.includes(ent)) {
+                  return true;
+                }
+
+                const taskEntity = entitiesData.byId[ent];
+
+                if (!taskEntity) {
+                  return false;
+                }
+
+                const parentEntityId = taskEntity.parent;
+                if (entities?.includes(parentEntityId)) {
+                  return true;
+                }
+
+                return false;
+              })
           ) || [];
 
       const formatted = formatTasksPerDate(filteredTasks);

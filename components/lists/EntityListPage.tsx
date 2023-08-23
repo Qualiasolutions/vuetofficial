@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGetMemberEntitiesQuery } from 'reduxStore/services/api/entities';
+import {
+  useGetAllEntitiesQuery,
+  useGetMemberEntitiesQuery
+} from 'reduxStore/services/api/entities';
 import ListLink from 'components/molecules/ListLink';
 import linkMapping from 'components/entityCards';
 import { EntityResponseType, EntityTypeName } from 'types/entities';
@@ -65,12 +68,12 @@ export default function EntityListPage({
   entityFilters
 }: EntityListPageProps) {
   const {
-    data: memberEntities,
+    data: allEntities,
     isLoading,
     isFetching
-  } = useGetMemberEntitiesQuery(null as any);
-  const entityData = Object.values(memberEntities?.byId || {}).filter(
-    (entity) => entityTypes.includes(entity.resourcetype)
+  } = useGetAllEntitiesQuery(null as any);
+  const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
+    entityTypes.includes(entity.resourcetype)
   );
   const { t } = useTranslation();
   const [monthsBack, setMonthsBack] = useState(0);
