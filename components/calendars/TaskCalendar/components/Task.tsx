@@ -20,22 +20,19 @@ import {
   MinimalScheduledTask,
   ScheduledEntityResponseType,
   ScheduledTaskResponseType,
-  ScheduledTaskType,
   TaskType
 } from 'types/tasks';
 import SafePressable from 'components/molecules/SafePressable';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { Feather } from '@expo/vector-icons';
 import { setTaskToAction } from 'reduxStore/slices/calendars/actions';
 import UserTags from 'components/molecules/UserTags';
-import useCanMarkComplete from 'hooks/useCanMarkComplete';
-import TaskCompletionPressable from 'components/molecules/TaskCompletionPressable';
-import Checkbox from 'components/molecules/Checkbox';
-import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
+import useHasEditPerms from 'hooks/useHasEditPerms';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -258,12 +255,9 @@ function Task({
   const isCompleteTextColor = useThemeColor({}, 'grey');
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-  // const canMarkComplete = useCanMarkComplete({
-  //   taskId: id,
-  //   recurrenceIndex: recurrence_index,
-  //   actionId: action_id
-  // });
+  const hasEditPerms = useHasEditPerms(id);
 
   const isCompleteStyle = {
     color: isCompleteTextColor,
@@ -313,17 +307,7 @@ function Task({
               </TransparentScrollView>
             </TransparentView>
           </TransparentView>
-          {/* {canMarkComplete && (
-            <TaskCompletionPressable
-              useSafePressable={true}
-              taskId={id}
-              recurrenceIndex={recurrence_index}
-              actionId={action_id}
-            >
-              <Checkbox checked={isComplete} />
-            </TaskCompletionPressable>
-          )} */}
-          {!isEntity && (
+          {!isEntity && hasEditPerms && (
             <SafePressable
               onPress={() => {
                 if (scheduledTask) {
@@ -339,6 +323,37 @@ function Task({
             >
               <Feather name="more-horizontal" size={30} />
             </SafePressable>
+          )}
+          {[
+            'SCHOOL_TERM',
+            'SCHOOL_TERM_START',
+            'SCHOOL_TERM_END',
+            'SCHOOL_BREAK',
+            'SCHOOL_YEAR_START',
+            'SCHOOL_YEAR_END'
+          ].includes(type) && (
+            <TouchableOpacity
+              onPress={() => {
+                (navigation.navigate as any)('ContentNavigator', {
+                  screen: 'SchoolTerms',
+                  initial: false
+                });
+              }}
+            >
+              <Feather name="arrow-right" size={30} />
+            </TouchableOpacity>
+          )}
+          {type === 'ENTITY' && (
+            <TouchableOpacity
+              onPress={() => {
+                (navigation.navigate as any)('ContentNavigator', {
+                  screen: 'EntityScreen',
+                  params: { entityId: id }
+                });
+              }}
+            >
+              <Feather name="arrow-right" size={30} />
+            </TouchableOpacity>
           )}
         </TransparentView>
         <TransparentView style={styles.bottomWrapper}>
