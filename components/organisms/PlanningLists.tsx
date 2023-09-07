@@ -28,7 +28,7 @@ import PlanningListHeader from 'components/molecules/PlanningListHeader';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
-  categoryHeader: { fontSize: 22, marginRight: 20 },
+  categoryHeader: { fontSize: 20, marginRight: 20 },
   categoryHeaderSection: {
     marginBottom: 10,
     flexDirection: 'row'
