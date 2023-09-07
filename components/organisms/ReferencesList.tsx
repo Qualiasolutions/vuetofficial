@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
+import DropDown from 'components/forms/components/DropDown';
 import { Button } from 'components/molecules/ButtonComponents';
 import { Modal, YesNoModal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
@@ -49,18 +50,23 @@ import { EntityTypeName } from 'types/entities';
 import { Reference, ReferenceType } from 'types/references';
 
 const addReferenceStyles = StyleSheet.create({
-  refInputPair: { flexDirection: 'row', width: '100%', alignItems: 'center' },
-  input: { flex: 1, marginRight: 10, marginVertical: 5 },
+  refInputPair: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'flex-start',
+    marginTop: 4
+  },
+  input: { flex: 1, marginRight: 10 },
   buttonWrapper: { alignItems: 'flex-start' },
   button: { paddingVertical: 5 },
-  dropdown: { width: 130, marginRight: 10, flex: 0, height: 40 }
+  dropdown: { width: 130, marginRight: 10, flex: 0, height: 24 },
+  dropdownText: { fontSize: 12 }
 });
 const AddReference = ({ groupId }: { groupId: number }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
   const [newValue, setNewValue] = useState('');
   const [newType, setNewType] = useState<ReferenceType | ''>('');
-  const [typePickerOpen, setTypePickerOpen] = useState(false);
   const borderColor = useThemeColor({}, 'grey');
 
   const { data: userDetails, isLoading: isLoadingUserDetails } =
@@ -80,13 +86,7 @@ const AddReference = ({ groupId }: { groupId: number }) => {
   return (
     <TransparentView>
       <TransparentView style={addReferenceStyles.refInputPair}>
-        <TextInput
-          value={newName}
-          onChangeText={setNewName}
-          style={addReferenceStyles.input}
-          placeholder={t('common.name')}
-        />
-        <DropDownPicker
+        <DropDown
           value={newType}
           items={[
             { value: 'NAME', label: 'Name' },
@@ -100,18 +100,20 @@ const AddReference = ({ groupId }: { groupId: number }) => {
             { value: 'DATE', label: 'Date' },
             { value: 'OTHER', label: 'Other' }
           ]}
-          multiple={false}
-          setValue={(item) => {
-            if (item(null)) {
-              setNewType(item(null));
-            }
+          setFormValues={(value) => {
+            setNewType(value);
           }}
-          open={typePickerOpen}
-          setOpen={setTypePickerOpen}
           listMode="MODAL"
-          placeholder={t('common.type')}
+          dropdownPlaceholder={t('common.type')}
           containerStyle={addReferenceStyles.dropdown}
+          textStyle={addReferenceStyles.dropdownText}
           style={{ borderColor }}
+        />
+        <TextInput
+          value={newName}
+          onChangeText={setNewName}
+          style={addReferenceStyles.input}
+          placeholder={t('common.name')}
         />
         {newType === 'DATE' ? (
           <DateTimeTextInput
@@ -480,9 +482,9 @@ const entityRefStyles = StyleSheet.create({
   nameInput: {
     minWidth: 120,
     width: 'auto',
-    fontSize: 18
+    fontSize: 14
   },
-  nameTitle: { fontSize: 20 }
+  nameTitle: { fontSize: 16 }
 });
 
 const ReferenceGroupItem = ({ groupId }: { groupId: number }) => {
@@ -676,7 +678,7 @@ const FlatReferencesList = ({
 };
 
 const referencesListStyles = {
-  categoryHeader: { fontSize: 24 },
+  categoryHeader: { fontSize: 20 },
   container: { padding: 10 },
   categorySection: { marginBottom: 30 }
 };

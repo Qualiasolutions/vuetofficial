@@ -25,10 +25,12 @@ import AnniversaryDatesScreen from 'screens/EntityPages/AnniversaryDatesScreen';
 import HolidayDatesScreen from 'screens/EntityPages/HolidayDatesScreen';
 import AddHolidayTaskScreen from 'screens/Forms/TaskForms/AddHolidayTaskScreen';
 import SchoolTermsScreen from 'screens/SchoolTermsScreen';
+import { useTranslation } from 'react-i18next';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
 export function ContentNavigator() {
+  const { t } = useTranslation();
   return (
     <ContentStack.Navigator
       initialRouteName="Categories"
@@ -46,7 +48,7 @@ export function ContentNavigator() {
       <ContentStack.Screen
         name="AllReferences"
         component={AllReferencesScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: true, title: t('pageTitles.references') }}
       />
       <ContentStack.Screen
         name="EntityList"
