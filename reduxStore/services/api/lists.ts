@@ -2,6 +2,7 @@ import {
   AllPlanningListItems,
   AllPlanningLists,
   AllPlanningSublists,
+  AllShoppingListDelegations,
   AllShoppingListItems,
   AllShoppingLists,
   AllShoppingListStores,
@@ -11,6 +12,7 @@ import {
   PlanningListItem,
   PlanningSublist,
   ShoppingList,
+  ShoppingListDelegation,
   ShoppingListItem,
   ShoppingListStore
 } from 'types/lists';
@@ -1143,10 +1145,83 @@ const listsApi = vuetApi.injectEndpoints({
         }
       }),
       providesTags: ['ShoppingListStore']
+    }),
+    getAllStoreDelegations: builder.query<AllShoppingListDelegations, void>({
+      query: () => ({
+        url: 'core/shopping-list-delegation/',
+        method: 'GET',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: ShoppingListDelegation[] =
+              await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['ShoppingListDelegation']
+    }),
+    createStoreDelegations: builder.mutation<
+      ShoppingListDelegation[],
+      Omit<ShoppingListDelegation, 'id' | 'store_name' | 'list_name'>[]
+    >({
+      query: (body) => {
+        return {
+          url: 'core/shopping-list-delegation/',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['ShoppingListDelegation']
+    }),
+    deleteStoreDelegation: builder.mutation<void, number>({
+      query: (delegationId) => {
+        return {
+          url: `core/shopping-list-delegation/${delegationId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['ShoppingListDelegation']
+    }),
+    getAllDelegatedShoppingListItems: builder.query<AllShoppingListItems, void>(
+      {
+        query: () => ({
+          url: 'core/delegated-shopping-list-item/',
+          responseHandler: async (response) => {
+            if (response.ok) {
+              const responseJson: ShoppingListItem[] = await response.json();
+              return normaliseShoppingListItems(responseJson);
+            } else {
+              // Just return the error data
+              return response.json();
+            }
+          }
+        }),
+        providesTags: ['ShoppingListItem']
+      }
+    ),
+    updateDelegatedShoppingListItems: builder.mutation<
+      ShoppingListItem,
+      { id: number; checked: boolean }
+    >({
+      query: ({ id, checked }) => {
+        return {
+          url: `core/delegated-shopping-list-item/${id}/`,
+          method: 'PATCH',
+          body: {
+            checked
+          }
+        };
+      },
+      invalidatesTags: ['ShoppingListItem']
     })
   }),
   overrideExisting: true
 });
+
+export default listsApi;
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -1182,5 +1257,10 @@ export const {
   useGetAllShoppingListStoresQuery,
   useCreateShoppingListStoreMutation,
   useUpdateShoppingListStoreMutation,
-  useDeleteShoppingListStoreMutation
+  useDeleteShoppingListStoreMutation,
+  useGetAllStoreDelegationsQuery,
+  useCreateStoreDelegationsMutation,
+  useDeleteStoreDelegationMutation,
+  useGetAllDelegatedShoppingListItemsQuery,
+  useUpdateDelegatedShoppingListItemsMutation
 } = listsApi;

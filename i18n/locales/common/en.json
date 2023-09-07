@@ -33,6 +33,7 @@
     "routines": "Routines",
     "myPlanningLists": "My Planning Lists",
     "myShoppingLists": "My Shopping & Selling Lists",
+    "delegatedLists": "Delegated Lists",
     "listsHome": "Lists Home",
     "alerts": "Alerts",
     "newItems": "New Items",
@@ -729,7 +730,13 @@
         "blurb": "Are you sure you would like to delete this store list?"
       },
       "groupByStore": "Group by store",
-      "groupByList": "Group by list"
+      "groupByList": "Group by list",
+      "delegationButton": {
+        "delegate": "Delegate",
+        "delegations": "Delegations",
+        "delegateForLists": "Delegate for the following lists:",
+        "delegateTo": "Delegate To"
+      }
     }, 
     "entityPages": {
       "car": {

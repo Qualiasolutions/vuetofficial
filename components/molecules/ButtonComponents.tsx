@@ -11,6 +11,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center'
   },
+  smallButton: {
+    paddingVertical: 5
+  },
   linkButton: {
     textAlign: 'center',
     alignItems: 'center'
@@ -65,5 +68,37 @@ export function LinkButton(props: {
     >
       <BlackText style={[{ color: textColor }]} text={title} bold={true} />
     </TouchableOpacity>
+  );
+}
+
+export function SmallButton(props: {
+  onPress: (event: GestureResponderEvent) => void;
+  title: string;
+  style?: object;
+  disabled?: boolean;
+}) {
+  const { style, title, disabled, ...otherProps } = props;
+  const backgroundColor = useThemeColor({}, 'buttonDefault');
+  const disabledBackgroundColor = useThemeColor({}, 'disabledGrey');
+  const textColor = useThemeColor({}, 'buttonTextDefault');
+  const color = useThemeColor({}, 'text');
+
+  return (
+    <SafePressable
+      style={({ pressed }) => [
+        {
+          backgroundColor:
+            disabled || pressed ? disabledBackgroundColor : backgroundColor,
+          color
+        },
+        styles.button,
+        styles.smallButton,
+        style
+      ]}
+      disabled={disabled}
+      {...otherProps}
+    >
+      <BlackText style={[{ color: textColor }]} text={title} bold={true} />
+    </SafePressable>
   );
 }

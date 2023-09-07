@@ -1,5 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useTranslation } from 'react-i18next';
+import DelegatedLists from './DelegatedLists';
 import PlanningLists from './PlanningLists';
 import ShoppingLists from './ShoppingLists';
 
@@ -7,6 +8,7 @@ export type NavigatorParamList = {
   Home: undefined;
   PlanningLists: undefined;
   ShoppingLists: undefined;
+  DelegatedLists: undefined;
 };
 const TopTabs = createMaterialTopTabNavigator<NavigatorParamList>();
 
@@ -30,6 +32,13 @@ export default function ListsNavigator() {
         component={ShoppingLists}
         options={{
           title: t('pageTitles.myShoppingLists')
+        }}
+      />
+      <TopTabs.Screen
+        name="DelegatedLists"
+        component={DelegatedLists}
+        options={{
+          title: t('pageTitles.delegatedLists')
         }}
       />
     </TopTabs.Navigator>

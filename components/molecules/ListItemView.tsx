@@ -52,7 +52,6 @@ export default function ListItemView({
   item
 }: {
   item: PlanningListItem | ShoppingListItem;
-  parentList?: PlanningList | ShoppingList;
 }) {
   const { data: allLists, isLoading: isLoadingLists } =
     useGetAllPlanningListsQuery();

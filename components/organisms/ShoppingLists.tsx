@@ -25,6 +25,7 @@ import PlanningListHeader from 'components/molecules/PlanningListHeader';
 import ListItemView from 'components/molecules/ListItemView';
 import AddListItemInputPair from 'components/molecules/AddListItemInputPair';
 import ShoppingStoreHeader from 'components/molecules/ShoppingStoreHeader';
+import StoreDelegationButton from 'components/molecules/StoreDelegationButton';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
@@ -68,11 +69,7 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
       <PlanningListHeader list={list} isShoppingList={true} />
       <TransparentView style={styles.sublists}>
         {items.map((itemId) => (
-          <ListItemView
-            key={itemId}
-            item={allItems.byId[itemId]}
-            parentList={list}
-          />
+          <ListItemView key={itemId} item={allItems.byId[itemId]} />
         ))}
         <AddListItemInputPair list={list.id} isShoppingList={true} />
       </TransparentView>
@@ -134,6 +131,7 @@ const ShoppingStoreView = ({ store }: { store: ShoppingListStore }) => {
   return (
     <WhiteBox style={styles.listBox}>
       <ShoppingStoreHeader store={store} />
+      <StoreDelegationButton storeId={store.id} />
       <TransparentView style={styles.sublists}>
         {items.map((itemId) => (
           <ListItemView key={itemId} item={allItems.byId[itemId]} />

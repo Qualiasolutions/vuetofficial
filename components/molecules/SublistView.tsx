@@ -148,16 +148,13 @@ export default function SublistView({
   }
 
   const sublistItems = allListItems.bySublist[sublist.id] || [];
-  const parentList = allLists.byId[sublist.list];
 
   return (
     <TransparentView style={style || {}}>
       <SublistHeader sublist={sublist} />
       {sublistItems.map((itemId) => {
         const item = allListItems.byId[itemId];
-        return (
-          <ListItemView item={item} parentList={parentList} key={item.id} />
-        );
+        return <ListItemView item={item} key={item.id} />;
       })}
       <TransparentView style={styles.listItemView}>
         <AddListItemInputPair sublist={sublist.id} />

@@ -83,7 +83,7 @@ export default function StoreSelector({
         dropdownPlaceholder={t('components.planningLists.storeSelector.store')}
         labelStyle={styles.dropdownText}
       />
-      <Modal visible={addingNew}>
+      <Modal visible={addingNew} onRequestClose={() => setAddingNew(false)}>
         <TransparentView style={styles.addStoreModalContent}>
           <Text>{t('components.planningLists.storeSelector.nameBlurb')}</Text>
           <TextInput

@@ -1,3 +1,4 @@
+import { Id } from '@reduxjs/toolkit/dist/query/tsHelpers';
 import { BaseEntityType } from './entities';
 
 export type ListEntryResponse = {
@@ -130,4 +131,21 @@ export type ShoppingListStore = {
 export type AllShoppingListStores = {
   ids: number[];
   byId: { [key: number]: ShoppingListStore };
+};
+
+export type ShoppingListDelegation = {
+  id: number;
+  delegator: number;
+  delegatee: number;
+  store: number;
+  list: number;
+  store_name: string;
+  list_name: string;
+};
+
+export type AllShoppingListDelegations = {
+  ids: number[];
+  byId: {
+    [key: number]: ShoppingListDelegation;
+  };
 };
