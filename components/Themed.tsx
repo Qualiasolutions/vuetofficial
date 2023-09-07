@@ -83,6 +83,10 @@ export function TextInput(props: TextInputProps) {
     'backgroundWhite'
   );
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const placeholderTextColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'mediumGrey'
+  );
 
   return (
     <DefaultTextInput
@@ -95,6 +99,7 @@ export function TextInput(props: TextInputProps) {
         style || {}
       ]}
       {...otherProps}
+      placeholderTextColor={placeholderTextColor}
     />
   );
 }

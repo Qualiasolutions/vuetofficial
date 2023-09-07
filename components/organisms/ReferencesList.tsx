@@ -18,7 +18,6 @@ import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
