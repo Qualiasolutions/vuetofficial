@@ -7,7 +7,7 @@ import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { Image } from './ImageComponents';
 import { Text, useThemeColor } from 'components/Themed';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RootTabParamList } from 'types/base';
 import { TouchableOpacity } from './TouchableOpacityComponents';
@@ -27,9 +27,9 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 10
   },
-  drawerPressableSize: {
-    height: 60,
-    width: 60,
+  myAccountSize: {
+    height: 50,
+    width: 50,
     borderRadius: 15
   },
   drawerPressable: {
@@ -37,10 +37,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'visible'
   },
-  drawerImage: {},
-  drawerNullImage: {
-    height: 30,
-    width: 30
+  myAccountNullImage: {
+    height: 24,
+    width: 24
   },
   button: {
     marginLeft: 20,
@@ -80,37 +79,18 @@ export default function TopNav() {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const { data: userDetails } = useGetUserFullDetails();
   const whiteColor = useThemeColor({}, 'white');
+  const primaryColor = useThemeColor({}, 'primary');
   const { t } = useTranslation();
 
   const imageSource = userDetails?.presigned_profile_image_url
     ? { uri: parsePresignedUrl(userDetails.presigned_profile_image_url) }
-    : require('assets/images/icons/camera.png');
+    : require('assets/images/icons/user-head.png');
 
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
-      <SafePressable
-        onPress={() => (navigation as any).openDrawer()}
-        style={[
-          styles.drawerPressable,
-          styles.drawerPressableSize,
-          elevation.elevated,
-          {
-            backgroundColor: whiteColor
-          }
-        ]}
-      >
-        <Image
-          source={imageSource}
-          style={[
-            ...(!userDetails?.presigned_profile_image_url
-              ? [styles.drawerNullImage]
-              : [styles.drawerImage, styles.drawerPressableSize]),
-            {
-              backgroundColor: whiteColor
-            }
-          ]}
-        />
-      </SafePressable>
+      <TouchableOpacity onPress={() => (navigation as any).openDrawer()}>
+        <Feather name="align-justify" size={32} color={primaryColor} />
+      </TouchableOpacity>
       <TransparentView style={styles.rightButtons}>
         <PageLink
           pageName="Alerts"
@@ -128,6 +108,29 @@ export default function TopNav() {
           title={t('pageTitles.quickJot')}
         />
       </TransparentView>
+      <TouchableOpacity
+        onPress={() => (navigation as any).navigate('MyAccountNavigator')}
+        style={[
+          styles.drawerPressable,
+          styles.myAccountSize,
+          elevation.elevated,
+          {
+            backgroundColor: whiteColor
+          }
+        ]}
+      >
+        <Image
+          source={imageSource}
+          style={[
+            ...(!userDetails?.presigned_profile_image_url
+              ? [styles.myAccountNullImage]
+              : [styles.myAccountSize]),
+            {
+              backgroundColor: whiteColor
+            }
+          ]}
+        />
+      </TouchableOpacity>
     </WhitePaddedView>
   );
 }

@@ -1,6 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
-import { Button } from 'components/molecules/ButtonComponents';
+import { Button, SmallButton } from 'components/molecules/ButtonComponents';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
+import EntityTags from 'components/molecules/EntityTags';
+import OptionTags from 'components/molecules/OptionTags';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import {
   TransparentPaddedView,
@@ -138,7 +141,12 @@ const ActionAlertEntry = ({ actionAlertId }: { actionAlertId: number }) => {
 };
 
 const taskAlertStyles = StyleSheet.create({
-  card: { marginBottom: 10 }
+  card: { marginBottom: 10 },
+  tagsWrapper: {
+    flexDirection: 'row',
+    width: '50%',
+    flex: 0
+  }
 });
 const TaskAlerts = ({ taskId }: { taskId: number | null }) => {
   const task = useSelector(selectTaskById(taskId || -1));
@@ -163,6 +171,10 @@ const TaskAlerts = ({ taskId }: { taskId: number | null }) => {
       <Text>
         {task.date || `${task.start_datetime} - ${task.end_datetime}`}
       </Text>
+      <TransparentScrollView style={taskAlertStyles.tagsWrapper} horizontal>
+        <EntityTags entities={task.entities} />
+        <OptionTags tagNames={task.tags} />
+      </TransparentScrollView>
       {alertList}
     </ElevatedPressableBox>
   );
@@ -192,6 +204,10 @@ const TaskActionAlerts = ({ actionId }: { actionId: number }) => {
       }
     >
       <Text>{`ACTION - ${task.title}`}</Text>
+      <TransparentScrollView style={taskAlertStyles.tagsWrapper} horizontal>
+        <EntityTags entities={task.entities} />
+        <OptionTags tagNames={task.tags} />
+      </TransparentScrollView>
       <Text>
         {scheduledAction.date ||
           `${scheduledAction.start_datetime} - ${scheduledAction.end_datetime}`}
@@ -241,8 +257,12 @@ const OverdueTask = ({
       <Text>
         {taskObj.date || `${taskObj.start_datetime} - ${taskObj.end_datetime}`}
       </Text>
+      <TransparentScrollView style={taskAlertStyles.tagsWrapper} horizontal>
+        <EntityTags entities={taskObj.entities} />
+        <OptionTags tagNames={taskObj.tags} />
+      </TransparentScrollView>
       <TransparentView style={overdueTaskStyles.buttons}>
-        <Button
+        <SmallButton
           title={t('common.markDone')}
           onPress={async () => {
             try {
@@ -268,7 +288,7 @@ const OverdueTask = ({
           }}
           style={overdueTaskStyles.button}
         />
-        <Button
+        <SmallButton
           title={t('common.ignore')}
           onPress={async () => {
             try {
