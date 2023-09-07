@@ -1,4 +1,6 @@
 import Calendar from 'components/calendars/TaskCalendar';
+import EditEntityForm from 'components/forms/EditEntityForm';
+import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import MessageThread from 'components/organisms/MessageThread';
 import ReferencesList from 'components/organisms/ReferencesList';
 import { useMemo } from 'react';
@@ -12,12 +14,19 @@ import {
   selectFilteredScheduledEntityIds,
   selectScheduledTaskIdsByEntityIds
 } from 'reduxStore/slices/tasks/selectors';
-import EntityHome from 'screens/EntityPages/EntityHome';
+import EntityHome, {
+  resourceTypeToComponent
+} from 'screens/EntityPages/EntityHome';
 import EntityOverview, {
   RESOURCE_TYPE_TO_COMPONENT
 } from 'screens/EntityPages/EntityOverview';
 import { EntityTypeName } from 'types/entities';
 import QuickNavigator from './base/QuickNavigator';
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  editForm: { paddingBottom: 100 }
+});
 
 const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
   List: 'Home',
@@ -40,11 +49,29 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   );
 
   const homeComponent = useMemo(() => {
-    if (isMemberEntity) {
+    if (
+      entity &&
+      resourceTypeToComponent[entity?.resourcetype] &&
+      isMemberEntity
+    ) {
       return () => <EntityHome entityId={entityId} />;
     }
     return null;
-  }, [entityId, isMemberEntity]);
+  }, [entity, entityId, isMemberEntity]);
+
+  const editComponent = useMemo(() => {
+    if (entity && resourceTypeToComponent[entity?.resourcetype]) {
+      return null;
+    }
+    if (!isMemberEntity) {
+      return null;
+    }
+    return () => (
+      <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
+        <EditEntityForm entityId={entityId} />
+      </TransparentFullPageScrollView>
+    );
+  }, [entity, isMemberEntity, entityId]);
 
   const overviewComponent = useMemo(() => {
     if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
@@ -84,6 +111,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   return (
     <QuickNavigator
       homeComponent={homeComponent}
+      editComponent={editComponent}
       overviewComponent={overviewComponent}
       calendarComponent={calendarComponent}
       referencesComponent={referencesComponent}

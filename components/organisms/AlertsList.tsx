@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Button, SmallButton } from 'components/molecules/ButtonComponents';
+import { SmallButton } from 'components/molecules/ButtonComponents';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
 import EntityTags from 'components/molecules/EntityTags';
 import OptionTags from 'components/molecules/OptionTags';

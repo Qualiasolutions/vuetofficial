@@ -24,12 +24,9 @@ const DefaultHome = ({ entityId }: { entityId: number }) => {
   );
 };
 
-const resourceTypeToComponent = {
+export const resourceTypeToComponent = {
   List: ListEntityPage,
   Car: CarPage,
-  // Birthday: BirthdayPage,
-  // Event: EventPage,
-  // Holiday: HolidayPage,
   default: DefaultHome
 } as {
   default: React.ElementType;

@@ -15,6 +15,7 @@ const I_WANT_TO_ID = 'I_WANT_TO';
 
 export default function QuickNavigator({
   homeComponent,
+  editComponent,
   calendarComponent,
   referencesComponent,
   listsComponent,
@@ -24,6 +25,7 @@ export default function QuickNavigator({
   categoryName
 }: {
   homeComponent?: (() => JSX.Element | null) | null;
+  editComponent?: (() => JSX.Element | null) | null;
   calendarComponent?: (() => JSX.Element | null) | null;
   referencesComponent?: (() => JSX.Element | null) | null;
   listsComponent?: (() => JSX.Element | null) | null;
@@ -71,6 +73,16 @@ export default function QuickNavigator({
           component={homeComponent}
           options={{
             title: t('pageTitles.home'),
+            dropDownId: QUICK_NAV_ID
+          }}
+        />
+      )}
+      {editComponent && (
+        <TopTabs.Screen
+          name="Edit"
+          component={editComponent}
+          options={{
+            title: t('pageTitles.edit'),
             dropDownId: QUICK_NAV_ID
           }}
         />
