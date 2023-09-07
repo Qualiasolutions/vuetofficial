@@ -98,6 +98,10 @@ export interface HolidayResponseType extends BaseEntityType {
   country_code: string;
 }
 
+export interface StudentResponseType extends BaseEntityType {
+  school_attended: number;
+}
+
 export type FormCreateEntityRequest = {
   formData?: FormData;
 };
@@ -108,6 +112,8 @@ export type FormUpdateEntityRequest = {
 };
 
 export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
+export const isStudentEntity = (x: any): x is StudentResponseType =>
+  !!x.school_attended;
 
 // This should be a big OR statement of all entities
 export type EntityResponseType =
@@ -117,4 +123,5 @@ export type EntityResponseType =
 export type EntityParsedType =
   | CarParsedType
   | ListResponseType
+  | StudentResponseType
   | HolidayResponseType;

@@ -4,12 +4,18 @@ import dayjs from 'dayjs';
 import { vuetApi } from 'reduxStore/services/api/api';
 import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
+import schoolTermsApi from 'reduxStore/services/api/schoolTerms';
 import taskActionsApi from 'reduxStore/services/api/taskActions';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
 import { CategoryName } from 'types/categories';
 import { DayType } from 'types/datesAndTimes';
-import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
+import {
+  EntityTypeName,
+  isStudentEntity,
+  SchoolTermTypeName,
+  StudentResponseType
+} from 'types/entities';
 import {
   HiddenTagType,
   ScheduledEntityResponseType,
@@ -25,6 +31,7 @@ import {
   selectFilteredTags,
   selectFilteredUsers
 } from '../calendars/selectors';
+import { selectEntitiesByEntityTypes } from '../entities/selectors';
 
 export const selectTaskById = (id: number) =>
   createSelector(
@@ -402,17 +409,45 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
   }
 );
 
+const studentSelector = selectEntitiesByEntityTypes(['Student']);
+
 export const selectFilteredScheduledEntityIds = (
   resourceTypes?: (EntityTypeName | SchoolTermTypeName)[],
   entityIds?: number[]
 ) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(null as any),
+    schoolTermsApi.endpoints.getAllSchoolYears.select(),
+    schoolTermsApi.endpoints.getAllSchoolBreaks.select(),
+    schoolTermsApi.endpoints.getAllSchoolTerms.select(),
+    studentSelector,
     selectFilteredEntities,
     selectFilteredTags,
     selectFilteredUsers,
-    (scheduledTasks, entities, tags, users) => {
-      if (!scheduledTasks.data?.orderedEntities) {
+    (
+      scheduledTasks,
+      allEntities,
+      schoolYears,
+      schoolBreaks,
+      schoolTerms,
+      students,
+      entities,
+      tags,
+      users
+    ) => {
+      const schoolYearsData = schoolYears.data;
+      const schoolBreaksData = schoolBreaks.data;
+      const schoolTermsData = schoolTerms.data;
+      const allEntitiesData = allEntities.data;
+
+      if (
+        !scheduledTasks.data?.orderedEntities ||
+        !schoolYearsData ||
+        !schoolBreaksData ||
+        !schoolTermsData ||
+        !allEntitiesData
+      ) {
         return {};
       }
 
@@ -422,7 +457,70 @@ export const selectFilteredScheduledEntityIds = (
             ({ resourcetype }) =>
               !resourceTypes || resourceTypes.includes(resourcetype)
           )
-          .filter(({ id }) => !entityIds || entityIds.includes(id))
+          .filter(({ id, resourcetype }) => {
+            if (entityIds && entityIds.includes(id)) {
+              // Have exact entity ID match
+              return true;
+            }
+
+            if (resourceTypes && resourceTypes.includes(resourcetype)) {
+              // Have exact resource type match
+              return true;
+            }
+
+            if (!entityIds && !resourceTypes) {
+              // No filtering
+              return true;
+            }
+
+            if (resourceTypes) {
+              // Otherwise if resourceTypes is specified then only return exact resource type matches
+              return false;
+            }
+
+            // At this point entityIds must be specified
+            if (entityIds) {
+              let schoolYear = null;
+              if (['SchoolYearStart', 'SchoolYearEnd'].includes(resourcetype)) {
+                schoolYear = schoolYearsData.byId[id];
+              }
+              if (
+                ['SchoolTermStart', 'SchoolTermEnd', 'SchoolTerm'].includes(
+                  resourcetype
+                )
+              ) {
+                const schoolTerm = schoolTermsData.byId[id];
+                const schoolYearId = schoolTerm.school_year;
+                schoolYear = schoolYearsData.byId[schoolYearId];
+              }
+              if (['SchoolBreak'].includes(resourcetype)) {
+                const schoolBreak = schoolBreaksData.byId[id];
+                const schoolYearId = schoolBreak.school_year;
+                schoolYear = schoolYearsData.byId[schoolYearId];
+              }
+
+              if (schoolYear) {
+                if (entityIds.includes(schoolYear.school)) {
+                  return true;
+                }
+
+                const studentEntityIds = students.filter((studentId) =>
+                  entityIds.includes(studentId)
+                );
+                for (const studentId of studentEntityIds) {
+                  const student = allEntitiesData.byId[studentId];
+
+                  if (isStudentEntity(student)) {
+                    if (student.school_attended === schoolYear.school) {
+                      return true;
+                    }
+                  }
+                }
+              }
+            }
+
+            return false;
+          })
           .map(({ id, resourcetype }) => {
             const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
             return (

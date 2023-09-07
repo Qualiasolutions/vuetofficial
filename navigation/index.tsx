@@ -21,6 +21,11 @@ import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import TaskActionModal from 'components/molecules/TaskActionModal';
 import ListItemActionModal from 'components/molecules/ListItemActionModal';
+import {
+  useGetAllSchoolBreaksQuery,
+  useGetAllSchoolTermsQuery,
+  useGetAllSchoolYearsQuery
+} from 'reduxStore/services/api/schoolTerms';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -37,6 +42,11 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   // Force fetch of categories on app load
   useGetAllCategoriesQuery();
+
+  // Force fetch of School Years etc
+  useGetAllSchoolYearsQuery();
+  useGetAllSchoolTermsQuery();
+  useGetAllSchoolBreaksQuery();
 
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
