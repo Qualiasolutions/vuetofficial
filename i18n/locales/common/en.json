@@ -157,7 +157,7 @@
       "appointments": "Appointment Type",
       "measurements": "Measurements",
       "goals": "Health & Beauty Goals",
-      "patients": "Patients"
+      "patients": "People"
     },
     "home": {
       "myHomes": "My Homes",
@@ -223,7 +223,7 @@
     "trips": "Trips",
     "travel-plans": "Travel Plans",
     "pets": "Pets",
-    "patient": "Patients",
+    "patient": "People",
     "days-off": "Days Off",
     "holidays": "Holidays",
     "holiday-plans": "Holiday Plans",
@@ -344,7 +344,7 @@
     "SocialPlan": "Social Plan",
     "HealthBeauty": "Health / Beauty",
     "Finance": "Finance",
-    "Patient": "Patient",
+    "Patient": "Person",
     "Appointment": "Appointment",
     "AnniversaryPlan": "Birthday / Anniversary Plan"
   },
@@ -424,7 +424,7 @@
   },
   "misc": {
     "turnsAgeIn": "Turns {{age}} in {{year}}",
-    "editCountryList": "Edit Country List",
+    "editCountryList": "Add National Holidays",
     "phoneNumber": "Phone number",
     "phoneNo": "Phone no.",
     "currentlyNoEntities": "You don't currently have any {{entityType}}. Click the + button below to add some"

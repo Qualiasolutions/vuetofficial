@@ -273,29 +273,13 @@ const EntityAndTagSelectorModal = ({
     (ent) =>
       allEntities.byId[ent] && allEntities.byId[ent].resourcetype === 'Patient'
   );
-  // const requiresPatientTag = selectedEntities.some(
-  //   (ent) =>
-  //     allEntities.byId[ent] &&
-  //     allEntities.byId[ent].resourcetype === 'Appointment'
-  // );
-  // const requiresStudentTag = selectedEntities.some(
-  //   (ent) =>
-  //     allEntities.byId[ent] &&
-  //     ['School', 'AcademicPlan', 'ExtracurricularPlan'].includes(
-  //       allEntities.byId[ent].resourcetype
-  //     )
-  // );
+
   const requiresMatchingStudentTag = selectedEntities.some(
     (ent) =>
       allEntities.byId[ent] &&
       ['Student'].includes(allEntities.byId[ent].resourcetype)
   );
 
-  // const requiresEmployeeTag = selectedEntities.some(
-  //   (ent) =>
-  //     allEntities.byId[ent] &&
-  //     ['DaysOff', 'CareerGoal'].includes(allEntities.byId[ent].resourcetype)
-  // );
   const allowedMatchingEmployeeTag = selectedEntities.some(
     (ent) =>
       allEntities.byId[ent] &&
@@ -312,30 +296,12 @@ const EntityAndTagSelectorModal = ({
       resourceTypes: ['Appointment', 'HealthGoal']
     });
   }
-  // if (requiresPatientTag) {
-  //   requiredEntityTypes.push({
-  //     name: 'Patient',
-  //     resourceTypes: ['Patient']
-  //   });
-  // }
-  // if (requiresStudentTag) {
-  //   requiredEntityTypes.push({
-  //     name: 'Student',
-  //     resourceTypes: ['Student']
-  //   });
-  // }
   if (requiresMatchingStudentTag) {
     requiredEntityTypes.push({
       name: 'School, Extracurricular or Academic Plan',
       resourceTypes: ['School', 'ExtracurricularPlan', 'AcademicPlan']
     });
   }
-  // if (requiresEmployeeTag) {
-  //   requiredEntityTypes.push({
-  //     name: 'Employee',
-  //     resourceTypes: ['Employee']
-  //   });
-  // }
 
   const permittedEntityTypes: {
     name: string;
