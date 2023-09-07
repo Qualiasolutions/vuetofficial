@@ -48,9 +48,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start'
   },
   title: {
-    fontSize: 14,
+    fontSize: 12,
     textAlign: 'left',
     wrap: 'nowrap'
+  },
+  timeText: {
+    fontSize: 12
   },
   leftInfo: {
     width: '25%',
@@ -109,14 +112,14 @@ const TimeText = ({
 
   let textContent = null;
   if (!scheduledTask) {
-    textContent = <Text>{t('common.allDay')}</Text>;
+    textContent = <Text style={styles.timeText}>{t('common.allDay')}</Text>;
   } else if (type && ['BIRTHDAY', 'ANNIVERSARY'].includes(type)) {
-    textContent = <Text>{t('common.allDay')}</Text>;
+    textContent = <Text style={styles.timeText}>{t('common.allDay')}</Text>;
   } else if (scheduledTask.start_date && scheduledTask.end_date) {
-    textContent = <Text>{t('common.allDay')}</Text>;
+    textContent = <Text style={styles.timeText}>{t('common.allDay')}</Text>;
   } else if (scheduledTask.date) {
     textContent = (
-      <Text>
+      <Text style={styles.timeText}>
         {`${
           scheduledTask.duration
             ? `${scheduledTask.duration} ${t('common.mins')}, `
@@ -139,12 +142,12 @@ const TimeText = ({
     if (!multiDay) {
       textContent = (
         <>
-          <Text>
+          <Text style={styles.timeText}>
             {`${getTimeStringFromDateObject(
               new Date(scheduledTask.start_datetime)
             )}`}
           </Text>
-          <Text>
+          <Text style={styles.timeText}>
             {`${getTimeStringFromDateObject(
               new Date(scheduledTask.end_datetime)
             )}`}
@@ -154,7 +157,7 @@ const TimeText = ({
     } else {
       if (isFirstDay) {
         textContent = (
-          <Text>
+          <Text style={styles.timeText}>
             {`${
               isFirstDay ? `${t('common.from')} ` : ''
             }${getTimeStringFromDateObject(
@@ -164,7 +167,7 @@ const TimeText = ({
         );
       } else if (isLastDay) {
         textContent = (
-          <Text>
+          <Text style={styles.timeText}>
             {`${
               isLastDay ? `${t('common.until')} ` : ''
             }${getTimeStringFromDateObject(
@@ -173,7 +176,7 @@ const TimeText = ({
           </Text>
         );
       } else {
-        textContent = <Text>{t('common.allDay')}</Text>;
+        textContent = <Text style={styles.timeText}>{t('common.allDay')}</Text>;
       }
     }
   }
