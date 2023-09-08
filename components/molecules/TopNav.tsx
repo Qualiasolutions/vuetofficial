@@ -107,8 +107,13 @@ export default function TopNav() {
           iconName="edit"
           title={t('pageTitles.quickJot')}
         />
+        <PageLink
+          pageName="OverdueTasks"
+          iconName="flag"
+          title={t('pageTitles.overdue')}
+        />
       </TransparentView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => (navigation as any).navigate('MyAccountNavigator')}
         style={[
           styles.drawerPressable,
@@ -130,7 +135,7 @@ export default function TopNav() {
             }
           ]}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </WhitePaddedView>
   );
 }

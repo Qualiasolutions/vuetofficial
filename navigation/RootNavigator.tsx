@@ -44,6 +44,7 @@ import ListsNavigator from 'components/organisms/ListsNavigator';
 import AlertsList from 'components/organisms/AlertsList';
 import NewItemsList from 'components/organisms/NewItemsList';
 import QuickJot from 'components/organisms/QuickJot';
+import OverdueTasksList from 'components/organisms/OverdueTasksList';
 
 const styles = StyleSheet.create({
   icon: {
@@ -260,6 +261,15 @@ export function BottomTabNavigator({
       <BottomTab.Screen
         name="NewItems"
         component={NewItemsList}
+        options={{
+          tabBarButton: () => null,
+          title: '',
+          header: BackOnlyHeaderWithSafeArea
+        }}
+      />
+      <BottomTab.Screen
+        name="OverdueTasks"
+        component={OverdueTasksList}
         options={{
           tabBarButton: () => null,
           title: '',

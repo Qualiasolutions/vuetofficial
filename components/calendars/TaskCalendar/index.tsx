@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
 
 type CalendarProps = {
   showFilters?: boolean;
+  showListHeader?: boolean;
+  showAllTime?: boolean;
   filteredTasks: {
     [key: string]: ScheduledTask[];
   };
@@ -61,7 +63,9 @@ type CalendarProps = {
 function Calendar({
   filteredTasks,
   filteredEntities,
-  showFilters
+  showFilters,
+  showListHeader,
+  showAllTime
 }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
@@ -101,10 +105,12 @@ function Calendar({
             dispatch(setListEnforcedDate({ date }));
           }}
           showFilters={showFilters}
+          showListHeader={showListHeader}
+          showAllTime={showAllTime}
         />
       </TransparentView>
     );
-  }, [filteredTasks, filteredEntities, showFilters, dispatch]);
+  }, [filteredTasks, filteredEntities, showFilters, showListHeader, dispatch]);
 
   const isLoading =
     isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;

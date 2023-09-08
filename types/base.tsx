@@ -242,6 +242,7 @@ export type RootTabParamList = {
   };
   Alerts: undefined;
   NewItems: undefined;
+  OverdueTasks: undefined;
   QuickJot: undefined;
 };
 

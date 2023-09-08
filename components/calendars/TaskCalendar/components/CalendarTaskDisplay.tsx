@@ -110,13 +110,17 @@ function Calendar({
   tasks,
   entities,
   onChangeFirstDate,
-  showFilters
+  showFilters,
+  showListHeader = true,
+  showAllTime
 }: {
   tasks: { [date: string]: ScheduledTask[] };
   entities?: { [date: string]: ScheduledEntity[] };
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
   showFilters?: boolean;
+  showListHeader?: boolean;
+  showAllTime?: boolean;
 }) {
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
@@ -389,10 +393,12 @@ function Calendar({
 
   const shownSections = useMemo(() => {
     return [
-      ...pastSections.slice(pastSections.length - pastMonthsToShow * 30),
+      ...(showAllTime
+        ? pastSections
+        : pastSections.slice(pastSections.length - pastMonthsToShow * 30)),
       ...futureSections
     ];
-  }, [futureSections, pastSections, pastMonthsToShow]);
+  }, [futureSections, pastSections, pastMonthsToShow, showAllTime]);
 
   const HORIZONTAL_PADDING = 20;
   const renderItem = useCallback(
@@ -510,7 +516,7 @@ function Calendar({
         }}
         renderItem={renderItem}
         contentContainerStyle={noTasks ? {} : { paddingBottom: PADDING_BOTTOM }}
-        ListHeaderComponent={listHeaderComponent}
+        ListHeaderComponent={showListHeader ? listHeaderComponent : null}
         onViewableItemsChanged={onViewableItemsChanged}
         getItemLayout={(d, index) =>
           itemsLayout[index] ?? { length: 0, offset: 0, index }
@@ -521,7 +527,7 @@ function Calendar({
       />
       {noTasks && (
         <WhitePaddedView style={styles.noTasksContainer}>
-          {listHeaderComponent}
+          {showListHeader ? listHeaderComponent : null}
           <Text>{t('components.calendar.noTasks')}</Text>
         </WhitePaddedView>
       )}
