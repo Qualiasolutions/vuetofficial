@@ -4,14 +4,20 @@ import { useTranslation } from 'react-i18next';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import {
   useCreateShoppingListStoreMutation,
-  useGetAllShoppingListStoresQuery
+  useDeleteShoppingListStoreMutation,
+  useGetAllShoppingListStoresQuery,
+  useUpdateShoppingListStoreMutation
 } from 'reduxStore/services/api/lists';
 import { TransparentView } from './ViewComponents';
 import { StyleSheet } from 'react-native';
 import DropDown from 'components/forms/components/DropDown';
-import { Modal } from './Modals';
+import { Modal, YesNoModal } from './Modals';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { Button } from './ButtonComponents';
+import { Button, SmallButton } from './ButtonComponents';
+import { TouchableOpacity } from './TouchableOpacityComponents';
+import { Feather } from '@expo/vector-icons';
+import { ShoppingListStore } from 'types/lists';
+import { TransparentScrollView } from './ScrollViewComponents';
 
 const styles = StyleSheet.create({
   buttonWrapper: { alignItems: 'flex-start', flexDirection: 'row' },
@@ -22,8 +28,108 @@ const styles = StyleSheet.create({
   },
   addStoreModalContent: { alignItems: 'center' },
   dropdownContainer: { maxWidth: 120 },
-  dropdownText: { fontSize: 11 }
+  dropdownText: { fontSize: 11 },
+  manageStoreListing: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  manageStoreListingText: {
+    marginRight: 10
+  },
+  manageStoreListingActionIcon: {
+    marginRight: 10
+  },
+  manageStoreListings: {
+    flexGrow: 0,
+    flexShrink: 1
+  },
+  editStoreNameInput: {},
+  doneButton: { marginTop: 10 }
 });
+
+const ManageStoreListing = ({ store }: { store: ShoppingListStore }) => {
+  const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [newStoreName, setNewStoreName] = useState(store.name);
+  const [updateStore] = useUpdateShoppingListStoreMutation();
+  const [deleteStore] = useDeleteShoppingListStoreMutation();
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <TransparentView style={styles.manageStoreListing}>
+        {editing ? (
+          <TextInput
+            value={newStoreName}
+            onChangeText={setNewStoreName}
+            style={styles.editStoreNameInput}
+            autoFocus={true}
+            onBlur={() => {
+              // Set a timeout because otherwise the update is sometimes not processed
+              setTimeout(() => {
+                setEditing(false);
+                setNewStoreName(store.name);
+              }, 100);
+            }}
+          />
+        ) : (
+          <Text style={styles.manageStoreListingText}>{store.name}</Text>
+        )}
+
+        {editing ? (
+          <>
+            <TouchableOpacity
+              onPress={async () => {
+                try {
+                  await updateStore({
+                    id: store.id,
+                    name: newStoreName
+                  });
+                  setEditing(false);
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+              style={styles.manageStoreListingActionIcon}
+            >
+              <Feather name="check" color="green" size={24} />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                setDeleting(true);
+              }}
+              style={styles.manageStoreListingActionIcon}
+            >
+              <Feather name="x" color="red" size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setEditing(true);
+              }}
+              style={styles.manageStoreListingActionIcon}
+            >
+              <Feather name="edit" color="orange" size={24} />
+            </TouchableOpacity>
+          </>
+        )}
+      </TransparentView>
+      <YesNoModal
+        visible={deleting}
+        onYes={async () => {
+          await deleteStore(store.id).unwrap();
+        }}
+        onNo={() => setDeleting(false)}
+        question={t('components.planningLists.storeSelector.deleteQuestion')}
+      />
+    </>
+  );
+};
 
 export default function StoreSelector({
   onSelect,
@@ -41,6 +147,7 @@ export default function StoreSelector({
 
   const { t } = useTranslation();
   const [addingNew, setAddingNew] = useState(false);
+  const [managingStores, setManaging] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
 
   const isLoading = isLoadingStores || !shoppingListStores || !userDetails;
@@ -61,6 +168,11 @@ export default function StoreSelector({
     label: t('components.planningLists.storeSelector.addNew')
   });
 
+  dropDownItems.push({
+    value: 'MANAGE',
+    label: t('components.planningLists.storeSelector.manageStores')
+  });
+
   return (
     <TransparentView style={styles.storeSelectorDropdown}>
       <DropDown
@@ -70,6 +182,8 @@ export default function StoreSelector({
         setFormValues={(val) => {
           if (val === 'NEW') {
             setAddingNew(true);
+          } else if (val === 'MANAGE') {
+            setManaging(true);
           } else {
             onSelect(val);
           }
@@ -106,6 +220,21 @@ export default function StoreSelector({
               }}
             />
           </TransparentView>
+        </TransparentView>
+      </Modal>
+      <Modal visible={managingStores} onRequestClose={() => setManaging(false)}>
+        <TransparentView>
+          <TransparentScrollView style={styles.manageStoreListings}>
+            {shoppingListStores.ids.map((storeId) => {
+              const store = shoppingListStores.byId[storeId];
+              return <ManageStoreListing store={store} key={storeId} />;
+            })}
+          </TransparentScrollView>
+          <SmallButton
+            title={t('common.done')}
+            onPress={() => setManaging(false)}
+            style={styles.doneButton}
+          />
         </TransparentView>
       </Modal>
     </TransparentView>

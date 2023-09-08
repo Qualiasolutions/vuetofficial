@@ -356,6 +356,7 @@
   "common": {
     "start": "Start",
     "end": "End",
+    "done": "Done",
     "edit": "Edit",
     "name": "Name",
     "value": "Value",
@@ -707,7 +708,9 @@
       "storeSelector": {
         "store": "No store",
         "addNew": "Add new",
-        "nameBlurb": "What would you like to name your new store?"
+        "manageStores": "Manage Stores",
+        "nameBlurb": "What would you like to name your new store?",
+        "deleteQuestion": "Are you sure you would like to delete this store?"
       },
       "saveTemplateModal": {
         "blurb": "What would you like to save your template as?"
