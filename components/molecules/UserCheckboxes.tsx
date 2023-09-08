@@ -21,9 +21,8 @@ export default function UserCheckboxes({
   value: number[];
   onToggleUser: (value: number) => void;
 }) {
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
-  if (isLoadingUserDetails || !userDetails) {
+  const { data: userDetails } = useGetUserFullDetails();
+  if (!userDetails) {
     return <PaddedSpinner />;
   }
 

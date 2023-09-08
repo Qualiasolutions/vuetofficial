@@ -13,7 +13,6 @@ import EditTaskScreen from 'screens/Forms/TaskForms/EditTaskScreen';
 import {
   useGetCategorySetupCompletionsQuery,
   useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery,
   useGetUserInvitesQuery
 } from 'reduxStore/services/api/user';
 import { ConditionallyTintedImage } from 'components/molecules/ImageComponents';

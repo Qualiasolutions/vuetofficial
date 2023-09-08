@@ -141,8 +141,7 @@ export default function MemberSelector({
   const [addingNew, setAddingNew] = useState(false);
   const { t } = useTranslation();
 
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const [getMinimalDetails, getMinimalDetailsResult, lastMinimalDetails] =
     useLazyGetUserMinimalDetailsQuery();
@@ -215,7 +214,7 @@ export default function MemberSelector({
     else bottomSheetRef?.current?.close();
   }, [showMembersList]);
 
-  const isLoading = isLoadingUserDetails || !userDetails;
+  const isLoading = !userDetails;
 
   if (isLoading) {
     return null;

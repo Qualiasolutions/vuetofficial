@@ -68,8 +68,7 @@ const AddReference = ({ groupId }: { groupId: number }) => {
   const [newType, setNewType] = useState<ReferenceType | ''>('');
   const borderColor = useThemeColor({}, 'grey');
 
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const [createNewReference] = useCreateReferenceMutation();
 
   useEffect(() => {
@@ -78,7 +77,7 @@ const AddReference = ({ groupId }: { groupId: number }) => {
     }
   }, [newType]);
 
-  if (isLoadingUserDetails || !userDetails) {
+  if (!userDetails) {
     return null;
   }
 
@@ -170,11 +169,10 @@ const AddReferenceGroup = ({
 }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const [createNewReferenceGroup] = useCreateReferenceGroupMutation();
 
-  if (isLoadingUserDetails || !userDetails) {
+  if (!userDetails) {
     return null;
   }
 

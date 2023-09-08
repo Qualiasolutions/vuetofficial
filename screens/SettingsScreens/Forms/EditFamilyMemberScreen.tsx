@@ -29,7 +29,7 @@ export default function EditFamilyMemberScreen({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {
   const { t } = useTranslation();
-  const { data: userFullDetails, isLoading, error } = useGetUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const familyMemberIdRaw = route.params.id;
   const familyMemberId =
@@ -54,12 +54,8 @@ export default function EditFamilyMemberScreen({
     useFamilyMemberForm()
   );
 
-  if (isLoading || !userFullDetails || !route.params.id) {
+  if (!userFullDetails || !route.params.id) {
     return null;
-  }
-
-  if (error) {
-    return <GenericError />;
   }
 
   if (route.params?.id && familyMemberToEdit) {

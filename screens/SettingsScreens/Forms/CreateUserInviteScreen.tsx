@@ -44,14 +44,14 @@ const CreateUserInviteScreen = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [usingEmail, setUsingEmail] = useState(false);
-  const { data: userFullDetails, isLoading } = useGetUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const [createUserInvite, createUserInviteResult] =
     useCreateUserInviteMutation();
 
   const { t } = useTranslation();
 
-  if (isLoading || !userFullDetails) {
+  if (!userFullDetails) {
     return <FullPageSpinner />;
   }
 

@@ -44,8 +44,7 @@ const CategoryToggle = ({
 };
 
 export default function WhatMyFamilySeesScreen() {
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
@@ -63,7 +62,6 @@ export default function WhatMyFamilySeesScreen() {
   const isLoading =
     isLoadingCategories ||
     isLoadingPermissions ||
-    isLoadingUserDetails ||
     !allCategories ||
     !familyViewPermissions ||
     !userDetails;

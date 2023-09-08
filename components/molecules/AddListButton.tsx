@@ -52,8 +52,7 @@ const AddListModal = ({
   const [newListTemplateId, setNewListTemplateId] = useState('');
   const [step, setStep] = useState<AddListStep>('TEMPLATE_SELECTION');
 
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
   const { t } = useTranslation();
   const [createNewPlanningList] = useCreatePlanningListMutation();
   const [createNewShoppingList] = useCreateShoppingListMutation();
@@ -69,10 +68,7 @@ const AddListModal = ({
   } = useGetAllPlanningListTemplatesQuery();
 
   const isLoading =
-    isLoadingUserDetails ||
-    !userDetails ||
-    isLoadingPlanningListTemplates ||
-    !planningListTemplates;
+    !userDetails || isLoadingPlanningListTemplates || !planningListTemplates;
 
   if (isLoading) {
     return null;

@@ -43,7 +43,8 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const { data: userFullDetails, isLoading: isLoadingFullDetails } =
     useGetUserFullDetailsQuery(userBasicDetails?.user_id || -1, {
       refetchOnMountOrArgChange: true,
-      skip: !userBasicDetails?.user_id
+      skip: !userBasicDetails?.user_id,
+      pollingInterval: 1000
     });
   const { data: invitesForUser, isLoading: isLoadingInvitesForUser } =
     useActiveInvitesForUser(true);

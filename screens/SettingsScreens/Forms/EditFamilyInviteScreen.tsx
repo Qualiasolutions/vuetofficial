@@ -13,7 +13,6 @@ import {
 } from 'reduxStore/services/api/user';
 import { useTranslation } from 'react-i18next';
 
-import GenericError from 'components/molecules/GenericError';
 import { useEffect } from 'react';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -25,7 +24,7 @@ export default function EditEntityScreen({
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {
   const { t } = useTranslation();
 
-  const { data: userFullDetails, isLoading, error } = useGetUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const { data: allUserInvites } = useGetUserInvitesQuery(null as any, {
     skip: !userFullDetails?.family?.id
@@ -54,12 +53,8 @@ export default function EditEntityScreen({
     useFamilyMemberForm()
   );
 
-  if (isLoading || !userFullDetails || !route.params.id) {
+  if (!userFullDetails || !route.params.id) {
     return null;
-  }
-
-  if (error) {
-    return <GenericError />;
   }
 
   if (route.params?.id && familyInviteToEdit) {

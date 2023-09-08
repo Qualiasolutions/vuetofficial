@@ -5,8 +5,7 @@ import { selectAccessToken } from 'reduxStore/slices/auth/selectors';
 
 export default function useActiveInvitesForUser(ownInvites: boolean) {
   const jwtAccessToken = useSelector(selectAccessToken);
-  const { data: userFullDetails, isLoading: isLoadingUserFullDetails } =
-    useGetUserFullDetails();
+  const { data: userFullDetails } = useGetUserFullDetails();
 
   const { data: userInvites, isLoading: isLoadingUserInvites } =
     useGetUserInvitesQuery(null as any, {
@@ -20,8 +19,7 @@ export default function useActiveInvitesForUser(ownInvites: boolean) {
     };
   }
 
-  const isLoading =
-    isLoadingUserFullDetails || isLoadingUserInvites || !userInvites;
+  const isLoading = !userFullDetails || isLoadingUserInvites || !userInvites;
 
   if (isLoading) {
     return {

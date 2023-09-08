@@ -35,8 +35,7 @@ export default function StoreSelector({
   const { data: shoppingListStores, isLoading: isLoadingStores } =
     useGetAllShoppingListStoresQuery(null as any);
 
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const [createStore] = useCreateShoppingListStoreMutation();
 
@@ -44,11 +43,7 @@ export default function StoreSelector({
   const [addingNew, setAddingNew] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
 
-  const isLoading =
-    isLoadingStores ||
-    !shoppingListStores ||
-    isLoadingUserDetails ||
-    !userDetails;
+  const isLoading = isLoadingStores || !shoppingListStores || !userDetails;
   if (isLoading) {
     return null;
   }
