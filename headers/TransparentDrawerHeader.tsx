@@ -2,7 +2,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { HeaderTitle } from '@react-navigation/elements';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { View } from 'components/Themed';
-import { ImageBackground, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { DrawerHeaderProps } from '@react-navigation/drawer';
 
 type Props = DrawerHeaderProps & { height?: number };

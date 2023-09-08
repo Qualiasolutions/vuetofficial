@@ -335,7 +335,7 @@ export default function AlertsList() {
   const { data: allActionAlerts, isLoading: isLoadingActionAlerts } =
     useGetAllActionAlertsQuery();
 
-  const overdueTasks = useSelector(selectOverdueTasks);
+  // const overdueTasks = useSelector(selectOverdueTasks);
 
   if (
     isLoadingAlerts ||
@@ -356,8 +356,8 @@ export default function AlertsList() {
 
   if (
     alertedTasks.length === 0 &&
-    alertedActions.length === 0 &&
-    overdueTasks.length === 0
+    alertedActions.length === 0
+    // overdueTasks.length === 0
   ) {
     return (
       <TransparentPaddedView>
@@ -427,8 +427,8 @@ export default function AlertsList() {
       <FlatList
         data={[
           ...alertedTasks.map((task) => ({ task, type: 'ALERT' })),
-          ...alertedActions.map((action) => ({ action, type: 'ACTION_ALERT' })),
-          ...overdueTasks.map((task) => ({ task, type: 'OVERDUE_TASK' }))
+          ...alertedActions.map((action) => ({ action, type: 'ACTION_ALERT' }))
+          // ...overdueTasks.map((task) => ({ task, type: 'OVERDUE_TASK' }))
         ]}
         contentContainerStyle={listStyles.listView}
         renderItem={({ item }) => {
