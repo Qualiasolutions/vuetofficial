@@ -19,12 +19,19 @@ export default function useActiveInvitesForUser(ownInvites: boolean) {
     };
   }
 
-  const isLoading = !userFullDetails || isLoadingUserInvites || !userInvites;
+  const isLoading = !userFullDetails || isLoadingUserInvites;
 
   if (isLoading) {
     return {
       data: [],
       isLoading: true
+    };
+  }
+
+  if (!userInvites) {
+    return {
+      data: [],
+      isLoading: false
     };
   }
 

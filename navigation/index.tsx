@@ -39,7 +39,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const { data: userBasicDetails, isLoading: isLoadingDetails } =
-    useGetUserDetailsQuery();
+    useGetUserDetailsQuery(undefined, { skip: !jwtAccessToken });
   const { data: userFullDetails, isLoading: isLoadingFullDetails } =
     useGetUserFullDetailsQuery(userBasicDetails?.user_id || -1, {
       refetchOnMountOrArgChange: true,
@@ -50,12 +50,12 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
     useActiveInvitesForUser(true);
 
   // Force fetch of categories on app load
-  useGetAllCategoriesQuery();
+  useGetAllCategoriesQuery(undefined, { skip: !userBasicDetails?.user_id });
 
   // Force fetch of School Years etc
-  useGetAllSchoolYearsQuery();
-  useGetAllSchoolTermsQuery();
-  useGetAllSchoolBreaksQuery();
+  useGetAllSchoolYearsQuery(undefined, { skip: !userBasicDetails?.user_id });
+  useGetAllSchoolTermsQuery(undefined, { skip: !userBasicDetails?.user_id });
+  useGetAllSchoolBreaksQuery(undefined, { skip: !userBasicDetails?.user_id });
 
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
