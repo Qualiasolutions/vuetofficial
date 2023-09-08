@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
-import SafePressable from 'components/molecules/SafePressable';
 import TopNav from 'components/molecules/TopNav';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 

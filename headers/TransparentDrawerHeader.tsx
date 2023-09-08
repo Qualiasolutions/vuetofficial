@@ -7,6 +7,22 @@ import { DrawerHeaderProps } from '@react-navigation/drawer';
 
 type Props = DrawerHeaderProps & { height?: number };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    width: '100%',
+    height: '100%',
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  sideSections: {
+    width: 50,
+    backgroundColor: 'transparent'
+  }
+});
+
 const TransparentDrawerHeader = (props: Props) => {
   const height = props.height || 160;
 
@@ -29,21 +45,5 @@ const TransparentDrawerHeader = (props: Props) => {
     </TransparentView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-    width: '100%',
-    height: '100%',
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  sideSections: {
-    width: 50,
-    backgroundColor: 'transparent'
-  }
-});
 
 export default TransparentDrawerHeader;
