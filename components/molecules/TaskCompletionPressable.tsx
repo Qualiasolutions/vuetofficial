@@ -2,6 +2,7 @@ import useCompletionCallback from 'components/forms/TaskCompletionModal/taskComp
 import TaskCompletionModal from 'components/forms/TaskCompletionModal/TaskCompletionModal';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import {
   useCreateTaskActionCompletionFormMutation,
@@ -19,6 +20,7 @@ export default function TaskCompletionPressable({
   recurrenceIndex,
   actionId,
   onSuccess = () => {},
+  onPress = () => {},
   children,
   useSafePressable = false
 }: {
@@ -26,6 +28,7 @@ export default function TaskCompletionPressable({
   recurrenceIndex?: number;
   actionId: number | null;
   onSuccess?: () => void;
+  onPress?: () => void;
   children: ReactNode;
   useSafePressable?: boolean;
 }) {
@@ -34,6 +37,7 @@ export default function TaskCompletionPressable({
     selectScheduledTask({ id: taskId, recurrenceIndex, actionId })
   );
   const taskObj = useSelector(selectTaskById(taskId));
+  const { t } = useTranslation();
 
   const [createTaskActionCompletionForm] =
     useCreateTaskActionCompletionFormMutation();
@@ -49,28 +53,38 @@ export default function TaskCompletionPressable({
   return (
     <>
       <PressableComp
-        onPress={async () => {
-          if (scheduledTask) {
-            if (scheduledTask.action_id) {
-              await createTaskActionCompletionForm({
-                action: scheduledTask.action_id,
-                recurrence_index: scheduledTask.recurrence_index
-              }).unwrap();
-              onSuccess();
-              return;
-            }
-            await triggerCreateCompletionForm({
-              resourcetype: 'TaskCompletionForm',
-              recurrence_index: scheduledTask.recurrence_index,
-              task: scheduledTask.id
-            }).unwrap();
+        onPress={() => {
+          onPress();
+          setTimeout(async () => {
+            try {
+              if (scheduledTask) {
+                if (scheduledTask.action_id) {
+                  await createTaskActionCompletionForm({
+                    action: scheduledTask.action_id,
+                    recurrence_index: scheduledTask.recurrence_index
+                  }).unwrap();
+                  onSuccess();
+                  return;
+                }
+                await triggerCreateCompletionForm({
+                  resourcetype: 'TaskCompletionForm',
+                  recurrence_index: scheduledTask.recurrence_index,
+                  task: scheduledTask.id
+                }).unwrap();
 
-            if (completionCallback) {
-              setShowTaskCompletionForm(true);
-            } else {
-              onSuccess();
+                if (completionCallback) {
+                  setShowTaskCompletionForm(true);
+                } else {
+                  onSuccess();
+                }
+              }
+            } catch (err) {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
             }
-          }
+          }, 10);
         }}
       >
         {children}

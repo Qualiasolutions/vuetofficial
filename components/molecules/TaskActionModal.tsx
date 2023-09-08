@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectTaskToAction } from 'reduxStore/slices/calendars/selectors';
 import { RootTabParamList } from 'types/base';
 import { LinkButton } from './ButtonComponents';
-import Modal from 'react-native-modal';
+import { Modal } from 'components/molecules/Modals';
 
 import { setTaskToAction } from 'reduxStore/slices/calendars/actions';
 import {
@@ -14,13 +14,17 @@ import {
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
 
-import { WhiteBox } from './ViewComponents';
 import DeleteTaskModal from './DeleteTaskModal';
 import { YesNoModal } from './Modals';
 import { useDeleteTaskMutation } from 'reduxStore/services/api/tasks';
 import TaskCompletionPressable from './TaskCompletionPressable';
 import useCanMarkComplete from 'hooks/useCanMarkComplete';
 import useHasEditPerms from 'hooks/useHasEditPerms';
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  modalBox: { paddingHorizontal: 30 }
+});
 
 export default function TaskActionModal() {
   const [deletingOccurrence, setDeletingOccurrence] = useState(false);
@@ -55,108 +59,102 @@ export default function TaskActionModal() {
 
   return (
     <Modal
-      isVisible={!!taskToAction}
-      onDismiss={() => {
+      visible={!!taskToAction}
+      onRequestClose={() => {
         dispatch(setTaskToAction(null));
       }}
-      onBackdropPress={() => {
-        dispatch(setTaskToAction(null));
-      }}
-      animationIn="slideInRight"
-      animationOut="slideOutRight"
+      boxStyle={styles.modalBox}
     >
-      <WhiteBox>
-        {hasEditPerms ? (
-          task?.recurrence ? (
-            <>
-              <LinkButton
-                onPress={() => {
-                  if (taskToAction) {
-                    // We don't need to be able to edit specific instances
-                    // of birthdays
-                    if (['BIRTHDAY', 'ANNIVERSARY'].includes(task.type)) {
-                      navigation.navigate('EditTask', {
-                        taskId: taskToAction.taskId
-                      });
-                    } else {
-                      navigation.navigate('EditTaskOccurrence', {
-                        taskId: taskToAction.taskId,
-                        recurrenceIndex:
-                          taskToAction.recurrenceIndex === null
-                            ? -1
-                            : taskToAction.recurrenceIndex
-                      });
-                    }
-                    dispatch(setTaskToAction(null));
-                  }
-                }}
-                title={t('components.task.editTask')}
-              />
-              <LinkButton
-                onPress={() => {
-                  setDeletingOccurrence(true);
-                }}
-                title={t('common.delete')}
-              />
-            </>
-          ) : (
-            <>
-              <LinkButton
-                onPress={() => {
-                  if (taskToAction) {
+      {hasEditPerms ? (
+        task?.recurrence ? (
+          <>
+            <LinkButton
+              onPress={() => {
+                if (taskToAction) {
+                  // We don't need to be able to edit specific instances
+                  // of birthdays
+                  if (['BIRTHDAY', 'ANNIVERSARY'].includes(task.type)) {
                     navigation.navigate('EditTask', {
                       taskId: taskToAction.taskId
                     });
-                    dispatch(setTaskToAction(null));
+                  } else {
+                    navigation.navigate('EditTaskOccurrence', {
+                      taskId: taskToAction.taskId,
+                      recurrenceIndex:
+                        taskToAction.recurrenceIndex === null
+                          ? -1
+                          : taskToAction.recurrenceIndex
+                    });
                   }
-                }}
-                title={t('components.task.editTask')}
-              />
-              <LinkButton
-                onPress={() => {
-                  setDeletingTask(true);
-                }}
-                title={t('common.delete')}
-              />
-            </>
-          )
-        ) : null}
-        {taskToAction && (
-          <LinkButton
-            onPress={() => {
-              if (taskToAction) {
-                (navigation.navigate as any)('Chat', {
-                  screen: 'MessageThread',
-                  initial: false,
-                  params: taskToAction
-                });
-                dispatch(setTaskToAction(null));
-              }
-            }}
-            title={t('components.task.messages')}
-          />
-        )}
-        {canMarkComplete && taskToAction && scheduledTask && (
-          <TaskCompletionPressable
-            taskId={taskToAction.taskId}
-            recurrenceIndex={
-              taskToAction.recurrenceIndex === null
-                ? undefined
-                : taskToAction.recurrenceIndex
+                  dispatch(setTaskToAction(null));
+                }
+              }}
+              title={t('components.task.editTask')}
+            />
+            <LinkButton
+              onPress={() => {
+                setDeletingOccurrence(true);
+              }}
+              title={t('common.delete')}
+            />
+          </>
+        ) : (
+          <>
+            <LinkButton
+              onPress={() => {
+                if (taskToAction) {
+                  navigation.navigate('EditTask', {
+                    taskId: taskToAction.taskId
+                  });
+                  dispatch(setTaskToAction(null));
+                }
+              }}
+              title={t('components.task.editTask')}
+            />
+            <LinkButton
+              onPress={() => {
+                setDeletingTask(true);
+              }}
+              title={t('common.delete')}
+            />
+          </>
+        )
+      ) : null}
+      {taskToAction && (
+        <LinkButton
+          onPress={() => {
+            if (taskToAction) {
+              (navigation.navigate as any)('Chat', {
+                screen: 'MessageThread',
+                initial: false,
+                params: taskToAction
+              });
+              dispatch(setTaskToAction(null));
             }
-            actionId={taskToAction.actionId}
-            onSuccess={() => dispatch(setTaskToAction(null))}
-          >
-            {scheduledTask.is_complete ? null : (
-              <LinkButton
-                onPress={() => {}}
-                title={t('components.task.markComplete')}
-                disabled={true}
-              />
-            )}
-          </TaskCompletionPressable>
-        )}
-      </WhiteBox>
+          }}
+          title={t('components.task.messages')}
+        />
+      )}
+      {canMarkComplete && taskToAction && scheduledTask && (
+        <TaskCompletionPressable
+          taskId={taskToAction.taskId}
+          recurrenceIndex={
+            taskToAction.recurrenceIndex === null
+              ? undefined
+              : taskToAction.recurrenceIndex
+          }
+          actionId={taskToAction.actionId}
+          onPress={() => dispatch(setTaskToAction(null))}
+        >
+          {scheduledTask.is_complete ? null : (
+            <LinkButton
+              onPress={() => {}}
+              title={t('components.task.markComplete')}
+              disabled={true}
+            />
+          )}
+        </TaskCompletionPressable>
+      )}
       <DeleteTaskModal
         visible={deletingOccurrence}
         onRequestClose={() => setDeletingOccurrence(false)}
