@@ -243,7 +243,6 @@ function Task({
   isEntity
 }: PropTypes) {
   const task = useSelector(selectTaskById(id));
-
   const scheduledTask = useSelector(
     selectScheduledTask({
       id,

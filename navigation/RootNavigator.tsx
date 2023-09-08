@@ -97,11 +97,6 @@ export function BottomTabNavigator({
 }) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetailsQuery();
-
-  useGetUserFullDetailsQuery(userDetails?.user_id || -1, {
-    refetchOnMountOrArgChange: true,
-    skip: !userDetails?.user_id
-  });
   useGetUserInvitesQuery(null as any, {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id

@@ -17,7 +17,6 @@ import { DarkTheme, DefaultTheme } from 'constants/Colors';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SideNavigator } from './SideNavigator';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import TaskActionModal from 'components/molecules/TaskActionModal';
 import ListItemActionModal from 'components/molecules/ListItemActionModal';
@@ -26,6 +25,10 @@ import {
   useGetAllSchoolTermsQuery,
   useGetAllSchoolYearsQuery
 } from 'reduxStore/services/api/schoolTerms';
+import {
+  useGetUserDetailsQuery,
+  useGetUserFullDetailsQuery
+} from 'reduxStore/services/api/user';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -35,9 +38,14 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const [hasJustSignedUp, setHasJustSignedUp] = React.useState(false);
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
-  const { data: userFullDetails, isLoading: isLoadingUserDetails } =
-    useGetUserFullDetails();
-  const { isLoading: isLoadingUserInvites, data: invitesForUser } =
+  const { data: userBasicDetails, isLoading: isLoadingDetails } =
+    useGetUserDetailsQuery();
+  const { data: userFullDetails, isLoading: isLoadingFullDetails } =
+    useGetUserFullDetailsQuery(userBasicDetails?.user_id || -1, {
+      refetchOnMountOrArgChange: true,
+      skip: !userBasicDetails?.user_id
+    });
+  const { data: invitesForUser, isLoading: isLoadingInvitesForUser } =
     useActiveInvitesForUser(true);
 
   // Force fetch of categories on app load
@@ -53,7 +61,8 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
 
   let navigatorComponent = <FullPageSpinner />;
 
-  const isLoading = isLoadingUserDetails || isLoadingUserInvites;
+  const isLoading =
+    isLoadingDetails || isLoadingFullDetails || isLoadingInvitesForUser;
 
   if (!isLoading) {
     if (!(jwtAccessToken && jwtRefreshToken)) {
