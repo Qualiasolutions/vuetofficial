@@ -110,7 +110,14 @@ function Calendar({
         />
       </TransparentView>
     );
-  }, [filteredTasks, filteredEntities, showFilters, showListHeader, dispatch]);
+  }, [
+    JSON.stringify(filteredTasks),
+    JSON.stringify(filteredEntities),
+    showFilters,
+    showAllTime,
+    showListHeader,
+    dispatch
+  ]);
 
   const isLoading =
     isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;
