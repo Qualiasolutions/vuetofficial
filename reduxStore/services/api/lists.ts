@@ -150,11 +150,12 @@ const listsApi = vuetApi.injectEndpoints({
           body
         };
       },
-      invalidatesTags: ['Entity'],
+      invalidatesTags: [],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
       ) {
+        const mockId = Math.round(1000000 * Math.random() * 1e7);
         const patchResults = [];
         for (const {
           endpointName,
@@ -174,7 +175,7 @@ const listsApi = vuetApi.injectEndpoints({
                 for (const list of listsToUpdate) {
                   list.list_entries.push({
                     ...patch,
-                    id: Math.round(1000000 * Math.random() * 1e7)
+                    id: mockId
                   });
                 }
               }
@@ -183,7 +184,32 @@ const listsApi = vuetApi.injectEndpoints({
           patchResults.push(patchResult);
         }
         try {
-          await queryFulfilled;
+          const { data: newListEntry } = await queryFulfilled;
+          for (const {
+            endpointName,
+            originalArgs
+          } of entitiesApi.util.selectInvalidatedBy(getState(), [
+            { type: 'Entity' }
+          ])) {
+            if (endpointName !== 'getAllEntities') continue;
+            dispatch(
+              entitiesApi.util.updateQueryData(
+                'getAllEntities',
+                originalArgs,
+                (draft) => {
+                  const listsToUpdate = Object.values(draft.byId).filter(
+                    (entity) => entity.id === patch.list
+                  );
+                  for (const list of listsToUpdate) {
+                    const mockIndex = list.list_entries
+                      .map((entry) => entry.id)
+                      .indexOf(mockId);
+                    list.list_entries[mockIndex].id = newListEntry.id;
+                  }
+                }
+              )
+            );
+          }
         } catch {
           for (const patchResult of patchResults) {
             patchResult.undo();
@@ -216,7 +242,7 @@ const listsApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Entity'],
+      invalidatesTags: [],
       async onQueryStarted(idToDelete, { dispatch, queryFulfilled, getState }) {
         const patchResults = [];
         for (const {
