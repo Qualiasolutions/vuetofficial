@@ -18,7 +18,6 @@
     "oops": "Oops!",
     "personalAssistant": "Personal assistant",
     "familySettings": "Family settings",
-    "friendSettings": "Friend settings",
     "addFamilyMember": "Add family member",
     "addFriend": "Add to Vuet circle",
     "editFamilyMember": "Edit {{fullName}}",

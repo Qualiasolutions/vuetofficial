@@ -34,13 +34,6 @@ const SettingsScreen = ({
           style={styles.button}
         />
         <Button
-          title={t('pageTitles.friendSettings')}
-          onPress={() => {
-            navigation.navigate('FriendSettings');
-          }}
-          style={styles.button}
-        />
-        <Button
           title={t('pageTitles.personalAssistant')}
           onPress={() => {
             navigation.navigate('PersonalAssistant');
