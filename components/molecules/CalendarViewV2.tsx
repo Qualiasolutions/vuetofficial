@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
-import { ParsedPeriod } from 'types/periods';
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
 import SafePressable from './SafePressable';
@@ -17,7 +16,6 @@ import { MinimalScheduledTask } from 'types/tasks';
 export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };
   entities?: { [date: string]: ScheduledEntity[] };
-  periods: ParsedPeriod[];
   onChangeDate?: (date: string) => void;
   hidden?: boolean;
 };
@@ -69,8 +67,7 @@ const ListedEntity = ({ id }: { id: number }) => {
 const CalendarContent = ({
   onChangeDate,
   tasks,
-  entities,
-  periods
+  entities
 }: CalendarViewProps) => {
   const [forcedInitialDate, setForcedInitialDate] = useState<string | null>(
     null
@@ -175,7 +172,6 @@ export default function CalendarView({
   onChangeDate,
   tasks,
   entities,
-  periods,
   hidden
 }: CalendarViewProps) {
   if (hidden) {
@@ -186,7 +182,6 @@ export default function CalendarView({
       onChangeDate={onChangeDate}
       tasks={tasks}
       entities={entities}
-      periods={periods}
     />
   );
 }

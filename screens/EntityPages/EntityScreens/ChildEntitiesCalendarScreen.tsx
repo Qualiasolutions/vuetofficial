@@ -12,15 +12,12 @@ import { ContentTabParamList } from 'types/base';
 import React from 'react';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import Calendar from 'components/calendars/TaskCalendar';
 import useEntityHeader from '../../../headers/hooks/useEntityHeader';
 
 export default function ChildEntitiesCalendarScreen({
   navigation,
   route
 }: NativeStackScreenProps<ContentTabParamList, 'ChildEntitiesCalendarScreen'>) {
-  const { data: userDetails } = useGetUserDetails();
-
   const {
     data: allEntities,
     isLoading: isLoadingEntities,
@@ -63,20 +60,4 @@ export default function ChildEntitiesCalendarScreen({
   }
 
   return null;
-  // return (
-  //   <Calendar
-  //     taskFilters={[
-  //       (task) =>
-  //         childEntities
-  //           .map((ent) => ent.id)
-  //           .some((ent) => task.entities.includes(ent))
-  //     ]}
-  //     periodFilters={[
-  //       (period) =>
-  //         childEntities
-  //           .map((ent) => ent.id)
-  //           .some((ent) => period.entities.includes(ent))
-  //     ]}
-  //   />
-  // );
 }

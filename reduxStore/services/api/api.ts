@@ -48,7 +48,6 @@ export const vuetApi = createApi({
     'Task',
     'TaskLimit',
     'TaskAction',
-    'Period',
     'TaskCompletionForm',
     'Category',
     'User',

@@ -1,5 +1,5 @@
 /*
-  TaskCalendar - this is a calendar component for displaying tasks (and periods)
+  TaskCalendar - this is a calendar component for displaying tasks
 */
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';

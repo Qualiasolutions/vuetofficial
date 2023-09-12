@@ -5,14 +5,12 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { WhitePaddedView } from 'components/molecules/ViewComponents';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
 import { View } from 'components/Themed';
 import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { elevation } from 'styles/elevation';
 import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import SafePressable from 'components/molecules/SafePressable';
 

@@ -166,18 +166,12 @@ export type ContentTabParamList = {
   };
   EntityScreen: { entityId: number | string };
   TagScreen: { tagName: string };
-  EntityPeriods: { entityId: number };
   ChildEntitiesScreen: {
     entityId: number | string;
     entityTypes: EntityTypeName[];
     showCreateForm: boolean;
   };
   ChildEntitiesCalendarScreen: {
-    entityId: number | string;
-    entityTypes: EntityTypeName[];
-    includeParentTasks?: boolean;
-  };
-  ChildEntitiesPeriodsScreen: {
     entityId: number | string;
     entityTypes: EntityTypeName[];
     includeParentTasks?: boolean;

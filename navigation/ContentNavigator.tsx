@@ -14,8 +14,6 @@ import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
 import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import ChildEntitiesCalendarScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesCalendarScreen';
-import EntityPeriodsScreen from 'screens/EntityPages/EntityPeriodsScreen';
-import ChildEntitiesPeriodsScreen from 'screens/EntityPages/EntityScreens/ChildEntitiesPeriodsScreen';
 import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
 import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
 import BlockedDaysSettingsScreen from 'screens/Categories/BlockedDaySettingsScreen';
@@ -122,13 +120,6 @@ export function ContentNavigator() {
         }}
       />
       <ContentStack.Screen
-        name="EntityPeriods"
-        component={EntityPeriodsScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
         name="ChildEntitiesScreen"
         component={ChildEntitiesScreen}
         options={{
@@ -138,13 +129,6 @@ export function ContentNavigator() {
       <ContentStack.Screen
         name="ChildEntitiesCalendarScreen"
         component={ChildEntitiesCalendarScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="ChildEntitiesPeriodsScreen"
-        component={ChildEntitiesPeriodsScreen}
         options={{
           headerShown: true
         }}

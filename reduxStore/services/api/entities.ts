@@ -299,7 +299,7 @@ const entitiesApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity', 'Task']
     }),
     bulkCreateEntities: builder.mutation<
       EntityResponseType[],
@@ -310,7 +310,7 @@ const entitiesApi = vuetApi.injectEndpoints({
         method: 'POST',
         body
       }),
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity', 'Task']
     }),
     bulkDeleteEntities: builder.mutation<
       EntityResponseType[],
@@ -321,7 +321,7 @@ const entitiesApi = vuetApi.injectEndpoints({
         method: 'DELETE',
         body: { pk_ids: body.map((holiday) => holiday.id) }
       }),
-      invalidatesTags: ['Entity', 'Task', 'Period']
+      invalidatesTags: ['Entity', 'Task']
     })
   }),
   overrideExisting: true

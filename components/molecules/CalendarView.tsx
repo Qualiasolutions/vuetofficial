@@ -1,18 +1,11 @@
-import { useThemeColor, View } from 'components/Themed';
-import { useMemo, useState } from 'react';
+import { useThemeColor } from 'components/Themed';
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
-import {
-  getDateWithoutTimezone,
-  getUTCValuesFromDateString
-} from 'utils/datesAndTimes';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
-import { AlmostBlackText } from './TextComponents';
-import useScheduledPeriods from 'hooks/useScheduledPeriods';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
-import SafePressable from './SafePressable';
 
 export type CalendarViewProps = {
   dates: {
@@ -47,8 +40,6 @@ export default function CalendarView({
   const greyColor = useThemeColor({}, 'grey');
   const [selectedDay, setSelectedDay] = useState<DateData | null>(null);
   const styles = useStyle();
-  const { periods: allPeriods } = useScheduledPeriods();
-  const navigation = useNavigation();
   const listEnforcedDate = useSelector(selectListEnforcedDate);
 
   const updateDate = (newDate: string) => {
@@ -73,31 +64,6 @@ export default function CalendarView({
     datesCopy[selectedDay.dateString].selected = true;
     datesCopy[selectedDay.dateString].selectedColor = greyColor;
   }
-
-  const selectedDayPeriods = useMemo(() => {
-    if (allPeriods && selectedDay) {
-      if (selectedDay.dateString in dates) {
-        return allPeriods.filter((period) => {
-          if (
-            getDateWithoutTimezone(period.end_date) <
-            getDateWithoutTimezone(selectedDay.dateString)
-          ) {
-            return false;
-          }
-          if (
-            getDateWithoutTimezone(period.start_date) >
-            getDateWithoutTimezone(selectedDay.dateString)
-          ) {
-            return false;
-          }
-          return dates[selectedDay.dateString].periods
-            .map((p) => p.id)
-            .includes(period.id);
-        });
-      }
-    }
-    return [];
-  }, [selectedDay, dates, allPeriods]);
 
   return (
     <WhiteFullPageScrollView style={styles.container}>
@@ -134,45 +100,6 @@ export default function CalendarView({
         }}
         initialDate={listEnforcedDate || undefined}
       />
-
-      {allPeriods && selectedDayPeriods && (
-        <View style={styles.periodList}>
-          {selectedDayPeriods.map((period) => {
-            const periodStartUtcValues = getUTCValuesFromDateString(
-              period.start_date
-            );
-            const periodEndUtcValues = getUTCValuesFromDateString(
-              period.end_date
-            );
-
-            const text =
-              periodStartUtcValues.day === periodEndUtcValues.day &&
-              periodStartUtcValues.monthShortName ===
-                periodEndUtcValues.monthShortName
-                ? `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName}`
-                : `${periodStartUtcValues.day} ${periodStartUtcValues.monthShortName} - ${periodEndUtcValues.day} ${periodEndUtcValues.monthShortName}`;
-            return (
-              <SafePressable
-                style={styles.periodListElement}
-                key={period.id}
-                onPress={() => {
-                  (navigation.navigate as any)('ContentNavigator', {
-                    screen: 'EntityScreen',
-                    initial: false,
-                    params: { entityId: period.entity }
-                  });
-                }}
-              >
-                <AlmostBlackText
-                  text={period.title}
-                  style={styles.periodListTitleText}
-                />
-                <AlmostBlackText text={text} />
-              </SafePressable>
-            );
-          })}
-        </View>
-      )}
     </WhiteFullPageScrollView>
   );
 }
