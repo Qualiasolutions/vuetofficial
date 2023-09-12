@@ -1,6 +1,7 @@
 import SafePressable from 'components/molecules/SafePressable';
 import { Text } from 'components/Themed';
 import iWantToOptions from 'constants/iWantToOptions';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
@@ -36,6 +37,7 @@ export default function QuickNavigator({
 }) {
   const { t } = useTranslation();
   const { data: referenceGroups } = useGetAllReferenceGroupsQuery();
+  const { data: userDetails } = useGetUserFullDetails();
 
   const iWantToComponents = useMemo(() => {
     if (!categoryName) {
@@ -107,7 +109,7 @@ export default function QuickNavigator({
           }}
         />
       )}
-      {referencesComponent && (
+      {referencesComponent && userDetails && userDetails.is_premium && (
         <TopTabs.Screen
           name="References"
           component={referencesComponent}

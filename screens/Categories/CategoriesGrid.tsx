@@ -14,6 +14,7 @@ import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
 import TopNav from 'components/molecules/TopNav';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 type CategoryGroupName =
   | 'PETS'
@@ -95,12 +96,13 @@ const styles = StyleSheet.create({
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
+  const { data: userDetails } = useGetUserFullDetails();
   const { t } = useTranslation();
 
   const whiteColor = useThemeColor({}, 'white');
   const overlayColor = useThemeColor({}, 'overlay');
 
-  if (isLoading || !allCategories) {
+  if (isLoading || !allCategories || !userDetails) {
     return <FullPageSpinner />;
   }
 
@@ -180,8 +182,11 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       {categoriesContent}
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('AllReferences');
+          if (userDetails.is_premium) {
+            navigation.navigate('AllReferences');
+          }
         }}
+        disabled={!userDetails.is_premium}
       >
         <ImageBackground
           source={categoriesImages.REFERENCES}
@@ -196,6 +201,11 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
               text={t('pageTitles.references')}
               bold={true}
             />
+            {
+              <View style={styles.premiumTag}>
+                <Text style={styles.premiumTagText}>Premium</Text>
+              </View>
+            }
           </View>
         </ImageBackground>
       </TouchableOpacity>
