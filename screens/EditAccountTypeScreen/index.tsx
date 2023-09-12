@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 import Constants from 'expo-constants';
 import { useGetAllSubscriptionsQuery } from 'reduxStore/services/api/subscriptions';
-import { Text, View } from 'components/Themed';
+import { Text } from 'components/Themed';
 
 const vuetWebUrl = Constants.manifest?.extra?.vuetWebUrl;
 const stripeCustomerPortalUrl =
