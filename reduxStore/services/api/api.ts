@@ -74,7 +74,8 @@ export const vuetApi = createApi({
     'ShoppingListDelegation',
     'SchoolYear',
     'SchoolTerm',
-    'SchoolBreak'
+    'SchoolBreak',
+    'Subscription'
   ],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({

@@ -12,17 +12,34 @@ import {
 } from 'components/molecules/ViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
-import { Pressable } from 'react-native';
-import { useUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
+import { Linking } from 'react-native';
+import Constants from 'expo-constants';
+import { useGetAllSubscriptionsQuery } from 'reduxStore/services/api/subscriptions';
+
+const vuetWebUrl = Constants.manifest?.extra?.vuetWebUrl;
+const stripeCustomerPortalUrl =
+  Constants.manifest?.extra?.stripeCustomerPortalUrl;
 
 export function EditAccountTypeScreen() {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserFullDetails();
-  const [updateUserDetails] = useUpdateUserDetailsMutation();
+  const { data: subscriptions } = useGetAllSubscriptionsQuery(
+    userDetails?.id || -1,
+    {
+      skip: !userDetails
+    }
+  );
 
-  if (!userDetails) {
+  const loading = !userDetails || !subscriptions;
+  if (loading) {
     return <FullPageSpinner />;
   }
+
+  const firstSubscription = subscriptions[0];
+
+  const renewalDate = new Date(
+    firstSubscription.current_period_end * 1000
+  ).toDateString();
 
   return (
     <TransparentPaddedView>
@@ -33,14 +50,14 @@ export function EditAccountTypeScreen() {
               'screens.editAccountType.premiumPlan'
             )}`}
           />
-          <PageSubtitle text={`${t('screens.editAccountType.renewsOn')} xxx`} />
-          <PageSubtitle text="..." />
+          <PageSubtitle
+            text={`${t('screens.editAccountType.renewsOn')} ${renewalDate}`}
+          />
           <SafePressable
             onPress={() => {
-              updateUserDetails({
-                user_id: userDetails.id,
-                is_premium: false
-              });
+              Linking.openURL(
+                `${stripeCustomerPortalUrl}?prefilled_email=${firstSubscription.customer_email}`
+              );
             }}
           >
             <PrimaryText text={t('screens.editAccountType.changePlan')} />
@@ -58,10 +75,7 @@ export function EditAccountTypeScreen() {
           <Button
             title={t('screens.editAccountType.upgrade')}
             onPress={() => {
-              updateUserDetails({
-                user_id: userDetails.id,
-                is_premium: true
-              });
+              Linking.openURL(vuetWebUrl);
             }}
           />
         </TransparentView>
