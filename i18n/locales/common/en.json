@@ -597,9 +597,11 @@
       "currentAccountType": "Current account type",
       "standardPlan": "Standard plan",
       "premiumPlan": "Premium plan",
+      "familyPlan": "Family plan",
       "upgradeNow": "Upgrade now for all of these benefits:",
       "upgrade": "Upgrade",
       "renewsOn": "Renews on",
+      "willCancelOn": "Your plan will be cancelled on",
       "changePlan": "Change my plan"
     },
     "editSecurity": {

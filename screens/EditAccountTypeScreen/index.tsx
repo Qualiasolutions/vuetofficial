@@ -26,7 +26,8 @@ export function EditAccountTypeScreen() {
   const { data: subscriptions } = useGetAllSubscriptionsQuery(
     userDetails?.id || -1,
     {
-      skip: !userDetails
+      skip: !userDetails,
+      pollingInterval: 10_000
     }
   );
 
@@ -46,12 +47,18 @@ export function EditAccountTypeScreen() {
       {userDetails.is_premium ? (
         <TransparentView>
           <PageTitle
-            text={`${t('screens.editAccountType.currentAccountType')}: ${t(
-              'screens.editAccountType.premiumPlan'
-            )}`}
+            text={`${t('screens.editAccountType.currentAccountType')}: ${
+              firstSubscription.is_family
+                ? t('screens.editAccountType.familyPlan')
+                : t('screens.editAccountType.premiumPlan')
+            }`}
           />
           <PageSubtitle
-            text={`${t('screens.editAccountType.renewsOn')} ${renewalDate}`}
+            text={`${
+              firstSubscription.cancel_at_period_end
+                ? t('screens.editAccountType.willCancelOn')
+                : t('screens.editAccountType.renewsOn')
+            } ${renewalDate}`}
           />
           <SafePressable
             onPress={() => {
