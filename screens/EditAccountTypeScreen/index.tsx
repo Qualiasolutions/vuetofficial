@@ -43,7 +43,7 @@ export function EditAccountTypeScreen() {
     userDetails?.id || -1,
     {
       skip: !userDetails,
-      pollingInterval: 10_000
+      pollingInterval: 10000
     }
   );
 
