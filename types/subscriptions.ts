@@ -6,4 +6,5 @@ export type Subscription = {
   is_family: boolean;
   type: SubscriptionType;
   customer_email: string;
+  user: number;
 };

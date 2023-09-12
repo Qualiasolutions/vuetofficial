@@ -15,10 +15,26 @@ import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 import Constants from 'expo-constants';
 import { useGetAllSubscriptionsQuery } from 'reduxStore/services/api/subscriptions';
+import { Text, View } from 'components/Themed';
 
 const vuetWebUrl = Constants.manifest?.extra?.vuetWebUrl;
 const stripeCustomerPortalUrl =
   Constants.manifest?.extra?.stripeCustomerPortalUrl;
+
+const FamilyMemberName = ({ userId }: { userId: number }) => {
+  const { t } = useTranslation();
+  const { data: userDetails } = useGetUserFullDetails();
+  const planOwner = userDetails?.family.users.find(
+    (user) => user.id === userId
+  );
+
+  return (
+    <Text>
+      {t('screens.editAccountType.ownedBy')} {planOwner?.first_name}{' '}
+      {planOwner?.last_name}
+    </Text>
+  );
+};
 
 export function EditAccountTypeScreen() {
   const { t } = useTranslation();
@@ -36,15 +52,15 @@ export function EditAccountTypeScreen() {
     return <FullPageSpinner />;
   }
 
-  const firstSubscription = subscriptions[0];
+  const firstSubscription = subscriptions.length > 0 ? subscriptions[0] : null;
 
-  const renewalDate = new Date(
-    firstSubscription.current_period_end * 1000
-  ).toDateString();
+  const renewalDate = firstSubscription
+    ? new Date(firstSubscription.current_period_end * 1000).toDateString()
+    : null;
 
   return (
     <TransparentPaddedView>
-      {userDetails.is_premium ? (
+      {firstSubscription ? (
         <TransparentView>
           <PageTitle
             text={`${t('screens.editAccountType.currentAccountType')}: ${
@@ -53,6 +69,11 @@ export function EditAccountTypeScreen() {
                 : t('screens.editAccountType.premiumPlan')
             }`}
           />
+          {firstSubscription.user !== userDetails.id && (
+            <TransparentView>
+              <FamilyMemberName userId={firstSubscription.user} />
+            </TransparentView>
+          )}
           <PageSubtitle
             text={`${
               firstSubscription.cancel_at_period_end
