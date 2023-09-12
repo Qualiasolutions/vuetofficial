@@ -1,4 +1,4 @@
-import { WhiteBox } from 'components/molecules/ViewComponents';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import {
   useDeletePlanningListItemMutation,
   useDeleteShoppingListItemMutation,
@@ -12,7 +12,7 @@ import { PageSubtitle } from 'components/molecules/TextComponents';
 
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import Modal from 'react-native-modal';
+import { Modal } from 'components/molecules/Modals';
 import { LinkButton } from './ButtonComponents';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectListItemToAction } from 'reduxStore/slices/lists/selectors';
@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
   linkButton: { marginVertical: 6 },
   actionModalContent: {
     alignItems: 'center'
-  }
+  },
+  modalBox: { paddingHorizontal: 30 }
 });
 
 const isShoppingListItem = (
@@ -76,13 +77,11 @@ export default function ListItemActionModal() {
 
   return (
     <Modal
-      isVisible={!!item}
-      onDismiss={onDismiss}
-      onBackdropPress={onDismiss}
-      animationIn="slideInRight"
-      animationOut="slideOutRight"
+      visible={!!item}
+      onRequestClose={onDismiss}
+      boxStyle={styles.modalBox}
     >
-      <WhiteBox style={styles.actionModalContent}>
+      <TransparentView style={styles.actionModalContent}>
         <PageSubtitle text={item?.title || ''} />
         <LinkButton
           onPress={() => {
@@ -112,7 +111,7 @@ export default function ListItemActionModal() {
           title={t('components.planningLists.itemActionModal.createTask')}
           style={styles.linkButton}
         />
-      </WhiteBox>
+      </TransparentView>
     </Modal>
   );
 }
