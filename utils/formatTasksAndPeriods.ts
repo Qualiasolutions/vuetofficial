@@ -76,10 +76,16 @@ export const formatEntitiesPerDate = (
       continue;
     }
 
-    const entityDates =
-      entity.start_date && entity.end_date
-        ? getDateStringsBetween(entity.start_date, entity.end_date)
-        : [];
+    let entityDates: string[] = [];
+    if (entity.start_datetime && entity.end_datetime) {
+      entityDates = getDateStringsBetween(
+        entity.start_datetime,
+        entity.end_datetime
+      );
+    }
+    if (entity.start_date && entity.end_date) {
+      entityDates = getDateStringsBetween(entity.start_date, entity.end_date);
+    }
 
     entityDates.forEach((entityDate) => {
       if (!entitiesPerDate[entityDate]) {

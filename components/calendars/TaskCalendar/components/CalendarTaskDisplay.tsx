@@ -1,4 +1,10 @@
-import { StyleSheet, SectionList, ViewToken } from 'react-native';
+import {
+  StyleSheet,
+  SectionList,
+  ViewToken,
+  ViewStyle,
+  TextStyle
+} from 'react-native';
 import React, {
   useCallback,
   useEffect,
@@ -112,7 +118,10 @@ function Calendar({
   onChangeFirstDate,
   showFilters,
   showListHeader = true,
-  showAllTime
+  showAllTime,
+  headerStyle,
+  headerTextStyle,
+  reverse
 }: {
   tasks: { [date: string]: ScheduledTask[] };
   entities?: { [date: string]: ScheduledEntity[] };
@@ -121,6 +130,9 @@ function Calendar({
   showFilters?: boolean;
   showListHeader?: boolean;
   showAllTime?: boolean;
+  headerStyle?: ViewStyle;
+  headerTextStyle?: TextStyle;
+  reverse?: boolean;
 }) {
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
@@ -392,13 +404,18 @@ function Calendar({
   }, [monthEnforcedDate]);
 
   const shownSections = useMemo(() => {
-    return [
+    const sections = [
       ...(showAllTime
         ? pastSections
         : pastSections.slice(pastSections.length - pastMonthsToShow * 30)),
       ...futureSections
     ];
-  }, [futureSections, pastSections, pastMonthsToShow, showAllTime]);
+
+    if (reverse) {
+      sections.reverse();
+    }
+    return sections;
+  }, [futureSections, pastSections, pastMonthsToShow, showAllTime, reverse]);
 
   const HORIZONTAL_PADDING = 20;
   const renderItem = useCallback(
@@ -503,10 +520,13 @@ function Calendar({
                   height: SECTION_HEADER_HEIGHT,
                   backgroundColor: lightYellowColor,
                   borderColor: blackColor
-                }
+                },
+                headerStyle
               ]}
             >
-              <Text style={styles.sectionHeaderText}>{section.title}</Text>
+              <Text style={[styles.sectionHeaderText, headerTextStyle]}>
+                {section.title}
+              </Text>
             </AlmostWhiteView>
           );
         }}

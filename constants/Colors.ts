@@ -32,7 +32,7 @@ const colors = {
     transparent: lightColors.transparent,
     text: lightColors.black,
     errorText: lightColors.error,
-    errorBackground: lightColors.error + '22',
+    errorBackground: lightColors.error + 'bb',
     primary: lightColors.primary,
     secondary: lightColors.secondary,
     lightPrimary: lightColors.lightPrimary,

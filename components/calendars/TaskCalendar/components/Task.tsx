@@ -96,12 +96,18 @@ type PropTypes = {
   isEntity?: boolean;
 };
 
+const isScheduledTask = (
+  item: ScheduledTaskResponseType | ScheduledEntityResponseType
+): item is ScheduledTaskResponseType => {
+  return Object.keys(item).includes('date');
+};
+
 const TimeText = ({
   scheduledTask,
   date,
   type
 }: {
-  scheduledTask?: ScheduledTaskResponseType;
+  scheduledTask?: ScheduledTaskResponseType | ScheduledEntityResponseType;
   date: string;
   type?: TaskType;
 }) => {
@@ -117,7 +123,7 @@ const TimeText = ({
     textContent = <Text style={styles.timeText}>{t('common.allDay')}</Text>;
   } else if (scheduledTask.start_date && scheduledTask.end_date) {
     textContent = <Text style={styles.timeText}>{t('common.allDay')}</Text>;
-  } else if (scheduledTask.date) {
+  } else if (isScheduledTask(scheduledTask) && scheduledTask.date) {
     textContent = (
       <Text style={styles.timeText}>
         {`${
@@ -282,7 +288,7 @@ function Task({
         <TransparentView style={[styles.containerWrapper]}>
           <TransparentView style={styles.container}>
             <TimeText
-              scheduledTask={isEntity ? undefined : scheduledTask}
+              scheduledTask={isEntity ? scheduledEntity : scheduledTask}
               date={date}
             />
             <TransparentView style={styles.titleContainer}>

@@ -4,7 +4,7 @@
 
 import CalendarTaskDisplay from './components/CalendarTaskDisplay';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { useDispatch } from 'react-redux';
 import {
   TransparentView,
@@ -55,6 +55,9 @@ type CalendarProps = {
   showFilters?: boolean;
   showListHeader?: boolean;
   showAllTime?: boolean;
+  reverse?: boolean;
+  headerStyle?: ViewStyle;
+  headerTextStyle?: TextStyle;
   filteredTasks: {
     [key: string]: ScheduledTask[];
   };
@@ -65,7 +68,10 @@ function Calendar({
   filteredEntities,
   showFilters,
   showListHeader,
-  showAllTime
+  showAllTime,
+  reverse,
+  headerStyle,
+  headerTextStyle
 }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
@@ -107,6 +113,9 @@ function Calendar({
           showFilters={showFilters}
           showListHeader={showListHeader}
           showAllTime={showAllTime}
+          reverse={reverse}
+          headerStyle={headerStyle}
+          headerTextStyle={headerTextStyle}
         />
       </TransparentView>
     );
@@ -115,6 +124,9 @@ function Calendar({
     JSON.stringify(filteredEntities),
     showFilters,
     showAllTime,
+    reverse,
+    headerStyle,
+    headerTextStyle,
     showListHeader,
     dispatch
   ]);

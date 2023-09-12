@@ -128,8 +128,10 @@ interface ScheduledEntityResponseType {
   members: number[];
   title: string;
   resourcetype: EntityTypeName | SchoolTermTypeName;
-  start_date: string;
-  end_date: string;
+  start_date: string | null;
+  end_date: string | null;
+  start_datetime: string | null;
+  end_datetime: string | null;
 }
 
 interface BaseCreateTaskRequest {
