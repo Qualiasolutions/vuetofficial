@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     height: 26
   },
   barIconText: {
-    fontSize: 10
+    fontSize: 9
   }
 });
 

@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   gridText: {
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 13
   },
   premiumTag: {
     backgroundColor: '#FFC700',
