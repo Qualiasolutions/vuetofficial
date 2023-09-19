@@ -6,13 +6,6 @@ import { Text, useThemeColor } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import {
-  useCreateEmailValidationMutation,
-  useCreatePhoneValidationMutation,
-  useUpdateEmailValidationMutation,
-  useUpdatePhoneValidationMutation
-} from 'reduxStore/services/api/signup';
-
-import {
   CodeField,
   Cursor,
   useBlurOnFulfill,

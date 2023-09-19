@@ -13,9 +13,11 @@ import { DayType } from 'types/datesAndTimes';
 import {
   EntityTypeName,
   isStudentEntity,
-  SchoolTermTypeName,
-  StudentResponseType
+  SchoolTermTypeName
 } from 'types/entities';
+
+import { getDateStringFromDateObject } from 'utils/datesAndTimes';
+
 import {
   HiddenTagType,
   ScheduledEntityResponseType,
@@ -139,7 +141,11 @@ export const selectOverdueTasks = createSelector(
 
       if (!isComplete) {
         const taskStart = new Date(taskDatetimeString);
-        if (taskStart < new Date() && !task.is_complete) {
+        if (
+          getDateStringFromDateObject(taskStart) <
+            getDateStringFromDateObject(new Date()) &&
+          !task.is_complete
+        ) {
           overdueTasks.push(task);
         }
         if (taskStart > new Date()) {
