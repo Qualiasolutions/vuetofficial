@@ -22,7 +22,8 @@ export default function TaskCompletionPressable({
   onSuccess = () => {},
   onPress = () => {},
   children,
-  useSafePressable = false
+  useSafePressable = false,
+  disabled
 }: {
   taskId: number;
   recurrenceIndex?: number;
@@ -31,6 +32,7 @@ export default function TaskCompletionPressable({
   onPress?: () => void;
   children: ReactNode;
   useSafePressable?: boolean;
+  disabled?: boolean;
 }) {
   const [showTaskCompletionForm, setShowTaskCompletionForm] = useState(false);
   const scheduledTask = useSelector(
@@ -39,9 +41,10 @@ export default function TaskCompletionPressable({
   const taskObj = useSelector(selectTaskById(taskId));
   const { t } = useTranslation();
 
-  const [createTaskActionCompletionForm] =
+  const [createTaskActionCompletionForm, createTaskActionCompletionFormResult] =
     useCreateTaskActionCompletionFormMutation();
-  const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
+  const [triggerCreateCompletionForm, createTaskCompletionFormResult] =
+    useCreateTaskCompletionFormMutation();
   const completionCallback = useCompletionCallback(taskId, recurrenceIndex);
 
   if (!scheduledTask || !taskObj) {
@@ -54,6 +57,9 @@ export default function TaskCompletionPressable({
     <>
       <PressableComp
         onPress={() => {
+          if (disabled) return;
+          if (createTaskActionCompletionFormResult.isLoading) return;
+          if (createTaskCompletionFormResult.isLoading) return;
           onPress();
           setTimeout(async () => {
             try {

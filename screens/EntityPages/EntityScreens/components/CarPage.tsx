@@ -85,7 +85,6 @@ const DueDateInputForm = ({
       ),
       due_date_members: dueDateMembershipField(
         'due_date',
-        userFullDetails,
         false,
         modelFieldTranslations('entities.entity.taskMembers'),
         modelFieldTranslations('tasks.task.changeMembers')

@@ -62,7 +62,6 @@ export default function MOTTypeRescheduler({
         ),
         members: dueDateMembershipField(
           'date',
-          userFullDetails,
           false,
           modelFieldTranslations('entities.entity.taskMembers'),
           modelFieldTranslations('tasks.task.changeMembers')

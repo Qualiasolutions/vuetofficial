@@ -34,16 +34,6 @@ export default function ModalContent({
     return null;
   }
 
-  if (task?.type === 'DUE_DATE' && !task.recurrence) {
-    return (
-      <DueDateRescheduler
-        onDismiss={onDismiss}
-        onSubmitSuccess={onSubmitSuccess}
-        taskId={taskId}
-      />
-    );
-  }
-
   if (
     [
       'MOT_DUE',
@@ -69,6 +59,16 @@ export default function ModalContent({
         onSubmitSuccess={onSubmitSuccess}
         taskId={taskId}
         recurrenceIndex={recurrenceIndex}
+      />
+    );
+  }
+
+  if (task?.type === 'DUE_DATE' && !task.recurrence) {
+    return (
+      <DueDateRescheduler
+        onDismiss={onDismiss}
+        onSubmitSuccess={onSubmitSuccess}
+        taskId={taskId}
       />
     );
   }

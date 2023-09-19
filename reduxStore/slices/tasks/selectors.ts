@@ -832,7 +832,14 @@ export const selectNextTaskFromEntityAndHiddenTag = (
 ) =>
   createSelector(
     selectTasksFromEntityAndHiddenTag(entityId, tagName),
-    (tasks) => {
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+    (tasks, taskCompletionForms) => {
+      const taskCompletionFormData = taskCompletionForms.data;
+
+      if (!taskCompletionFormData) {
+        return null;
+      }
+
       const sortedTasks = tasks.sort((taskA, taskB) => {
         const taskAStart = taskA.start_datetime || taskA.date;
         const taskBStart = taskB.start_datetime || taskB.date;
@@ -844,6 +851,9 @@ export const selectNextTaskFromEntityAndHiddenTag = (
 
       const now = new Date();
       for (const task of sortedTasks) {
+        if (taskCompletionFormData.byTaskId[task.id]) {
+          continue;
+        }
         if (task.start_datetime && new Date(task.start_datetime) > now) {
           return task;
         }

@@ -33,6 +33,9 @@ import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
 import useHasEditPerms from 'hooks/useHasEditPerms';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import useCanMarkComplete from 'hooks/useCanMarkComplete';
+import TaskCompletionPressable from 'components/molecules/TaskCompletionPressable';
+import Checkbox from 'components/molecules/Checkbox';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -267,6 +270,12 @@ function Task({
 
   const hasEditPerms = useHasEditPerms(id);
 
+  const canMarkComplete = useCanMarkComplete({
+    taskId: task?.id || -1,
+    recurrenceIndex: recurrence_index,
+    actionId: action_id
+  });
+
   const isCompleteStyle = {
     color: isCompleteTextColor,
     textDecorationLine: 'line-through' as 'line-through'
@@ -315,8 +324,23 @@ function Task({
               </TransparentScrollView>
             </TransparentView>
           </TransparentView>
+          {canMarkComplete && scheduledTask && (
+            <TaskCompletionPressable
+              taskId={scheduledTask.id}
+              recurrenceIndex={
+                scheduledTask.recurrence_index === null
+                  ? undefined
+                  : scheduledTask.recurrence_index
+              }
+              actionId={scheduledTask.action_id}
+              disabled={scheduledTask.is_complete}
+              // useSafePressable={true}
+            >
+              <Checkbox checked={scheduledTask.is_complete} disabled={true} />
+            </TaskCompletionPressable>
+          )}
           {!isEntity && hasEditPerms && (
-            <SafePressable
+            <TouchableOpacity
               onPress={() => {
                 if (scheduledTask) {
                   dispatch(
@@ -330,7 +354,7 @@ function Task({
               }}
             >
               <Feather name="more-horizontal" size={30} />
-            </SafePressable>
+            </TouchableOpacity>
           )}
           {[
             'SCHOOL_TERM',
