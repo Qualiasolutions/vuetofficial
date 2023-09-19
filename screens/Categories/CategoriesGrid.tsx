@@ -15,6 +15,8 @@ import { BlackText } from 'components/molecules/TextComponents';
 import TopNav from 'components/molecules/TopNav';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { useDispatch } from 'react-redux';
+import { setShowPremiumModal } from 'reduxStore/slices/misc/actions';
 
 type CategoryGroupName =
   | 'PETS'
@@ -98,6 +100,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
   const { data: userDetails } = useGetUserFullDetails();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const whiteColor = useThemeColor({}, 'white');
   const overlayColor = useThemeColor({}, 'overlay');
@@ -184,9 +187,10 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
         onPress={() => {
           if (userDetails.is_premium) {
             navigation.navigate('AllReferences');
+          } else {
+            dispatch(setShowPremiumModal(true));
           }
         }}
-        disabled={!userDetails.is_premium}
       >
         <ImageBackground
           source={categoriesImages.REFERENCES}

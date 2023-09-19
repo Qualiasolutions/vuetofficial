@@ -7,11 +7,13 @@ import { EntireState } from './types';
 import { notificationsReducer } from './slices/notifications/reducer';
 import { calendarReducer } from './slices/calendars/reducer';
 import { listsReducer } from './slices/lists/reducer';
+import { miscReducer } from './slices/misc/reducer';
 
 const appReducer = combineReducers({
   authentication: authReducer,
   notifications: notificationsReducer,
   calendar: calendarReducer,
+  misc: miscReducer,
   lists: listsReducer,
   [vuetApi.reducerPath]: vuetApi.reducer
 });

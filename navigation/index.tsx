@@ -29,6 +29,7 @@ import {
   useGetUserDetailsQuery,
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
+import PremiumModal from 'components/molecules/PremiumModal';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -92,6 +93,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       {navigatorComponent}
       <TaskActionModal />
       <ListItemActionModal />
+      <PremiumModal />
     </NavigationContainer>
   );
 };

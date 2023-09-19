@@ -809,6 +809,11 @@
       "dueDate": {
         "wouldYouLikeToReschedule": "Would you like to schedule another due date?"
       }
+    },
+    "premiumModal": {
+      "upgradeToPremium": "Upgrade to premium",
+      "blurb": "Upgrade to premium to access the full set of Vuet features",
+      "upgrade": "Upgrade"
     }
   }
 }

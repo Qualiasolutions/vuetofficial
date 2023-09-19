@@ -3,11 +3,13 @@
 import { AuthAction } from './slices/auth/reducer';
 import { CalendarAction } from './slices/calendars/reducer';
 import { ListsAction } from './slices/lists/reducer';
+import { MiscAction } from './slices/misc/reducer';
 import { NotificationAction } from './slices/notifications/reducer';
 
 export type RootAction =
   | AuthAction
   | CalendarAction
+  | MiscAction
   | NotificationAction
   | ListsAction;
 
