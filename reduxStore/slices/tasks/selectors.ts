@@ -745,7 +745,8 @@ export const selectIsComplete = ({
           ];
         return {
           isComplete: !!completionForm,
-          isIgnored: !!(completionForm && completionForm.ignore)
+          isIgnored: !!(completionForm && completionForm.ignore),
+          completionForm
         };
       }
       const completionForm =
@@ -755,7 +756,8 @@ export const selectIsComplete = ({
         ];
       return {
         isComplete: !!completionForm,
-        isIgnored: !!(completionForm && completionForm.ignore)
+        isIgnored: !!(completionForm && completionForm.ignore),
+        completionForm
       };
     }
   );

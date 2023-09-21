@@ -219,6 +219,73 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
         }
       }
     }),
+    deleteTaskCompletionForm: builder.mutation<
+      null,
+      { formId: number; taskId: number; recurrenceIndex: number }
+    >({
+      query: ({ formId }) => {
+        return {
+          url: `core/task_completion_form/${formId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['TaskCompletionForm'],
+      async onQueryStarted(
+        { formId, taskId, recurrenceIndex },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of taskCompletionFormsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'TaskCompletionForm' }
+        ])) {
+          if (endpointName !== 'getTaskCompletionForms') continue;
+          const patchResult = dispatch(
+            taskCompletionFormsApi.util.updateQueryData(
+              'getTaskCompletionForms',
+              originalArgs,
+              (draft) => {
+                draft.ids = draft.ids.filter(
+                  (draftFormId) => draftFormId !== formId
+                );
+                delete draft.byId[formId];
+                delete draft.byTaskId[taskId][recurrenceIndex];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (endpointName !== 'getAllScheduledTasks') continue;
+          const patchResult = dispatch(
+            tasksApi.util.updateQueryData(
+              'getAllScheduledTasks',
+              originalArgs,
+              (draft) => {
+                draft.byTaskId[taskId][recurrenceIndex].is_complete = false;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
+    }),
     createTaskActionCompletionForm: builder.mutation<
       object,
       TaskActionCompletionFormCreateRequest
@@ -298,6 +365,73 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    deleteTaskActionCompletionForm: builder.mutation<
+      object,
+      { formId: number; actionId: number; recurrenceIndex: number }
+    >({
+      query: ({ formId }) => {
+        return {
+          url: `core/task_action_completion_form/${formId}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['TaskCompletionForm'],
+      async onQueryStarted(
+        { formId, actionId, recurrenceIndex },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of taskCompletionFormsApi.util.selectInvalidatedBy(getState(), [
+          { type: 'TaskCompletionForm' }
+        ])) {
+          if (endpointName !== 'getTaskActionCompletionForms') continue;
+          const patchResult = dispatch(
+            taskCompletionFormsApi.util.updateQueryData(
+              'getTaskActionCompletionForms',
+              originalArgs,
+              (draft) => {
+                draft.ids = draft.ids.filter(
+                  (draftFormId) => draftFormId !== formId
+                );
+                delete draft.byId[formId];
+                delete draft.byActionId[actionId][recurrenceIndex];
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (endpointName !== 'getAllScheduledTasks') continue;
+          const patchResult = dispatch(
+            tasksApi.util.updateQueryData(
+              'getAllScheduledTasks',
+              originalArgs,
+              (draft) => {
+                draft.byActionId[actionId][recurrenceIndex].is_complete = false;
+              }
+            )
+          );
+          patchResults.push(patchResult);
+        }
+
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     })
   }),
   overrideExisting: true
@@ -310,6 +444,8 @@ export default taskCompletionFormsApi;
 export const {
   useCreateTaskCompletionFormMutation,
   useGetTaskCompletionFormsQuery,
+  useDeleteTaskCompletionFormMutation,
+  useDeleteTaskActionCompletionFormMutation,
   useCreateTaskActionCompletionFormMutation,
   useGetTaskActionCompletionFormsQuery
 } = taskCompletionFormsApi;

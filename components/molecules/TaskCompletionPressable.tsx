@@ -6,11 +6,13 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import {
   useCreateTaskActionCompletionFormMutation,
-  useCreateTaskCompletionFormMutation
+  useCreateTaskCompletionFormMutation,
+  useDeleteTaskActionCompletionFormMutation,
+  useDeleteTaskCompletionFormMutation
 } from 'reduxStore/services/api/taskCompletionForms';
 import {
-  selectScheduledTask,
-  selectTaskById
+  selectIsComplete,
+  selectScheduledTask
 } from 'reduxStore/slices/tasks/selectors';
 import SafePressable from './SafePressable';
 import { TouchableOpacity } from './TouchableOpacityComponents';
@@ -38,16 +40,26 @@ export default function TaskCompletionPressable({
   const scheduledTask = useSelector(
     selectScheduledTask({ id: taskId, recurrenceIndex, actionId })
   );
-  const taskObj = useSelector(selectTaskById(taskId));
+  const { isComplete, completionForm } = useSelector(
+    selectIsComplete({
+      id: taskId,
+      recurrenceIndex: recurrenceIndex === undefined ? null : recurrenceIndex,
+      actionId
+    })
+  );
   const { t } = useTranslation();
 
   const [createTaskActionCompletionForm, createTaskActionCompletionFormResult] =
     useCreateTaskActionCompletionFormMutation();
   const [triggerCreateCompletionForm, createTaskCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
+  const [deleteTaskCompletionForm, deleteTaskCompletionFormResult] =
+    useDeleteTaskCompletionFormMutation();
+  const [deleteTaskActionCompletionForm, deleteTaskActionCompletionFormResult] =
+    useDeleteTaskActionCompletionFormMutation();
   const completionCallback = useCompletionCallback(taskId, recurrenceIndex);
 
-  if (!scheduledTask || !taskObj) {
+  if (!scheduledTask) {
     return null;
   }
 
@@ -60,29 +72,50 @@ export default function TaskCompletionPressable({
           if (disabled) return;
           if (createTaskActionCompletionFormResult.isLoading) return;
           if (createTaskCompletionFormResult.isLoading) return;
+          if (deleteTaskCompletionFormResult.isLoading) return;
+          if (deleteTaskActionCompletionFormResult.isLoading) return;
           onPress();
           setTimeout(async () => {
             try {
-              if (scheduledTask) {
-                if (scheduledTask.action_id) {
-                  await createTaskActionCompletionForm({
-                    action: scheduledTask.action_id,
-                    recurrence_index: scheduledTask.recurrence_index
+              if (actionId) {
+                if (isComplete && completionForm) {
+                  await deleteTaskActionCompletionForm({
+                    actionId,
+                    formId: completionForm.id,
+                    recurrenceIndex:
+                      recurrenceIndex === undefined ? -1 : recurrenceIndex
                   }).unwrap();
                   onSuccess();
                   return;
                 }
-                await triggerCreateCompletionForm({
-                  resourcetype: 'TaskCompletionForm',
-                  recurrence_index: scheduledTask.recurrence_index,
-                  task: scheduledTask.id
+                await createTaskActionCompletionForm({
+                  action: actionId,
+                  recurrence_index:
+                    recurrenceIndex === undefined ? -1 : recurrenceIndex
                 }).unwrap();
+                onSuccess();
+                return;
+              }
+              if (isComplete && completionForm) {
+                await deleteTaskCompletionForm({
+                  taskId,
+                  formId: completionForm.id,
+                  recurrenceIndex:
+                    recurrenceIndex === undefined ? -1 : recurrenceIndex
+                }).unwrap();
+                onSuccess();
+                return;
+              }
+              await triggerCreateCompletionForm({
+                resourcetype: 'TaskCompletionForm',
+                recurrence_index: scheduledTask.recurrence_index,
+                task: scheduledTask.id
+              }).unwrap();
 
-                if (completionCallback) {
-                  setShowTaskCompletionForm(true);
-                } else {
-                  onSuccess();
-                }
+              if (completionCallback) {
+                setShowTaskCompletionForm(true);
+              } else {
+                onSuccess();
               }
             } catch (err) {
               Toast.show({
@@ -95,7 +128,7 @@ export default function TaskCompletionPressable({
       >
         {children}
       </PressableComp>
-      {scheduledTask && taskObj && (
+      {scheduledTask && (
         <TaskCompletionModal
           taskId={taskId}
           recurrenceIndex={recurrenceIndex}

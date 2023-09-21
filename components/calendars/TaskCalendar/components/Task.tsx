@@ -374,8 +374,6 @@ function Task({
                   : scheduledTask.recurrence_index
               }
               actionId={scheduledTask.action_id}
-              disabled={scheduledTask.is_complete}
-              // useSafePressable={true}
             >
               <Checkbox
                 checked={scheduledTask.is_complete}
