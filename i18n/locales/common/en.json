@@ -357,6 +357,7 @@
     "end": "End",
     "done": "Done",
     "edit": "Edit",
+    "change": "Change",
     "name": "Name",
     "value": "Value",
     "members": "Members",
@@ -665,6 +666,7 @@
     "tagSelector": {
       "selectedEntities": "Selected entities",
       "selectedTags": "Selected tags",
+      "selectTags": "Select Tags",
       "requiresPetTag": "You must add a pet tag to this task",
       "requiresTravelTag": "You must add a travel tag to this task",
       "requiresTag": "You must add a {{requirementName}} entity to this task",

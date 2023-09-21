@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentView,
+  WhitePaddedView,
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
@@ -21,6 +22,7 @@ import AddAccommodationTaskForm from 'components/forms/AddAccommodationTaskForm'
 import AddAnniversaryForm from 'components/forms/AddAnniversaryForm';
 import DropDown from 'components/forms/components/DropDown';
 import { BlackText } from 'components/molecules/TextComponents';
+import EntityAndTagSelector from 'components/forms/components/TagSelector';
 
 const formTypes = [
   {
@@ -58,8 +60,6 @@ const styles = StyleSheet.create({
     paddingBottom: 100
   },
   typeSelector: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -92,6 +92,13 @@ export default function AddTaskScreen({
 }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
+  const [tagsAndEntities, setTagsAndEntities] = useState<{
+    tags: string[];
+    entities: number[];
+  }>({
+    tags: [],
+    entities: []
+  });
   const [formType, setFormType] = useState<FormType | ''>(
     route.params?.type || ''
   );
@@ -174,7 +181,15 @@ export default function AddTaskScreen({
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
         <TransparentView>
-          <WhiteView style={styles.typeSelector}>
+          {/* <WhitePaddedView>
+            <EntityAndTagSelector
+              value={tagsAndEntities}
+              onChange={(newTagsAndEntities) => {
+                setTagsAndEntities(newTagsAndEntities);
+              }}
+            />
+          </WhitePaddedView> */}
+          <WhitePaddedView style={styles.typeSelector}>
             <BlackText text={t('common.addNew')} style={styles.addNewLabel} />
             <DropDown
               value={formType}
@@ -184,8 +199,14 @@ export default function AddTaskScreen({
               }}
               listMode="MODAL"
               containerStyle={styles.dropdownContainer}
+              // disabled={
+              //   !(
+              //     tagsAndEntities.entities.length > 0 ||
+              //     tagsAndEntities.tags.length > 0
+              //   )
+              // }
             />
-          </WhiteView>
+          </WhitePaddedView>
           <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
             <AddDueDateForm
               defaults={dueDateDefaults}

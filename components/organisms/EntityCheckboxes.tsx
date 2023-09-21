@@ -1,4 +1,5 @@
 import Checkbox from 'components/molecules/Checkbox';
+import SafePressable from 'components/molecules/SafePressable';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
@@ -27,14 +28,14 @@ const HIDDEN_ENTITY_TYPES = [
   'HealthGoal'
 ];
 const styles = StyleSheet.create({
-  checkboxContainer: { flexGrow: 0 },
   entityCheckboxPair: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
   entityCheckboxLabel: {
-    marginRight: 10
+    marginRight: 10,
+    flex: 1
   },
   categoryTitle: { fontSize: 22 },
   categoryCheckboxes: { marginBottom: 20 }
@@ -110,7 +111,31 @@ export default function EntityCheckboxes({
           }
 
           return (
-            <TransparentView style={styles.entityCheckboxPair} key={entity.id}>
+            <SafePressable
+              style={styles.entityCheckboxPair}
+              key={entity.id}
+              onPress={async () => {
+                if (value.entities.includes(entity.id)) {
+                  const newEntities = value.entities.filter(
+                    (id) =>
+                      id !== entity.id &&
+                      !HIDDEN_ENTITY_TYPES.includes(
+                        memberEntities.byId[id].resourcetype
+                      )
+                  );
+                  setSelectedEntities(newEntities);
+                } else {
+                  setSelectedEntities(
+                    [...value.entities, entity.id].filter(
+                      (id) =>
+                        !HIDDEN_ENTITY_TYPES.includes(
+                          memberEntities.byId[id].resourcetype
+                        )
+                    )
+                  );
+                }
+              }}
+            >
               <TransparentView style={styles.entityCheckboxLabel}>
                 <Text>
                   {entity.name}
@@ -119,29 +144,9 @@ export default function EntityCheckboxes({
               </TransparentView>
               <Checkbox
                 checked={value.entities.includes(entity.id)}
-                onValueChange={async () => {
-                  if (value.entities.includes(entity.id)) {
-                    const newEntities = value.entities.filter(
-                      (id) =>
-                        id !== entity.id &&
-                        !HIDDEN_ENTITY_TYPES.includes(
-                          memberEntities.byId[id].resourcetype
-                        )
-                    );
-                    setSelectedEntities(newEntities);
-                  } else {
-                    setSelectedEntities(
-                      [...value.entities, entity.id].filter(
-                        (id) =>
-                          !HIDDEN_ENTITY_TYPES.includes(
-                            memberEntities.byId[id].resourcetype
-                          )
-                      )
-                    );
-                  }
-                }}
+                disabled={true}
               />
-            </TransparentView>
+            </SafePressable>
           );
         });
 

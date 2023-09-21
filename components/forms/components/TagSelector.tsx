@@ -1,12 +1,12 @@
-import { Button } from 'components/molecules/ButtonComponents';
+import { Button, SmallButton } from 'components/molecules/ButtonComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
-import { TransparentView } from 'components/molecules/ViewComponents';
+import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
 import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
-import { Text } from 'components/Themed';
+import { Text, View } from 'components/Themed';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
@@ -20,7 +20,7 @@ import { CategoryName } from 'types/categories';
 import { EntityTypeName } from 'types/entities';
 
 const styles = StyleSheet.create({
-  checkboxContainer: { flexGrow: 0 },
+  checkboxContainer: { flexGrow: 0, paddingHorizontal: 10 },
   entityCheckboxPair: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -33,8 +33,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   button: { marginHorizontal: 5 },
+  changeButton: { marginLeft: 5 },
   requiredTagSection: { marginVertical: 10 },
-  selectedEntitiesSummary: { marginBottom: 10 }
+  selectedEntitiesSummary: { marginBottom: 10 },
+  modalBoxStyle: { width: '100%' }
 });
 
 type ValueType = {
@@ -142,18 +144,19 @@ const StepTwoSelector = ({
           <Text>{t('components.tagSelector.requiresPetTag')}:</Text>
           {allTags.PETS &&
             allTags.PETS.map((petTagName) => (
-              <TransparentView
+              <SafePressable
                 style={styles.entityCheckboxPair}
                 key={petTagName}
+                onPress={checkboxOnValueChange(petTagName)}
               >
                 <TransparentView style={styles.entityCheckboxLabel}>
                   <Text>{t(`tags.${petTagName}`)}</Text>
                 </TransparentView>
                 <Checkbox
                   checked={selectedTags.includes(petTagName)}
-                  onValueChange={checkboxOnValueChange(petTagName)}
+                  disabled={true}
                 />
-              </TransparentView>
+              </SafePressable>
             ))}
         </TransparentView>
       )}
@@ -178,18 +181,19 @@ const StepTwoSelector = ({
             </Text>
             {matchingEntities.length > 0 ? (
               matchingEntities.map((entity) => (
-                <TransparentView
+                <SafePressable
                   style={styles.entityCheckboxPair}
                   key={entity.id}
+                  onPress={entityCheckboxOnChange(entity.id)}
                 >
                   <TransparentView style={styles.entityCheckboxLabel}>
                     <Text>{entity.name}</Text>
                   </TransparentView>
                   <Checkbox
                     checked={selectedEntities.includes(entity.id)}
-                    onValueChange={entityCheckboxOnChange(entity.id)}
+                    disabled={true}
                   />
-                </TransparentView>
+                </SafePressable>
               ))
             ) : (
               <Text bold={true}>
@@ -331,9 +335,13 @@ const EntityAndTagSelectorModal = ({
   }
 
   return (
-    <Modal visible={open} onRequestClose={onRequestClose}>
+    <Modal
+      visible={open}
+      onRequestClose={onRequestClose}
+      boxStyle={styles.modalBoxStyle}
+    >
       {isStepTwo ? (
-        <TransparentScrollView style={styles.checkboxContainer}>
+        <TransparentScrollView contentContainerStyle={styles.checkboxContainer}>
           <StepTwoSelector
             selectedEntities={selectedEntities}
             selectedTags={selectedTags}
@@ -422,23 +430,36 @@ export default function EntityAndTagSelector({
 
   return (
     <TransparentView>
-      <SafePressable onPress={() => setOpen(true)}>
-        {(value.entities && value.entities.length > 0) ||
-        (value.tags && value.tags.length > 0) ? (
-          <TransparentView>
-            {value.entities.map((entityId) =>
-              allEntities.byId[entityId] ? (
-                <Text key={entityId}>{allEntities.byId[entityId].name}</Text>
-              ) : null
-            )}
-            {value.tags.map((tagName) => (
-              <Text key={tagName}>{t(`tags.${tagName}`)}</Text>
-            ))}
-          </TransparentView>
-        ) : (
-          <Text>ADD ENTITIES</Text>
-        )}
-      </SafePressable>
+      {(value.entities && value.entities.length > 0) ||
+      (value.tags && value.tags.length > 0) ? (
+        <WhiteBox>
+          <Text bold={true}>{t('components.tagSelector.selectedTags')}</Text>
+          {value.entities.map((entityId) =>
+            allEntities.byId[entityId] ? (
+              <Text key={entityId}>{allEntities.byId[entityId].name}</Text>
+            ) : null
+          )}
+          {value.tags.map((tagName) => (
+            <Text key={tagName}>{t(`tags.${tagName}`)}</Text>
+          ))}
+          <View style={styles.buttonWrapper}>
+            <SmallButton
+              onPress={() => onChange({ entities: [], tags: [] })}
+              title={t('common.clear')}
+            />
+            <SmallButton
+              onPress={() => setOpen(true)}
+              title={t('common.change')}
+              style={styles.changeButton}
+            />
+          </View>
+        </WhiteBox>
+      ) : (
+        <SmallButton
+          onPress={() => setOpen(true)}
+          title={t('components.tagSelector.selectTags')}
+        />
+      )}
       <EntityAndTagSelectorModal
         open={open}
         onRequestClose={() => setOpen(false)}
