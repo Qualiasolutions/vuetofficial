@@ -22,7 +22,6 @@ import {
   ScheduledTaskResponseType,
   TaskType
 } from 'types/tasks';
-import SafePressable from 'components/molecules/SafePressable';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
@@ -41,26 +40,23 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1
   },
-  titleContentContainer: {
-    flex: 1,
-    justifyContent: 'flex-start'
-  },
   iconAndTitle: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start'
+    alignItems: 'center'
   },
   title: {
     fontSize: 12,
     textAlign: 'left',
-    wrap: 'nowrap'
+    width: '90%'
   },
   timeText: {
     fontSize: 12
   },
   leftInfo: {
-    width: '25%',
-    marginRight: 5
+    width: 60,
+    marginRight: 5,
+    flex: 0
   },
   outerContainer: {
     borderBottomWidth: 1,
@@ -73,11 +69,10 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   container: {
-    flex: 1,
+    flexShrink: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: '100%'
+    alignItems: 'flex-start'
   },
   bottomWrapper: {
     flexDirection: 'row',
@@ -302,10 +297,7 @@ function Task({
               date={date}
             />
             <TransparentView style={styles.titleContainer}>
-              <TransparentScrollView
-                contentContainerStyle={styles.iconAndTitle}
-                horizontal={true}
-              >
+              <TransparentView style={styles.iconAndTitle}>
                 {!isEntity && task && <TaskIcon task={task} />}
                 {isEntity && scheduledEntity && (
                   <EntityIcon entity={scheduledEntity} />
@@ -320,9 +312,9 @@ function Task({
                   }
                   style={[styles.title, isComplete && isCompleteStyle]}
                   bold={true}
-                  numberOfLines={1}
+                  numberOfLines={2}
                 />
-              </TransparentScrollView>
+              </TransparentView>
             </TransparentView>
           </TransparentView>
           {!isEntity && hasEditPerms && (
