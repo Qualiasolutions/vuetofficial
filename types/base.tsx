@@ -226,7 +226,6 @@ export type RootTabParamList = {
     recurrenceIndex?: number;
     recurrenceOverwrite?: boolean;
   };
-  EditTaskOccurrence: { taskId: number; recurrenceIndex: number };
   Transport: undefined;
   NotFound: undefined;
   CreateTask: undefined;

@@ -38,7 +38,6 @@ import {
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import MessagesNavigator from './MessagesNavigator';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
-import EditTaskOccurrenceScreen from 'screens/Forms/TaskForms/EditTaskOccurrenceScreen';
 import ListsNavigator from 'components/organisms/ListsNavigator';
 import AlertsList from 'components/organisms/AlertsList';
 import NewItemsList from 'components/organisms/NewItemsList';
@@ -211,15 +210,6 @@ export function BottomTabNavigator({
       <BottomTab.Screen
         name="EditTask"
         component={EditTaskScreen}
-        options={{
-          tabBarButton: () => null,
-          title: t('pageTitles.editTask'),
-          header: BackOnlyHeaderWithSafeArea
-        }}
-      />
-      <BottomTab.Screen
-        name="EditTaskOccurrence"
-        component={EditTaskOccurrenceScreen}
         options={{
           tabBarButton: () => null,
           title: t('pageTitles.editTask'),
