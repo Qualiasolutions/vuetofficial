@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '50%',
     flex: 0
-  }
+  },
+  checkbox: { marginLeft: 10 }
 });
 
 export type ScheduledEntity = { id: number; resourcetype: string };
@@ -324,21 +325,6 @@ function Task({
               </TransparentScrollView>
             </TransparentView>
           </TransparentView>
-          {canMarkComplete && scheduledTask && (
-            <TaskCompletionPressable
-              taskId={scheduledTask.id}
-              recurrenceIndex={
-                scheduledTask.recurrence_index === null
-                  ? undefined
-                  : scheduledTask.recurrence_index
-              }
-              actionId={scheduledTask.action_id}
-              disabled={scheduledTask.is_complete}
-              // useSafePressable={true}
-            >
-              <Checkbox checked={scheduledTask.is_complete} disabled={true} />
-            </TaskCompletionPressable>
-          )}
           {!isEntity && hasEditPerms && (
             <TouchableOpacity
               onPress={() => {
@@ -386,6 +372,25 @@ function Task({
             >
               <Feather name="arrow-right" size={30} />
             </TouchableOpacity>
+          )}
+          {canMarkComplete && scheduledTask && (
+            <TaskCompletionPressable
+              taskId={scheduledTask.id}
+              recurrenceIndex={
+                scheduledTask.recurrence_index === null
+                  ? undefined
+                  : scheduledTask.recurrence_index
+              }
+              actionId={scheduledTask.action_id}
+              disabled={scheduledTask.is_complete}
+              // useSafePressable={true}
+            >
+              <Checkbox
+                checked={scheduledTask.is_complete}
+                disabled={true}
+                style={styles.checkbox}
+              />
+            </TaskCompletionPressable>
           )}
         </TransparentView>
         <TransparentView style={styles.bottomWrapper}>

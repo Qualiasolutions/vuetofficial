@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
     width: CHECKBOX_WIDTH,
     borderRadius: CHECKBOX_RADIUS,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10
+    alignItems: 'center'
   },
   check: {
     height: 17,

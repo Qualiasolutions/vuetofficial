@@ -7,24 +7,24 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { ITEM_HEIGHT } from './shared';
 import { useSelector } from 'react-redux';
 import { selectRoutineById } from 'reduxStore/slices/routines/selectors';
-import SafePressable from 'components/molecules/SafePressable';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   leftInfo: {
-    width: '20%',
-    marginRight: 5
+    marginRight: 20,
+    flexDirection: 'row'
   },
   outerContainer: {
     paddingVertical: 5,
     paddingHorizontal: 5,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    justifyContent: 'center'
   },
   container: {
-    flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 5,
+    paddingVertical: 5,
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderWidth: 2,
@@ -62,8 +62,9 @@ export default function Routine({ id, date }: PropTypes) {
         style={[styles.container, { backgroundColor, borderColor }]}
       >
         <TransparentView style={styles.leftInfo}>
-          <Text>{routine.start_time.slice(0, 5)}</Text>
-          <Text>{routine.end_time.slice(0, 5)}</Text>
+          <Text>
+            {routine.start_time.slice(0, 5)} - {routine.end_time.slice(0, 5)}
+          </Text>
         </TransparentView>
         <Text style={styles.routineName}>{routine.name}</Text>
       </TouchableOpacity>
