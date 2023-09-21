@@ -78,12 +78,13 @@ export default function TaskActionModal() {
                       taskId: taskToAction.taskId
                     });
                   } else {
-                    navigation.navigate('EditTaskOccurrence', {
+                    navigation.navigate('EditTask', {
                       taskId: taskToAction.taskId,
                       recurrenceIndex:
                         taskToAction.recurrenceIndex === null
                           ? -1
-                          : taskToAction.recurrenceIndex
+                          : taskToAction.recurrenceIndex,
+                      recurrenceOverwrite: true
                     });
                   }
                   dispatch(setTaskToAction(null));

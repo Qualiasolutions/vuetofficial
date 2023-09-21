@@ -207,6 +207,7 @@ export {
   TransportTaskType,
   AccommodationTaskType,
   AnniversaryTaskType,
+  ActivityTaskType,
   TaskType,
   ScheduledTaskResourceType,
   ScheduledTaskType,

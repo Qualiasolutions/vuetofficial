@@ -1,63 +1,35 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { useThemeColor } from 'components/Themed';
-import { Button } from 'components/molecules/ButtonComponents';
-
-import {
-  useDueDateFieldTypes,
-  useTransportFieldTypes,
-  useAccommodationFieldTypes,
-  useAnniversaryFieldTypes,
-  useHolidayFieldTypes,
-  useTaskFieldTypes
-} from 'components/forms/taskFormFieldTypes';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFieldTypesForFormType } from 'components/forms/taskFormFieldTypes';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import {
-  TransparentPaddedView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
-import TypedForm from 'components/forms/TypedForm';
+import { TransparentView } from 'components/molecules/ViewComponents';
 import createInitialObject from 'components/forms/utils/createInitialObject';
-import { FieldValueTypes } from 'components/forms/types';
 import { StyleSheet } from 'react-native';
-import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
-import {
-  useDeleteTaskMutation,
-  useGetAllTasksQuery,
-  useUpdateTaskMutation
-} from 'reduxStore/services/api/tasks';
-import parseFormValues from 'components/forms/utils/parseFormValues';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 import useGetUserDetails from 'hooks/useGetUserDetails';
-import { FixedTaskResponseType } from 'types/tasks';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import hasAllRequired from 'components/forms/utils/hasAllRequired';
 import {
   isAccommodationTaskType,
+  isActivityTaskType,
   isAnniversaryTaskType,
   isTransportTaskType
 } from 'constants/TaskTypes';
 import { getTimeInTimezone } from 'utils/datesAndTimes';
+import GenericAddTaskForm from 'components/forms/GenericAddTaskForm';
+import { useSelector } from 'react-redux';
+import {
+  selectScheduledTask,
+  selectTaskById
+} from 'reduxStore/slices/tasks/selectors';
 
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 100
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    width: '100%',
-    zIndex: -1,
-    justifyContent: 'center'
-  },
-  bottomButton: {
-    flex: 1,
-    margin: 5
-  },
-  spinner: { marginTop: 20 }
+  }
 });
 
 export default function EditTaskScreen({
@@ -66,494 +38,128 @@ export default function EditTaskScreen({
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
   const { t } = useTranslation();
 
-  const [updateTask, updateTaskResult] = useUpdateTaskMutation();
-  const [deleteTask, deleteTaskResult] = useDeleteTaskMutation();
-  const isSubmitting = updateTaskResult.isLoading || deleteTaskResult.isLoading;
+  const { taskId, recurrenceIndex } = route.params;
 
   const { data: userDetails } = useGetUserDetails();
-  const { data: allTasks } = useGetAllTasksQuery(null as any, {
-    skip: !userDetails?.id
-  });
-
-  const fieldColor = useThemeColor({}, 'almostWhite');
-
-  const [taskToEdit, setTaskToEdit] = useState<FixedTaskResponseType | null>(
-    null
-  );
-  const [taskFieldValues, setTaskFieldValues] = useState<FieldValueTypes>({});
-
-  const [dueDateFieldValues, setDueDateFieldValues] = useState<FieldValueTypes>(
-    {}
+  const taskObj = useSelector(selectTaskById(taskId));
+  const scheduledTaskObj = useSelector(
+    selectScheduledTask({
+      id: taskId,
+      recurrenceIndex
+    })
   );
 
-  const [flightFieldValues, setFlightFieldValues] = useState<FieldValueTypes>(
-    {}
-  );
+  const formType = useMemo(() => {
+    const taskType = taskObj?.type;
+    if (!taskType) {
+      return null;
+    }
+    if (isTransportTaskType(taskType)) {
+      return 'TRANSPORT';
+    }
+    if (isAccommodationTaskType(taskType)) {
+      return 'ACCOMMODATION';
+    }
+    if (isAnniversaryTaskType(taskType)) {
+      return 'ANNIVERSARY';
+    }
+    if (isActivityTaskType(taskType)) {
+      return 'ACTIVITY';
+    }
+    return taskType;
+  }, [taskObj]);
 
-  const [accommodationFieldValues, setAccommodationFieldValues] =
-    useState<FieldValueTypes>({});
-
-  const [anniversaryFieldValues, setAnniversaryFieldValues] =
-    useState<FieldValueTypes>({});
-
-  const [holidayFieldValues, setHolidayFieldValues] = useState<FieldValueTypes>(
-    {}
-  );
-
-  const taskFields = useTaskFieldTypes({
+  const taskToEditType = taskObj?.type;
+  const taskFields = useFieldTypesForFormType(formType, {
     isEdit: true,
     allowRecurrence: true,
-    taskHiddenTag: taskToEdit?.hidden_tag,
+    taskHiddenTag: taskObj?.hidden_tag,
     disableFlexible: true,
-    disabledRecurrenceFields: !!(taskToEdit && taskToEdit.recurrence)
+    disabledRecurrenceFields: !!(taskObj && taskObj?.recurrence),
+    anniversaryType:
+      taskToEditType && isAnniversaryTaskType(taskToEditType)
+        ? taskToEditType
+        : undefined,
+    transportType:
+      taskToEditType && isTransportTaskType(taskToEditType)
+        ? taskToEditType
+        : undefined,
+    accommodationType:
+      taskToEditType && isAccommodationTaskType(taskToEditType)
+        ? taskToEditType
+        : undefined
   });
 
-  const dueDateFields = useDueDateFieldTypes(
-    true,
-    taskToEdit?.hidden_tag,
-    !!(taskToEdit && taskToEdit.recurrence)
-  );
-
-  const taskType = taskToEdit?.type;
-  const flightFields = useTransportFieldTypes(
-    taskType && isTransportTaskType(taskType) ? taskType : 'FLIGHT'
-  );
-
-  const accommodationFields = useAccommodationFieldTypes(
-    taskType && isAccommodationTaskType(taskType) ? taskType : 'HOTEL'
-  );
-
-  const anniversaryFields = useAnniversaryFieldTypes(
-    taskType && isAnniversaryTaskType(taskType) ? taskType : 'BIRTHDAY',
-    true
-  );
-
-  const holidayFields = useHolidayFieldTypes(true);
-
-  useEffect(() => {
-    if (allTasks && userDetails) {
-      const oldTask = { ...allTasks.byId[route.params.taskId] };
-
-      if (oldTask.start_timezone && oldTask.start_datetime) {
+  const defaultValues = useMemo(() => {
+    if (taskObj && scheduledTaskObj && userDetails) {
+      if (taskObj.start_timezone && taskObj.start_datetime) {
         const newStart = getTimeInTimezone(
-          oldTask.start_datetime,
-          oldTask.start_timezone
+          taskObj.start_datetime,
+          taskObj.start_timezone
         );
 
-        oldTask.start_datetime = newStart;
+        taskObj.start_datetime = newStart;
       }
-      if (oldTask.end_timezone && oldTask.end_datetime) {
+      if (taskObj.end_timezone && taskObj.end_datetime) {
         const newEnd = getTimeInTimezone(
-          oldTask.end_datetime,
-          oldTask.end_timezone
+          taskObj.end_datetime,
+          taskObj.end_timezone
         );
-        oldTask.end_datetime = newEnd;
+        taskObj.end_datetime = newEnd;
+      }
+
+      if (scheduledTaskObj.start_date) {
+        scheduledTaskObj.date = scheduledTaskObj.start_date;
       }
 
       const newTaskToEdit = {
-        ...oldTask,
-        is_any_time:
-          (oldTask.date && oldTask.duration) ||
-          (oldTask.start_date && oldTask.end_date),
+        ...taskObj,
+        date: (recurrenceIndex
+          ? scheduledTaskObj.date
+          : taskObj.date) as string,
+        start_datetime: scheduledTaskObj.start_datetime
+          ? new Date(scheduledTaskObj.start_datetime)
+          : undefined,
+        end_datetime: scheduledTaskObj.end_datetime
+          ? new Date(scheduledTaskObj.end_datetime)
+          : undefined,
+        is_any_time: !!scheduledTaskObj.date,
         tagsAndEntities: {
-          entities: oldTask.entities,
-          tags: oldTask.tags || []
+          entities: taskObj.entities,
+          tags: taskObj.tags || []
         }
       };
-      if (newTaskToEdit) {
-        setTaskToEdit(newTaskToEdit);
 
-        const initialTaskFields = createInitialObject(
-          taskFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setTaskFieldValues(initialTaskFields);
-
-        const initialDueDateFields = createInitialObject(
-          dueDateFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setDueDateFieldValues(initialDueDateFields);
-
-        const initialFlightFields = createInitialObject(
-          flightFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setFlightFieldValues(initialFlightFields);
-
-        const initialAccommodationFields = createInitialObject(
-          accommodationFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setAccommodationFieldValues(initialAccommodationFields);
-
-        const initialAnniversaryFields = createInitialObject(
-          anniversaryFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setAnniversaryFieldValues(initialAnniversaryFields);
-
-        const initialHolidayFields = createInitialObject(
-          holidayFields,
-          userDetails,
-          newTaskToEdit
-        );
-        setHolidayFieldValues(initialHolidayFields);
-      }
+      const initialTaskFields = createInitialObject(
+        taskFields,
+        userDetails,
+        newTaskToEdit
+      );
+      return initialTaskFields;
     }
-  }, [
-    allTasks,
-    userDetails,
-    route.params.taskId,
-    taskFields,
-    dueDateFields,
-    flightFields,
-    accommodationFields,
-    anniversaryFields,
-    holidayFields
-  ]);
+  }, [taskObj, scheduledTaskObj, userDetails, taskFields, recurrenceIndex]);
 
   useEntityHeader(0, false, t('pageTitles.editTask'));
 
-  const hasRequired = useMemo(() => {
-    if (!taskToEdit) {
-      return false;
-    }
-    if (
-      [
-        'TASK',
-        'APPOINTMENT',
-        'ACTIVITY',
-        'FOOD_ACTIVITY',
-        'OTHER_ACTIVITY'
-      ].includes(taskToEdit.type)
-    ) {
-      return hasAllRequired(taskFieldValues, taskFields);
-    } else if (taskToEdit.type === 'DUE_DATE') {
-      return hasAllRequired(dueDateFieldValues, dueDateFields);
-    } else if (isTransportTaskType(taskToEdit.type)) {
-      return hasAllRequired(flightFieldValues, flightFields);
-    } else if (isAccommodationTaskType(taskToEdit.type)) {
-      return hasAllRequired(accommodationFieldValues, accommodationFields);
-    } else if (isAnniversaryTaskType(taskToEdit.type)) {
-      return hasAllRequired(anniversaryFieldValues, anniversaryFields);
-    } else if (taskToEdit.type === 'HOLIDAY') {
-      return hasAllRequired(holidayFieldValues, holidayFields);
-    } else {
-      return false;
-    }
-  }, [
-    taskFieldValues,
-    taskFields,
-    taskToEdit,
-    dueDateFields,
-    dueDateFieldValues,
-    flightFields,
-    flightFieldValues,
-    accommodationFields,
-    accommodationFieldValues,
-    anniversaryFields,
-    anniversaryFieldValues,
-    holidayFields,
-    holidayFieldValues
-  ]);
-
-  const updateTaskAndCallbacks = useCallback(
-    async (
-      body: Partial<FixedTaskResponseType> & Pick<FixedTaskResponseType, 'id'>
-    ) => {
-      try {
-        await updateTask(body).unwrap();
-        Toast.show({
-          type: 'success',
-          text1: t('screens.editTask.updateSuccess')
-        });
-        navigation.goBack();
-      } catch (e) {
-        Toast.show({
-          type: 'error',
-          text1: t('common.errors.generic')
-        });
-      }
-    },
-    [navigation, t, updateTask]
-  );
-
-  useEffect(() => {
-    if (deleteTaskResult.isSuccess) {
-      navigation.goBack();
-    } else if (deleteTaskResult.isError) {
-      Toast.show({
-        type: 'error',
-        text1: t('common.errors.generic')
-      });
-    }
-  }, [deleteTaskResult, navigation, t]);
-
-  const submitUpdateForm = () => {
-    if (taskToEdit) {
-      if (
-        [
-          'TASK',
-          'APPOINTMENT',
-          'ACTIVITY',
-          'FOOD_ACTIVITY',
-          'OTHER_ACTIVITY'
-        ].includes(taskToEdit.type)
-      ) {
-        const parsedTaskFieldValues = parseFormValues(
-          taskFieldValues,
-          taskFields
-        );
-        const body = {
-          ...parsedTaskFieldValues,
-          resourcetype: 'FixedTask' as 'FixedTask',
-          id: taskToEdit.id
-        };
-
-        if (
-          taskToEdit.recurrence &&
-          Object.keys(body as any).includes('recurrence')
-        ) {
-          delete (body as any).recurrence;
-        }
-
-        updateTaskAndCallbacks(body);
-      } else if (taskToEdit.type === 'DUE_DATE') {
-        const parsedDueDateFieldValues = parseFormValues(
-          dueDateFieldValues,
-          dueDateFields
-        );
-
-        const body = {
-          ...parsedDueDateFieldValues,
-          resourcetype: 'FixedTask' as 'FixedTask',
-          id: taskToEdit.id
-        };
-        if (Object.keys(body as any).includes('recurrence')) {
-          delete (body as any).recurrence;
-        }
-
-        updateTaskAndCallbacks(body);
-      } else if (isTransportTaskType(taskToEdit.type)) {
-        const parsedFlightFieldValues = parseFormValues(
-          flightFieldValues,
-          flightFields
-        );
-
-        const body = {
-          ...parsedFlightFieldValues,
-          resourcetype: 'TransportTask' as 'TransportTask',
-          id: taskToEdit.id,
-          type: taskToEdit.type
-        };
-        if (Object.keys(body as any).includes('recurrence')) {
-          delete (body as any).recurrence;
-        }
-
-        updateTaskAndCallbacks(body);
-      } else if (isAccommodationTaskType(taskToEdit.type)) {
-        const parsedAccommodationFieldValues = parseFormValues(
-          accommodationFieldValues,
-          accommodationFields
-        );
-
-        const body = {
-          ...parsedAccommodationFieldValues,
-          resourcetype: 'AccommodationTask' as 'AccommodationTask',
-          id: taskToEdit.id,
-          type: taskToEdit.type
-        };
-        if (Object.keys(body as any).includes('recurrence')) {
-          delete (body as any).recurrence;
-        }
-
-        updateTaskAndCallbacks(body);
-      } else if (isAnniversaryTaskType(taskToEdit.type)) {
-        const parsedAnniversaryFieldValues = parseFormValues(
-          anniversaryFieldValues,
-          anniversaryFields
-        );
-
-        const body = {
-          ...parsedAnniversaryFieldValues,
-          resourcetype: (taskToEdit.type === 'ANNIVERSARY'
-            ? 'AnniversaryTask'
-            : 'BirthdayTask') as 'AnniversaryTask' | 'BirthdayTask',
-          id: taskToEdit.id,
-          type: taskToEdit.type
-        };
-
-        if (Object.keys(body as any).includes('recurrence')) {
-          delete (body as any).recurrence;
-        }
-
-        updateTaskAndCallbacks(body);
-      } else if (taskToEdit.type === 'HOLIDAY') {
-        const parsedHolidayFieldValues = parseFormValues(
-          holidayFieldValues,
-          holidayFields
-        );
-
-        const body = {
-          ...parsedHolidayFieldValues,
-          resourcetype: 'HolidayTask' as 'HolidayTask',
-          id: taskToEdit.id,
-          type: taskToEdit.type
-        };
-
-        if (Object.keys(body as any).includes('recurrence')) {
-          delete (body as any).recurrence;
-        }
-
-        updateTaskAndCallbacks(body);
-      }
-    }
-  };
-
-  if (!taskToEdit) {
+  if (!(defaultValues && Object.keys(defaultValues).length > 0)) {
     return <FullPageSpinner />;
   }
 
-  let formFields = null;
-
-  if (
-    [
-      'TASK',
-      'APPOINTMENT',
-      'ACTIVITY',
-      'FOOD_ACTIVITY',
-      'OTHER_ACTIVITY'
-    ].includes(taskToEdit.type)
-  ) {
-    formFields = (
-      <>
-        <TransparentView>
-          <TypedForm
-            fields={taskFields}
-            formValues={taskFieldValues}
-            onFormValuesChange={(values: FieldValueTypes) => {
-              setTaskFieldValues(values);
-            }}
-            inlineFields={true}
-            fieldColor={fieldColor}
-          />
-        </TransparentView>
-      </>
-    );
-  }
-
-  if (taskToEdit.type === 'DUE_DATE') {
-    formFields = (
-      <TransparentView>
-        <TypedForm
-          fields={dueDateFields}
-          formValues={dueDateFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setDueDateFieldValues(values);
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-        />
-      </TransparentView>
-    );
-  }
-
-  if (isTransportTaskType(taskToEdit.type)) {
-    formFields = (
-      <TransparentView>
-        <TypedForm
-          fields={flightFields}
-          formValues={flightFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setFlightFieldValues(values);
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-        />
-      </TransparentView>
-    );
-  }
-
-  if (isAccommodationTaskType(taskToEdit.type)) {
-    formFields = (
-      <TransparentView>
-        <TypedForm
-          fields={accommodationFields}
-          formValues={accommodationFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setAccommodationFieldValues(values);
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-        />
-      </TransparentView>
-    );
-  }
-
-  if (isAnniversaryTaskType(taskToEdit.type)) {
-    formFields = (
-      <TransparentView>
-        <TypedForm
-          fields={anniversaryFields}
-          formValues={anniversaryFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setAnniversaryFieldValues(values);
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-        />
-      </TransparentView>
-    );
-  }
-
-  if (taskToEdit.type === 'HOLIDAY') {
-    formFields = (
-      <TransparentView>
-        <TypedForm
-          fields={holidayFields}
-          formValues={holidayFieldValues}
-          onFormValuesChange={(values: FieldValueTypes) => {
-            setHolidayFieldValues(values);
-          }}
-          inlineFields={true}
-          fieldColor={fieldColor}
-        />
-      </TransparentView>
-    );
+  if (!taskToEditType) {
+    return <FullPageSpinner />;
   }
 
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
-        {formFields}
-        {isSubmitting ? (
-          <PaddedSpinner spinnerColor="buttonDefault" style={styles.spinner} />
-        ) : (
-          <TransparentPaddedView style={styles.bottomButtons}>
-            <Button
-              title={t('screens.editTask.updateTask')}
-              onPress={() => {
-                submitUpdateForm();
-              }}
-              disabled={!hasRequired}
-              style={styles.bottomButton}
-            />
-            <Button
-              title={t('screens.editTask.deleteTask')}
-              onPress={() => {
-                deleteTask(taskToEdit);
-              }}
-              disabled={!hasRequired}
-              style={styles.bottomButton}
-            />
-          </TransparentPaddedView>
-        )}
+        <GenericAddTaskForm
+          type={taskToEditType}
+          isEdit={true}
+          defaults={defaultValues}
+          taskId={route.params.taskId}
+          recurrenceIndex={route.params.recurrenceIndex}
+          recurrenceOverwrite={route.params.recurrenceOverwrite}
+        />
       </TransparentView>
     </TransparentFullPageScrollView>
   );

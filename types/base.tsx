@@ -221,7 +221,11 @@ export type RootTabParamList = {
     date?: string;
   };
   PlusButton: undefined;
-  EditTask: { taskId: number };
+  EditTask: {
+    taskId: number;
+    recurrenceIndex?: number;
+    recurrenceOverwrite?: boolean;
+  };
   EditTaskOccurrence: { taskId: number; recurrenceIndex: number };
   Transport: undefined;
   NotFound: undefined;

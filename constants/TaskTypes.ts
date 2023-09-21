@@ -1,5 +1,6 @@
 import {
   AccommodationTaskType,
+  ActivityTaskType,
   AnniversaryTaskType,
   TransportTaskType
 } from 'types/tasks';
@@ -26,6 +27,14 @@ export const ANNIVERSARY_TASK_TYPES: {
   ANNIVERSARY: 'Anniversary'
 };
 
+export const ACTIVITY_TASK_TYPES: {
+  [key in ActivityTaskType]: string;
+} = {
+  ACTIVITY: 'Activity',
+  FOOD_ACTIVITY: 'Food Activity',
+  OTHER_ACTIVITY: 'Other Activity'
+};
+
 export const isTransportTaskType = (val: string): val is TransportTaskType => {
   return val in TRANSPORT_TASK_TYPES;
 };
@@ -40,4 +49,8 @@ export const isAnniversaryTaskType = (
   val: string
 ): val is AnniversaryTaskType => {
   return val in ANNIVERSARY_TASK_TYPES;
+};
+
+export const isActivityTaskType = (val: string): val is ActivityTaskType => {
+  return val in ACTIVITY_TASK_TYPES;
 };

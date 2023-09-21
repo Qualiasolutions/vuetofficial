@@ -1,4 +1,3 @@
-import { Recurrence } from 'types/tasks';
 import { FlatFormFieldTypes } from '../formFieldTypes';
 import { FieldValueTypes } from '../types';
 import isFieldShown from './isFieldShown';
@@ -8,7 +7,7 @@ const hasAllRequired = (
   fields: FlatFormFieldTypes
 ) => {
   const parsedFormValues = { ...formValues };
-  for (const field in parsedFormValues) {
+  for (const field in fields) {
     const f = fields[field];
 
     if (!f?.required) {

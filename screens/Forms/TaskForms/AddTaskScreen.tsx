@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import {
   TransparentView,
-  WhitePaddedView,
-  WhiteView
+  WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
@@ -15,14 +14,17 @@ import useGetUserDetails from 'hooks/useGetUserDetails';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
 import dayjs from 'dayjs';
 import { RootTabScreenProps } from 'types/base';
-import AddDueDateForm from 'components/forms/AddDueDateForm';
-import AddTaskForm from 'components/forms/AddTaskForm';
-import AddTransportTaskForm from 'components/forms/AddTransportTaskForm';
-import AddAccommodationTaskForm from 'components/forms/AddAccommodationTaskForm';
-import AddAnniversaryForm from 'components/forms/AddAnniversaryForm';
 import DropDown from 'components/forms/components/DropDown';
 import { BlackText } from 'components/molecules/TextComponents';
 import EntityAndTagSelector from 'components/forms/components/TagSelector';
+import { FieldValueTypes } from 'components/forms/types';
+import {
+  AnniversaryTaskType,
+  TransportTaskType,
+  AccommodationTaskType,
+  ActivityTaskType
+} from 'types/tasks';
+import GenericAddTaskForm from 'components/forms/GenericAddTaskForm';
 
 const formTypes = [
   {
@@ -72,6 +74,11 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     flex: 1
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center'
   }
 });
 
@@ -84,6 +91,7 @@ export type FormType =
   | 'ACTIVITY'
   | 'TRANSPORT'
   | 'ACCOMMODATION'
+  | 'HOLIDAY'
   | 'ANNIVERSARY';
 
 export default function AddTaskScreen({
@@ -92,6 +100,7 @@ export default function AddTaskScreen({
 }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
+
   const [tagsAndEntities, setTagsAndEntities] = useState<{
     tags: string[];
     entities: number[];
@@ -102,6 +111,16 @@ export default function AddTaskScreen({
   const [formType, setFormType] = useState<FormType | ''>(
     route.params?.type || ''
   );
+  const [anniversaryType, setAnniversaryType] =
+    useState<AnniversaryTaskType>('BIRTHDAY');
+  const [transportType, setTransportType] =
+    useState<TransportTaskType>('FLIGHT');
+  const [accommodationType, setAccomodationType] =
+    useState<AccommodationTaskType>('HOTEL');
+  const [activityType, setActivityType] =
+    useState<ActivityTaskType>('ACTIVITY');
+
+  const [taskFieldValues, setTaskFieldValues] = useState<FieldValueTypes>({});
 
   const headerBackgroundColor = useThemeColor({}, 'secondary');
   const headerTintColor = useThemeColor({}, 'white');
@@ -113,6 +132,7 @@ export default function AddTaskScreen({
     DUE_DATE: 'Add Due Date',
     TRANSPORT: 'Add Transport',
     ACCOMMODATION: 'Add Accommodation',
+    HOLIDAY: 'Add Holiday',
     ANNIVERSARY: 'Add Birthday / Anniversary'
   }[formType];
 
@@ -142,36 +162,78 @@ export default function AddTaskScreen({
     const defaultDuration = 15;
     const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
     const dateNow = new Date();
-    const defaultDueDate = dayjs(dateNow).format('YYYY-MM-DD');
+    const defaultDueDate =
+      route.params?.date || dayjs(dateNow).format('YYYY-MM-DD');
+
+    const parsedDefaultDueDate = new Date(defaultDueDate || '');
+    // Date fields should be the same in all timezones
+    const timezoneIgnorantDueDate = new Date(
+      parsedDefaultDueDate.getUTCFullYear(),
+      parsedDefaultDueDate.getUTCMonth(),
+      parsedDefaultDueDate.getUTCDate()
+    );
 
     return {
       title: route.params?.title || '',
       start_datetime: defaultStartTime,
       end_datetime: defaultEndTime,
-      date: defaultDueDate,
+      date: timezoneIgnorantDueDate,
       duration: defaultDuration,
       recurrence: null,
       earliest_action_date: defaultEarliestActionDate,
-      due_date: defaultDueDate,
-      entities: route.params?.entities || [],
+      due_date: timezoneIgnorantDueDate,
       members: route.params?.members || (userDetails ? [userDetails.id] : []),
-      tags: route.params?.tags || []
+      actions: [],
+      reminders: [],
+      tagsAndEntities: {
+        entities: route.params?.entities || [],
+        tags: route.params?.tags || []
+      }
     };
   }, [formType, route.params, userDetails]);
 
-  const dueDateDefaults = useMemo(() => {
-    const dateNow = new Date();
-    const defaultDueDate =
-      route.params?.date || dayjs(dateNow).format('YYYY-MM-DD');
+  useEffect(() => {
+    if (Object.keys(taskFieldValues).length === 0) {
+      setTaskFieldValues(taskDefaults);
+    }
+  }, [taskDefaults, taskFieldValues]);
 
-    return {
-      date: defaultDueDate,
-      title: route.params?.title || '',
-      duration: 15,
-      entities: route.params?.entities || [],
-      tags: route.params?.tags || []
-    };
-  }, [route.params]);
+  useEffect(() => {
+    if (formType === 'ANNIVERSARY') {
+      setTaskFieldValues((vals) => ({
+        ...vals,
+        recurrence: {
+          earliest_occurrence: null,
+          latest_occurrence: null,
+          interval_length: 1,
+          recurrence: 'YEARLY'
+        }
+      }));
+    } else {
+      setTaskFieldValues((vals) => ({
+        ...vals,
+        recurrence: null
+      }));
+    }
+  }, [formType]);
+
+  const taskType = useMemo(() => {
+    return formType === 'ANNIVERSARY'
+      ? anniversaryType
+      : formType === 'ACCOMMODATION'
+      ? accommodationType
+      : formType === 'TRANSPORT'
+      ? transportType
+      : formType === 'ACTIVITY'
+      ? activityType
+      : formType;
+  }, [
+    formType,
+    anniversaryType,
+    accommodationType,
+    transportType,
+    activityType
+  ]);
 
   if (!userDetails) {
     return <FullPageSpinner />;
@@ -207,55 +269,101 @@ export default function AddTaskScreen({
               // }
             />
           </WhitePaddedView>
-          <TransparentView style={formType !== 'DUE_DATE' && styles.hidden}>
-            <AddDueDateForm
-              defaults={dueDateDefaults}
-              onSuccess={() => navigation.goBack()}
-              inlineFields={true}
-            />
-          </TransparentView>
-          <TransparentView style={formType !== 'TRANSPORT' && styles.hidden}>
-            <AddTransportTaskForm
-              defaults={taskDefaults}
-              onSuccess={() => navigation.goBack()}
-              inlineFields={true}
-            />
-          </TransparentView>
-          <TransparentView
-            style={formType !== 'ACCOMMODATION' && styles.hidden}
-          >
-            <AddAccommodationTaskForm
-              defaults={taskDefaults}
-              onSuccess={() => navigation.goBack()}
-              inlineFields={true}
-            />
-          </TransparentView>
-          <TransparentView
-            style={
-              !['TASK', 'APPOINTMENT', 'ACTIVITY'].includes(formType) &&
-              styles.hidden
-            }
-          >
-            <AddTaskForm
-              formType={
-                formType === 'TASK' ||
-                formType === 'APPOINTMENT' ||
-                formType === 'ACTIVITY'
-                  ? formType
-                  : 'TASK'
-              }
-              defaults={taskDefaults}
-              onSuccess={() => navigation.goBack()}
-              inlineFields={true}
-            />
-          </TransparentView>
-          <TransparentView style={formType !== 'ANNIVERSARY' && styles.hidden}>
-            <AddAnniversaryForm
-              defaults={taskDefaults}
-              onSuccess={() => navigation.goBack()}
-              inlineFields={true}
-            />
-          </TransparentView>
+          {formType === 'ANNIVERSARY' && (
+            <WhitePaddedView>
+              <DropDown
+                value={anniversaryType}
+                items={[
+                  {
+                    value: 'BIRTHDAY',
+                    label: 'Birthday'
+                  },
+                  {
+                    value: 'ANNIVERSARY',
+                    label: 'Anniversary'
+                  }
+                ]}
+                setFormValues={setAnniversaryType}
+                listMode="MODAL"
+              />
+            </WhitePaddedView>
+          )}
+          {formType === 'TRANSPORT' && (
+            <WhitePaddedView>
+              <DropDown
+                value={transportType}
+                items={[
+                  {
+                    value: 'FLIGHT',
+                    label: 'Flight'
+                  },
+                  {
+                    value: 'TRAIN',
+                    label: 'Train / Public Transport'
+                  },
+                  {
+                    value: 'RENTAL_CAR',
+                    label: 'Rental Car'
+                  },
+                  {
+                    value: 'TAXI',
+                    label: 'Taxi'
+                  },
+                  {
+                    value: 'DRIVE_TIME',
+                    label: 'Drive Time'
+                  }
+                ]}
+                setFormValues={setTransportType}
+                listMode="MODAL"
+              />
+            </WhitePaddedView>
+          )}
+          {formType === 'ACCOMMODATION' && (
+            <WhitePaddedView>
+              <DropDown
+                value={accommodationType}
+                items={[
+                  {
+                    value: 'HOTEL',
+                    label: 'Hotel'
+                  },
+                  {
+                    value: 'STAY_WITH_FRIEND',
+                    label: 'Stay With Friend'
+                  }
+                ]}
+                setFormValues={setAccomodationType}
+                listMode="MODAL"
+              />
+            </WhitePaddedView>
+          )}
+          {formType === 'ACTIVITY' && (
+            <WhitePaddedView>
+              <DropDown
+                value={activityType}
+                items={[
+                  {
+                    value: 'ACTIVITY',
+                    label: 'Activity'
+                  },
+                  {
+                    value: 'FOOD_ACTIVITY',
+                    label: 'Food'
+                  },
+                  {
+                    value: 'OTHER_ACTIVITY',
+                    label: 'Other'
+                  }
+                ]}
+                setFormValues={setActivityType}
+                listMode="MODAL"
+              />
+            </WhitePaddedView>
+          )}
+          {taskType && (
+            <GenericAddTaskForm type={taskType} defaults={taskFieldValues} />
+          )}
         </TransparentView>
       </TransparentView>
     </TransparentFullPageScrollView>

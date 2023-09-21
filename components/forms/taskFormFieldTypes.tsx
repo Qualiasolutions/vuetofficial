@@ -12,6 +12,7 @@ import {
   TransportTaskType
 } from 'types/tasks';
 import { TFunction } from 'i18next';
+import { FormType } from 'screens/Forms/TaskForms/AddTaskScreen';
 
 const defaultTagSelector = (t: TFunction): Field => ({
   type: 'tagSelector',
@@ -315,12 +316,17 @@ export const useTaskFieldTypes = ({
   ]);
 };
 
-export const useDueDateFieldTypes = (
-  isEdit: boolean = false,
-  taskHiddenTag: string = '',
-  disabledRecurrenceFields: boolean = false,
-  allowRecurrence: boolean = true
-): FlatFormFieldTypes => {
+export const useDueDateFieldTypes = ({
+  isEdit,
+  taskHiddenTag,
+  disabledRecurrenceFields,
+  allowRecurrence
+}: {
+  isEdit?: boolean;
+  taskHiddenTag?: string;
+  disabledRecurrenceFields?: boolean;
+  allowRecurrence?: boolean;
+}): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { data: allRoutines } = useGetAllRoutinesQuery();
 
@@ -587,10 +593,13 @@ export const useAccommodationFieldTypes = (
   }, [t, type]);
 };
 
-export const useAnniversaryFieldTypes = (
-  type: AnniversaryTaskType,
-  disabledRecurrenceFields: boolean = false
-): FlatFormFieldTypes => {
+export const useAnniversaryFieldTypes = ({
+  type,
+  disabledRecurrenceFields
+}: {
+  type: AnniversaryTaskType;
+  disabledRecurrenceFields?: boolean;
+}): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
   const { t: baseT } = useTranslation();
 
@@ -708,4 +717,42 @@ export const useHolidayFieldTypes = (
       reminders: defaultReminders(t)
     };
   }, [t, baseT, disabledRecurrenceFields]);
+};
+
+export const useFieldTypesForFormType = (
+  type: FormType | null,
+  opts: {
+    isEdit?: boolean;
+    allowRecurrence?: boolean;
+    taskHiddenTag?: string;
+    disableFlexible?: boolean;
+    disabledRecurrenceFields?: boolean;
+    accommodationType?: AccommodationTaskType;
+    anniversaryType?: AnniversaryTaskType;
+    transportType?: TransportTaskType;
+  }
+) => {
+  const taskFieldTypes = useTaskFieldTypes(opts);
+  const dueDateFieldTypes = useDueDateFieldTypes(opts);
+  const holidayFieldTypes = useHolidayFieldTypes(opts.disabledRecurrenceFields);
+  const accommodationFieldTypes = useAccommodationFieldTypes(
+    opts.accommodationType
+  );
+  const anniversaryFieldTypes = useAnniversaryFieldTypes({
+    ...opts,
+    type: opts.anniversaryType || 'BIRTHDAY'
+  });
+  const transportFieldTypes = useTransportFieldTypes(opts.transportType);
+
+  if (!type) {
+    return {};
+  }
+
+  if (type === 'ACCOMMODATION') return accommodationFieldTypes;
+  if (type === 'ANNIVERSARY') return anniversaryFieldTypes;
+  if (type === 'TRANSPORT') return transportFieldTypes;
+  if (type === 'DUE_DATE') return dueDateFieldTypes;
+  if (type === 'HOLIDAY') return holidayFieldTypes;
+
+  return taskFieldTypes;
 };
