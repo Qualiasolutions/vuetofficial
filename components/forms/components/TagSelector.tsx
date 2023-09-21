@@ -1,3 +1,5 @@
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
 import { Button, SmallButton } from 'components/molecules/ButtonComponents';
 import Checkbox from 'components/molecules/Checkbox';
 import { Modal } from 'components/molecules/Modals';
@@ -16,6 +18,7 @@ import {
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
+import { RootTabParamList } from 'types/base';
 import { CategoryName } from 'types/categories';
 import { EntityTypeName } from 'types/entities';
 
@@ -31,6 +34,9 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     flexDirection: 'row'
+  },
+  createNewButton: {
+    marginVertical: 20
   },
   button: { marginHorizontal: 5 },
   changeButton: { marginLeft: 5 },
@@ -230,6 +236,7 @@ const EntityAndTagSelectorModal = ({
   const [selectedEntities, setSelectedEntities] = useState(value.entities);
   const [selectedTags, setSelectedTags] = useState(value.tags);
   const { t } = useTranslation();
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
     useGetMemberEntitiesQuery(null as any);
   const { data: allEntities, isLoading: isLoadingAllEntities } =
@@ -357,6 +364,16 @@ const EntityAndTagSelectorModal = ({
         </TransparentScrollView>
       ) : (
         <TransparentScrollView style={styles.checkboxContainer}>
+          <SmallButton
+            title={t('components.tagSelector.createNewEntity')}
+            style={styles.createNewButton}
+            onPress={() => {
+              navigation.navigate('ContentNavigator', {
+                screen: 'Categories',
+                initial: false
+              });
+            }}
+          />
           <EntityCheckboxes
             value={{
               entities: selectedEntities,

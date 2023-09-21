@@ -671,7 +671,8 @@
       "requiresTravelTag": "You must add a travel tag to this task",
       "requiresTag": "You must add a {{requirementName}} entity to this task",
       "allowedTag": "You may add a {{requirementName}} entity to this task",
-      "noEntities": "No {{entityType}} entities found"
+      "noEntities": "No {{entityType}} entities found",
+      "createNewEntity": "Create new entity"
     },
     "messageThread": {
       "send": "Send"

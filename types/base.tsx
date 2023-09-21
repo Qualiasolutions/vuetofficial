@@ -207,7 +207,10 @@ export type RootStackParamList = {
 export type RootTabParamList = {
   Home: undefined;
   SettingsNavigator: undefined;
-  ContentNavigator: undefined;
+  ContentNavigator: {
+    screen?: string;
+    initial?: boolean;
+  };
   SideNavigator: undefined;
   AddTask: {
     entities?: number[];
