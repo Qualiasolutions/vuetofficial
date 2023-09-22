@@ -120,12 +120,14 @@ export default function GenericTaskForm({
     return type;
   }, [type]);
 
+  const disabledRecurrenceFields =
+    isEdit &&
+    (isAnniversaryTaskType(type) ||
+      (recurrenceIndex !== undefined && !recurrenceOverwrite));
+
   const formFields = useFieldTypesForFormType(formType || null, {
     isEdit,
-    disabledRecurrenceFields:
-      isEdit &&
-      (isAnniversaryTaskType(type) ||
-        (recurrenceIndex !== undefined && !recurrenceOverwrite)),
+    disabledRecurrenceFields,
     disableFlexible: recurrenceIndex !== undefined,
     anniversaryType: isAnniversaryTaskType(type) ? type : undefined,
     transportType: isTransportTaskType(type) ? type : undefined,
@@ -170,7 +172,7 @@ export default function GenericTaskForm({
       delete parsedFullFieldValues.date;
     }
 
-    if (isEdit && !recurrenceOverwrite && parsedFullFieldValues.recurrence) {
+    if (disabledRecurrenceFields) {
       delete parsedFullFieldValues.recurrence;
     }
 
@@ -184,8 +186,7 @@ export default function GenericTaskForm({
     taskFieldValues,
     type,
     extraFields,
-    isEdit,
-    recurrenceOverwrite
+    disabledRecurrenceFields
   ]);
 
   const submitCreateForm = async () => {
