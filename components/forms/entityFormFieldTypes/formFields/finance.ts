@@ -10,7 +10,7 @@ export const financeForm = (isEdit: boolean, t: TFunction): FormFieldTypes => {
     },
     notes: {
       type: 'TextArea',
-      required: true,
+      required: false,
       displayName: t('entities.entity.description')
     },
     members: {

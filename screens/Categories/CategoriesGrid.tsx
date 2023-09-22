@@ -193,11 +193,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
           }
         }}
       >
-        <ImageBackground
-          source={categoriesImages.REFERENCES}
-          style={styles.gridSquare}
-          resizeMode="cover"
-        >
+        <ImageBackground style={styles.gridSquare} resizeMode="cover">
           <View
             style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
           >
