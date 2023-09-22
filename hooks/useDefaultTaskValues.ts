@@ -23,11 +23,8 @@ export default function useDefaultTaskValues(
   const { data: userDetails } = useGetUserDetails();
   const taskFields = useFieldTypesForTask(taskObj);
 
-  console.log('taskFields');
-  console.log(taskFields);
-
   const defaultValues = useMemo(() => {
-    if (taskObj && scheduledTaskObj && userDetails) {
+    if (taskObj && userDetails) {
       if (taskObj.start_timezone && taskObj.start_datetime) {
         const newStart = getTimeInTimezone(
           taskObj.start_datetime,
@@ -44,22 +41,22 @@ export default function useDefaultTaskValues(
         taskObj.end_datetime = newEnd;
       }
 
-      if (scheduledTaskObj.start_date) {
-        scheduledTaskObj.date = scheduledTaskObj.start_date;
+      const baseTask = { ...(scheduledTaskObj || taskObj) };
+
+      if (baseTask.start_date) {
+        baseTask.date = baseTask.start_date;
       }
 
       const newTaskToEdit = {
         ...taskObj,
-        date: (recurrenceIndex
-          ? scheduledTaskObj.date
-          : taskObj.date) as string,
-        start_datetime: scheduledTaskObj.start_datetime
-          ? new Date(scheduledTaskObj.start_datetime)
+        date: baseTask.date as string,
+        start_datetime: baseTask.start_datetime
+          ? new Date(baseTask.start_datetime)
           : undefined,
-        end_datetime: scheduledTaskObj.end_datetime
-          ? new Date(scheduledTaskObj.end_datetime)
+        end_datetime: baseTask.end_datetime
+          ? new Date(baseTask.end_datetime)
           : undefined,
-        is_any_time: !!scheduledTaskObj.date,
+        is_any_time: !!baseTask.date,
         tagsAndEntities: {
           entities: taskObj.entities,
           tags: taskObj.tags || []
@@ -73,9 +70,7 @@ export default function useDefaultTaskValues(
       );
       return initialTaskFields;
     }
-  }, [taskObj, scheduledTaskObj, userDetails, taskFields, recurrenceIndex]);
-
-  console.log(defaultValues);
+  }, [taskObj, scheduledTaskObj, userDetails, taskFields]);
 
   return defaultValues;
 }

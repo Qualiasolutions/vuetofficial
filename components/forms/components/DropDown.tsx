@@ -36,7 +36,7 @@ export default function DropDown({
   disabled = false
 }: {
   value: string;
-  items: { label: string; value: any }[];
+  items: { label: string; value: any; disabled?: boolean }[];
   setFormValues: (item: any) => void;
   dropdownPlaceholder?: string;
   listMode?: ListModeType;
@@ -83,6 +83,7 @@ export default function DropDown({
           textStyle
         ]}
         labelStyle={labelStyle}
+        disabledItemLabelStyle={{ color: disabledTextColor }}
         disabled={disabled}
       />
       {showOther && (

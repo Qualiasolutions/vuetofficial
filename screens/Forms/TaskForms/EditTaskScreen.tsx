@@ -7,7 +7,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import useEntityHeader from 'headers/hooks/useEntityHeader';
-import GenericAddTaskForm from 'components/forms/GenericAddTaskForm';
+import GenericTaskForm from 'components/forms/GenericTaskForm';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import useDefaultTaskValues from 'hooks/useDefaultTaskValues';
@@ -42,13 +42,16 @@ export default function EditTaskScreen({
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
-        <GenericAddTaskForm
+        <GenericTaskForm
           type={taskToEditType}
           isEdit={true}
           defaults={defaultValues}
           taskId={route.params.taskId}
           recurrenceIndex={route.params.recurrenceIndex}
           recurrenceOverwrite={route.params.recurrenceOverwrite}
+          onSuccess={() => {
+            navigation.goBack();
+          }}
         />
       </TransparentView>
     </TransparentFullPageScrollView>

@@ -1,7 +1,8 @@
 import {
   DateField,
   Field,
-  FlatFormFieldTypes
+  FlatFormFieldTypes,
+  FormFieldTypes
 } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
@@ -10,7 +11,6 @@ import {
   AccommodationTaskType,
   AnniversaryTaskType,
   FixedTaskResponseType,
-  TaskType,
   TransportTaskType
 } from 'types/tasks';
 import { TFunction } from 'i18next';
@@ -752,17 +752,19 @@ export const useFieldTypesForFormType = (
   });
   const transportFieldTypes = useTransportFieldTypes(opts.transportType);
 
-  if (!type) {
-    return {};
+  let form: FormFieldTypes = {};
+  if (type === 'ACCOMMODATION') form = accommodationFieldTypes;
+  else if (type === 'ANNIVERSARY') form = anniversaryFieldTypes;
+  else if (type === 'TRANSPORT') form = transportFieldTypes;
+  else if (type === 'DUE_DATE') form = dueDateFieldTypes;
+  else if (type === 'HOLIDAY') form = holidayFieldTypes;
+  else form = taskFieldTypes;
+
+  if (!opts.isEdit && form.tagsAndEntities) {
+    delete form.tagsAndEntities;
   }
 
-  if (type === 'ACCOMMODATION') return accommodationFieldTypes;
-  if (type === 'ANNIVERSARY') return anniversaryFieldTypes;
-  if (type === 'TRANSPORT') return transportFieldTypes;
-  if (type === 'DUE_DATE') return dueDateFieldTypes;
-  if (type === 'HOLIDAY') return holidayFieldTypes;
-
-  return taskFieldTypes;
+  return form;
 };
 
 export const useFieldTypesForTask = (task?: FixedTaskResponseType) => {

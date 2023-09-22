@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
 import { Button } from 'components/molecules/ButtonComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import {
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function GenericAddTaskForm({
+export default function GenericTaskForm({
   type,
   defaults,
   onSuccess,
@@ -46,7 +45,8 @@ export default function GenericAddTaskForm({
   isEdit,
   taskId,
   inlineFields = true,
-  sectionStyle
+  sectionStyle,
+  extraFields
 }: {
   type: TaskType;
   defaults: any;
@@ -57,9 +57,10 @@ export default function GenericAddTaskForm({
   taskId?: number;
   inlineFields?: boolean;
   sectionStyle?: ViewStyle;
+  extraFields?: { [key: string]: any };
 }) {
   /*
-    GenericAddTaskForm
+    GenericTaskForm
 
     Use recurrenceOverwrite, recurrenceIndex and taskId to use this
     to overwrite a recurrent task (either the instance or the series)
@@ -73,7 +74,6 @@ export default function GenericAddTaskForm({
   const [stateParsedFieldValues, setStateParsedFieldValues] = useState({});
   const fieldColor = useThemeColor({}, 'almostWhite');
   const { t } = useTranslation();
-  const navigation = useNavigation();
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
@@ -89,10 +89,11 @@ export default function GenericAddTaskForm({
           recurrence: 'YEARLY'
         }
       : null;
+
     setTaskFieldValues((v) => ({
       ...defaults,
       ...v,
-      recurrence: defaultRecurrence
+      recurrence: defaultRecurrence || defaults.recurrence || v.recurrence
     }));
   }, [defaults, type]);
 
@@ -168,8 +169,11 @@ export default function GenericAddTaskForm({
       delete parsedFullFieldValues.date;
     }
 
-    return parsedFullFieldValues;
-  }, [formFields, formType, taskFieldValues, type]);
+    return {
+      ...parsedFullFieldValues,
+      ...(extraFields || {})
+    };
+  }, [formFields, formType, taskFieldValues, type, extraFields]);
 
   const submitCreateForm = async () => {
     const parsedFullFieldValues = getParsedFieldValues();
@@ -190,7 +194,9 @@ export default function GenericAddTaskForm({
         type: 'success',
         text1: t('screens.addTask.createSuccess')
       });
-      navigation.goBack();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -209,7 +215,9 @@ export default function GenericAddTaskForm({
           type: 'success',
           text1: t('screens.editTask.updateSuccess')
         });
-        navigation.goBack();
+        if (onSuccess) {
+          onSuccess();
+        }
       } catch (e) {
         Toast.show({
           type: 'error',
@@ -217,7 +225,7 @@ export default function GenericAddTaskForm({
         });
       }
     },
-    [navigation, t, updateTask]
+    [t, updateTask, onSuccess]
   );
 
   const submitUpdateForm = () => {

@@ -24,7 +24,7 @@ import {
   AccommodationTaskType,
   ActivityTaskType
 } from 'types/tasks';
-import GenericAddTaskForm from 'components/forms/GenericAddTaskForm';
+import GenericTaskForm from 'components/forms/GenericTaskForm';
 
 const formTypes = [
   {
@@ -235,134 +235,217 @@ export default function AddTaskScreen({
     activityType
   ]);
 
+  useEffect(() => {
+    if (formType === 'ANNIVERSARY') {
+      const otherTaskType =
+        taskType === 'ANNIVERSARY' ? 'BIRTHDAY' : 'ANNIVERSARY';
+      setTagsAndEntities((currentTagsAndEntities) => {
+        const newTags = currentTagsAndEntities.tags.includes(
+          `SOCIAL_INTERESTS__${taskType}`
+        )
+          ? currentTagsAndEntities.tags
+          : [
+              ...currentTagsAndEntities.tags.filter(
+                (tag) => tag !== `SOCIAL_INTERESTS__${otherTaskType}`
+              ),
+              `SOCIAL_INTERESTS__${taskType}`
+            ];
+        return {
+          entities: currentTagsAndEntities.entities,
+          tags: newTags
+        };
+      });
+    } else {
+      setTagsAndEntities((currentTagsAndEntities) => {
+        const newTags = currentTagsAndEntities.tags.filter(
+          (tag) =>
+            ![
+              `SOCIAL_INTERESTS__BIRTHDAY`,
+              'SOCIAL_INTERESTS__ANNIVERSARY'
+            ].includes(tag)
+        );
+        return {
+          entities: currentTagsAndEntities.entities,
+          tags: newTags
+        };
+      });
+    }
+  }, [formType, taskType]);
+
   if (!userDetails) {
     return <FullPageSpinner />;
   }
+
+  const tagsChosen =
+    tagsAndEntities.entities.length > 0 ||
+    tagsAndEntities.tags.filter(
+      (tag) =>
+        ![
+          `SOCIAL_INTERESTS__BIRTHDAY`,
+          'SOCIAL_INTERESTS__ANNIVERSARY'
+        ].includes(tag)
+    ).length > 0;
+
+  const formTypeOptions = formTypes.map((option) => {
+    if (!tagsChosen && option.value !== 'ANNIVERSARY') {
+      return { ...option, disabled: true };
+    }
+    return option;
+  });
+
+  const showForm = tagsChosen || formType === 'ANNIVERSARY';
 
   return (
     <TransparentFullPageScrollView>
       <TransparentView style={styles.container}>
         <TransparentView>
-          {/* <WhitePaddedView>
+          <WhitePaddedView>
             <EntityAndTagSelector
               value={tagsAndEntities}
               onChange={(newTagsAndEntities) => {
                 setTagsAndEntities(newTagsAndEntities);
               }}
+              extraTagOptions={
+                formType === 'ANNIVERSARY'
+                  ? taskType === 'BIRTHDAY'
+                    ? {
+                        SOCIAL_INTERESTS: [
+                          {
+                            value: 'SOCIAL_INTERESTS__BIRTHDAY',
+                            label: t('tags.SOCIAL_INTERESTS__BIRTHDAY')
+                          }
+                        ]
+                      }
+                    : {
+                        SOCIAL_INTERESTS: [
+                          {
+                            value: 'SOCIAL_INTERESTS__ANNIVERSARY',
+                            label: t('tags.SOCIAL_INTERESTS__ANNIVERSARY')
+                          }
+                        ]
+                      }
+                  : {}
+              }
             />
-          </WhitePaddedView> */}
+          </WhitePaddedView>
           <WhitePaddedView style={styles.typeSelector}>
             <BlackText text={t('common.addNew')} style={styles.addNewLabel} />
             <DropDown
               value={formType}
-              items={formTypes}
+              items={formTypeOptions}
               setFormValues={(value) => {
                 setFormType(value as FormType);
               }}
               listMode="MODAL"
               containerStyle={styles.dropdownContainer}
-              // disabled={
-              //   !(
-              //     tagsAndEntities.entities.length > 0 ||
-              //     tagsAndEntities.tags.length > 0
-              //   )
-              // }
             />
           </WhitePaddedView>
-          {formType === 'ANNIVERSARY' && (
-            <WhitePaddedView>
-              <DropDown
-                value={anniversaryType}
-                items={[
-                  {
-                    value: 'BIRTHDAY',
-                    label: 'Birthday'
-                  },
-                  {
-                    value: 'ANNIVERSARY',
-                    label: 'Anniversary'
-                  }
-                ]}
-                setFormValues={setAnniversaryType}
-                listMode="MODAL"
-              />
-            </WhitePaddedView>
-          )}
-          {formType === 'TRANSPORT' && (
-            <WhitePaddedView>
-              <DropDown
-                value={transportType}
-                items={[
-                  {
-                    value: 'FLIGHT',
-                    label: 'Flight'
-                  },
-                  {
-                    value: 'TRAIN',
-                    label: 'Train / Public Transport'
-                  },
-                  {
-                    value: 'RENTAL_CAR',
-                    label: 'Rental Car'
-                  },
-                  {
-                    value: 'TAXI',
-                    label: 'Taxi'
-                  },
-                  {
-                    value: 'DRIVE_TIME',
-                    label: 'Drive Time'
-                  }
-                ]}
-                setFormValues={setTransportType}
-                listMode="MODAL"
-              />
-            </WhitePaddedView>
-          )}
-          {formType === 'ACCOMMODATION' && (
-            <WhitePaddedView>
-              <DropDown
-                value={accommodationType}
-                items={[
-                  {
-                    value: 'HOTEL',
-                    label: 'Hotel'
-                  },
-                  {
-                    value: 'STAY_WITH_FRIEND',
-                    label: 'Stay With Friend'
-                  }
-                ]}
-                setFormValues={setAccomodationType}
-                listMode="MODAL"
-              />
-            </WhitePaddedView>
-          )}
-          {formType === 'ACTIVITY' && (
-            <WhitePaddedView>
-              <DropDown
-                value={activityType}
-                items={[
-                  {
-                    value: 'ACTIVITY',
-                    label: 'Activity'
-                  },
-                  {
-                    value: 'FOOD_ACTIVITY',
-                    label: 'Food'
-                  },
-                  {
-                    value: 'OTHER_ACTIVITY',
-                    label: 'Other'
-                  }
-                ]}
-                setFormValues={setActivityType}
-                listMode="MODAL"
-              />
-            </WhitePaddedView>
-          )}
-          {taskType && (
-            <GenericAddTaskForm type={taskType} defaults={taskFieldValues} />
+          {showForm && (
+            <>
+              {formType === 'ANNIVERSARY' && (
+                <WhitePaddedView>
+                  <DropDown
+                    value={anniversaryType}
+                    items={[
+                      {
+                        value: 'BIRTHDAY',
+                        label: 'Birthday'
+                      },
+                      {
+                        value: 'ANNIVERSARY',
+                        label: 'Anniversary'
+                      }
+                    ]}
+                    setFormValues={setAnniversaryType}
+                    listMode="MODAL"
+                  />
+                </WhitePaddedView>
+              )}
+              {formType === 'TRANSPORT' && (
+                <WhitePaddedView>
+                  <DropDown
+                    value={transportType}
+                    items={[
+                      {
+                        value: 'FLIGHT',
+                        label: 'Flight'
+                      },
+                      {
+                        value: 'TRAIN',
+                        label: 'Train / Public Transport'
+                      },
+                      {
+                        value: 'RENTAL_CAR',
+                        label: 'Rental Car'
+                      },
+                      {
+                        value: 'TAXI',
+                        label: 'Taxi'
+                      },
+                      {
+                        value: 'DRIVE_TIME',
+                        label: 'Drive Time'
+                      }
+                    ]}
+                    setFormValues={setTransportType}
+                    listMode="MODAL"
+                  />
+                </WhitePaddedView>
+              )}
+              {formType === 'ACCOMMODATION' && (
+                <WhitePaddedView>
+                  <DropDown
+                    value={accommodationType}
+                    items={[
+                      {
+                        value: 'HOTEL',
+                        label: 'Hotel'
+                      },
+                      {
+                        value: 'STAY_WITH_FRIEND',
+                        label: 'Stay With Friend'
+                      }
+                    ]}
+                    setFormValues={setAccomodationType}
+                    listMode="MODAL"
+                  />
+                </WhitePaddedView>
+              )}
+              {formType === 'ACTIVITY' && (
+                <WhitePaddedView>
+                  <DropDown
+                    value={activityType}
+                    items={[
+                      {
+                        value: 'ACTIVITY',
+                        label: 'Activity'
+                      },
+                      {
+                        value: 'FOOD_ACTIVITY',
+                        label: 'Food'
+                      },
+                      {
+                        value: 'OTHER_ACTIVITY',
+                        label: 'Other'
+                      }
+                    ]}
+                    setFormValues={setActivityType}
+                    listMode="MODAL"
+                  />
+                </WhitePaddedView>
+              )}
+              {taskType && (
+                <GenericTaskForm
+                  type={taskType}
+                  defaults={taskFieldValues}
+                  extraFields={tagsAndEntities}
+                  onSuccess={() => {
+                    setTagsAndEntities({ tags: [], entities: [] });
+                    navigation.goBack();
+                  }}
+                />
+              )}
+            </>
           )}
         </TransparentView>
       </TransparentView>

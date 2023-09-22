@@ -13,7 +13,7 @@ import {
 } from 'reduxStore/slices/tasks/selectors';
 import { elevation } from 'styles/elevation';
 
-import GenericAddTaskForm from '../GenericAddTaskForm';
+import GenericTaskForm from '../GenericTaskForm';
 import createInitialObject from '../utils/createInitialObject';
 import useGetUserDetails from 'hooks/useGetUserDetails';
 import { useFieldTypesForTask } from '../taskFormFieldTypes';
@@ -59,12 +59,16 @@ export default function FinalOccurrenceRescheduler({
     return (
       <TransparentScrollView style={styles.modalFormContainer}>
         <TransparentView>
-          <GenericAddTaskForm
+          <GenericTaskForm
             type={taskObj.type}
             defaults={{
               ...defaultValues,
               recurrence: {
                 ...defaultValues.recurrence,
+                latest_occurrence: defaultLatestOccurrence
+              },
+              date_recurrence: {
+                ...defaultValues.date_recurrence,
                 latest_occurrence: defaultLatestOccurrence
               }
             }}
