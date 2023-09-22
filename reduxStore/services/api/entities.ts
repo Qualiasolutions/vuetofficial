@@ -90,7 +90,7 @@ const entitiesApi = vuetApi.injectEndpoints({
           body
         };
       },
-      // invalidatesTags: ['Entity'],
+      invalidatesTags: ['Task'], // Need to invalidate scheduled tasks
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
@@ -251,7 +251,7 @@ const entitiesApi = vuetApi.injectEndpoints({
           body: payload.formData
         };
       },
-      invalidatesTags: ['Entity'],
+      invalidatesTags: ['Entity', 'Task'],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }
