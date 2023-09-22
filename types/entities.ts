@@ -63,6 +63,7 @@ export interface BaseEntityType {
   hidden: boolean;
   child_entities: number[];
   members: number[];
+  parent: number | null;
   parent_name: string | null;
   [key: string]: any;
 }

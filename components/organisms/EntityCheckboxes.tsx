@@ -25,7 +25,8 @@ const HIDDEN_ENTITY_TYPES = [
   'CareerGoal',
   'Appointment',
   'HealthBeauty',
-  'HealthGoal'
+  'HealthGoal',
+  'EventSubentity'
 ];
 const styles = StyleSheet.create({
   entityCheckboxPair: {

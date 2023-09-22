@@ -62,10 +62,12 @@ type TagSelectorProps = {
   requiredEntityTypes: {
     name: string;
     resourceTypes: EntityTypeName[];
+    parent?: number[];
   }[];
   permittedEntityTypes: {
     name: string;
     resourceTypes: EntityTypeName[];
+    parent?: number[];
   }[];
   onChange: (tags: string[]) => void;
   onChangeEntities: (entities: number[]) => void;
@@ -171,9 +173,17 @@ const StepTwoSelector = ({
       {[
         ...requiredEntityTypes.map((opts) => ({ ...opts, type: 'REQUIRED' })),
         ...permittedEntityTypes.map((opts) => ({ ...opts, type: 'PERMITTED' }))
-      ].map(({ name, resourceTypes, type }) => {
+      ].map(({ name, resourceTypes, parent, type }) => {
         const matchingEntities = Object.values(memberEntities.byId).filter(
-          (entity) => resourceTypes.includes(entity.resourcetype)
+          (entity) => {
+            const hasValidParent =
+              !parent || (entity.parent && parent.includes(entity.parent));
+            return (
+              hasValidParent &&
+              resourceTypes.includes(entity.resourcetype) &&
+              !entity.hidden
+            );
+          }
         );
         return (
           <TransparentView style={styles.requiredTagSection} key={name}>
@@ -299,6 +309,11 @@ const EntityAndTagSelectorModal = ({
       ['Employee'].includes(allEntities.byId[ent].resourcetype)
   );
 
+  const selectedEvents = selectedEntities.filter(
+    (ent) =>
+      allEntities.byId[ent] && allEntities.byId[ent].resourcetype === 'Event'
+  );
+
   const requiredEntityTypes: {
     name: string;
     resourceTypes: EntityTypeName[];
@@ -319,12 +334,34 @@ const EntityAndTagSelectorModal = ({
   const permittedEntityTypes: {
     name: string;
     resourceTypes: EntityTypeName[];
+    parent?: number[];
   }[] = [];
   if (allowedMatchingEmployeeTag) {
     permittedEntityTypes.push({
       name: 'Days off or Career goal',
       resourceTypes: ['DaysOff', 'CareerGoal']
     });
+  }
+
+  if (selectedEvents.length > 0) {
+    for (const event of selectedEvents) {
+      const eventEntity = allEntities.byId[event];
+      const childEntities = eventEntity.child_entities;
+      let hasVisibleChild = false;
+      for (const childEntityId of childEntities) {
+        if (!allEntities.byId[childEntityId].hidden) {
+          hasVisibleChild = true;
+          break;
+        }
+      }
+      if (hasVisibleChild) {
+        permittedEntityTypes.push({
+          name: `${eventEntity.name} sub`,
+          resourceTypes: ['EventSubentity'],
+          parent: [event]
+        });
+      }
+    }
   }
 
   let hasRequiredEntityTags = true;
@@ -389,12 +426,12 @@ const EntityAndTagSelectorModal = ({
       )}
       {isStepTwo ? (
         <TransparentView style={styles.buttonWrapper}>
-          <Button
+          <SmallButton
             title={t('common.back')}
             onPress={() => setIsStepTwo(false)}
             style={styles.button}
           />
-          <Button
+          <SmallButton
             title={t('common.finish')}
             onPress={() => {
               onChange({
@@ -453,11 +490,16 @@ export default function EntityAndTagSelector({
       (value.tags && value.tags.length > 0) ? (
         <WhiteBox>
           <Text bold={true}>{t('components.tagSelector.selectedTags')}</Text>
-          {value.entities.map((entityId) =>
-            allEntities.byId[entityId] ? (
-              <Text key={entityId}>{allEntities.byId[entityId].name}</Text>
-            ) : null
-          )}
+          {value.entities.map((entityId) => {
+            const entity = allEntities.byId[entityId];
+            if (!entity) return null;
+            const parentName = entity.parent_name;
+            let displayName = entity.name;
+            if (parentName) {
+              displayName += ` (${parentName})`;
+            }
+            return entity ? <Text key={entityId}>{displayName}</Text> : null;
+          })}
           {value.tags.map((tagName) => (
             <Text key={tagName}>{t(`tags.${tagName}`)}</Text>
           ))}

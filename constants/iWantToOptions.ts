@@ -92,7 +92,10 @@ const iWantToOptions: {
     { title: 'Keep to hand school logins', link: '' },
     { title: 'Reference schedule or syllabus', link: '' }
   ],
-  CAREER: [{ title: 'Add one', link: '' }],
+  CAREER: [
+    { title: 'Add one', link: '' },
+    { title: 'Block work time', link: '' }
+  ],
   TRAVEL: [
     { title: 'Be reminded to research trip in advance', link: '' },
     {
