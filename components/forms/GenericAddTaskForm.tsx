@@ -19,7 +19,6 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import {
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation,
-  useDeleteTaskMutation,
   useUpdateTaskMutation
 } from 'reduxStore/services/api/tasks';
 import { FixedTaskResponseType, TaskType } from 'types/tasks';
@@ -82,8 +81,20 @@ export default function GenericAddTaskForm({
   const [updateTask, updateTaskResult] = useUpdateTaskMutation();
 
   useEffect(() => {
-    setTaskFieldValues(defaults);
-  }, [defaults]);
+    const defaultRecurrence = ['ANNIVERSARY', 'BIRTHDAY'].includes(type)
+      ? {
+          earliest_occurrence: null,
+          latest_occurrence: null,
+          interval_length: 1,
+          recurrence: 'YEARLY'
+        }
+      : null;
+    setTaskFieldValues((v) => ({
+      ...defaults,
+      ...v,
+      recurrence: defaultRecurrence
+    }));
+  }, [defaults, type]);
 
   const isSubmitting =
     createTaskResult.isLoading ||
@@ -243,7 +254,7 @@ export default function GenericAddTaskForm({
         fields={formFields}
         formValues={taskFieldValues}
         onFormValuesChange={setTaskFieldValues}
-        inlineFields={true}
+        inlineFields={inlineFields}
         fieldColor={fieldColor}
         sectionStyle={sectionStyle}
       />
