@@ -9,10 +9,18 @@ import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import {
   AccommodationTaskType,
   AnniversaryTaskType,
+  FixedTaskResponseType,
+  TaskType,
   TransportTaskType
 } from 'types/tasks';
 import { TFunction } from 'i18next';
 import { FormType } from 'screens/Forms/TaskForms/AddTaskScreen';
+import {
+  isAccommodationTaskType,
+  isAnniversaryTaskType,
+  isTransportTaskType,
+  useFormType
+} from 'constants/TaskTypes';
 
 const defaultTagSelector = (t: TFunction): Field => ({
   type: 'tagSelector',
@@ -755,4 +763,23 @@ export const useFieldTypesForFormType = (
   if (type === 'HOLIDAY') return holidayFieldTypes;
 
   return taskFieldTypes;
+};
+
+export const useFieldTypesForTask = (task?: FixedTaskResponseType) => {
+  const taskType = task?.type;
+  const formType = useFormType(taskType || '');
+
+  return useFieldTypesForFormType(formType, {
+    isEdit: true,
+    allowRecurrence: true,
+    taskHiddenTag: task?.hidden_tag,
+    disableFlexible: true,
+    disabledRecurrenceFields: !!(task && task?.recurrence),
+    anniversaryType:
+      taskType && isAnniversaryTaskType(taskType) ? taskType : undefined,
+    transportType:
+      taskType && isTransportTaskType(taskType) ? taskType : undefined,
+    accommodationType:
+      taskType && isAccommodationTaskType(taskType) ? taskType : undefined
+  });
 };

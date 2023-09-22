@@ -2,6 +2,7 @@ import {
   AccommodationTaskType,
   ActivityTaskType,
   AnniversaryTaskType,
+  TaskType,
   TransportTaskType
 } from 'types/tasks';
 
@@ -53,4 +54,24 @@ export const isAnniversaryTaskType = (
 
 export const isActivityTaskType = (val: string): val is ActivityTaskType => {
   return val in ACTIVITY_TASK_TYPES;
+};
+
+export const useFormType = (taskType: TaskType | '') => {
+  if (!taskType) {
+    return null;
+  }
+  if (isTransportTaskType(taskType)) {
+    return 'TRANSPORT';
+  }
+  if (isAccommodationTaskType(taskType)) {
+    return 'ACCOMMODATION';
+  }
+  if (isAnniversaryTaskType(taskType)) {
+    return 'ANNIVERSARY';
+  }
+  if (isActivityTaskType(taskType)) {
+    return 'ACTIVITY';
+  }
+
+  return taskType;
 };

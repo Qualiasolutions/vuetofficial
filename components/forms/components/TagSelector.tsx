@@ -33,13 +33,15 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   buttonWrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   createNewButton: {
     marginVertical: 20
   },
   button: { marginHorizontal: 5 },
-  changeButton: { marginLeft: 5 },
+  clearButton: { marginRight: 5 },
+  baseButton: { marginBottom: 2 },
   requiredTagSection: { marginVertical: 10 },
   selectedEntitiesSummary: { marginBottom: 10 },
   modalBoxStyle: { width: '100%' }
@@ -463,11 +465,12 @@ export default function EntityAndTagSelector({
             <SmallButton
               onPress={() => onChange({ entities: [], tags: [] })}
               title={t('common.clear')}
+              style={[styles.clearButton, styles.baseButton]}
             />
             <SmallButton
               onPress={() => setOpen(true)}
               title={t('common.change')}
-              style={styles.changeButton}
+              style={styles.baseButton}
             />
           </View>
         </WhiteBox>

@@ -2,6 +2,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import { useFormType } from 'constants/TaskTypes';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
@@ -13,6 +14,10 @@ import {
 import { elevation } from 'styles/elevation';
 
 import GenericAddTaskForm from '../GenericAddTaskForm';
+import createInitialObject from '../utils/createInitialObject';
+import useGetUserDetails from 'hooks/useGetUserDetails';
+import { useFieldTypesForTask } from '../taskFormFieldTypes';
+import useDefaultTaskValues from 'hooks/useDefaultTaskValues';
 
 const styles = StyleSheet.create({
   buttonWrapper: {
@@ -38,22 +43,17 @@ export default function FinalOccurrenceRescheduler({
   const taskObj = useSelector(selectTaskById(taskId));
   const [rescheduling, setRescheduling] = useState(false);
   const { t } = useTranslation();
-  const scheduledTask = useSelector(
-    selectScheduledTask({
-      id: taskId,
-      recurrenceIndex: recurrenceIndex,
-      actionId: null
-    })
-  );
-
-  if (!taskObj || !scheduledTask) {
-    return null;
-  }
 
   const defaultLatestOccurrence = taskObj?.recurrence?.latest_occurrence
     ? new Date(taskObj.recurrence.latest_occurrence)
     : new Date();
   defaultLatestOccurrence.setMonth(defaultLatestOccurrence.getMonth() + 1);
+
+  const defaultValues = useDefaultTaskValues(taskId, recurrenceIndex);
+
+  if (!taskObj || !defaultValues) {
+    return null;
+  }
 
   if (rescheduling) {
     return (
@@ -62,19 +62,9 @@ export default function FinalOccurrenceRescheduler({
           <GenericAddTaskForm
             type={taskObj.type}
             defaults={{
-              ...taskObj,
-              date: (recurrenceIndex
-                ? scheduledTask.date
-                : taskObj.date) as string,
-              start_datetime: scheduledTask.start_datetime
-                ? new Date(scheduledTask.start_datetime)
-                : undefined,
-              end_datetime: scheduledTask.end_datetime
-                ? new Date(scheduledTask.end_datetime)
-                : undefined,
-              is_any_time: !!scheduledTask.date,
+              ...defaultValues,
               recurrence: {
-                ...taskObj.recurrence,
+                ...defaultValues.recurrence,
                 latest_occurrence: defaultLatestOccurrence
               }
             }}

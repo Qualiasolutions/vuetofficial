@@ -80,7 +80,6 @@ export default function GenericAddTaskForm({
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
   const [updateTask, updateTaskResult] = useUpdateTaskMutation();
-  const [deleteTask, deleteTaskResult] = useDeleteTaskMutation();
 
   useEffect(() => {
     setTaskFieldValues(defaults);
@@ -89,8 +88,7 @@ export default function GenericAddTaskForm({
   const isSubmitting =
     createTaskResult.isLoading ||
     createTaskWithoutMutationResult.isLoading ||
-    updateTaskResult.isLoading ||
-    deleteTaskResult.isLoading;
+    updateTaskResult.isLoading;
 
   const formType = useMemo(() => {
     if (!type) {
@@ -247,6 +245,7 @@ export default function GenericAddTaskForm({
         onFormValuesChange={setTaskFieldValues}
         inlineFields={true}
         fieldColor={fieldColor}
+        sectionStyle={sectionStyle}
       />
       <TransparentPaddedView style={styles.bottomButtons}>
         {isSubmitting ? (
