@@ -190,7 +190,6 @@ export default function GenericAddTaskForm({
         type: 'success',
         text1: t('screens.addTask.createSuccess')
       });
-      // resetState();
       navigation.goBack();
     } catch (err) {
       Toast.show({
