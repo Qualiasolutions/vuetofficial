@@ -59,9 +59,9 @@ export default function useSetupPushNotifications() {
         if (token && matchingTokens && matchingTokens.length === 0) {
           await createPushToken({ token });
         } else if (matchingTokens) {
-          for (const token of matchingTokens) {
+          for (const matchingToken of matchingTokens) {
             // Ensure that last_active is updated to now
-            await updatePushToken({ id: token.id });
+            await updatePushToken({ id: matchingToken.id });
           }
         }
       }
