@@ -616,6 +616,10 @@
     "categoryList": {
       "categoryPreferences": "{{category}} Preferences",
       "quickNav": "Quick Nav"
+    },
+    "contact": {
+      "placeholder": "Let us know what you're thinking",
+      "success": "Message sent successfully! We'll get back to you as soon as possible"
     }
   },
   "navigation": {

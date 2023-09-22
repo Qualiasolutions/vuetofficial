@@ -173,14 +173,14 @@ export function SideNavigator({
           drawerIcon: () => <CustomIcon name="user" />
         }}
       />
-      <SideDrawer.Screen
+      {/* <SideDrawer.Screen
         name="Notifications"
         component={NotificationsScreen}
         options={{
           title: 'Notifications',
           drawerIcon: () => <CustomIcon name="bell" />
         }}
-      />
+      /> */}
       <SideDrawer.Screen
         name="SettingsNavigator"
         component={SettingsNavigator}
@@ -189,20 +189,20 @@ export function SideNavigator({
           drawerIcon: () => <CustomIcon name="settings" />
         }}
       />
-      <SideDrawer.Screen
+      {/* <SideDrawer.Screen
         name="Help"
         component={HelpScreen}
         options={{
           title: 'Help',
           drawerIcon: () => <CustomIcon name="help-circle" />
         }}
-      />
+      /> */}
       <SideDrawer.Screen
         name="Contact"
         component={ContactScreen}
         options={{
           title: 'Contact',
-          drawerIcon: () => <CustomIcon name="phone" />
+          drawerIcon: () => <CustomIcon name="mail" />
         }}
       />
     </SideDrawer.Navigator>
