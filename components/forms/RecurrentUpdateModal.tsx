@@ -21,14 +21,12 @@ export default function RecurrentUpdateModal({
   visible,
   onRequestClose,
   parsedFieldValues,
-  recurrence,
   recurrenceIndex,
   taskId
 }: {
   visible: boolean;
   onRequestClose: () => void;
   parsedFieldValues: any;
-  recurrence: number;
   recurrenceIndex: number;
   taskId: number;
 }) {
@@ -43,6 +41,12 @@ export default function RecurrentUpdateModal({
   const oldScheduledTask = useSelector(
     selectScheduledTask({ id: taskId, recurrenceIndex })
   );
+
+  if (!oldScheduledTask) return null;
+
+  const recurrence = oldScheduledTask.recurrence;
+
+  if (!recurrence) return null;
 
   const isUpdating =
     createRecurrentOverwriteResult.isLoading || updateAfterResult.isLoading;

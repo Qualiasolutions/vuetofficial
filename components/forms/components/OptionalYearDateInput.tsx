@@ -87,8 +87,14 @@ export function OptionalYearDateInput({
       setDateValue('');
       setMonthValue('');
       setYearValue('');
+      return;
     }
-  }, [value]);
+
+    const newValueMonth = value?.getMonth();
+    setMonthValue(String(newValueMonth + 1));
+    setDateValue(String(value.getDate()));
+    setYearValue((knownYear && String(value?.getFullYear())) || '');
+  }, [value, knownYear]);
 
   useEffect(() => {
     const parsedDate = validatedDate();
@@ -98,7 +104,7 @@ export function OptionalYearDateInput({
       setNextAge(age);
       setNextAnniversaryYear(year);
     }
-  }, [dateValue, monthValue, yearValue]);
+  }, [dateValue, monthValue, yearValue, validatedDate]);
 
   return (
     <TransparentView style={styles.container}>

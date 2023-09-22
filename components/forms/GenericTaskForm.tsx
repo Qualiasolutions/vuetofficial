@@ -81,21 +81,20 @@ export default function GenericTaskForm({
   const [updateTask, updateTaskResult] = useUpdateTaskMutation();
 
   useEffect(() => {
-    const defaultRecurrence = ['ANNIVERSARY', 'BIRTHDAY'].includes(type)
-      ? {
-          earliest_occurrence: null,
-          latest_occurrence: null,
-          interval_length: 1,
-          recurrence: 'YEARLY'
-        }
-      : null;
+    if (isEdit) {
+      // If edit then we want to make sure that we start with
+      // the right form values that are passed in from the parent
+      return setTaskFieldValues({ ...defaults });
+    }
 
+    // Otherwise we want to retain the current values
+    // except for specific fields
     setTaskFieldValues((v) => ({
       ...defaults,
       ...v,
-      recurrence: defaultRecurrence || defaults.recurrence || v.recurrence
+      recurrence: defaults.recurrence // Always just use the defaulted recurrence
     }));
-  }, [defaults, type]);
+  }, [defaults, type, isEdit]);
 
   const isSubmitting =
     createTaskResult.isLoading ||
@@ -124,7 +123,9 @@ export default function GenericTaskForm({
   const formFields = useFieldTypesForFormType(formType || null, {
     isEdit,
     disabledRecurrenceFields:
-      recurrenceIndex !== undefined && !recurrenceOverwrite,
+      isEdit &&
+      (isAnniversaryTaskType(type) ||
+        (recurrenceIndex !== undefined && !recurrenceOverwrite)),
     disableFlexible: recurrenceIndex !== undefined,
     anniversaryType: isAnniversaryTaskType(type) ? type : undefined,
     transportType: isTransportTaskType(type) ? type : undefined,
@@ -169,11 +170,23 @@ export default function GenericTaskForm({
       delete parsedFullFieldValues.date;
     }
 
+    if (isEdit && !recurrenceOverwrite && parsedFullFieldValues.recurrence) {
+      delete parsedFullFieldValues.recurrence;
+    }
+
     return {
       ...parsedFullFieldValues,
       ...(extraFields || {})
     };
-  }, [formFields, formType, taskFieldValues, type, extraFields]);
+  }, [
+    formFields,
+    formType,
+    taskFieldValues,
+    type,
+    extraFields,
+    isEdit,
+    recurrenceOverwrite
+  ]);
 
   const submitCreateForm = async () => {
     const parsedFullFieldValues = getParsedFieldValues();
@@ -303,7 +316,6 @@ export default function GenericTaskForm({
       <RecurrentUpdateModal
         visible={showRecurrentUpdateModal}
         onRequestClose={() => setShowRecurrentUpdateModal(false)}
-        recurrence={taskFieldValues?.recurrence?.id || -1}
         recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
         taskId={taskId || -1}
         parsedFieldValues={stateParsedFieldValues}
