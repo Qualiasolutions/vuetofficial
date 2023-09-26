@@ -275,21 +275,7 @@ export const useTaskFieldTypes = ({
       },
       reminders: {
         ...defaultReminders(t),
-        shownFields: [
-          {
-            is_any_time: false,
-            is_flexible: false
-          }
-        ]
-      },
-      date_reminders: {
-        ...defaultReminders(t),
-        shownFields: [
-          {
-            is_any_time: true,
-            is_flexible: false
-          }
-        ]
+        shownFields: [{ is_flexible: false }]
       },
       routine: {
         type: 'dropDown',
