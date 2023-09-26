@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { SettingsTabParamList } from 'types/base';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { FullPageSpinner } from 'components/molecules/Spinners';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +24,11 @@ const SettingsScreen = ({
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'Settings'>) => {
   const { t } = useTranslation();
+  const { data: user } = useGetUserFullDetails();
+
+  if (!user) {
+    return <FullPageSpinner />;
+  }
 
   return (
     <TransparentFullPageScrollView contentContainerStyle={styles.container}>
@@ -39,6 +46,7 @@ const SettingsScreen = ({
             navigation.navigate('PersonalAssistant');
           }}
           style={styles.button}
+          disabled={!user.is_premium}
         />
         <Button
           title={t('pageTitles.routines')}
@@ -46,6 +54,7 @@ const SettingsScreen = ({
             navigation.navigate('Routines');
           }}
           style={styles.button}
+          disabled={!user.is_premium}
         />
       </TransparentView>
     </TransparentFullPageScrollView>
