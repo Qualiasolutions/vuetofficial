@@ -26,7 +26,8 @@ export default function ModalContent({
   const nextScheduledTask = useSelector(
     selectScheduledTask({
       id: taskId,
-      recurrenceIndex: recurrenceIndex ? recurrenceIndex + 1 : undefined
+      recurrenceIndex:
+        recurrenceIndex !== undefined ? recurrenceIndex + 1 : undefined
     })
   );
 
