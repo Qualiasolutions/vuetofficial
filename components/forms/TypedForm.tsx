@@ -18,6 +18,7 @@ import {
   OptionalYearDate,
   RadioField,
   RecurrenceSelectorField,
+  RoutineField,
   StringField,
   TagSelectorField,
   TimezoneField
@@ -51,6 +52,7 @@ import Duration from './components/Duration';
 import isFieldShown from './utils/isFieldShown';
 import ActionSelector from './components/ActionSelector';
 import ReminderSelector from './components/ReminderSelector';
+import RoutineSelector from './components/RoutineSelector';
 
 const parseFieldName = (name: string) => {
   return name
@@ -80,9 +82,9 @@ const getAssociatedUpdates = (
         const associatedDateTime = new Date(newValue);
         associatedDateTime.setHours(associatedDateTime.getHours() + 1);
         associatedUpdates[f.associatedEndTimeField] = associatedDateTime;
-      } else if (formValues[field]) {
+      } else if (formValues[f.associatedEndTimeField] && formValues[field]) {
         /*
-          Otherwise is the old start time is set then maintain the
+          Otherwise if the old start time is set then maintain the
           event length
         */
         const currentDelta =
@@ -727,6 +729,37 @@ export default function TypedForm({
                     }
                     listMode={(hasListMode(f) && f.listMode) || undefined}
                     style={textInputStyle}
+                    containerStyle={styles.flex}
+                    disabled={
+                      f.disabled || (formType === 'UPDATE' && f.disableUpdate)
+                    }
+                  />
+                </InputPair>
+              );
+            }
+            case 'routineSelector': {
+              const f = flatFields[field] as RoutineField;
+
+              if (!isFieldShown(f, formValues)) {
+                return null;
+              }
+
+              return (
+                <InputPair
+                  field={field}
+                  key={field}
+                  containerStyle={styles.inputPair}
+                  inlineFieldsOverride={inlineOverride}
+                >
+                  <RoutineSelector
+                    value={formValues[field]}
+                    onChange={(item) => {
+                      onFormValuesChange({
+                        ...formValues,
+                        [field]: item
+                      });
+                    }}
+                    textInputStyle={textInputStyle}
                     containerStyle={styles.flex}
                     disabled={
                       f.disabled || (formType === 'UPDATE' && f.disableUpdate)

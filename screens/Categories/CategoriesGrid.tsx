@@ -17,6 +17,7 @@ import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponent
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useDispatch } from 'react-redux';
 import { setShowPremiumModal } from 'reduxStore/slices/misc/actions';
+import PremiumTag from 'components/molecules/PremiumTag';
 
 type CategoryGroupName =
   | 'PETS'
@@ -76,25 +77,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 13
   },
-  premiumTag: {
-    backgroundColor: '#FFC700',
-    padding: 5,
-    margin: 5,
-    borderRadius: 5,
-    position: 'absolute',
-    bottom: 3,
-    right: 3
-  },
-  premiumTagText: {
-    fontSize: 10,
-    color: 'white'
-  },
   overlay: {
     flex: 1,
     justifyContent: 'center',
     borderRadius: 10,
     padding: 10
-  }
+  },
+  premiumTag: { position: 'absolute', bottom: 3, right: 3 }
 });
 
 export default function CategoriesGrid({ navigation }: CategoriesTypes) {
@@ -140,9 +129,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       const isPremiumTag = categoryGroup
         .map((cat) => cat.is_premium)
         .some((isPrem) => isPrem) ? (
-        <View style={styles.premiumTag}>
-          <Text style={styles.premiumTagText}>Premium</Text>
-        </View>
+        <PremiumTag />
       ) : null;
 
       return (
@@ -202,11 +189,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
               text={t('pageTitles.references')}
               bold={true}
             />
-            {
-              <View style={styles.premiumTag}>
-                <Text style={styles.premiumTagText}>Premium</Text>
-              </View>
-            }
+            <PremiumTag style={styles.premiumTag} />
           </View>
         </ImageBackground>
       </TouchableOpacity>

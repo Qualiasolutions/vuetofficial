@@ -6,7 +6,6 @@ import {
 } from 'components/forms/formFieldTypes';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import {
   AccommodationTaskType,
   AnniversaryTaskType,
@@ -99,7 +98,6 @@ export const useTaskFieldTypes = ({
   allowRecurrence?: boolean;
 }): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -278,16 +276,9 @@ export const useTaskFieldTypes = ({
         shownFields: [{ is_flexible: false }]
       },
       routine: {
-        type: 'dropDown',
+        type: 'routineSelector',
         required: false,
         displayName: t('tasks.task.routine'),
-        permittedValues: allRoutines
-          ? Object.values(allRoutines.byId).map((routine) => ({
-              value: routine.id,
-              label: routine.name
-            }))
-          : [],
-        listMode: 'MODAL',
         shownFields: [
           {
             is_any_time: true
@@ -303,7 +294,6 @@ export const useTaskFieldTypes = ({
     t,
     isEdit,
     taskHiddenTag,
-    allRoutines,
     allowRecurrence,
     disableFlexible,
     disabledRecurrenceFields
@@ -322,7 +312,6 @@ export const useDueDateFieldTypes = ({
   allowRecurrence?: boolean;
 }): FlatFormFieldTypes => {
   const { t } = useTranslation('modelFields');
-  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   return useMemo<FlatFormFieldTypes>(() => {
     return {
@@ -362,27 +351,13 @@ export const useDueDateFieldTypes = ({
       actions: defaultActions(t),
       reminders: defaultReminders(t),
       routine: {
-        type: 'dropDown',
+        type: 'routineSelector',
         required: false,
         displayName: t('tasks.task.routine'),
-        permittedValues: allRoutines
-          ? Object.values(allRoutines.byId).map((routine) => ({
-              value: routine.id,
-              label: routine.name
-            }))
-          : [],
-        listMode: 'MODAL',
         helpText: t('tasks.helpText.routine')
       }
     };
-  }, [
-    t,
-    isEdit,
-    taskHiddenTag,
-    allRoutines,
-    disabledRecurrenceFields,
-    allowRecurrence
-  ]);
+  }, [t, isEdit, taskHiddenTag, disabledRecurrenceFields, allowRecurrence]);
 };
 
 export const useTransportFieldTypes = (

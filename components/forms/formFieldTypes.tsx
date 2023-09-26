@@ -16,6 +16,7 @@ export type PermittedTypes =
   | 'TextArea'
   | 'addFamilyMembers'
   | 'dropDown'
+  | 'routineSelector'
   | 'recurrenceSelector'
   | 'actionsSelector'
   | 'reminderSelector'
@@ -82,7 +83,6 @@ export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {
 
 export type DropDownField = BaseField<'dropDown', any> & {
   permittedValues: any[];
-  displayName?: string;
   initialValue?: any;
   placeholder?: string;
   listMode?: ListModeType;
@@ -94,6 +94,8 @@ export type DropDownWithOtherField = BaseField<'dropDownWithOther', any> & {
   placeholder?: string;
   listMode?: ListModeType;
 };
+
+export type RoutineField = BaseField<'routineSelector', any>;
 
 export type RecurrenceSelectorField = BaseField<'recurrenceSelector', any> & {
   firstOccurrenceField: string;
@@ -145,6 +147,7 @@ export type Field =
   | AddFamilyMembersField
   | DropDownField
   | DropDownWithOtherField
+  | RoutineField
   | RecurrenceSelectorField
   | TagSelectorField
   | ActionsSelectorField

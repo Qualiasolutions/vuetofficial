@@ -160,7 +160,6 @@ export default function AddTaskScreen({
     }
 
     const defaultDuration = 15;
-    const defaultEarliestActionDate = dayjs(new Date()).format('YYYY-MM-DD');
     const dateNow = new Date();
     const defaultDueDate =
       route.params?.date || dayjs(dateNow).format('YYYY-MM-DD');
@@ -180,7 +179,7 @@ export default function AddTaskScreen({
       date: timezoneIgnorantDueDate,
       duration: defaultDuration,
       recurrence: null,
-      earliest_action_date: defaultEarliestActionDate,
+      earliest_action_date: timezoneIgnorantDueDate,
       due_date: timezoneIgnorantDueDate,
       members: route.params?.members || (userDetails ? [userDetails.id] : []),
       actions: [],
