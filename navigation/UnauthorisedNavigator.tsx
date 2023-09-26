@@ -23,30 +23,19 @@ export function UnauthorisedNavigator() {
         headerTintColor: primaryColor
       }}
     >
-      <UnauthorisedStack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
+      <UnauthorisedStack.Screen name="Login" component={LoginScreen} />
       <UnauthorisedStack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
-        options={{ headerShown: true }}
       />
-      <UnauthorisedStack.Screen
-        name="Signup"
-        component={SignupScreen}
-        options={{ headerShown: false }}
-      />
+      <UnauthorisedStack.Screen name="Signup" component={SignupScreen} />
       <UnauthorisedStack.Screen
         name="ValidatePhone"
         component={ValidatePhoneScreen}
-        options={{ headerShown: false }}
       />
       <UnauthorisedStack.Screen
         name="CreatePassword"
         component={CreatePasswordScreen}
-        options={{ headerShown: false }}
       />
     </UnauthorisedStack.Navigator>
   );

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15
   },
-  passwordInput: { marginBottom: 10 },
+  passwordInput: { marginBottom: 10, width: '100%' },
   otherOptsWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
