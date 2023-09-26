@@ -46,6 +46,7 @@ export const vuetApi = createApi({
     'CategorySetupCompletion',
     'ReferencesSetupCompletion',
     'EntityTypeSetupCompletion',
+    'TagSetupCompletion',
     'Entity',
     'Task',
     'TaskLimit',

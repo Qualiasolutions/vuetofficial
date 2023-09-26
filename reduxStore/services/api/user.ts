@@ -11,7 +11,8 @@ import {
   SecureUpdateUserRequest,
   CategorySetupCompletion,
   ReferencesSetupCompletion,
-  EntityTypeSetupCompletion
+  EntityTypeSetupCompletion,
+  TagSetupCompletion
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -174,6 +175,23 @@ const userApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['EntityTypeSetupCompletion']
+    }),
+    getTagSetupCompletions: builder.query<TagSetupCompletion[], void>({
+      query: () => ({
+        url: `core/tag-setup/`
+      }),
+      providesTags: ['TagSetupCompletion']
+    }),
+    createTagSetupCompletion: builder.mutation<
+      TagSetupCompletion,
+      { tag_name: string; user: number }
+    >({
+      query: (body) => ({
+        url: 'core/tag-setup/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['TagSetupCompletion']
     })
   }),
   overrideExisting: true
@@ -197,7 +215,9 @@ export const {
   useGetReferencesSetupCompletionsQuery,
   useCreateReferencesSetupCompletionMutation,
   useGetEntityTypeSetupCompletionsQuery,
-  useCreateEntityTypeSetupCompletionMutation
+  useCreateEntityTypeSetupCompletionMutation,
+  useGetTagSetupCompletionsQuery,
+  useCreateTagSetupCompletionMutation
 } = userApi;
 
 export default userApi;

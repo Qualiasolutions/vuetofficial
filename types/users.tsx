@@ -148,3 +148,9 @@ export type ReferencesSetupCompletion = {
   id: number;
   user: number;
 };
+
+export type TagSetupCompletion = {
+  id: number;
+  tag_name: string;
+  user: number;
+};
