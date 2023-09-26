@@ -7,13 +7,22 @@ import SignupScreen from 'screens/AuthScreens/SignupScreen';
 import ValidatePhoneScreen from 'screens/AuthScreens/ValidatePhoneScreen';
 import CreatePasswordScreen from 'screens/AuthScreens/CreatePasswordScreen';
 import ForgotPasswordScreen from 'screens/AuthScreens/ForgotPasswordScreen';
+import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
+import { useThemeColor } from 'components/Themed';
 
 const UnauthorisedStack =
   createNativeStackNavigator<UnauthorisedTabParamList>();
 
 export function UnauthorisedNavigator() {
+  const primaryColor = useThemeColor({}, 'primary');
+
   return (
-    <UnauthorisedStack.Navigator>
+    <UnauthorisedStack.Navigator
+      screenOptions={{
+        header: BackOnlyHeaderWithSafeArea,
+        headerTintColor: primaryColor
+      }}
+    >
       <UnauthorisedStack.Screen
         name="Login"
         component={LoginScreen}
@@ -22,7 +31,7 @@ export function UnauthorisedNavigator() {
       <UnauthorisedStack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <UnauthorisedStack.Screen
         name="Signup"

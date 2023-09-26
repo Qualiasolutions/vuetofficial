@@ -22,7 +22,9 @@ declare global {
 export type UnauthorisedTabParamList = {
   Login: undefined;
   Signup: undefined;
-  ForgotPassword: undefined;
+  ForgotPassword: {
+    useEmail?: boolean;
+  };
   ValidatePhone: {
     phoneNumber: string;
     validationId: number;

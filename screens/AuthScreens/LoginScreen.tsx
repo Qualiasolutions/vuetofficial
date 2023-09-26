@@ -160,7 +160,7 @@ const LoginScreen = ({
         </SafePressable>
         <SafePressable
           onPress={() => {
-            navigation.navigate('ForgotPassword');
+            navigation.navigate('ForgotPassword', { useEmail: usingEmail });
           }}
         >
           <PrimaryText text={t('screens.logIn.forgotPassword')} bold={true} />

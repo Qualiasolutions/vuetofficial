@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
 });
 
 export default function ForgotPasswordScreen({
-  navigation
+  navigation,
+  route
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'ForgotPassword'>) {
   const { t } = useTranslation();
   const [username, setUsername] = useState<string>('');
@@ -59,7 +60,9 @@ export default function ForgotPasswordScreen({
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [newPasswordConf, setNewPasswordConf] = useState<string>('');
-  const [usingEmail, setUsingEmail] = useState<boolean>(false);
+  const [usingEmail, setUsingEmail] = useState<boolean>(
+    !!route.params.useEmail
+  );
   const [step, setStep] = useState('USERNAME');
 
   const [createPasswordResetCode, createPasswordResetCodeResult] =
