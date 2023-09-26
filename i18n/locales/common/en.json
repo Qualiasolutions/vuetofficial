@@ -807,6 +807,7 @@
       "newTask": "New Task",
       "newTaskCompletion": "Task completed",
       "completedOn": "Completed on",
+      "uncheckedOn": "Unchecked on",
       "createdOn": "Created on"
     },
     "messageList": {

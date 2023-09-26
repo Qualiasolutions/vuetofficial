@@ -98,7 +98,9 @@ const NewTaskCompletionCard = ({
       <Text bold={true}>{t('components.newItemsList.newTaskCompletion')}</Text>
       <Text bold={true}>{task.title}</Text>
       <Text>
-        {t('components.newItemsList.completedOn')}{' '}
+        {form.complete
+          ? t('components.newItemsList.completedOn')
+          : t('components.newItemsList.uncheckedOn')}{' '}
         {String(new Date(form?.completion_datetime))}
       </Text>
     </ElevatedPressableBox>
