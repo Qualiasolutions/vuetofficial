@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     width: '100%'
+  },
+  textInput: {
+    width: '100%'
   }
 });
 
@@ -87,7 +90,7 @@ const SignupScreen = ({
         />
       </TransparentView>
       {usingEmail ? (
-        <TextInput onChangeText={onChangeEmail} />
+        <TextInput onChangeText={onChangeEmail} style={styles.textInput} />
       ) : (
         <PhoneNumberInput
           onChangeFormattedText={(text) => {

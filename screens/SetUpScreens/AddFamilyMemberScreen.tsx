@@ -19,6 +19,7 @@ import {
 } from 'screens/SettingsScreens/Forms/familyMemberFormFieldTypes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,23 +33,16 @@ const AddFamilyMemberScreen = ({
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamilyMember'>) => {
   const { data: userFullDetails } = useGetUserFullDetails();
 
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
-
   const formFields = deepCopy<FamilyMemberFormFieldTypes>(
     useFamilyMemberForm()
   );
 
   const { t } = useTranslation();
 
-  const errorContent = errorMessage ? (
-    <ErrorBox errorText={errorMessage} />
-  ) : null;
-
   return (
     <TransparentFullPageScrollView>
       <TransparentPaddedView style={styles.container}>
         <PageTitle text={t('screens.addFamilyMember.title')} />
-        {errorContent}
         <RTKForm
           fields={formFields}
           methodHooks={{
@@ -59,7 +53,10 @@ const AddFamilyMemberScreen = ({
             navigation.push('AddFamily');
           }}
           onSubmitFailure={() => {
-            setErrorMessage(t('common.errors.generic'));
+            Toast.show({
+              type: 'error',
+              text1: t('common.errors.generic')
+            });
           }}
           extraFields={{
             family: userFullDetails?.family.id,

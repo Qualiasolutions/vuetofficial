@@ -34,10 +34,7 @@ const styles = StyleSheet.create({
   imagePicker: {
     marginBottom: 30
   },
-  addedMembers: {
-    width: '100%',
-    marginTop: 30
-  }
+  addedMembers: { zIndex: -1 }
 });
 
 const AddFamilyScreen = ({
@@ -104,7 +101,9 @@ const AddFamilyScreen = ({
         defaultImageUrl={userFullDetails?.family?.presigned_image_url}
         displayInternalImage={false}
       />
-      {addedMembersContent}
+      <TransparentView style={styles.addedMembers}>
+        {addedMembersContent}
+      </TransparentView>
       <Button
         title={t('screens.addFamily.addMember')}
         onPress={() => {
