@@ -161,7 +161,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
           key={categoryGroupName}
         >
           <ImageBackground
-            source={categoriesImages[categoryGroupName as CategoryGroupName]}
+            // source={categoriesImages[categoryGroupName as CategoryGroupName]}
             style={styles.gridSquare}
             resizeMode="cover"
           >
