@@ -4,6 +4,7 @@ import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponen
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { t } from 'i18next';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -88,8 +89,9 @@ const NewTaskCompletionCard = ({
   const form = useSelector(selectTaskCompletionFormById(taskCompletionId));
   const navigation = useNavigation();
   const task = useSelector(selectTaskById(form ? form.task : -1));
+  const { data: user } = useGetUserFullDetails();
 
-  if (!task || !form) {
+  if (!task || !form || !user?.is_premium) {
     return null;
   }
 
