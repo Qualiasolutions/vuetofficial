@@ -5,6 +5,7 @@ type TaskCompletionFormCreateRequest = {
   resourcetype: string;
   recurrence_index: number | null;
   task: number;
+  complete?: boolean;
   ignore?: boolean;
 };
 
@@ -14,6 +15,7 @@ export type TaskCompletionForm = {
   resourcetype: string;
   id: number;
   ignore: boolean;
+  complete: boolean;
   completion_datetime: string;
 };
 
@@ -21,6 +23,7 @@ type TaskActionCompletionFormCreateRequest = {
   recurrence_index: number | null;
   action: number;
   ignore?: boolean;
+  complete?: boolean;
 };
 
 type TaskActionCompletionForm = {
@@ -28,6 +31,7 @@ type TaskActionCompletionForm = {
   action: number;
   id: number;
   ignore: boolean;
+  complete: boolean;
 };
 
 export type AllTaskCompletionForms = {
@@ -164,6 +168,8 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           { type: 'TaskCompletionForm' }
         ])) {
           if (endpointName !== 'getTaskCompletionForms') continue;
+          console.log('patch.complete');
+          console.log(patch.complete);
           const patchResult = dispatch(
             taskCompletionFormsApi.util.updateQueryData(
               'getTaskCompletionForms',
@@ -173,6 +179,8 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
                 const mockEntry = {
                   ...patch,
                   ignore: !!patch.ignore,
+                  complete:
+                    patch.complete === undefined ? true : patch.complete,
                   id: mockId,
                   completion_datetime: new Date().toISOString()
                 };
@@ -205,7 +213,8 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               (draft) => {
                 draft.byTaskId[patch.task][
                   patch.recurrence_index === null ? -1 : patch.recurrence_index
-                ].is_complete = true;
+                ].is_complete =
+                  patch.complete === undefined ? true : patch.complete;
               }
             )
           );
@@ -321,6 +330,8 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
                 const mockEntry = {
                   ...patch,
                   ignore: !!patch.ignore,
+                  complete:
+                    patch.complete === undefined ? true : patch.complete,
                   id: mockId
                 };
                 draft.ids.push(mockId);
@@ -352,7 +363,8 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               (draft) => {
                 draft.byActionId[patch.action][
                   patch.recurrence_index === null ? -1 : patch.recurrence_index
-                ].is_complete = true;
+                ].is_complete =
+                  patch.complete === undefined ? true : patch.complete;
               }
             )
           );

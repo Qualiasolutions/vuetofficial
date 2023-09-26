@@ -10,10 +10,7 @@ import {
   useDeleteTaskActionCompletionFormMutation,
   useDeleteTaskCompletionFormMutation
 } from 'reduxStore/services/api/taskCompletionForms';
-import {
-  selectIsComplete,
-  selectScheduledTask
-} from 'reduxStore/slices/tasks/selectors';
+import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import SafePressable from './SafePressable';
 import { TouchableOpacity } from './TouchableOpacityComponents';
 
@@ -40,23 +37,17 @@ export default function TaskCompletionPressable({
   const scheduledTask = useSelector(
     selectScheduledTask({ id: taskId, recurrenceIndex, actionId })
   );
-  const { isComplete, completionForm } = useSelector(
-    selectIsComplete({
-      id: taskId,
-      recurrenceIndex: recurrenceIndex === undefined ? null : recurrenceIndex,
-      actionId
-    })
-  );
+  const isComplete = scheduledTask?.is_complete;
   const { t } = useTranslation();
 
   const [createTaskActionCompletionForm, createTaskActionCompletionFormResult] =
     useCreateTaskActionCompletionFormMutation();
   const [triggerCreateCompletionForm, createTaskCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
-  const [deleteTaskCompletionForm, deleteTaskCompletionFormResult] =
-    useDeleteTaskCompletionFormMutation();
-  const [deleteTaskActionCompletionForm, deleteTaskActionCompletionFormResult] =
-    useDeleteTaskActionCompletionFormMutation();
+  // const [deleteTaskCompletionForm, deleteTaskCompletionFormResult] =
+  //   useDeleteTaskCompletionFormMutation();
+  // const [deleteTaskActionCompletionForm, deleteTaskActionCompletionFormResult] =
+  //   useDeleteTaskActionCompletionFormMutation();
   const completionCallback = useCompletionCallback(taskId, recurrenceIndex);
 
   if (!scheduledTask) {
@@ -72,18 +63,18 @@ export default function TaskCompletionPressable({
           if (disabled) return;
           if (createTaskActionCompletionFormResult.isLoading) return;
           if (createTaskCompletionFormResult.isLoading) return;
-          if (deleteTaskCompletionFormResult.isLoading) return;
-          if (deleteTaskActionCompletionFormResult.isLoading) return;
+          // if (deleteTaskCompletionFormResult.isLoading) return;
+          // if (deleteTaskActionCompletionFormResult.isLoading) return;
           onPress();
           setTimeout(async () => {
             try {
               if (actionId) {
-                if (isComplete && completionForm) {
-                  await deleteTaskActionCompletionForm({
-                    actionId,
-                    formId: completionForm.id,
-                    recurrenceIndex:
-                      recurrenceIndex === undefined ? -1 : recurrenceIndex
+                if (isComplete) {
+                  await createTaskActionCompletionForm({
+                    action: actionId,
+                    recurrence_index:
+                      recurrenceIndex === undefined ? -1 : recurrenceIndex,
+                    complete: false
                   }).unwrap();
                   onSuccess();
                   return;
@@ -96,12 +87,13 @@ export default function TaskCompletionPressable({
                 onSuccess();
                 return;
               }
-              if (isComplete && completionForm) {
-                await deleteTaskCompletionForm({
-                  taskId,
-                  formId: completionForm.id,
-                  recurrenceIndex:
-                    recurrenceIndex === undefined ? -1 : recurrenceIndex
+              if (isComplete) {
+                await triggerCreateCompletionForm({
+                  resourcetype: 'TaskCompletionForm',
+                  task: scheduledTask.id,
+                  recurrence_index:
+                    recurrenceIndex === undefined ? -1 : recurrenceIndex,
+                  complete: false
                 }).unwrap();
                 onSuccess();
                 return;
