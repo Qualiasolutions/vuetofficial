@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import {
+  useCreateFlexibleFixedTaskMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation,
   useUpdateTaskMutation
@@ -76,6 +77,8 @@ export default function GenericTaskForm({
   const { t } = useTranslation();
 
   const [createTask, createTaskResult] = useCreateTaskMutation();
+  const [createFlexibleTask, createFlexibleTaskResult] =
+    useCreateFlexibleFixedTaskMutation();
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
   const [updateTask, updateTaskResult] = useUpdateTaskMutation();
@@ -99,6 +102,7 @@ export default function GenericTaskForm({
   const isSubmitting =
     createTaskResult.isLoading ||
     createTaskWithoutMutationResult.isLoading ||
+    createFlexibleTaskResult.isLoading ||
     updateTaskResult.isLoading;
 
   const formType = useMemo(() => {
@@ -193,16 +197,20 @@ export default function GenericTaskForm({
     const parsedFullFieldValues = getParsedFieldValues();
 
     try {
-      if (
-        parsedFullFieldValues.recurrence ||
-        (parsedFullFieldValues.actions &&
-          parsedFullFieldValues.actions.length > 0)
-      ) {
-        await createTask(parsedFullFieldValues).unwrap();
+      if (taskFieldValues.is_flexible) {
+        await createFlexibleTask(parsedFullFieldValues).unwrap();
       } else {
-        await createTaskWithoutCacheInvalidation(
-          parsedFullFieldValues
-        ).unwrap();
+        if (
+          parsedFullFieldValues.recurrence ||
+          (parsedFullFieldValues.actions &&
+            parsedFullFieldValues.actions.length > 0)
+        ) {
+          await createTask(parsedFullFieldValues).unwrap();
+        } else {
+          await createTaskWithoutCacheInvalidation(
+            parsedFullFieldValues
+          ).unwrap();
+        }
       }
       Toast.show({
         type: 'success',
