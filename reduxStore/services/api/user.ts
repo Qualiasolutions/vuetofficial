@@ -12,7 +12,8 @@ import {
   CategorySetupCompletion,
   ReferencesSetupCompletion,
   EntityTypeSetupCompletion,
-  TagSetupCompletion
+  TagSetupCompletion,
+  LinkListSetupCompletion
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -192,6 +193,23 @@ const userApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['TagSetupCompletion']
+    }),
+    getLinkListCompletions: builder.query<LinkListSetupCompletion[], void>({
+      query: () => ({
+        url: `core/link-list-setup/`
+      }),
+      providesTags: ['LinkListSetupCompletion']
+    }),
+    createLinkListSetupCompletion: builder.mutation<
+      LinkListSetupCompletion,
+      { list_name: string; user: number }
+    >({
+      query: (body) => ({
+        url: 'core/link-list-setup/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['LinkListSetupCompletion']
     })
   }),
   overrideExisting: true
@@ -217,7 +235,9 @@ export const {
   useGetEntityTypeSetupCompletionsQuery,
   useCreateEntityTypeSetupCompletionMutation,
   useGetTagSetupCompletionsQuery,
-  useCreateTagSetupCompletionMutation
+  useCreateTagSetupCompletionMutation,
+  useGetLinkListCompletionsQuery,
+  useCreateLinkListSetupCompletionMutation
 } = userApi;
 
 export default userApi;

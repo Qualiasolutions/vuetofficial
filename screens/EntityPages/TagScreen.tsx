@@ -22,7 +22,7 @@ const SETUP_TEXT_PAGES: {
   SOCIAL_INTERESTS__INFORMATION__PUBLIC: ['PBF to add intro info here']
 };
 
-const setupPagesTypes = StyleSheet.create({
+const setupPagesStyles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
   }
@@ -46,7 +46,7 @@ const SetupPages = ({
   }
 
   return (
-    <TransparentContainerView style={setupPagesTypes.container}>
+    <TransparentContainerView style={setupPagesStyles.container}>
       <Text>{pages[currentPage]}</Text>
       {createTagCompletionResult.isLoading ? (
         <PaddedSpinner />

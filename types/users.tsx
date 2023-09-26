@@ -154,3 +154,9 @@ export type TagSetupCompletion = {
   tag_name: string;
   user: number;
 };
+
+export type LinkListSetupCompletion = {
+  id: number;
+  list_name: string;
+  user: number;
+};
