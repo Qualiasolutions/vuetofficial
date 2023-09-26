@@ -44,14 +44,14 @@ function AnniversaryCard({ task }: { task: ScheduledTaskResponseType }) {
     cardSubtitle: { fontSize: 18 }
   });
 
-  if (!baseTask?.date || !task?.date) {
+  if (!baseTask?.start_date || !task?.start_date) {
     return null;
   }
 
-  const { monthName, day } = getUTCValuesFromDateString(baseTask.date);
+  const { monthName, day } = getUTCValuesFromDateString(baseTask.start_date);
 
-  const startDate = getDateWithoutTimezone(baseTask.date);
-  const instanceDate = getDateWithoutTimezone(task.date);
+  const startDate = getDateWithoutTimezone(baseTask.start_date);
+  const instanceDate = getDateWithoutTimezone(task.start_date);
   const yearsOffset = instanceDate.getFullYear() - startDate.getFullYear();
 
   return (
