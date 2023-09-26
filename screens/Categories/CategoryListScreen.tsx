@@ -39,17 +39,17 @@ Any tasks that cant be associated with one or more Transport entities can be add
 `
   ],
   FAMILY: null,
-  PETS: null,
-  SOCIAL_INTERESTS: null,
-  EDUCATION: null,
-  CAREER: null,
-  TRAVEL: null,
-  HEALTH_BEAUTY: null,
-  HOME: null,
-  GARDEN: null,
-  FOOD: null,
-  LAUNDRY: null,
-  FINANCE: null
+  PETS: ['PBF to add intro info here'],
+  SOCIAL_INTERESTS: ['PBF to add intro info here'],
+  EDUCATION: ['PBF to add intro info here'],
+  CAREER: ['PBF to add intro info here'],
+  TRAVEL: ['PBF to add intro info here'],
+  HEALTH_BEAUTY: ['PBF to add intro info here'],
+  HOME: ['PBF to add intro info here'],
+  GARDEN: ['PBF to add intro info here'],
+  FOOD: ['PBF to add intro info here'],
+  LAUNDRY: ['PBF to add intro info here'],
+  FINANCE: ['PBF to add intro info here']
 };
 
 const SetupPages = ({

@@ -580,7 +580,7 @@
       "updateSuccess": "Account details successfully updated",
       "accountDetails": "Account Details",
       "accountType": "Account Type",
-      "phoneNumber": "Phone Number",
+      "phoneNumber": "Associated Phone or Email",
       "security": "Security"
     },
     "editPhoneNumber": {
