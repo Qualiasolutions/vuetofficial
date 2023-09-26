@@ -804,7 +804,10 @@
     },
     "newItemsList": {
       "newEntity": "New Entity",
-      "newTask": "New Task"
+      "newTask": "New Task",
+      "newTaskCompletion": "Task completed",
+      "completedOn": "Completed on",
+      "createdOn": "Created on"
     },
     "messageList": {
       "noMessages": "You haven't sent or received any messages yet"

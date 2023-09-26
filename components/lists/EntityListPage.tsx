@@ -1,9 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useGetAllEntitiesQuery,
-  useGetMemberEntitiesQuery
-} from 'reduxStore/services/api/entities';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import ListLink from 'components/molecules/ListLink';
 import linkMapping from 'components/entityCards';
 import { EntityResponseType, EntityTypeName } from 'types/entities';

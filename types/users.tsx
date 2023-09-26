@@ -1,3 +1,4 @@
+import { EntityTypeName } from './entities';
 import { FamilyResponse } from './families';
 
 export type AuthDetails = {
@@ -134,5 +135,16 @@ export type UserFullResponse = {
 export type CategorySetupCompletion = {
   id: number;
   category: number;
+  user: number;
+};
+
+export type EntityTypeSetupCompletion = {
+  id: number;
+  entity_type: EntityTypeName;
+  user: number;
+};
+
+export type ReferencesSetupCompletion = {
+  id: number;
   user: number;
 };

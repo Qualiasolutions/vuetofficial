@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import entitiesApi from 'reduxStore/services/api/entities';
+import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import { EntityTypeName } from 'types/entities';
 
 export const selectEntityById = (entityId: number) =>
@@ -67,3 +68,29 @@ export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
       });
     }
   );
+
+export const selectNewTaskCompletionFormIds = createSelector(
+  taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+  (completionForms) => {
+    const taskFormData = completionForms?.data;
+    if (!taskFormData) {
+      return [];
+    }
+    const reverseSortedIds = [...taskFormData.ids].sort((a, b) =>
+      a < b ? 1 : -1
+    );
+    const newIds = [];
+
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    for (const id of reverseSortedIds) {
+      if (new Date(taskFormData.byId[id].completion_datetime) > threeDaysAgo) {
+        newIds.push(id);
+        continue;
+      }
+      // If the latest ID is not new then neathir is anything older
+      return newIds;
+    }
+    return newIds;
+  }
+);

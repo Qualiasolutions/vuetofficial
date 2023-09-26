@@ -15,16 +15,17 @@ import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 import { TransparentContainerView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
+import { CategoryName } from 'types/categories';
 
 type CategoryListScreenProps = ContentTabScreenProps<'CategoryList'>;
 
-const setupPagesStypes = StyleSheet.create({
+const setupPagesTypes = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
   }
 });
 
-const SETUP_TEXT_PAGES = {
+const SETUP_TEXT_PAGES: { [key in CategoryName]: string[] | null } = {
   TRANSPORT: [
     `
 Transport Category allows users to record and action due dates and tasks for automobiles, motorcycles, boats, bicycles and more. Even Public Transportation.
@@ -70,7 +71,7 @@ const SetupPages = ({
   }
 
   return (
-    <TransparentContainerView style={setupPagesStypes.container}>
+    <TransparentContainerView style={setupPagesTypes.container}>
       <Text>{pages[currentPage]}</Text>
       {createCategoryCompletionResult.isLoading ? (
         <PaddedSpinner />

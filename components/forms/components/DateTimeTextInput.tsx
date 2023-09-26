@@ -40,10 +40,6 @@ export default function DateTimeTextInput({
       : dayjs(value).format('HH:mm')
     : '';
 
-  console.log('DATETIME TEXT INPUT');
-  console.log(value);
-  console.log(typeof value);
-
   return (
     <TransparentView style={containerStyle}>
       <SafePressable

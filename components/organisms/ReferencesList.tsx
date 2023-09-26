@@ -8,7 +8,11 @@ import { Modal, YesNoModal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner, SmallSpinner } from 'components/molecules/Spinners';
-import { TransparentView, WhiteBox } from 'components/molecules/ViewComponents';
+import {
+  TransparentContainerView,
+  TransparentView,
+  WhiteBox
+} from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
@@ -37,6 +41,10 @@ import {
   useUpdateReferenceMutation
 } from 'reduxStore/services/api/references';
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
+import {
+  useCreateReferencesSetupCompletionMutation,
+  useGetReferencesSetupCompletionsQuery
+} from 'reduxStore/services/api/user';
 import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   selectReferenceById,
@@ -47,6 +55,48 @@ import {
 import { RootTabParamList } from 'types/base';
 import { EntityTypeName } from 'types/entities';
 import { Reference, ReferenceType } from 'types/references';
+
+const SETUP_TEXT_PAGES = ['PBF to add intro info here'];
+
+const setupPagesStypes = StyleSheet.create({
+  container: {
+    justifyContent: 'flex-start'
+  }
+});
+
+const SetupPages = () => {
+  const { t } = useTranslation();
+  const [currentPage, setCurrentPage] = useState(0);
+  const { data: userDetails } = useGetUserFullDetails();
+  const [createReferencesCompletion, createReferencesCompletionResult] =
+    useCreateReferencesSetupCompletionMutation();
+
+  if (!userDetails) {
+    return null;
+  }
+
+  return (
+    <TransparentContainerView style={setupPagesStypes.container}>
+      <Text>{SETUP_TEXT_PAGES[currentPage]}</Text>
+      {createReferencesCompletionResult.isLoading ? (
+        <PaddedSpinner />
+      ) : (
+        <Button
+          onPress={() => {
+            if (currentPage === SETUP_TEXT_PAGES.length - 1) {
+              createReferencesCompletion({
+                user: userDetails.id
+              });
+            } else {
+              setCurrentPage(currentPage + 1);
+            }
+          }}
+          title={t('common.continue')}
+        />
+      )}
+    </TransparentContainerView>
+  );
+};
 
 const addReferenceStyles = StyleSheet.create({
   refInputPair: {
@@ -703,6 +753,8 @@ export default function ReferencesList({
   const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =
     useGetAllReferenceGroupsQuery();
   const { isLoading: isLoadingReferences } = useGetAllReferencesQuery(); // Pull refs
+  const { data: referenceCompetions } =
+    useGetReferencesSetupCompletionsQuery(undefined);
 
   const relevantEntities = useEntities({
     entities,
@@ -718,9 +770,14 @@ export default function ReferencesList({
     !memberEntities ||
     !allCategories ||
     !allTags ||
-    !allReferenceGroups
+    !allReferenceGroups ||
+    !referenceCompetions
   ) {
     return <PaddedSpinner />;
+  }
+
+  if (referenceCompetions.length === 0) {
+    return <SetupPages />;
   }
 
   const tagsToShow = (
@@ -811,39 +868,36 @@ export default function ReferencesList({
   }
 
   const content =
-    Object.keys(tagsAndEntitiesToShowByCategory).length > 0
-      ? Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => (
-          <TransparentView
-            key={categoryId}
-            style={referencesListStyles.categorySection}
-          >
-            {showCategoryHeaders && (
-              <Text style={referencesListStyles.categoryHeader}>
-                {t(
-                  `categories.${allCategories.byId[parseInt(categoryId)].name}`
-                )}
-              </Text>
-            )}
-            <FlatReferencesList
-              entities={
-                tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
-              }
-              tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
-              tagsFirst={tagsFirst}
-            />
-          </TransparentView>
-        ))
-      : categoryName &&
-        entityNames && (
-          <Text>
-            {categoryName && entityNames
-              ? t('components.referencesList.noReferences', {
-                  categoryName,
-                  entityNames
-                })
-              : t('components.referencesList.noReferencesDefault')}
-          </Text>
-        );
+    Object.keys(tagsAndEntitiesToShowByCategory).length > 0 ? (
+      Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => (
+        <TransparentView
+          key={categoryId}
+          style={referencesListStyles.categorySection}
+        >
+          {showCategoryHeaders && (
+            <Text style={referencesListStyles.categoryHeader}>
+              {t(`categories.${allCategories.byId[parseInt(categoryId)].name}`)}
+            </Text>
+          )}
+          <FlatReferencesList
+            entities={
+              tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
+            }
+            tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
+            tagsFirst={tagsFirst}
+          />
+        </TransparentView>
+      ))
+    ) : (
+      <Text>
+        {categoryName && entityNames
+          ? t('components.referencesList.noReferences', {
+              categoryName,
+              entityNames
+            })
+          : t('components.referencesList.noReferencesDefault')}
+      </Text>
+    );
 
   return (
     <TransparentFullPageScrollView style={referencesListStyles.container}>

@@ -9,7 +9,9 @@ import {
   UserResponse,
   UserFullResponse,
   SecureUpdateUserRequest,
-  CategorySetupCompletion
+  CategorySetupCompletion,
+  ReferencesSetupCompletion,
+  EntityTypeSetupCompletion
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -132,6 +134,46 @@ const userApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['CategorySetupCompletion']
+    }),
+    getReferencesSetupCompletions: builder.query<
+      ReferencesSetupCompletion[],
+      void
+    >({
+      query: () => ({
+        url: `core/references-setup/`
+      }),
+      providesTags: ['ReferencesSetupCompletion']
+    }),
+    createReferencesSetupCompletion: builder.mutation<
+      ReferencesSetupCompletion,
+      { user: number }
+    >({
+      query: (body) => ({
+        url: 'core/references-setup/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['ReferencesSetupCompletion']
+    }),
+    getEntityTypeSetupCompletions: builder.query<
+      EntityTypeSetupCompletion[],
+      void
+    >({
+      query: () => ({
+        url: `core/entity-type-setup/`
+      }),
+      providesTags: ['EntityTypeSetupCompletion']
+    }),
+    createEntityTypeSetupCompletion: builder.mutation<
+      EntityTypeSetupCompletion,
+      { entity_type: string; user: number }
+    >({
+      query: (body) => ({
+        url: 'core/entity-type-setup/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['EntityTypeSetupCompletion']
     })
   }),
   overrideExisting: true
@@ -151,7 +193,11 @@ export const {
   useCreateCategorySetupCompletionMutation,
   useGetUserMinimalDetailsQuery,
   useLazyGetUserMinimalDetailsQuery,
-  useGetUserMinimalDetailsFromIdQuery
+  useGetUserMinimalDetailsFromIdQuery,
+  useGetReferencesSetupCompletionsQuery,
+  useCreateReferencesSetupCompletionMutation,
+  useGetEntityTypeSetupCompletionsQuery,
+  useCreateEntityTypeSetupCompletionMutation
 } = userApi;
 
 export default userApi;

@@ -51,6 +51,14 @@ export const selectTaskActionById = (id: number) =>
     }
   );
 
+export const selectTaskCompletionFormById = (id: number) =>
+  createSelector(
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+    (forms) => {
+      return forms.data?.byId && forms.data?.byId[id];
+    }
+  );
+
 export const selectNewTaskIds = createSelector(
   tasksApi.endpoints.getAllTasks.select(null as any),
   (tasks) => {
@@ -592,7 +600,7 @@ export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
                 }
 
                 const parentEntityId = taskEntity.parent;
-                if (entities?.includes(parentEntityId)) {
+                if (parentEntityId && entities?.includes(parentEntityId)) {
                   return true;
                 }
 

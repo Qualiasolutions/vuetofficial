@@ -8,12 +8,13 @@ type TaskCompletionFormCreateRequest = {
   ignore?: boolean;
 };
 
-type TaskCompletionForm = {
+export type TaskCompletionForm = {
   recurrence_index: number | null;
   task: number;
   resourcetype: string;
   id: number;
   ignore: boolean;
+  completion_datetime: string;
 };
 
 type TaskActionCompletionFormCreateRequest = {
@@ -172,7 +173,8 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
                 const mockEntry = {
                   ...patch,
                   ignore: !!patch.ignore,
-                  id: mockId
+                  id: mockId,
+                  completion_datetime: new Date().toISOString()
                 };
                 draft.ids.push(mockId);
                 draft.byId[mockId] = mockEntry;
