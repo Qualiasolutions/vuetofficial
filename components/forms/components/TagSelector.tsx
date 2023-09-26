@@ -407,6 +407,7 @@ const EntityAndTagSelectorModal = ({
             title={t('components.tagSelector.createNewEntity')}
             style={styles.createNewButton}
             onPress={() => {
+              onRequestClose();
               navigation.navigate('ContentNavigator', {
                 screen: 'Categories',
                 initial: false
