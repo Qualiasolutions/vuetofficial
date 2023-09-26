@@ -28,6 +28,9 @@ import ValidationCodeInput from 'components/molecules/ValidationCodeInput';
 import { useSecureUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'flex-start'
+  },
   inputLabelWrapper: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
@@ -74,7 +77,7 @@ export default function ForgotPasswordScreen({
     useSecureUpdateUserDetailsMutation();
 
   return (
-    <AlmostWhiteContainerView>
+    <AlmostWhiteContainerView style={styles.container}>
       <PageTitle text={t('screens.forgotPassword.title')} />
       {step === 'NEW_PASSWORD' && (
         <>

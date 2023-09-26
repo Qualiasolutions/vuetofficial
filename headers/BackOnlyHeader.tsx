@@ -4,9 +4,10 @@ import {
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { useThemeColor } from 'components/Themed';
 
 const styles = StyleSheet.create({
   container: {
@@ -44,32 +45,55 @@ export default function BackOnlyHeader(
   );
 }
 
-export function BackOnlyHeaderWithSafeArea(
-  props: NativeStackHeaderProps | BottomTabHeaderProps
-) {
+function BackOnlyHeaderWithSafeAreaBase({
+  style,
+  ...otherProps
+}: (NativeStackHeaderProps | BottomTabHeaderProps) & { style?: ViewStyle }) {
   // This causes the error
   // "Warning: React has detected a change in the order of Hooks called by BottomTabView"
   const statusBarHeight = getStatusBarHeight();
-  const navigationState = props.navigation.getState();
+  const navigationState = otherProps.navigation.getState();
 
   if (navigationState.index === 0) {
     return null;
   }
 
   return (
-    <WhiteView
-      style={[
-        styles.container,
-        styles.safeAreaContainer,
-        { marginTop: statusBarHeight }
-      ]}
-    >
+    <WhiteView style={[style, { marginTop: statusBarHeight }]}>
       <TransparentView style={styles.flexShrink}>
         <HeaderBackButton
-          tintColor={props.options.headerTintColor}
-          onPress={props.navigation.goBack}
+          tintColor={otherProps.options.headerTintColor}
+          onPress={otherProps.navigation.goBack}
         />
       </TransparentView>
     </WhiteView>
+  );
+}
+
+export function BackOnlyHeaderWithSafeArea(
+  props: NativeStackHeaderProps | BottomTabHeaderProps
+) {
+  return (
+    <BackOnlyHeaderWithSafeAreaBase
+      {...props}
+      style={StyleSheet.flatten([styles.container, styles.safeAreaContainer])}
+    />
+  );
+}
+
+export function AlmostWhiteBackOnlyHeaderWithSafeArea(
+  props: NativeStackHeaderProps | BottomTabHeaderProps
+) {
+  const almostWhite = useThemeColor({}, 'almostWhite');
+  return (
+    <BackOnlyHeaderWithSafeAreaBase
+      {...props}
+      style={StyleSheet.flatten([
+        styles.container,
+        {
+          backgroundColor: almostWhite
+        }
+      ])}
+    />
   );
 }
