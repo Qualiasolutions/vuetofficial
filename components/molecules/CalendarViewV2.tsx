@@ -42,12 +42,16 @@ function useStyle() {
 
 const ListedTask = ({
   id,
-  recurrenceIndex
+  recurrenceIndex,
+  actionId
 }: {
   id: number;
   recurrenceIndex: number | null;
+  actionId?: number | null;
 }) => {
-  const task = useSelector(selectScheduledTask({ id, recurrenceIndex }));
+  const task = useSelector(
+    selectScheduledTask({ id, recurrenceIndex, actionId })
+  );
   const styles = useStyle();
   if (!task) {
     return null;
@@ -154,6 +158,7 @@ const CalendarContent = ({
                           id={task.id}
                           recurrenceIndex={task.recurrence_index}
                           key={`${task.id}_${task.recurrence_index}`}
+                          actionId={task.action_id}
                         />
                       ))}
                   </TransparentView>

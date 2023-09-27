@@ -90,7 +90,6 @@ const ALERTABLE_TYPES = [
   'OTHER_ACTIVITY',
   'FOOD_ACTIVITY',
   'TASK',
-  'APPOINTMENT',
   'DUE_DATE'
 ];
 
