@@ -5,7 +5,29 @@ import { Feather } from '@expo/vector-icons';
 import { useThemeColor } from 'components/Themed';
 import { default as Colors } from '../../constants/Colors';
 
-const Search = ({ onChangeText = () => {} }) => {
+const styles = StyleSheet.create({
+  searchView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 53,
+    backgroundColor: Colors.light.lightGrey,
+    borderRadius: 60,
+    marginTop: 10,
+    paddingLeft: 18
+  },
+  textInput: {
+    flex: 1,
+    paddingHorizontal: 20,
+    fontFamily: 'Poppins',
+    fontSize: 16
+  }
+});
+
+type SearchProps = {
+  onChangeText: (val: string) => void;
+};
+
+const Search = ({ onChangeText = () => {} }: SearchProps) => {
   return (
     <View style={styles.searchView}>
       <Feather
@@ -24,21 +46,3 @@ const Search = ({ onChangeText = () => {} }) => {
 };
 
 export default Search;
-
-const styles = StyleSheet.create({
-  searchView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 53,
-    backgroundColor: Colors.light.lightGrey,
-    borderRadius: 60,
-    marginTop: 10,
-    paddingLeft: 18
-  },
-  textInput: {
-    flex: 1,
-    paddingHorizontal: 20,
-    fontFamily: 'Poppins',
-    fontSize: 16
-  }
-});

@@ -213,7 +213,8 @@ export function ListingModal(props: ListingModalProps) {
     itemToName = (item) => item.name,
     onClose = () => {},
     onSelect,
-    ListItemComponent = DefaultListItemComponent
+    ListItemComponent = DefaultListItemComponent,
+    search
   } = props;
 
   const initialMinimisedSettings = useMemo<{ [key: string]: boolean }>(() => {
@@ -225,9 +226,12 @@ export function ListingModal(props: ListingModalProps) {
     }
     return settings;
   }, [sectionSettings]);
+
   const [minimisedSettings, setMinimisedSettings] = useState<{
     [key: string]: boolean;
   }>(initialMinimisedSettings);
+
+  const [searchedText, setSearchedText] = useState('');
 
   useEffect(() => {
     if (visible) bottomSheetRef?.current?.open();
@@ -235,7 +239,14 @@ export function ListingModal(props: ListingModalProps) {
   }, [visible]);
 
   const sections = Object.keys(data).map((sectionName) => {
-    if (data[sectionName].length === 0) return null;
+    const filteredSectionData = search
+      ? data[sectionName].filter(
+          (option) =>
+            searchedText.length >= 2 &&
+            option.name.toLowerCase().includes(searchedText.toLowerCase())
+        )
+      : [];
+    if (filteredSectionData.length === 0) return null;
     const sectionHeader =
       sectionSettings && sectionSettings[sectionName] ? (
         <SafePressable
@@ -271,7 +282,7 @@ export function ListingModal(props: ListingModalProps) {
           </TransparentView>
         </SafePressable>
       ) : null;
-    const memberRows = data[sectionName].map((item) => {
+    const memberRows = filteredSectionData.map((item) => {
       return (
         <SafePressable
           style={listingModalStyles.listItem}
@@ -304,9 +315,9 @@ export function ListingModal(props: ListingModalProps) {
       dragFromTopOnly={true}
       closeOnDragDown={true}
     >
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <WhiteView style={listingModalStyles.bottomContainer}>
-          {/* <Search /> */}
+          {search && <Search onChangeText={setSearchedText} />}
           <SafeAreaView>{sections}</SafeAreaView>
         </WhiteView>
       </ScrollView>
@@ -329,4 +340,5 @@ type ListingModalProps = {
   onClose?: () => void;
   onSelect: (item: any) => void;
   ListItemComponent?: React.ElementType;
+  search?: boolean;
 };

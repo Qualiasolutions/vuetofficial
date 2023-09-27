@@ -2,7 +2,7 @@ import { ModalListing } from 'components/forms/components/MemberSelector';
 import { useThemeColor } from 'components/Themed';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, Pressable, Image } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { UserFullResponse, UserResponse } from 'types/users';
 import MemberCircle from './MemberCircle';
 import { ListingModal } from './Modals';

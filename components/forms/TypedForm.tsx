@@ -819,9 +819,6 @@ export default function TypedForm({
                         [field]: value
                       });
                     }}
-                    listMode={f.listMode || 'MODAL'}
-                    style={textInputStyle}
-                    containerStyle={styles.flex}
                     disabled={
                       f.disabled || (formType === 'UPDATE' && f.disableUpdate)
                     }

@@ -1,58 +1,55 @@
-import DropDown from './DropDown';
 import momentTZ from 'moment-timezone';
-import { ViewStyle } from 'react-native';
+import { ListingModal } from 'components/molecules/Modals';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Text } from 'components/Themed';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const timeZonesList = momentTZ.tz.names();
 
 type Props = {
   value: string;
   onSelectTimezone: (tz: string) => void;
-  listMode: string;
-  style: ViewStyle;
-  containerStyle: ViewStyle;
   disabled?: boolean;
-};
-
-const getTimezoneLabelFromTzName = (tzName: string) => {
-  // Etc/GMT-2 is actually 2 hours ahead i.e. East. This is weirdly counterintuitive
-  const timezoneOffset = parseInt(tzName.split('/GMT')[1]);
-  if (timezoneOffset > 0) {
-    return `GMT-${timezoneOffset}`;
-  } else {
-    return `GMT+${-timezoneOffset}`;
-  }
 };
 
 export default function TimezoneSelect({
   value,
   onSelectTimezone,
-  listMode,
-  style,
-  containerStyle,
   disabled
 }: Props) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const timezoneOptions = timeZonesList.map((tzName) => ({
+    name: tzName,
+    id: tzName,
+    selected: tzName === value
+  }));
+
   return (
-    <DropDown
-      value={value}
-      items={timeZonesList
-        .filter(
-          (tzName) => tzName.includes('/GMT+') || tzName.includes('/GMT-')
-        )
-        .sort(
-          (a, b) => parseInt(a.split('/GMT')[1]) - parseInt(b.split('/GMT')[1])
-        )
-        .map((tzName) => ({
-          label: getTimezoneLabelFromTzName(tzName),
-          value: tzName
-        }))}
-      setFormValues={onSelectTimezone}
-      dropdownPlaceholder="Select"
-      listMode="MODAL"
-      style={style}
-      textInputStyle={{}}
-      containerStyle={containerStyle}
-      allowOther={false}
-      disabled={disabled}
-    />
+    <>
+      <TouchableOpacity
+        onPress={() => {
+          setOpen(true);
+        }}
+        disabled={disabled}
+      >
+        <Text>{value || t('components.timezoneSelect.selectTimezone')}</Text>
+      </TouchableOpacity>
+      <ListingModal
+        data={{
+          timezoneOptions
+        }}
+        visible={open}
+        onSelect={(option) => {
+          onSelectTimezone(option.id);
+          setOpen(false);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
+        search={true}
+      />
+    </>
   );
 }

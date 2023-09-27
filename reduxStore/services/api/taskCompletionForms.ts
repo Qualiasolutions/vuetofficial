@@ -168,8 +168,6 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
           { type: 'TaskCompletionForm' }
         ])) {
           if (endpointName !== 'getTaskCompletionForms') continue;
-          console.log('patch.complete');
-          console.log(patch.complete);
           const patchResult = dispatch(
             taskCompletionFormsApi.util.updateQueryData(
               'getTaskCompletionForms',

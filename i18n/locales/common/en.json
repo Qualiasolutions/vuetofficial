@@ -825,6 +825,9 @@
       "upgradeToPremium": "Upgrade to premium",
       "blurb": "Upgrade to premium to access the full set of Vuet features",
       "upgrade": "Upgrade"
+    },
+    "timezoneSelect": {
+      "selectTimezone": "Select Timezone"
     }
   }
 }
