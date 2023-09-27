@@ -205,6 +205,11 @@ export const selectTasksInDailyRoutines = createSelector(
       if (formattedTaskObjects[date]) {
         for (const taskObj of formattedTaskObjects[date]) {
           if (taskObj.start_datetime && taskObj.end_datetime) {
+            if (!taskObj.routine) {
+              nonRoutineTasks.push(taskObj);
+              continue;
+            }
+
             // In this case the task is a fixed task
             const startTime = new Date(taskObj.start_datetime || '');
             const startDate = dayjs(startTime).format('YYYY-MM-DD');
@@ -217,19 +222,15 @@ export const selectTasksInDailyRoutines = createSelector(
               continue;
             }
 
-            let addedToRoutine = false;
-            for (const routine of dayRoutines) {
-              if (
-                dayjs(taskObj.start_datetime).format('HH:mm:dd') >=
-                  routine.start_time &&
-                dayjs(taskObj.end_datetime).format('HH:mm:dd') <=
-                  routine.end_time
-              ) {
-                routineTasks[routine.id].push(taskObj);
-                addedToRoutine = true;
-              }
-            }
-            if (!addedToRoutine) {
+            const assignedRoutine = routinesData.byId[taskObj.routine];
+            if (
+              dayjs(taskObj.start_datetime).format('HH:mm:dd') >=
+                assignedRoutine.start_time &&
+              dayjs(taskObj.end_datetime).format('HH:mm:dd') <=
+                assignedRoutine.end_time
+            ) {
+              routineTasks[assignedRoutine.id].push(taskObj);
+            } else {
               nonRoutineTasks.push(taskObj);
             }
           } else {
