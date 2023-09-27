@@ -181,7 +181,9 @@ export default function HolidayDetailScreen({
               holidaysToCreate.map((holiday) => ({
                 ...holiday,
                 resourcetype: 'HolidayTask',
-                members: userDetails ? [userDetails.id] : [],
+                members: userDetails
+                  ? userDetails.family.users.map((user) => user.id)
+                  : [],
                 entities: [],
                 type: 'HOLIDAY',
                 tags: ['SOCIAL_INTERESTS__HOLIDAY']
