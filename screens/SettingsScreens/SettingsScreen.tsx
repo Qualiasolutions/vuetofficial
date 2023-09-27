@@ -41,6 +41,13 @@ const SettingsScreen = ({
           style={styles.button}
         />
         <Button
+          title={t('pageTitles.integrations')}
+          onPress={() => {
+            navigation.navigate('Integrations');
+          }}
+          style={styles.button}
+        />
+        <Button
           title={t('pageTitles.personalAssistant')}
           onPress={() => {
             navigation.navigate('PersonalAssistant');

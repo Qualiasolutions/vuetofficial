@@ -207,7 +207,8 @@ const TaskIcon = ({ task }: { task: FixedTaskResponseType }) => {
     FOOD_ACTIVITY: '🍲',
     BIRTHDAY: '🎂',
     ANNIVERSARY: '🍾',
-    HOLIDAY: '🎆'
+    HOLIDAY: '🎆',
+    ICAL_EVENT: '📅'
   };
 
   const icon = (task?.type && iconMappings[task.type]) || '';

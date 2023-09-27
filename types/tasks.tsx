@@ -48,6 +48,7 @@ type TaskType =
   | 'APPOINTMENT'
   | 'DUE_DATE'
   | 'HOLIDAY'
+  | 'ICAL_EVENT'
   | ActivityTaskType
   | TransportTaskType
   | AccommodationTaskType

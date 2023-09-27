@@ -60,6 +60,7 @@ export const vuetApi = createApi({
     'PushToken',
     'Country',
     'Holiday',
+    'ICalIntegration',
     'Friendships',
     'FamilyCategoryViewPermission',
     'PreferredDays',

@@ -31,6 +31,7 @@
     "taskLimits": "Task Limits",
     "flexibleTaskPreferences": "Flexible Tasks",
     "routines": "Routines",
+    "integrations": "Integrations",
     "myPlanningLists": "My Planning Lists",
     "myShoppingLists": "My Shopping & Selling Lists",
     "delegatedLists": "Delegated Lists",
@@ -620,6 +621,10 @@
     "contact": {
       "placeholder": "Let us know what you're thinking",
       "success": "Message sent successfully! We'll get back to you as soon as possible"
+    },
+    "integrations": {
+      "noIntegrations": "No external calendars have been linked to this account",
+      "enterUrl": "Enter the iCal URL to link"
     }
   },
   "navigation": {

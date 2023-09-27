@@ -10,6 +10,10 @@ export default function useHasEditPerms(taskId: number) {
   );
   const task = useSelector(selectTaskById(taskId));
 
+  if (task?.type === 'ICAL_EVENT') {
+    return false;
+  }
+
   if (userDetails && task?.members.includes(userDetails.id)) {
     return true;
   }
