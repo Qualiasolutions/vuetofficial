@@ -1,3 +1,4 @@
+import DropDown from 'components/forms/components/DropDown';
 import { SmallButton } from 'components/molecules/ButtonComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
@@ -15,7 +16,8 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import {
   useCreateICalIntegrationMutation,
   useDeleteICalIntegrationMutation,
-  useGetICalIntegrationsQuery
+  useGetICalIntegrationsQuery,
+  useUpdateICalIntegrationMutation
 } from 'reduxStore/services/api/externalCalendars';
 import { ICalIntegration } from 'types/externalCalendars';
 
@@ -23,31 +25,72 @@ const styles = StyleSheet.create({
   form: { paddingTop: 20, marginBottom: 100 },
   buttonWrapper: { marginTop: 10, flexDirection: 'row' },
   integrationCard: {
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  }
+    marginBottom: 10
+  },
+  integrationCardButton: {
+    marginVertical: 10
+  },
+  integrationCardActions: {}
 });
 
 const IntegrationCard = ({ integration }: { integration: ICalIntegration }) => {
   const { t } = useTranslation();
   const [deleteIntegration, deleteIntegrationResult] =
     useDeleteICalIntegrationMutation();
+  const [updateIntegration, updateIntegrationResult] =
+    useUpdateICalIntegrationMutation();
   return (
     <WhiteBox style={styles.integrationCard}>
       <Text>{integration.ical_name}</Text>
-      {deleteIntegrationResult.isLoading ? (
-        <PaddedSpinner />
-      ) : (
-        <SmallButton
-          title={t('common.delete')}
-          onPress={async () => {
-            await deleteIntegration(integration.id).unwrap();
-          }}
-          disabled={deleteIntegrationResult.isLoading}
-        />
-      )}
+      <TransparentView style={styles.integrationCardActions}>
+        {deleteIntegrationResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <SmallButton
+            title={t('common.delete')}
+            onPress={async () => {
+              await deleteIntegration(integration.id).unwrap();
+            }}
+            disabled={deleteIntegrationResult.isLoading}
+            style={styles.integrationCardButton}
+          />
+        )}
+        {updateIntegrationResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <DropDown
+            value={integration.share_type}
+            items={[
+              {
+                value: 'OFF',
+                label: "Don't share with family"
+              },
+              {
+                value: 'BUSY',
+                label: 'Show as busy'
+              },
+              {
+                value: 'FULL',
+                label: 'Show full details'
+              }
+            ]}
+            setFormValues={async (value) => {
+              try {
+                updateIntegration({
+                  id: integration.id,
+                  share_type: value
+                }).unwrap();
+              } catch {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+            listMode="MODAL"
+          />
+        )}
+      </TransparentView>
     </WhiteBox>
   );
 };
@@ -66,7 +109,7 @@ const IntegrationsList = () => {
   return (
     <>
       {iCalIntegrations.map((integration) => (
-        <IntegrationCard integration={integration} />
+        <IntegrationCard integration={integration} key={integration.id} />
       ))}
     </>
   );

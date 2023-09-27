@@ -1,6 +1,7 @@
 import {
   ICalIntegration,
-  ICalIntegrationCreateRequest
+  ICalIntegrationCreateRequest,
+  ICalIntegrationUpdateRequest
 } from 'types/externalCalendars';
 import { vuetApi } from './api';
 
@@ -30,6 +31,17 @@ const extendedApi = vuetApi.injectEndpoints({
         method: 'DELETE'
       }),
       invalidatesTags: ['ICalIntegration', 'Task']
+    }),
+    updateICalIntegration: builder.mutation<
+      ICalIntegration,
+      ICalIntegrationUpdateRequest
+    >({
+      query: (body) => ({
+        url: `external-calendars/ical-integration/${body.id}/`,
+        method: 'PATCH',
+        body
+      }),
+      invalidatesTags: ['ICalIntegration']
     })
   }),
   overrideExisting: true
@@ -38,5 +50,6 @@ const extendedApi = vuetApi.injectEndpoints({
 export const {
   useGetICalIntegrationsQuery,
   useCreateICalIntegrationMutation,
-  useDeleteICalIntegrationMutation
+  useDeleteICalIntegrationMutation,
+  useUpdateICalIntegrationMutation
 } = extendedApi;

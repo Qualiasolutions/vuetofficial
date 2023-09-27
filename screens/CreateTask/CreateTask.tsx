@@ -70,8 +70,6 @@ export default function CreateTask({
 
   return (
     <WhiteView style={styles.container}>
-      <Search />
-
       <TransparentView style={{ marginTop: 18 }}>
         <TransparentView style={styles.dropDownContainer}>
           <Text>
