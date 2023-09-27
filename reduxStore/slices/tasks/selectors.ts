@@ -85,13 +85,7 @@ export const selectNewTaskIds = createSelector(
   }
 );
 
-const ALERTABLE_TYPES = [
-  'ACTIVITY',
-  'OTHER_ACTIVITY',
-  'FOOD_ACTIVITY',
-  'TASK',
-  'DUE_DATE'
-];
+const ALERTABLE_TYPES = ['TASK', 'DUE_DATE'];
 
 export const selectOverdueTasks = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(null as any),
