@@ -77,14 +77,8 @@ const PageLink = ({
 
 export default function TopNav() {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
-  const { data: userDetails } = useGetUserFullDetails();
-  const whiteColor = useThemeColor({}, 'white');
   const primaryColor = useThemeColor({}, 'primary');
   const { t } = useTranslation();
-
-  const imageSource = userDetails?.presigned_profile_image_url
-    ? { uri: parsePresignedUrl(userDetails.presigned_profile_image_url) }
-    : require('assets/images/icons/user-head.png');
 
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
@@ -113,29 +107,6 @@ export default function TopNav() {
           title={t('pageTitles.overdue')}
         />
       </TransparentView>
-      {/* <TouchableOpacity
-        onPress={() => (navigation as any).navigate('MyAccountNavigator')}
-        style={[
-          styles.drawerPressable,
-          styles.myAccountSize,
-          elevation.elevated,
-          {
-            backgroundColor: whiteColor
-          }
-        ]}
-      >
-        <Image
-          source={imageSource}
-          style={[
-            ...(!userDetails?.presigned_profile_image_url
-              ? [styles.myAccountNullImage]
-              : [styles.myAccountSize]),
-            {
-              backgroundColor: whiteColor
-            }
-          ]}
-        />
-      </TouchableOpacity> */}
     </WhitePaddedView>
   );
 }

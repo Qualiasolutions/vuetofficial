@@ -151,13 +151,7 @@ export default function AddTaskScreen({
     defaultStartTime.setHours(defaultStartTime.getHours() + 1);
 
     const defaultEndTime = new Date(defaultStartTime);
-
-    if (formType === 'TASK') {
-      defaultEndTime.setMinutes(defaultStartTime.getMinutes() + 15);
-    }
-    if (formType === 'APPOINTMENT' || formType === 'ACTIVITY') {
-      defaultEndTime.setHours(defaultStartTime.getHours() + 1);
-    }
+    defaultEndTime.setHours(defaultStartTime.getHours() + 1);
 
     const defaultDuration = 15;
     const dateNow = new Date();
@@ -189,7 +183,7 @@ export default function AddTaskScreen({
         tags: route.params?.tags || []
       }
     };
-  }, [formType, route.params, userDetails]);
+  }, [route.params, userDetails]);
 
   useEffect(() => {
     if (Object.keys(taskFieldValues).length === 0) {

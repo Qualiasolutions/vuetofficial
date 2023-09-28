@@ -9,6 +9,7 @@ export type Alert = {
   type: AlertName;
   user: number;
   task: number;
+  read: boolean;
 };
 
 export type AllAlerts = {
@@ -26,6 +27,7 @@ export type ActionAlert = {
   type: AlertName;
   user: number;
   action: number;
+  read: boolean;
 };
 
 export type AllActionAlerts = {

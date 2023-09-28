@@ -152,22 +152,23 @@ export default function EntityCheckboxes({
         });
 
         const tagCheckbox = infoTag ? (
-          <TransparentView style={styles.entityCheckboxPair} key={infoTag}>
+          <SafePressable
+            style={styles.entityCheckboxPair}
+            key={infoTag}
+            onPress={async () => {
+              if (value.tags.includes(infoTag)) {
+                const newTags = value.tags.filter((tag) => tag !== infoTag);
+                setSelectedTags(newTags);
+              } else {
+                setSelectedTags([...value.tags, infoTag]);
+              }
+            }}
+          >
             <TransparentView style={styles.entityCheckboxLabel}>
               <Text>{t(`tags.${infoTag}`)}</Text>
             </TransparentView>
-            <Checkbox
-              checked={value.tags.includes(infoTag)}
-              onValueChange={async () => {
-                if (value.tags.includes(infoTag)) {
-                  const newTags = value.tags.filter((tag) => tag !== infoTag);
-                  setSelectedTags(newTags);
-                } else {
-                  setSelectedTags([...value.tags, infoTag]);
-                }
-              }}
-            />
-          </TransparentView>
+            <Checkbox checked={value.tags.includes(infoTag)} disabled={true} />
+          </SafePressable>
         ) : null;
 
         const extraTagCheckboxes = extraTags
