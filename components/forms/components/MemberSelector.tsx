@@ -13,18 +13,13 @@ import { useTranslation } from 'react-i18next';
 import SafePressable from 'components/molecules/SafePressable';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import PhoneNumberInput from './PhoneNumberInput';
 import { Button } from 'components/molecules/ButtonComponents';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { Feather } from '@expo/vector-icons';
-import {
-  useGetUserMinimalDetailsFromIdQuery,
-  useLazyGetUserMinimalDetailsQuery
-} from 'reduxStore/services/api/user';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { useGetUserMinimalDetailsFromIdQuery } from 'reduxStore/services/api/user';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import PhoneNumberMemberFinder from 'components/molecules/PhoneNumberMemberFinder';
 
 const styles = StyleSheet.create({
   addMemberButton: {
@@ -56,16 +51,6 @@ const styles = StyleSheet.create({
     padding: 23,
     justifyContent: 'space-between'
   },
-  phoneNumberInputWrapper: {
-    marginTop: 30
-  },
-  phoneNumberInput: { flex: 1, marginRight: 10 },
-  phoneNumberInputPair: {
-    flexDirection: 'row'
-  },
-  phoneNumberAddButton: {
-    alignItems: 'flex-end'
-  },
   externalNumberListing: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -85,7 +70,8 @@ const styles = StyleSheet.create({
   },
   externalMembersList: { marginTop: 30 },
   selectedMemberListing: { marginTop: 11 },
-  cancelButton: { marginHorizontal: 10 }
+  cancelButton: { marginHorizontal: 10 },
+  addExternalWrapper: { marginTop: 30 }
 });
 
 export function ModalListing({
@@ -137,14 +123,9 @@ export default function MemberSelector({
 }) {
   const bottomSheetRef = useRef<RBSheet>(null);
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
-  const [newExternalNumber, setNewExternalNumber] = useState('');
-  const [addingNew, setAddingNew] = useState(false);
   const { t } = useTranslation();
 
   const { data: userDetails } = useGetUserFullDetails();
-
-  const [getMinimalDetails, getMinimalDetailsResult, lastMinimalDetails] =
-    useLazyGetUserMinimalDetailsQuery();
 
   const onSelectMember = (member: UserResponse) => {
     if (values.includes(member.id)) {
@@ -290,71 +271,14 @@ export default function MemberSelector({
                       </SafePressable>
                     </TransparentView>
                   ))}
-                <TransparentView style={styles.phoneNumberInputWrapper}>
-                  {addingNew ? (
-                    <>
-                      <TransparentView style={styles.phoneNumberInputPair}>
-                        <PhoneNumberInput
-                          onChangeFormattedText={(newPhoneNumber) => {
-                            setNewExternalNumber(newPhoneNumber);
-                          }}
-                          containerStyle={styles.phoneNumberInput}
-                        />
-                        <TransparentView style={styles.phoneNumberAddButton}>
-                          {getMinimalDetailsResult.isLoading ? (
-                            <PaddedSpinner />
-                          ) : (
-                            <>
-                              <Button
-                                onPress={async () => {
-                                  try {
-                                    const res = await getMinimalDetails(
-                                      newExternalNumber
-                                    ).unwrap();
-                                    if (!values.includes(res.id)) {
-                                      onValueChange([...values, res.id]);
-                                    }
-                                    // TODO - we want to put the
-                                  } catch (err) {
-                                    // This doesn't show under modal
-                                    Toast.show({
-                                      type: 'error',
-                                      text1: t(
-                                        'components.memberSelector.noMemberError'
-                                      )
-                                    });
-                                  }
-                                }}
-                                title={t('common.add')}
-                              />
-                            </>
-                          )}
-                        </TransparentView>
-                      </TransparentView>
-                      <>
-                        <TouchableOpacity
-                          onPress={() => setAddingNew(false)}
-                          style={styles.cancelButton}
-                        >
-                          <PrimaryText text={t('common.cancel')} />
-                        </TouchableOpacity>
-                        {getMinimalDetailsResult.isError && (
-                          <TransparentView style={styles.phoneNumberAddButton}>
-                            <Feather name="x" color="red" size={40} />
-                            <PrimaryText
-                              text={t(
-                                'components.memberSelector.noMemberError'
-                              )}
-                            />
-                          </TransparentView>
-                        )}
-                      </>
-                    </>
-                  ) : (
-                    <SafePressable onPress={() => setAddingNew(true)}>
-                      <PrimaryText text={t('common.addNew')} />
-                    </SafePressable>
-                  )}
+                <TransparentView style={styles.addExternalWrapper}>
+                  <PhoneNumberMemberFinder
+                    onFindId={(newId) => {
+                      if (!values.includes(newId)) {
+                        onValueChange([...values, newId]);
+                      }
+                    }}
+                  />
                 </TransparentView>
               </TransparentView>
             </SafeAreaView>

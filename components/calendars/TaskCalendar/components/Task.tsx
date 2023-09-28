@@ -261,6 +261,7 @@ function Task({
   const isComplete = !!scheduledTask?.is_complete;
 
   const isCompleteTextColor = useThemeColor({}, 'grey');
+  const borderColor = useThemeColor({}, 'grey');
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -290,7 +291,24 @@ function Task({
 
   return (
     <>
-      <TransparentView style={[styles.outerContainer, { height: ITEM_HEIGHT }]}>
+      <TouchableOpacity
+        style={[styles.outerContainer, { height: ITEM_HEIGHT, borderColor }]}
+        onPress={() => {
+          if (
+            !isEntity &&
+            scheduledTask &&
+            scheduledTask.type !== 'ICAL_EVENT'
+          ) {
+            dispatch(
+              setTaskToAction({
+                taskId: scheduledTask.id,
+                recurrenceIndex: scheduledTask.recurrence_index,
+                actionId: scheduledTask.action_id
+              })
+            );
+          }
+        }}
+      >
         <TransparentView style={[styles.containerWrapper]}>
           <TransparentView style={styles.container}>
             <TimeText
@@ -319,21 +337,9 @@ function Task({
             </TransparentView>
           </TransparentView>
           {!isEntity && hasEditPerms && (
-            <TouchableOpacity
-              onPress={() => {
-                if (scheduledTask) {
-                  dispatch(
-                    setTaskToAction({
-                      taskId: scheduledTask.id,
-                      recurrenceIndex: scheduledTask.recurrence_index,
-                      actionId: scheduledTask.action_id
-                    })
-                  );
-                }
-              }}
-            >
+            <TransparentView>
               <Feather name="more-horizontal" size={30} />
-            </TouchableOpacity>
+            </TransparentView>
           )}
           {[
             'SCHOOL_TERM',
@@ -395,7 +401,7 @@ function Task({
           </TransparentScrollView>
           <UserTags memberIds={taskOrEntity.members} />
         </TransparentView>
-      </TransparentView>
+      </TouchableOpacity>
     </>
   );
 }

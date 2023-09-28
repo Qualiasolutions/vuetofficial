@@ -46,6 +46,10 @@ export const selectHasUnseenActivity = createSelector(
     const latestTask = tasksData?.byId[newTaskIds[0]];
     const latestEntity = entitiesData?.byId[newEntityIds[0]];
 
+    if (lastActivityView.isLoading) {
+      return false;
+    }
+
     if (!lastActivityViewData) {
       return !!(latestForm || latestTask || latestEntity);
     }

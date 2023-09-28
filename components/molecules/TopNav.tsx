@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectHasUnreadAlert } from 'reduxStore/slices/alerts/selectors';
 import { selectFilteredOverdueTasks } from 'reduxStore/slices/tasks/selectors';
-import { useGetLastActivityViewQuery } from 'reduxStore/services/api/user';
 import { selectHasUnseenActivity } from 'reduxStore/slices/misc/selectors';
 
 const styles = StyleSheet.create({

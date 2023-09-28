@@ -38,6 +38,8 @@ import {
   useGetAllEntitiesQuery,
   useGetMemberEntitiesQuery
 } from 'reduxStore/services/api/entities';
+import { useGetLastActivityViewQuery } from 'reduxStore/services/api/user';
+
 import { useGetAllTagsQuery } from 'reduxStore/services/api/tags';
 import MessagesNavigator from './MessagesNavigator';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
@@ -130,6 +132,9 @@ export function BottomTabNavigator({
     skip: !userDetails?.user_id
   });
   useGetCategorySetupCompletionsQuery(undefined, {
+    skip: !userDetails?.user_id
+  });
+  useGetLastActivityViewQuery(undefined, {
     skip: !userDetails?.user_id
   });
 

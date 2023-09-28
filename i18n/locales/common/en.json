@@ -758,10 +758,14 @@
       "delegationButton": {
         "delegate": "Delegate",
         "delegations": "Delegations",
-        "delegateForLists": "Delegate for the following lists:",
-        "delegateTo": "Delegate To"
+        "delegateTo": "Delegate To",
+        "delegateToSomeoneElse": "Delegate to someone else"
       }
     }, 
+    "delegatedLists": {
+      "receivedDelegations": "Lists Delegated To Me",
+      "sentDelegations": "Lists Delegated By Me"
+    },
     "entityPages": {
       "car": {
         "addingDueDate": "Adding {{dueDateType}} due date",

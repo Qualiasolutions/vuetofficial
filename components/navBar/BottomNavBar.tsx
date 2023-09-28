@@ -242,22 +242,16 @@ export default function BottomNavBar({
                     type RouteParams = ContentTabParamList['EntityList'];
                     const entityTypes = (currentScreenParams as RouteParams)
                       .entityTypes;
-                    if (entityTypes.length > 1) {
-                      setEntityTypeOptions(
-                        (currentScreenParams as RouteParams).entityTypes
-                      );
-                      setShowingEntityTypeSelector(true);
+
+                    if (
+                      entityTypes[0] === 'Holiday' &&
+                      holidayEntities.length === 0
+                    ) {
+                      navigation.navigate('HolidayList');
                     } else {
-                      if (
-                        entityTypes[0] === 'Holiday' &&
-                        holidayEntities.length === 0
-                      ) {
-                        navigation.navigate('HolidayList');
-                      } else {
-                        navigation.navigate('AddEntity', {
-                          entityTypes: entityTypes[0]
-                        });
-                      }
+                      navigation.navigate('AddEntity', {
+                        entityTypes: entityTypes[0]
+                      });
                     }
                   } else if (currentScreen === 'HolidayDates') {
                     navigation.navigate('AddHolidayTask');

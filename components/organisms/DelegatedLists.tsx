@@ -1,7 +1,8 @@
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
   TransparentPaddedView,
-  TransparentView
+  TransparentView,
+  WhiteBox
 } from 'components/molecules/ViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import {
@@ -16,10 +17,15 @@ import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponen
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useTranslation } from 'react-i18next';
+import StoreDelegations from 'components/molecules/StoreDelegations';
 
 const styles = StyleSheet.create({
   receivedDelegation: {
     marginBottom: 20
+  },
+  delegationTypeHeading: {
+    fontSize: 22,
+    marginBottom: 6
   }
 });
 
@@ -81,6 +87,7 @@ const ReceivedDelegation = ({
 export default function DelegatedLists() {
   const { data: delegations } = useGetAllStoreDelegationsQuery();
   const { data: userDetails } = useGetUserFullDetails();
+  const { t } = useTranslation();
 
   if (!delegations || !userDetails) {
     return <FullPageSpinner />;
@@ -97,13 +104,37 @@ export default function DelegatedLists() {
       }
     });
 
+  const delegatedStores = delegations.ids
+    .filter((id) => delegations.byId[id].delegator === userDetails.id)
+    .map((id) => delegations.byId[id].store);
+
+  const uniqueDelegatedStores = Array.from(new Set(delegatedStores));
+
   return (
     <WhiteFullPageScrollView>
-      <TransparentPaddedView>
-        {receivedDelegations.map((delegation) => (
-          <ReceivedDelegation delegation={delegation} key={delegation.id} />
-        ))}
-      </TransparentPaddedView>
+      {receivedDelegations.length > 0 && (
+        <TransparentPaddedView>
+          <Text style={styles.delegationTypeHeading}>
+            {t('components.delegatedLists.receivedDelegations')}
+          </Text>
+          {receivedDelegations.map((delegation) => (
+            <ReceivedDelegation delegation={delegation} key={delegation.id} />
+          ))}
+        </TransparentPaddedView>
+      )}
+
+      {delegatedStores.length > 0 && (
+        <TransparentPaddedView>
+          <Text style={styles.delegationTypeHeading}>
+            {t('components.delegatedLists.sentDelegations')}
+          </Text>
+          {uniqueDelegatedStores.map((storeId) => (
+            <WhiteBox key={storeId}>
+              <StoreDelegations storeId={storeId} />
+            </WhiteBox>
+          ))}
+        </TransparentPaddedView>
+      )}
     </WhiteFullPageScrollView>
   );
 }
