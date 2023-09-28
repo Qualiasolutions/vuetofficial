@@ -26,16 +26,12 @@ import ListItemView from 'components/molecules/ListItemView';
 import AddListItemInputPair from 'components/molecules/AddListItemInputPair';
 import ShoppingStoreHeader from 'components/molecules/ShoppingStoreHeader';
 import StoreDelegationButton from 'components/molecules/StoreDelegationButton';
+import { Feather } from '@expo/vector-icons';
+import { Text } from 'components/Themed';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
-  categoryHeader: { fontSize: 22, marginRight: 20 },
-  categoryHeaderSection: {
-    marginBottom: 10,
-    flexDirection: 'row'
-  },
-  listHeader: { fontSize: 18, marginRight: 10 },
-  listHeaderSection: { flexDirection: 'row', alignItems: 'center' },
   listBox: { marginBottom: 20 },
   sublists: { paddingLeft: 10 },
   sublistView: { marginBottom: 20 },
@@ -43,7 +39,15 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   addListButtonWrapper: { marginBottom: 10, flexDirection: 'row' },
-  groupByStoreButton: { paddingVertical: 5, marginHorizontal: 5 }
+  groupByStoreButton: { paddingVertical: 5, marginHorizontal: 5 },
+  listDropdownButton: { flexDirection: 'row', marginLeft: 20 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  delegationButtonWrapper: {
+    marginBottom: 4
+  }
 });
 
 const ShoppingListView = ({ list }: { list: ShoppingList }) => {
@@ -52,6 +56,7 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
 
   const [updateList, updateListResult] = useUpdateShoppingListMutation();
   const [editingMembers, setEditingMembers] = useState(false);
+  const [showItems, setShowItems] = useState(false);
 
   const [newMembers, setNewMembers] = useState(list.members);
   const { t } = useTranslation();
@@ -66,13 +71,36 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
 
   return (
     <WhiteBox style={styles.listBox}>
-      <PlanningListHeader list={list} isShoppingList={true} />
-      <TransparentView style={styles.sublists}>
-        {items.map((itemId) => (
-          <ListItemView key={itemId} item={allItems.byId[itemId]} />
-        ))}
-        <AddListItemInputPair list={list.id} isShoppingList={true} />
+      <TransparentView style={styles.header}>
+        <PlanningListHeader list={list} isShoppingList={true} />
+        {
+          <TouchableOpacity
+            onPress={() => {
+              setShowItems(!showItems);
+            }}
+            style={styles.listDropdownButton}
+          >
+            <Feather
+              name={showItems ? 'chevron-up' : 'chevron-down'}
+              size={25}
+            />
+            {!showItems && (
+              <Text>
+                {items.length}{' '}
+                {items.length === 1 ? t('common.item') : t('common.items')}
+              </Text>
+            )}
+          </TouchableOpacity>
+        }
       </TransparentView>
+      {showItems && (
+        <TransparentView style={styles.sublists}>
+          {items.map((itemId) => (
+            <ListItemView key={itemId} item={allItems.byId[itemId]} />
+          ))}
+          <AddListItemInputPair list={list.id} isShoppingList={true} />
+        </TransparentView>
+      )}
       <SafePressable
         onPress={() => {
           setEditingMembers(true);
@@ -115,6 +143,8 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
 const ShoppingStoreView = ({ store }: { store: ShoppingListStore }) => {
   const { data: allItems, isLoading: isLoadingItems } =
     useGetAllShoppingListItemsQuery();
+  const [showItems, setShowItems] = useState(false);
+  const { t } = useTranslation();
 
   const isLoading = isLoadingItems || !allItems;
 
@@ -130,13 +160,38 @@ const ShoppingStoreView = ({ store }: { store: ShoppingListStore }) => {
 
   return (
     <WhiteBox style={styles.listBox}>
-      <ShoppingStoreHeader store={store} />
-      <StoreDelegationButton storeId={store.id} />
-      <TransparentView style={styles.sublists}>
-        {items.map((itemId) => (
-          <ListItemView key={itemId} item={allItems.byId[itemId]} />
-        ))}
+      <TransparentView style={styles.header}>
+        <ShoppingStoreHeader store={store} />
+        {
+          <TouchableOpacity
+            onPress={() => {
+              setShowItems(!showItems);
+            }}
+            style={styles.listDropdownButton}
+          >
+            <Feather
+              name={showItems ? 'chevron-up' : 'chevron-down'}
+              size={25}
+            />
+            {!showItems && (
+              <Text>
+                {items.length}{' '}
+                {items.length === 1 ? t('common.item') : t('common.items')}
+              </Text>
+            )}
+          </TouchableOpacity>
+        }
       </TransparentView>
+      <TransparentView style={styles.delegationButtonWrapper}>
+        <StoreDelegationButton storeId={store.id} />
+      </TransparentView>
+      {showItems && (
+        <TransparentView style={styles.sublists}>
+          {items.map((itemId) => (
+            <ListItemView key={itemId} item={allItems.byId[itemId]} />
+          ))}
+        </TransparentView>
+      )}
     </WhiteBox>
   );
 };

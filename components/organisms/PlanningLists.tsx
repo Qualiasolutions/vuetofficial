@@ -25,12 +25,22 @@ import AddListButton from 'components/molecules/AddListButton';
 import AddSublistInputPair from 'components/molecules/AddSublistInputPair';
 import SublistView from 'components/molecules/SublistView';
 import PlanningListHeader from 'components/molecules/PlanningListHeader';
+import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
+import { useSelector } from 'react-redux';
+import { Feather } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
   categoryHeader: { fontSize: 20, marginRight: 20 },
   categoryHeaderSection: {
     marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  categoryHeaderLeft: {
+    flexDirection: 'row'
+  },
+  listDropdownButton: {
     flexDirection: 'row'
   },
   listHeader: { fontSize: 18, marginRight: 10 },
@@ -116,6 +126,58 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
   );
 };
 
+const CategoryPlanningLists = ({ categoryId }: { categoryId: number }) => {
+  const { data: planningLists, isLoading: isLoadingPlanningLists } =
+    useGetAllPlanningListsQuery();
+  const category = useSelector(selectCategoryById(categoryId));
+  const { t } = useTranslation();
+  const [showLists, setShowLists] = useState(false);
+
+  if (!planningLists || !category) {
+    return null;
+  }
+
+  return (
+    <TransparentPaddedView>
+      <TransparentView style={styles.categoryHeaderSection}>
+        <TransparentView style={styles.categoryHeaderLeft}>
+          <Text style={styles.categoryHeader}>
+            {t(`categories.${category.name}`)}
+          </Text>
+          {planningLists.byCategory[category.id] && (
+            <SafePressable
+              onPress={() => {
+                setShowLists(!showLists);
+              }}
+              style={styles.listDropdownButton}
+            >
+              <Feather
+                name={showLists ? 'chevron-up' : 'chevron-down'}
+                size={25}
+              />
+              {!showLists && (
+                <Text>
+                  {planningLists.byCategory[category.id].length}{' '}
+                  {planningLists.byCategory[category.id].length > 1
+                    ? t('common.lists')
+                    : t('common.list')}
+                </Text>
+              )}
+            </SafePressable>
+          )}
+        </TransparentView>
+        <AddListButton category={category.id} />
+      </TransparentView>
+      {showLists &&
+        planningLists.byCategory[category.id] &&
+        planningLists.byCategory[category.id].map((listId) => {
+          const list = planningLists.byId[listId];
+          return <PlanningListView list={list} key={listId} />;
+        })}
+    </TransparentPaddedView>
+  );
+};
+
 export default function PlanningLists() {
   const { data: planningLists, isLoading: isLoadingPlanningLists } =
     useGetAllPlanningListsQuery();
@@ -135,19 +197,7 @@ export default function PlanningLists() {
   }
 
   const categoryViews = Object.values(allCategories.byId).map((category) => (
-    <TransparentPaddedView key={category.id}>
-      <TransparentView style={styles.categoryHeaderSection}>
-        <Text style={styles.categoryHeader}>
-          {t(`categories.${category.name}`)}
-        </Text>
-        <AddListButton category={category.id} />
-      </TransparentView>
-      {planningLists.byCategory[category.id] &&
-        planningLists.byCategory[category.id].map((listId) => {
-          const list = planningLists.byId[listId];
-          return <PlanningListView list={list} key={listId} />;
-        })}
-    </TransparentPaddedView>
+    <CategoryPlanningLists categoryId={category.id} key={category.id} />
   ));
 
   return (

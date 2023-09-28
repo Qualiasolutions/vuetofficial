@@ -415,6 +415,10 @@
     "pending": "pending",
     "markDone": "Mark as done",
     "ignore": "Ignore",
+    "list": "List",
+    "lists": "Lists",
+    "item": "Item",
+    "items": "Items",
     "emailAddress": "Email address",
     "errors": {
       "generic": "Oops, something went wrong. Please try again later.",
