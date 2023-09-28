@@ -22,8 +22,25 @@ export default function CategoryCheckboxes({
 }) {
   const { t } = useTranslation();
   const { data: allCategories } = useGetAllCategoriesQuery();
+
+  if (!allCategories) {
+    return null;
+  }
+
   return (
     <>
+      <SafePressable
+        style={styles.listItem}
+        onPress={() => {
+          onChange(allCategories.ids);
+        }}
+      >
+        <Text bold={true}>{t(`common.selectAll`)}</Text>
+        <Checkbox
+          checked={value.length === allCategories?.ids.length}
+          disabled={true}
+        />
+      </SafePressable>
       {allCategories?.ids.map((id) => (
         <SafePressable
           key={id}
