@@ -1,7 +1,9 @@
 // import { Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { Image } from 'components/molecules/ImageComponents';
 import { Modal } from 'components/molecules/Modals';
+import SafePressable from 'components/molecules/SafePressable';
 // import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { PrimaryText } from 'components/molecules/TextComponents';
@@ -10,21 +12,26 @@ import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 // import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
-// import { Text } from 'components/Themed';
+import { Text } from 'components/Themed';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  setFilteredCategories,
   // setFilteredEntities,
   // setFilteredTags,
   setFilteredUsers
 } from 'reduxStore/slices/calendars/actions';
 import {
+  selectFilteredCategories,
   // selectFilteredEntities,
   // selectFilteredTags,
   selectFilteredUsers
 } from 'reduxStore/slices/calendars/selectors';
+import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
+import CategoryCheckboxes from 'components/organisms/CategoryCheckboxes';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 
 const styles = StyleSheet.create({
   modal: {
@@ -98,6 +105,48 @@ const UserFilterSelector = ({ onApply }: { onApply: () => void }) => {
   );
 };
 
+const CategoryFilterSelector = ({ onApply }: { onApply: () => void }) => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const filteredCategories = useSelector(selectFilteredCategories);
+  const [newFilteredCategories, setNewFilteredCategories] = useState<number[]>([
+    ...(filteredCategories || [])
+  ]);
+  const { data: allCategories } = useGetAllCategoriesQuery();
+
+  const setFilteredCategoryIds = (categories: number[]) => {
+    dispatch(setFilteredCategories({ categories }));
+  };
+
+  useEffect(() => {
+    if (allCategories && newFilteredCategories.length === 0) {
+      setNewFilteredCategories(allCategories.ids);
+    }
+  }, [newFilteredCategories, allCategories]);
+
+  return (
+    <TransparentView style={styles.checkboxContainer}>
+      <TransparentScrollView>
+        <CategoryCheckboxes
+          value={newFilteredCategories}
+          onChange={setNewFilteredCategories}
+        />
+      </TransparentScrollView>
+      <TransparentView style={styles.buttonWrapper}>
+        <Button
+          title={t('common.apply')}
+          onPress={() => {
+            setFilteredCategoryIds(newFilteredCategories);
+            onApply();
+          }}
+          style={styles.userFiltersApplyButton}
+        />
+      </TransparentView>
+    </TransparentView>
+  );
+};
+
 // const EntityFilterSelector = () => {
 //   const { t } = useTranslation();
 //   const dispatch = useDispatch();
@@ -150,14 +199,15 @@ const FiltersModal = ({
   visible: boolean;
   onRequestClose: () => void;
 }) => {
-  // const { t } = useTranslation();
-  // const filteredUsers = useSelector(selectFilteredUsers);
+  const { t } = useTranslation();
+  const filteredUsers = useSelector(selectFilteredUsers);
+  const filteredCategories = useSelector(selectFilteredCategories);
   // const filteredEntities = useSelector(selectFilteredEntities);
   // const filteredTags = useSelector(selectFilteredTags);
 
-  // const [shownFilters, setShownFilters] = useState<'' | 'USERS' | 'ENTITIES'>(
-  //   ''
-  // );
+  const [shownFilters, setShownFilters] = useState<
+    '' | 'USERS' | 'ENTITIES' | 'CATEGORIES'
+  >('');
   return (
     <Modal
       visible={visible}
@@ -165,7 +215,7 @@ const FiltersModal = ({
       boxStyle={styles.modal}
     >
       <TransparentView>
-        {/* <SafePressable
+        <SafePressable
           onPress={() =>
             setShownFilters(shownFilters === 'USERS' ? '' : 'USERS')
           }
@@ -182,8 +232,45 @@ const FiltersModal = ({
             size={25}
           />
         </SafePressable>
-        {shownFilters === 'USERS' && <UserFilterSelector />} */}
-        <UserFilterSelector onApply={onRequestClose} />
+        {shownFilters === 'USERS' && (
+          <UserFilterSelector
+            onApply={() => {
+              setShownFilters('');
+              onRequestClose();
+            }}
+          />
+        )}
+      </TransparentView>
+      <TransparentView style={styles.entitiesSelector}>
+        <SafePressable onPress={() => setShownFilters('CATEGORIES')}>
+          <SafePressable
+            onPress={() =>
+              setShownFilters(shownFilters === 'CATEGORIES' ? '' : 'CATEGORIES')
+            }
+            style={styles.filterTypeHeader}
+          >
+            <Text style={styles.userFiltersTitle}>
+              {t('filters.categoryFilters')}
+              {filteredCategories && filteredCategories.length > 0
+                ? ` (${filteredCategories.length})`
+                : ''}
+            </Text>
+            <Feather
+              name={
+                shownFilters === 'CATEGORIES' ? 'chevron-up' : 'chevron-down'
+              }
+              size={25}
+            />
+          </SafePressable>
+        </SafePressable>
+        {shownFilters === 'CATEGORIES' && (
+          <CategoryFilterSelector
+            onApply={() => {
+              setShownFilters('');
+              onRequestClose();
+            }}
+          />
+        )}
       </TransparentView>
       {/* <TransparentView style={styles.entitiesSelector}>
         <SafePressable onPress={() => setShownFilters('ENTITIES')}>

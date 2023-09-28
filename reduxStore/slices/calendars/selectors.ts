@@ -37,6 +37,11 @@ export const selectFilteredTags = createSelector(
   (calendar: CalendarState | undefined) => calendar?.data?.filteredTags
 );
 
+export const selectFilteredCategories = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.data?.filteredCategories
+);
+
 export const selectTaskToAction = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.data?.taskToAction

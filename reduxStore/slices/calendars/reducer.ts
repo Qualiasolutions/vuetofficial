@@ -9,6 +9,7 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     filteredUsers: [],
     filteredEntities: [],
     filteredTags: [],
+    filteredCategories: [],
     taskToAction: null
   },
   ui: {
@@ -78,6 +79,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         data: {
           ...state.data,
           filteredTags: payload.tags
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setFilteredCategories,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          filteredCategories: payload.categories
         }
       };
     }

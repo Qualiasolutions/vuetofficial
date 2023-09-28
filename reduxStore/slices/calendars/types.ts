@@ -3,6 +3,7 @@ export interface CalendarState {
     filteredUsers: number[];
     filteredEntities: number[];
     filteredTags: string[];
+    filteredCategories: number[];
     taskToAction: {
       taskId: number;
       recurrenceIndex: number | null;

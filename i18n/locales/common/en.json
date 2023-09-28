@@ -351,7 +351,8 @@
   },
   "filters": {
     "userFilters": "User filters",
-    "entityFilters": "Entity filters"
+    "entityFilters": "Entity filters",
+    "categoryFilters": "Category filters"
   },
   "common": {
     "start": "Start",

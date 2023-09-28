@@ -22,6 +22,12 @@ export const setFilteredTags = createAction('@calendars/setFilteredTags')<{
   tags: string[];
 }>();
 
+export const setFilteredCategories = createAction(
+  '@calendars/setFilteredCategories'
+)<{
+  categories: number[];
+}>();
+
 export const setTaskToAction = createAction('@calendars/setTaskToAction')<{
   taskId: number;
   recurrenceIndex: number | null;

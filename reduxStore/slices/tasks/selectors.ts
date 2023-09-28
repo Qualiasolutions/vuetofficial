@@ -29,11 +29,20 @@ import {
   formatTasksPerDate
 } from 'utils/formatTasksAndPeriods';
 import {
+  selectFilteredCategories,
   selectFilteredEntities,
   selectFilteredTags,
   selectFilteredUsers
 } from '../calendars/selectors';
 import { selectEntitiesByEntityTypes } from '../entities/selectors';
+import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
+
+const TAG_TO_CATEGORY: { [key: string]: CategoryName } = {
+  ...INFO_CATEGORY_TAGS,
+  SOCIAL_INTERESTS__BIRTHDAY: 'SOCIAL_INTERESTS',
+  SOCIAL_INTERESTS__ANNIVERSARY: 'SOCIAL_INTERESTS',
+  SOCIAL_INTERESTS__HOLIDAY: 'SOCIAL_INTERESTS'
+};
 
 export const selectTaskById = (id: number) =>
   createSelector(tasksApi.endpoints.getAllTasks.select(), (tasks) => {
@@ -370,9 +379,17 @@ export const selectScheduledTaskIdsByEntityTypes = (
 
 export const selectFilteredScheduledTaskIdsByDate = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(),
+  entitiesApi.endpoints.getAllEntities.select(),
+  vuetApi.endpoints.getAllCategories.select(),
   selectFilteredUsers,
-  (scheduledTasks, users) => {
+  selectFilteredCategories,
+  (scheduledTasks, allEntities, allCategories, users, categories) => {
+    const entitiesData = allEntities.data;
+    const categoriesData = allCategories.data;
     if (!scheduledTasks.data) {
+      return {};
+    }
+    if (!entitiesData || !categoriesData) {
       return {};
     }
 
@@ -392,9 +409,21 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
         .filter(isTask)
         .filter(
           (task) =>
-            !users ||
-            users.length === 0 ||
-            task.members.some((member) => users?.includes(member))
+            (!users ||
+              users.length === 0 ||
+              task.members.some((member) => users?.includes(member))) &&
+            (!categories ||
+              categories.length === 0 ||
+              categories.length === categoriesData.ids.length ||
+              task.entities.some((entityId) => {
+                const entity = entitiesData.byId[entityId];
+                return entity && categories.includes(entity.category);
+              }) ||
+              task.tags.some((tagName) => {
+                const tagCategoryName = TAG_TO_CATEGORY[tagName];
+                const categoryId = categoriesData.byName[tagCategoryName]?.id;
+                return categoryId && categories.includes(categoryId);
+              }))
         ) || [];
 
     const formatted = formatTasksPerDate(filteredTasks);
