@@ -160,3 +160,9 @@ export type LinkListSetupCompletion = {
   list_name: string;
   user: number;
 };
+
+export type LastActivityView = {
+  id: number;
+  timestamp: string;
+  user: number;
+};

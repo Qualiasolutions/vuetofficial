@@ -6,6 +6,7 @@ import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { t } from 'i18next';
+import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
@@ -15,10 +16,16 @@ import {
 } from 'reduxStore/services/api/taskCompletionForms';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import {
+  useCreateLastActivityViewMutation,
+  useGetLastActivityViewQuery,
+  useUpdateLastActivityViewMutation
+} from 'reduxStore/services/api/user';
+import {
   selectEntityById,
   selectNewEntityIds,
   selectNewTaskCompletionFormIds
 } from 'reduxStore/slices/entities/selectors';
+import { selectHasUnseenActivity } from 'reduxStore/slices/misc/selectors';
 import {
   selectNewTaskIds,
   selectTaskById,
@@ -122,9 +129,16 @@ const isTaskCompletionForm = (
 };
 
 export default function NewItemsList() {
+  const { data: lastActivityView, isLoading: isLoadingLastActivity } =
+    useGetLastActivityViewQuery();
+  const [updateLastActivityView] = useUpdateLastActivityViewMutation();
+  const [createLastActivityView] = useCreateLastActivityViewMutation();
+  const { data: userDetails } = useGetUserFullDetails();
+
   const newEntityIds = useSelector(selectNewEntityIds);
   const newTaskIds = useSelector(selectNewTaskIds);
   const newTaskCompletionFormIds = useSelector(selectNewTaskCompletionFormIds);
+  const hasUnseenActivity = useSelector(selectHasUnseenActivity);
 
   const { data: allEntities, isLoading: isLoadingEntities } =
     useGetAllEntitiesQuery();
@@ -133,6 +147,23 @@ export default function NewItemsList() {
     data: allTaskCompletionForms,
     isLoading: isLoadingTaskCompletionForms
   } = useGetTaskCompletionFormsQuery();
+
+  useEffect(() => {
+    if (hasUnseenActivity && userDetails && !isLoadingLastActivity) {
+      if (lastActivityView?.id) {
+        updateLastActivityView({ id: lastActivityView.id });
+      } else {
+        createLastActivityView({ user: userDetails.id });
+      }
+    }
+  }, [
+    userDetails,
+    isLoadingLastActivity,
+    updateLastActivityView,
+    createLastActivityView,
+    lastActivityView?.id,
+    hasUnseenActivity
+  ]);
 
   const isLoading =
     isLoadingEntities || isLoadingTasks || isLoadingTaskCompletionForms;
@@ -177,6 +208,7 @@ export default function NewItemsList() {
 
     return timeA < timeB ? 1 : -1;
   });
+
   return (
     <WhiteFullPageScrollView>
       <TransparentPaddedView style={listStyles.container}>

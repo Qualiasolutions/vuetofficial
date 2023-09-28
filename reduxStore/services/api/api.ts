@@ -68,6 +68,7 @@ export const vuetApi = createApi({
     'Reference',
     'Routine',
     'Tag',
+    'LastActivityView',
     'Message',
     'PlanningList',
     'PlanningSublist',

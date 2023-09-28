@@ -44,11 +44,6 @@ export const selectHasUnreadAlert = createSelector(
     const alertsData = alerts?.data;
     const actionAlertsData = actionAlerts?.data;
 
-    console.log('alertsData');
-    console.log(alertsData);
-    console.log('actionAlertsData');
-    console.log(actionAlertsData);
-
     if (!alertsData || !actionAlertsData) {
       return false;
     }

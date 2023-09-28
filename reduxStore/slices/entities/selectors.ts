@@ -4,16 +4,13 @@ import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms'
 import { EntityTypeName } from 'types/entities';
 
 export const selectEntityById = (entityId: number) =>
-  createSelector(
-    entitiesApi.endpoints.getAllEntities.select(),
-    (entities) => {
-      const entityData = entities?.data;
-      if (!entityData) {
-        return null;
-      }
-      return entityData.byId[entityId];
+  createSelector(entitiesApi.endpoints.getAllEntities.select(), (entities) => {
+    const entityData = entities?.data;
+    if (!entityData) {
+      return null;
     }
-  );
+    return entityData.byId[entityId];
+  });
 
 export const selectMemberEntityById = (entityId: number) =>
   createSelector(
@@ -54,20 +51,17 @@ export const selectNewEntityIds = createSelector(
 );
 
 export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
-  createSelector(
-    entitiesApi.endpoints.getAllEntities.select(),
-    (entities) => {
-      const entityData = entities?.data;
-      if (!entityData) {
-        return [];
-      }
-
-      return entityData.ids.filter((id) => {
-        const entity = entityData.byId[id];
-        return entityTypes.includes(entity.resourcetype);
-      });
+  createSelector(entitiesApi.endpoints.getAllEntities.select(), (entities) => {
+    const entityData = entities?.data;
+    if (!entityData) {
+      return [];
     }
-  );
+
+    return entityData.ids.filter((id) => {
+      const entity = entityData.byId[id];
+      return entityTypes.includes(entity.resourcetype);
+    });
+  });
 
 export const selectNewTaskCompletionFormIds = createSelector(
   taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),

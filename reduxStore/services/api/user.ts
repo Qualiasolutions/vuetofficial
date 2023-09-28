@@ -13,7 +13,8 @@ import {
   ReferencesSetupCompletion,
   EntityTypeSetupCompletion,
   TagSetupCompletion,
-  LinkListSetupCompletion
+  LinkListSetupCompletion,
+  LastActivityView
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -210,6 +211,39 @@ const userApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['LinkListSetupCompletion']
+    }),
+    getLastActivityView: builder.query<LastActivityView | null, void>({
+      query: () => ({
+        url: `core/last-activity-view/`,
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: LastActivityView[] = await response.json();
+            return responseJson[0] || null;
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
+      }),
+      providesTags: ['LastActivityView']
+    }),
+    updateLastActivityView: builder.mutation<LastActivityView, { id: number }>({
+      query: ({ id: lastActivityId }) => ({
+        url: `core/last-activity-view/${lastActivityId}/`,
+        method: 'PATCH'
+      }),
+      invalidatesTags: ['LastActivityView']
+    }),
+    createLastActivityView: builder.mutation<
+      LastActivityView,
+      { user: number }
+    >({
+      query: (body) => ({
+        url: `core/last-activity-view/`,
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['LastActivityView']
     })
   }),
   overrideExisting: true
@@ -237,7 +271,10 @@ export const {
   useGetTagSetupCompletionsQuery,
   useCreateTagSetupCompletionMutation,
   useGetLinkListCompletionsQuery,
-  useCreateLinkListSetupCompletionMutation
+  useCreateLinkListSetupCompletionMutation,
+  useGetLastActivityViewQuery,
+  useUpdateLastActivityViewMutation,
+  useCreateLastActivityViewMutation
 } = userApi;
 
 export default userApi;

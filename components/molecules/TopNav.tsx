@@ -14,6 +14,9 @@ import { TouchableOpacity } from './TouchableOpacityComponents';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectHasUnreadAlert } from 'reduxStore/slices/alerts/selectors';
+import { selectOverdueTasks } from 'reduxStore/slices/tasks/selectors';
+import { useGetLastActivityViewQuery } from 'reduxStore/services/api/user';
+import { selectHasUnseenActivity } from 'reduxStore/slices/misc/selectors';
 
 const styles = StyleSheet.create({
   container: {
@@ -77,8 +80,6 @@ const PageLink = ({
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const primaryColor = useThemeColor({}, 'primary');
 
-  console.log(marked);
-
   return (
     <TouchableOpacity
       onPress={() => {
@@ -98,6 +99,8 @@ export default function TopNav() {
   const primaryColor = useThemeColor({}, 'primary');
   const { t } = useTranslation();
   const hasUnreadAlert = useSelector(selectHasUnreadAlert);
+  const overdueTasks = useSelector(selectOverdueTasks);
+  const hasUnseenActivity = useSelector(selectHasUnseenActivity);
 
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
@@ -115,6 +118,7 @@ export default function TopNav() {
           pageName="NewItems"
           iconName="bell"
           title={t('pageTitles.newItems')}
+          marked={hasUnseenActivity}
         />
         <PageLink
           pageName="QuickJot"
@@ -125,6 +129,7 @@ export default function TopNav() {
           pageName="OverdueTasks"
           iconName="flag"
           title={t('pageTitles.overdue')}
+          marked={overdueTasks && overdueTasks.length > 0}
         />
       </TransparentView>
     </WhitePaddedView>
