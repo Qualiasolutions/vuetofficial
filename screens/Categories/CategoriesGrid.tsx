@@ -93,7 +93,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
   const dispatch = useDispatch();
 
   const whiteColor = useThemeColor({}, 'white');
-  const overlayColor = useThemeColor({}, 'overlay');
+  const overlayColor = useThemeColor({}, 'almostBlack');
 
   if (isLoading || !allCategories || !userDetails) {
     return <FullPageSpinner />;
@@ -153,7 +153,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
             resizeMode="cover"
           >
             <View
-              style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
+              style={[styles.overlay, { backgroundColor: `${overlayColor}` }]}
             >
               <BlackText
                 style={[styles.gridText, { color: textColor }]}
@@ -182,7 +182,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
       >
         <ImageBackground style={styles.gridSquare} resizeMode="cover">
           <View
-            style={[styles.overlay, { backgroundColor: `${overlayColor}99` }]}
+            style={[styles.overlay, { backgroundColor: `${overlayColor}` }]}
           >
             <BlackText
               style={[styles.gridText, { color: whiteColor }]}
