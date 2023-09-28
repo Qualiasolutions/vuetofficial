@@ -213,6 +213,7 @@ export default function ListEntry({
                 )
               ) : imageSource ? (
                 <SafePressable
+                  style={styles.title}
                   onPress={() => {
                     setFullPageImage(true);
                   }}
