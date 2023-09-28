@@ -17,6 +17,9 @@ import { Feather } from '@expo/vector-icons';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'components/molecules/Modals';
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { RootTabParamList } from 'types/base';
 
 export default function ListEntry({
   listEntry
@@ -32,6 +35,7 @@ export default function ListEntry({
   const trashImage = require('assets/images/icons/trash.png');
 
   const { t } = useTranslation();
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
 
   const styles = StyleSheet.create({
     listEntryContainer: {
@@ -51,7 +55,9 @@ export default function ListEntry({
     },
     title: {
       fontSize: 16,
-      paddingLeft: 10
+      paddingLeft: 10,
+      flexDirection: 'row',
+      alignItems: 'center'
     },
     titleWrapper: {
       display: 'flex',
@@ -83,6 +89,9 @@ export default function ListEntry({
     fullPageImage: {
       width: '100%',
       height: '100%'
+    },
+    createTaskIcon: {
+      marginLeft: 10
     }
   });
 
@@ -135,7 +144,7 @@ export default function ListEntry({
               />
               {listEntry.title ? (
                 updatingText ? (
-                  <>
+                  <TransparentView style={styles.title}>
                     <TextInput
                       value={newTitle}
                       onChangeText={setNewTitle}
@@ -175,18 +184,32 @@ export default function ListEntry({
                     >
                       <Feather name="check" size={20} color="green" />
                     </SafePressable>
-                  </>
+                  </TransparentView>
                 ) : (
-                  <SafePressable
-                    onPress={() => {
-                      setUpdatingText(true);
-                    }}
-                  >
-                    <AlmostBlackText
-                      text={listEntry.title}
-                      style={styles.title}
-                    />
-                  </SafePressable>
+                  <>
+                    <SafePressable
+                      onPress={() => {
+                        setUpdatingText(true);
+                      }}
+                    >
+                      <AlmostBlackText
+                        text={listEntry.title}
+                        style={styles.title}
+                      />
+                    </SafePressable>
+                    <SafePressable
+                      style={styles.createTaskIcon}
+                      onPress={() => {
+                        navigation.navigate('AddTask', {
+                          title: listEntry.title,
+                          entities: [],
+                          tags: []
+                        });
+                      }}
+                    >
+                      <Feather name="plus" size={20} color="green" />
+                    </SafePressable>
+                  </>
                 )
               ) : imageSource ? (
                 <SafePressable

@@ -187,10 +187,17 @@ export default function AddTaskScreen({
   }, [route.params, userDetails]);
 
   useEffect(() => {
-    if (taskDefaults && !taskFieldValues) {
+    if (taskDefaults) {
       setTaskFieldValues(taskDefaults);
     }
-  }, [taskDefaults, taskFieldValues]);
+  }, [taskDefaults]);
+
+  useEffect(() => {
+    setTagsAndEntities({
+      tags: route.params?.tags || [],
+      entities: route.params?.entities || []
+    });
+  }, [route.params]);
 
   useEffect(() => {
     if (formType === 'ANNIVERSARY') {
