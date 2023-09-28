@@ -10,10 +10,7 @@ import {
 } from 'headers/utils/headerMappings';
 import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
 import { headerRightMapping } from 'headers/utils/headerRightMapping';
-import {
-  selectEntityById,
-  selectMemberEntityById
-} from 'reduxStore/slices/entities/selectors';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { useSelector } from 'react-redux';
 import { parsePresignedUrl } from 'utils/urls';
 

@@ -22,6 +22,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1
   },
+  content: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
   flexShrink: { flexShrink: 1 }
 });
 export default function BackOnlyHeader(
@@ -47,8 +52,12 @@ export default function BackOnlyHeader(
 
 function BackOnlyHeaderWithSafeAreaBase({
   style,
+  headerRight,
   ...otherProps
-}: (NativeStackHeaderProps | BottomTabHeaderProps) & { style?: ViewStyle }) {
+}: (NativeStackHeaderProps | BottomTabHeaderProps) & {
+  style?: ViewStyle;
+  headerRight?: JSX.Element;
+}) {
   // This causes the error
   // "Warning: React has detected a change in the order of Hooks called by BottomTabView"
   const statusBarHeight = getStatusBarHeight();
@@ -60,30 +69,38 @@ function BackOnlyHeaderWithSafeAreaBase({
 
   return (
     <WhiteView style={[style, { marginTop: statusBarHeight }]}>
-      <TransparentView style={styles.flexShrink}>
+      <TransparentView style={[styles.flexShrink, styles.content]}>
         <HeaderBackButton
           tintColor={otherProps.options.headerTintColor}
           onPress={otherProps.navigation.goBack}
         />
+        {headerRight || null}
       </TransparentView>
     </WhiteView>
   );
 }
 
-export function BackOnlyHeaderWithSafeArea(
-  props: NativeStackHeaderProps | BottomTabHeaderProps
-) {
+export function BackOnlyHeaderWithSafeArea({
+  headerRight,
+  ...props
+}: (NativeStackHeaderProps | BottomTabHeaderProps) & {
+  headerRight?: JSX.Element;
+}) {
   return (
     <BackOnlyHeaderWithSafeAreaBase
       {...props}
       style={StyleSheet.flatten([styles.container, styles.safeAreaContainer])}
+      headerRight={headerRight}
     />
   );
 }
 
-export function AlmostWhiteBackOnlyHeaderWithSafeArea(
-  props: NativeStackHeaderProps | BottomTabHeaderProps
-) {
+export function AlmostWhiteBackOnlyHeaderWithSafeArea({
+  headerRight,
+  ...props
+}: (NativeStackHeaderProps | BottomTabHeaderProps) & {
+  headerRight?: JSX.Element;
+}) {
   const almostWhite = useThemeColor({}, 'almostWhite');
   return (
     <BackOnlyHeaderWithSafeAreaBase
@@ -94,6 +111,7 @@ export function AlmostWhiteBackOnlyHeaderWithSafeArea(
           backgroundColor: almostWhite
         }
       ])}
+      headerRight={headerRight}
     />
   );
 }

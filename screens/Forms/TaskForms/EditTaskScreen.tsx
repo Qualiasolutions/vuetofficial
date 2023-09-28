@@ -11,6 +11,7 @@ import GenericTaskForm from 'components/forms/GenericTaskForm';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import useDefaultTaskValues from 'hooks/useDefaultTaskValues';
+import useEditTaskHeader from 'headers/hooks/useEditTaskHeader';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,7 +30,7 @@ export default function EditTaskScreen({
   const taskToEditType = taskObj?.type;
   const defaultValues = useDefaultTaskValues(taskId, recurrenceIndex);
 
-  useEntityHeader(0, false, t('pageTitles.editTask'));
+  useEditTaskHeader({ taskId, recurrenceIndex });
 
   if (!(defaultValues && Object.keys(defaultValues).length > 0)) {
     return <FullPageSpinner />;
