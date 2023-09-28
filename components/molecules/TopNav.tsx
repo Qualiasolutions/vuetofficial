@@ -14,7 +14,7 @@ import { TouchableOpacity } from './TouchableOpacityComponents';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectHasUnreadAlert } from 'reduxStore/slices/alerts/selectors';
-import { selectOverdueTasks } from 'reduxStore/slices/tasks/selectors';
+import { selectFilteredOverdueTasks } from 'reduxStore/slices/tasks/selectors';
 import { useGetLastActivityViewQuery } from 'reduxStore/services/api/user';
 import { selectHasUnseenActivity } from 'reduxStore/slices/misc/selectors';
 
@@ -99,7 +99,7 @@ export default function TopNav() {
   const primaryColor = useThemeColor({}, 'primary');
   const { t } = useTranslation();
   const hasUnreadAlert = useSelector(selectHasUnreadAlert);
-  const overdueTasks = useSelector(selectOverdueTasks);
+  const overdueTasks = useSelector(selectFilteredOverdueTasks);
   const hasUnseenActivity = useSelector(selectHasUnseenActivity);
 
   return (

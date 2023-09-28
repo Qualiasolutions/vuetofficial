@@ -163,6 +163,41 @@ export const selectOverdueTasks = createSelector(
   }
 );
 
+export const selectFilteredOverdueTasks = createSelector(
+  selectOverdueTasks,
+  selectFilteredUsers,
+  selectFilteredCategories,
+  vuetApi.endpoints.getAllCategories.select(),
+  entitiesApi.endpoints.getAllEntities.select(),
+  (tasks, users, categories, allCategories, allEntities) => {
+    const categoriesData = allCategories.data;
+    const entitiesData = allEntities.data;
+
+    if (!categoriesData || !entitiesData) {
+      return [];
+    }
+
+    return tasks.filter(
+      (task) =>
+        (!users ||
+          users.length === 0 ||
+          task.members.some((member) => users?.includes(member))) &&
+        (!categories ||
+          categories.length === 0 ||
+          categories.length === categoriesData.ids.length ||
+          task.entities.some((entityId) => {
+            const entity = entitiesData.byId[entityId];
+            return entity && categories.includes(entity.category);
+          }) ||
+          task.tags.some((tagName) => {
+            const tagCategoryName = TAG_TO_CATEGORY[tagName];
+            const categoryId = categoriesData.byName[tagCategoryName]?.id;
+            return categoryId && categories.includes(categoryId);
+          }))
+    );
+  }
+);
+
 export const selectTasksInDailyRoutines = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(),
   routinesApi.endpoints.getAllRoutines.select(),
