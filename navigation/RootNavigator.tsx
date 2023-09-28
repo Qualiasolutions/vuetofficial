@@ -23,7 +23,10 @@ import {
 import useSetupPushNotifications from 'hooks/setupPushNotifications';
 import { ContentNavigator } from './ContentNavigator';
 import BottomNavBar from 'components/navBar/BottomNavBar';
-import { useGetAllAlertsQuery } from 'reduxStore/services/api/alerts';
+import {
+  useGetAllActionAlertsQuery,
+  useGetAllAlertsQuery
+} from 'reduxStore/services/api/alerts';
 import {
   useGetTaskActionCompletionFormsQuery,
   useGetTaskCompletionFormsQuery
@@ -95,35 +98,38 @@ export function BottomTabNavigator({
 }) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetailsQuery();
-  useGetUserInvitesQuery(null as any, {
+  useGetUserInvitesQuery(undefined, {
     refetchOnMountOrArgChange: true,
     skip: !userDetails?.user_id
   });
-  useGetAllAlertsQuery(null as any, {
+  useGetAllAlertsQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetAllTaskActionsQuery(null as any, {
+  useGetAllActionAlertsQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetTaskCompletionFormsQuery(null as any, {
+  useGetAllTaskActionsQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetTaskActionCompletionFormsQuery(null as any, {
+  useGetTaskCompletionFormsQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetAllRoutinesQuery(null as any, {
+  useGetTaskActionCompletionFormsQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetMemberEntitiesQuery(null as any, {
+  useGetAllRoutinesQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetAllEntitiesQuery(null as any, {
+  useGetMemberEntitiesQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetAllTagsQuery(null as any, {
+  useGetAllEntitiesQuery(undefined, {
     skip: !userDetails?.user_id
   });
-  useGetCategorySetupCompletionsQuery(null as any, {
+  useGetAllTagsQuery(undefined, {
+    skip: !userDetails?.user_id
+  });
+  useGetCategorySetupCompletionsQuery(undefined, {
     skip: !userDetails?.user_id
   });
 

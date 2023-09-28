@@ -26,7 +26,7 @@ export default function EditEntityScreen({
 
   const { data: userFullDetails } = useGetUserFullDetails();
 
-  const { data: allUserInvites } = useGetUserInvitesQuery(null as any, {
+  const { data: allUserInvites } = useGetUserInvitesQuery(undefined, {
     skip: !userFullDetails?.family?.id
   });
 

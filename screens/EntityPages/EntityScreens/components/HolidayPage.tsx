@@ -36,11 +36,7 @@ export default function HolidayScreen({ entityId }: { entityId: number }) {
 
   const [itemName, setItemName] = useState('');
 
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();
 

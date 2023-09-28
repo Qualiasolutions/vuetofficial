@@ -127,14 +127,12 @@ export default function NewItemsList() {
   const newTaskCompletionFormIds = useSelector(selectNewTaskCompletionFormIds);
 
   const { data: allEntities, isLoading: isLoadingEntities } =
-    useGetAllEntitiesQuery(null as any);
-  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery(
-    null as any
-  );
+    useGetAllEntitiesQuery();
+  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery();
   const {
     data: allTaskCompletionForms,
     isLoading: isLoadingTaskCompletionForms
-  } = useGetTaskCompletionFormsQuery(null as any);
+  } = useGetTaskCompletionFormsQuery();
 
   const isLoading =
     isLoadingEntities || isLoadingTasks || isLoadingTaskCompletionForms;

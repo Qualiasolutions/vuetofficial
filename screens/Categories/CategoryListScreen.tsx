@@ -99,7 +99,7 @@ export default function CategoryListScreen({ route }: CategoryListScreenProps) {
   useCategoryHeader(category?.name || '');
 
   const { data: categorySetupData, isLoading: isLoadingSetupData } =
-    useGetCategorySetupCompletionsQuery(null as any);
+    useGetCategorySetupCompletionsQuery();
 
   if (!category) {
     return null;

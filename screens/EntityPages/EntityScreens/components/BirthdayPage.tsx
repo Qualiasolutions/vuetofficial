@@ -74,7 +74,7 @@ export default function BirthdayScreen({ entityId }: { entityId: number }) {
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(null as any, {
+  } = useGetAllEntitiesQuery(undefined, {
     skip: !userDetails?.id
   });
   const entityData = allEntities?.byId[entityId];

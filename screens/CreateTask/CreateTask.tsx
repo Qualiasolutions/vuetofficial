@@ -28,7 +28,7 @@ export default function CreateTask({
   const [selectedEntity, setSelectedEntity] =
     useState<EntityParsedType | null>();
   const { data: categories } = useGetAllCategoriesQuery();
-  const { data: entities } = useGetAllEntitiesQuery(null as any);
+  const { data: entities } = useGetAllEntitiesQuery();
 
   useEffect(() => {
     navigation.addListener('focus', () => {

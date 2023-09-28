@@ -128,7 +128,7 @@ export default function MessageList() {
   const isFocused = useIsFocused();
 
   const { data: messageThreads, isLoading } = useGetMessageThreadsQuery(
-    null as any,
+    undefined,
     { pollingInterval: 10000, skip: !isFocused }
   );
 

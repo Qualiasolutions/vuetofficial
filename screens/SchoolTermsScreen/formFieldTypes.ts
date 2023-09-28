@@ -10,7 +10,7 @@ const schoolsSelector = selectEntitiesByEntityTypes(['School']);
 export const useSchoolYearFieldTypes = () => {
   const { t } = useTranslation('modelFields');
   const schoolEntities = useSelector(schoolsSelector);
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery();
 
   const schoolOptions = useMemo(() => {
     if (!allEntities || !schoolEntities) {

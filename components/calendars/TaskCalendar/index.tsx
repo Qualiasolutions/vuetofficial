@@ -75,11 +75,10 @@ function Calendar({
 }: CalendarProps) {
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
-    useGetTaskCompletionFormsQuery(null as any);
-  const { isLoading: isLoadingScheduledTasks } = useGetAllScheduledTasksQuery(
-    null as any
-  );
-  const { isLoading: isLoadingTasks } = useGetAllTasksQuery(null as any);
+    useGetTaskCompletionFormsQuery(undefined);
+  const { isLoading: isLoadingScheduledTasks } =
+    useGetAllScheduledTasksQuery(undefined);
+  const { isLoading: isLoadingTasks } = useGetAllTasksQuery(undefined);
   const dispatch = useDispatch();
 
   const primaryColor = useThemeColor({}, 'primary');

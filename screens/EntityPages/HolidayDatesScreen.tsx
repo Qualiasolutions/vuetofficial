@@ -71,9 +71,7 @@ function HolidayCard({ task }: { task: ScheduledTaskResponseType }) {
 export default function HolidayDatesScreen() {
   useEntityTypeHeader('holiday-dates');
 
-  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery(
-    null as any
-  );
+  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery();
   const { data: allScheduledTasks, isLoading: isLoadingScheduledTasks } =
     useGetAllScheduledTasksQuery();
 

@@ -70,7 +70,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
 
   const { t } = useTranslation();
 
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery();
   const entityData = allEntities?.byId[entityId];
 
   const styles = useStyle();

@@ -274,7 +274,7 @@ const RoutineCard = ({ id }: { id?: number }) => {
 };
 
 export default function RoutinesList() {
-  const { data: allRoutines } = useGetAllRoutinesQuery(null as any);
+  const { data: allRoutines } = useGetAllRoutinesQuery();
 
   const routineCards = allRoutines?.ids.map((id) => (
     <RoutineCard id={id} key={id} />

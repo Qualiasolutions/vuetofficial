@@ -137,7 +137,7 @@ export default function BottomNavBar({
   }, [state]);
 
   const { data: userDetails } = useGetUserFullDetails();
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
+  const { data: allEntities } = useGetAllEntitiesQuery(undefined, {
     skip: !userDetails?.id
   });
 

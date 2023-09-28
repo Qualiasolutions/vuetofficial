@@ -7,11 +7,7 @@ import { StyleSheet } from 'react-native';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 export default function TripPage({ entityId }: { entityId: number }) {
-  const {
-    data: allEntities,
-    isLoading,
-    error
-  } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities, isLoading, error } = useGetAllEntitiesQuery();
   const entityData = allEntities?.byId[entityId];
   const { t } = useTranslation();
 

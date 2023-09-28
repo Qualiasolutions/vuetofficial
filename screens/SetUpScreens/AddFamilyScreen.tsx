@@ -41,7 +41,7 @@ const AddFamilyScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamily'>) => {
   const { data: userFullDetails } = useGetUserFullDetails();
-  const { data: userInvites } = useGetUserInvitesQuery(null as any);
+  const { data: userInvites } = useGetUserInvitesQuery();
 
   const familyPhoneNumbers =
     userFullDetails?.family.users

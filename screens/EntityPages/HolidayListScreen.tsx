@@ -39,7 +39,7 @@ export default function HolidayListScreen({
     }
   );
 
-  const { data: allTasks } = useGetAllTasksQuery(null as any, {
+  const { data: allTasks } = useGetAllTasksQuery(undefined, {
     skip: !userDetails?.id
   });
 

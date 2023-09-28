@@ -140,9 +140,9 @@ function Calendar({
   const tasksPerRoutine = useSelector(selectTasksInDailyRoutines);
   const sectionListRef = useRef<any>(null);
   const { t } = useTranslation();
-  const { data: allRoutines } = useGetAllRoutinesQuery(null as any);
-  const { data: allTasks } = useGetAllTasksQuery(null as any);
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: allRoutines } = useGetAllRoutinesQuery(undefined);
+  const { data: allTasks } = useGetAllTasksQuery(undefined);
+  const { data: allEntities } = useGetAllEntitiesQuery(undefined);
   const lightYellowColor = useThemeColor({}, 'lightYellow');
   const blackColor = useThemeColor({}, 'black');
 

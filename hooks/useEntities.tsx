@@ -18,10 +18,10 @@ export default function useEntities({
   tags
 }: Props) {
   const { data: allEntities, isLoading: isLoadingEntities } =
-    useGetAllEntitiesQuery(null as any);
+    useGetAllEntitiesQuery();
 
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
-    useGetMemberEntitiesQuery(null as any);
+    useGetMemberEntitiesQuery();
 
   if (!(categories || entities || entityTypes || tags)) {
     return [];

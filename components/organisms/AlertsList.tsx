@@ -10,6 +10,8 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -18,7 +20,8 @@ import {
   useDeleteActionAlertMutation,
   useDeleteAlertMutation,
   useGetAllActionAlertsQuery,
-  useGetAllAlertsQuery
+  useGetAllAlertsQuery,
+  useMarkAlertsReadMutation
 } from 'reduxStore/services/api/alerts';
 import {
   useCreateTaskActionCompletionFormMutation,
@@ -28,7 +31,8 @@ import {
   selectActionAlertById,
   selectAlertById,
   selectAlertsByActionId,
-  selectAlertsByTaskId
+  selectAlertsByTaskId,
+  selectHasUnreadAlert
 } from 'reduxStore/slices/alerts/selectors';
 import {
   selectScheduledTask,
@@ -334,6 +338,18 @@ export default function AlertsList() {
 
   const { data: allActionAlerts, isLoading: isLoadingActionAlerts } =
     useGetAllActionAlertsQuery();
+
+  const { data: userDetails } = useGetUserFullDetails();
+
+  const [markAlertsRead] = useMarkAlertsReadMutation();
+
+  const hasUnreadAlert = useSelector(selectHasUnreadAlert);
+
+  useEffect(() => {
+    if (userDetails && hasUnreadAlert) {
+      markAlertsRead(userDetails.id);
+    }
+  }, [hasUnreadAlert, userDetails, markAlertsRead]);
 
   // const overdueTasks = useSelector(selectOverdueTasks);
 

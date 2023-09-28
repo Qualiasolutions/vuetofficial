@@ -68,10 +68,10 @@ export default function HolidayDetailScreen({
   const [monthsAhead, setMonthsAhead] = useState(12);
 
   const { data: userDetails } = useGetUserDetails();
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any, {
+  const { data: allEntities } = useGetAllEntitiesQuery(undefined, {
     skip: !userDetails?.id
   });
-  const { data: allTasks } = useGetAllTasksQuery(null as any, {
+  const { data: allTasks } = useGetAllTasksQuery(undefined, {
     skip: !userDetails?.id
   });
 

@@ -37,7 +37,7 @@ export default function useForm(
   const { t } = useTranslation('modelFields');
 
   const allSchoolIds = useSelector(schoolSelector);
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery(undefined);
 
   const form = useMemo(() => {
     if (entityType === 'Car') {

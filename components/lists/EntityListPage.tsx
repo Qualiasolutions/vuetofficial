@@ -69,7 +69,7 @@ export default function EntityListPage({
     data: allEntities,
     isLoading,
     isFetching
-  } = useGetAllEntitiesQuery(null as any);
+  } = useGetAllEntitiesQuery(undefined);
   const entityData = Object.values(allEntities?.byId || {}).filter((entity) =>
     entityTypes.includes(entity.resourcetype)
   );

@@ -1,10 +1,7 @@
 import React from 'react';
-import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
-import useGetUserDetails from 'hooks/useGetUserDetails';
 import ListLink from 'components/molecules/ListLink';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
-import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 
 const styles = StyleSheet.create({
@@ -15,18 +12,6 @@ const styles = StyleSheet.create({
 });
 
 export default function HobbyScreen({ entityId }: { entityId: number }) {
-  const { data: userDetails, isLoading: isLoadingUserDetails } =
-    useGetUserDetails();
-
-  const { isLoading: isLoadingEntities } = useGetAllEntitiesQuery(null as any, {
-    skip: !userDetails?.id
-  });
-
-  const isLoading = isLoadingUserDetails || isLoadingEntities;
-  if (isLoading) {
-    return <FullPageSpinner />;
-  }
-
   const entityIdParsed =
     typeof entityId === 'number' ? entityId : parseInt(entityId);
 

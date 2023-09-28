@@ -79,11 +79,9 @@ function AnniversaryCard({ task }: { task: ScheduledTaskResponseType }) {
 export default function AnniversaryDatesScreen() {
   useEntityTypeHeader('anniversary-dates');
 
-  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery(
-    null as any
-  );
+  const { data: allTasks, isLoading: isLoadingTasks } = useGetAllTasksQuery();
   const { data: allScheduledTasks, isLoading: isLoadingScheduledTasks } =
-    useGetAllScheduledTasksQuery(null as any);
+    useGetAllScheduledTasksQuery();
 
   if (isLoadingTasks || isLoadingScheduledTasks || !allTasks) {
     return <FullPageSpinner />;

@@ -41,7 +41,7 @@ export default function ChildEntityList({
     data: allEntities,
     isLoading,
     error
-  } = useGetAllEntitiesQuery(null as any, {
+  } = useGetAllEntitiesQuery(undefined, {
     skip: !userDetails?.id
   });
   const entityData = allEntities?.byId[entityId];

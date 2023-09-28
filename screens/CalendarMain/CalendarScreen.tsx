@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 export default function CalendarScreen() {
   const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
   const filteredEntities = useSelector(selectFilteredScheduledEntityIds());
-  const { isLoading } = useGetAllScheduledTasksQuery(null as any);
+  const { isLoading } = useGetAllScheduledTasksQuery();
 
   if (isLoading) {
     return <FullPageSpinner />;

@@ -746,8 +746,8 @@ export default function ReferencesList({
   showCategoryHeaders?: boolean;
 }) {
   const { t } = useTranslation();
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
-  const { data: memberEntities } = useGetMemberEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery();
+  const { data: memberEntities } = useGetMemberEntitiesQuery();
   const { data: allCategories } = useGetAllCategoriesQuery();
   const { data: allTags } = useGetAllTagsQuery();
   const { data: allReferenceGroups, isLoading: isLoadingReferenceGroups } =

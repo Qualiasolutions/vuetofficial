@@ -39,7 +39,7 @@ const FlatList = ({ entityId }: { entityId: number }) => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const parentEntity = useSelector(selectEntityById(entityId));
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery();
 
   if (!parentEntity || !allEntities) {
     return null;
@@ -85,7 +85,7 @@ export default function ListOfLists({
   showCategoryHeaders
 }: Props) {
   const { t } = useTranslation();
-  const { data: allEntities } = useGetAllEntitiesQuery(null as any);
+  const { data: allEntities } = useGetAllEntitiesQuery();
   const { data: allCategories } = useGetAllCategoriesQuery();
   const listEntities = useSelector(selectEntitiesByEntityTypes(['List']));
 

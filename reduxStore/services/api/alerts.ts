@@ -173,6 +173,16 @@ const alertsApi = vuetApi.injectEndpoints({
           }
         }
       }
+    }),
+    markAlertsRead: builder.mutation<void, number>({
+      query: (userId) => {
+        return {
+          url: `core/mark-alerts-read/`,
+          method: 'POST',
+          body: { user: userId }
+        };
+      },
+      invalidatesTags: ['Alert', 'ActionAlert']
     })
   }),
   overrideExisting: true
@@ -186,5 +196,6 @@ export const {
   useGetAllAlertsQuery,
   useDeleteAlertMutation,
   useGetAllActionAlertsQuery,
-  useDeleteActionAlertMutation
+  useDeleteActionAlertMutation,
+  useMarkAlertsReadMutation
 } = alertsApi;

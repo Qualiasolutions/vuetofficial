@@ -6,12 +6,14 @@ import { elevation } from 'styles/elevation';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { parsePresignedUrl } from 'utils/urls';
 import { Image } from './ImageComponents';
-import { Text, useThemeColor } from 'components/Themed';
+import { Text, useThemeColor, View } from 'components/Themed';
 import { Feather } from '@expo/vector-icons';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RootTabParamList } from 'types/base';
 import { TouchableOpacity } from './TouchableOpacityComponents';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { selectHasUnreadAlert } from 'reduxStore/slices/alerts/selectors';
 
 const styles = StyleSheet.create({
   container: {
@@ -47,20 +49,35 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 11
+  },
+  linkMarker: {
+    position: 'absolute',
+    width: 12,
+    height: 12,
+    top: 0,
+    right: -4,
+    backgroundColor: 'red',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'brown'
   }
 });
 
 const PageLink = ({
   pageName,
   iconName,
-  title
+  title,
+  marked
 }: {
   pageName: keyof RootTabParamList;
   iconName: keyof typeof Feather.glyphMap;
   title: string;
+  marked?: boolean;
 }) => {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const primaryColor = useThemeColor({}, 'primary');
+
+  console.log(marked);
 
   return (
     <TouchableOpacity
@@ -71,6 +88,7 @@ const PageLink = ({
     >
       <Feather name={iconName} size={32} color={primaryColor} />
       <Text style={[styles.buttonText, { color: primaryColor }]}>{title}</Text>
+      {marked && <View style={styles.linkMarker} />}
     </TouchableOpacity>
   );
 };
@@ -79,6 +97,7 @@ export default function TopNav() {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const primaryColor = useThemeColor({}, 'primary');
   const { t } = useTranslation();
+  const hasUnreadAlert = useSelector(selectHasUnreadAlert);
 
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
@@ -90,6 +109,7 @@ export default function TopNav() {
           pageName="Alerts"
           iconName="alert-triangle"
           title={t('pageTitles.alerts')}
+          marked={hasUnreadAlert}
         />
         <PageLink
           pageName="NewItems"

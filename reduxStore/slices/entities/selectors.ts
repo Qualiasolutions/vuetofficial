@@ -5,7 +5,7 @@ import { EntityTypeName } from 'types/entities';
 
 export const selectEntityById = (entityId: number) =>
   createSelector(
-    entitiesApi.endpoints.getAllEntities.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(),
     (entities) => {
       const entityData = entities?.data;
       if (!entityData) {
@@ -17,7 +17,7 @@ export const selectEntityById = (entityId: number) =>
 
 export const selectMemberEntityById = (entityId: number) =>
   createSelector(
-    entitiesApi.endpoints.getMemberEntities.select(null as any),
+    entitiesApi.endpoints.getMemberEntities.select(),
     (entities) => {
       const entityData = entities?.data;
       if (!entityData) {
@@ -28,7 +28,7 @@ export const selectMemberEntityById = (entityId: number) =>
   );
 
 export const selectNewEntityIds = createSelector(
-  entitiesApi.endpoints.getAllEntities.select(null as any),
+  entitiesApi.endpoints.getAllEntities.select(),
   (entities) => {
     const entityData = entities?.data;
     if (!entityData) {
@@ -55,7 +55,7 @@ export const selectNewEntityIds = createSelector(
 
 export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
   createSelector(
-    entitiesApi.endpoints.getAllEntities.select(null as any),
+    entitiesApi.endpoints.getAllEntities.select(),
     (entities) => {
       const entityData = entities?.data;
       if (!entityData) {
@@ -70,7 +70,7 @@ export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
   );
 
 export const selectNewTaskCompletionFormIds = createSelector(
-  taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+  taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
   (completionForms) => {
     const taskFormData = completionForms?.data;
     if (!taskFormData) {

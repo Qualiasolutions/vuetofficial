@@ -36,16 +36,13 @@ import {
 import { selectEntitiesByEntityTypes } from '../entities/selectors';
 
 export const selectTaskById = (id: number) =>
-  createSelector(
-    tasksApi.endpoints.getAllTasks.select(null as any),
-    (tasks) => {
-      return tasks.data?.byId && tasks.data?.byId[id];
-    }
-  );
+  createSelector(tasksApi.endpoints.getAllTasks.select(), (tasks) => {
+    return tasks.data?.byId && tasks.data?.byId[id];
+  });
 
 export const selectTaskActionById = (id: number) =>
   createSelector(
-    taskActionsApi.endpoints.getAllTaskActions.select(null as any),
+    taskActionsApi.endpoints.getAllTaskActions.select(),
     (taskActions) => {
       return (taskActions.data?.byId && taskActions.data?.byId[id]) || null;
     }
@@ -53,14 +50,14 @@ export const selectTaskActionById = (id: number) =>
 
 export const selectTaskCompletionFormById = (id: number) =>
   createSelector(
-    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
     (forms) => {
       return forms.data?.byId && forms.data?.byId[id];
     }
   );
 
 export const selectNewTaskIds = createSelector(
-  tasksApi.endpoints.getAllTasks.select(null as any),
+  tasksApi.endpoints.getAllTasks.select(),
   (tasks) => {
     const tasksData = tasks?.data;
     if (!tasksData) {
@@ -88,12 +85,10 @@ export const selectNewTaskIds = createSelector(
 const ALERTABLE_TYPES = ['TASK', 'DUE_DATE'];
 
 export const selectOverdueTasks = createSelector(
-  tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-  taskActionsApi.endpoints.getAllTaskActions.select(null as any),
-  taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
-  taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(
-    null as any
-  ),
+  tasksApi.endpoints.getAllScheduledTasks.select(),
+  taskActionsApi.endpoints.getAllTaskActions.select(),
+  taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
+  taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(),
   (tasks, taskActions, taskCompletionForms, taskActionCompletionForms) => {
     const tasksData = tasks?.data;
     const taskActionsData = taskActions?.data;
@@ -160,8 +155,8 @@ export const selectOverdueTasks = createSelector(
 );
 
 export const selectTasksInDailyRoutines = createSelector(
-  tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-  routinesApi.endpoints.getAllRoutines.select(null as any),
+  tasksApi.endpoints.getAllScheduledTasks.select(),
+  routinesApi.endpoints.getAllRoutines.select(),
   (tasks, routines) => {
     const taskData = tasks.data;
     const routinesData = routines.data;
@@ -311,8 +306,8 @@ export const selectScheduledTaskIdsByEntityTypes = (
   entityTypes: EntityTypeName[]
 ) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-    entitiesApi.endpoints.getAllEntities.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
+    entitiesApi.endpoints.getAllEntities.select(),
     (scheduledTasks, allEntities) => {
       const entitiesData = allEntities.data;
       const taskData = scheduledTasks.data;
@@ -374,7 +369,7 @@ export const selectScheduledTaskIdsByEntityTypes = (
   );
 
 export const selectFilteredScheduledTaskIdsByDate = createSelector(
-  tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+  tasksApi.endpoints.getAllScheduledTasks.select(),
   selectFilteredUsers,
   (scheduledTasks, users) => {
     if (!scheduledTasks.data) {
@@ -415,8 +410,8 @@ export const selectFilteredScheduledEntityIds = (
   entityIds?: number[]
 ) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-    entitiesApi.endpoints.getAllEntities.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
+    entitiesApi.endpoints.getAllEntities.select(),
     schoolTermsApi.endpoints.getAllSchoolYears.select(),
     schoolTermsApi.endpoints.getAllSchoolBreaks.select(),
     schoolTermsApi.endpoints.getAllSchoolTerms.select(),
@@ -549,8 +544,8 @@ export const selectFilteredScheduledEntityIds = (
 
 export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-    entitiesApi.endpoints.getAllEntities.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
+    entitiesApi.endpoints.getAllEntities.select(),
     (scheduledTasks, allEntities) => {
       if (!scheduledTasks.data) {
         return {};
@@ -610,7 +605,7 @@ export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
 
 export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
     (scheduledTasks) => {
       if (!scheduledTasks.data) {
         return {};
@@ -663,8 +658,8 @@ const EXTRA_CATEGORY_ITEMS: {
 
 export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
-    entitiesApi.endpoints.getAllEntities.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
+    entitiesApi.endpoints.getAllEntities.select(),
     vuetApi.endpoints.getAllCategories.select(),
     (scheduledTasks, allEntities, allCategories) => {
       const entitiesData = allEntities.data;
@@ -734,10 +729,8 @@ export const selectIsComplete = ({
   actionId: number | null;
 }) =>
   createSelector(
-    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
-    taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(
-      null as any
-    ),
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
+    taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(),
     (taskCompletionForms, taskActionCompletionForms) => {
       if (actionId) {
         const completionForm =
@@ -774,7 +767,7 @@ export const selectScheduledTask = ({
   actionId?: number | null;
 }) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
     (scheduledTasks) => {
       const recIndex =
         recurrenceIndex === null || recurrenceIndex === undefined
@@ -795,7 +788,7 @@ export const selectScheduledTask = ({
 
 export const selectScheduledEntity = (id: number, type: string) =>
   createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(null as any),
+    tasksApi.endpoints.getAllScheduledTasks.select(),
     (scheduledTasks) => {
       if (id) {
         return (
@@ -811,24 +804,19 @@ export const selectTasksFromEntityAndHiddenTag = (
   entityId: number,
   tagName: HiddenTagType
 ) =>
-  createSelector(
-    tasksApi.endpoints.getAllTasks.select(null as any),
-    (tasks) => {
-      const taskData = tasks.data;
+  createSelector(tasksApi.endpoints.getAllTasks.select(), (tasks) => {
+    const taskData = tasks.data;
 
-      if (!taskData) {
-        return [];
-      }
-      return taskData?.ids
-        .filter((id) => {
-          const task = taskData.byId[id];
-          return (
-            task.entities.includes(entityId) && task.hidden_tag === tagName
-          );
-        })
-        .map((id) => taskData.byId[id]);
+    if (!taskData) {
+      return [];
     }
-  );
+    return taskData?.ids
+      .filter((id) => {
+        const task = taskData.byId[id];
+        return task.entities.includes(entityId) && task.hidden_tag === tagName;
+      })
+      .map((id) => taskData.byId[id]);
+  });
 
 export const selectNextTaskFromEntityAndHiddenTag = (
   entityId: number,
@@ -836,7 +824,7 @@ export const selectNextTaskFromEntityAndHiddenTag = (
 ) =>
   createSelector(
     selectTasksFromEntityAndHiddenTag(entityId, tagName),
-    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(null as any),
+    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
     (tasks, taskCompletionForms) => {
       const taskCompletionFormData = taskCompletionForms.data;
 

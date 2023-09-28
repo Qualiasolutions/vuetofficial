@@ -139,7 +139,7 @@ export default function StoreSelector({
   value: number | null;
 }) {
   const { data: shoppingListStores, isLoading: isLoadingStores } =
-    useGetAllShoppingListStoresQuery(null as any);
+    useGetAllShoppingListStoresQuery(undefined);
 
   const { data: userDetails } = useGetUserFullDetails();
 

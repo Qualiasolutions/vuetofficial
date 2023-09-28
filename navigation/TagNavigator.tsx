@@ -19,7 +19,7 @@ export default function TagNavigator({ tagName }: { tagName: string }) {
     [tagName]
   );
   const filteredTasks = useSelector(taskSelector);
-  const { data: allCategories } = useGetAllCategoriesQuery(null as any);
+  const { data: allCategories } = useGetAllCategoriesQuery();
 
   const calendarComponent = useMemo(() => {
     return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;

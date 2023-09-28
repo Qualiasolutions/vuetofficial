@@ -85,13 +85,12 @@ const StepTwoSelector = ({
   const { t } = useTranslation();
 
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
-    useGetMemberEntitiesQuery(null as any);
+    useGetMemberEntitiesQuery(undefined);
   const { data: allEntities, isLoading: isLoadingAllEntities } =
     useGetAllEntitiesQuery();
 
-  const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery(
-    null as any
-  );
+  const { data: allTags, isLoading: isLoadingTags } =
+    useGetAllTagsQuery(undefined);
 
   const isLoading =
     isLoadingMemberEntities ||
@@ -250,9 +249,9 @@ const EntityAndTagSelectorModal = ({
   const { t } = useTranslation();
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const { data: memberEntities, isLoading: isLoadingMemberEntities } =
-    useGetMemberEntitiesQuery(null as any);
+    useGetMemberEntitiesQuery(undefined);
   const { data: allEntities, isLoading: isLoadingAllEntities } =
-    useGetAllEntitiesQuery(null as any);
+    useGetAllEntitiesQuery(undefined);
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
   const { data: allTags, isLoading: isLoadingTags } = useGetAllTagsQuery();
