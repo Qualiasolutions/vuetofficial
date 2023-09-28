@@ -11,6 +11,7 @@ import { useThemeColor } from 'components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import { parsePresignedUrl } from 'utils/urls';
 import SafePressable from 'components/molecules/SafePressable';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -46,7 +47,7 @@ export default function GenericEntityWithImageCard({
 
   const imageSource = parsePresignedUrl(entity.presigned_image_url);
   return (
-    <SafePressable
+    <TouchableOpacity
       onPress={() => {
         (navigation as any).push('EntityScreen', { entityId: entity.id });
       }}
@@ -63,6 +64,6 @@ export default function GenericEntityWithImageCard({
         )}
         <BlackText text={`${entity.name}`} style={styles.listEntryText} />
       </WhiteView>
-    </SafePressable>
+    </TouchableOpacity>
   );
 }

@@ -105,8 +105,8 @@ export default function AddTaskScreen({
     tags: string[];
     entities: number[];
   }>({
-    tags: [],
-    entities: []
+    tags: route.params.tags || [],
+    entities: route.params.entities || []
   });
   const [formType, setFormType] = useState<FormType | ''>(
     route.params?.type || ''
@@ -120,7 +120,8 @@ export default function AddTaskScreen({
   const [activityType, setActivityType] =
     useState<ActivityTaskType>('ACTIVITY');
 
-  const [taskFieldValues, setTaskFieldValues] = useState<FieldValueTypes>({});
+  const [taskFieldValues, setTaskFieldValues] =
+    useState<FieldValueTypes | null>(null);
 
   const headerBackgroundColor = useThemeColor({}, 'secondary');
   const headerTintColor = useThemeColor({}, 'white');
@@ -186,7 +187,7 @@ export default function AddTaskScreen({
   }, [route.params, userDetails]);
 
   useEffect(() => {
-    if (Object.keys(taskFieldValues).length === 0) {
+    if (taskDefaults && !taskFieldValues) {
       setTaskFieldValues(taskDefaults);
     }
   }, [taskDefaults, taskFieldValues]);
@@ -266,6 +267,10 @@ export default function AddTaskScreen({
   }, [formType, taskType]);
 
   if (!userDetails) {
+    return <FullPageSpinner />;
+  }
+
+  if (!taskFieldValues) {
     return <FullPageSpinner />;
   }
 
