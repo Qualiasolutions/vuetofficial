@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
-import { getTimeStringFromDateObject } from 'utils/datesAndTimes';
+import {
+  getTimeInTimezone,
+  getTimeStringFromDateObject
+} from 'utils/datesAndTimes';
 import React from 'react';
 
 import { BlackText } from 'components/molecules/TextComponents';
@@ -46,13 +49,16 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
-    fontSize: 12,
-    textAlign: 'left',
+    fontSize: 11,
+    textAlign: 'left'
+  },
+  titleAndTimezoneText: {
     width: '90%'
   },
   timeText: {
     fontSize: 12
   },
+  timeZoneText: { fontSize: 8 },
   leftInfo: {
     width: 60,
     marginRight: 5,
@@ -65,7 +71,7 @@ const styles = StyleSheet.create({
   containerWrapper: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: '100%'
   },
   container: {
@@ -188,6 +194,59 @@ const TimeText = ({
 
   return (
     <TransparentView style={styles.leftInfo}>{textContent}</TransparentView>
+  );
+};
+
+const TimeZoneText = ({
+  task,
+  scheduledTask,
+  date
+}: {
+  task?: FixedTaskResponseType;
+  scheduledTask?: ScheduledTaskResponseType;
+  date: string;
+}) => {
+  const { t } = useTranslation();
+  const startTime = new Date(scheduledTask?.start_datetime || '');
+  const startDate = dayjs(startTime).format('YYYY-MM-DD');
+  const endTime = new Date(scheduledTask?.end_datetime || '');
+  const endDate = dayjs(endTime).format('YYYY-MM-DD');
+  const multiDay = startDate !== endDate;
+
+  const currentDate = dayjs(date).format('YYYY-MM-DD');
+
+  const isFirstDay = multiDay && currentDate === startDate;
+  const isLastDay = multiDay && currentDate === endDate;
+
+  if (
+    !(
+      scheduledTask?.start_datetime &&
+      task?.start_timezone &&
+      scheduledTask?.end_datetime &&
+      task?.end_timezone
+    )
+  ) {
+    return null;
+  }
+
+  const startTimeString = `${
+    getTimeInTimezone(scheduledTask?.start_datetime, task?.start_timezone)
+      .split('T')[1]
+      .split(':00Z')[0]
+  } ${task?.start_timezone}`;
+
+  const endTimeString = `${
+    getTimeInTimezone(scheduledTask?.end_datetime, task?.end_timezone)
+      .split('T')[1]
+      .split(':00Z')[0]
+  } ${task?.end_timezone}`;
+
+  return (
+    <Text style={styles.timeZoneText}>
+      {multiDay && isFirstDay && `${t('common.from')} ${startTimeString}`}
+      {multiDay && isLastDay && `${t('common.until')} ${endTimeString}`}
+      {!multiDay && `${startTimeString} - ${endTimeString}`}
+    </Text>
   );
 };
 
@@ -321,18 +380,25 @@ function Task({
                 {isEntity && scheduledEntity && (
                   <EntityIcon entity={scheduledEntity} />
                 )}
-                <BlackText
-                  text={
-                    isEntity
-                      ? scheduledEntity?.title || ''
-                      : task
-                      ? `${action_id ? 'ACTION - ' : ''}${task.title}`
-                      : ''
-                  }
-                  style={[styles.title, isComplete && isCompleteStyle]}
-                  bold={true}
-                  numberOfLines={2}
-                />
+                <TransparentView style={[styles.titleAndTimezoneText]}>
+                  <BlackText
+                    text={
+                      isEntity
+                        ? scheduledEntity?.title || ''
+                        : task
+                        ? `${action_id ? 'ACTION - ' : ''}${task.title}`
+                        : ''
+                    }
+                    style={[styles.title, isComplete && isCompleteStyle]}
+                    bold={true}
+                    numberOfLines={2}
+                  />
+                  <TimeZoneText
+                    task={task}
+                    scheduledTask={scheduledTask}
+                    date={date}
+                  />
+                </TransparentView>
               </TransparentView>
             </TransparentView>
           </TransparentView>
