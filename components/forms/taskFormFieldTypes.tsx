@@ -732,7 +732,7 @@ export const useFieldTypesForTask = (task?: FixedTaskResponseType) => {
   const taskType = task?.type;
   const formType = useFormType(taskType || '');
 
-  return useFieldTypesForFormType(formType, {
+  return useFieldTypesForFormType(formType === 'ICAL_EVENT' ? null : formType, {
     isEdit: true,
     allowRecurrence: true,
     taskHiddenTag: task?.hidden_tag,

@@ -22,6 +22,7 @@ import {
   useUpdateTaskMutation
 } from 'reduxStore/services/api/tasks';
 import { FixedTaskResponseType, TaskType } from 'types/tasks';
+import { FormFieldTypes } from './formFieldTypes';
 import RecurrentUpdateModal from './RecurrentUpdateModal';
 import { useFieldTypesForFormType } from './taskFormFieldTypes';
 import TypedForm from './TypedForm';
@@ -129,14 +130,17 @@ export default function GenericTaskForm({
     (isAnniversaryTaskType(type) ||
       (recurrenceIndex !== undefined && !recurrenceOverwrite));
 
-  const formFields = useFieldTypesForFormType(formType || null, {
-    isEdit,
-    disabledRecurrenceFields,
-    disableFlexible: recurrenceIndex !== undefined,
-    anniversaryType: isAnniversaryTaskType(type) ? type : undefined,
-    transportType: isTransportTaskType(type) ? type : undefined,
-    accommodationType: isAccommodationTaskType(type) ? type : undefined
-  });
+  const formFields = useFieldTypesForFormType(
+    formType === 'ICAL_EVENT' ? null : formType,
+    {
+      isEdit,
+      disabledRecurrenceFields,
+      disableFlexible: recurrenceIndex !== undefined,
+      anniversaryType: isAnniversaryTaskType(type) ? type : undefined,
+      transportType: isTransportTaskType(type) ? type : undefined,
+      accommodationType: isAccommodationTaskType(type) ? type : undefined
+    }
+  );
 
   const hasRequired = useMemo(() => {
     return hasAllRequired(taskFieldValues, formFields);
@@ -162,7 +166,7 @@ export default function GenericTaskForm({
       resourcetype:
         formType === 'ANNIVERSARY' && type === 'BIRTHDAY'
           ? 'BirthdayTask'
-          : resourceTypeMapping[formType || '']
+          : resourceTypeMapping[formType === 'ICAL_EVENT' ? '' : formType || '']
     };
 
     if (parsedFormFieldValues.date && !parsedFormFieldValues.duration) {
@@ -250,6 +254,42 @@ export default function GenericTaskForm({
     [t, updateTask, onSuccess]
   );
 
+  const onChangeValues = useCallback(
+    (vals: FieldValueTypes) => {
+      const newVals = { ...vals };
+      if (
+        taskFieldValues.start_datetime !== vals.start_datetime ||
+        taskFieldValues.end_datetime !== vals.end_datetime
+      ) {
+        newVals.start_date = vals.start_datetime;
+        newVals.end_date = vals.end_datetime;
+        newVals.date = vals.start_datetime;
+        newVals.due_date = vals.start_datetime;
+      }
+
+      if (
+        taskFieldValues.start_date !== vals.start_date ||
+        taskFieldValues.end_date !== vals.end_date
+      ) {
+        newVals.start_datetime = vals.start_date;
+        newVals.end_datetime = vals.end_date;
+        newVals.date = vals.start_date;
+        newVals.due_date = vals.start_date;
+      }
+
+      if (taskFieldValues.date !== vals.date) {
+        newVals.start_datetime = vals.date;
+        newVals.end_datetime = vals.date;
+        newVals.start_date = vals.date;
+        newVals.end_date = vals.date;
+        newVals.due_date = vals.date;
+      }
+
+      setTaskFieldValues(newVals);
+    },
+    [taskFieldValues]
+  );
+
   const submitUpdateForm = () => {
     if (taskId) {
       const parsedTaskFieldValues = getParsedFieldValues();
@@ -282,7 +322,7 @@ export default function GenericTaskForm({
       <TypedForm
         fields={formFields}
         formValues={taskFieldValues}
-        onFormValuesChange={setTaskFieldValues}
+        onFormValuesChange={onChangeValues}
         inlineFields={inlineFields}
         fieldColor={fieldColor}
         sectionStyle={sectionStyle}

@@ -193,7 +193,7 @@ export default function TypedForm({
   formType?: 'UPDATE' | 'CREATE';
   inlineFields?: boolean;
   fieldColor?: string;
-  onFormValuesChange?: Function;
+  onFormValuesChange?: (vals: FieldValueTypes) => void;
   style?: ViewStyle;
   sectionStyle?: ViewStyle;
 }) {
