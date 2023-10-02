@@ -220,9 +220,6 @@ export const headerMapping = {
     SchoolBreak: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),
-    TripActivity: entityTypeHeader(
-      require('assets/images/header-backgrounds/cars.png')
-    ),
     Flight: entityTypeHeader(
       require('assets/images/header-backgrounds/cars.png')
     ),

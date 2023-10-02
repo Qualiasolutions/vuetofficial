@@ -31,7 +31,6 @@ export type EntityTypeName =
   | 'DriveTime'
   | 'HotelOrRental'
   | 'StayWithFriend'
-  | 'TripActivity'
   | 'Pet'
   | 'DaysOff'
   | 'AcademicPlan'

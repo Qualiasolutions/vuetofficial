@@ -10,7 +10,6 @@ import EntityScreen from 'screens/EntityPages/EntityScreens/EntityScreen';
 import LinkListScreen from 'screens/LinkListScreen';
 import HolidayListScreen from 'screens/EntityPages/HolidayListScreen';
 import HolidayDetailScreen from 'screens/EntityPages/HolidayDetailScreen';
-import EditEntityScreen from 'screens/Forms/EntityForms/EditEntityScreen';
 import AddEntityScreen from 'screens/Forms/EntityForms/AddEntityScreen';
 import CategoryPreferencesScreen from 'screens/Categories/CategoryPreferencesScreen';
 import SubCategoryListScreen from 'screens/Categories/SubCategoryListScreen';
@@ -129,13 +128,6 @@ export function ContentNavigator() {
         component={HolidayDetailScreen}
         options={{
           headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="EditEntity"
-        component={EditEntityScreen}
-        options={{
-          headerShown: false
         }}
       />
       <ContentStack.Screen

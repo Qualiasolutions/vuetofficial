@@ -31,7 +31,6 @@ const ENTITY_TYPE_TO_CATEGORY: {
   DriveTime: 'TRAVEL',
   HotelOrRental: 'TRAVEL',
   StayWithFriend: 'TRAVEL',
-  TripActivity: 'TRAVEL',
   TravelPlan: 'TRAVEL',
   Pet: 'PETS',
   Employee: 'CAREER',

@@ -90,6 +90,8 @@ const entitiesApi = vuetApi.injectEndpoints({
           body
         };
       },
+      // TODO - improve logic so that we don't always invalidate tags (for performance)
+      // invalidatesTags: [],
       invalidatesTags: ['Task'], // Need to invalidate scheduled tasks
       async onQueryStarted(
         { ...patch },
@@ -252,6 +254,8 @@ const entitiesApi = vuetApi.injectEndpoints({
         };
       },
       invalidatesTags: ['Entity', 'Task'],
+      // TODO - improve logic so that we don't always invalidate tags (for performance)
+      // invalidatesTags: [],
       async onQueryStarted(
         { ...patch },
         { dispatch, queryFulfilled, getState }

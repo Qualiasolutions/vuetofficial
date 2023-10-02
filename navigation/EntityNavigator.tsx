@@ -23,6 +23,7 @@ import EntityOverview, {
 import { EntityTypeName } from 'types/entities';
 import QuickNavigator from './base/QuickNavigator';
 import { StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   editForm: { paddingBottom: 100 }
@@ -38,6 +39,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     [entityId]
   );
   const filteredTasks = useSelector(taskSelector);
+  const navigation = useNavigation();
 
   const entity = useSelector(selectEntityById(entityId));
   const category = useSelector(selectCategoryById(entity?.category || -1));
@@ -60,18 +62,17 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [entity, entityId, isMemberEntity]);
 
   const editComponent = useMemo(() => {
-    if (entity && resourceTypeToComponent[entity?.resourcetype]) {
-      return null;
-    }
-    if (!isMemberEntity) {
-      return null;
-    }
     return () => (
       <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
-        <EditEntityForm entityId={entityId} />
+        <EditEntityForm
+          entityId={entityId}
+          onSubmitSuccess={() => {
+            navigation.goBack();
+          }}
+        />
       </TransparentFullPageScrollView>
     );
-  }, [entity, isMemberEntity, entityId]);
+  }, [entityId]);
 
   const overviewComponent = useMemo(() => {
     if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {

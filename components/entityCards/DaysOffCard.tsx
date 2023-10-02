@@ -41,7 +41,7 @@ export default function DaysOffCard({
   return (
     <SafePressable
       onPress={() => {
-        (navigation as any).push('EditEntity', { entityId: entity.id });
+        (navigation as any).push('EntityScreen', { entityId: entity.id });
       }}
     >
       <WhiteBox style={styles.card}>

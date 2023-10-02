@@ -18,7 +18,7 @@ import { TransparentView } from 'components/molecules/ViewComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
-export default function EditEntityScreen({
+export default function EditFamilyInviteScreen({
   route,
   navigation
 }: NativeStackScreenProps<SettingsTabParamList, 'EditFamilyMember'>) {

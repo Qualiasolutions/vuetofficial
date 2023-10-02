@@ -219,15 +219,6 @@ export default function CarPage({ entityId }: { entityId: number }) {
       <TransparentPaddedView>
         <TransparentView style={styles.titleBar}>
           <Text style={styles.title}>{entity.name}</Text>
-          <SafePressable
-            onPress={() => {
-              (navigation.navigate as any)('EditEntity', {
-                entityId
-              });
-            }}
-          >
-            <PrimaryText text="Edit" style={styles.titleEdit} />
-          </SafePressable>
         </TransparentView>
         {supportedHiddenTags.map((hiddenTag, i) => {
           const nextTask = dueDateTasks[hiddenTag];
