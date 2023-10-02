@@ -765,6 +765,15 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
                 if (!categoryName) {
                   return false;
                 }
+
+                if (
+                  task.tags.some((tagName) => {
+                    return TAG_TO_CATEGORY[tagName] === categoryName;
+                  })
+                ) {
+                  return true;
+                }
+
                 const extraItems = EXTRA_CATEGORY_ITEMS[categoryName];
                 if (!extraItems) {
                   return false;
