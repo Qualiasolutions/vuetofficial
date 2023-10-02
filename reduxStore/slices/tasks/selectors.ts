@@ -858,7 +858,7 @@ export const selectScheduledTask = ({
         recurrenceIndex === null || recurrenceIndex === undefined
           ? -1
           : recurrenceIndex;
-      if (actionId) {
+      if (actionId && scheduledTasks.data?.byActionId[actionId]) {
         return scheduledTasks.data?.byActionId[actionId][recIndex];
       }
       if (id) {

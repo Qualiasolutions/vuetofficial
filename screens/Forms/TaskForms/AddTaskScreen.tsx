@@ -463,9 +463,9 @@ export default function AddTaskScreen({
                         })
                       );
                       dispatch(
-                        setListEnforcedDate(
-                          vals.start_datetime || vals.start_date || vals.date
-                        )
+                        setListEnforcedDate({
+                          date: getDateStringFromDateObject(start)
+                        })
                       );
                     }
                     navigation.goBack();

@@ -1,3 +1,4 @@
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { SmallButton } from 'components/molecules/ButtonComponents';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
@@ -15,7 +16,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   useDeleteActionAlertMutation,
   useDeleteAlertMutation,
@@ -24,10 +25,6 @@ import {
   useMarkAlertsReadMutation
 } from 'reduxStore/services/api/alerts';
 import {
-  useCreateTaskActionCompletionFormMutation,
-  useCreateTaskCompletionFormMutation
-} from 'reduxStore/services/api/taskCompletionForms';
-import {
   selectActionAlertById,
   selectAlertById,
   selectAlertsByActionId,
@@ -35,18 +32,21 @@ import {
   selectHasUnreadAlert
 } from 'reduxStore/slices/alerts/selectors';
 import {
+  setListEnforcedDate,
+  setMonthEnforcedDate
+} from 'reduxStore/slices/calendars/actions';
+import {
   selectScheduledTask,
   selectTaskActionById
 } from 'reduxStore/slices/tasks/selectors';
-import {
-  selectOverdueTasks,
-  selectTaskById
-} from 'reduxStore/slices/tasks/selectors';
+import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import {
   selectCurrentUserId,
   selectFamilyMemberFromId
 } from 'reduxStore/slices/users/selectors';
+import { RootTabParamList } from 'types/base';
 import { ScheduledTaskResponseType } from 'types/tasks';
+import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 
 const alertEntryStyles = StyleSheet.create({
   container: {
@@ -62,22 +62,58 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
     selectFamilyMemberFromId(currentUserId || -1, alert?.user || -1)
   );
   const { t } = useTranslation();
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const dispatch = useDispatch();
   const [deleteAlert] = useDeleteAlertMutation();
 
-  if (!alert) {
+  const task = useSelector(selectTaskById(alert?.task || -1));
+
+  if (!alert || !task) {
     return null;
   }
 
   return (
     <TransparentView style={alertEntryStyles.container}>
-      <TransparentView>
-        <Text>
-          {alert.type} for{' '}
-          {currentUserId === user?.id
-            ? 'you'
-            : `${user?.first_name} ${user?.last_name}`}
-        </Text>
-      </TransparentView>
+      <SmallButton
+        title={alert.type}
+        onPress={() => {
+          if (alert.type === 'UNPREFERRED_DAY') {
+            navigation.navigate('SettingsNavigator', {
+              screen: 'PreferredDayPreferences',
+              initial: false
+            });
+          }
+          if (alert.type === 'BLOCKED_DAY') {
+            navigation.navigate('SettingsNavigator', {
+              screen: 'BlockedDayPreferences',
+              initial: false
+            });
+          }
+          if (alert.type === 'TASK_LIMIT_EXCEEDED') {
+            navigation.navigate('SettingsNavigator', {
+              screen: 'TaskLimits',
+              initial: false
+            });
+          }
+          if (alert.type === 'TASK_CONFLICT') {
+            const start = task.start_datetime || task.start_date || task.date;
+
+            if (start) {
+              dispatch(
+                setListEnforcedDate({
+                  date: getDateStringFromDateObject(new Date(start))
+                })
+              );
+              dispatch(
+                setMonthEnforcedDate({
+                  date: getDateStringFromDateObject(new Date(start))
+                })
+              );
+              navigation.navigate('Home');
+            }
+          }
+        }}
+      />
       <Pressable
         onPress={async () => {
           try {
@@ -105,22 +141,64 @@ const ActionAlertEntry = ({ actionAlertId }: { actionAlertId: number }) => {
     selectFamilyMemberFromId(currentUserId || -1, alert?.user || -1)
   );
   const { t } = useTranslation();
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const dispatch = useDispatch();
   const [deleteAlert] = useDeleteActionAlertMutation();
 
-  if (!alert) {
+  const action = useSelector(selectTaskActionById(alert?.action || -1));
+  const task = useSelector(
+    selectScheduledTask({
+      id: action?.task,
+      actionId: action?.id
+    })
+  );
+
+  if (!alert || !action || !task) {
     return null;
   }
 
   return (
     <TransparentView style={alertEntryStyles.container}>
-      <TransparentView>
-        <Text>
-          {alert.type} for{' '}
-          {currentUserId === user?.id
-            ? 'you'
-            : `${user?.first_name} ${user?.last_name}`}
-        </Text>
-      </TransparentView>
+      <SmallButton
+        title={alert.type}
+        onPress={() => {
+          if (alert.type === 'UNPREFERRED_DAY') {
+            navigation.navigate('SettingsNavigator', {
+              screen: 'PreferredDayPreferences',
+              initial: false
+            });
+          }
+          if (alert.type === 'BLOCKED_DAY') {
+            navigation.navigate('SettingsNavigator', {
+              screen: 'BlockedDayPreferences',
+              initial: false
+            });
+          }
+          if (alert.type === 'TASK_LIMIT_EXCEEDED') {
+            navigation.navigate('SettingsNavigator', {
+              screen: 'TaskLimits',
+              initial: false
+            });
+          }
+          if (alert.type === 'TASK_CONFLICT') {
+            const start = task.start_datetime || task.start_date || task.date;
+
+            if (start) {
+              dispatch(
+                setListEnforcedDate({
+                  date: getDateStringFromDateObject(new Date(start))
+                })
+              );
+              dispatch(
+                setMonthEnforcedDate({
+                  date: getDateStringFromDateObject(new Date(start))
+                })
+              );
+              navigation.navigate('Home');
+            }
+          }
+        }}
+      />
       <Pressable
         onPress={async () => {
           try {
@@ -203,8 +281,9 @@ const TaskActionAlerts = ({ actionId }: { actionId: number }) => {
   return (
     <ElevatedPressableBox
       style={taskAlertStyles.card}
-      onPress={() =>
-        (navigation.navigate as any)('EditTask', { taskId: task.id })
+      onPress={
+        () => {}
+        // (navigation.navigate as any)('EditTask', { taskId: task.id })
       }
     >
       <Text>{`ACTION - ${task.title}`}</Text>
@@ -217,110 +296,6 @@ const TaskActionAlerts = ({ actionId }: { actionId: number }) => {
           `${scheduledAction.start_datetime} - ${scheduledAction.end_datetime}`}
       </Text>
       {alertList}
-    </ElevatedPressableBox>
-  );
-};
-
-const overdueTaskStyles = StyleSheet.create({
-  buttons: {
-    flexDirection: 'row'
-  },
-  button: {
-    margin: 10
-  }
-});
-const OverdueTask = ({
-  task,
-  action,
-  recurrenceIndex
-}: {
-  task: number;
-  action: number | null;
-  recurrenceIndex: number;
-}) => {
-  const taskObj = useSelector(
-    selectScheduledTask({ id: task, recurrenceIndex, actionId: action })
-  );
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-
-  const [triggerCreateCompletionForm] = useCreateTaskCompletionFormMutation();
-  const [createTaskActionCompletionForm] =
-    useCreateTaskActionCompletionFormMutation();
-
-  if (!taskObj) {
-    return null;
-  }
-
-  return (
-    <ElevatedPressableBox
-      style={taskAlertStyles.card}
-      onPress={() => (navigation.navigate as any)('EditTask', { taskId: task })}
-    >
-      <Text>{taskObj.title}</Text>
-      <Text>
-        {taskObj.date || `${taskObj.start_datetime} - ${taskObj.end_datetime}`}
-      </Text>
-      <TransparentScrollView style={taskAlertStyles.tagsWrapper} horizontal>
-        <EntityTags entities={taskObj.entities} />
-        <OptionTags tagNames={taskObj.tags} />
-      </TransparentScrollView>
-      <TransparentView style={overdueTaskStyles.buttons}>
-        <SmallButton
-          title={t('common.markDone')}
-          onPress={async () => {
-            try {
-              if (action) {
-                await createTaskActionCompletionForm({
-                  action,
-                  recurrence_index: recurrenceIndex
-                });
-              } else {
-                await triggerCreateCompletionForm({
-                  resourcetype: 'TaskCompletionForm',
-                  recurrence_index: recurrenceIndex,
-                  task
-                }).unwrap();
-              }
-            } catch (err) {
-              console.error(err);
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
-            }
-          }}
-          style={overdueTaskStyles.button}
-        />
-        <SmallButton
-          title={t('common.ignore')}
-          onPress={async () => {
-            try {
-              if (action) {
-                await createTaskActionCompletionForm({
-                  action,
-                  recurrence_index: recurrenceIndex,
-                  ignore: true
-                });
-              } else {
-                await triggerCreateCompletionForm({
-                  resourcetype: 'TaskCompletionForm',
-                  recurrence_index: recurrenceIndex,
-                  ignore: true,
-                  task
-                }).unwrap();
-              }
-            } catch (err) {
-              console.error(err);
-              Toast.show({
-                type: 'error',
-                text1: t('common.errors.generic')
-              });
-            }
-          }}
-          style={overdueTaskStyles.button}
-        />
-      </TransparentView>
     </ElevatedPressableBox>
   );
 };
@@ -351,8 +326,6 @@ export default function AlertsList() {
     }
   }, [hasUnreadAlert, userDetails, markAlertsRead]);
 
-  // const overdueTasks = useSelector(selectOverdueTasks);
-
   if (
     isLoadingAlerts ||
     !allAlerts ||
@@ -370,11 +343,7 @@ export default function AlertsList() {
     parseInt(action)
   );
 
-  if (
-    alertedTasks.length === 0 &&
-    alertedActions.length === 0
-    // overdueTasks.length === 0
-  ) {
+  if (alertedTasks.length === 0 && alertedActions.length === 0) {
     return (
       <TransparentPaddedView>
         <Text>{t('components.alertsList.noAlerts')}</Text>
@@ -420,31 +389,12 @@ export default function AlertsList() {
     return item.type === 'ACTION_ALERT';
   };
 
-  const isOverdueTask = (
-    item:
-      | {
-          task?: number;
-          action?: number;
-          type: string;
-        }
-      | {
-          task: ScheduledTaskResponseType;
-          type: string;
-        }
-  ): item is {
-    task: ScheduledTaskResponseType;
-    type: string;
-  } => {
-    return item.type === 'OVERDUE_TASK';
-  };
-
   return (
     <TransparentView style={listStyles.container}>
       <FlatList
         data={[
           ...alertedTasks.map((task) => ({ task, type: 'ALERT' })),
           ...alertedActions.map((action) => ({ action, type: 'ACTION_ALERT' }))
-          // ...overdueTasks.map((task) => ({ task, type: 'OVERDUE_TASK' }))
         ]}
         contentContainerStyle={listStyles.listView}
         renderItem={({ item }) => {
@@ -457,19 +407,6 @@ export default function AlertsList() {
               <TaskActionAlerts
                 actionId={item.action}
                 key={item.task || item.action}
-              />
-            );
-          } else if (isOverdueTask(item)) {
-            return (
-              <OverdueTask
-                key={`${item.task.id}_${item.task.recurrence_index}_${item.task.action_id}`}
-                task={item.task.id}
-                action={item.task.action_id}
-                recurrenceIndex={
-                  item.task.recurrence_index === null
-                    ? -1
-                    : item.task.recurrence_index
-                }
               />
             );
           }

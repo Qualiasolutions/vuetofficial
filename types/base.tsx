@@ -178,7 +178,7 @@ export type RootStackParamList = {
 
 export type RootTabParamList = {
   Home: undefined;
-  SettingsNavigator: undefined;
+  SettingsNavigator: NavigatorScreenParams<SettingsTabParamList>;
   ContentNavigator: {
     screen?: string;
     initial?: boolean;
