@@ -35,8 +35,6 @@ const linking: LinkingOptions<TabParamList> = {
           EntityScreen: 'entity-screen',
           EditEntity: 'edit-entity',
           AddEntity: 'add-entity',
-          ChildEntitiesScreen: 'child-entities-screen',
-          ChildEntitiesCalendarScreen: 'child-entities-calendar-screen',
           HolidayList: 'holiday-list',
           HolidayDetail: 'holiday-detail'
         }

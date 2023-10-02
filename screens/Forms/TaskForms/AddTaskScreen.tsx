@@ -25,6 +25,12 @@ import {
   ActivityTaskType
 } from 'types/tasks';
 import GenericTaskForm from 'components/forms/GenericTaskForm';
+import {
+  setListEnforcedDate,
+  setMonthEnforcedDate
+} from 'reduxStore/slices/calendars/actions';
+import { useDispatch } from 'react-redux';
+import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 
 const formTypes = [
   {
@@ -100,6 +106,7 @@ export default function AddTaskScreen({
 }: AddTaskScreenProps) {
   const { t } = useTranslation();
   const { data: userDetails } = useGetUserDetails();
+  const dispatch = useDispatch();
 
   const [tagsAndEntities, setTagsAndEntities] = useState<{
     tags: string[];
@@ -444,8 +451,23 @@ export default function AddTaskScreen({
                   type={taskType}
                   defaults={taskFieldValues}
                   extraFields={tagsAndEntities}
-                  onSuccess={() => {
+                  onSuccess={(vals) => {
                     setTagsAndEntities({ tags: [], entities: [] });
+                    const start: Date | undefined =
+                      vals.start_datetime || vals.start_date || vals.date;
+
+                    if (start) {
+                      dispatch(
+                        setMonthEnforcedDate({
+                          date: getDateStringFromDateObject(start)
+                        })
+                      );
+                      dispatch(
+                        setListEnforcedDate(
+                          vals.start_datetime || vals.start_date || vals.date
+                        )
+                      );
+                    }
                     navigation.goBack();
                   }}
                 />

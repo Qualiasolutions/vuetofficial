@@ -52,7 +52,7 @@ export default function GenericTaskForm({
 }: {
   type: TaskType;
   defaults: any;
-  onSuccess?: () => void;
+  onSuccess?: (vals: FieldValueTypes) => void;
   recurrenceOverwrite?: boolean;
   recurrenceIndex?: number;
   isEdit?: boolean;
@@ -221,7 +221,7 @@ export default function GenericTaskForm({
         text1: t('screens.addTask.createSuccess')
       });
       if (onSuccess) {
-        onSuccess();
+        onSuccess(taskFieldValues);
       }
     } catch (err) {
       Toast.show({
@@ -242,7 +242,7 @@ export default function GenericTaskForm({
           text1: t('screens.editTask.updateSuccess')
         });
         if (onSuccess) {
-          onSuccess();
+          onSuccess(taskFieldValues);
         }
       } catch (e) {
         Toast.show({
@@ -251,7 +251,7 @@ export default function GenericTaskForm({
         });
       }
     },
-    [t, updateTask, onSuccess]
+    [t, updateTask, onSuccess, taskFieldValues]
   );
 
   const onChangeValues = useCallback(

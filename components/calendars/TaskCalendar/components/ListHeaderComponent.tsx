@@ -32,6 +32,7 @@ import {
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import CategoryCheckboxes from 'components/organisms/CategoryCheckboxes';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { HEADER_HEIGHT } from './shared';
 
 const styles = StyleSheet.create({
   modal: {
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   loadMoreButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
-    height: 54,
+    height: HEADER_HEIGHT,
     alignItems: 'center'
   },
   loadMoreButton: { marginRight: 30 },

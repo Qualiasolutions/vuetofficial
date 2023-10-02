@@ -84,27 +84,6 @@ export type SettingsTabParamList = {
 export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =
   NativeStackScreenProps<SettingsTabParamList, Screen>;
 
-// Entity Stack
-export type EntityTabParamList = {
-  EntityCalendar: undefined;
-  EntityReferences: undefined;
-  EntityMessages: undefined;
-  EntityHome: undefined;
-};
-
-export type EntityTabScreenProps<Screen extends keyof EntityTabParamList> =
-  NativeStackScreenProps<EntityTabParamList, Screen>;
-
-// Entity Type Stack
-export type EntityTypeTabParamList = {
-  EntityTypeCalendar: { entityTypes: EntityTypeName[] };
-  EntityTypeReferences: { entityTypes: EntityTypeName[] };
-  EntityTypeHome: { entityTypes: EntityTypeName[] };
-};
-
-export type EntityTypeTabScreenProps<Screen extends keyof EntityTabParamList> =
-  NativeStackScreenProps<EntityTabParamList, Screen>;
-
 // Tag stack
 export type TagScreenTabParamList = {
   TagCalendar: undefined;
@@ -169,16 +148,6 @@ export type ContentTabParamList = {
   };
   EntityScreen: { entityId: number | string };
   TagScreen: { tagName: string };
-  ChildEntitiesScreen: {
-    entityId: number | string;
-    entityTypes: EntityTypeName[];
-    showCreateForm: boolean;
-  };
-  ChildEntitiesCalendarScreen: {
-    entityId: number | string;
-    entityTypes: EntityTypeName[];
-    includeParentTasks?: boolean;
-  };
   HolidayList: {};
   HolidayDetail: { countrycodes: string[] };
   EditEntity: { entityId: number | string };
@@ -262,5 +231,4 @@ export type TabParamList = RootTabParamList &
   FamilyRequestTabParamList &
   SettingsTabParamList &
   MyAccountTabParamList &
-  EntityTabParamList &
   QuickNavTabParamList;

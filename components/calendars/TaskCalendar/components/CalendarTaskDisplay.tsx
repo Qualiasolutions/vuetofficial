@@ -28,7 +28,7 @@ import {
 import { useSelector } from 'react-redux';
 import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import Task, { ScheduledEntity } from './Task';
-import { ITEM_HEIGHT } from './shared';
+import { HEADER_HEIGHT, ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
 import { useTranslation } from 'react-i18next';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
@@ -363,11 +363,14 @@ function Calendar({
   useEffect(() => {
     if (monthEnforcedDate && sectionListRef?.current) {
       const newDate = new Date(monthEnforcedDate);
+      const datesToShow = Array(
+        ...new Set([...Object.keys(entities || {}), ...Object.keys(tasks)])
+      ).sort();
       if (firstDate && firstDate < newDate) {
-        let sectionIndex = -1;
-        for (const date of Object.keys(tasks)) {
+        let sectionIndex = 0;
+        for (const date of datesToShow) {
           const dateObj = new Date(date);
-          if (dateObj < newDate && firstDate < dateObj) {
+          if (dateObj < newDate && firstDate <= dateObj) {
             sectionIndex += 1;
           }
         }
@@ -450,7 +453,7 @@ function Calendar({
     if (!shownSections) return [];
     const layouts: any[] = [];
     let index = 0;
-    let offset = 0;
+    let offset = HEADER_HEIGHT;
     shownSections.forEach((section) => {
       // Section header
       const TOTAL_HEADER_HEIGHT = SECTION_HEADER_HEIGHT;
