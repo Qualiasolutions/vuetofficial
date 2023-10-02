@@ -516,7 +516,18 @@ export const selectFilteredScheduledEntityIds = (
               !resourceTypes || resourceTypes.includes(resourcetype)
           )
           .filter(({ id, resourcetype }) => {
-            if (entityIds && entityIds.includes(id)) {
+            if (
+              entityIds &&
+              entityIds.includes(id) &&
+              ![
+                'SchoolYearStart',
+                'SchoolYearEnd',
+                'SchoolTerm',
+                'SchoolTermStart',
+                'SchoolTermEnd',
+                'SchoolBreak'
+              ].includes(resourcetype)
+            ) {
               // Have exact entity ID match
               return true;
             }
@@ -565,6 +576,7 @@ export const selectFilteredScheduledEntityIds = (
                 const studentEntityIds = students.filter((studentId) =>
                   entityIds.includes(studentId)
                 );
+
                 for (const studentId of studentEntityIds) {
                   const student = allEntitiesData.byId[studentId];
 

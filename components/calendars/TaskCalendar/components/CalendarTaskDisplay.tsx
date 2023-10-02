@@ -375,7 +375,7 @@ function Calendar({
           }
         }
 
-        if (sectionIndex >= 0) {
+        if (sectionIndex >= 0 && sectionIndex < datesToShow.length) {
           // SCROLL TO THE RIGHT DATE
           try {
             sectionListRef.current.scrollToLocation({
