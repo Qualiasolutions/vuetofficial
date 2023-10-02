@@ -25,26 +25,25 @@ export default function useDefaultTaskValues(
 
   const defaultValues = useMemo(() => {
     if (taskObj && userDetails) {
-      if (taskObj.start_timezone && taskObj.start_datetime) {
-        const newStart = getTimeInTimezone(
-          taskObj.start_datetime,
-          taskObj.start_timezone
-        );
-
-        taskObj.start_datetime = newStart;
-      }
-      if (taskObj.end_timezone && taskObj.end_datetime) {
-        const newEnd = getTimeInTimezone(
-          taskObj.end_datetime,
-          taskObj.end_timezone
-        );
-        taskObj.end_datetime = newEnd;
-      }
-
       const baseTask = { ...(scheduledTaskObj || taskObj) };
 
       if (baseTask.start_date) {
         baseTask.date = baseTask.start_date;
+      }
+
+      if (taskObj.start_timezone && baseTask.start_datetime) {
+        const newStart = getTimeInTimezone(
+          baseTask.start_datetime,
+          taskObj.start_timezone
+        );
+        baseTask.start_datetime = newStart;
+      }
+      if (taskObj.end_timezone && baseTask.end_datetime) {
+        const newEnd = getTimeInTimezone(
+          baseTask.end_datetime,
+          taskObj.end_timezone
+        );
+        baseTask.end_datetime = newEnd;
       }
 
       const newTaskToEdit = {
