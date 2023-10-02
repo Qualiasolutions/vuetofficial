@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 0,
     paddingLeft: 20,
+    paddingRight: 40,
     paddingTop: 20,
     paddingBottom: 20,
     flexDirection: 'row',
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   flexShrink: { flexShrink: 1 }
 });

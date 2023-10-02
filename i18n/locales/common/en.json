@@ -419,6 +419,7 @@
     "lists": "Lists",
     "item": "Item",
     "items": "Items",
+    "chat": "Chat",
     "emailAddress": "Email address",
     "errors": {
       "generic": "Oops, something went wrong. Please try again later.",

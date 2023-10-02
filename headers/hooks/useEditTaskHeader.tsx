@@ -1,16 +1,16 @@
 import { useLayoutEffect } from 'react';
-import {
-  NativeStackHeaderProps,
-  NativeStackNavigationOptions
-} from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import {
-  selectScheduledTask,
-  selectTaskById
-} from 'reduxStore/slices/tasks/selectors';
-import { Text } from 'components/Themed';
+import { selectTaskById } from 'reduxStore/slices/tasks/selectors';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
+import { SmallButton } from 'components/molecules/ButtonComponents';
+import { useTranslation } from 'react-i18next';
+import {
+  BottomTabHeaderProps,
+  BottomTabNavigationProp
+} from '@react-navigation/bottom-tabs';
+import { RootTabParamList } from 'types/base';
+import { useThemeColor } from 'components/Themed';
 
 export default function useEditTaskHeader({
   taskId,
@@ -19,29 +19,39 @@ export default function useEditTaskHeader({
   taskId: number;
   recurrenceIndex?: number;
 }) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const route = useRoute();
+  const { t } = useTranslation();
   const task = useSelector(selectTaskById(taskId));
-  const scheduledTask = useSelector(
-    selectScheduledTask({ id: taskId, recurrenceIndex })
-  );
+  const primaryColor = useThemeColor({}, 'primary');
 
   useLayoutEffect(() => {
-    console.log('task');
-    console.log(task);
     if (task) {
-      const headerRight = <Text>{task.title}</Text>;
-      const header = (props: NativeStackHeaderProps) => (
+      const headerRight = (
+        <SmallButton
+          title={t('common.chat')}
+          onPress={() => {
+            navigation.navigate('Chat', {
+              screen: 'MessageThread',
+              initial: false,
+              params: {
+                taskId,
+                recurrenceIndex
+              }
+            });
+          }}
+        />
+      );
+      const header = (props: BottomTabHeaderProps) => (
         <BackOnlyHeaderWithSafeArea headerRight={headerRight} {...props} />
       );
 
-      const options: Partial<NativeStackNavigationOptions> = {
+      navigation.setOptions({
         title: task.title,
         header,
-        headerShown: true
-      };
-
-      navigation.setOptions(options);
+        headerShown: true,
+        headerTintColor: primaryColor
+      });
     }
-  }, [task, navigation, route]);
+  }, [task, navigation, route, recurrenceIndex, t, taskId, primaryColor]);
 }

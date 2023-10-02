@@ -139,10 +139,10 @@ export type MyAccountTabScreenProps<
 export type MessagesTabParamList = {
   MessagesList: undefined;
   MessageThread: {
-    entityId: number | null;
-    taskId: number | null;
-    actionId: number | null;
-    recurrenceIndex: number | null;
+    entityId?: number | null;
+    taskId?: number | null;
+    actionId?: number | null;
+    recurrenceIndex?: number | null;
   };
 };
 export type MessagesTabScreenProps<Screen extends keyof MessagesTabParamList> =
@@ -238,7 +238,7 @@ export type RootTabParamList = {
   };
   Calendar: {};
   Lists: {};
-  Chat: undefined;
+  Chat: NavigatorScreenParams<MessagesTabParamList>;
   RoutineTasks: {
     id: number;
     date: string;
