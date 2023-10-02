@@ -23,7 +23,6 @@ export default function EditTaskScreen({
   route,
   navigation
 }: NativeStackScreenProps<RootTabParamList, 'EditTask'>) {
-  const { t } = useTranslation();
   const { taskId, recurrenceIndex } = route.params;
 
   const taskObj = useSelector(selectTaskById(taskId));
