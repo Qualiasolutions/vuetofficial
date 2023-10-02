@@ -1,11 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import SafePressable from './SafePressable';
 import { TransparentView, WhitePaddedView } from './ViewComponents';
 import { elevation } from 'styles/elevation';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { parsePresignedUrl } from 'utils/urls';
-import { Image } from './ImageComponents';
 import { Text, useThemeColor, View } from 'components/Themed';
 import { Feather } from '@expo/vector-icons';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -117,7 +113,7 @@ export default function TopNav() {
           pageName="NewItems"
           iconName="bell"
           title={t('pageTitles.newItems')}
-          marked={hasUnseenActivity}
+          // marked={hasUnseenActivity}
         />
         <PageLink
           pageName="QuickJot"
