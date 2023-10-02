@@ -385,7 +385,53 @@ const tasksApi = vuetApi.injectEndpoints({
           method: 'DELETE'
         };
       },
-      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction']
+      invalidatesTags: ['Task', 'Alert', 'ActionAlert', 'TaskAction'],
+      async onQueryStarted({ id }, { dispatch, queryFulfilled, getState }) {
+        const patchResults = [];
+        for (const {
+          endpointName,
+          originalArgs
+        } of tasksApi.util.selectInvalidatedBy(getState(), [
+          { type: 'Task' }
+        ])) {
+          if (endpointName === 'getAllTasks') {
+            const patchResult = dispatch(
+              tasksApi.util.updateQueryData(
+                'getAllTasks',
+                originalArgs,
+                (draft) => {
+                  draft.ids = draft.ids.filter(
+                    (draftTaskId) => draftTaskId !== id
+                  );
+                  delete draft.byId[id];
+                }
+              )
+            );
+            patchResults.push(patchResult);
+          }
+
+          if (endpointName === 'getAllScheduledTasks') {
+            const patchResult = dispatch(
+              tasksApi.util.updateQueryData(
+                'getAllScheduledTasks',
+                originalArgs,
+                (draft) => {
+                  delete draft.byTaskId[id];
+                }
+              )
+            );
+            patchResults.push(patchResult);
+          }
+        }
+
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
+          }
+        }
+      }
     }),
     bulkCreateTasks: builder.mutation<
       FixedTaskResponseType[],

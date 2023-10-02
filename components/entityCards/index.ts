@@ -2,7 +2,6 @@ import { EntityTypeName } from 'types/entities';
 import AnniversaryCard from './AnniversaryCard';
 import EventCard from './EventCard';
 import DaysOffCard from './DaysOffCard';
-import HolidayCard from './HolidayCard';
 import TripCard from './TripCard';
 import GenericEntityWithImageCard from './GenericEntityWithImageCard';
 
@@ -17,7 +16,6 @@ export default {
   Birthday: AnniversaryCard,
   Event: EventCard,
   DaysOff: DaysOffCard,
-  Holiday: HolidayCard,
   SocialPlan: GenericEntityWithImageCard,
   Hobby: GenericEntityWithImageCard,
   Car: GenericEntityWithImageCard,
