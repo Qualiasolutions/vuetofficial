@@ -1,3 +1,4 @@
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import ElevatedPressableBox from 'components/molecules/ElevatedPressableBox';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
@@ -8,7 +9,7 @@ import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { t } from 'i18next';
 import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import {
   TaskCompletionForm,
@@ -21,6 +22,10 @@ import {
   useUpdateLastActivityViewMutation
 } from 'reduxStore/services/api/user';
 import {
+  setListEnforcedDate,
+  setMonthEnforcedDate
+} from 'reduxStore/slices/calendars/actions';
+import {
   selectEntityById,
   selectNewEntityIds,
   selectNewTaskCompletionFormIds
@@ -31,8 +36,10 @@ import {
   selectTaskById,
   selectTaskCompletionFormById
 } from 'reduxStore/slices/tasks/selectors';
+import { RootTabParamList } from 'types/base';
 import { EntityResponseType } from 'types/entities';
 import { FixedTaskResponseType } from 'types/tasks';
+import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 
 const cardStyles = StyleSheet.create({
   card: { marginBottom: 5 }
@@ -51,7 +58,10 @@ const NewEntityCard = ({ entityId }: { entityId: number }) => {
         (navigation.navigate as any)('ContentNavigator', {
           screen: 'EntityScreen',
           initial: false,
-          params: { entityId }
+          params: {
+            entityId,
+            screen: 'Edit'
+          }
         });
       }}
     >
@@ -67,7 +77,8 @@ const NewEntityCard = ({ entityId }: { entityId: number }) => {
 
 const NewTaskCard = ({ taskId }: { taskId: number }) => {
   const task = useSelector(selectTaskById(taskId));
-  const navigation = useNavigation();
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const dispatch = useDispatch();
 
   if (!task) {
     return null;
@@ -76,9 +87,21 @@ const NewTaskCard = ({ taskId }: { taskId: number }) => {
     <ElevatedPressableBox
       style={cardStyles.card}
       onPress={() => {
-        (navigation.navigate as any)('EditTask', {
-          taskId: task.id
-        });
+        const start = task.start_datetime || task.start_date || task.date;
+
+        if (start) {
+          dispatch(
+            setListEnforcedDate({
+              date: getDateStringFromDateObject(new Date(start))
+            })
+          );
+          dispatch(
+            setMonthEnforcedDate({
+              date: getDateStringFromDateObject(new Date(start))
+            })
+          );
+          navigation.navigate('Home');
+        }
       }}
     >
       <Text bold={true}>{t('components.newItemsList.newTask')}</Text>
