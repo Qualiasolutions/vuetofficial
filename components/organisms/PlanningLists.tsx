@@ -59,6 +59,7 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
 
   const [updateList, updateListResult] = useUpdatePlanningListMutation();
   const [editingMembers, setEditingMembers] = useState(false);
+  const [showItems, setShowItems] = useState(false);
 
   const [newMembers, setNewMembers] = useState(list.members);
   const { t } = useTranslation();
@@ -73,20 +74,27 @@ const PlanningListView = ({ list }: { list: PlanningList }) => {
 
   return (
     <WhiteBox style={styles.listBox}>
-      <PlanningListHeader list={list} />
-      <TransparentView style={styles.sublists}>
-        {sublists.map((sublistId) => {
-          const sublist = allSublists.byId[sublistId];
-          return (
-            <SublistView
-              sublist={sublist}
-              key={sublistId}
-              style={styles.sublistView}
-            />
-          );
-        })}
-        <AddSublistInputPair list={list.id} />
-      </TransparentView>
+      <PlanningListHeader
+        list={list}
+        isShoppingList={false}
+        expanded={showItems}
+        onClickExpand={() => setShowItems(!showItems)}
+      />
+      {showItems && (
+        <TransparentView style={styles.sublists}>
+          {sublists.map((sublistId) => {
+            const sublist = allSublists.byId[sublistId];
+            return (
+              <SublistView
+                sublist={sublist}
+                key={sublistId}
+                style={styles.sublistView}
+              />
+            );
+          })}
+          <AddSublistInputPair list={list.id} />
+        </TransparentView>
+      )}
       <SafePressable
         onPress={() => {
           setEditingMembers(true);

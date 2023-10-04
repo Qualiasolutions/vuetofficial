@@ -16,6 +16,7 @@ import { Feather } from '@expo/vector-icons';
 import { Modal, YesNoModal } from './Modals';
 import { Button } from './ButtonComponents';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { TouchableOpacity } from './TouchableOpacityComponents';
 
 const styles = StyleSheet.create({
   listHeader: {
@@ -32,15 +33,22 @@ const styles = StyleSheet.create({
   saveTemplateModalContent: {
     maxWidth: 250,
     alignItems: 'center'
-  }
+  },
+  listDropdownButton: { flexDirection: 'row', marginLeft: 20 }
 });
 
 export default function PlanningListHeader({
   list,
-  isShoppingList
+  isShoppingList,
+  expanded,
+  numItems,
+  onClickExpand
 }: {
   list: PlanningList | ShoppingList;
   isShoppingList?: boolean;
+  expanded?: boolean;
+  numItems?: number;
+  onClickExpand?: () => void;
 }) {
   const [deleteList] = useDeletePlanningListMutation();
   const [deleteShoppingList] = useDeleteShoppingListMutation();
@@ -145,6 +153,17 @@ export default function PlanningListHeader({
           <Feather name="save" size={20} color="green" />
         </SafePressable>
       )}
+      <TouchableOpacity
+        onPress={onClickExpand}
+        style={styles.listDropdownButton}
+      >
+        <Feather name={expanded ? 'chevron-up' : 'chevron-down'} size={25} />
+        {!expanded && (
+          <Text>
+            {numItems} {numItems === 1 ? t('common.item') : t('common.items')}
+          </Text>
+        )}
+      </TouchableOpacity>
       <YesNoModal
         title={t('components.planningLists.deleteListModal.title')}
         question={t('components.planningLists.deleteListModal.blurb')}

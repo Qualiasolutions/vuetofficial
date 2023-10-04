@@ -72,26 +72,13 @@ const ShoppingListView = ({ list }: { list: ShoppingList }) => {
   return (
     <WhiteBox style={styles.listBox}>
       <TransparentView style={styles.header}>
-        <PlanningListHeader list={list} isShoppingList={true} />
-        {
-          <TouchableOpacity
-            onPress={() => {
-              setShowItems(!showItems);
-            }}
-            style={styles.listDropdownButton}
-          >
-            <Feather
-              name={showItems ? 'chevron-up' : 'chevron-down'}
-              size={25}
-            />
-            {!showItems && (
-              <Text>
-                {items.length}{' '}
-                {items.length === 1 ? t('common.item') : t('common.items')}
-              </Text>
-            )}
-          </TouchableOpacity>
-        }
+        <PlanningListHeader
+          list={list}
+          isShoppingList={true}
+          expanded={showItems}
+          onClickExpand={() => setShowItems(!showItems)}
+          numItems={items.length}
+        />
       </TransparentView>
       {showItems && (
         <TransparentView style={styles.sublists}>
