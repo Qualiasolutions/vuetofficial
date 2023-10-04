@@ -10,11 +10,13 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     filteredEntities: [],
     filteredTags: [],
     filteredCategories: [],
+    filteredTaskTypes: [],
     taskToAction: null
   },
   ui: {
     enforcedDate: '',
     actionDrawerOpen: false,
+    filtersModalOpen: false,
     lastUpdateId: null
   }
 };
@@ -93,6 +95,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
     }
   )
   .handleAction(
+    actions.setFilteredTaskTypes,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          filteredTaskTypes: payload.taskTypes
+        }
+      };
+    }
+  )
+  .handleAction(
     actions.setTaskToAction,
     (state: CalendarState, { payload }) => {
       return {
@@ -100,6 +114,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         data: {
           ...state.data,
           taskToAction: payload
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setFiltersModalOpen,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          filtersModalOpen: payload
         }
       };
     }

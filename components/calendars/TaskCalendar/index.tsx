@@ -21,6 +21,7 @@ import {
 } from 'utils/datesAndTimes';
 import {
   setEnforcedDate,
+  setFiltersModalOpen,
   setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import MonthSelector from './components/MonthSelector';
@@ -94,7 +95,6 @@ function Calendar({
 
   const primaryColor = useThemeColor({}, 'primary');
   const [showCalendar, setShowCalendar] = useState(false);
-  const [filtersModalOpen, setFiltersModalOpen] = useState(false);
 
   const calendarView = useMemo(() => {
     return (
@@ -178,7 +178,7 @@ function Calendar({
           {showFilters && (
             <TouchableOpacity
               onPress={() => {
-                setFiltersModalOpen(true);
+                dispatch(setFiltersModalOpen(true));
               }}
               style={styles.headerButton}
             >
@@ -206,10 +206,6 @@ function Calendar({
         </WhitePaddedView>
       </TransparentView>
       <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>
-      <FiltersModal
-        visible={filtersModalOpen}
-        onRequestClose={() => setFiltersModalOpen(false)}
-      />
     </TransparentView>
   );
 }

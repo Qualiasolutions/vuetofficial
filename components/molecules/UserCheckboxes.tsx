@@ -1,9 +1,12 @@
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import Checkbox from './Checkbox';
+import SafePressable from './SafePressable';
 import { PaddedSpinner } from './Spinners';
 import UserWithColor from './UserWithColor';
 import { TransparentView } from './ViewComponents';
+import { UserResponse } from 'types/users';
 
 const styles = StyleSheet.create({
   itemWrapper: {
@@ -22,15 +25,22 @@ export default function UserCheckboxes({
   onToggleUser: (value: number) => void;
 }) {
   const { data: userDetails } = useGetUserFullDetails();
-  if (!userDetails) {
+  const familyUsers = userDetails?.family?.users;
+
+  if (!familyUsers) {
     return <PaddedSpinner />;
   }
-
   return (
     <TransparentView>
-      {userDetails.family.users.map((user) => {
+      {familyUsers.map((user) => {
         return (
-          <TransparentView style={styles.itemWrapper} key={user.id}>
+          <SafePressable
+            style={styles.itemWrapper}
+            key={user.id}
+            onPress={() => {
+              onToggleUser(user.id);
+            }}
+          >
             <UserWithColor
               name={`${user.first_name} ${user.last_name}`}
               memberColour={user.member_colour}
@@ -40,9 +50,9 @@ export default function UserCheckboxes({
             <Checkbox
               checked={value && value.includes(user.id)}
               style={styles.checkbox}
-              onValueChange={async () => onToggleUser(user.id)}
+              disabled={true}
             />
-          </TransparentView>
+          </SafePressable>
         );
       })}
     </TransparentView>

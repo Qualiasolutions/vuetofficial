@@ -37,9 +37,19 @@ export const selectFilteredCategories = createSelector(
   (calendar: CalendarState | undefined) => calendar?.data?.filteredCategories
 );
 
+export const selectFilteredTaskTypes = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.data?.filteredTaskTypes
+);
+
 export const selectTaskToAction = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.data?.taskToAction
+);
+
+export const selectFiltersModalOpen = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.ui?.filtersModalOpen
 );
 
 export const selectScheduledTaskIdsByDate = createSelector(

@@ -1,18 +1,7 @@
-import Checkbox from 'components/molecules/Checkbox';
-import SafePressable from 'components/molecules/SafePressable';
-import { Text } from 'components/Themed';
+import CheckboxesList from 'components/molecules/CheckboxesList';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 
-const styles = StyleSheet.create({
-  listItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 3
-  }
-});
 export default function CategoryCheckboxes({
   value,
   onChange
@@ -27,40 +16,39 @@ export default function CategoryCheckboxes({
     return null;
   }
 
+  const checkboxOptions = allCategories?.ids.map((id) => {
+    return {
+      value: id,
+      label: t(`categories.${allCategories.byId[id].name}`),
+      checked: value.includes(id)
+    };
+  });
+
   return (
-    <>
-      <SafePressable
-        style={styles.listItem}
-        onPress={() => {
+    <CheckboxesList
+      options={[
+        {
+          label: t('common.selectAll'),
+          value: 'ALL',
+          checked: value.length === allCategories?.ids.length
+        },
+        ...checkboxOptions
+      ]}
+      onToggleItem={(categoryId) => {
+        if (categoryId === 'ALL') {
           if (value.length === allCategories?.ids.length) {
             onChange([]);
           } else {
             onChange(allCategories.ids);
           }
-        }}
-      >
-        <Text bold={true}>{t(`common.selectAll`)}</Text>
-        <Checkbox
-          checked={value.length === allCategories?.ids.length}
-          disabled={true}
-        />
-      </SafePressable>
-      {allCategories?.ids.map((id) => (
-        <SafePressable
-          key={id}
-          style={styles.listItem}
-          onPress={() => {
-            if (value.includes(id)) {
-              onChange(value.filter((categoryId) => categoryId !== id));
-            } else {
-              onChange([...value, id]);
-            }
-          }}
-        >
-          <Text>{t(`categories.${allCategories.byId[id].name}`)}</Text>
-          <Checkbox checked={value.includes(id)} disabled={true} />
-        </SafePressable>
-      ))}
-    </>
+        } else {
+          if (value.includes(categoryId)) {
+            onChange(value.filter((id) => id !== categoryId));
+          } else {
+            onChange([...value, categoryId]);
+          }
+        }
+      }}
+    />
   );
 }

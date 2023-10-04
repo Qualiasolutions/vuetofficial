@@ -97,6 +97,16 @@
     "SOCIAL_INTERESTS__ANNIVERSARY": "Anniversary",
     "SOCIAL_INTERESTS__HOLIDAY": "Holiday I Celebrate"
   },
+  "taskTypes": {
+    "TASK": "Task",
+    "DUE_DATE": "Due Date",
+    "APPOINTMENT": "Appointment",
+    "ACTIVITY": "Activity",
+    "TRANSPORT": "Transport",
+    "ACCOMMODATION": "Accommodation",
+    "HOLIDAY": "Holiday",
+    "ANNIVERSARY": "Anniversary"
+  },
   "templates": {
     "planningLists": {
       "BEFORE_AFTER_TERM_TIME": "Before and After Term Time",
@@ -350,7 +360,8 @@
   "filters": {
     "userFilters": "User filters",
     "entityFilters": "Entity filters",
-    "categoryFilters": "Category filters"
+    "categoryFilters": "Category filters",
+    "taskTypeFilters": "Task Type filters"
   },
   "common": {
     "start": "Start",
@@ -358,6 +369,7 @@
     "done": "Done",
     "edit": "Edit",
     "change": "Change",
+    "other": "Other",
     "name": "Name",
     "value": "Value",
     "members": "Members",

@@ -4,7 +4,7 @@ import { ColorSchemeName } from 'react-native';
 
 import LinkingConfiguration from './LinkingConfiguration';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectAccessToken,
   selectRefreshToken
@@ -30,6 +30,9 @@ import {
   useGetUserFullDetailsQuery
 } from 'reduxStore/services/api/user';
 import PremiumModal from 'components/molecules/PremiumModal';
+import { selectFiltersModalOpen } from 'reduxStore/slices/calendars/selectors';
+import { setFiltersModalOpen } from 'reduxStore/slices/calendars/actions';
+import FiltersModal from 'components/organisms/FiltersModal';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -39,13 +42,19 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const [hasJustSignedUp, setHasJustSignedUp] = React.useState(false);
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
+  const filtersModalOpen = !!useSelector(selectFiltersModalOpen);
+  const dispatch = useDispatch();
   const { data: userBasicDetails, isLoading: isLoadingDetails } =
     useGetUserDetailsQuery(undefined, { skip: !jwtAccessToken });
   const { data: userFullDetails, isLoading: isLoadingFullDetails } =
     useGetUserFullDetailsQuery(userBasicDetails?.user_id || -1, {
       refetchOnMountOrArgChange: true,
       skip: !userBasicDetails?.user_id,
-      pollingInterval: 10000
+      // TODO
+      // This does cause some performance issues when updating -
+      // would be better to use sockets so that we only refetch
+      // when we actually need to
+      pollingInterval: 30000
     });
   const { data: invitesForUser, isLoading: isLoadingInvitesForUser } =
     useActiveInvitesForUser(true);
@@ -94,6 +103,12 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       <TaskActionModal />
       <ListItemActionModal />
       <PremiumModal />
+      <FiltersModal
+        visible={filtersModalOpen}
+        onRequestClose={() => {
+          dispatch(setFiltersModalOpen(false));
+        }}
+      />
     </NavigationContainer>
   );
 };

@@ -1,3 +1,4 @@
+import { TaskType } from 'types/tasks';
 import { createAction } from 'typesafe-actions';
 
 export const setEnforcedDate = createAction('@calendars/setEnforcedDate')<{
@@ -28,6 +29,12 @@ export const setFilteredCategories = createAction(
   categories: number[];
 }>();
 
+export const setFilteredTaskTypes = createAction(
+  '@calendars/setFilteredTaskTypes'
+)<{
+  taskTypes: (TaskType | 'OTHER')[];
+}>();
+
 export const setTaskToAction = createAction('@calendars/setTaskToAction')<{
   taskId: number;
   recurrenceIndex: number | null;
@@ -35,3 +42,7 @@ export const setTaskToAction = createAction('@calendars/setTaskToAction')<{
 } | null>();
 
 export const deselectTasks = createAction('@calendars/deselectTasks')();
+
+export const setFiltersModalOpen = createAction(
+  '@calendars/setFiltersModalOpen'
+)<boolean>();

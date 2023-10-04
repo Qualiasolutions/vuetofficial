@@ -22,7 +22,8 @@ import {
   HiddenTagType,
   ScheduledEntityResponseType,
   ScheduledTask,
-  ScheduledTaskResponseType
+  ScheduledTaskResponseType,
+  TaskType
 } from 'types/tasks';
 import {
   formatEntitiesPerDate,
@@ -30,12 +31,12 @@ import {
 } from 'utils/formatTasksAndPeriods';
 import {
   selectFilteredCategories,
-  selectFilteredEntities,
-  selectFilteredTags,
+  selectFilteredTaskTypes,
   selectFilteredUsers
 } from '../calendars/selectors';
 import { selectEntitiesByEntityTypes } from '../entities/selectors';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
+import { AllCategories, AllEntities } from 'reduxStore/services/api/types';
 
 const TAG_TO_CATEGORY: { [key: string]: CategoryName } = {
   ...INFO_CATEGORY_TAGS,
@@ -163,37 +164,68 @@ export const selectOverdueTasks = createSelector(
   }
 );
 
+const filterTask = (
+  task: ScheduledTaskResponseType,
+  filteredUsers: number[],
+  filteredCategories: number[],
+  filteredTaskTypes: (TaskType | 'OTHER')[],
+  allCategories: AllCategories,
+  allEntities: AllEntities
+) => {
+  return (
+    (!filteredUsers ||
+      filteredUsers.length === 0 ||
+      task.members.some((member) => filteredUsers?.includes(member))) &&
+    (!filteredCategories ||
+      filteredCategories.length === 0 ||
+      filteredCategories.length === allCategories.ids.length ||
+      task.entities.some((entityId) => {
+        const entity = allEntities.byId[entityId];
+        return entity && filteredCategories.includes(entity.category);
+      }) ||
+      task.tags.some((tagName) => {
+        const tagCategoryName = TAG_TO_CATEGORY[tagName];
+        const categoryId = allCategories.byName[tagCategoryName]?.id;
+        return categoryId && filteredCategories.includes(categoryId);
+      })) &&
+    (!filteredTaskTypes ||
+      filteredTaskTypes.length === 0 ||
+      filteredTaskTypes.includes(task.type) ||
+      (filteredTaskTypes.includes('OTHER') &&
+        !['TASK', 'APPOINTMENT'].includes(task.type)))
+  );
+};
+
 export const selectFilteredOverdueTasks = createSelector(
   selectOverdueTasks,
   selectFilteredUsers,
   selectFilteredCategories,
+  selectFilteredTaskTypes,
   vuetApi.endpoints.getAllCategories.select(),
   entitiesApi.endpoints.getAllEntities.select(),
-  (tasks, users, categories, allCategories, allEntities) => {
+  (tasks, users, categories, taskTypes, allCategories, allEntities) => {
     const categoriesData = allCategories.data;
     const entitiesData = allEntities.data;
 
-    if (!categoriesData || !entitiesData) {
+    if (
+      !categoriesData ||
+      !entitiesData ||
+      !users ||
+      !categories ||
+      !taskTypes
+    ) {
       return [];
     }
 
-    return tasks.filter(
-      (task) =>
-        (!users ||
-          users.length === 0 ||
-          task.members.some((member) => users?.includes(member))) &&
-        (!categories ||
-          categories.length === 0 ||
-          categories.length === categoriesData.ids.length ||
-          task.entities.some((entityId) => {
-            const entity = entitiesData.byId[entityId];
-            return entity && categories.includes(entity.category);
-          }) ||
-          task.tags.some((tagName) => {
-            const tagCategoryName = TAG_TO_CATEGORY[tagName];
-            const categoryId = categoriesData.byName[tagCategoryName]?.id;
-            return categoryId && categories.includes(categoryId);
-          }))
+    return tasks.filter((task) =>
+      filterTask(
+        task,
+        users,
+        categories,
+        taskTypes,
+        categoriesData,
+        entitiesData
+      )
     );
   }
 );
@@ -418,13 +450,27 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
   vuetApi.endpoints.getAllCategories.select(),
   selectFilteredUsers,
   selectFilteredCategories,
-  (scheduledTasks, allEntities, allCategories, users, categories) => {
+  selectFilteredTaskTypes,
+  (
+    scheduledTasks,
+    allEntities,
+    allCategories,
+    users,
+    categories,
+    taskTypes
+  ) => {
     const entitiesData = allEntities.data;
     const categoriesData = allCategories.data;
     if (!scheduledTasks.data) {
       return {};
     }
-    if (!entitiesData || !categoriesData) {
+    if (
+      !entitiesData ||
+      !categoriesData ||
+      !users ||
+      !categories ||
+      !taskTypes
+    ) {
       return {};
     }
 
@@ -442,23 +488,15 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
           }
         })
         .filter(isTask)
-        .filter(
-          (task) =>
-            (!users ||
-              users.length === 0 ||
-              task.members.some((member) => users?.includes(member))) &&
-            (!categories ||
-              categories.length === 0 ||
-              categories.length === categoriesData.ids.length ||
-              task.entities.some((entityId) => {
-                const entity = entitiesData.byId[entityId];
-                return entity && categories.includes(entity.category);
-              }) ||
-              task.tags.some((tagName) => {
-                const tagCategoryName = TAG_TO_CATEGORY[tagName];
-                const categoryId = categoriesData.byName[tagCategoryName]?.id;
-                return categoryId && categories.includes(categoryId);
-              }))
+        .filter((task) =>
+          filterTask(
+            task,
+            users,
+            categories,
+            taskTypes,
+            categoriesData,
+            entitiesData
+          )
         ) || [];
 
     const formatted = formatTasksPerDate(filteredTasks);
@@ -468,6 +506,15 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
 );
 
 const studentSelector = selectEntitiesByEntityTypes(['Student']);
+
+const SCHOOL_ENTITY_TYPES = [
+  'SchoolYearStart',
+  'SchoolYearEnd',
+  'SchoolTerm',
+  'SchoolTermStart',
+  'SchoolTermEnd',
+  'SchoolBreak'
+];
 
 export const selectFilteredScheduledEntityIds = (
   resourceTypes?: (EntityTypeName | SchoolTermTypeName)[],
@@ -479,32 +526,36 @@ export const selectFilteredScheduledEntityIds = (
     schoolTermsApi.endpoints.getAllSchoolYears.select(),
     schoolTermsApi.endpoints.getAllSchoolBreaks.select(),
     schoolTermsApi.endpoints.getAllSchoolTerms.select(),
+    vuetApi.endpoints.getAllCategories.select(),
     studentSelector,
-    selectFilteredEntities,
-    selectFilteredTags,
     selectFilteredUsers,
+    selectFilteredCategories,
+    selectFilteredTaskTypes,
     (
       scheduledTasks,
       allEntities,
       schoolYears,
       schoolBreaks,
       schoolTerms,
+      allCategories,
       students,
-      entities,
-      tags,
-      users
+      users,
+      categories,
+      taskTypes
     ) => {
       const schoolYearsData = schoolYears.data;
       const schoolBreaksData = schoolBreaks.data;
       const schoolTermsData = schoolTerms.data;
       const allEntitiesData = allEntities.data;
+      const allCategoriesData = allCategories.data;
 
       if (
         !scheduledTasks.data?.orderedEntities ||
         !schoolYearsData ||
         !schoolBreaksData ||
         !schoolTermsData ||
-        !allEntitiesData
+        !allEntitiesData ||
+        !allCategoriesData
       ) {
         return {};
       }
@@ -519,14 +570,7 @@ export const selectFilteredScheduledEntityIds = (
             if (
               entityIds &&
               entityIds.includes(id) &&
-              ![
-                'SchoolYearStart',
-                'SchoolYearEnd',
-                'SchoolTerm',
-                'SchoolTermStart',
-                'SchoolTermEnd',
-                'SchoolBreak'
-              ].includes(resourcetype)
+              !SCHOOL_ENTITY_TYPES.includes(resourcetype)
             ) {
               // Have exact entity ID match
               return true;
@@ -601,15 +645,21 @@ export const selectFilteredScheduledEntityIds = (
           .filter(isEntity)
           .filter(
             (entity) =>
-              // ((!entities && !tags) ||
-              //   (entities &&
-              //     entities.length === 0 &&
-              //     tags &&
-              //     tags.length === 0) ||
-              //   entities?.includes(entity.id)) &&
-              !users ||
-              users.length === 0 ||
-              entity.members.some((member) => users?.includes(member))
+              (!users ||
+                users.length === 0 ||
+                entity.members.some((member) => users?.includes(member))) &&
+              (!categories ||
+                categories.length === 0 ||
+                categories.length === allEntitiesData.ids.length ||
+                categories.includes(allEntitiesData.byId[entity.id].category) ||
+                (categories.some(
+                  (categoryId) =>
+                    allCategoriesData.byId[categoryId].name === 'EDUCATION'
+                ) &&
+                  SCHOOL_ENTITY_TYPES.includes(entity.resourcetype))) &&
+              (!taskTypes ||
+                taskTypes.length === 0 ||
+                taskTypes.includes('OTHER'))
           ) || [];
 
       const formatted = formatEntitiesPerDate(filteredEntities);
