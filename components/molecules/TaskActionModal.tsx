@@ -8,7 +8,10 @@ import { RootTabParamList } from 'types/base';
 import { LinkButton } from './ButtonComponents';
 import { Modal } from 'components/molecules/Modals';
 
-import { setTaskToAction } from 'reduxStore/slices/calendars/actions';
+import {
+  setTaskToAction,
+  setTaskToPartiallyComplete
+} from 'reduxStore/slices/calendars/actions';
 import {
   selectScheduledTask,
   selectTaskById
@@ -136,26 +139,60 @@ export default function TaskActionModal() {
           title={t('components.task.messages')}
         />
       )}
-      {canMarkComplete && taskToAction && scheduledTask && (
-        <TaskCompletionPressable
-          taskId={taskToAction.taskId}
-          recurrenceIndex={
-            taskToAction.recurrenceIndex === null
-              ? undefined
-              : taskToAction.recurrenceIndex
-          }
-          actionId={taskToAction.actionId}
-          onPress={() => dispatch(setTaskToAction(null))}
-        >
-          {scheduledTask.is_complete ? null : (
-            <LinkButton
-              onPress={() => {}}
-              title={t('components.task.markComplete')}
-              disabled={true}
-            />
-          )}
-        </TaskCompletionPressable>
-      )}
+      {canMarkComplete &&
+        taskToAction &&
+        scheduledTask &&
+        !scheduledTask.is_complete && (
+          <>
+            <TaskCompletionPressable
+              taskId={taskToAction.taskId}
+              recurrenceIndex={
+                taskToAction.recurrenceIndex === null
+                  ? undefined
+                  : taskToAction.recurrenceIndex
+              }
+              actionId={taskToAction.actionId}
+              onPress={() => dispatch(setTaskToAction(null))}
+            >
+              <LinkButton
+                onPress={() => {}}
+                title={t('components.task.markComplete')}
+                disabled={true}
+              />
+            </TaskCompletionPressable>
+            {!taskToAction.actionId && (
+              <LinkButton
+                onPress={() => {
+                  dispatch(setTaskToAction(null));
+                  dispatch(
+                    setTaskToPartiallyComplete({
+                      taskId: taskToAction.taskId,
+                      recurrenceIndex: taskToAction.recurrenceIndex,
+                      actionId: taskToAction.actionId
+                    })
+                  );
+                }}
+                title={t('components.task.markPartiallyCompleteAndRepeat')}
+              />
+            )}
+            {/* <TaskCompletionPressable
+              taskId={taskToAction.taskId}
+              recurrenceIndex={
+                taskToAction.recurrenceIndex === null
+                  ? undefined
+                  : taskToAction.recurrenceIndex
+              }
+              actionId={taskToAction.actionId}
+              onPress={() => dispatch(setTaskToAction(null))}
+            >
+              <LinkButton
+                onPress={() => {}}
+                title={t('components.task.markIncompleteAndReschedule')}
+                disabled={true}
+              />
+            </TaskCompletionPressable> */}
+          </>
+        )}
       <DeleteTaskModal
         visible={deletingOccurrence}
         onRequestClose={() => setDeletingOccurrence(false)}

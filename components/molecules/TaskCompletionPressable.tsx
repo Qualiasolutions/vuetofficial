@@ -6,9 +6,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import {
   useCreateTaskActionCompletionFormMutation,
-  useCreateTaskCompletionFormMutation,
-  useDeleteTaskActionCompletionFormMutation,
-  useDeleteTaskCompletionFormMutation
+  useCreateTaskCompletionFormMutation
 } from 'reduxStore/services/api/taskCompletionForms';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import SafePressable from './SafePressable';
@@ -44,10 +42,6 @@ export default function TaskCompletionPressable({
     useCreateTaskActionCompletionFormMutation();
   const [triggerCreateCompletionForm, createTaskCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
-  // const [deleteTaskCompletionForm, deleteTaskCompletionFormResult] =
-  //   useDeleteTaskCompletionFormMutation();
-  // const [deleteTaskActionCompletionForm, deleteTaskActionCompletionFormResult] =
-  //   useDeleteTaskActionCompletionFormMutation();
   const completionCallback = useCompletionCallback(taskId, recurrenceIndex);
 
   if (!scheduledTask) {
@@ -63,8 +57,6 @@ export default function TaskCompletionPressable({
           if (disabled) return;
           if (createTaskActionCompletionFormResult.isLoading) return;
           if (createTaskCompletionFormResult.isLoading) return;
-          // if (deleteTaskCompletionFormResult.isLoading) return;
-          // if (deleteTaskActionCompletionFormResult.isLoading) return;
           onPress();
           setTimeout(async () => {
             try {

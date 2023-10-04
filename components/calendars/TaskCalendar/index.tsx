@@ -38,7 +38,6 @@ import { useThemeColor } from 'components/Themed';
 import { ScheduledTask } from 'types/tasks';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import { t } from 'i18next';
-import FiltersModal from 'components/molecules/FiltersModal';
 
 dayjs.extend(utc);
 

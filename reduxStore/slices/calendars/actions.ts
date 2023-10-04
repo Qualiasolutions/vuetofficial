@@ -47,6 +47,14 @@ export const setTaskToAction = createAction('@calendars/setTaskToAction')<{
   actionId: number | null;
 } | null>();
 
+export const setTaskToPartiallyComplete = createAction(
+  '@calendars/setTaskToPartiallyComplete'
+)<{
+  taskId: number;
+  recurrenceIndex: number | null;
+  actionId: number | null;
+} | null>();
+
 export const deselectTasks = createAction('@calendars/deselectTasks')();
 
 export const setFiltersModalOpen = createAction(

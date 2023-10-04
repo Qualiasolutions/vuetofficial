@@ -12,7 +12,8 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     filteredCategories: [],
     filteredTaskTypes: [],
     completionFilters: [],
-    taskToAction: null
+    taskToAction: null,
+    taskToPartiallyComplete: null
   },
   ui: {
     enforcedDate: '',
@@ -127,6 +128,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         data: {
           ...state.data,
           taskToAction: payload
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setTaskToPartiallyComplete,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          taskToPartiallyComplete: payload
         }
       };
     }

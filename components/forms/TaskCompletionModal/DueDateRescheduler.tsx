@@ -40,7 +40,7 @@ export default function DueDateRescheduler({
   const taskObj = useSelector(selectTaskById(taskId));
   const [rescheduling, setRescheduling] = useState(false);
   const { t } = useTranslation();
-  const dueDateFields = useDueDateFieldTypes();
+  const dueDateFields = useDueDateFieldTypes({});
   const [fieldValues, setFieldValues] = useState<FieldValueTypes>({});
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const { data: userFullDetails } = useGetUserFullDetails();

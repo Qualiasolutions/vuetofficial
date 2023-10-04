@@ -52,6 +52,12 @@ export const selectTaskToAction = createSelector(
   (calendar: CalendarState | undefined) => calendar?.data?.taskToAction
 );
 
+export const selectTaskToPartiallyComplete = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) =>
+    calendar?.data?.taskToPartiallyComplete
+);
+
 export const selectFiltersModalOpen = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.ui?.filtersModalOpen

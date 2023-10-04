@@ -661,6 +661,11 @@
     }
   },
   "components": {
+    "taskPartialCompletionModal": {
+      "rescheduleOneDay": "Task again one day later",
+      "rescheduleOneWeek": "Task again one week later",
+      "rescheduleOn": "Task again at a specified time:"
+    },
     "alertsList": {
       "noAlerts": "You currently have no task conflict alerts"
     },
@@ -803,7 +808,8 @@
       "deleteOccurrenceConfirmation": "Are you sure you would like to delete this occurrence?",
       "deleteConfirmation": "Are you sure you would like to delete this task?",
       "messages": "Messages",
-      "markComplete": "Mark Complete"
+      "markComplete": "Mark Complete",
+      "markPartiallyCompleteAndRepeat": "Partially done / task again"
     },
     "actionSelector": {
       "placeholder": "Add Actions"

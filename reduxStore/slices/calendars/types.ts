@@ -13,6 +13,11 @@ export interface CalendarState {
       recurrenceIndex: number | null;
       actionId: number | null;
     } | null;
+    taskToPartiallyComplete: {
+      taskId: number;
+      recurrenceIndex: number | null;
+      actionId: number | null;
+    } | null;
   };
   ui: {
     filtersModalOpen: boolean;

@@ -289,14 +289,21 @@ export const selectTasksInDailyRoutines = createSelector(
 
       const nonRoutineTasks: ScheduledTask[] = [];
 
-      const taskObjects = taskData.byDate[date].map((task) => {
-        const recurrenceIndex =
-          task.recurrence_index === null ? -1 : task.recurrence_index;
-        if (task.action_id) {
-          return taskData.byActionId[task.action_id][recurrenceIndex];
-        }
-        return taskData.byTaskId[task.id][recurrenceIndex];
-      });
+      const taskObjects = taskData.byDate[date]
+        .filter((task) => {
+          return (
+            (task.action_id && taskData.byActionId[task.action_id]) ||
+            taskData.byTaskId[task.id]
+          );
+        })
+        .map((task) => {
+          const recurrenceIndex =
+            task.recurrence_index === null ? -1 : task.recurrence_index;
+          if (task.action_id) {
+            return taskData.byActionId[task.action_id][recurrenceIndex];
+          }
+          return taskData.byTaskId[task.id][recurrenceIndex];
+        });
 
       const formattedTaskObjects = formatTasksPerDate(taskObjects);
       if (formattedTaskObjects[date]) {
@@ -509,11 +516,17 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
           const recurrenceIndex =
             recurrence_index === null ? -1 : recurrence_index;
           if (['FixedTask'].includes(resourcetype)) {
-            return scheduledTasks.data?.byTaskId[id][recurrenceIndex];
+            return (
+              scheduledTasks.data?.byTaskId[id] &&
+              scheduledTasks.data?.byTaskId[id][recurrenceIndex]
+            );
           }
 
           if (action_id) {
-            return scheduledTasks.data?.byActionId[action_id][recurrenceIndex];
+            return (
+              scheduledTasks.data?.byActionId[action_id] &&
+              scheduledTasks.data?.byActionId[action_id][recurrenceIndex]
+            );
           }
         })
         .filter(isTask)
