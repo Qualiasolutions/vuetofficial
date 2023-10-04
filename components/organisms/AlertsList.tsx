@@ -32,8 +32,8 @@ import {
   selectHasUnreadAlert
 } from 'reduxStore/slices/alerts/selectors';
 import {
-  setListEnforcedDate,
-  setMonthEnforcedDate
+  setEnforcedDate,
+  setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import {
   selectScheduledTask,
@@ -100,15 +100,12 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
 
             if (start) {
               dispatch(
-                setListEnforcedDate({
+                setEnforcedDate({
                   date: getDateStringFromDateObject(new Date(start))
                 })
               );
-              dispatch(
-                setMonthEnforcedDate({
-                  date: getDateStringFromDateObject(new Date(start))
-                })
-              );
+              dispatch(setLastUpdateId(new Date()));
+
               navigation.navigate('Home');
             }
           }
@@ -185,15 +182,12 @@ const ActionAlertEntry = ({ actionAlertId }: { actionAlertId: number }) => {
 
             if (start) {
               dispatch(
-                setListEnforcedDate({
+                setEnforcedDate({
                   date: getDateStringFromDateObject(new Date(start))
                 })
               );
-              dispatch(
-                setMonthEnforcedDate({
-                  date: getDateStringFromDateObject(new Date(start))
-                })
-              );
+              dispatch(setLastUpdateId(new Date()));
+
               navigation.navigate('Home');
             }
           }

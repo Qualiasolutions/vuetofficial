@@ -1,38 +1,24 @@
-// import { Feather } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-import { Button, LinkButton } from 'components/molecules/ButtonComponents';
-import { Image } from 'components/molecules/ImageComponents';
+import { Button } from 'components/molecules/ButtonComponents';
 import { Modal } from 'components/molecules/Modals';
 import SafePressable from 'components/molecules/SafePressable';
-// import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
-import { PaddedSpinner } from 'components/molecules/Spinners';
-import { PrimaryText } from 'components/molecules/TextComponents';
-import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import UserCheckboxes from 'components/molecules/UserCheckboxes';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
-// import EntityCheckboxes from 'components/organisms/EntityCheckboxes';
 import { Text } from 'components/Themed';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setFilteredCategories,
-  // setFilteredEntities,
-  // setFilteredTags,
   setFilteredUsers
 } from 'reduxStore/slices/calendars/actions';
 import {
   selectFilteredCategories,
-  // selectFilteredEntities,
-  // selectFilteredTags,
   selectFilteredUsers
 } from 'reduxStore/slices/calendars/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import CategoryCheckboxes from 'components/organisms/CategoryCheckboxes';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { HEADER_HEIGHT } from './shared';
 
 const styles = StyleSheet.create({
   modal: {
@@ -46,13 +32,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  loadMoreButtonWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    height: HEADER_HEIGHT,
-    alignItems: 'center'
-  },
-  loadMoreButton: { marginRight: 30 },
   userFiltersTitle: { fontSize: 20, margin: 10 },
   userFiltersApplyButton: { marginTop: 10 },
   buttonWrapper: { flexDirection: 'row', justifyContent: 'center' },
@@ -63,7 +42,6 @@ const styles = StyleSheet.create({
 const UserFilterSelector = ({ onApply }: { onApply: () => void }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { data: userDetails } = useGetUserFullDetails();
 
   const filteredUsers = useSelector(selectFilteredUsers);
   const [newFilteredUsers, setNewFilteredUsers] = useState<number[]>(
@@ -73,12 +51,6 @@ const UserFilterSelector = ({ onApply }: { onApply: () => void }) => {
   const setFilteredUserIds = (users: number[]) => {
     dispatch(setFilteredUsers({ users }));
   };
-
-  useEffect(() => {
-    if (userDetails && newFilteredUsers.length === 0) {
-      setNewFilteredUsers(userDetails.family.users.map((user) => user.id));
-    }
-  }, [newFilteredUsers, userDetails]);
 
   return (
     <TransparentView>
@@ -114,17 +86,10 @@ const CategoryFilterSelector = ({ onApply }: { onApply: () => void }) => {
   const [newFilteredCategories, setNewFilteredCategories] = useState<number[]>([
     ...(filteredCategories || [])
   ]);
-  const { data: allCategories } = useGetAllCategoriesQuery();
 
   const setFilteredCategoryIds = (categories: number[]) => {
     dispatch(setFilteredCategories({ categories }));
   };
-
-  useEffect(() => {
-    if (allCategories && newFilteredCategories.length === 0) {
-      setNewFilteredCategories(allCategories.ids);
-    }
-  }, [newFilteredCategories, allCategories]);
 
   return (
     <TransparentView style={styles.checkboxContainer}>
@@ -148,63 +113,16 @@ const CategoryFilterSelector = ({ onApply }: { onApply: () => void }) => {
   );
 };
 
-// const EntityFilterSelector = () => {
-//   const { t } = useTranslation();
-//   const dispatch = useDispatch();
-
-//   const filteredEntities = useSelector(selectFilteredEntities);
-//   const [newFilteredEntities, setNewFilteredEntities] = useState<number[]>([
-//     ...(filteredEntities || [])
-//   ]);
-
-//   const filteredTags = useSelector(selectFilteredTags);
-//   const [newFilteredTags, setNewFilteredTags] = useState<string[]>([
-//     ...(filteredTags || [])
-//   ]);
-
-//   const setFilteredEntityIds = (entities: number[]) => {
-//     dispatch(setFilteredEntities({ entities }));
-//   };
-
-//   const setFilteredTagNames = (tags: string[]) => {
-//     dispatch(setFilteredTags({ tags }));
-//   };
-
-//   return (
-//     <TransparentView style={styles.checkboxContainer}>
-//       <TransparentScrollView>
-//         <EntityCheckboxes
-//           value={{ entities: newFilteredEntities, tags: newFilteredTags }}
-//           setSelectedEntities={setNewFilteredEntities}
-//           setSelectedTags={setNewFilteredTags}
-//         />
-//       </TransparentScrollView>
-//       <TransparentView style={styles.buttonWrapper}>
-//         <Button
-//           title={t('common.apply')}
-//           onPress={() => {
-//             setFilteredEntityIds(newFilteredEntities);
-//             setFilteredTagNames(newFilteredTags);
-//           }}
-//           style={styles.userFiltersApplyButton}
-//         />
-//       </TransparentView>
-//     </TransparentView>
-//   );
-// };
-
-const FiltersModal = ({
+export default function FiltersModal({
   visible,
   onRequestClose
 }: {
   visible: boolean;
   onRequestClose: () => void;
-}) => {
+}) {
   const { t } = useTranslation();
   const filteredUsers = useSelector(selectFilteredUsers);
   const filteredCategories = useSelector(selectFilteredCategories);
-  // const filteredEntities = useSelector(selectFilteredEntities);
-  // const filteredTags = useSelector(selectFilteredTags);
 
   const [shownFilters, setShownFilters] = useState<
     '' | 'USERS' | 'ENTITIES' | 'CATEGORIES'
@@ -273,82 +191,6 @@ const FiltersModal = ({
           />
         )}
       </TransparentView>
-      {/* <TransparentView style={styles.entitiesSelector}>
-        <SafePressable onPress={() => setShownFilters('ENTITIES')}>
-          <SafePressable
-            onPress={() =>
-              setShownFilters(shownFilters === 'ENTITIES' ? '' : 'ENTITIES')
-            }
-            style={styles.filterTypeHeader}
-          >
-            <Text style={styles.userFiltersTitle}>
-              {t('filters.entityFilters')}
-              {filteredEntities &&
-              filteredTags &&
-              filteredEntities.length + filteredTags.length > 0
-                ? ` (${filteredEntities.length + filteredTags.length})`
-                : ''}
-            </Text>
-            <Feather
-              name={shownFilters === 'ENTITIES' ? 'chevron-up' : 'chevron-down'}
-              size={25}
-            />
-          </SafePressable>
-        </SafePressable>
-        {shownFilters === 'ENTITIES' && <EntityFilterSelector />}
-      </TransparentView> */}
     </Modal>
-  );
-};
-
-export default function ListHeaderComponent({
-  loading,
-  showLoadMore,
-  showFilters,
-  onLoadMore
-}: {
-  loading: boolean;
-  showLoadMore: boolean;
-  showFilters: boolean;
-  onLoadMore: () => void;
-}) {
-  const { t } = useTranslation();
-  const [filtersModalOpen, setFiltersModalOpen] = useState(false);
-
-  if (loading) {
-    return (
-      <TransparentView style={styles.loadMoreButtonWrapper}>
-        <PaddedSpinner spinnerColor="buttonDefault" />
-      </TransparentView>
-    );
-  }
-  return (
-    <TransparentView style={styles.loadMoreButtonWrapper}>
-      {showLoadMore && (
-        <LinkButton
-          title={t('common.loadOlder')}
-          onPress={onLoadMore}
-          style={styles.loadMoreButton}
-        />
-      )}
-      {showFilters && (
-        <TouchableOpacity
-          onPress={() => {
-            setFiltersModalOpen(true);
-          }}
-          style={styles.filtersButton}
-        >
-          <Image source={require('assets/images/icons/filter.png')} />
-          <PrimaryText
-            style={styles.filtersButtonText}
-            text={t('components.calendar.filters')}
-          />
-        </TouchableOpacity>
-      )}
-      <FiltersModal
-        visible={filtersModalOpen}
-        onRequestClose={() => setFiltersModalOpen(false)}
-      />
-    </TransparentView>
   );
 }

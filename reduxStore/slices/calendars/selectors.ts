@@ -7,24 +7,14 @@ export const selectCalendarState = (
   state: EntireState
 ): CalendarState | undefined => state?.calendar;
 
-export const selectListEnforcedDate = createSelector(
-  selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.listEnforcedDate
-);
-
-export const selectMonthEnforcedDate = createSelector(
-  selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.monthEnforcedDate
-);
-
 export const selectEnforcedDate = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.ui?.enforcedDate
 );
 
-export const selectLastUpdateTime = createSelector(
+export const selectLastUpdateId = createSelector(
   selectCalendarState,
-  (calendar: CalendarState | undefined) => calendar?.ui?.lastUpdateTime
+  (calendar: CalendarState | undefined) => calendar?.ui?.lastUpdateId
 );
 
 export const selectFilteredUsers = createSelector(

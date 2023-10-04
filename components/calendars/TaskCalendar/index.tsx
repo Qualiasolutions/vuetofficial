@@ -20,8 +20,8 @@ import {
   getDateStringFromDateObject
 } from 'utils/datesAndTimes';
 import {
-  setListEnforcedDate,
-  setMonthEnforcedDate
+  setEnforcedDate,
+  setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import MonthSelector from './components/MonthSelector';
 import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
@@ -37,6 +37,7 @@ import { useThemeColor } from 'components/Themed';
 import { ScheduledTask } from 'types/tasks';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import { t } from 'i18next';
+import FiltersModal from 'components/molecules/FiltersModal';
 
 dayjs.extend(utc);
 
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   monthSelectorSection: {
     paddingVertical: 12,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     marginBottom: 3
@@ -58,13 +59,14 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   todayButton: {
-    marginLeft: 20
-  }
+    marginHorizontal: 6
+  },
+  headerButton: { alignItems: 'center', marginHorizontal: 6 },
+  headerButtonText: { fontSize: 11 }
 });
 
 type CalendarProps = {
   showFilters?: boolean;
-  showListHeader?: boolean;
   showAllTime?: boolean;
   reverse?: boolean;
   headerStyle?: ViewStyle;
@@ -78,8 +80,6 @@ function Calendar({
   filteredTasks,
   filteredEntities,
   showFilters,
-  showListHeader,
-  showAllTime,
   reverse,
   headerStyle,
   headerTextStyle
@@ -94,6 +94,7 @@ function Calendar({
 
   const primaryColor = useThemeColor({}, 'primary');
   const [showCalendar, setShowCalendar] = useState(false);
+  const [filtersModalOpen, setFiltersModalOpen] = useState(false);
 
   const calendarView = useMemo(() => {
     return (
@@ -101,7 +102,7 @@ function Calendar({
         tasks={filteredTasks}
         entities={filteredEntities}
         onChangeDate={(date) => {
-          dispatch(setMonthEnforcedDate({ date }));
+          dispatch(setEnforcedDate({ date }));
         }}
       />
     );
@@ -117,11 +118,8 @@ function Calendar({
           entities={filteredEntities}
           alwaysIncludeCurrentDate={true}
           onChangeFirstDate={(date) => {
-            dispatch(setListEnforcedDate({ date }));
+            dispatch(setEnforcedDate({ date }));
           }}
-          showFilters={showFilters}
-          showListHeader={showListHeader}
-          showAllTime={showAllTime}
           reverse={reverse}
           headerStyle={headerStyle}
           headerTextStyle={headerTextStyle}
@@ -132,11 +130,9 @@ function Calendar({
     JSON.stringify(filteredTasks),
     JSON.stringify(filteredEntities),
     showFilters,
-    showAllTime,
     reverse,
     headerStyle,
     headerTextStyle,
-    showListHeader,
     dispatch
   ]);
 
@@ -157,8 +153,8 @@ function Calendar({
               onValueChange={(date) => {
                 if (date) {
                   const dateString = getDateStringFromDateObject(date);
-                  dispatch(setMonthEnforcedDate({ date: dateString }));
-                  dispatch(setListEnforcedDate({ date: dateString }));
+                  dispatch(setEnforcedDate({ date: dateString }));
+                  dispatch(setLastUpdateId(new Date()));
                 }
               }}
             />
@@ -167,26 +163,53 @@ function Calendar({
             onPress={() => {
               setShowCalendar(!showCalendar);
             }}
+            style={styles.headerButton}
           >
             <Feather
               name={showCalendar ? 'list' : 'calendar'}
               size={24}
               color={primaryColor}
             />
+            <PrimaryText
+              style={styles.headerButtonText}
+              text={showCalendar ? t('common.list') : t('common.month')}
+            />
           </TouchableOpacity>
+          {showFilters && (
+            <TouchableOpacity
+              onPress={() => {
+                setFiltersModalOpen(true);
+              }}
+              style={styles.headerButton}
+            >
+              <Feather name={'sliders'} size={24} color={primaryColor} />
+              <PrimaryText
+                style={styles.headerButtonText}
+                text={t('components.calendar.filters')}
+              />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             onPress={() => {
               const today = getCurrentDateString();
-              dispatch(setMonthEnforcedDate({ date: today }));
-              dispatch(setListEnforcedDate({ date: today }));
+              dispatch(setEnforcedDate({ date: today }));
+              dispatch(setLastUpdateId(new Date()));
             }}
-            style={styles.todayButton}
+            style={styles.headerButton}
           >
-            <PrimaryText text={t('common.today')} />
+            <Feather name={'sun'} size={24} color={primaryColor} />
+            <PrimaryText
+              style={styles.headerButtonText}
+              text={t('common.today')}
+            />
           </TouchableOpacity>
         </WhitePaddedView>
       </TransparentView>
       <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>
+      <FiltersModal
+        visible={filtersModalOpen}
+        onRequestClose={() => setFiltersModalOpen(false)}
+      />
     </TransparentView>
   );
 }

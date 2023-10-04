@@ -1,12 +1,12 @@
 import { createAction } from 'typesafe-actions';
 
-export const setListEnforcedDate = createAction(
-  '@calendars/setListEnforcedDate'
-)<{ date: string }>();
+export const setEnforcedDate = createAction('@calendars/setEnforcedDate')<{
+  date: string;
+}>();
 
-export const setMonthEnforcedDate = createAction(
-  '@calendars/setMonthEnforcedDate'
-)<{ date: string }>();
+export const setLastUpdateId = createAction(
+  '@calendars/setLastUpdateId'
+)<Date>();
 
 export const setFilteredUsers = createAction('@calendars/setFilteredUsers')<{
   users: number[];

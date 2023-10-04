@@ -22,8 +22,8 @@ import {
   useUpdateLastActivityViewMutation
 } from 'reduxStore/services/api/user';
 import {
-  setListEnforcedDate,
-  setMonthEnforcedDate
+  setEnforcedDate,
+  setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import {
   selectEntityById,
@@ -91,15 +91,12 @@ const NewTaskCard = ({ taskId }: { taskId: number }) => {
 
         if (start) {
           dispatch(
-            setListEnforcedDate({
+            setEnforcedDate({
               date: getDateStringFromDateObject(new Date(start))
             })
           );
-          dispatch(
-            setMonthEnforcedDate({
-              date: getDateStringFromDateObject(new Date(start))
-            })
-          );
+          dispatch(setLastUpdateId(new Date()));
+
           navigation.navigate('Home');
         }
       }}

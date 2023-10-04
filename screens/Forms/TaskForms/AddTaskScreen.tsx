@@ -26,8 +26,8 @@ import {
 } from 'types/tasks';
 import GenericTaskForm from 'components/forms/GenericTaskForm';
 import {
-  setListEnforcedDate,
-  setMonthEnforcedDate
+  setEnforcedDate,
+  setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import { useDispatch } from 'react-redux';
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
@@ -458,15 +458,11 @@ export default function AddTaskScreen({
 
                     if (start) {
                       dispatch(
-                        setMonthEnforcedDate({
+                        setEnforcedDate({
                           date: getDateStringFromDateObject(start)
                         })
                       );
-                      dispatch(
-                        setListEnforcedDate({
-                          date: getDateStringFromDateObject(start)
-                        })
-                      );
+                      dispatch(setLastUpdateId(new Date()));
                     }
                     navigation.goBack();
                   }}

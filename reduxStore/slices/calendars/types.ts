@@ -11,10 +11,8 @@ export interface CalendarState {
     } | null;
   };
   ui: {
-    listEnforcedDate: string;
-    monthEnforcedDate: string;
     enforcedDate: string;
     actionDrawerOpen: boolean;
-    lastUpdateTime: null | Date;
+    lastUpdateId: null | Date;
   };
 }

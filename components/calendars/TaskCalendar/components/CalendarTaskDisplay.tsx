@@ -5,13 +5,7 @@ import {
   ViewStyle,
   TextStyle
 } from 'react-native';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import {
   getCurrentDateString,
@@ -25,14 +19,13 @@ import {
   TransparentView,
   WhitePaddedView
 } from 'components/molecules/ViewComponents';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectLastUpdateTime,
-  selectMonthEnforcedDate
+  selectEnforcedDate,
+  selectLastUpdateId
 } from 'reduxStore/slices/calendars/selectors';
 import Task, { ScheduledEntity } from './Task';
-import { HEADER_HEIGHT, ITEM_HEIGHT } from './shared';
-import ListHeaderComponent from './ListHeaderComponent';
+import { ITEM_HEIGHT } from './shared';
 import { useTranslation } from 'react-i18next';
 import { useGetAllRoutinesQuery } from 'reduxStore/services/api/routines';
 import Routine from './Routine';
@@ -45,6 +38,10 @@ import {
 } from 'types/tasks';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import {
+  setEnforcedDate,
+  setLastUpdateId
+} from 'reduxStore/slices/calendars/actions';
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -119,9 +116,6 @@ function Calendar({
   tasks,
   entities,
   onChangeFirstDate,
-  showFilters,
-  showListHeader = true,
-  showAllTime,
   headerStyle,
   headerTextStyle,
   reverse
@@ -130,17 +124,12 @@ function Calendar({
   entities?: { [date: string]: ScheduledEntity[] };
   alwaysIncludeCurrentDate?: boolean;
   onChangeFirstDate?: (date: string) => void;
-  showFilters?: boolean;
-  showListHeader?: boolean;
-  showAllTime?: boolean;
   headerStyle?: ViewStyle;
   headerTextStyle?: TextStyle;
   reverse?: boolean;
 }) {
-  const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
-  const [rerenderingList, setRerenderingList] = useState(false);
-  const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
-  const lastUpdateTime = useSelector(selectLastUpdateTime);
+  const enforcedDate = useSelector(selectEnforcedDate);
+  const lastUpdateId = useSelector(selectLastUpdateId);
   const tasksPerRoutine = useSelector(selectTasksInDailyRoutines);
   const sectionListRef = useRef<any>(null);
   const { t } = useTranslation();
@@ -149,12 +138,11 @@ function Calendar({
   const { data: allEntities } = useGetAllEntitiesQuery(undefined);
   const lightYellowColor = useThemeColor({}, 'lightYellow');
   const blackColor = useThemeColor({}, 'black');
+  const dispatch = useDispatch();
 
   const currentDate = useMemo(() => {
     return new Date(getCurrentDateString());
   }, []);
-
-  const [firstDate, setFirstDate] = useState<Date>(currentDate);
 
   const updateDate = useCallback(
     (newDate: string) => {
@@ -169,20 +157,19 @@ function Calendar({
     Object.keys(tasks).length === 0 &&
     (!entities || Object.keys(entities).length === 0);
 
-  const [futureSections, pastSections] = useMemo(() => {
+  const sectionsData = useMemo(() => {
     const datesToShow = Array(
       ...new Set([...Object.keys(entities || {}), ...Object.keys(tasks)])
     ).sort();
 
     if (!allRoutines) {
-      return [[], []];
+      return [];
     }
 
-    const future: { title: string; key: string; data: ItemData[] }[] = [];
-    const past: { title: string; key: string; data: ItemData[] }[] = [];
+    const sections: { title: string; key: string; data: ItemData[] }[] = [];
 
     for (const date of datesToShow) {
-      const sectionsArray = new Date(date) < firstDate ? past : future;
+      const sectionsArray = sections;
 
       const dayJsDate = dayjs(date);
 
@@ -352,9 +339,8 @@ function Calendar({
         data: sectionData
       });
     }
-    return [future, past];
+    return sections;
   }, [
-    firstDate,
     tasks,
     allRoutines,
     tasksPerRoutine,
@@ -365,67 +351,58 @@ function Calendar({
   ]);
 
   useEffect(() => {
-    if (monthEnforcedDate && sectionListRef?.current) {
-      const newDate = new Date(monthEnforcedDate);
-      const datesToShow = Array(
-        ...new Set([...Object.keys(entities || {}), ...Object.keys(tasks)])
-      ).sort();
-      if (firstDate && firstDate < newDate) {
-        let sectionIndex = 0;
-        for (const date of datesToShow) {
-          const dateObj = new Date(date);
-          if (dateObj < newDate && firstDate <= dateObj) {
-            sectionIndex += 1;
-          }
-        }
+    if (!enforcedDate) {
+      const today = getCurrentDateString();
+      dispatch(setEnforcedDate({ date: today }));
+      dispatch(setLastUpdateId(new Date()));
+    }
 
-        if (sectionIndex >= 0 && sectionIndex < datesToShow.length) {
-          // SCROLL TO THE RIGHT DATE
-          try {
-            sectionListRef.current.scrollToLocation({
-              sectionIndex,
-              itemIndex: 0
-            });
-          } catch (err) {
-            console.error(err);
-          }
-        }
-        return;
-      }
-
-      // Otherwise scroll to the start and set
-      // the first date to be the new date
-      setPastMonthsToShow(0);
-      setFirstDate(newDate);
-      if (futureSections.length > 0) {
-        try {
-          sectionListRef.current.scrollToLocation({
-            sectionIndex: 0,
-            itemIndex: 0
-          });
-        } catch (err) {
-          console.error(err);
-        }
+    const newDate = enforcedDate ? new Date(enforcedDate) : new Date();
+    const datesToShow = Array(
+      ...new Set([...Object.keys(entities || {}), ...Object.keys(tasks)])
+    ).sort();
+    let sectionIndex = 0;
+    for (const date of datesToShow) {
+      const dateObj = new Date(date);
+      if (dateObj < newDate) {
+        sectionIndex += 1;
       }
     }
+
+    if (sectionIndex >= 0 && sectionIndex < datesToShow.length) {
+      // SCROLL TO THE RIGHT DATE
+      try {
+        sectionListRef.current.scrollToLocation({
+          sectionIndex,
+          itemIndex: 0
+        });
+        // Set a timeout because sometimes this doesn't work
+        // on initial render otherwise
+        setTimeout(() => {
+          sectionListRef.current.scrollToLocation({
+            sectionIndex,
+            itemIndex: 0
+          });
+        }, 100);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return;
   }, [
-    monthEnforcedDate,
-    lastUpdateTime // Need this in case the date is set but not actually changed
+    lastUpdateId, // This marks whether to actually update the location
+    entities,
+    tasks
   ]);
 
   const shownSections = useMemo(() => {
-    const sections = [
-      ...(showAllTime
-        ? pastSections
-        : pastSections.slice(pastSections.length - pastMonthsToShow * 30)),
-      ...futureSections
-    ];
+    const sections = [...sectionsData];
 
     if (reverse) {
       sections.reverse();
     }
     return sections;
-  }, [futureSections, pastSections, pastMonthsToShow, showAllTime, reverse]);
+  }, [sectionsData, reverse]);
 
   const HORIZONTAL_PADDING = 20;
   const renderItem = useCallback(
@@ -460,7 +437,7 @@ function Calendar({
     if (!shownSections) return [];
     const layouts: any[] = [];
     let index = 0;
-    let offset = HEADER_HEIGHT;
+    let offset = 0;
     shownSections.forEach((section) => {
       // Section header
       const TOTAL_HEADER_HEIGHT = SECTION_HEADER_HEIGHT;
@@ -494,27 +471,6 @@ function Calendar({
 
   const PADDING_BOTTOM = 300;
 
-  const listHeaderComponent = (
-    <ListHeaderComponent
-      loading={rerenderingList}
-      showLoadMore={
-        pastMonthsToShow < 24 &&
-        pastSections.length > shownSections.length - futureSections.length
-      }
-      showFilters={!!showFilters}
-      onLoadMore={() => {
-        // Suuuuuuuper hacky way to make the button
-        // a little bit more responsive to clicks
-        setRerenderingList(true);
-        setTimeout(() => {
-          setPastMonthsToShow(pastMonthsToShow + 3);
-        }, 300);
-        setTimeout(() => {
-          setRerenderingList(false);
-        }, 2000);
-      }}
-    />
-  );
   return (
     <>
       <SectionList
@@ -541,12 +497,8 @@ function Calendar({
           );
         }}
         refreshing={false}
-        onRefresh={() => {
-          setPastMonthsToShow(0);
-        }}
         renderItem={renderItem}
         contentContainerStyle={noTasks ? {} : { paddingBottom: PADDING_BOTTOM }}
-        ListHeaderComponent={showListHeader ? listHeaderComponent : null}
         onViewableItemsChanged={onViewableItemsChanged}
         getItemLayout={(d, index) =>
           itemsLayout[index] ?? { length: 0, offset: 0, index }
@@ -557,7 +509,6 @@ function Calendar({
       />
       {noTasks && (
         <WhitePaddedView style={styles.noTasksContainer}>
-          {showListHeader ? listHeaderComponent : null}
           <Text>{t('components.calendar.noTasks')}</Text>
         </WhitePaddedView>
       )}

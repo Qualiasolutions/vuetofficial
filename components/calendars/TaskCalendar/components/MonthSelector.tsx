@@ -7,7 +7,6 @@ import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import dayjs from 'dayjs';
-import { View } from 'components/Themed';
 import { getUTCValuesFromDateString } from 'utils/datesAndTimes';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
@@ -38,9 +37,9 @@ export default function MonthSelector({
   const { data: userDetails } = useGetUserFullDetails();
 
   const now = dayjs(new Date());
-  const { monthName, year } = enforcedDate
+  const { monthShortName, year } = enforcedDate
     ? getUTCValuesFromDateString(enforcedDate)
-    : { monthName: now.format('MMM'), year: now.format('YYYY') };
+    : { monthShortName: now.format('MMM'), year: now.format('YYYY') };
 
   if (!userDetails) {
     return null;
@@ -54,7 +53,7 @@ export default function MonthSelector({
         style={styles.monthPressable}
       >
         <AlmostBlackText
-          text={`${monthName} ${year}`}
+          text={`${monthShortName} ${year}`}
           style={styles.monthText}
         />
         <AlmostBlackText text="▼" />

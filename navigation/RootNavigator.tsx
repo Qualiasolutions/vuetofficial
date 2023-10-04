@@ -1,5 +1,4 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as React from 'react';
 import { StyleSheet, View, ImageSourcePropType } from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -48,6 +47,9 @@ import AlertsList from 'components/organisms/AlertsList';
 import NewItemsList from 'components/organisms/NewItemsList';
 import QuickJot from 'components/organisms/QuickJot';
 import OverdueTasksList from 'components/organisms/OverdueTasksList';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setEnforcedDate } from 'reduxStore/slices/calendars/actions';
 
 const styles = StyleSheet.create({
   icon: {
@@ -99,6 +101,7 @@ export function BottomTabNavigator({
   hasJustSignedUp: boolean;
 }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { data: userDetails } = useGetUserDetailsQuery();
   useGetUserInvitesQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -139,6 +142,10 @@ export function BottomTabNavigator({
   });
 
   useSetupPushNotifications();
+
+  useEffect(() => {
+    dispatch(setEnforcedDate({ date: '' }));
+  }, [dispatch]);
 
   return (
     <BottomTab.Navigator

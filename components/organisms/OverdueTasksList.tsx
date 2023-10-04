@@ -12,7 +12,6 @@ export default function OverdueTasksList() {
 
   return (
     <Calendar
-      showListHeader={true}
       showAllTime={true}
       showFilters={true}
       reverse={true}

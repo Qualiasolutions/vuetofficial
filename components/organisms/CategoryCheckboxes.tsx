@@ -32,7 +32,11 @@ export default function CategoryCheckboxes({
       <SafePressable
         style={styles.listItem}
         onPress={() => {
-          onChange(allCategories.ids);
+          if (value.length === allCategories?.ids.length) {
+            onChange([]);
+          } else {
+            onChange(allCategories.ids);
+          }
         }}
       >
         <Text bold={true}>{t(`common.selectAll`)}</Text>

@@ -13,38 +13,33 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     taskToAction: null
   },
   ui: {
-    listEnforcedDate: '',
-    monthEnforcedDate: '',
     enforcedDate: '',
     actionDrawerOpen: false,
-    lastUpdateTime: null
+    lastUpdateId: null
   }
 };
 
 const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
   .handleAction(
-    actions.setListEnforcedDate,
+    actions.setEnforcedDate,
     (state: CalendarState, { payload }) => {
       return {
         ...state,
         ui: {
           ...state.ui,
-          listEnforcedDate: payload.date,
           enforcedDate: payload.date
         }
       };
     }
   )
   .handleAction(
-    actions.setMonthEnforcedDate,
+    actions.setLastUpdateId,
     (state: CalendarState, { payload }) => {
       return {
         ...state,
         ui: {
           ...state.ui,
-          monthEnforcedDate: payload.date,
-          enforcedDate: payload.date,
-          lastUpdateTime: new Date()
+          lastUpdateId: payload
         }
       };
     }

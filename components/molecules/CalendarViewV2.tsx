@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { WhiteFullPageScrollView } from './ScrollViewComponents';
 import { useSelector } from 'react-redux';
-import { selectListEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import { selectEnforcedDate } from 'reduxStore/slices/calendars/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
 import { TransparentView } from './ViewComponents';
@@ -77,7 +77,7 @@ const CalendarContent = ({
     null
   );
   const styles = useStyle();
-  const listEnforcedDate = useSelector(selectListEnforcedDate);
+  const enforcedDate = useSelector(selectEnforcedDate);
   const whiteColor = useThemeColor({}, 'white');
   const almostWhiteColor = useThemeColor({}, 'almostWhite');
   const currentDayColor = useThemeColor({}, 'lightYellow');
@@ -95,9 +95,9 @@ const CalendarContent = ({
 
   useEffect(() => {
     setForcedInitialDate(null);
-  }, [listEnforcedDate]);
+  }, [enforcedDate]);
 
-  const currentDate = forcedInitialDate || listEnforcedDate || undefined;
+  const currentDate = forcedInitialDate || enforcedDate || undefined;
 
   return (
     <WhiteFullPageScrollView style={styles.container}>
