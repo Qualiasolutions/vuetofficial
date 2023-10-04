@@ -438,7 +438,7 @@ function Task({
               <Feather name="arrow-right" size={30} />
             </TouchableOpacity>
           )}
-          {canMarkComplete && scheduledTask && (
+          {canMarkComplete && scheduledTask && !isEntity && (
             <TaskCompletionPressable
               taskId={scheduledTask.id}
               recurrenceIndex={
