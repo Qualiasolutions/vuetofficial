@@ -354,7 +354,7 @@ function Calendar({
     if (!enforcedDate) {
       const today = getCurrentDateString();
       dispatch(setEnforcedDate({ date: today }));
-      dispatch(setLastUpdateId(new Date()));
+      dispatch(setLastUpdateId(String(new Date())));
     }
 
     const newDate = enforcedDate ? new Date(enforcedDate) : new Date();

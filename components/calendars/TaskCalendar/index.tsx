@@ -154,7 +154,7 @@ function Calendar({
                 if (date) {
                   const dateString = getDateStringFromDateObject(date);
                   dispatch(setEnforcedDate({ date: dateString }));
-                  dispatch(setLastUpdateId(new Date()));
+                  dispatch(setLastUpdateId(String(new Date())));
                 }
               }}
             />
@@ -193,7 +193,7 @@ function Calendar({
             onPress={() => {
               const today = getCurrentDateString();
               dispatch(setEnforcedDate({ date: today }));
-              dispatch(setLastUpdateId(new Date()));
+              dispatch(setLastUpdateId(String(new Date())));
             }}
             style={styles.headerButton}
           >

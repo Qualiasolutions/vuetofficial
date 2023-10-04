@@ -104,7 +104,7 @@ const AlertEntry = ({ alertId }: { alertId: number }) => {
                   date: getDateStringFromDateObject(new Date(start))
                 })
               );
-              dispatch(setLastUpdateId(new Date()));
+              dispatch(setLastUpdateId(String(new Date())));
 
               navigation.navigate('Home');
             }
@@ -186,7 +186,7 @@ const ActionAlertEntry = ({ actionAlertId }: { actionAlertId: number }) => {
                   date: getDateStringFromDateObject(new Date(start))
                 })
               );
-              dispatch(setLastUpdateId(new Date()));
+              dispatch(setLastUpdateId(String(new Date())));
 
               navigation.navigate('Home');
             }

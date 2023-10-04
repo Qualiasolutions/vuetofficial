@@ -95,7 +95,7 @@ const NewTaskCard = ({ taskId }: { taskId: number }) => {
               date: getDateStringFromDateObject(new Date(start))
             })
           );
-          dispatch(setLastUpdateId(new Date()));
+          dispatch(setLastUpdateId(String(new Date())));
 
           navigation.navigate('Home');
         }

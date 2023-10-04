@@ -7,7 +7,7 @@ export const setEnforcedDate = createAction('@calendars/setEnforcedDate')<{
 
 export const setLastUpdateId = createAction(
   '@calendars/setLastUpdateId'
-)<Date>();
+)<string>();
 
 export const setFilteredUsers = createAction('@calendars/setFilteredUsers')<{
   users: number[];

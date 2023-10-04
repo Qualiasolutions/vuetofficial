@@ -462,7 +462,7 @@ export default function AddTaskScreen({
                           date: getDateStringFromDateObject(start)
                         })
                       );
-                      dispatch(setLastUpdateId(new Date()));
+                      dispatch(setLastUpdateId(String(new Date())));
                     }
                     navigation.goBack();
                   }}

@@ -18,6 +18,6 @@ export interface CalendarState {
     filtersModalOpen: boolean;
     enforcedDate: string;
     actionDrawerOpen: boolean;
-    lastUpdateId: null | Date;
+    lastUpdateId: null | string;
   };
 }
