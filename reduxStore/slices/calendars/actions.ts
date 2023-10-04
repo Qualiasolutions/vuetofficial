@@ -35,6 +35,12 @@ export const setFilteredTaskTypes = createAction(
   taskTypes: (TaskType | 'OTHER')[];
 }>();
 
+export const setCompletionFilters = createAction(
+  '@calendars/setCompletionFilters'
+)<{
+  completionFilters: ('COMPLETE' | 'INCOMPLETE')[];
+}>();
+
 export const setTaskToAction = createAction('@calendars/setTaskToAction')<{
   taskId: number;
   recurrenceIndex: number | null;

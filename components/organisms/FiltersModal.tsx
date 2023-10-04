@@ -10,11 +10,13 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  setCompletionFilters,
   setFilteredCategories,
   setFilteredTaskTypes,
   setFilteredUsers
 } from 'reduxStore/slices/calendars/actions';
 import {
+  selectCompletionFilters,
   selectFilteredCategories,
   selectFilteredTaskTypes,
   selectFilteredUsers
@@ -107,6 +109,41 @@ const TaskTypeSelector = ({
   );
 };
 
+const CompletionFilterSelector = ({
+  value,
+  onValueChange
+}: {
+  value: ('COMPLETE' | 'INCOMPLETE')[];
+  onValueChange: (completionTypes: ('COMPLETE' | 'INCOMPLETE')[]) => void;
+}) => {
+  const { t } = useTranslation();
+  const completionOptions = [
+    {
+      value: 'COMPLETE',
+      label: t('common.complete'),
+      checked: value.includes('COMPLETE')
+    },
+    {
+      value: 'INCOMPLETE',
+      label: t('common.incomplete'),
+      checked: value.includes('INCOMPLETE')
+    }
+  ];
+
+  return (
+    <CheckboxesList
+      options={completionOptions}
+      onToggleItem={(completionType) => {
+        if (value.includes(completionType)) {
+          onValueChange(value.filter((val) => val !== completionType));
+        } else {
+          onValueChange([...value, completionType]);
+        }
+      }}
+    />
+  );
+};
+
 const ExpandableSection = ({
   title,
   children
@@ -141,12 +178,15 @@ export default function FiltersModal({
   const filteredUsers = useSelector(selectFilteredUsers);
   const filteredCategories = useSelector(selectFilteredCategories);
   const filteredTaskTypes = useSelector(selectFilteredTaskTypes);
+  const completionFilters = useSelector(selectCompletionFilters);
 
   const [newFilteredUsers, setNewFilteredUsers] = useState(filteredUsers);
   const [newFilteredCategories, setNewFilteredCategories] =
     useState(filteredCategories);
   const [newFilteredTaskTypes, setNewFilteredTaskTypes] =
     useState(filteredTaskTypes);
+  const [newCompletionFilters, setNewCompletionFilters] =
+    useState(completionFilters);
 
   const onUsersValueChange = useCallback(
     (newUsers: number[]) => {
@@ -198,6 +238,18 @@ export default function FiltersModal({
             onValueChange={setNewFilteredTaskTypes}
           />
         </ExpandableSection>
+        <ExpandableSection
+          title={`${t('filters.completionFilters')}${
+            completionFilters && completionFilters.length > 0
+              ? ` (${completionFilters.length})`
+              : ''
+          }`}
+        >
+          <CompletionFilterSelector
+            value={newCompletionFilters || []}
+            onValueChange={setNewCompletionFilters}
+          />
+        </ExpandableSection>
       </TransparentScrollView>
       <TransparentView>
         <TransparentView style={styles.buttonWrapper}>
@@ -215,6 +267,13 @@ export default function FiltersModal({
               if (newFilteredTaskTypes) {
                 dispatch(
                   setFilteredTaskTypes({ taskTypes: newFilteredTaskTypes })
+                );
+              }
+              if (newCompletionFilters) {
+                dispatch(
+                  setCompletionFilters({
+                    completionFilters: newCompletionFilters
+                  })
                 );
               }
               onRequestClose();

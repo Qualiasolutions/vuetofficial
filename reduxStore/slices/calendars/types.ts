@@ -7,6 +7,7 @@ export interface CalendarState {
     filteredTags: string[];
     filteredCategories: number[];
     filteredTaskTypes: (TaskType | 'OTHER')[];
+    completionFilters: ('COMPLETE' | 'INCOMPLETE')[];
     taskToAction: {
       taskId: number;
       recurrenceIndex: number | null;

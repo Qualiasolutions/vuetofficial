@@ -11,6 +11,7 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     filteredTags: [],
     filteredCategories: [],
     filteredTaskTypes: [],
+    completionFilters: [],
     taskToAction: null
   },
   ui: {
@@ -102,6 +103,18 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         data: {
           ...state.data,
           filteredTaskTypes: payload.taskTypes
+        }
+      };
+    }
+  )
+  .handleAction(
+    actions.setCompletionFilters,
+    (state: CalendarState, { payload }) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          completionFilters: payload.completionFilters
         }
       };
     }

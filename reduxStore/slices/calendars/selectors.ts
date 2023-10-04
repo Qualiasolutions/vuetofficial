@@ -42,6 +42,11 @@ export const selectFilteredTaskTypes = createSelector(
   (calendar: CalendarState | undefined) => calendar?.data?.filteredTaskTypes
 );
 
+export const selectCompletionFilters = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.data?.completionFilters
+);
+
 export const selectTaskToAction = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.data?.taskToAction

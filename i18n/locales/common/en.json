@@ -361,7 +361,8 @@
     "userFilters": "User filters",
     "entityFilters": "Entity filters",
     "categoryFilters": "Category filters",
-    "taskTypeFilters": "Task Type filters"
+    "taskTypeFilters": "Task Type filters",
+    "completionFilters": "Completion filters"
   },
   "common": {
     "start": "Start",
@@ -370,6 +371,8 @@
     "edit": "Edit",
     "change": "Change",
     "other": "Other",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
     "name": "Name",
     "value": "Value",
     "members": "Members",

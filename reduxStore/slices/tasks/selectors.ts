@@ -30,6 +30,7 @@ import {
   formatTasksPerDate
 } from 'utils/formatTasksAndPeriods';
 import {
+  selectCompletionFilters,
   selectFilteredCategories,
   selectFilteredTaskTypes,
   selectFilteredUsers
@@ -169,6 +170,7 @@ const filterTask = (
   filteredUsers: number[],
   filteredCategories: number[],
   filteredTaskTypes: (TaskType | 'OTHER')[],
+  completionFilters: ('COMPLETE' | 'INCOMPLETE')[],
   allCategories: AllCategories,
   allEntities: AllEntities
 ) => {
@@ -192,7 +194,15 @@ const filterTask = (
       filteredTaskTypes.length === 0 ||
       filteredTaskTypes.includes(task.type) ||
       (filteredTaskTypes.includes('OTHER') &&
-        !['TASK', 'APPOINTMENT'].includes(task.type)))
+        !['TASK', 'APPOINTMENT'].includes(task.type))) &&
+    (!completionFilters ||
+      completionFilters.length === 0 ||
+      (completionFilters.includes('COMPLETE') &&
+        completionFilters.includes('INCOMPLETE')) ||
+      (completionFilters.includes('COMPLETE') && task.is_complete) ||
+      (completionFilters.includes('INCOMPLETE') &&
+        !task.is_complete &&
+        (task.action_id || (task && ['TASK', 'DUE_DATE'].includes(task.type)))))
   );
 };
 
@@ -201,9 +211,18 @@ export const selectFilteredOverdueTasks = createSelector(
   selectFilteredUsers,
   selectFilteredCategories,
   selectFilteredTaskTypes,
+  selectCompletionFilters,
   vuetApi.endpoints.getAllCategories.select(),
   entitiesApi.endpoints.getAllEntities.select(),
-  (tasks, users, categories, taskTypes, allCategories, allEntities) => {
+  (
+    tasks,
+    users,
+    categories,
+    taskTypes,
+    completionFilters,
+    allCategories,
+    allEntities
+  ) => {
     const categoriesData = allCategories.data;
     const entitiesData = allEntities.data;
 
@@ -212,7 +231,8 @@ export const selectFilteredOverdueTasks = createSelector(
       !entitiesData ||
       !users ||
       !categories ||
-      !taskTypes
+      !taskTypes ||
+      !completionFilters
     ) {
       return [];
     }
@@ -223,6 +243,7 @@ export const selectFilteredOverdueTasks = createSelector(
         users,
         categories,
         taskTypes,
+        completionFilters,
         categoriesData,
         entitiesData
       )
@@ -451,13 +472,15 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
   selectFilteredUsers,
   selectFilteredCategories,
   selectFilteredTaskTypes,
+  selectCompletionFilters,
   (
     scheduledTasks,
     allEntities,
     allCategories,
     users,
     categories,
-    taskTypes
+    taskTypes,
+    completionFilters
   ) => {
     const entitiesData = allEntities.data;
     const categoriesData = allCategories.data;
@@ -469,7 +492,8 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
       !categoriesData ||
       !users ||
       !categories ||
-      !taskTypes
+      !taskTypes ||
+      !completionFilters
     ) {
       return {};
     }
@@ -494,6 +518,7 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
             users,
             categories,
             taskTypes,
+            completionFilters,
             categoriesData,
             entitiesData
           )
@@ -531,6 +556,7 @@ export const selectFilteredScheduledEntityIds = (
     selectFilteredUsers,
     selectFilteredCategories,
     selectFilteredTaskTypes,
+    selectCompletionFilters,
     (
       scheduledTasks,
       allEntities,
@@ -541,7 +567,8 @@ export const selectFilteredScheduledEntityIds = (
       students,
       users,
       categories,
-      taskTypes
+      taskTypes,
+      completionFilters
     ) => {
       const schoolYearsData = schoolYears.data;
       const schoolBreaksData = schoolBreaks.data;
@@ -659,7 +686,11 @@ export const selectFilteredScheduledEntityIds = (
                   SCHOOL_ENTITY_TYPES.includes(entity.resourcetype))) &&
               (!taskTypes ||
                 taskTypes.length === 0 ||
-                taskTypes.includes('OTHER'))
+                taskTypes.includes('OTHER')) &&
+              (!completionFilters ||
+                completionFilters.length === 0 ||
+                (completionFilters.includes('COMPLETE') &&
+                  completionFilters.includes('INCOMPLETE')))
           ) || [];
 
       const formatted = formatEntitiesPerDate(filteredEntities);
