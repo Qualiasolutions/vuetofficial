@@ -178,6 +178,10 @@ function getCurrentDateString() {
   return getDateStringFromDateObject(new Date());
 }
 
+function getCurrentDateTimeString() {
+  return dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss');
+}
+
 const getOffsetMonthStartDateString = (
   date: Date,
   offset: number
@@ -241,6 +245,7 @@ export {
   getDateStringFromDateObject,
   getTimeStringFromDateObject,
   getCurrentDateString,
+  getCurrentDateTimeString,
   getDateWithoutTimezone,
   getLongDateFromDateObject,
   getDatesPeriodString,

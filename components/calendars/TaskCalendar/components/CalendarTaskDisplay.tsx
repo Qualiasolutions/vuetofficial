@@ -26,7 +26,10 @@ import {
   WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import { useSelector } from 'react-redux';
-import { selectMonthEnforcedDate } from 'reduxStore/slices/calendars/selectors';
+import {
+  selectLastUpdateTime,
+  selectMonthEnforcedDate
+} from 'reduxStore/slices/calendars/selectors';
 import Task, { ScheduledEntity } from './Task';
 import { HEADER_HEIGHT, ITEM_HEIGHT } from './shared';
 import ListHeaderComponent from './ListHeaderComponent';
@@ -137,6 +140,7 @@ function Calendar({
   const [pastMonthsToShow, setPastMonthsToShow] = useState(0);
   const [rerenderingList, setRerenderingList] = useState(false);
   const monthEnforcedDate = useSelector(selectMonthEnforcedDate);
+  const lastUpdateTime = useSelector(selectLastUpdateTime);
   const tasksPerRoutine = useSelector(selectTasksInDailyRoutines);
   const sectionListRef = useRef<any>(null);
   const { t } = useTranslation();
@@ -404,7 +408,10 @@ function Calendar({
         }
       }
     }
-  }, [monthEnforcedDate]);
+  }, [
+    monthEnforcedDate,
+    lastUpdateTime // Need this in case the date is set but not actually changed
+  ]);
 
   const shownSections = useMemo(() => {
     const sections = [

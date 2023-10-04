@@ -16,7 +16,8 @@ const INITIAL_CALENDAR_STATE: CalendarState = {
     listEnforcedDate: '',
     monthEnforcedDate: '',
     enforcedDate: '',
-    actionDrawerOpen: false
+    actionDrawerOpen: false,
+    lastUpdateTime: null
   }
 };
 
@@ -42,7 +43,8 @@ const calendarReducer = createReducer(INITIAL_CALENDAR_STATE)
         ui: {
           ...state.ui,
           monthEnforcedDate: payload.date,
-          enforcedDate: payload.date
+          enforcedDate: payload.date,
+          lastUpdateTime: new Date()
         }
       };
     }

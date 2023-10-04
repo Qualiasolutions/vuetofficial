@@ -22,6 +22,11 @@ export const selectEnforcedDate = createSelector(
   (calendar: CalendarState | undefined) => calendar?.ui?.enforcedDate
 );
 
+export const selectLastUpdateTime = createSelector(
+  selectCalendarState,
+  (calendar: CalendarState | undefined) => calendar?.ui?.lastUpdateTime
+);
+
 export const selectFilteredUsers = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.data?.filteredUsers

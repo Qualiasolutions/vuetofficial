@@ -20,9 +20,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between'
   },
-  endSpace: {
-    width: '20%'
-  },
   monthPressable: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -62,7 +59,6 @@ export default function MonthSelector({
         />
         <AlmostBlackText text="▼" />
       </SafePressable>
-      <View style={styles.endSpace} />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode={'date'}

@@ -15,7 +15,10 @@ import dayjs from 'dayjs';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import utc from 'dayjs/plugin/utc';
 import CalendarView from 'components/molecules/CalendarViewV2';
-import { getDateStringFromDateObject } from 'utils/datesAndTimes';
+import {
+  getCurrentDateString,
+  getDateStringFromDateObject
+} from 'utils/datesAndTimes';
 import {
   setListEnforcedDate,
   setMonthEnforcedDate
@@ -32,6 +35,8 @@ import { Feather } from '@expo/vector-icons';
 import { elevation } from 'styles/elevation';
 import { useThemeColor } from 'components/Themed';
 import { ScheduledTask } from 'types/tasks';
+import { PrimaryText } from 'components/molecules/TextComponents';
+import { t } from 'i18next';
 
 dayjs.extend(utc);
 
@@ -48,6 +53,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     marginBottom: 3
+  },
+  monthSelectorWrapper: {
+    marginRight: 20
+  },
+  todayButton: {
+    marginLeft: 20
   }
 });
 
@@ -141,28 +152,38 @@ function Calendar({
         <WhitePaddedView
           style={[styles.monthSelectorSection, elevation.elevated]}
         >
-          <MonthSelector
-            onValueChange={(date) => {
-              if (date) {
-                const dateString = getDateStringFromDateObject(date);
-                dispatch(setMonthEnforcedDate({ date: dateString }));
-                dispatch(setListEnforcedDate({ date: dateString }));
-              }
-            }}
-          />
-          {
-            <TouchableOpacity
-              onPress={() => {
-                setShowCalendar(!showCalendar);
+          <TransparentView style={styles.monthSelectorWrapper}>
+            <MonthSelector
+              onValueChange={(date) => {
+                if (date) {
+                  const dateString = getDateStringFromDateObject(date);
+                  dispatch(setMonthEnforcedDate({ date: dateString }));
+                  dispatch(setListEnforcedDate({ date: dateString }));
+                }
               }}
-            >
-              <Feather
-                name={showCalendar ? 'list' : 'calendar'}
-                size={24}
-                color={primaryColor}
-              />
-            </TouchableOpacity>
-          }
+            />
+          </TransparentView>
+          <TouchableOpacity
+            onPress={() => {
+              setShowCalendar(!showCalendar);
+            }}
+          >
+            <Feather
+              name={showCalendar ? 'list' : 'calendar'}
+              size={24}
+              color={primaryColor}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              const today = getCurrentDateString();
+              dispatch(setMonthEnforcedDate({ date: today }));
+              dispatch(setListEnforcedDate({ date: today }));
+            }}
+            style={styles.todayButton}
+          >
+            <PrimaryText text={t('common.today')} />
+          </TouchableOpacity>
         </WhitePaddedView>
       </TransparentView>
       <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>

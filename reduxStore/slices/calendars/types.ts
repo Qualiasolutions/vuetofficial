@@ -15,5 +15,6 @@ export interface CalendarState {
     monthEnforcedDate: string;
     enforcedDate: string;
     actionDrawerOpen: boolean;
+    lastUpdateTime: null | Date;
   };
 }

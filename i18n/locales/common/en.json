@@ -367,6 +367,7 @@
     "from": "From",
     "allDay": "All day",
     "anyTime": "Any time",
+    "today": "Today",
     "apply": "Apply",
     "frequency": "Frequency",
     "timePeriod": "Time period",
