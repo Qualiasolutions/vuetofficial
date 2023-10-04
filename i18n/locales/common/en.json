@@ -377,6 +377,7 @@
     "invite": "Invite",
     "oops": "Oops",
     "next": "Next",
+    "previous": "Previous",
     "finish": "Finish",
     "back": "Back",
     "hide": "Hide",
@@ -630,6 +631,9 @@
     "integrations": {
       "noIntegrations": "No external calendars have been linked to this account",
       "enterUrl": "Enter the iCal URL to link"
+    },
+    "routineTasks": {
+      "noTasks": "No tasks to show for this routine on this date"
     }
   },
   "navigation": {
