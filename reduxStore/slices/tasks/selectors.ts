@@ -682,8 +682,10 @@ export const selectFilteredScheduledEntityIds = (
                 entity.members.some((member) => users?.includes(member))) &&
               (!categories ||
                 categories.length === 0 ||
-                categories.length === allEntitiesData.ids.length ||
-                categories.includes(allEntitiesData.byId[entity.id].category) ||
+                categories.length === allCategoriesData.ids.length ||
+                categories.includes(
+                  allEntitiesData.byId[entity.id]?.category
+                ) ||
                 (categories.some(
                   (categoryId) =>
                     allCategoriesData.byId[categoryId].name === 'EDUCATION'
