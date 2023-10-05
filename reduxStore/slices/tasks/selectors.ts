@@ -187,7 +187,8 @@ const filterTask = (
       }) ||
       task.tags.some((tagName) => {
         const tagCategoryName = TAG_TO_CATEGORY[tagName];
-        const categoryId = allCategories.byName[tagCategoryName]?.id;
+        const categoryId =
+          tagCategoryName && allCategories.byName[tagCategoryName]?.id;
         return categoryId && filteredCategories.includes(categoryId);
       })) &&
     (!filteredTaskTypes ||
