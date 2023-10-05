@@ -20,6 +20,8 @@ import {
 import dayjs from 'dayjs';
 import {
   FixedTaskResponseType,
+  ICalEventResponseType,
+  isICalEvent,
   MinimalScheduledTask,
   ScheduledEntityResponseType,
   ScheduledTaskResponseType,
@@ -38,6 +40,7 @@ import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponent
 import useCanMarkComplete from 'hooks/useCanMarkComplete';
 import TaskCompletionPressable from 'components/molecules/TaskCompletionPressable';
 import Checkbox from 'components/molecules/Checkbox';
+import { selectIntegrationById } from 'reduxStore/slices/externalCalendars/selectors';
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -197,7 +200,24 @@ const TimeText = ({
   );
 };
 
-const TimeZoneText = ({
+const ICalInfo = ({ task }: { task: ICalEventResponseType }) => {
+  const { t } = useTranslation();
+  const iCalIntegration = useSelector(
+    selectIntegrationById(task.ical_integration)
+  );
+
+  if (!iCalIntegration) {
+    return null;
+  }
+
+  return (
+    <Text style={styles.timeZoneText}>
+      {`${t('common.from')} ${iCalIntegration.ical_name}`}
+    </Text>
+  );
+};
+
+const InfoText = ({
   task,
   scheduledTask,
   date
@@ -207,6 +227,7 @@ const TimeZoneText = ({
   date: string;
 }) => {
   const { t } = useTranslation();
+
   const startTime = new Date(scheduledTask?.start_datetime || '');
   const startDate = dayjs(startTime).format('YYYY-MM-DD');
   const endTime = new Date(scheduledTask?.end_datetime || '');
@@ -219,35 +240,37 @@ const TimeZoneText = ({
   const isLastDay = multiDay && currentDate === endDate;
 
   if (
-    !(
-      scheduledTask?.start_datetime &&
-      task?.start_timezone &&
-      scheduledTask?.end_datetime &&
-      task?.end_timezone
-    )
+    scheduledTask?.start_datetime &&
+    task?.start_timezone &&
+    scheduledTask?.end_datetime &&
+    task?.end_timezone
   ) {
-    return null;
+    const startTimeString = `${
+      getTimeInTimezone(scheduledTask?.start_datetime, task?.start_timezone)
+        .split('T')[1]
+        .split(':00Z')[0]
+    } ${task?.start_timezone}`;
+
+    const endTimeString = `${
+      getTimeInTimezone(scheduledTask?.end_datetime, task?.end_timezone)
+        .split('T')[1]
+        .split(':00Z')[0]
+    } ${task?.end_timezone}`;
+
+    return (
+      <Text style={styles.timeZoneText}>
+        {multiDay && isFirstDay && `${t('common.from')} ${startTimeString}`}
+        {multiDay && isLastDay && `${t('common.until')} ${endTimeString}`}
+        {!multiDay && `${startTimeString} - ${endTimeString}`}
+      </Text>
+    );
   }
 
-  const startTimeString = `${
-    getTimeInTimezone(scheduledTask?.start_datetime, task?.start_timezone)
-      .split('T')[1]
-      .split(':00Z')[0]
-  } ${task?.start_timezone}`;
+  if (task && isICalEvent(task)) {
+    return <ICalInfo task={task} />;
+  }
 
-  const endTimeString = `${
-    getTimeInTimezone(scheduledTask?.end_datetime, task?.end_timezone)
-      .split('T')[1]
-      .split(':00Z')[0]
-  } ${task?.end_timezone}`;
-
-  return (
-    <Text style={styles.timeZoneText}>
-      {multiDay && isFirstDay && `${t('common.from')} ${startTimeString}`}
-      {multiDay && isLastDay && `${t('common.until')} ${endTimeString}`}
-      {!multiDay && `${startTimeString} - ${endTimeString}`}
-    </Text>
-  );
+  return null;
 };
 
 const TaskIcon = ({ task }: { task: FixedTaskResponseType }) => {
@@ -393,7 +416,7 @@ function Task({
                     bold={true}
                     numberOfLines={2}
                   />
-                  <TimeZoneText
+                  <InfoText
                     task={task}
                     scheduledTask={scheduledTask}
                     date={date}

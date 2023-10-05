@@ -103,14 +103,16 @@ const IntegrationsList = () => {
     return <FullPageSpinner />;
   }
 
-  if (iCalIntegrations.length === 0) {
+  if (iCalIntegrations.ids.length === 0) {
     return <Text>{t('screens.integrations.noIntegrations')}</Text>;
   }
   return (
     <>
-      {iCalIntegrations.map((integration) => (
-        <IntegrationCard integration={integration} key={integration.id} />
-      ))}
+      {iCalIntegrations.ids
+        .map((id) => iCalIntegrations.byId[id])
+        .map((integration) => (
+          <IntegrationCard integration={integration} key={integration.id} />
+        ))}
     </>
   );
 };

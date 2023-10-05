@@ -90,6 +90,10 @@ interface HolidayTaskResponseType extends FixedTaskResponseType {
   custom: boolean;
 }
 
+interface ICalEventResponseType extends FixedTaskResponseType {
+  ical_integration: number;
+}
+
 const isAnniversaryTask = (
   task: FixedTaskResponseType
 ): task is AnniversaryTaskResponseType => {
@@ -100,6 +104,12 @@ const isHolidayTask = (
   task: FixedTaskResponseType
 ): task is HolidayTaskResponseType => {
   return Object.keys(task).includes('string_id');
+};
+
+const isICalEvent = (
+  task: FixedTaskResponseType
+): task is ICalEventResponseType => {
+  return Object.keys(task).includes('ical_integration');
 };
 
 interface ScheduledTaskResponseType {
@@ -218,6 +228,7 @@ export {
   FixedTaskResponseType,
   AnniversaryTaskResponseType,
   HolidayTaskResponseType,
+  ICalEventResponseType,
   CreateTaskRequest,
   CreateFixedTaskRequest,
   CreateFlexibleFixedTaskRequest,
@@ -229,5 +240,6 @@ export {
   MinimalScheduledTask,
   ScheduledTask,
   isAnniversaryTask,
-  isHolidayTask
+  isHolidayTask,
+  isICalEvent
 };

@@ -50,6 +50,7 @@ import OverdueTasksList from 'components/organisms/OverdueTasksList';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { setEnforcedDate } from 'reduxStore/slices/calendars/actions';
+import { useGetICalIntegrationsQuery } from 'reduxStore/services/api/externalCalendars';
 
 const styles = StyleSheet.create({
   icon: {
@@ -138,6 +139,9 @@ export function BottomTabNavigator({
     skip: !userDetails?.user_id
   });
   useGetLastActivityViewQuery(undefined, {
+    skip: !userDetails?.user_id
+  });
+  useGetICalIntegrationsQuery(undefined, {
     skip: !userDetails?.user_id
   });
 

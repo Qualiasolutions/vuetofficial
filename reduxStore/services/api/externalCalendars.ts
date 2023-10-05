@@ -3,14 +3,26 @@ import {
   ICalIntegrationCreateRequest,
   ICalIntegrationUpdateRequest
 } from 'types/externalCalendars';
-import { vuetApi } from './api';
+import { normalizeData, vuetApi } from './api';
 
-const extendedApi = vuetApi.injectEndpoints({
+const externalCalendarsApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
-    getICalIntegrations: builder.query<ICalIntegration[], void>({
+    getICalIntegrations: builder.query<
+      { ids: number[]; byId: { [key: number]: ICalIntegration } },
+      void
+    >({
       query: () => ({
         url: 'external-calendars/ical-integration/',
-        method: 'GET'
+        method: 'GET',
+        responseHandler: async (response) => {
+          if (response.ok) {
+            const responseJson: ICalIntegration[] = await response.json();
+            return normalizeData(responseJson);
+          } else {
+            // Just return the error data
+            return response.json();
+          }
+        }
       }),
       providesTags: ['ICalIntegration']
     }),
@@ -47,9 +59,11 @@ const extendedApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
+export default externalCalendarsApi;
+
 export const {
   useGetICalIntegrationsQuery,
   useCreateICalIntegrationMutation,
   useDeleteICalIntegrationMutation,
   useUpdateICalIntegrationMutation
-} = extendedApi;
+} = externalCalendarsApi;
