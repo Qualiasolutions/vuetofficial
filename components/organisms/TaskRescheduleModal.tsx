@@ -9,33 +9,39 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
-import { useCreateTaskWithoutCacheInvalidationMutation } from 'reduxStore/services/api/tasks';
-import { setTaskToPartiallyComplete } from 'reduxStore/slices/calendars/actions';
-import { selectTaskToPartiallyComplete } from 'reduxStore/slices/calendars/selectors';
+import {
+  useCreateRecurrentTaskOverwriteMutation,
+  useUpdateTaskMutation
+} from 'reduxStore/services/api/tasks';
+import { setTaskToReschedule } from 'reduxStore/slices/calendars/actions';
+import { selectTaskToReschedule } from 'reduxStore/slices/calendars/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
-import { CreateTaskRequest } from 'types/tasks';
+import { FixedTaskResponseType } from 'types/tasks';
 
 const styles = StyleSheet.create({
   specificTimeSection: { marginTop: 20 },
   submitButton: { marginTop: 6 }
 });
 
-export default function TaskPartialCompletionModal() {
-  const taskToPartiallyComplete = useSelector(selectTaskToPartiallyComplete);
+export default function TaskRescheduleModal() {
+  const taskToReschedule = useSelector(selectTaskToReschedule);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const scheduledTask = useSelector(
     selectScheduledTask({
-      id: taskToPartiallyComplete?.taskId,
-      recurrenceIndex: taskToPartiallyComplete?.recurrenceIndex
+      id: taskToReschedule?.taskId,
+      recurrenceIndex: taskToReschedule?.recurrenceIndex
     })
   );
   const [newTaskTime, setNewTaskTime] = useState<Date | null>(null);
-  const [createTask, createTaskResult] =
-    useCreateTaskWithoutCacheInvalidationMutation();
-  const [createTaskCompletionForm, createTaskCompletionFormResult] =
-    useCreateTaskCompletionFormMutation();
+  // const [createTask, createTaskResult] =
+  //   useCreateTaskWithoutCacheInvalidationMutation();
+  // const [createTaskCompletionForm, createTaskCompletionFormResult] =
+  //   useCreateTaskCompletionFormMutation();
+
+  const [updateTask, updateTaskResult] = useUpdateTaskMutation();
+  const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
+    useCreateRecurrentTaskOverwriteMutation();
 
   useEffect(() => {
     const scheduledTaskStart =
@@ -45,24 +51,22 @@ export default function TaskPartialCompletionModal() {
     setNewTaskTime(scheduledTaskStart ? new Date(scheduledTaskStart) : null);
   }, [scheduledTask]);
 
-  const createDuplicateTask = useCallback(
+  const rescheduleTask = useCallback(
     async ({ daysOffset, start }: { daysOffset?: number; start?: Date }) => {
       if (scheduledTask) {
-        const newTaskCreateBody: CreateTaskRequest = {
-          title: scheduledTask.title,
-          members: scheduledTask.members,
-          entities: scheduledTask.entities,
-          resourcetype: 'FixedTask'
+        const updateBody: Partial<FixedTaskResponseType> &
+          Pick<FixedTaskResponseType, 'id'> = {
+          id: scheduledTask.id
         };
         if (scheduledTask.start_datetime && scheduledTask.end_datetime) {
           if (daysOffset) {
             const startDatetime = new Date(scheduledTask.start_datetime);
             startDatetime.setDate(startDatetime.getDate() + daysOffset);
-            newTaskCreateBody.start_datetime = startDatetime.toISOString();
+            updateBody.start_datetime = startDatetime.toISOString();
 
             const endDatetime = new Date(scheduledTask.end_datetime);
             endDatetime.setDate(endDatetime.getDate() + daysOffset);
-            newTaskCreateBody.end_datetime = endDatetime.toISOString();
+            updateBody.end_datetime = endDatetime.toISOString();
           } else if (start) {
             const startDatetime = new Date(start);
 
@@ -71,57 +75,64 @@ export default function TaskPartialCompletionModal() {
               Number(new Date(scheduledTask.start_datetime));
             const endDatetime = new Date(Number(startDatetime) + duration);
 
-            newTaskCreateBody.start_datetime = startDatetime.toISOString();
-            newTaskCreateBody.end_datetime = endDatetime.toISOString();
+            updateBody.start_datetime = startDatetime.toISOString();
+            updateBody.end_datetime = endDatetime.toISOString();
           }
         }
         if (scheduledTask.start_date && scheduledTask.end_date) {
           if (daysOffset) {
             const startDate = new Date(scheduledTask.start_date);
             startDate.setDate(startDate.getDate() + daysOffset);
-            newTaskCreateBody.start_date =
-              dayjs(startDate).format('YYYY-MM-DD');
+            updateBody.start_date = dayjs(startDate).format('YYYY-MM-DD');
 
             const endDate = new Date(scheduledTask.end_date);
             endDate.setDate(endDate.getDate() + daysOffset);
-            newTaskCreateBody.end_date = dayjs(endDate).format('YYYY-MM-DD');
+            updateBody.end_date = dayjs(endDate).format('YYYY-MM-DD');
           } else if (start) {
             const startDate = new Date(start);
             const duration =
               Number(new Date(scheduledTask.end_date)) -
               Number(new Date(scheduledTask.start_date));
             const endDate = new Date(Number(startDate) + duration);
-            newTaskCreateBody.start_date =
-              dayjs(startDate).format('YYYY-MM-DD');
-            newTaskCreateBody.end_date = dayjs(endDate).format('YYYY-MM-DD');
+            updateBody.start_date = dayjs(startDate).format('YYYY-MM-DD');
+            updateBody.end_date = dayjs(endDate).format('YYYY-MM-DD');
           }
         }
         if (scheduledTask.date && scheduledTask.duration) {
           if (daysOffset) {
             const newDate = new Date(scheduledTask.date);
             newDate.setDate(newDate.getDate() + daysOffset);
-            newTaskCreateBody.date = dayjs(newDate).format('YYYY-MM-DD');
-            newTaskCreateBody.duration = scheduledTask.duration;
+            updateBody.date = dayjs(newDate).format('YYYY-MM-DD');
+            updateBody.duration = scheduledTask.duration;
           } else if (start) {
             const newDate = new Date(start);
-            newTaskCreateBody.date = dayjs(newDate).format('YYYY-MM-DD');
-            newTaskCreateBody.duration = scheduledTask.duration;
+            updateBody.date = dayjs(newDate).format('YYYY-MM-DD');
+            updateBody.duration = scheduledTask.duration;
           }
         }
 
         try {
-          dispatch(setTaskToPartiallyComplete(null));
-          await createTaskCompletionForm({
-            resourcetype: 'TaskCompletionForm',
-            task: scheduledTask.id,
-            recurrence_index:
-              taskToPartiallyComplete?.recurrenceIndex === undefined
-                ? -1
-                : taskToPartiallyComplete?.recurrenceIndex,
-            complete: true,
-            partial: true
-          }).unwrap();
-          await createTask(newTaskCreateBody).unwrap();
+          dispatch(setTaskToReschedule(null));
+          if (
+            taskToReschedule?.recurrenceIndex !== null &&
+            taskToReschedule?.recurrenceIndex !== undefined &&
+            scheduledTask.recurrence
+          ) {
+            createRecurrentOverwrite({
+              task: {
+                title: scheduledTask.title,
+                members: scheduledTask.members,
+                entities: scheduledTask.entities,
+                resourcetype: 'FixedTask',
+                ...updateBody
+              },
+              recurrence: scheduledTask.recurrence,
+              recurrence_index: taskToReschedule?.recurrenceIndex,
+              baseTaskId: taskToReschedule.taskId
+            });
+          } else {
+            await updateTask(updateBody).unwrap();
+          }
         } catch {
           Toast.show({
             type: 'error',
@@ -132,41 +143,41 @@ export default function TaskPartialCompletionModal() {
     },
     [
       scheduledTask,
-      createTask,
       dispatch,
       t,
-      createTaskCompletionForm,
-      taskToPartiallyComplete
+      updateTask,
+      createRecurrentOverwrite,
+      taskToReschedule
     ]
   );
 
   return (
     <Modal
-      visible={!!taskToPartiallyComplete}
+      visible={!!taskToReschedule}
       onRequestClose={() => {
-        dispatch(setTaskToPartiallyComplete(null));
+        dispatch(setTaskToReschedule(null));
       }}
     >
       <TransparentView>
         <LinkButton
-          title={t('components.taskPartialCompletionModal.rescheduleOneDay')}
+          title={t('components.taskRescheduleModal.rescheduleOneDay')}
           disabled={
-            createTaskResult.isLoading ||
-            createTaskCompletionFormResult.isLoading
+            updateTaskResult.isLoading ||
+            createRecurrentOverwriteResult.isLoading
           }
           onPress={() => {
-            createDuplicateTask({ daysOffset: 1 });
+            rescheduleTask({ daysOffset: 1 });
           }}
         />
         <LinkButton
-          title={t('components.taskPartialCompletionModal.rescheduleOneWeek')}
+          title={t('components.taskRescheduleModal.rescheduleOneWeek')}
           onPress={() => {
-            createDuplicateTask({ daysOffset: 7 });
+            rescheduleTask({ daysOffset: 7 });
           }}
         />
 
         <TransparentView style={styles.specificTimeSection}>
-          <Text>{t('components.taskPartialCompletionModal.rescheduleOn')}</Text>
+          <Text>{t('components.taskRescheduleModal.rescheduleOn')}</Text>
           <DateTimeTextInput
             value={newTaskTime}
             onValueChange={setNewTaskTime}
@@ -176,7 +187,7 @@ export default function TaskPartialCompletionModal() {
             title={t('common.submit')}
             onPress={() => {
               if (newTaskTime) {
-                createDuplicateTask({ start: newTaskTime });
+                rescheduleTask({ start: newTaskTime });
               }
             }}
             disabled={!newTaskTime}

@@ -1,5 +1,10 @@
 import { TaskType } from 'types/tasks';
 
+type TaskOrAction = {
+  taskId: number;
+  recurrenceIndex: number | null;
+  actionId: number | null;
+};
 export interface CalendarState {
   data: {
     filteredUsers: number[];
@@ -8,16 +13,9 @@ export interface CalendarState {
     filteredCategories: number[];
     filteredTaskTypes: (TaskType | 'OTHER')[];
     completionFilters: ('COMPLETE' | 'INCOMPLETE')[];
-    taskToAction: {
-      taskId: number;
-      recurrenceIndex: number | null;
-      actionId: number | null;
-    } | null;
-    taskToPartiallyComplete: {
-      taskId: number;
-      recurrenceIndex: number | null;
-      actionId: number | null;
-    } | null;
+    taskToAction: TaskOrAction | null;
+    taskToPartiallyComplete: TaskOrAction | null;
+    taskToReschedule: TaskOrAction | null;
   };
   ui: {
     filtersModalOpen: boolean;

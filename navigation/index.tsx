@@ -34,6 +34,7 @@ import { selectFiltersModalOpen } from 'reduxStore/slices/calendars/selectors';
 import { setFiltersModalOpen } from 'reduxStore/slices/calendars/actions';
 import FiltersModal from 'components/organisms/FiltersModal';
 import TaskPartialCompletionModal from 'components/organisms/TaskPartialCompletionModal';
+import TaskRescheduleModal from 'components/organisms/TaskRescheduleModal';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
@@ -103,6 +104,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       {navigatorComponent}
       <TaskActionModal />
       <TaskPartialCompletionModal />
+      <TaskRescheduleModal />
       <ListItemActionModal />
       <PremiumModal />
       <FiltersModal

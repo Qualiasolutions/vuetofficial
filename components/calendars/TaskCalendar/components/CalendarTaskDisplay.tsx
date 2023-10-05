@@ -394,9 +394,7 @@ function Calendar({
     }
     return;
   }, [
-    lastUpdateId, // This marks whether to actually update the location
-    entities,
-    tasks
+    lastUpdateId // This marks whether to actually update the location
   ]);
 
   const shownSections = useMemo(() => {

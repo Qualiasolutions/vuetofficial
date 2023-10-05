@@ -231,7 +231,6 @@ export default function AddHolidayTaskForm({
       <RecurrentUpdateModal
         visible={showRecurrentUpdateModal}
         onRequestClose={() => setShowRecurrentUpdateModal(false)}
-        recurrence={taskObj?.recurrence?.id || -1}
         recurrenceIndex={recurrenceIndex === undefined ? -1 : recurrenceIndex}
         taskId={taskId || -1}
         parsedFieldValues={fieldValues}

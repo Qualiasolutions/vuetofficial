@@ -666,6 +666,11 @@
       "rescheduleOneWeek": "Task again one week later",
       "rescheduleOn": "Task again at a specified time:"
     },
+    "taskRescheduleModal": {
+      "rescheduleOneDay": "Reschedule one day later",
+      "rescheduleOneWeek": "Reschedule one week later",
+      "rescheduleOn": "Reschedule at a specified time:"
+    },
     "alertsList": {
       "noAlerts": "You currently have no task conflict alerts"
     },
@@ -809,7 +814,8 @@
       "deleteConfirmation": "Are you sure you would like to delete this task?",
       "messages": "Messages",
       "markComplete": "Mark Complete",
-      "markPartiallyCompleteAndRepeat": "Partially done / task again"
+      "markPartiallyCompleteAndRepeat": "Partially done / task again",
+      "markIncompleteAndReschedule": "Did not do / reschedule"
     },
     "actionSelector": {
       "placeholder": "Add Actions"

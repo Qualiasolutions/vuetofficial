@@ -55,6 +55,14 @@ export const setTaskToPartiallyComplete = createAction(
   actionId: number | null;
 } | null>();
 
+export const setTaskToReschedule = createAction(
+  '@calendars/setTaskToReschedule'
+)<{
+  taskId: number;
+  recurrenceIndex: number | null;
+  actionId: number | null;
+} | null>();
+
 export const deselectTasks = createAction('@calendars/deselectTasks')();
 
 export const setFiltersModalOpen = createAction(

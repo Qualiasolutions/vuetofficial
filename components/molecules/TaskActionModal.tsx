@@ -10,7 +10,8 @@ import { Modal } from 'components/molecules/Modals';
 
 import {
   setTaskToAction,
-  setTaskToPartiallyComplete
+  setTaskToPartiallyComplete,
+  setTaskToReschedule
 } from 'reduxStore/slices/calendars/actions';
 import {
   selectScheduledTask,
@@ -173,6 +174,21 @@ export default function TaskActionModal() {
                   );
                 }}
                 title={t('components.task.markPartiallyCompleteAndRepeat')}
+              />
+            )}
+            {!taskToAction.actionId && (
+              <LinkButton
+                onPress={() => {
+                  dispatch(setTaskToAction(null));
+                  dispatch(
+                    setTaskToReschedule({
+                      taskId: taskToAction.taskId,
+                      recurrenceIndex: taskToAction.recurrenceIndex,
+                      actionId: taskToAction.actionId
+                    })
+                  );
+                }}
+                title={t('components.task.markIncompleteAndReschedule')}
               />
             )}
             {/* <TaskCompletionPressable
