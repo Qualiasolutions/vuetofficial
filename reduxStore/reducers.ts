@@ -8,6 +8,7 @@ import { notificationsReducer } from './slices/notifications/reducer';
 import { calendarReducer } from './slices/calendars/reducer';
 import { listsReducer } from './slices/lists/reducer';
 import { miscReducer } from './slices/misc/reducer';
+import { usersReducer } from './slices/users/reducer';
 
 const appReducer = combineReducers({
   authentication: authReducer,
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
   calendar: calendarReducer,
   misc: miscReducer,
   lists: listsReducer,
+  users: usersReducer,
   [vuetApi.reducerPath]: vuetApi.reducer
 });
 

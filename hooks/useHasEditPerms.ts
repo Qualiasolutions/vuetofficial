@@ -5,6 +5,7 @@ import useGetUserFullDetails from './useGetUserDetails';
 
 export default function useHasEditPerms(taskId: number) {
   const { data: userDetails } = useGetUserFullDetails();
+
   const { data: memberEntities } = useSelector(
     entitiesApi.endpoints.getMemberEntities.select()
   );

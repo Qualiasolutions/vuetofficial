@@ -1,5 +1,4 @@
 import { NavigationContainer } from '@react-navigation/native';
-import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 
 import LinkingConfiguration from './LinkingConfiguration';
@@ -25,76 +24,78 @@ import {
   useGetAllSchoolTermsQuery,
   useGetAllSchoolYearsQuery
 } from 'reduxStore/services/api/schoolTerms';
-import {
-  useGetUserDetailsQuery,
-  useGetUserFullDetailsQuery
-} from 'reduxStore/services/api/user';
 import PremiumModal from 'components/molecules/PremiumModal';
 import { selectFiltersModalOpen } from 'reduxStore/slices/calendars/selectors';
 import { setFiltersModalOpen } from 'reduxStore/slices/calendars/actions';
 import FiltersModal from 'components/organisms/FiltersModal';
 import TaskPartialCompletionModal from 'components/organisms/TaskPartialCompletionModal';
 import TaskRescheduleModal from 'components/organisms/TaskRescheduleModal';
+import { useCallback, useMemo, useState } from 'react';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;
 }
 
 const Navigation = ({ colorScheme }: NavigationProps) => {
-  const [hasJustSignedUp, setHasJustSignedUp] = React.useState(false);
+  const [hasJustSignedUp, setHasJustSignedUp] = useState(false);
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
   const filtersModalOpen = !!useSelector(selectFiltersModalOpen);
+
   const dispatch = useDispatch();
-  const { data: userBasicDetails, isLoading: isLoadingDetails } =
-    useGetUserDetailsQuery(undefined, { skip: !jwtAccessToken });
-  const { data: userFullDetails, isLoading: isLoadingFullDetails } =
-    useGetUserFullDetailsQuery(userBasicDetails?.user_id || -1, {
-      refetchOnMountOrArgChange: true,
-      skip: !userBasicDetails?.user_id,
-      // TODO
-      // This does cause some performance issues when updating -
-      // would be better to use sockets so that we only refetch
-      // when we actually need to
-      pollingInterval: 30000
-    });
+  const { data: userFullDetails, isLoading: isLoadingUserDetails } =
+    useGetUserFullDetails();
   const { data: invitesForUser, isLoading: isLoadingInvitesForUser } =
     useActiveInvitesForUser(true);
 
   // Force fetch of categories on app load
-  useGetAllCategoriesQuery(undefined, { skip: !userBasicDetails?.user_id });
+  useGetAllCategoriesQuery(undefined, { skip: !userFullDetails?.id });
 
   // Force fetch of School Years etc
-  useGetAllSchoolYearsQuery(undefined, { skip: !userBasicDetails?.user_id });
-  useGetAllSchoolTermsQuery(undefined, { skip: !userBasicDetails?.user_id });
-  useGetAllSchoolBreaksQuery(undefined, { skip: !userBasicDetails?.user_id });
+  useGetAllSchoolYearsQuery(undefined, { skip: !userFullDetails?.id });
+  useGetAllSchoolTermsQuery(undefined, { skip: !userFullDetails?.id });
+  useGetAllSchoolBreaksQuery(undefined, { skip: !userFullDetails?.id });
 
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
-  let navigatorComponent = <FullPageSpinner />;
+  const navigatorComponent = useMemo(() => {
+    let component = <FullPageSpinner />;
 
-  const isLoading =
-    isLoadingDetails || isLoadingFullDetails || isLoadingInvitesForUser;
+    const isLoading = isLoadingUserDetails || isLoadingInvitesForUser;
 
-  if (!isLoading) {
-    if (!(jwtAccessToken && jwtRefreshToken)) {
-      navigatorComponent = <UnauthorisedNavigator />;
-    } else {
-      if (firstInviteForUser) {
-        navigatorComponent = <FamilyRequestNavigator />;
-      } else if (userFullDetails && !userFullDetails.has_done_setup) {
-        if (!hasJustSignedUp) {
-          setHasJustSignedUp(true);
-        }
-        navigatorComponent = <SetupNavigator />;
+    if (!isLoading) {
+      if (!(jwtAccessToken && jwtRefreshToken)) {
+        component = <UnauthorisedNavigator />;
       } else {
-        navigatorComponent = (
-          <SideNavigator hasJustSignedUp={hasJustSignedUp} />
-        );
+        if (firstInviteForUser) {
+          component = <FamilyRequestNavigator />;
+        } else if (userFullDetails && !userFullDetails.has_done_setup) {
+          if (!hasJustSignedUp) {
+            setHasJustSignedUp(true);
+          }
+          component = <SetupNavigator />;
+        } else {
+          component = <SideNavigator hasJustSignedUp={hasJustSignedUp} />;
+        }
       }
     }
-  }
+
+    return component;
+  }, [
+    firstInviteForUser,
+    hasJustSignedUp,
+    isLoadingInvitesForUser,
+    isLoadingUserDetails,
+    jwtAccessToken,
+    jwtRefreshToken,
+    userFullDetails
+  ]);
+
+  const onFiltersClose = useCallback(() => {
+    dispatch(setFiltersModalOpen(false));
+  }, [dispatch]);
 
   return (
     <NavigationContainer
@@ -109,9 +110,7 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
       <PremiumModal />
       <FiltersModal
         visible={filtersModalOpen}
-        onRequestClose={() => {
-          dispatch(setFiltersModalOpen(false));
-        }}
+        onRequestClose={onFiltersClose}
       />
     </NavigationContainer>
   );
