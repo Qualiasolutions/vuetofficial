@@ -6,6 +6,7 @@ type TaskCompletionFormCreateRequest = {
   recurrence_index: number | null;
   task: number;
   complete?: boolean;
+  partial?: boolean;
   ignore?: boolean;
 };
 
