@@ -14,7 +14,6 @@ import {
 } from 'reduxStore/slices/users/selectors';
 
 export default function useSyncUserDetails() {
-  console.log('SYNC');
   const dispatch = useDispatch();
   const { data: userDetails } = useGetUserDetailsQuery();
   const userId = userDetails ? userDetails.user_id : -1;

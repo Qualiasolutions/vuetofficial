@@ -10,15 +10,9 @@ import {
   ScheduledEntityResponseType,
   AnniversaryTaskResponseType
 } from 'types/tasks';
-import {
-  formatEntitiesPerDate,
-  formatTasksPerDate
-} from 'utils/formatTasksAndPeriods';
-import { getDateStringsBetween } from 'utils/datesAndTimes';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
 import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
-import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Task';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 
 const normalizeScheduledTaskData = ({
@@ -37,7 +31,6 @@ const normalizeScheduledTaskData = ({
         action_id
       })
     ),
-    byDate: formatTasksPerDate(taskData),
     byTaskId: taskData
       .filter((task) => ['FixedTask'].includes(task.resourcetype))
       .reduce<{ [key: number]: {} }>(
@@ -66,7 +59,6 @@ const normalizeScheduledTaskData = ({
       id,
       resourcetype
     })),
-    byDateEntities: formatEntitiesPerDate(entityData),
     byEntityId: entityData.reduce<{ [key: string]: {} }>((prev, next) => {
       const type = RESOURCE_TYPE_TO_TYPE[next.resourcetype] || 'ENTITY';
       return {
@@ -121,32 +113,6 @@ const updateQueryDataForNewTask = (
                 }
               };
 
-              const taskDates = newTask.date
-                ? [newTask.date]
-                : newTask.start_datetime && newTask.end_datetime
-                ? getDateStringsBetween(
-                    newTask.start_datetime,
-                    newTask.end_datetime
-                  )
-                : newTask.start_date && newTask.end_date
-                ? getDateStringsBetween(newTask.start_date, newTask.end_date)
-                : [];
-
-              for (const date of taskDates) {
-                if (!draft.byDate[date]) {
-                  draft.byDate[date] = [];
-                }
-                draft.byDate[date] = [
-                  ...draft.byDate[date],
-                  {
-                    id: newTask.id,
-                    recurrence_index: null,
-                    type: 'TASK',
-                    action_id: null
-                  }
-                ];
-              }
-
               draft.ordered.push({
                 id: newTask.id,
                 recurrence_index: null,
@@ -165,6 +131,66 @@ const updateQueryDataForNewTask = (
   // the server response
 };
 
+const updateQueryDataForUpdateTask = (
+  api: any,
+  patch: Partial<FixedTaskResponseType> & Pick<FixedTaskResponseType, 'id'>,
+  dispatch: ThunkDispatch<any, any, AnyAction>,
+  getState: () => RootState<any, any, 'vuetApi'>
+) => {
+  const patchResults = [];
+  for (const { endpointName, originalArgs } of api.util.selectInvalidatedBy(
+    getState(),
+    [{ type: 'Task' }]
+  )) {
+    if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
+      continue;
+    if (endpointName === 'getAllTasks') {
+      const patchResult = dispatch(
+        api.util.updateQueryData('getAllTasks', originalArgs, (draft: any) => {
+          draft.byId[patch.id] = {
+            ...draft.byId[patch.id],
+            ...patch
+          };
+        })
+      );
+      patchResults.push(patchResult);
+    }
+    if (endpointName === 'getAllScheduledTasks') {
+      const patchResult = dispatch(
+        api.util.updateQueryData(
+          'getAllScheduledTasks',
+          originalArgs,
+          (draft: any) => {
+            // If the task is recurrent then don't update
+            // its start and end times (they can't change)
+            if (!draft.byTaskId[patch.id][-1]) return;
+
+            // Otherwise it is a single occurrence and we
+            // may want to update the start and end times
+            const scheduledTask = draft.byTaskId[patch.id][-1];
+            const newTimes = {
+              start_date: patch.start_date || scheduledTask.start_date,
+              end_date: patch.end_date || scheduledTask.end_date,
+              start_datetime:
+                patch.start_datetime || scheduledTask.start_datetime,
+              end_datetime: patch.end_datetime || scheduledTask.end_datetime,
+              date: patch.date || scheduledTask.date,
+              duration: patch.duration || scheduledTask.duration
+            };
+            draft.byTaskId[patch.id][-1] = {
+              ...scheduledTask,
+              ...newTimes
+            };
+          }
+        )
+      );
+      patchResults.push(patchResult);
+    }
+  }
+
+  return patchResults;
+};
+
 type AllScheduledTasks = {
   ordered: {
     id: number;
@@ -172,13 +198,6 @@ type AllScheduledTasks = {
     resourcetype: ScheduledTaskResourceType;
     action_id: number | null;
   }[];
-  byDate: {
-    [date: string]: {
-      id: number;
-      recurrence_index: number | null;
-      action_id: number | null;
-    }[];
-  };
   byTaskId: {
     [key: number]: {
       [key: number]: ScheduledTaskResponseType;
@@ -193,9 +212,6 @@ type AllScheduledTasks = {
     id: number;
     resourcetype: EntityTypeName | SchoolTermTypeName;
   }[];
-  byDateEntities: {
-    [date: string]: ScheduledEntity[];
-  };
   byEntityId: {
     [resourcetype: string]: {
       [key: number]: ScheduledEntityResponseType;
@@ -254,56 +270,43 @@ const tasksApi = vuetApi.injectEndpoints({
         { ...patch },
         { dispatch, queryFulfilled, getState }
       ) {
-        const { data: newTask } = await queryFulfilled;
-        const patchResults = [];
-        for (const {
-          endpointName,
-          originalArgs
-        } of tasksApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Task' }
-        ])) {
-          if (!['getAllTasks', 'getAllScheduledTasks'].includes(endpointName))
-            continue;
-          if (endpointName === 'getAllTasks') {
-            const patchResult = dispatch(
-              tasksApi.util.updateQueryData(
-                'getAllTasks',
-                originalArgs,
-                (draft) => {
-                  draft.byId[newTask.id] = newTask;
-                }
-              )
-            );
-            patchResults.push(patchResult);
-          }
-          if (endpointName === 'getAllScheduledTasks') {
-            const patchResult = dispatch(
-              tasksApi.util.updateQueryData(
-                'getAllScheduledTasks',
-                originalArgs,
-                (draft) => {
-                  // If the task is recurrent then don't update
-                  // its start and end times (they can't change)
-                  if (!draft.byTaskId[newTask.id][-1]) return;
-
-                  // Otherwise it is a single occurrence and we
-                  // may want to update the start and end times
-                  const scheduledTask = draft.byTaskId[newTask.id][-1];
-                  draft.byTaskId[newTask.id][-1] = {
-                    ...scheduledTask,
-                    start_datetime:
-                      newTask.start_datetime || scheduledTask.start_datetime,
-                    end_datetime:
-                      newTask.end_datetime || scheduledTask.end_datetime,
-                    date: newTask.date || scheduledTask.date,
-                    duration: newTask.duration || scheduledTask.duration
-                  };
-                }
-              )
-            );
-            patchResults.push(patchResult);
+        const patchResults = updateQueryDataForUpdateTask(
+          tasksApi,
+          patch,
+          dispatch,
+          getState
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          for (const patchResult of patchResults) {
+            patchResult.undo();
           }
         }
+      }
+    }),
+    updateTaskWithoutCacheInvalidation: builder.mutation<
+      FixedTaskResponseType,
+      Partial<FixedTaskResponseType> & Pick<FixedTaskResponseType, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/task/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: ['Alert', 'ActionAlert', 'TaskAction'],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        const patchResults = updateQueryDataForUpdateTask(
+          tasksApi,
+          patch,
+          dispatch,
+          getState
+        );
         try {
           await queryFulfilled;
         } catch {
@@ -543,6 +546,7 @@ export const {
   useGetAllTasksQuery,
   useGetAllScheduledTasksQuery,
   useUpdateTaskMutation,
+  useUpdateTaskWithoutCacheInvalidationMutation,
   useDeleteTaskMutation,
   useCreateTaskMutation,
   useCreateTaskWithoutCacheInvalidationMutation,

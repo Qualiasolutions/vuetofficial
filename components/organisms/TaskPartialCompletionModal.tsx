@@ -111,17 +111,19 @@ export default function TaskPartialCompletionModal() {
 
         try {
           dispatch(setTaskToPartiallyComplete(null));
-          await createTaskCompletionForm({
-            resourcetype: 'TaskCompletionForm',
-            task: scheduledTask.id,
-            recurrence_index:
-              taskToPartiallyComplete?.recurrenceIndex === undefined
-                ? -1
-                : taskToPartiallyComplete?.recurrenceIndex,
-            complete: true,
-            partial: true
-          }).unwrap();
-          await createTask(newTaskCreateBody).unwrap();
+          await Promise.all([
+            createTask(newTaskCreateBody).unwrap(),
+            createTaskCompletionForm({
+              resourcetype: 'TaskCompletionForm',
+              task: scheduledTask.id,
+              recurrence_index:
+                taskToPartiallyComplete?.recurrenceIndex === undefined
+                  ? -1
+                  : taskToPartiallyComplete?.recurrenceIndex,
+              complete: true,
+              partial: true
+            }).unwrap()
+          ]);
         } catch {
           Toast.show({
             type: 'error',

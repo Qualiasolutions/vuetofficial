@@ -50,6 +50,18 @@ const TAG_TO_CATEGORY: { [key: string]: CategoryName } = {
   PETS_HEALTH: 'PETS'
 };
 
+const isTask = (
+  item: ScheduledTaskResponseType | undefined
+): item is ScheduledTaskResponseType => {
+  return !!item;
+};
+
+const isEntity = (
+  item: ScheduledEntityResponseType | undefined
+): item is ScheduledEntityResponseType => {
+  return !!item;
+};
+
 export const selectTaskById = (id: number) =>
   createSelector(tasksApi.endpoints.getAllTasks.select(), (tasks) => {
     return tasks.data?.byId && tasks.data?.byId[id];
@@ -273,7 +285,23 @@ export const selectTasksInDailyRoutines = createSelector(
       };
     } = {};
 
-    for (const date in taskData.byDate) {
+    const allScheduledTasks = taskData.ordered
+      .map(({ id, recurrence_index, action_id }) => {
+        if (action_id) {
+          return taskData.byActionId[action_id][
+            recurrence_index === null ? -1 : recurrence_index
+          ];
+        }
+        if (id) {
+          return taskData.byTaskId[id][
+            recurrence_index === null ? -1 : recurrence_index
+          ];
+        }
+      })
+      .filter(isTask);
+
+    const tasksByDate = formatTasksPerDate(allScheduledTasks);
+    for (const date in tasksByDate) {
       const dayJsDate = dayjs(date);
       const weekdayName = dayJsDate.format('dddd').toLowerCase() as DayType;
 
@@ -289,25 +317,8 @@ export const selectTasksInDailyRoutines = createSelector(
 
       const nonRoutineTasks: ScheduledTask[] = [];
 
-      const taskObjects = taskData.byDate[date]
-        .filter((task) => {
-          return (
-            (task.action_id && taskData.byActionId[task.action_id]) ||
-            taskData.byTaskId[task.id]
-          );
-        })
-        .map((task) => {
-          const recurrenceIndex =
-            task.recurrence_index === null ? -1 : task.recurrence_index;
-          if (task.action_id) {
-            return taskData.byActionId[task.action_id][recurrenceIndex];
-          }
-          return taskData.byTaskId[task.id][recurrenceIndex];
-        });
-
-      const formattedTaskObjects = formatTasksPerDate(taskObjects);
-      if (formattedTaskObjects[date]) {
-        for (const taskObj of formattedTaskObjects[date]) {
+      if (tasksByDate[date]) {
+        for (const taskObj of tasksByDate[date]) {
           if (taskObj.start_datetime && taskObj.end_datetime) {
             if (!taskObj.routine) {
               nonRoutineTasks.push(taskObj);
@@ -377,18 +388,6 @@ export const selectTasksForRoutineForDate = (routine: number, date: string) => {
   return createSelector(selectTasksInDailyRoutines, (dailyTasksPerRoutine) => {
     return dailyTasksPerRoutine[date][routine];
   });
-};
-
-const isTask = (
-  item: ScheduledTaskResponseType | undefined
-): item is ScheduledTaskResponseType => {
-  return !!item;
-};
-
-const isEntity = (
-  item: ScheduledEntityResponseType | undefined
-): item is ScheduledEntityResponseType => {
-  return !!item;
 };
 
 const EXTRA_ENTITY_TYPE_ITEMS: {

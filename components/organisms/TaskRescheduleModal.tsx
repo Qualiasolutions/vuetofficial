@@ -11,7 +11,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useCreateRecurrentTaskOverwriteMutation,
-  useUpdateTaskMutation
+  useUpdateTaskWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/tasks';
 import { setTaskToReschedule } from 'reduxStore/slices/calendars/actions';
 import { selectTaskToReschedule } from 'reduxStore/slices/calendars/selectors';
@@ -39,7 +39,8 @@ export default function TaskRescheduleModal() {
   // const [createTaskCompletionForm, createTaskCompletionFormResult] =
   //   useCreateTaskCompletionFormMutation();
 
-  const [updateTask, updateTaskResult] = useUpdateTaskMutation();
+  const [updateTask, updateTaskResult] =
+    useUpdateTaskWithoutCacheInvalidationMutation();
   const [createRecurrentOverwrite, createRecurrentOverwriteResult] =
     useCreateRecurrentTaskOverwriteMutation();
 

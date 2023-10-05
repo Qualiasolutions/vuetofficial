@@ -67,10 +67,3 @@ export const selectFiltersModalOpen = createSelector(
   selectCalendarState,
   (calendar: CalendarState | undefined) => calendar?.ui?.filtersModalOpen
 );
-
-export const selectScheduledTaskIdsByDate = createSelector(
-  tasksApi.endpoints.getAllScheduledTasks.select(),
-  (scheduledTasks) => {
-    return scheduledTasks.data?.byDate;
-  }
-);

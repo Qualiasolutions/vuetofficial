@@ -22,7 +22,6 @@ import {
   useUpdateTaskMutation
 } from 'reduxStore/services/api/tasks';
 import { FixedTaskResponseType, TaskType } from 'types/tasks';
-import { FormFieldTypes } from './formFieldTypes';
 import RecurrentUpdateModal from './RecurrentUpdateModal';
 import { useFieldTypesForFormType } from './taskFormFieldTypes';
 import TypedForm from './TypedForm';
