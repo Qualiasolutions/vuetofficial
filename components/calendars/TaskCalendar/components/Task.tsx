@@ -206,13 +206,13 @@ const ICalInfo = ({ task }: { task: ICalEventResponseType }) => {
     selectIntegrationById(task.ical_integration)
   );
 
-  if (!iCalIntegration) {
-    return null;
-  }
-
   return (
     <Text style={styles.timeZoneText}>
-      {`${t('common.from')} ${iCalIntegration.ical_name}`}
+      {`${t('common.from')} ${
+        iCalIntegration
+          ? iCalIntegration.ical_name
+          : t('components.taskCard.externalCalendar')
+      }`}
     </Text>
   );
 };

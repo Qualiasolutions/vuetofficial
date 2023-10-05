@@ -661,6 +661,9 @@
     }
   },
   "components": {
+    "taskCard": {
+      "externalCalendar": "External Calendar"
+    },
     "taskPartialCompletionModal": {
       "rescheduleOneDay": "Task again one day later",
       "rescheduleOneWeek": "Task again one week later",

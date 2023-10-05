@@ -25,6 +25,7 @@ import { TransparentScrollView } from 'components/molecules/ScrollViewComponents
 import CategoryCheckboxes from 'components/organisms/CategoryCheckboxes';
 import { TaskType } from 'types/tasks';
 import CheckboxesList from 'components/molecules/CheckboxesList';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   modal: {
@@ -179,6 +180,7 @@ export default function FiltersModal({
   const filteredCategories = useSelector(selectFilteredCategories);
   const filteredTaskTypes = useSelector(selectFilteredTaskTypes);
   const completionFilters = useSelector(selectCompletionFilters);
+  const { data: user } = useGetUserFullDetails();
 
   const [newFilteredUsers, setNewFilteredUsers] = useState(filteredUsers);
   const [newFilteredCategories, setNewFilteredCategories] =
@@ -238,18 +240,20 @@ export default function FiltersModal({
             onValueChange={setNewFilteredTaskTypes}
           />
         </ExpandableSection>
-        <ExpandableSection
-          title={`${t('filters.completionFilters')}${
-            completionFilters && completionFilters.length > 0
-              ? ` (${completionFilters.length})`
-              : ''
-          }`}
-        >
-          <CompletionFilterSelector
-            value={newCompletionFilters || []}
-            onValueChange={setNewCompletionFilters}
-          />
-        </ExpandableSection>
+        {user?.is_premium && (
+          <ExpandableSection
+            title={`${t('filters.completionFilters')}${
+              completionFilters && completionFilters.length > 0
+                ? ` (${completionFilters.length})`
+                : ''
+            }`}
+          >
+            <CompletionFilterSelector
+              value={newCompletionFilters || []}
+              onValueChange={setNewCompletionFilters}
+            />
+          </ExpandableSection>
+        )}
       </TransparentScrollView>
       <TransparentView>
         <TransparentView style={styles.buttonWrapper}>
