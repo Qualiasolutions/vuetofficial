@@ -372,17 +372,21 @@ function Calendar({
     if (sectionIndex >= 0 && sectionIndex < datesToShow.length) {
       // SCROLL TO THE RIGHT DATE
       try {
-        sectionListRef.current.scrollToLocation({
-          sectionIndex,
-          itemIndex: 0
-        });
-        // Set a timeout because sometimes this doesn't work
-        // on initial render otherwise
-        setTimeout(() => {
+        if (sectionListRef.current) {
           sectionListRef.current.scrollToLocation({
             sectionIndex,
             itemIndex: 0
           });
+        }
+        // Set a timeout because sometimes this doesn't work
+        // on initial render otherwise
+        setTimeout(() => {
+          if (sectionListRef.current) {
+            sectionListRef.current.scrollToLocation({
+              sectionIndex,
+              itemIndex: 0
+            });
+          }
         }, 100);
       } catch (err) {
         console.error(err);
