@@ -6,6 +6,8 @@ import CalendarTaskDisplay from './components/CalendarTaskDisplay';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
+
 import {
   TransparentView,
   WhitePaddedView,
@@ -32,12 +34,14 @@ import {
   useGetAllTasksQuery
 } from 'reduxStore/services/api/tasks';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import Search from 'components/molecules/Search';
 import { Feather } from '@expo/vector-icons';
 import { elevation } from 'styles/elevation';
 import { useThemeColor } from 'components/Themed';
 import { ScheduledTask } from 'types/tasks';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import { t } from 'i18next';
+import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 
 dayjs.extend(utc);
 
@@ -87,25 +91,95 @@ function Calendar({
   // Force fetch the completion forms initially
   const { isLoading: isLoadingTaskCompletionForms } =
     useGetTaskCompletionFormsQuery(undefined);
-  const { isLoading: isLoadingScheduledTasks } =
+  const { isLoading: isLoadingScheduledTasks, data: allScheduled } =
     useGetAllScheduledTasksQuery(undefined);
   const { isLoading: isLoadingTasks } = useGetAllTasksQuery(undefined);
+  const { isLoading: isLoadingEntities, data: allEntities } =
+    useGetAllEntitiesQuery(undefined);
+
   const dispatch = useDispatch();
 
   const primaryColor = useThemeColor({}, 'primary');
   const [showCalendar, setShowCalendar] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [submittedSearchText, setSubmittedSearchText] = useState('');
+
+  const fullFilteredTasks = useMemo(() => {
+    const full: { [date: string]: ScheduledTask[] } = {};
+    for (const date in filteredTasks) {
+      const filtered = filteredTasks[date].filter((task) => {
+        const scheduledTask =
+          allScheduled?.byTaskId[task.id][
+            task.recurrence_index === null ? -1 : task.recurrence_index
+          ];
+
+        if (!scheduledTask) {
+          return false;
+        }
+
+        if (
+          scheduledTask.title
+            .toLowerCase()
+            .includes(submittedSearchText.toLowerCase())
+        ) {
+          return true;
+        }
+
+        for (const entityId of scheduledTask.entities) {
+          if (
+            allEntities?.byId[entityId].name
+              ?.toLowerCase()
+              .includes(submittedSearchText.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+
+        for (const tagName of scheduledTask.tags) {
+          if (
+            tagName.toLowerCase().includes(submittedSearchText.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+      if (filtered.length > 0) {
+        full[date] = filtered;
+      }
+    }
+    return full;
+  }, [filteredTasks, submittedSearchText, allEntities, allScheduled]);
+
+  const fullFilteredEntities = useMemo(() => {
+    const full: { [date: string]: ScheduledEntity[] } = {};
+    for (const date in filteredEntities) {
+      const filtered = filteredEntities[date].filter((entity) => {
+        return allScheduled?.byEntityId[
+          RESOURCE_TYPE_TO_TYPE[entity.resourcetype] || 'ENTITY'
+        ][entity.id].title
+          .toLowerCase()
+          .includes(submittedSearchText.toLowerCase());
+      });
+      if (filtered.length > 0) {
+        full[date] = filtered;
+      }
+    }
+    return full;
+  }, [filteredEntities, submittedSearchText, allScheduled]);
 
   const calendarView = useMemo(() => {
     return (
       <CalendarView
-        tasks={filteredTasks}
+        tasks={fullFilteredTasks}
         entities={filteredEntities}
         onChangeDate={(date) => {
           dispatch(setEnforcedDate({ date }));
         }}
       />
     );
-  }, [filteredTasks, filteredEntities, dispatch]);
+  }, [fullFilteredTasks, filteredEntities, dispatch]);
 
   const listView = useMemo(() => {
     return (
@@ -113,8 +187,8 @@ function Calendar({
         style={[styles.container, { marginBottom: MARGIN_BOTTOM }]}
       >
         <CalendarTaskDisplay
-          tasks={filteredTasks}
-          entities={filteredEntities}
+          tasks={fullFilteredTasks}
+          entities={fullFilteredEntities}
           alwaysIncludeCurrentDate={true}
           onChangeFirstDate={(date) => {
             dispatch(setEnforcedDate({ date }));
@@ -126,8 +200,8 @@ function Calendar({
       </TransparentView>
     );
   }, [
-    JSON.stringify(filteredTasks),
-    JSON.stringify(filteredEntities),
+    JSON.stringify(fullFilteredTasks),
+    JSON.stringify(fullFilteredEntities),
     showFilters,
     reverse,
     headerStyle,
@@ -136,7 +210,10 @@ function Calendar({
   ]);
 
   const isLoading =
-    isLoadingTaskCompletionForms || isLoadingScheduledTasks || isLoadingTasks;
+    isLoadingTaskCompletionForms ||
+    isLoadingScheduledTasks ||
+    isLoadingTasks ||
+    isLoadingEntities;
   if (isLoading) {
     return <FullPageSpinner />;
   }
@@ -166,7 +243,7 @@ function Calendar({
           >
             <Feather
               name={showCalendar ? 'list' : 'calendar'}
-              size={24}
+              size={20}
               color={primaryColor}
             />
             <PrimaryText
@@ -181,7 +258,7 @@ function Calendar({
               }}
               style={styles.headerButton}
             >
-              <Feather name={'sliders'} size={24} color={primaryColor} />
+              <Feather name={'sliders'} size={20} color={primaryColor} />
               <PrimaryText
                 style={styles.headerButtonText}
                 text={t('components.calendar.filters')}
@@ -196,12 +273,19 @@ function Calendar({
             }}
             style={styles.headerButton}
           >
-            <Feather name={'sun'} size={24} color={primaryColor} />
+            <Feather name={'sun'} size={20} color={primaryColor} />
             <PrimaryText
               style={styles.headerButtonText}
               text={t('common.today')}
             />
           </TouchableOpacity>
+        </WhitePaddedView>
+        <WhitePaddedView>
+          <Search
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmit={setSubmittedSearchText}
+          />
         </WhitePaddedView>
       </TransparentView>
       <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>

@@ -317,7 +317,9 @@ export function ListingModal(props: ListingModalProps) {
     >
       <ScrollView keyboardShouldPersistTaps="handled">
         <WhiteView style={listingModalStyles.bottomContainer}>
-          {search && <Search onChangeText={setSearchedText} />}
+          {search && (
+            <Search onChangeText={setSearchedText} value={searchedText} />
+          )}
           <SafeAreaView>{sections}</SafeAreaView>
         </WhiteView>
       </ScrollView>

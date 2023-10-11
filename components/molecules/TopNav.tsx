@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     width: 24
   },
   button: {
-    marginLeft: 20,
+    marginLeft: 16,
     alignItems: 'center'
   },
   buttonText: {
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   },
   linkMarker: {
     position: 'absolute',
-    width: 12,
-    height: 12,
+    width: 10,
+    height: 10,
     top: 0,
     right: -4,
     backgroundColor: 'red',
@@ -82,7 +82,7 @@ const PageLink = ({
       }}
       style={styles.button}
     >
-      <Feather name={iconName} size={32} color={primaryColor} />
+      <Feather name={iconName} size={24} color={primaryColor} />
       <Text style={[styles.buttonText, { color: primaryColor }]}>{title}</Text>
       {marked && <View style={styles.linkMarker} />}
     </TouchableOpacity>
