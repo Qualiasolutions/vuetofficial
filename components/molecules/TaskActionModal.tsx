@@ -25,6 +25,8 @@ import TaskCompletionPressable from './TaskCompletionPressable';
 import useCanMarkComplete from 'hooks/useCanMarkComplete';
 import useHasEditPerms from 'hooks/useHasEditPerms';
 import { StyleSheet } from 'react-native';
+import { useCreateTaskCompletionFormMutation } from 'reduxStore/services/api/taskCompletionForms';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const styles = StyleSheet.create({
   modalBox: { paddingHorizontal: 30 }
@@ -38,6 +40,8 @@ export default function TaskActionModal() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [deleteTask] = useDeleteTaskMutation();
+  const [createTaskCompletionForm, createTaskCompletionFormResult] =
+    useCreateTaskCompletionFormMutation();
 
   const taskToAction = useSelector(selectTaskToAction);
   const task = useSelector(selectTaskById(taskToAction?.taskId || -1));
@@ -162,34 +166,53 @@ export default function TaskActionModal() {
               />
             </TaskCompletionPressable>
             {!taskToAction.actionId && (
-              <LinkButton
-                onPress={() => {
-                  dispatch(setTaskToAction(null));
-                  dispatch(
-                    setTaskToPartiallyComplete({
-                      taskId: taskToAction.taskId,
-                      recurrenceIndex: taskToAction.recurrenceIndex,
-                      actionId: taskToAction.actionId
-                    })
-                  );
-                }}
-                title={t('components.task.markPartiallyCompleteAndRepeat')}
-              />
-            )}
-            {!taskToAction.actionId && (
-              <LinkButton
-                onPress={() => {
-                  dispatch(setTaskToAction(null));
-                  dispatch(
-                    setTaskToReschedule({
-                      taskId: taskToAction.taskId,
-                      recurrenceIndex: taskToAction.recurrenceIndex,
-                      actionId: taskToAction.actionId
-                    })
-                  );
-                }}
-                title={t('components.task.markIncompleteAndReschedule')}
-              />
+              <>
+                <LinkButton
+                  onPress={() => {
+                    dispatch(setTaskToAction(null));
+                    dispatch(
+                      setTaskToPartiallyComplete({
+                        taskId: taskToAction.taskId,
+                        recurrenceIndex: taskToAction.recurrenceIndex,
+                        actionId: taskToAction.actionId
+                      })
+                    );
+                  }}
+                  title={t('components.task.markPartiallyCompleteAndRepeat')}
+                />
+                <LinkButton
+                  onPress={() => {
+                    dispatch(setTaskToAction(null));
+                    dispatch(
+                      setTaskToReschedule({
+                        taskId: taskToAction.taskId,
+                        recurrenceIndex: taskToAction.recurrenceIndex,
+                        actionId: taskToAction.actionId
+                      })
+                    );
+                  }}
+                  title={t('components.task.markIncompleteAndReschedule')}
+                />
+                <LinkButton
+                  onPress={async () => {
+                    dispatch(setTaskToAction(null));
+                    try {
+                      await createTaskCompletionForm({
+                        task: taskToAction.taskId,
+                        recurrence_index: taskToAction.recurrenceIndex,
+                        resourcetype: 'TaskCompletionForm',
+                        ignore: true
+                      }).unwrap();
+                    } catch {
+                      Toast.show({
+                        type: 'error',
+                        text1: t('common.errors.generic')
+                      });
+                    }
+                  }}
+                  title={t('components.task.markIncomplete')}
+                />
+              </>
             )}
             {/* <TaskCompletionPressable
               taskId={taskToAction.taskId}

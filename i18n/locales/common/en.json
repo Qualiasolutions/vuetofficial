@@ -818,7 +818,8 @@
       "messages": "Messages",
       "markComplete": "Mark Complete",
       "markPartiallyCompleteAndRepeat": "Partially done / task again",
-      "markIncompleteAndReschedule": "Did not do / reschedule"
+      "markIncompleteAndReschedule": "Did not do / reschedule",
+      "markIncomplete": "Did not do / will not do"
     },
     "actionSelector": {
       "placeholder": "Add Actions"
