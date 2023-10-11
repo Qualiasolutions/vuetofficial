@@ -90,7 +90,7 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
     <WhiteFullPageScrollView>
       <WhitePaddedView>
         {invites.map((invite) => (
-          <TransparentPaddedView>
+          <TransparentPaddedView key={invite.id}>
             <Text>{invite.email || invite.phone_number}</Text>
           </TransparentPaddedView>
         ))}
