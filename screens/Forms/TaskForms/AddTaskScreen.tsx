@@ -180,7 +180,7 @@ export default function AddTaskScreen({
       end_datetime: defaultEndTime,
       date: timezoneIgnorantDueDate,
       duration: defaultDuration,
-      recurrence: null,
+      recurrence: route.params?.recurrence || null,
       earliest_action_date: timezoneIgnorantDueDate,
       due_date: timezoneIgnorantDueDate,
       members: route.params?.members || (userDetails ? [userDetails.id] : []),

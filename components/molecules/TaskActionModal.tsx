@@ -144,6 +144,19 @@ export default function TaskActionModal() {
           title={t('components.task.messages')}
         />
       )}
+      {taskToAction && !taskToAction.actionId && task && (
+        <LinkButton
+          onPress={() => {
+            if (taskToAction) {
+              (navigation.navigate as any)('AddTask', {
+                ...task
+              });
+              dispatch(setTaskToAction(null));
+            }
+          }}
+          title={t('components.task.duplicateTask')}
+        />
+      )}
       {canMarkComplete &&
         taskToAction &&
         scheduledTask &&
@@ -214,22 +227,6 @@ export default function TaskActionModal() {
                 />
               </>
             )}
-            {/* <TaskCompletionPressable
-              taskId={taskToAction.taskId}
-              recurrenceIndex={
-                taskToAction.recurrenceIndex === null
-                  ? undefined
-                  : taskToAction.recurrenceIndex
-              }
-              actionId={taskToAction.actionId}
-              onPress={() => dispatch(setTaskToAction(null))}
-            >
-              <LinkButton
-                onPress={() => {}}
-                title={t('components.task.markIncompleteAndReschedule')}
-                disabled={true}
-              />
-            </TaskCompletionPressable> */}
           </>
         )}
       <DeleteTaskModal

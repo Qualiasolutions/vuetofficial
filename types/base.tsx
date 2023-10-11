@@ -11,6 +11,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FormType } from 'screens/Forms/TaskForms/AddTaskScreen';
 import { EntityTypeName } from './entities';
+import { Recurrence } from './tasks';
 
 declare global {
   namespace ReactNavigation {
@@ -191,6 +192,7 @@ export type RootTabParamList = {
     type?: FormType;
     title?: string;
     date?: string;
+    recurrence?: Recurrence;
   };
   PlusButton: undefined;
   EditTask: {

@@ -819,7 +819,8 @@
       "markComplete": "Mark Complete",
       "markPartiallyCompleteAndRepeat": "Partially done / task again",
       "markIncompleteAndReschedule": "Did not do / reschedule",
-      "markIncomplete": "Did not do / will not do"
+      "markIncomplete": "Did not do / will not do",
+      "duplicateTask": "Duplicate Task"
     },
     "actionSelector": {
       "placeholder": "Add Actions"

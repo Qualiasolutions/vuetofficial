@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { Button } from 'components/molecules/ButtonComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import {
@@ -82,6 +83,14 @@ export default function GenericTaskForm({
   const [createTaskWithoutCacheInvalidation, createTaskWithoutMutationResult] =
     useCreateTaskWithoutCacheInvalidationMutation();
   const [updateTask, updateTaskResult] = useUpdateTaskMutation();
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (!isFocused) {
+      setTaskFieldValues({});
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     if (isEdit) {
