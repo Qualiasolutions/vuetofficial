@@ -98,14 +98,14 @@ export default function CategoryListScreen({ route }: CategoryListScreenProps) {
   const category = useSelector(selectCategoryById(route.params.categoryId));
   useCategoryHeader(category?.name || '');
 
-  const { data: categorySetupData, isLoading: isLoadingSetupData } =
+  const { data: categorySetupData, isFetching: isFetchingSetupData } =
     useGetCategorySetupCompletionsQuery();
 
   if (!category) {
     return null;
   }
 
-  if (isLoadingSetupData || !categorySetupData) {
+  if (isFetchingSetupData || !categorySetupData) {
     return <FullPageSpinner />;
   }
 

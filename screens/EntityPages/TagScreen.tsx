@@ -74,10 +74,11 @@ type TagScreenProps = ContentTabScreenProps<'TagScreen'>;
 export default function TagScreen({ route }: TagScreenProps) {
   const tagName = route.params.tagName;
   useEntityTypeHeader(tagName);
-  const { data: tagCompletions } = useGetTagSetupCompletionsQuery();
+  const { data: tagCompletions, isFetching: isFetchingCompletions } =
+    useGetTagSetupCompletionsQuery();
 
   if (SETUP_TEXT_PAGES[tagName]) {
-    if (!tagCompletions) {
+    if (!tagCompletions || isFetchingCompletions) {
       return <FullPageSpinner />;
     }
     if (

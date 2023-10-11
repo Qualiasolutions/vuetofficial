@@ -75,10 +75,10 @@ type EntityListScreenProps = ContentTabScreenProps<'EntityList'>;
 
 export default function EntityListScreen({ route }: EntityListScreenProps) {
   useEntityTypeHeader(route.params.entityTypeName);
-  const { data: setupCompletions } =
+  const { data: setupCompletions, isFetching: isFetchingSetupCompletions } =
     useGetEntityTypeSetupCompletionsQuery(undefined);
 
-  if (!setupCompletions) {
+  if (!setupCompletions || isFetchingSetupCompletions) {
     return <FullPageSpinner />;
   }
 

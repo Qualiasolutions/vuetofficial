@@ -83,9 +83,10 @@ export default function LinkListScreen({ route }: LinkListScreenProps) {
   const listName = route.params.listName;
   useEntityTypeHeader(listName);
 
-  const { data: linkListCompletions } = useGetLinkListCompletionsQuery();
+  const { data: linkListCompletions, isFetching: isFetchingCompletions } =
+    useGetLinkListCompletionsQuery();
 
-  if (!linkListCompletions) {
+  if (!linkListCompletions || isFetchingCompletions) {
     return <FullPageSpinner />;
   }
   if (
