@@ -21,9 +21,11 @@ import EntityOverview, {
   RESOURCE_TYPE_TO_COMPONENT
 } from 'screens/EntityPages/EntityOverview';
 import { EntityTypeName } from 'types/entities';
-import QuickNavigator from './base/QuickNavigator';
+import QuickNavigator, { QuickNavPage } from './base/QuickNavigator';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import GuestListPage from 'components/organisms/GuestListPage';
 
 const styles = StyleSheet.create({
   editForm: { paddingBottom: 100 }
@@ -34,6 +36,7 @@ const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
   Event: 'Overview'
 };
 export default function EntityNavigator({ entityId }: { entityId: number }) {
+  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByEntityIds([entityId]),
     [entityId]
@@ -98,10 +101,6 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return null;
   }, [entityId, isMemberEntity]);
 
-  // const listsComponent = useMemo(() => {
-  //   return () => <ListOfLists entities={[entityId]} />;
-  // }, [entityId]);
-
   const messagesComponent = useMemo(() => {
     if (isMemberEntity) {
       return () => <MessageThread entityId={entityId} />;
@@ -109,21 +108,74 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return null;
   }, [entityId, isMemberEntity]);
 
+  const guestListComponent = useMemo(() => {
+    if (isMemberEntity) {
+      if (entity?.resourcetype === 'Event')
+        return () => <GuestListPage entityId={entityId} />;
+    }
+    return null;
+  }, [entity, entityId, isMemberEntity]);
+
+  const quickNavPages: QuickNavPage[] = [];
+  if (homeComponent) {
+    quickNavPages.push({
+      name: 'Home',
+      title: t('pageTitles.home'),
+      component: homeComponent
+    });
+  }
+  if (editComponent) {
+    quickNavPages.push({
+      name: 'Edit',
+      title: t('pageTitles.edit'),
+      component: editComponent
+    });
+  }
+  if (overviewComponent) {
+    quickNavPages.push({
+      name: 'Overview',
+      title: t('pageTitles.overview'),
+      component: overviewComponent
+    });
+  }
+  if (calendarComponent) {
+    quickNavPages.push({
+      name: 'Calendar',
+      title: t('pageTitles.calendar'),
+      component: calendarComponent
+    });
+  }
+  if (referencesComponent) {
+    quickNavPages.push({
+      name: 'References',
+      title: t('pageTitles.references'),
+      component: referencesComponent
+    });
+  }
+  if (messagesComponent) {
+    quickNavPages.push({
+      name: 'Messages',
+      title: t('pageTitles.messages'),
+      component: messagesComponent
+    });
+  }
+  if (guestListComponent) {
+    quickNavPages.push({
+      name: 'GuestList',
+      title: t('pageTitles.guestList'),
+      component: guestListComponent
+    });
+  }
+
   return (
     <QuickNavigator
-      homeComponent={homeComponent}
-      editComponent={editComponent}
-      overviewComponent={overviewComponent}
-      calendarComponent={calendarComponent}
-      referencesComponent={referencesComponent}
-      // listsComponent={listsComponent}
-      messagesComponent={messagesComponent}
       categoryName={category?.name || ''}
       initialRouteName={
         entity?.resourcetype
           ? INITIAL_ROUTE_NAME_MAPPINGS[entity?.resourcetype] || 'Calendar'
           : 'Calendar'
       }
+      quickNavPages={quickNavPages}
     />
   );
 }

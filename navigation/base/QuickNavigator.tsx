@@ -1,9 +1,7 @@
 import SafePressable from 'components/molecules/SafePressable';
 import { Text } from 'components/Themed';
 import iWantToOptions from 'constants/iWantToOptions';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 import { useGetAllReferenceGroupsQuery } from 'reduxStore/services/api/references';
 import { QuickNavTabParamList } from 'types/base';
@@ -14,30 +12,22 @@ const TopTabs = createDropDownNavigator<QuickNavTabParamList>();
 const QUICK_NAV_ID = 'QUICK_NAV';
 const I_WANT_TO_ID = 'I_WANT_TO';
 
+export type QuickNavPage = {
+  component: () => JSX.Element | null;
+  name: string;
+  title: string;
+};
+
 export default function QuickNavigator({
-  homeComponent,
-  editComponent,
-  calendarComponent,
-  referencesComponent,
-  listsComponent,
-  messagesComponent,
-  overviewComponent,
   initialRouteName,
-  categoryName
+  categoryName,
+  quickNavPages
 }: {
-  homeComponent?: (() => JSX.Element | null) | null;
-  editComponent?: (() => JSX.Element | null) | null;
-  calendarComponent?: (() => JSX.Element | null) | null;
-  referencesComponent?: (() => JSX.Element | null) | null;
-  listsComponent?: (() => JSX.Element | null) | null;
-  messagesComponent?: (() => JSX.Element | null) | null;
-  overviewComponent?: (() => JSX.Element | null) | null;
   initialRouteName?: string;
   categoryName: CategoryName | '';
+  quickNavPages: QuickNavPage[];
 }) {
-  const { t } = useTranslation();
   const { data: referenceGroups } = useGetAllReferenceGroupsQuery();
-  const { data: userDetails } = useGetUserFullDetails();
 
   const iWantToComponents = useMemo(() => {
     if (!categoryName) {
@@ -64,81 +54,19 @@ export default function QuickNavigator({
     return null;
   }
 
-  const initialRouteNameValue =
-    initialRouteName || (homeComponent ? 'Home' : 'Calendar');
-
   return (
-    <TopTabs.Navigator initialRouteName={initialRouteNameValue}>
-      {homeComponent && (
+    <TopTabs.Navigator initialRouteName={initialRouteName}>
+      {quickNavPages.map(({ component, name, title }, i) => (
         <TopTabs.Screen
-          name="Home"
-          component={homeComponent}
+          key={i}
+          name={name}
+          component={component}
           options={{
-            title: t('pageTitles.home'),
+            title: title,
             dropDownId: QUICK_NAV_ID
           }}
         />
-      )}
-      {editComponent && (
-        <TopTabs.Screen
-          name="Edit"
-          component={editComponent}
-          options={{
-            title: t('pageTitles.edit'),
-            dropDownId: QUICK_NAV_ID
-          }}
-        />
-      )}
-      {overviewComponent && (
-        <TopTabs.Screen
-          name="Overview"
-          component={overviewComponent}
-          options={{
-            title: t('pageTitles.overview'),
-            dropDownId: QUICK_NAV_ID
-          }}
-        />
-      )}
-      {calendarComponent && (
-        <TopTabs.Screen
-          name="Calendar"
-          component={calendarComponent}
-          options={{
-            title: t('pageTitles.calendar'),
-            dropDownId: QUICK_NAV_ID
-          }}
-        />
-      )}
-      {referencesComponent && userDetails && userDetails.is_premium && (
-        <TopTabs.Screen
-          name="References"
-          component={referencesComponent}
-          options={{
-            title: t('pageTitles.references'),
-            dropDownId: QUICK_NAV_ID
-          }}
-        />
-      )}
-      {listsComponent && (
-        <TopTabs.Screen
-          name="Lists"
-          component={listsComponent}
-          options={{
-            title: t('pageTitles.lists'),
-            dropDownId: QUICK_NAV_ID
-          }}
-        />
-      )}
-      {messagesComponent && (
-        <TopTabs.Screen
-          name="Messages"
-          component={messagesComponent}
-          options={{
-            title: t('pageTitles.messages'),
-            dropDownId: QUICK_NAV_ID
-          }}
-        />
-      )}
+      ))}
       {Object.entries(iWantToComponents).map(([opt, comp], i) => (
         <TopTabs.Screen
           key={i}

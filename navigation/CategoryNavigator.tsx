@@ -3,6 +3,7 @@ import CategoryHome from 'components/organisms/CategoryHome';
 import ReferencesList from 'components/organisms/ReferencesList';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
 import {
@@ -17,6 +18,7 @@ export default function CategoryNavigator({
 }: {
   categoryId: number;
 }) {
+  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByCategories([categoryId]),
     [categoryId]
@@ -54,17 +56,31 @@ export default function CategoryNavigator({
     return () => <ReferencesList categories={[categoryId]} />;
   }, [categoryId]);
 
-  // const listsComponent = useMemo(() => {
-  //   return () => <ListOfLists categories={[categoryId]} />;
-  // }, [categoryId]);
+  const quickNavPages = [];
+  if (homeComponent) {
+    quickNavPages.push({
+      name: 'Home',
+      title: t('pageTitles.home'),
+      component: homeComponent
+    });
+  }
+  if (calendarComponent) {
+    quickNavPages.push({
+      name: 'Calendar',
+      title: t('pageTitles.calendar'),
+      component: calendarComponent
+    });
+  }
+  quickNavPages.push({
+    name: 'References',
+    title: t('pageTitles.references'),
+    component: referencesComponent
+  });
 
   return (
     <QuickNavigator
-      homeComponent={homeComponent}
-      calendarComponent={calendarComponent}
-      referencesComponent={referencesComponent}
-      // listsComponent={listsComponent}
       categoryName={category?.name || ''}
+      quickNavPages={quickNavPages}
     />
   );
 }

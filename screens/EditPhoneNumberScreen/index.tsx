@@ -93,7 +93,7 @@ export function EditPhoneNumberScreen() {
         <TransparentPaddedView>
           <ValidationCodeInput
             validationId={validationId}
-            isEmail={savingEmail}
+            isEmail={!!savingEmail}
             onVerify={async (validationCode) => {
               if (isEmail) {
                 await updateEmailValidation({
@@ -197,8 +197,8 @@ export function EditPhoneNumberScreen() {
             <PrimaryText
               text={
                 switchingToPhone
-                  ? t('screens.logIn.useEmail')
-                  : t('screens.logIn.usePhone')
+                  ? t('components.phoneOrEmailInput.useEmail')
+                  : t('components.phoneOrEmailInput.usePhone')
               }
               onPress={() => setSwitchingToPhone(!switchingToPhone)}
             />

@@ -4,6 +4,7 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import ReferencesList from 'components/organisms/ReferencesList';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
   selectFilteredScheduledEntityIds,
@@ -19,6 +20,7 @@ export default function EntityTypeNavigator({
   entityTypes: EntityTypeName[];
   entityTypeName: string;
 }) {
+  const { t } = useTranslation();
   const taskSelector = useMemo(
     () => selectScheduledTaskIdsByEntityTypes(entityTypes),
     [entityTypes]
@@ -54,19 +56,33 @@ export default function EntityTypeNavigator({
     return () => <ReferencesList entityTypes={entityTypes} />;
   }, [entityTypes]);
 
-  // const listsComponent = useMemo(() => {
-  //   return () => <ListOfLists entityTypes={entityTypes} />;
-  // }, [entityTypes]);
-
   const categoryName = ENTITY_TYPE_TO_CATEGORY[entityTypes[0]];
+
+  const quickNavPages = [];
+  if (homeComponent) {
+    quickNavPages.push({
+      name: 'Home',
+      title: t('pageTitles.home'),
+      component: homeComponent
+    });
+  }
+  if (calendarComponent) {
+    quickNavPages.push({
+      name: 'Calendar',
+      title: t('pageTitles.calendar'),
+      component: calendarComponent
+    });
+  }
+  quickNavPages.push({
+    name: 'References',
+    title: t('pageTitles.references'),
+    component: referencesComponent
+  });
 
   return (
     <QuickNavigator
-      homeComponent={homeComponent}
-      calendarComponent={calendarComponent}
-      referencesComponent={referencesComponent}
-      // listsComponent={listsComponent}
       categoryName={categoryName || ''}
+      quickNavPages={quickNavPages}
     />
   );
 }

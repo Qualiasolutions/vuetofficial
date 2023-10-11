@@ -24,6 +24,7 @@ import { PrimaryText } from 'components/molecules/TextComponents';
 import { TextInput } from 'components/Themed';
 import * as EmailValidator from 'email-validator';
 import { CreateUserInviteRequest } from 'types/users';
+import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
 
 const styles = StyleSheet.create({
   otherOptsWrapper: {
@@ -58,30 +59,18 @@ const CreateUserInviteScreen = ({
   return (
     <TransparentFullPageScrollView>
       <TransparentContainerView style={styles.container}>
-        {usingEmail ? (
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            style={styles.emailTextInput}
-            placeholder={t('common.emailAddress')}
-          />
-        ) : (
-          <PhoneNumberInput
-            value={phoneNumber}
-            onChangeFormattedText={setPhoneNumber}
-          />
-        )}
-        <TransparentView style={styles.otherOptsWrapper}>
-          <SafePressable onPress={() => setUsingEmail(!usingEmail)}>
-            <PrimaryText
-              text={
-                usingEmail
-                  ? t('screens.logIn.usePhone')
-                  : t('screens.logIn.useEmail')
-              }
-            />
-          </SafePressable>
-        </TransparentView>
+        <PhoneOrEmailInput
+          usingEmail={usingEmail}
+          value={usingEmail ? email : phoneNumber}
+          changeUsingEmail={setUsingEmail}
+          onValueChange={(val) => {
+            if (usingEmail) {
+              setEmail(val);
+            } else {
+              setPhoneNumber(val);
+            }
+          }}
+        />
         {createUserInviteResult.isLoading ? (
           <PaddedSpinner />
         ) : (

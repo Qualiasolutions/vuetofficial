@@ -27,10 +27,10 @@ import {
   AlmostWhiteContainerView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
+import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   otherOptsWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     width: '100%'
   },
   usernameInput: { marginBottom: 10, width: '100%' },
@@ -105,31 +105,13 @@ const LoginScreen = ({
             : t('screens.logIn.enterNumber')
         }
       />
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={
-            usingEmail
-              ? t('screens.logIn.emailAddress')
-              : t('screens.logIn.phoneNumber')
-          }
-        />
-      </TransparentView>
       <TransparentView style={styles.usernameInput}>
-        {usingEmail ? (
-          <TextInput
-            value={username}
-            onChangeText={(newUsername) => {
-              setUsername(newUsername);
-            }}
-          />
-        ) : (
-          <PhoneNumberInput
-            onChangeFormattedText={(newUsername) => {
-              setUsername(newUsername);
-            }}
-          />
-        )}
+        <PhoneOrEmailInput
+          usingEmail={usingEmail}
+          value={username}
+          changeUsingEmail={setUsingEmail}
+          onValueChange={setUsername}
+        />
       </TransparentView>
       <TransparentView style={styles.inputLabelWrapper}>
         <AlmostBlackText
@@ -144,20 +126,6 @@ const LoginScreen = ({
         style={styles.passwordInput}
       />
       <TransparentView style={styles.otherOptsWrapper}>
-        <SafePressable
-          onPress={() => {
-            setUsingEmail(!usingEmail);
-            setUsername('');
-          }}
-        >
-          <PrimaryText
-            text={
-              usingEmail
-                ? t('screens.logIn.usePhone')
-                : t('screens.logIn.useEmail')
-            }
-          />
-        </SafePressable>
         <SafePressable
           onPress={() => {
             navigation.navigate('ForgotPassword', { useEmail: usingEmail });

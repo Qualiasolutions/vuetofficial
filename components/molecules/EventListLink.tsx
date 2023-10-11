@@ -20,10 +20,7 @@ import { TouchableOpacity } from './TouchableOpacityComponents';
 // this for more sub-navigators
 type ListLinkProps = {
   text: string;
-  toScreen?:
-    | keyof RootTabParamList
-    | keyof ContentTabParamList
-    | keyof SettingsTabParamList;
+  toScreen?: string;
   toScreenParams?: object;
   navMethod?: 'push' | 'navigate';
   style?: ViewStyle;

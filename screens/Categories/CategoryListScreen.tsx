@@ -102,7 +102,7 @@ export default function CategoryListScreen({ route }: CategoryListScreenProps) {
     useGetCategorySetupCompletionsQuery();
 
   if (!category) {
-    return null;
+    return <FullPageSpinner />;
   }
 
   if (isFetchingSetupData || !categorySetupData) {

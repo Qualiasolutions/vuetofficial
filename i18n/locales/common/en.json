@@ -5,6 +5,7 @@
     "overview": "Overview",
     "references": "References",
     "categories": "Categories",
+    "guestList": "Guest List",
     "lists": "Lists",
     "messages": "Messages",
     "settings": "Settings",
@@ -465,8 +466,6 @@
       "enterEmail": "Please enter your email to log in",
       "phoneNumber": "Phone number",
       "emailAddress": "Email address",
-      "usePhone": "Use phone",
-      "useEmail": "Use email",
       "forgotPassword": "Forgot password",
       "dontHaveAccount": "Don't have an account?",
       "signUp": "Sign up",
@@ -597,7 +596,8 @@
       "typeOrUpload": "Type an item"
     },
     "eventPage": {
-      "thingsToDo": "Things to do before the party"
+      "thingsToDo": "Things to do before the party",
+      "guestList": "Guest List"
     },
     "myAccount": {
       "updateSuccess": "Account details successfully updated",
@@ -661,6 +661,10 @@
     }
   },
   "components": {
+    "phoneOrEmailInput": {
+      "useEmail": "Use email",
+      "usePhone": "Use phone"
+    },
     "taskCard": {
       "externalCalendar": "External Calendar"
     },

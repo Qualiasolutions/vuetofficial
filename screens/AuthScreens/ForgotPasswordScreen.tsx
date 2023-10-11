@@ -15,7 +15,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UnauthorisedTabParamList } from 'types/base';
 import { TextInput } from 'components/Themed';
-import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Button } from 'components/molecules/ButtonComponents';
 import { validate } from 'email-validator';
@@ -26,30 +25,17 @@ import {
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import ValidationCodeInput from 'components/molecules/ValidationCodeInput';
 import { useSecureUpdateUserDetailsMutation } from 'reduxStore/services/api/user';
+import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
-  },
-  inputLabelWrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%'
-  },
-  inputLabel: {
-    fontSize: 12,
-    textAlign: 'left'
   },
   confirmButton: {
     marginTop: 15,
     marginBottom: 15
   },
   passwordInput: { marginBottom: 10, width: '100%' },
-  otherOptsWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%'
-  },
   usernameInput: { marginBottom: 10, width: '100%' }
 });
 
@@ -174,36 +160,12 @@ export default function ForgotPasswordScreen({
             }
           />
           <TransparentView style={styles.usernameInput}>
-            {usingEmail ? (
-              <TextInput
-                value={username}
-                onChangeText={(newUsername) => {
-                  setUsername(newUsername);
-                }}
-              />
-            ) : (
-              <PhoneNumberInput
-                onChangeFormattedText={(newUsername) => {
-                  setUsername(newUsername);
-                }}
-              />
-            )}
-          </TransparentView>
-          <TransparentView style={styles.otherOptsWrapper}>
-            <SafePressable
-              onPress={() => {
-                setUsingEmail(!usingEmail);
-                setUsername('');
-              }}
-            >
-              <PrimaryText
-                text={
-                  usingEmail
-                    ? t('screens.logIn.usePhone')
-                    : t('screens.logIn.useEmail')
-                }
-              />
-            </SafePressable>
+            <PhoneOrEmailInput
+              usingEmail={usingEmail}
+              value={username}
+              changeUsingEmail={setUsingEmail}
+              onValueChange={setUsername}
+            />
           </TransparentView>
           {createPasswordResetCodeResult.isLoading ? (
             <PaddedSpinner spinnerColor="buttonDefault" />

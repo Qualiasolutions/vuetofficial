@@ -59,6 +59,7 @@ export const vuetApi = createApi({
     'Family',
     'PushToken',
     'Country',
+    'GuestListInvite',
     'Holiday',
     'ICalIntegration',
     'Friendships',

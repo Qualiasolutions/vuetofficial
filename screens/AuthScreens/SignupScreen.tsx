@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Text, TextInput } from 'components/Themed';
+import { Text } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
@@ -19,17 +19,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   PageTitle,
   PageSubtitle,
-  PrimaryText,
-  AlmostBlackText
+  PrimaryText
 } from 'components/molecules/TextComponents';
-import {
-  AlmostWhiteContainerView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
-import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
+import { AlmostWhiteContainerView } from 'components/molecules/ViewComponents';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
 import { PaddedSpinner } from 'components/molecules/Spinners';
+import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -59,8 +55,8 @@ const SignupScreen = ({
   navigation
 }: NativeStackScreenProps<UnauthorisedTabParamList, 'Signup'>) => {
   const [usingEmail, setUsingEmail] = useState(false);
-  const [phoneNumber, onChangePhoneNumber] = React.useState<string>('');
-  const [email, onChangeEmail] = React.useState<string>('');
+  const [phoneNumber, setPhoneNumber] = React.useState<string>('');
+  const [email, setEmail] = React.useState<string>('');
 
   const [createPhoneValidation, phoneValidationResult] =
     useCreatePhoneValidationMutation();
@@ -79,36 +75,18 @@ const SignupScreen = ({
             : t('screens.signUp.usePhoneNumber')
         }
       />
-      <TransparentView style={styles.inputLabelWrapper}>
-        <AlmostBlackText
-          style={styles.inputLabel}
-          text={
-            usingEmail
-              ? t('screens.signUp.emailAddress')
-              : t('screens.signUp.phoneNumber')
+      <PhoneOrEmailInput
+        usingEmail={usingEmail}
+        value={usingEmail ? email : phoneNumber}
+        changeUsingEmail={setUsingEmail}
+        onValueChange={(val) => {
+          if (usingEmail) {
+            setEmail(val);
+          } else {
+            setPhoneNumber(val);
           }
-        />
-      </TransparentView>
-      {usingEmail ? (
-        <TextInput onChangeText={onChangeEmail} style={styles.textInput} />
-      ) : (
-        <PhoneNumberInput
-          onChangeFormattedText={(text) => {
-            onChangePhoneNumber(text);
-          }}
-        />
-      )}
-      <TransparentView style={styles.extraOpts}>
-        <SafePressable onPress={() => setUsingEmail(!usingEmail)}>
-          <PrimaryText
-            text={
-              usingEmail
-                ? t('screens.logIn.usePhone')
-                : t('screens.logIn.useEmail')
-            }
-          />
-        </SafePressable>
-      </TransparentView>
+        }}
+      />
       {phoneValidationResult.isLoading || emailValidationResult.isLoading ? (
         <PaddedSpinner />
       ) : (

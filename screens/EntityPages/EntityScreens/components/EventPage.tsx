@@ -153,6 +153,14 @@ export default function EventScreen({ entityId }: { entityId: number }) {
       </TransparentView>
       <TransparentPaddedView style={styles.container}>
         {childEntityList}
+        <EventListLink
+          text={t('screens.eventPage.guestList')}
+          toScreen="GuestList"
+          toScreenParams={{ entityId: entityId }}
+          navMethod="navigate"
+          selected={true}
+          subType={'guest_list'}
+        />
         {customLink}
       </TransparentPaddedView>
 
