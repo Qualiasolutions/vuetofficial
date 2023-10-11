@@ -1,6 +1,6 @@
 import { useThemeColor } from 'components/Themed';
 import React, { useEffect, useState } from 'react';
-import { ViewStyle } from 'react-native';
+import { ViewStyle, ImageSourcePropType } from 'react-native';
 import { Pressable, StyleSheet } from 'react-native';
 import { Image } from '../ImageComponents';
 import SafePressable from '../SafePressable';
@@ -37,6 +37,7 @@ type CheckboxProps = {
   color?: string;
   onValueChange?: (value: any) => Promise<void>;
   label?: string;
+  image?: ImageSourcePropType;
 };
 
 export default function Checkbox({
@@ -47,7 +48,8 @@ export default function Checkbox({
   smoothChecking = true,
   color,
   onValueChange,
-  label
+  label,
+  image
 }: CheckboxProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const greyColor = useThemeColor({}, 'grey');
@@ -92,7 +94,7 @@ export default function Checkbox({
       >
         {isChecked && (
           <Image
-            source={require('assets/images/icons/check.png')}
+            source={image || require('assets/images/icons/check.png')}
             style={styles.check}
           />
         )}

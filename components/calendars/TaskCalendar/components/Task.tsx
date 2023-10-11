@@ -341,9 +341,12 @@ function Task({
   const scheduledEntity = useSelector(selectScheduledEntity(id, type));
 
   const isComplete = !!scheduledTask?.is_complete;
+  const isPartiallyComplete = !!scheduledTask?.is_partially_complete;
+  const isIgnored = !!scheduledTask?.is_ignored;
 
   const isCompleteTextColor = useThemeColor({}, 'grey');
   const borderColor = useThemeColor({}, 'grey');
+  const blackColor = useThemeColor({}, 'black');
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -358,7 +361,12 @@ function Task({
 
   const isCompleteStyle = {
     color: isCompleteTextColor,
+    textDecorationColor: 'black', // Only works on iOS
     textDecorationLine: 'line-through' as 'line-through'
+  };
+
+  const isPartiallyCompleteStyle = {
+    textDecorationStyle: 'dotted' as 'dotted' // Only works on iOS
   };
 
   const taskOrEntity = task || scheduledEntity;
@@ -412,7 +420,11 @@ function Task({
                         ? `${action_id ? 'ACTION - ' : ''}${task.title}`
                         : ''
                     }
-                    style={[styles.title, isComplete && isCompleteStyle]}
+                    style={[
+                      styles.title,
+                      isComplete && isCompleteStyle,
+                      isPartiallyComplete && isPartiallyCompleteStyle
+                    ]}
                     bold={true}
                     numberOfLines={2}
                   />
@@ -475,6 +487,12 @@ function Task({
                 checked={scheduledTask.is_complete}
                 disabled={true}
                 style={styles.checkbox}
+                color={isIgnored ? blackColor : undefined}
+                image={
+                  isIgnored
+                    ? require('assets/images/icons/red-cross.png')
+                    : undefined
+                }
               />
             </TaskCompletionPressable>
           )}

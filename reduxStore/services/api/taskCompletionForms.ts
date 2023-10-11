@@ -210,10 +210,18 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               'getAllScheduledTasks',
               originalArgs,
               (draft) => {
-                draft.byTaskId[patch.task][
-                  patch.recurrence_index === null ? -1 : patch.recurrence_index
-                ].is_complete =
+                const existingTask =
+                  draft.byTaskId[patch.task][
+                    patch.recurrence_index === null
+                      ? -1
+                      : patch.recurrence_index
+                  ];
+                existingTask.is_complete =
                   patch.complete === undefined ? true : patch.complete;
+                existingTask.is_partially_complete =
+                  patch.partial === undefined ? false : patch.partial;
+                existingTask.is_ignored =
+                  patch.ignore === undefined ? false : patch.ignore;
               }
             )
           );
@@ -281,6 +289,9 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               originalArgs,
               (draft) => {
                 draft.byTaskId[taskId][recurrenceIndex].is_complete = false;
+                draft.byTaskId[taskId][recurrenceIndex].is_ignored = false;
+                draft.byTaskId[taskId][recurrenceIndex].is_partially_complete =
+                  false;
               }
             )
           );
@@ -360,10 +371,16 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               'getAllScheduledTasks',
               originalArgs,
               (draft) => {
-                draft.byActionId[patch.action][
-                  patch.recurrence_index === null ? -1 : patch.recurrence_index
-                ].is_complete =
+                const existingTask =
+                  draft.byActionId[patch.action][
+                    patch.recurrence_index === null
+                      ? -1
+                      : patch.recurrence_index
+                  ];
+                existingTask.is_complete =
                   patch.complete === undefined ? true : patch.complete;
+                existingTask.is_ignored =
+                  patch.ignore === undefined ? true : patch.ignore;
               }
             )
           );
@@ -431,6 +448,7 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               originalArgs,
               (draft) => {
                 draft.byActionId[actionId][recurrenceIndex].is_complete = false;
+                draft.byActionId[actionId][recurrenceIndex].is_ignored = false;
               }
             )
           );

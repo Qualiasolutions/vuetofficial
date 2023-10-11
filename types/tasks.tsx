@@ -115,6 +115,8 @@ const isICalEvent = (
 interface ScheduledTaskResponseType {
   id: number;
   is_complete: boolean;
+  is_partially_complete: boolean;
+  is_ignored: boolean;
   action_id: number | null;
   members: number[];
   entities: number[];
