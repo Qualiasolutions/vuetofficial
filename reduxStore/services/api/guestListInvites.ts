@@ -68,6 +68,8 @@ const guestListInvitesApi = vuetApi.injectEndpoints({
   overrideExisting: true
 });
 
+export default guestListInvitesApi;
+
 export const {
   useCreateGuestListInviteMutation,
   useDeleteGuestListInviteMutation,

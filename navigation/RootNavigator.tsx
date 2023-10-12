@@ -52,6 +52,7 @@ import { useEffect } from 'react';
 import { setEnforcedDate } from 'reduxStore/slices/calendars/actions';
 import { useGetICalIntegrationsQuery } from 'reduxStore/services/api/externalCalendars';
 import EventsList from 'components/organisms/EventsList';
+import { useGetGuestListInviteeInvitesQuery } from 'reduxStore/services/api/guestListInvites';
 
 const styles = StyleSheet.create({
   icon: {
@@ -144,6 +145,10 @@ export function BottomTabNavigator({
   });
   useGetICalIntegrationsQuery(undefined, {
     skip: !userDetails?.user_id
+  });
+  useGetGuestListInviteeInvitesQuery(undefined, {
+    skip: !userDetails?.user_id,
+    pollingInterval: 20000
   });
 
   useSetupPushNotifications();

@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import entitiesApi from 'reduxStore/services/api/entities';
+import guestListInvitesApi from 'reduxStore/services/api/guestListInvites';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
 import userApi from 'reduxStore/services/api/user';
@@ -17,6 +18,23 @@ export const selectMiscState = (state: EntireState): MiscState | undefined =>
 export const selectShowPremiumModal = createSelector(
   selectMiscState,
   (misc: MiscState | undefined) => misc?.ui?.showPremiumModal
+);
+
+export const selectHasUnrespondedEvent = createSelector(
+  guestListInvitesApi.endpoints.getGuestListInviteeInvites.select(),
+  (guestListInvites) => {
+    const guestListInvitesData = guestListInvites.data;
+
+    if (!guestListInvitesData) {
+      return false;
+    }
+
+    return (
+      guestListInvitesData.filter(
+        (invite) => !invite.accepted && !invite.rejected && !invite.maybe
+      ).length > 0
+    );
+  }
 );
 
 export const selectHasUnseenActivity = createSelector(

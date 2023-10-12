@@ -11,7 +11,10 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectHasUnreadAlert } from 'reduxStore/slices/alerts/selectors';
 import { selectFilteredOverdueTasks } from 'reduxStore/slices/tasks/selectors';
-import { selectHasUnseenActivity } from 'reduxStore/slices/misc/selectors';
+import {
+  selectHasUnrespondedEvent,
+  selectHasUnseenActivity
+} from 'reduxStore/slices/misc/selectors';
 
 const styles = StyleSheet.create({
   container: {
@@ -96,7 +99,7 @@ export default function TopNav() {
   const hasUnreadAlert = useSelector(selectHasUnreadAlert);
   const overdueTasks = useSelector(selectFilteredOverdueTasks);
   const hasUnseenActivity = useSelector(selectHasUnseenActivity);
-  const hasUnrespondedEvent = true;
+  const hasUnrespondedEvent = useSelector(selectHasUnrespondedEvent);
 
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
