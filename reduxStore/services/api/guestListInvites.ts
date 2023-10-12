@@ -30,6 +30,20 @@ const guestListInvitesApi = vuetApi.injectEndpoints({
         method: 'GET'
       }),
       providesTags: ['GuestListInvite']
+    }),
+    sendGuestListInvite: builder.mutation<GuestListInvite, number>({
+      query: (inviteId) => ({
+        url: `core/guestlist-invite/${inviteId}/send/`,
+        method: 'GET'
+      }),
+      invalidatesTags: ['GuestListInvite']
+    }),
+    sendGuestListInvitesForEntity: builder.mutation<GuestListInvite, number>({
+      query: (entityId) => ({
+        url: `core/guestlist-invite/${entityId}/send_for_entity/`,
+        method: 'GET'
+      }),
+      invalidatesTags: ['GuestListInvite']
     })
   }),
   overrideExisting: true
@@ -38,5 +52,7 @@ const guestListInvitesApi = vuetApi.injectEndpoints({
 export const {
   useCreateGuestListInviteMutation,
   useDeleteGuestListInviteMutation,
-  useGetGuestListInvitesQuery
+  useGetGuestListInvitesQuery,
+  useSendGuestListInviteMutation,
+  useSendGuestListInvitesForEntityMutation
 } = guestListInvitesApi;

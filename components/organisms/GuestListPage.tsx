@@ -1,32 +1,30 @@
-import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
-import { Button, SmallButton } from 'components/molecules/ButtonComponents';
+import { SmallButton } from 'components/molecules/ButtonComponents';
 import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
 import {
   TransparentScrollView,
   WhiteFullPageScrollView
 } from 'components/molecules/ScrollViewComponents';
-import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
-import { PrimaryText } from 'components/molecules/TextComponents';
-import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import {
-  TransparentPaddedView,
+  FullPageSpinner,
+  PaddedSpinner,
+  SmallSpinner
+} from 'components/molecules/Spinners';
+import {
   TransparentView,
-  WhiteContainerView,
-  WhitePaddedView,
-  WhiteView
+  WhitePaddedView
 } from 'components/molecules/ViewComponents';
-import { Text, TextInput } from 'components/Themed';
 import { validate } from 'email-validator';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
-import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
+import { Table, Row } from 'react-native-table-component';
 
 import {
   useCreateGuestListInviteMutation,
   useDeleteGuestListInviteMutation,
-  useGetGuestListInvitesQuery
+  useGetGuestListInvitesQuery,
+  useSendGuestListInviteMutation,
+  useSendGuestListInvitesForEntityMutation
 } from 'reduxStore/services/api/guestListInvites';
 import {
   CreateGuestListInviteRequest,
@@ -121,12 +119,13 @@ const GuestListInviter = ({ entityId }: { entityId: number }) => {
 const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
   const { t } = useTranslation();
   const [deleteInvite, deleteInviteResult] = useDeleteGuestListInviteMutation();
+  const [sendInvite, sendInviteResult] = useSendGuestListInviteMutation();
 
   return (
     <TransparentView style={styles.tableText}>
       {invite.sent &&
         (deleteInviteResult.isLoading ? (
-          <PaddedSpinner />
+          <SmallSpinner />
         ) : (
           <SmallButton
             title={t('common.delete')}
@@ -142,9 +141,24 @@ const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
             }}
           />
         ))}
-      {!invite.sent && (
-        <SmallButton title={t('common.send')} onPress={() => {}} />
-      )}
+      {!invite.sent &&
+        (sendInviteResult.isLoading ? (
+          <SmallSpinner />
+        ) : (
+          <SmallButton
+            title={t('common.send')}
+            onPress={async () => {
+              try {
+                await sendInvite(invite.id).unwrap();
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+          />
+        ))}
     </TransparentView>
   );
 };
@@ -152,6 +166,9 @@ const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
 export default function GuestListPage({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
   const isFocused = useIsFocused();
+  const [sendForEntity, sendForEntityResult] =
+    useSendGuestListInvitesForEntityMutation();
+
   const { isLoading: isLoadingInvites, data: invites } =
     useGetGuestListInvitesQuery(undefined, {
       pollingInterval: 10000,
@@ -171,6 +188,8 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
     },
     [t]
   );
+
+  const hasUnsentInvite = invites?.some((invite) => !invite.sent);
 
   if (!invites || isLoadingInvites) {
     return <FullPageSpinner />;
@@ -204,12 +223,27 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
               );
             })}
           </Table>
-          <TransparentView style={styles.bottomActions}>
-            <SmallButton
-              title={t('screens.guestList.inviteAll')}
-              onPress={() => {}}
-            />
-          </TransparentView>
+          {hasUnsentInvite && (
+            <TransparentView style={styles.bottomActions}>
+              {sendForEntityResult.isLoading ? (
+                <SmallSpinner />
+              ) : (
+                <SmallButton
+                  title={t('screens.guestList.inviteAll')}
+                  onPress={async () => {
+                    try {
+                      await sendForEntity(entityId).unwrap();
+                    } catch {
+                      Toast.show({
+                        type: 'error',
+                        text1: t('common.errors.generic')
+                      });
+                    }
+                  }}
+                />
+              )}
+            </TransparentView>
+          )}
         </TransparentScrollView>
         <GuestListInviter entityId={entityId} />
       </WhitePaddedView>
