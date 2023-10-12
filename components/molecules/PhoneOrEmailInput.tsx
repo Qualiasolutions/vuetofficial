@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: '100%'
-  }
+  },
+  phoneNumberInputContainer: { height: 40 }
 });
 
 export default function PhoneOrEmailInput({
@@ -61,9 +62,11 @@ export default function PhoneOrEmailInput({
         ) : (
           <PhoneNumberInput
             value={value}
+            defaultValue={value}
             onChangeFormattedText={(text) => {
               onValueChange(text);
             }}
+            containerStyle={styles.phoneNumberInputContainer}
           />
         )}
       </TransparentView>

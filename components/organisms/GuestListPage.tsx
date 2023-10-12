@@ -1,30 +1,62 @@
 import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
 import { Button, SmallButton } from 'components/molecules/ButtonComponents';
 import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
-import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import {
+  TransparentScrollView,
+  WhiteFullPageScrollView
+} from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import {
   TransparentPaddedView,
   TransparentView,
-  WhitePaddedView
+  WhiteContainerView,
+  WhitePaddedView,
+  WhiteView
 } from 'components/molecules/ViewComponents';
 import { Text, TextInput } from 'components/Themed';
 import { validate } from 'email-validator';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
+import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
+
 import {
   useCreateGuestListInviteMutation,
+  useDeleteGuestListInviteMutation,
   useGetGuestListInvitesQuery
 } from 'reduxStore/services/api/guestListInvites';
-import { CreateGuestListInviteRequest } from 'types/guestListInvites';
+import {
+  CreateGuestListInviteRequest,
+  GuestListInvite
+} from 'types/guestListInvites';
+import { useIsFocused } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const styles = StyleSheet.create({
+  container: { paddingBottom: 50, height: '100%' },
+  innerContainer: { height: '100%', flex: 0 },
   buttonWrapper: {
     marginTop: 20
+  },
+  tableContainer: {
+    marginBottom: 20
+  },
+  tableContent: { flexDirection: 'row' },
+  tableBorder: { borderWidth: 1 },
+  tableText: {
+    textAlign: 'center',
+    margin: 4
+  },
+  tableHeaderText: {
+    fontWeight: 'bold'
+  },
+  bottomActions: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
   }
 });
 
@@ -36,7 +68,7 @@ const GuestListInviter = ({ entityId }: { entityId: number }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   return (
-    <TransparentPaddedView>
+    <TransparentView>
       <PhoneOrEmailInput
         usingEmail={usingEmail}
         value={usingEmail ? email : phoneNumber}
@@ -63,9 +95,18 @@ const GuestListInviter = ({ entityId }: { entityId: number }) => {
               } else {
                 body.phone_number = phoneNumber;
               }
-              await createInvite(body);
+              try {
+                await createInvite(body).unwrap();
+                setEmail('');
+                setPhoneNumber('');
+              } catch {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
             }}
-            title={t('common.invite')}
+            title={t('common.add')}
             disabled={
               (usingEmail && !validate(email)) ||
               (!usingEmail && phoneNumber.length < 9)
@@ -73,29 +114,105 @@ const GuestListInviter = ({ entityId }: { entityId: number }) => {
           />
         )}
       </TransparentView>
-    </TransparentPaddedView>
+    </TransparentView>
+  );
+};
+
+const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
+  const { t } = useTranslation();
+  const [deleteInvite, deleteInviteResult] = useDeleteGuestListInviteMutation();
+
+  return (
+    <TransparentView style={styles.tableText}>
+      {invite.sent &&
+        (deleteInviteResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <SmallButton
+            title={t('common.delete')}
+            onPress={async () => {
+              try {
+                await deleteInvite(invite.id).unwrap();
+              } catch (err) {
+                Toast.show({
+                  type: 'error',
+                  text1: t('common.errors.generic')
+                });
+              }
+            }}
+          />
+        ))}
+      {!invite.sent && (
+        <SmallButton title={t('common.send')} onPress={() => {}} />
+      )}
+    </TransparentView>
   );
 };
 
 export default function GuestListPage({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
+  const isFocused = useIsFocused();
   const { isLoading: isLoadingInvites, data: invites } =
-    useGetGuestListInvitesQuery();
+    useGetGuestListInvitesQuery(undefined, {
+      pollingInterval: 10000,
+      skip: !isFocused
+    });
+
+  const getInviteStatus = useCallback(
+    (invite: GuestListInvite) => {
+      if (invite.accepted) return t('common.accepted');
+      if (invite.rejected) return t('common.rejected');
+      if (invite.maybe) return t('common.maybe');
+      if (invite.sent) {
+        return t('common.pending');
+      }
+
+      return t('common.unsent');
+    },
+    [t]
+  );
 
   if (!invites || isLoadingInvites) {
     return <FullPageSpinner />;
   }
 
   return (
-    <WhiteFullPageScrollView>
-      <WhitePaddedView>
-        {invites.map((invite) => (
-          <TransparentPaddedView key={invite.id}>
-            <Text>{invite.email || invite.phone_number}</Text>
-          </TransparentPaddedView>
-        ))}
+    <WhiteFullPageScrollView
+      contentContainerStyle={styles.container}
+      scrollEnabled={false}
+    >
+      <WhitePaddedView style={styles.innerContainer}>
+        <TransparentScrollView style={styles.tableContainer}>
+          <Table borderStyle={styles.tableBorder}>
+            <Row
+              data={[t('common.invitee'), t('common.status'), '']}
+              textStyle={StyleSheet.flatten([
+                styles.tableText,
+                styles.tableHeaderText
+              ])}
+            />
+            {invites.map((invite) => {
+              return (
+                <Row
+                  data={[
+                    invite.email || invite.phone_number,
+                    getInviteStatus(invite),
+                    <InviteActions invite={invite} />
+                  ]}
+                  textStyle={StyleSheet.flatten([styles.tableText])}
+                />
+              );
+            })}
+          </Table>
+          <TransparentView style={styles.bottomActions}>
+            <SmallButton
+              title={t('screens.guestList.inviteAll')}
+              onPress={() => {}}
+            />
+          </TransparentView>
+        </TransparentScrollView>
+        <GuestListInviter entityId={entityId} />
       </WhitePaddedView>
-      <GuestListInviter entityId={entityId} />
     </WhiteFullPageScrollView>
   );
 }

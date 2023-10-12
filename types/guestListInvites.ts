@@ -6,6 +6,7 @@ export type GuestListInvite = {
   accepted: boolean;
   rejected: boolean;
   maybe: boolean;
+  sent: boolean;
   id: number;
 };
 

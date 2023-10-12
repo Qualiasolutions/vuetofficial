@@ -24,6 +24,16 @@ import SafePressable from 'components/molecules/SafePressable';
 
 type LimitType = 'TASKS' | 'MINUTES';
 
+const styles = StyleSheet.create({
+  tableText: {
+    textAlign: 'center',
+    margin: 4
+  },
+  tableHeaderText: {
+    fontWeight: 'bold'
+  }
+});
+
 const TypePicker = ({
   value,
   onChange
@@ -389,13 +399,3 @@ export default function TaskLimitsScreen() {
     </TransparentPaddedView>
   );
 }
-
-const styles = StyleSheet.create({
-  tableText: {
-    textAlign: 'center',
-    margin: 4
-  },
-  tableHeaderText: {
-    fontWeight: 'bold'
-  }
-});

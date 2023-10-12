@@ -1,5 +1,5 @@
 import { useThemeColor } from 'components/Themed';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 
@@ -23,10 +23,18 @@ export default function PhoneNumberInput(props: PhoneNumberInputProps) {
     textInputStyle,
     textContainerStyle,
     codeTextStyle,
+    value,
     ...otherProps
   } = props;
   const phoneInput = useRef<PhoneInput>(null);
   const borderColor = useThemeColor({}, 'grey');
+
+  useEffect(() => {
+    // If empty value is passed then reset internal state
+    if (phoneInput && phoneInput.current && !value) {
+      phoneInput.current.setState({ number: '' });
+    }
+  }, [value]);
 
   return (
     <PhoneInput

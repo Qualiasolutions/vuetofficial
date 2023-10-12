@@ -366,6 +366,13 @@
     "completionFilters": "Completion filters"
   },
   "common": {
+    "invitee": "Invitee",
+    "status": "Status",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "maybe": "Maybe",
+    "unsent": "Unsent",
+    "send": "Send",
     "start": "Start",
     "end": "End",
     "done": "Done",
@@ -456,6 +463,9 @@
     "currentlyNoEntities": "You don't currently have any {{entityType}}. Click the + button below to add some"
   },
   "screens": {
+    "guestList": {
+      "inviteAll": "Send all unsent invites"
+    },
     "drawer": {
       "logOut": "Log Out"
     },
