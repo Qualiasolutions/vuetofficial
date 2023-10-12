@@ -215,6 +215,7 @@ export type RootTabParamList = {
     date: string;
   };
   Alerts: undefined;
+  Events: undefined;
   NewItems: undefined;
   OverdueTasks: undefined;
   QuickJot: undefined;

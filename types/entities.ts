@@ -102,6 +102,11 @@ export interface StudentResponseType extends BaseEntityType {
   school_attended: number;
 }
 
+export interface EventResponseType extends BaseEntityType {
+  start_datetime: string;
+  end_datetime: string;
+}
+
 export type FormCreateEntityRequest = {
   formData?: FormData;
 };
@@ -111,17 +116,25 @@ export type FormUpdateEntityRequest = {
   formData?: FormData;
 };
 
-export const isListEntity = (x: any): x is ListResponseType => !!x.list_entries;
-export const isStudentEntity = (x: any): x is StudentResponseType =>
-  !!x.school_attended;
-
 // This should be a big OR statement of all entities
 export type EntityResponseType =
   | CarResponseType
   | ListResponseType
+  | StudentResponseType
+  | EventResponseType
   | HolidayResponseType;
 export type EntityParsedType =
   | CarParsedType
   | ListResponseType
   | StudentResponseType
   | HolidayResponseType;
+
+export const isListEntity = (x: EntityResponseType): x is ListResponseType =>
+  !!x.list_entries;
+
+export const isStudentEntity = (
+  x: EntityResponseType
+): x is StudentResponseType => !!x.school_attended;
+
+export const isEventEntity = (x: EntityResponseType): x is EventResponseType =>
+  x.resourcetype === 'Event';

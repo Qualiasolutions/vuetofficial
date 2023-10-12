@@ -14,7 +14,7 @@ import {
   WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import { validate } from 'email-validator';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
@@ -32,6 +32,7 @@ import {
 } from 'types/guestListInvites';
 import { useIsFocused } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { useGetUserMinimalDetailsFromIdQuery } from 'reduxStore/services/api/user';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 50, height: '100%' },
@@ -163,6 +164,38 @@ const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
   );
 };
 
+const InviteRow = ({ invite }: { invite: GuestListInvite }) => {
+  const { t } = useTranslation();
+  const { data: userDetails, isLoading: isLoadingUserDetails } =
+    useGetUserMinimalDetailsFromIdQuery(invite.user, { skip: !invite.user });
+  const inviteStatus = useMemo(() => {
+    if (invite.accepted) return t('common.accepted');
+    if (invite.rejected) return t('common.rejected');
+    if (invite.maybe) return t('common.maybe');
+    if (invite.sent) {
+      return t('common.pending');
+    }
+
+    return t('common.unsent');
+  }, [t, invite]);
+
+  return (
+    <Row
+      data={[
+        invite.email ||
+          invite.phone_number ||
+          userDetails?.phone_number ||
+          userDetails?.email,
+        inviteStatus,
+        <InviteActions invite={invite} />
+      ]}
+      textStyle={StyleSheet.flatten([styles.tableText])}
+      // @ts-ignore
+      borderStyle={styles.tableBorder}
+    />
+  );
+};
+
 export default function GuestListPage({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
   const isFocused = useIsFocused();
@@ -174,20 +207,6 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
       pollingInterval: 10000,
       skip: !isFocused
     });
-
-  const getInviteStatus = useCallback(
-    (invite: GuestListInvite) => {
-      if (invite.accepted) return t('common.accepted');
-      if (invite.rejected) return t('common.rejected');
-      if (invite.maybe) return t('common.maybe');
-      if (invite.sent) {
-        return t('common.pending');
-      }
-
-      return t('common.unsent');
-    },
-    [t]
-  );
 
   const hasUnsentInvite = invites?.some((invite) => !invite.sent);
 
@@ -201,50 +220,43 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
       scrollEnabled={false}
     >
       <WhitePaddedView style={styles.innerContainer}>
-        <TransparentScrollView style={styles.tableContainer}>
-          <Table borderStyle={styles.tableBorder}>
-            <Row
-              data={[t('common.invitee'), t('common.status'), '']}
-              textStyle={StyleSheet.flatten([
-                styles.tableText,
-                styles.tableHeaderText
-              ])}
-            />
-            {invites.map((invite) => {
-              return (
-                <Row
-                  data={[
-                    invite.email || invite.phone_number,
-                    getInviteStatus(invite),
-                    <InviteActions invite={invite} />
-                  ]}
-                  textStyle={StyleSheet.flatten([styles.tableText])}
-                />
-              );
-            })}
-          </Table>
-          {hasUnsentInvite && (
-            <TransparentView style={styles.bottomActions}>
-              {sendForEntityResult.isLoading ? (
-                <SmallSpinner />
-              ) : (
-                <SmallButton
-                  title={t('screens.guestList.inviteAll')}
-                  onPress={async () => {
-                    try {
-                      await sendForEntity(entityId).unwrap();
-                    } catch {
-                      Toast.show({
-                        type: 'error',
-                        text1: t('common.errors.generic')
-                      });
-                    }
-                  }}
-                />
-              )}
-            </TransparentView>
-          )}
-        </TransparentScrollView>
+        {invites.length > 0 && (
+          <TransparentScrollView style={styles.tableContainer}>
+            <Table borderStyle={styles.tableBorder}>
+              <Row
+                data={[t('common.invitee'), t('common.status'), '']}
+                textStyle={StyleSheet.flatten([
+                  styles.tableText,
+                  styles.tableHeaderText
+                ])}
+              />
+              {invites.map((invite) => {
+                return <InviteRow invite={invite} />;
+              })}
+            </Table>
+            {hasUnsentInvite && (
+              <TransparentView style={styles.bottomActions}>
+                {sendForEntityResult.isLoading ? (
+                  <SmallSpinner />
+                ) : (
+                  <SmallButton
+                    title={t('screens.guestList.inviteAll')}
+                    onPress={async () => {
+                      try {
+                        await sendForEntity(entityId).unwrap();
+                      } catch {
+                        Toast.show({
+                          type: 'error',
+                          text1: t('common.errors.generic')
+                        });
+                      }
+                    }}
+                  />
+                )}
+              </TransparentView>
+            )}
+          </TransparentScrollView>
+        )}
         <GuestListInviter entityId={entityId} />
       </WhitePaddedView>
     </WhiteFullPageScrollView>

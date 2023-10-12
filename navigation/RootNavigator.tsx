@@ -51,6 +51,7 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { setEnforcedDate } from 'reduxStore/slices/calendars/actions';
 import { useGetICalIntegrationsQuery } from 'reduxStore/services/api/externalCalendars';
+import EventsList from 'components/organisms/EventsList';
 
 const styles = StyleSheet.create({
   icon: {
@@ -258,6 +259,15 @@ export function BottomTabNavigator({
       <BottomTab.Screen
         name="Alerts"
         component={AlertsList}
+        options={{
+          tabBarButton: () => null,
+          title: '',
+          header: BackOnlyHeaderWithSafeArea
+        }}
+      />
+      <BottomTab.Screen
+        name="Events"
+        component={EventsList}
         options={{
           tabBarButton: () => null,
           title: '',

@@ -1,7 +1,8 @@
 import { vuetApi } from './api';
 import {
   CreateGuestListInviteRequest,
-  GuestListInvite
+  GuestListInvite,
+  GuestListInviteeInvite
 } from 'types/guestListInvites';
 
 const guestListInvitesApi = vuetApi.injectEndpoints({
@@ -44,6 +45,24 @@ const guestListInvitesApi = vuetApi.injectEndpoints({
         method: 'GET'
       }),
       invalidatesTags: ['GuestListInvite']
+    }),
+    getGuestListInviteeInvites: builder.query<GuestListInviteeInvite[], void>({
+      query: () => ({
+        url: 'core/guestlist-invitee-invite/',
+        method: 'GET'
+      }),
+      providesTags: ['GuestListInvite']
+    }),
+    updateGuestListInviteeInvite: builder.mutation<
+      GuestListInviteeInvite[],
+      Partial<GuestListInviteeInvite>
+    >({
+      query: (body) => ({
+        url: `core/guestlist-invitee-invite/${body.id}/`,
+        method: 'PATCH',
+        body
+      }),
+      invalidatesTags: ['GuestListInvite']
     })
   }),
   overrideExisting: true
@@ -54,5 +73,7 @@ export const {
   useDeleteGuestListInviteMutation,
   useGetGuestListInvitesQuery,
   useSendGuestListInviteMutation,
-  useSendGuestListInvitesForEntityMutation
+  useSendGuestListInvitesForEntityMutation,
+  useGetGuestListInviteeInvitesQuery,
+  useUpdateGuestListInviteeInviteMutation
 } = guestListInvitesApi;

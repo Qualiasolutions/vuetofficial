@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: {
-    fontSize: 11
+    fontSize: 10
   },
   linkMarker: {
     position: 'absolute',
@@ -96,6 +96,7 @@ export default function TopNav() {
   const hasUnreadAlert = useSelector(selectHasUnreadAlert);
   const overdueTasks = useSelector(selectFilteredOverdueTasks);
   const hasUnseenActivity = useSelector(selectHasUnseenActivity);
+  const hasUnrespondedEvent = true;
 
   return (
     <WhitePaddedView style={[styles.container, elevation.elevated]}>
@@ -125,6 +126,12 @@ export default function TopNav() {
           iconName="flag"
           title={t('pageTitles.overdue')}
           marked={overdueTasks && overdueTasks.length > 0}
+        />
+        <PageLink
+          pageName="Events"
+          iconName="star"
+          title={t('pageTitles.events')}
+          marked={hasUnrespondedEvent}
         />
       </TransparentView>
     </WhitePaddedView>

@@ -132,6 +132,13 @@ export type UserFullResponse = {
   presigned_profile_image_url: string;
 };
 
+export type UserMinimalResponse = {
+  id: number;
+  phone_number: string;
+  email: string;
+  member_colour: string;
+};
+
 export type CategorySetupCompletion = {
   id: number;
   category: number;

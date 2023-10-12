@@ -240,6 +240,10 @@ const getHumanReadableDate = (dateString: string) => {
   return getLongDateFromDateObject(getDateWithoutTimezone(dateString));
 };
 
+const getHumanReadableDateTime = (dateTimeString: string) => {
+  return dayjs(dateTimeString).format('HH:mm MMM DD, YYYY');
+};
+
 export {
   getTimeInTimezone,
   getDateStringFromDateObject,
@@ -259,5 +263,6 @@ export {
   getEndOfDay,
   getStartOfDay,
   parseSummaryTime,
-  getHumanReadableDate
+  getHumanReadableDate,
+  getHumanReadableDateTime
 };

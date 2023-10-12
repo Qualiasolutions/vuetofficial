@@ -84,11 +84,10 @@ export function SmallButton(props: {
   const color = useThemeColor({}, 'text');
 
   return (
-    <SafePressable
-      style={({ pressed }) => [
+    <TouchableOpacity
+      style={[
         {
-          backgroundColor:
-            disabled || pressed ? disabledBackgroundColor : backgroundColor,
+          backgroundColor: disabled ? disabledBackgroundColor : backgroundColor,
           color
         },
         styles.button,
@@ -99,6 +98,6 @@ export function SmallButton(props: {
       {...otherProps}
     >
       <BlackText style={[{ color: textColor }]} text={title} bold={true} />
-    </SafePressable>
+    </TouchableOpacity>
   );
 }

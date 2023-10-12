@@ -6,6 +6,7 @@
     "references": "References",
     "categories": "Categories",
     "guestList": "Guest List",
+    "events": "Events",
     "lists": "Lists",
     "messages": "Messages",
     "settings": "Settings",
@@ -671,6 +672,12 @@
     }
   },
   "components": {
+    "eventsList": {
+      "noInvites": "You do not have any pending event invites",
+      "accepted": "Accept",
+      "rejected": "Reject",
+      "maybe": "Tentative"
+    },
     "phoneOrEmailInput": {
       "useEmail": "Use email",
       "usePhone": "Use phone"

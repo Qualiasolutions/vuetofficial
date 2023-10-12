@@ -59,6 +59,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 3
   },
+  searchBox: {
+    marginBottom: 3
+  },
   monthSelectorWrapper: {
     marginRight: 20
   },
@@ -280,7 +283,7 @@ function Calendar({
             />
           </TouchableOpacity>
         </WhitePaddedView>
-        <WhitePaddedView>
+        <WhitePaddedView style={[elevation.elevated, styles.searchBox]}>
           <Search
             value={searchText}
             onChangeText={setSearchText}

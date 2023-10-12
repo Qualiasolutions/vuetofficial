@@ -14,7 +14,8 @@ import {
   EntityTypeSetupCompletion,
   TagSetupCompletion,
   LinkListSetupCompletion,
-  LastActivityView
+  LastActivityView,
+  UserMinimalResponse
 } from 'types/users';
 import { DeleteRequest } from 'types/apiBase';
 
@@ -26,19 +27,13 @@ const userApi = vuetApi.injectEndpoints({
       }),
       providesTags: ['User']
     }),
-    getUserMinimalDetails: builder.query<
-      { id: number; phone_number: string; member_colour: string },
-      string
-    >({
+    getUserMinimalDetails: builder.query<UserMinimalResponse, string>({
       query: (phone_number) => ({
         url: `core/user-minimal/${phone_number}/`
       }),
       providesTags: ['User']
     }),
-    getUserMinimalDetailsFromId: builder.query<
-      { id: number; phone_number: string; member_colour: string },
-      number
-    >({
+    getUserMinimalDetailsFromId: builder.query<UserMinimalResponse, number>({
       query: (userId) => ({
         url: `core/user-id-minimal/${userId}/`
       }),
