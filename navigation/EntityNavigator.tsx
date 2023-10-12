@@ -109,8 +109,8 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   }, [entityId, isMemberEntity]);
 
   const guestListComponent = useMemo(() => {
-    if (isMemberEntity) {
-      if (entity?.resourcetype === 'Event')
+    if (entity && isMemberEntity) {
+      if (entity.resourcetype === 'Event')
         return () => <GuestListPage entityId={entityId} />;
     }
     return null;

@@ -208,11 +208,12 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
       skip: !isFocused
     });
 
-  const hasUnsentInvite = invites?.some((invite) => !invite.sent);
-
   if (!invites || isLoadingInvites) {
     return <FullPageSpinner />;
   }
+
+  const entityInvites = invites.filter((invite) => invite.entity === entityId);
+  const hasUnsentInvite = entityInvites?.some((invite) => !invite.sent);
 
   return (
     <WhiteFullPageScrollView
@@ -220,7 +221,7 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
       scrollEnabled={false}
     >
       <WhitePaddedView style={styles.innerContainer}>
-        {invites.length > 0 && (
+        {entityInvites.length > 0 && (
           <TransparentScrollView style={styles.tableContainer}>
             <Table borderStyle={styles.tableBorder}>
               <Row
@@ -230,7 +231,7 @@ export default function GuestListPage({ entityId }: { entityId: number }) {
                   styles.tableHeaderText
                 ])}
               />
-              {invites.map((invite) => {
+              {entityInvites.map((invite) => {
                 return <InviteRow invite={invite} />;
               })}
             </Table>
