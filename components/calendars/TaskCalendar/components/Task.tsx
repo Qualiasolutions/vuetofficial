@@ -303,6 +303,7 @@ const TaskIcon = ({ task }: { task: FixedTaskResponseType }) => {
 };
 
 const EntityIcon = ({ entity }: { entity: ScheduledEntityResponseType }) => {
+  const { t } = useTranslation();
   const iconMappings: {
     [key in EntityTypeName | SchoolTermTypeName]?: string;
   } = {
@@ -313,14 +314,15 @@ const EntityIcon = ({ entity }: { entity: ScheduledEntityResponseType }) => {
     SchoolYearStart: '🏫',
     SchoolYearEnd: '🏫',
     Trip: '🏝️',
-    DaysOff: '🌄'
+    DaysOff: '🌄',
+    Event: `${t('entityResourceTypeNames.Event')}: `
   };
 
   const icon = (entity.resourcetype && iconMappings[entity.resourcetype]) || '';
 
   return icon ? (
     <TransparentView>
-      <Text>{`${icon} `}</Text>
+      <Text bold>{`${icon} `}</Text>
     </TransparentView>
   ) : null;
 };
