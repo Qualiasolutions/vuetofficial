@@ -1,9 +1,9 @@
 import momentTZ from 'moment-timezone';
-import { ListingModal } from 'components/molecules/Modals';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'components/Themed';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
+import ListingModal from 'components/molecules/ListingModal';
 
 const timeZonesList = momentTZ.tz.names();
 
@@ -37,18 +37,16 @@ export default function TimezoneSelect({
         <Text>{value || t('components.timezoneSelect.selectTimezone')}</Text>
       </TouchableOpacity>
       <ListingModal
-        data={{
-          timezoneOptions
-        }}
+        data={timezoneOptions}
         visible={open}
         onSelect={(option) => {
-          onSelectTimezone(option.id);
+          onSelectTimezone(String(option.id));
           setOpen(false);
         }}
         onClose={() => {
           setOpen(false);
         }}
-        search={true}
+        minSearchLength={2}
       />
     </>
   );

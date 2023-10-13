@@ -1,11 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Text, useThemeColor, View } from 'components/Themed';
+import React from 'react';
+import { useThemeColor, View } from 'components/Themed';
 import { useTranslation } from 'react-i18next';
 import {
   GestureResponderEvent,
   Modal as DefaultModal,
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
   ViewStyle
 } from 'react-native';
@@ -13,13 +11,9 @@ import { AlmostBlackText, PrimaryText } from './TextComponents';
 import {
   TransparentContainerView,
   TransparentView,
-  WhiteBox,
-  WhiteView
+  WhiteBox
 } from './ViewComponents';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import Colors from '../../constants/Colors';
-import Search from './Search';
-import { Feather } from '@expo/vector-icons';
+
 import SafePressable from './SafePressable';
 
 const styles = StyleSheet.create({
@@ -69,33 +63,6 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 1,
     padding: 0
-  }
-});
-
-const listingModalStyles = StyleSheet.create({
-  bottomContainer: {
-    width: '100%',
-    padding: 23
-  },
-  listItem: {
-    paddingBottom: 10,
-    marginBottom: 10,
-    borderBottomColor: Colors.light.disabledGrey,
-    borderBottomWidth: 1
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  sectionHeaderText: {
-    fontSize: 20
-  },
-  sectionHeaderFeather: {
-    marginRight: 20
-  },
-  section: {
-    marginTop: 10,
-    marginBottom: 10
   }
 });
 
@@ -183,164 +150,3 @@ export function YesNoModal(props: YesNoModalProps) {
     </Modal>
   );
 }
-
-const defaultListItemStyles = StyleSheet.create({
-  container: { paddingVertical: 6 }
-});
-
-function DefaultListItemComponent({
-  item,
-  itemToName
-}: {
-  item: any;
-  itemToName: (item: any) => string;
-}) {
-  return (
-    <TransparentView>
-      <TransparentView style={defaultListItemStyles.container}>
-        <Text> {itemToName(item)} </Text>
-      </TransparentView>
-    </TransparentView>
-  );
-}
-
-export function ListingModal(props: ListingModalProps) {
-  const bottomSheetRef = useRef<RBSheet>(null);
-  const {
-    visible,
-    sectionSettings,
-    data = {},
-    itemToName = (item) => item.name,
-    onClose = () => {},
-    onSelect,
-    ListItemComponent = DefaultListItemComponent,
-    search
-  } = props;
-
-  const initialMinimisedSettings = useMemo<{ [key: string]: boolean }>(() => {
-    const settings: { [key: string]: boolean } = {};
-    for (const sectionName in sectionSettings) {
-      settings[sectionName] =
-        sectionSettings[sectionName].minimisable &&
-        !sectionSettings[sectionName].initOpen;
-    }
-    return settings;
-  }, [sectionSettings]);
-
-  const [minimisedSettings, setMinimisedSettings] = useState<{
-    [key: string]: boolean;
-  }>(initialMinimisedSettings);
-
-  const [searchedText, setSearchedText] = useState('');
-
-  useEffect(() => {
-    if (visible) bottomSheetRef?.current?.open();
-    else bottomSheetRef?.current?.close();
-  }, [visible]);
-
-  const sections = Object.keys(data).map((sectionName) => {
-    const filteredSectionData = search
-      ? data[sectionName].filter(
-          (option) =>
-            searchedText.length >= 2 &&
-            option.name.toLowerCase().includes(searchedText.toLowerCase())
-        )
-      : [];
-    if (filteredSectionData.length === 0) return null;
-    const sectionHeader =
-      sectionSettings && sectionSettings[sectionName] ? (
-        <SafePressable
-          onPress={() => {
-            if (sectionSettings && sectionSettings[sectionName].minimisable) {
-              setMinimisedSettings({
-                ...minimisedSettings,
-                [sectionName]: !minimisedSettings[sectionName]
-              });
-            }
-          }}
-        >
-          <TransparentView style={listingModalStyles.sectionHeader}>
-            <AlmostBlackText
-              text={sectionName}
-              style={listingModalStyles.sectionHeaderText}
-            />
-            {sectionSettings && sectionSettings[sectionName].minimisable ? (
-              minimisedSettings[sectionName] ? (
-                <Feather
-                  name="chevron-down"
-                  size={25}
-                  style={listingModalStyles.sectionHeaderFeather}
-                />
-              ) : (
-                <Feather
-                  name="chevron-up"
-                  size={25}
-                  style={listingModalStyles.sectionHeaderFeather}
-                />
-              )
-            ) : null}
-          </TransparentView>
-        </SafePressable>
-      ) : null;
-    const memberRows = filteredSectionData.map((item) => {
-      return (
-        <SafePressable
-          style={listingModalStyles.listItem}
-          key={item.id}
-          onPress={() => onSelect(item)}
-        >
-          <ListItemComponent item={item} itemToName={itemToName} />
-        </SafePressable>
-      );
-    });
-    return (
-      <TransparentView key={sectionName} style={listingModalStyles.section}>
-        {sectionHeader}
-        {minimisedSettings[sectionName] ? null : memberRows}
-      </TransparentView>
-    );
-  });
-
-  return (
-    <RBSheet
-      ref={bottomSheetRef}
-      height={600}
-      onClose={onClose}
-      customStyles={{
-        container: {
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20
-        }
-      }}
-      dragFromTopOnly={true}
-      closeOnDragDown={true}
-    >
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <WhiteView style={listingModalStyles.bottomContainer}>
-          {search && (
-            <Search onChangeText={setSearchedText} value={searchedText} />
-          )}
-          <SafeAreaView>{sections}</SafeAreaView>
-        </WhiteView>
-      </ScrollView>
-    </RBSheet>
-  );
-}
-
-type ListingModalSectionSettings = {
-  minimisable: boolean;
-  initOpen?: boolean;
-};
-
-type ListingModalProps = {
-  visible: boolean;
-  data: {
-    [key: string]: any[];
-  };
-  sectionSettings?: { [key: string]: ListingModalSectionSettings };
-  itemToName?: (item: any) => string;
-  onClose?: () => void;
-  onSelect: (item: any) => void;
-  ListItemComponent?: React.ElementType;
-  search?: boolean;
-};

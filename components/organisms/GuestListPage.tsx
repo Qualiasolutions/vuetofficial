@@ -14,7 +14,7 @@ import {
   WhitePaddedView
 } from 'components/molecules/ViewComponents';
 import { validate } from 'email-validator';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
@@ -33,6 +33,9 @@ import {
 import { useIsFocused } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useGetUserMinimalDetailsFromIdQuery } from 'reduxStore/services/api/user';
+import PhoneContactSelector from 'components/molecules/PhoneContactSelector';
+import { Modal } from 'components/molecules/Modals';
+import { TextInput } from 'components/Themed';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 50, height: '100%' },
@@ -56,7 +59,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'flex-end'
-  }
+  },
+  addButton: { marginTop: 10 }
 });
 
 const GuestListInviter = ({ entityId }: { entityId: number }) => {
@@ -65,54 +69,105 @@ const GuestListInviter = ({ entityId }: { entityId: number }) => {
   const [usingEmail, setUsingEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setName] = useState('');
+  const [showContactSelectorModal, setShowContactSelectorModal] =
+    useState(false);
+  const [showNewDetailsModal, setShowNewDetailsModal] = useState(false);
 
   return (
     <TransparentView>
-      <PhoneOrEmailInput
-        usingEmail={usingEmail}
-        value={usingEmail ? email : phoneNumber}
-        changeUsingEmail={setUsingEmail}
-        onValueChange={(val) => {
-          if (usingEmail) {
-            setEmail(val);
-          } else {
-            setPhoneNumber(val);
+      <SmallButton
+        title={t('screens.guestList.selectContacts')}
+        onPress={() => {
+          setShowContactSelectorModal(true);
+        }}
+        style={styles.addButton}
+      />
+      <PhoneContactSelector
+        open={showContactSelectorModal}
+        onRequestClose={() => setShowContactSelectorModal(false)}
+        onSelect={async (contact) => {
+          try {
+            setShowContactSelectorModal(false);
+            await createInvite({
+              entity: entityId,
+              phone_number: contact.phoneNumber,
+              name: contact.name
+            });
+          } catch {
+            Toast.show({
+              type: 'error',
+              text1: t('common.errors.generic')
+            });
           }
         }}
       />
-      <TransparentView style={styles.buttonWrapper}>
-        {createInviteResult.isLoading ? (
-          <PaddedSpinner />
-        ) : (
-          <SmallButton
-            onPress={async () => {
-              const body: CreateGuestListInviteRequest = {
-                entity: entityId
-              };
-              if (usingEmail) {
-                body.email = email;
-              } else {
-                body.phone_number = phoneNumber;
-              }
-              try {
-                await createInvite(body).unwrap();
-                setEmail('');
-                setPhoneNumber('');
-              } catch {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
-              }
-            }}
-            title={t('common.add')}
-            disabled={
-              (usingEmail && !validate(email)) ||
-              (!usingEmail && phoneNumber.length < 9)
+      <SmallButton
+        title={t('screens.guestList.inviteByPhone')}
+        onPress={() => {
+          setShowNewDetailsModal(true);
+        }}
+        style={styles.addButton}
+      />
+      <Modal
+        boxStyle={{ width: '100%' }}
+        onRequestClose={() => setShowNewDetailsModal(false)}
+        visible={showNewDetailsModal}
+      >
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder={t('common.name')}
+        />
+        <PhoneOrEmailInput
+          usingEmail={usingEmail}
+          value={usingEmail ? email : phoneNumber}
+          changeUsingEmail={setUsingEmail}
+          onValueChange={(val) => {
+            if (usingEmail) {
+              setEmail(val);
+            } else {
+              setPhoneNumber(val);
             }
-          />
-        )}
-      </TransparentView>
+          }}
+        />
+        <TransparentView style={styles.buttonWrapper}>
+          {createInviteResult.isLoading ? (
+            <PaddedSpinner />
+          ) : (
+            <SmallButton
+              onPress={async () => {
+                const body: CreateGuestListInviteRequest = {
+                  entity: entityId,
+                  name
+                };
+                if (usingEmail) {
+                  body.email = email;
+                } else {
+                  body.phone_number = phoneNumber;
+                }
+                try {
+                  await createInvite(body).unwrap();
+                  setEmail('');
+                  setPhoneNumber('');
+                  setName('');
+                } catch {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+              title={t('common.add')}
+              disabled={
+                (usingEmail && !validate(email)) ||
+                (!usingEmail && phoneNumber.length < 9) ||
+                !name
+              }
+            />
+          )}
+        </TransparentView>
+      </Modal>
     </TransparentView>
   );
 };
@@ -179,16 +234,18 @@ const InviteRow = ({ invite }: { invite: GuestListInvite }) => {
     return t('common.unsent');
   }, [t, invite]);
 
+  const inviteContactDetails =
+    invite.email ||
+    invite.phone_number ||
+    userDetails?.phone_number ||
+    userDetails?.email;
+  const inviteName = invite.name
+    ? `${invite.name} (${inviteContactDetails})`
+    : inviteContactDetails;
+
   return (
     <Row
-      data={[
-        invite.email ||
-          invite.phone_number ||
-          userDetails?.phone_number ||
-          userDetails?.email,
-        inviteStatus,
-        <InviteActions invite={invite} />
-      ]}
+      data={[inviteName, inviteStatus, <InviteActions invite={invite} />]}
       textStyle={StyleSheet.flatten([styles.tableText])}
       // @ts-ignore
       borderStyle={styles.tableBorder}

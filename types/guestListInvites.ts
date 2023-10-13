@@ -5,6 +5,7 @@ export type GuestListInvite = {
   entity: number;
   phone_number: string;
   email: string;
+  name: string;
   accepted: boolean;
   rejected: boolean;
   maybe: boolean;

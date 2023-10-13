@@ -194,8 +194,6 @@ export default function ListEntityPage({
   const [createListEntry] = useCreateListEntryMutation();
   const [formCreateListEntry] = useFormCreateListEntryMutation();
 
-  const [updateEntity] = useUpdateEntityMutation();
-
   const listEntryComponents = useMemo(() => {
     if (!(entityData && isListEntity(entityData))) {
       return null;
@@ -209,7 +207,7 @@ export default function ListEntityPage({
     ));
   }, [entityData]);
 
-  if (!isListEntity(entityData)) {
+  if (!entityData || !isListEntity(entityData)) {
     return null;
   }
 
@@ -223,17 +221,6 @@ export default function ListEntityPage({
       );
     });
   }
-
-  const onMemberListUpdate = (mbrs: UserResponse[]) => {
-    const mbrIds = mbrs.map((x) => x.id);
-    updateEntity({
-      id: entityId,
-      resourcetype: entityData.resourcetype,
-      members: mbrIds
-    })
-      .unwrap()
-      .then((res: any) => console.log(res)); //this won't work if there are no members assigned to the entity!!!!
-  };
 
   const createEntry = () => {
     if (newEntryTitle) {
@@ -255,11 +242,6 @@ export default function ListEntityPage({
   return (
     <WhiteFullPageScrollView>
       <WhiteView>
-        {/* <MemberList
-          userFullDetails={userFullDetails!}
-          members={members}
-          onChange={(members: UserResponse[]) => onMemberListUpdate(members)}
-        /> */}
         {!hideHeader && (
           <TransparentPaddedView>
             <ListHeader list={entityData} />

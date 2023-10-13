@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: '100%'
   },
-  phoneNumberInputContainer: { height: 40 }
+  phoneNumberInputContainer: { height: 40, width: '100%' }
 });
 
 export default function PhoneOrEmailInput({

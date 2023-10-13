@@ -465,7 +465,9 @@
   },
   "screens": {
     "guestList": {
-      "inviteAll": "Send all unsent invites"
+      "inviteAll": "Send all unsent invites",
+      "selectContacts": "Invite phone contacts",
+      "inviteByPhone": "Invite by phone or email"
     },
     "drawer": {
       "logOut": "Log Out"
