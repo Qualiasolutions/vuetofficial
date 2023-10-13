@@ -43,7 +43,8 @@ export type EntityTypeName =
   | 'Appointment'
   | 'Student'
   | 'Employee'
-  | 'Finance';
+  | 'Finance'
+  | 'ProfessionalEntity';
 
 export type SchoolTermTypeName =
   | 'SchoolTerm'
@@ -107,6 +108,10 @@ export interface EventResponseType extends BaseEntityType {
   end_datetime: string;
 }
 
+export interface ProfessionalEntityResponseType extends BaseEntityType {
+  professional_category: number;
+}
+
 export type FormCreateEntityRequest = {
   formData?: FormData;
 };
@@ -122,7 +127,8 @@ export type EntityResponseType =
   | ListResponseType
   | StudentResponseType
   | EventResponseType
-  | HolidayResponseType;
+  | HolidayResponseType
+  | ProfessionalEntityResponseType;
 export type EntityParsedType =
   | CarParsedType
   | ListResponseType
@@ -138,3 +144,8 @@ export const isStudentEntity = (
 
 export const isEventEntity = (x: EntityResponseType): x is EventResponseType =>
   x.resourcetype === 'Event';
+
+export const isProfessionalEntity = (
+  x: EntityResponseType
+): x is ProfessionalEntityResponseType =>
+  x.resourcetype === 'ProfessionalEntity';

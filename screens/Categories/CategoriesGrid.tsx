@@ -1,23 +1,23 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, ImageSourcePropType } from 'react-native';
 
-import { Text, useThemeColor, View } from 'components/Themed';
+import { useThemeColor, View } from 'components/Themed';
 import { Category as CategoryType } from 'types/categories';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ContentTabScreenProps } from 'types/base';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import GenericError from 'components/molecules/GenericError';
 import { useTranslation } from 'react-i18next';
 import Layout from 'constants/Layout';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { BlackText } from 'components/molecules/TextComponents';
-import TopNav from 'components/molecules/TopNav';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useDispatch } from 'react-redux';
 import { setShowPremiumModal } from 'reduxStore/slices/misc/actions';
 import PremiumTag from 'components/molecules/PremiumTag';
+import { useNavigation } from '@react-navigation/native';
+import { ContentTabParamList } from 'types/base';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 type CategoryGroupName =
   | 'PETS'
@@ -43,14 +43,7 @@ const categoriesImages: {
   REFERENCES: require('assets/images/categories/transport.png')
 };
 
-type CategoriesTypes = ContentTabScreenProps<'Categories'>;
-
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white'
-  },
   spinnerWrapper: {
     flex: 1,
     width: '100%',
@@ -86,11 +79,12 @@ const styles = StyleSheet.create({
   premiumTag: { position: 'absolute', bottom: 3, right: 3 }
 });
 
-export default function CategoriesGrid({ navigation }: CategoriesTypes) {
+export default function CategoriesGrid() {
   const { data: allCategories, isLoading, error } = useGetAllCategoriesQuery();
   const { data: userDetails } = useGetUserFullDetails();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigation = useNavigation<StackNavigationProp<ContentTabParamList>>();
 
   const whiteColor = useThemeColor({}, 'white');
   const overlayColor = useThemeColor({}, 'almostBlack');
@@ -168,7 +162,7 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
     }
   );
 
-  const categoriesPage = (
+  return (
     <View style={styles.gridContainer}>
       {categoriesContent}
       <TouchableOpacity
@@ -194,12 +188,5 @@ export default function CategoriesGrid({ navigation }: CategoriesTypes) {
         </ImageBackground>
       </TouchableOpacity>
     </View>
-  );
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <TopNav />
-      <View style={styles.container}>{categoriesPage}</View>
-    </SafeAreaView>
   );
 }

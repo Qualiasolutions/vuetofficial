@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { EntityTypeName } from 'types/entities';
 import { FormFieldTypes } from '../formFieldTypes';
 import { carForm } from './formFields/car';
+import { professionalEntityForm } from './formFields/professional-entity';
 import { boatForm } from './formFields/boat';
 import { daysOffForm } from './formFields/days-off';
 import { eventForm } from './formFields/event';
@@ -27,6 +28,7 @@ import { useSelector } from 'react-redux';
 import { selectEntitiesByEntityTypes } from 'reduxStore/slices/entities/selectors';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import { defaultForm } from './formFields/default';
+import { useGetAllProfessionalCategoriesQuery } from 'reduxStore/services/api/categories';
 
 const schoolSelector = selectEntitiesByEntityTypes(['School']);
 
@@ -38,8 +40,16 @@ export default function useForm(
 
   const allSchoolIds = useSelector(schoolSelector);
   const { data: allEntities } = useGetAllEntitiesQuery(undefined);
+  const { data: allProfessionalCategories } =
+    useGetAllProfessionalCategoriesQuery();
 
   const form = useMemo(() => {
+    if (entityType === 'ProfessionalEntity') {
+      if (!allProfessionalCategories) {
+        return {};
+      }
+      return professionalEntityForm(isEdit, allProfessionalCategories, t);
+    }
     if (entityType === 'Car') {
       return carForm(isEdit, t);
     }
@@ -170,7 +180,14 @@ export default function useForm(
     }
 
     return {};
-  }, [entityType, isEdit, t, allEntities, allSchoolIds]);
+  }, [
+    entityType,
+    isEdit,
+    t,
+    allEntities,
+    allSchoolIds,
+    allProfessionalCategories
+  ]);
 
   return form;
 }

@@ -3,9 +3,9 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import { TransparentView } from 'components/molecules/ViewComponents';
 import useEntityTypeHeader from 'headers/hooks/useEntityTypeHeader';
 import { useTranslation } from 'react-i18next';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { ContentTabScreenProps } from 'types/base';
 import { StyleSheet } from 'react-native';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 type CategoryPreferencesScreenProps =
   ContentTabScreenProps<'CategoryPreferences'>;

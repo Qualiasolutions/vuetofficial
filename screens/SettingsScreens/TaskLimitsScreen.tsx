@@ -10,7 +10,6 @@ import {
 } from 'components/molecules/ViewComponents';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { Pressable, StyleSheet } from 'react-native';
 import { Modal } from 'components/molecules/Modals';
 import { TaskLimitInterval, TaskLimitLimitFields } from 'types/taskLimits';
@@ -21,6 +20,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import SafePressable from 'components/molecules/SafePressable';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 type LimitType = 'TASKS' | 'MINUTES';
 

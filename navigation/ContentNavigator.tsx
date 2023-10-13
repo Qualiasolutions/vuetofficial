@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import { ContentTabParamList as ContentTabParamList } from '../types/base';
 
-import CategoriesGrid from 'screens/Categories/CategoriesGrid';
 import EntityListScreen from 'screens/EntityPages/EntityListScreen';
 import CategoryListScreen from 'screens/Categories/CategoryListScreen';
 import EntityScreen from 'screens/EntityPages/EntityScreens/EntityScreen';
@@ -21,6 +20,8 @@ import HolidayDatesScreen from 'screens/EntityPages/HolidayDatesScreen';
 import AddHolidayTaskScreen from 'screens/Forms/TaskForms/AddHolidayTaskScreen';
 import SchoolTermsScreen from 'screens/SchoolTermsScreen';
 import { useTranslation } from 'react-i18next';
+import CategoriesPage from 'screens/Categories/CategoriesPage';
+import ProfessionalCategoryNavigator from './ProfessionalCategoryNavigator';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
@@ -37,7 +38,7 @@ export function ContentNavigator() {
     >
       <ContentStack.Screen
         name="Categories"
-        component={CategoriesGrid}
+        component={CategoriesPage}
         options={{ headerShown: false }}
       />
       <ContentStack.Screen
@@ -84,6 +85,13 @@ export function ContentNavigator() {
       <ContentStack.Screen
         name="CategoryList"
         component={CategoryListScreen}
+        options={{
+          headerShown: true
+        }}
+      />
+      <ContentStack.Screen
+        name="ProfessionalCategory"
+        component={ProfessionalCategoryNavigator}
         options={{
           headerShown: true
         }}

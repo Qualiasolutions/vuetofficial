@@ -15,7 +15,6 @@ import {
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { Button } from 'components/molecules/ButtonComponents';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { PlanningList } from 'types/lists';
 import SafePressable from 'components/molecules/SafePressable';
 import { Modal } from 'components/molecules/Modals';
@@ -28,6 +27,7 @@ import PlanningListHeader from 'components/molecules/PlanningListHeader';
 import { selectCategoryById } from 'reduxStore/slices/categories/selectors';
 import { useSelector } from 'react-redux';
 import { Feather } from '@expo/vector-icons';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 const styles = StyleSheet.create({
   container: { paddingBottom: 100 },
@@ -192,8 +192,6 @@ export default function PlanningLists() {
 
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
-
-  const { t } = useTranslation();
 
   const isLoading =
     isLoadingPlanningLists ||

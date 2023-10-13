@@ -1,6 +1,5 @@
 import React from 'react';
 import { ContentTabParamList } from 'types/base';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import linkConfig from './subCategories';
 import LinkList from '../../lists/LinkList';
@@ -11,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 const styles = StyleSheet.create({
   button: {

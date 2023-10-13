@@ -1,6 +1,6 @@
 import CheckboxesList from 'components/molecules/CheckboxesList';
 import { useTranslation } from 'react-i18next';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 export default function CategoryCheckboxes({
   value,

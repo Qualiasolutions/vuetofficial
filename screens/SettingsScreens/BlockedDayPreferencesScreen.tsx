@@ -7,7 +7,6 @@ import {
 
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import { StyleSheet } from 'react-native';
 import { Text } from 'components/Themed';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -16,6 +15,7 @@ import Checkbox from 'components/molecules/Checkbox';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { TransparentView } from 'components/molecules/ViewComponents';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 const blockTypes: BlockedCategoryType[] = [
   'birthdays',

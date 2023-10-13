@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 import {
   useGetAllEntitiesQuery,
   useGetMemberEntitiesQuery

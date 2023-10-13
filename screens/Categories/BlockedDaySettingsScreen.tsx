@@ -11,7 +11,7 @@ import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 import {
   useCreateBlockedCategoryMutation,
   useDeleteBlockedCategoryMutation,
@@ -130,7 +130,7 @@ export default function BlockedDaysSettingsScreen({
   route,
   navigation
 }: BlockedDaysSettingsScreenProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { data: allCategories, isLoading: isLoadingCategories } =
     useGetAllCategoriesQuery();
 
@@ -145,9 +145,11 @@ export default function BlockedDaysSettingsScreen({
   }
 
   if (!TYPE_MAPPINGS[categoryData.name]) {
-    return <Text style={styles.noOptionsText}>
-      {t("screens.blockedDayPreferences.noOptionsBlurb")}
-    </Text>;
+    return (
+      <Text style={styles.noOptionsText}>
+        {t('screens.blockedDayPreferences.noOptionsBlurb')}
+      </Text>
+    );
   } else {
     const selectors = TYPE_MAPPINGS[categoryData.name].map((typeName) => (
       <BlockTypeSelector type={typeName} key={typeName} />

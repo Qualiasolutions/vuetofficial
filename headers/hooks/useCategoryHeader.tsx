@@ -8,7 +8,10 @@ import { headerMapping } from 'headers/utils/headerMappings';
 import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
 
-export default function useCategoryHeader(categoryName: string) {
+export default function useCategoryHeader(
+  categoryName: string,
+  actualName?: boolean
+) {
   const navigation = useNavigation();
   const route = useRoute();
   const { t } = useTranslation();
@@ -25,7 +28,7 @@ export default function useCategoryHeader(categoryName: string) {
         : null;
 
       const options: Partial<NativeStackNavigationOptions> = {
-        title: t(`categories.${categoryName}`),
+        title: actualName ? categoryName : t(`categories.${categoryName}`),
         headerShown: true,
         headerTintColor
       };

@@ -8,7 +8,7 @@ import INFO_CATEGORY_TAGS, {
 } from 'constants/InfoCategoryTags';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 import {
   useGetAllEntitiesQuery,
   useGetMemberEntitiesQuery

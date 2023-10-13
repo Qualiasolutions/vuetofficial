@@ -3,7 +3,7 @@ import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewCo
 import { TransparentView } from 'components/molecules/ViewComponents';
 import useColouredHeader from 'headers/hooks/useColouredHeader';
 import { useTranslation } from 'react-i18next';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 import { ContentTabScreenProps } from 'types/base';
 
 type SubCategoryListScreenProps = ContentTabScreenProps<'SubCategoryList'>;

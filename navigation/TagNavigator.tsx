@@ -6,7 +6,7 @@ import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 import { selectScheduledTaskIdsByTagNames } from 'reduxStore/slices/tasks/selectors';
 import { TagScreenTabParamList } from 'types/base';
 

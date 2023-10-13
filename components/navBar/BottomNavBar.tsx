@@ -209,6 +209,15 @@ export default function BottomNavBar({
                         entityTypes: entityTypes[0]
                       });
                     }
+                  } else if (['ProfessionalCategory'].includes(currentScreen)) {
+                    type RouteParams =
+                      ContentTabParamList['ProfessionalCategory'];
+                    const categoryId = (currentScreenParams as RouteParams)
+                      .categoryId;
+
+                    navigation.navigate('AddEntity', {
+                      entityTypes: 'ProfessionalEntity'
+                    });
                   } else if (currentScreen === 'HolidayDates') {
                     navigation.navigate('AddHolidayTask');
                   } else {

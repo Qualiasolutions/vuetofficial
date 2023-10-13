@@ -1,3 +1,5 @@
+import { isDate } from 'lodash';
+
 type CategoryName =
   | 'FAMILY'
   | 'PETS'
@@ -21,4 +23,22 @@ type Category = {
   readable_name: string;
 };
 
-export { CategoryName, Category };
+type ProfessionalCategory = {
+  id: number;
+  name: string;
+  user: number;
+};
+
+type AllProfessionalCategories = {
+  ids: number[];
+  byId: {
+    [key: number]: ProfessionalCategory;
+  };
+};
+
+export {
+  CategoryName,
+  Category,
+  ProfessionalCategory,
+  AllProfessionalCategories
+};

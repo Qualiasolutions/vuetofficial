@@ -16,7 +16,6 @@ import { DarkTheme, DefaultTheme } from 'constants/Colors';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SideNavigator } from './SideNavigator';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
 import TaskActionModal from 'components/molecules/TaskActionModal';
 import ListItemActionModal from 'components/molecules/ListItemActionModal';
 import {
@@ -32,6 +31,7 @@ import TaskPartialCompletionModal from 'components/organisms/TaskPartialCompleti
 import TaskRescheduleModal from 'components/organisms/TaskRescheduleModal';
 import { useCallback, useMemo, useState } from 'react';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 interface NavigationProps {
   colorScheme: ColorSchemeName;

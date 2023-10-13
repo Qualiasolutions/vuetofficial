@@ -134,6 +134,7 @@ export type ContentTabParamList = {
   Categories: { initial: boolean; screen: string };
   CategoryPreferences: { categoryId: number };
   CategoryList: { categoryId: number };
+  ProfessionalCategory: { categoryId: number };
   SubCategoryList: { categoryIds: number[] };
   BlockedDaysSettings: { categoryId: number };
   AnniversaryDates: undefined;

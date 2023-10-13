@@ -8,7 +8,7 @@ import {
 import { Text } from 'components/Themed';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useTranslation } from 'react-i18next';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 import {
   useCreateFamilyCategoryViewPermissionMutation,
   useDeleteFamilyCategoryViewPermissionMutation,

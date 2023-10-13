@@ -1,8 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import customFetchBase from './customFetchBase';
-import { AllCategories } from './types';
-import { Category } from 'types/categories';
 
 export const normalizeData = (data: { id: number }[]) => {
   return {
@@ -11,26 +9,6 @@ export const normalizeData = (data: { id: number }[]) => {
       (prev, next) => ({
         ...prev,
         [next.id]: next
-      }),
-      {}
-    )
-  };
-};
-
-const normalizeCategoryData = (data: { id: number; name: string }[]) => {
-  return {
-    ids: data.map(({ id }) => id),
-    byId: data.reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.id]: next
-      }),
-      {}
-    ),
-    byName: data.reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.name]: next
       }),
       {}
     )
@@ -54,6 +32,7 @@ export const vuetApi = createApi({
     'TaskAction',
     'TaskCompletionForm',
     'Category',
+    'ProfessionalCategory',
     'User',
     'UserInvite',
     'Family',
@@ -84,25 +63,5 @@ export const vuetApi = createApi({
     'Subscription'
   ],
   baseQuery: customFetchBase,
-  endpoints: (builder) => ({
-    getAllCategories: builder.query<AllCategories, void>({
-      query: () => ({
-        url: 'core/category',
-        responseHandler: async (response) => {
-          if (response.ok) {
-            const responseJson: Category[] = await response.json();
-            return normalizeCategoryData(responseJson);
-          } else {
-            // Just return the error data
-            return response.json();
-          }
-        }
-      }),
-      providesTags: ['Category']
-    })
-  })
+  endpoints: (builder) => ({})
 });
-
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetAllCategoriesQuery } = vuetApi;

@@ -38,6 +38,7 @@ import {
 import { selectEntitiesByEntityTypes } from '../entities/selectors';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import { AllCategories, AllEntities } from 'reduxStore/services/api/types';
+import categoriesApi from 'reduxStore/services/api/categories';
 
 const TAG_TO_CATEGORY: { [key: string]: CategoryName } = {
   ...INFO_CATEGORY_TAGS,
@@ -229,7 +230,7 @@ export const selectFilteredOverdueTasks = createSelector(
   selectFilteredCategories,
   selectFilteredTaskTypes,
   selectCompletionFilters,
-  vuetApi.endpoints.getAllCategories.select(),
+  categoriesApi.endpoints.getAllCategories.select(),
   entitiesApi.endpoints.getAllEntities.select(),
   (
     tasks,
@@ -479,7 +480,7 @@ export const selectScheduledTaskIdsByEntityTypes = (
 export const selectFilteredScheduledTaskIdsByDate = createSelector(
   tasksApi.endpoints.getAllScheduledTasks.select(),
   entitiesApi.endpoints.getAllEntities.select(),
-  vuetApi.endpoints.getAllCategories.select(),
+  categoriesApi.endpoints.getAllCategories.select(),
   selectFilteredUsers,
   selectFilteredCategories,
   selectFilteredTaskTypes,
@@ -568,7 +569,7 @@ export const selectFilteredScheduledEntityIds = (
     schoolTermsApi.endpoints.getAllSchoolYears.select(),
     schoolTermsApi.endpoints.getAllSchoolBreaks.select(),
     schoolTermsApi.endpoints.getAllSchoolTerms.select(),
-    vuetApi.endpoints.getAllCategories.select(),
+    categoriesApi.endpoints.getAllCategories.select(),
     studentSelector,
     selectFilteredUsers,
     selectFilteredCategories,
@@ -836,7 +837,7 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(),
     entitiesApi.endpoints.getAllEntities.select(),
-    vuetApi.endpoints.getAllCategories.select(),
+    categoriesApi.endpoints.getAllCategories.select(),
     (scheduledTasks, allEntities, allCategories) => {
       const entitiesData = allEntities.data;
       const taskData = scheduledTasks.data;

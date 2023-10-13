@@ -310,6 +310,7 @@
     "TAX_DUE": "Tax"
   },
   "entityResourceTypeNames": {
+    "ProfessionalEntity": "Entity",
     "Car": "Vehicle",
     "Boat": "Boat or Other",
     "PublicTransport": "Public Transport",
@@ -461,7 +462,8 @@
     "editCountryList": "Add National Holidays",
     "phoneNumber": "Phone number",
     "phoneNo": "Phone no.",
-    "currentlyNoEntities": "You don't currently have any {{entityType}}. Click the + button below to add some"
+    "currentlyNoEntities": "You don't currently have any {{entityType}}. Click the + button below to add some",
+    "currentlyNoProfessionalEntities": "You don't currently have any entities in the {{categoryName}} category. Click the + button below to add some"
   },
   "screens": {
     "guestList": {
@@ -674,6 +676,9 @@
     }
   },
   "components": {
+    "professionalCategories": {
+      "addCategoryBlurb": "What would you like to name your new category?"
+    },
     "eventsList": {
       "noInvites": "You do not have any pending event invites",
       "accepted": "Accept",

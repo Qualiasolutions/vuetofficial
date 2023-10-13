@@ -10,8 +10,7 @@ import {
 } from 'components/molecules/ViewComponents';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { Table, TableWrapper, Row, Col } from 'react-native-table-component';
-import { useGetAllCategoriesQuery } from 'reduxStore/services/api/api';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Modal } from 'components/molecules/Modals';
 import { Text } from 'components/Themed';
 import { useEffect, useState } from 'react';
@@ -24,6 +23,7 @@ import Checkbox from 'components/molecules/Checkbox';
 import SafePressable from 'components/molecules/SafePressable';
 import { DayType } from 'types/datesAndTimes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
 const styles = StyleSheet.create({
   tableText: {
