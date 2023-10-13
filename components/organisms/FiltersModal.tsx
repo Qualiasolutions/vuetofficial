@@ -119,11 +119,11 @@ const CompletionFilterSelector = ({
 }) => {
   const { t } = useTranslation();
   const completionOptions = [
-    {
-      value: 'COMPLETE',
-      label: t('common.complete'),
-      checked: value.includes('COMPLETE')
-    },
+    // {
+    //   value: 'COMPLETE',
+    //   label: t('common.complete'),
+    //   checked: value.includes('COMPLETE')
+    // },
     {
       value: 'INCOMPLETE',
       label: t('common.incomplete'),
