@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  addButton: { marginTop: 10 }
+  addButton: { marginTop: 10 },
+  actionButton: { marginBottom: 4 }
 });
 
 const GuestListInviter = ({ entityId }: { entityId: number }) => {
@@ -179,10 +180,10 @@ const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
 
   return (
     <TransparentView style={styles.tableText}>
-      {invite.sent &&
-        (deleteInviteResult.isLoading ? (
-          <SmallSpinner />
-        ) : (
+      {deleteInviteResult.isLoading || sendInviteResult.isLoading ? (
+        <SmallSpinner />
+      ) : (
+        <>
           <SmallButton
             title={t('common.delete')}
             onPress={async () => {
@@ -195,26 +196,25 @@ const InviteActions = ({ invite }: { invite: GuestListInvite }) => {
                 });
               }
             }}
+            style={styles.actionButton}
           />
-        ))}
-      {!invite.sent &&
-        (sendInviteResult.isLoading ? (
-          <SmallSpinner />
-        ) : (
-          <SmallButton
-            title={t('common.send')}
-            onPress={async () => {
-              try {
-                await sendInvite(invite.id).unwrap();
-              } catch (err) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
-              }
-            }}
-          />
-        ))}
+          {!invite.sent && (
+            <SmallButton
+              title={t('common.send')}
+              onPress={async () => {
+                try {
+                  await sendInvite(invite.id).unwrap();
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+            />
+          )}
+        </>
+      )}
     </TransparentView>
   );
 };
