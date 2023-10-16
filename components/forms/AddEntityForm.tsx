@@ -21,9 +21,11 @@ import hasAllRequired from './utils/hasAllRequired';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
 export default function AddEntityForm({
-  entityType
+  entityType,
+  defaults
 }: {
   entityType: EntityTypeName;
+  defaults?: { [key: string]: any };
 }) {
   const navigation = useNavigation();
 
@@ -47,10 +49,14 @@ export default function AddEntityForm({
 
   useEffect(() => {
     if (userDetails && !formCreateEntityResult.isLoading) {
-      const initialValues = createInitialObject(flatFields, userDetails, {});
+      const initialValues = createInitialObject(
+        flatFields,
+        userDetails,
+        defaults || {}
+      );
       setFormValues(initialValues);
     }
-  }, [flatFields, userDetails, formCreateEntityResult]);
+  }, [flatFields, userDetails, formCreateEntityResult, defaults]);
 
   const allRequired = hasAllRequired(formValues, flatFields);
 

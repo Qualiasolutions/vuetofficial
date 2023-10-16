@@ -156,6 +156,7 @@ export type ContentTabParamList = {
   AddEntity: {
     entityTypes: EntityTypeName[];
     parentId?: number | string;
+    defaults: { [key: string]: any };
   };
   SchoolTerms: {};
 };

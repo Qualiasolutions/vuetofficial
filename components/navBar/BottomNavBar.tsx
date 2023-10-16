@@ -216,7 +216,10 @@ export default function BottomNavBar({
                       .categoryId;
 
                     navigation.navigate('AddEntity', {
-                      entityTypes: 'ProfessionalEntity'
+                      entityTypes: 'ProfessionalEntity',
+                      defaults: {
+                        professional_category: categoryId
+                      }
                     });
                   } else if (currentScreen === 'HolidayDates') {
                     navigation.navigate('AddHolidayTask');
