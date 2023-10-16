@@ -63,6 +63,19 @@ export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
     });
   });
 
+export const selectEntitiesByProfessionalCategory = (categoryId: number) =>
+  createSelector(entitiesApi.endpoints.getAllEntities.select(), (entities) => {
+    const entityData = entities?.data;
+    if (!entityData) {
+      return [];
+    }
+
+    return entityData.ids.filter((id) => {
+      const entity = entityData.byId[id];
+      return entity.professional_category === categoryId;
+    });
+  });
+
 export const selectNewTaskCompletionFormIds = createSelector(
   taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
   (completionForms) => {

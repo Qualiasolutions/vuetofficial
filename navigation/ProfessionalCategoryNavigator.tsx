@@ -1,21 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Calendar from 'components/calendars/TaskCalendar';
-import EntityListPage from 'components/lists/EntityListPage';
 import ProfessionalEntityListPage from 'components/lists/ProfessionalEntityListPage';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import ReferencesList from 'components/organisms/ReferencesList';
-import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import useCategoryHeader from 'headers/hooks/useCategoryHeader';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectProfessionalCategoryById } from 'reduxStore/slices/categories/selectors';
-import {
-  selectFilteredScheduledEntityIds,
-  selectScheduledTaskIdsByEntityTypes
-} from 'reduxStore/slices/tasks/selectors';
+import { selectEntitiesByProfessionalCategory } from 'reduxStore/slices/entities/selectors';
+import { selectScheduledTaskIdsByProfessionalCategory } from 'reduxStore/slices/tasks/selectors';
 import { ContentTabParamList } from 'types/base';
-import { EntityTypeName } from 'types/entities';
 import QuickNavigator from './base/QuickNavigator';
 
 export default function ProfessionalCategoryNavigator({
@@ -26,15 +21,14 @@ export default function ProfessionalCategoryNavigator({
   const category = useSelector(selectProfessionalCategoryById(categoryId));
 
   useCategoryHeader(category?.name || '', true);
-  // const taskSelector = useMemo(
-  //   () => selectScheduledTaskIdsByEntityTypes(entityTypes),
-  //   [entityTypes]
-  // );
-  // const filteredTasks = useSelector(taskSelector);
-
-  // const filteredEntities = useSelector(
-  //   selectFilteredScheduledEntityIds(entityTypes)
-  // );
+  const taskSelector = useMemo(
+    () => selectScheduledTaskIdsByProfessionalCategory(categoryId),
+    [categoryId]
+  );
+  const filteredTasks = useSelector(taskSelector);
+  const filteredEntities = useSelector(
+    selectEntitiesByProfessionalCategory(categoryId)
+  );
 
   const homeComponent = useMemo(() => {
     return () => (
@@ -44,19 +38,13 @@ export default function ProfessionalCategoryNavigator({
     );
   }, [categoryId]);
 
-  // const calendarComponent = useMemo(() => {
-  //   return () => (
-  //     <Calendar
-  //       showFilters={false}
-  //       filteredTasks={filteredTasks}
-  //       filteredEntities={filteredEntities}
-  //     />
-  //   );
-  // }, [filteredTasks, filteredEntities]);
+  const calendarComponent = useMemo(() => {
+    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
+  }, [filteredTasks]);
 
-  // const referencesComponent = useMemo(() => {
-  //   return () => <ReferencesList entityTypes={entityTypes} />;
-  // }, [entityTypes]);
+  const referencesComponent = useMemo(() => {
+    return () => <ReferencesList entities={filteredEntities} />;
+  }, [filteredEntities]);
 
   const quickNavPages = [];
   if (homeComponent) {
@@ -66,18 +54,18 @@ export default function ProfessionalCategoryNavigator({
       component: homeComponent
     });
   }
-  // if (calendarComponent) {
-  //   quickNavPages.push({
-  //     name: 'Calendar',
-  //     title: t('pageTitles.calendar'),
-  //     component: calendarComponent
-  //   });
-  // }
-  // quickNavPages.push({
-  //   name: 'References',
-  //   title: t('pageTitles.references'),
-  //   component: referencesComponent
-  // });
+  if (calendarComponent) {
+    quickNavPages.push({
+      name: 'Calendar',
+      title: t('pageTitles.calendar'),
+      component: calendarComponent
+    });
+  }
+  quickNavPages.push({
+    name: 'References',
+    title: t('pageTitles.references'),
+    component: referencesComponent
+  });
 
   return <QuickNavigator categoryName={''} quickNavPages={quickNavPages} />;
 }

@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import dayjs from 'dayjs';
-import { vuetApi } from 'reduxStore/services/api/api';
 import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
 import schoolTermsApi from 'reduxStore/services/api/schoolTerms';
@@ -898,6 +897,46 @@ export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
                 );
               })
           ) || [];
+
+      const formatted = formatTasksPerDate(filteredTasks);
+
+      return formatted;
+    }
+  );
+
+export const selectScheduledTaskIdsByProfessionalCategory = (
+  categoryId: number
+) =>
+  createSelector(
+    tasksApi.endpoints.getAllScheduledTasks.select(),
+    entitiesApi.endpoints.getAllEntities.select(),
+    (scheduledTasks, allEntities) => {
+      const entitiesData = allEntities.data;
+      const taskData = scheduledTasks.data;
+      if (!taskData || !entitiesData) {
+        return {};
+      }
+
+      const filteredTasks = taskData.ordered
+        .map(({ id, recurrence_index, resourcetype, action_id }) => {
+          const recurrenceIndex =
+            recurrence_index === null ? -1 : recurrence_index;
+          if (['FixedTask'].includes(resourcetype)) {
+            return taskData.byTaskId[id][recurrenceIndex];
+          }
+
+          if (action_id) {
+            return scheduledTasks.data?.byActionId[action_id][recurrenceIndex];
+          }
+        })
+        .filter(isTask)
+        .filter((task) =>
+          task.entities.some(
+            (ent) =>
+              entitiesData.byId[ent] &&
+              entitiesData.byId[ent].professional_category === categoryId
+          )
+        );
 
       const formatted = formatTasksPerDate(filteredTasks);
 
