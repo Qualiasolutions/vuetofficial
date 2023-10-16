@@ -1,40 +1,29 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import dayjs from 'dayjs';
 import entitiesApi from 'reduxStore/services/api/entities';
 import routinesApi from 'reduxStore/services/api/routines';
-import schoolTermsApi from 'reduxStore/services/api/schoolTerms';
 import taskActionsApi from 'reduxStore/services/api/taskActions';
 import taskCompletionFormsApi from 'reduxStore/services/api/taskCompletionForms';
 import tasksApi from 'reduxStore/services/api/tasks';
 import { CategoryName } from 'types/categories';
 import { DayType } from 'types/datesAndTimes';
-import {
-  EntityTypeName,
-  isStudentEntity,
-  SchoolTermTypeName
-} from 'types/entities';
+import { EntityTypeName } from 'types/entities';
 
 import { getDateStringFromDateObject } from 'utils/datesAndTimes';
 
 import {
   HiddenTagType,
-  ScheduledEntityResponseType,
   ScheduledTask,
   ScheduledTaskResponseType,
   TaskType
 } from 'types/tasks';
-import {
-  formatEntitiesPerDate,
-  formatTasksPerDate
-} from 'utils/formatTasksAndPeriods';
+import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
 import {
   selectCompletionFilters,
   selectFilteredCategories,
   selectFilteredTaskTypes,
   selectFilteredUsers
 } from '../calendars/selectors';
-import { selectEntitiesByEntityTypes } from '../entities/selectors';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import { AllCategories, AllEntities } from 'reduxStore/services/api/types';
 import categoriesApi from 'reduxStore/services/api/categories';
@@ -53,12 +42,6 @@ const TAG_TO_CATEGORY: { [key: string]: CategoryName } = {
 const isTask = (
   item: ScheduledTaskResponseType | undefined
 ): item is ScheduledTaskResponseType => {
-  return !!item;
-};
-
-const isEntity = (
-  item: ScheduledEntityResponseType | undefined
-): item is ScheduledEntityResponseType => {
   return !!item;
 };
 
@@ -547,238 +530,6 @@ export const selectFilteredScheduledTaskIdsByDate = createSelector(
   }
 );
 
-const studentSelector = selectEntitiesByEntityTypes(['Student']);
-
-const SCHOOL_ENTITY_TYPES = [
-  'SchoolYearStart',
-  'SchoolYearEnd',
-  'SchoolTerm',
-  'SchoolTermStart',
-  'SchoolTermEnd',
-  'SchoolBreak'
-];
-
-export const selectFilteredScheduledEntityIds = (
-  resourceTypes?: (EntityTypeName | SchoolTermTypeName)[],
-  entityIds?: number[]
-) =>
-  createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(),
-    entitiesApi.endpoints.getAllEntities.select(),
-    schoolTermsApi.endpoints.getAllSchoolYears.select(),
-    schoolTermsApi.endpoints.getAllSchoolBreaks.select(),
-    schoolTermsApi.endpoints.getAllSchoolTerms.select(),
-    categoriesApi.endpoints.getAllCategories.select(),
-    studentSelector,
-    selectFilteredUsers,
-    selectFilteredCategories,
-    selectFilteredTaskTypes,
-    selectCompletionFilters,
-    (
-      scheduledTasks,
-      allEntities,
-      schoolYears,
-      schoolBreaks,
-      schoolTerms,
-      allCategories,
-      students,
-      users,
-      categories,
-      taskTypes,
-      completionFilters
-    ) => {
-      const schoolYearsData = schoolYears.data;
-      const schoolBreaksData = schoolBreaks.data;
-      const schoolTermsData = schoolTerms.data;
-      const allEntitiesData = allEntities.data;
-      const allCategoriesData = allCategories.data;
-
-      if (
-        !scheduledTasks.data?.orderedEntities ||
-        !schoolYearsData ||
-        !schoolBreaksData ||
-        !schoolTermsData ||
-        !allEntitiesData ||
-        !allCategoriesData
-      ) {
-        return {};
-      }
-
-      const filteredEntities =
-        scheduledTasks.data.orderedEntities
-          .filter(
-            ({ resourcetype }) =>
-              !resourceTypes || resourceTypes.includes(resourcetype)
-          )
-          .filter(({ id, resourcetype }) => {
-            if (
-              entityIds &&
-              entityIds.includes(id) &&
-              !SCHOOL_ENTITY_TYPES.includes(resourcetype)
-            ) {
-              // Have exact entity ID match
-              return true;
-            }
-
-            if (resourceTypes && resourceTypes.includes(resourcetype)) {
-              // Have exact resource type match
-              return true;
-            }
-
-            if (!entityIds && !resourceTypes) {
-              // No filtering
-              return true;
-            }
-
-            if (resourceTypes) {
-              // Otherwise if resourceTypes is specified then only return exact resource type matches
-              return false;
-            }
-
-            // At this point entityIds must be specified
-            if (entityIds) {
-              let schoolYear = null;
-              if (['SchoolYearStart', 'SchoolYearEnd'].includes(resourcetype)) {
-                schoolYear = schoolYearsData.byId[id];
-              }
-              if (
-                ['SchoolTermStart', 'SchoolTermEnd', 'SchoolTerm'].includes(
-                  resourcetype
-                )
-              ) {
-                const schoolTerm = schoolTermsData.byId[id];
-                const schoolYearId = schoolTerm.school_year;
-                schoolYear = schoolYearsData.byId[schoolYearId];
-              }
-              if (['SchoolBreak'].includes(resourcetype)) {
-                const schoolBreak = schoolBreaksData.byId[id];
-                const schoolYearId = schoolBreak.school_year;
-                schoolYear = schoolYearsData.byId[schoolYearId];
-              }
-
-              if (schoolYear) {
-                if (entityIds.includes(schoolYear.school)) {
-                  return true;
-                }
-
-                const studentEntityIds = students.filter((studentId) =>
-                  entityIds.includes(studentId)
-                );
-
-                for (const studentId of studentEntityIds) {
-                  const student = allEntitiesData.byId[studentId];
-
-                  if (isStudentEntity(student)) {
-                    if (student.school_attended === schoolYear.school) {
-                      return true;
-                    }
-                  }
-                }
-              }
-            }
-
-            return false;
-          })
-          .map(({ id, resourcetype }) => {
-            const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
-            return (
-              scheduledTasks.data?.byEntityId[type] &&
-              scheduledTasks.data?.byEntityId[type][id]
-            );
-          })
-          .filter(isEntity)
-          .filter(
-            (entity) =>
-              (!users ||
-                users.length === 0 ||
-                entity.members.some((member) => users?.includes(member))) &&
-              (!categories ||
-                categories.length === 0 ||
-                categories.length === allCategoriesData.ids.length ||
-                categories.includes(
-                  allEntitiesData.byId[entity.id]?.category
-                ) ||
-                (categories.some(
-                  (categoryId) =>
-                    allCategoriesData.byId[categoryId].name === 'EDUCATION'
-                ) &&
-                  SCHOOL_ENTITY_TYPES.includes(entity.resourcetype))) &&
-              (!taskTypes ||
-                taskTypes.length === 0 ||
-                taskTypes.includes('OTHER')) &&
-              (!completionFilters ||
-                completionFilters.length === 0 ||
-                (completionFilters.includes('COMPLETE') &&
-                  completionFilters.includes('INCOMPLETE')))
-          ) || [];
-
-      const formatted = formatEntitiesPerDate(filteredEntities);
-
-      return formatted;
-    }
-  );
-
-export const selectScheduledTaskIdsByEntityIds = (entities: number[]) =>
-  createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(),
-    entitiesApi.endpoints.getAllEntities.select(),
-    (scheduledTasks, allEntities) => {
-      if (!scheduledTasks.data) {
-        return {};
-      }
-
-      if (!allEntities.data) {
-        return {};
-      }
-
-      const entitiesData = allEntities.data;
-
-      const filteredTasks =
-        scheduledTasks.data.ordered
-          .map(({ id, recurrence_index, resourcetype, action_id }) => {
-            const recurrenceIndex =
-              recurrence_index === null ? -1 : recurrence_index;
-            if (['FixedTask'].includes(resourcetype)) {
-              return scheduledTasks.data?.byTaskId[id][recurrenceIndex];
-            }
-
-            if (action_id) {
-              return scheduledTasks.data?.byActionId[action_id][
-                recurrenceIndex
-              ];
-            }
-          })
-          .filter(isTask)
-          .filter(
-            (task) =>
-              !entities ||
-              entities.length === 0 ||
-              task.entities.some((ent) => {
-                if (entities?.includes(ent)) {
-                  return true;
-                }
-
-                const taskEntity = entitiesData.byId[ent];
-
-                if (!taskEntity) {
-                  return false;
-                }
-
-                const parentEntityId = taskEntity.parent;
-                if (parentEntityId && entities?.includes(parentEntityId)) {
-                  return true;
-                }
-
-                return false;
-              })
-          ) || [];
-
-      const formatted = formatTasksPerDate(filteredTasks);
-
-      return formatted;
-    }
-  );
-
 export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(),
@@ -808,94 +559,6 @@ export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
               !tagNames ||
               tagNames.length === 0 ||
               task.tags.some((tagName) => tagNames?.includes(tagName))
-          ) || [];
-
-      const formatted = formatTasksPerDate(filteredTasks);
-
-      return formatted;
-    }
-  );
-
-const EXTRA_CATEGORY_ITEMS: {
-  [key in CategoryName]?: {
-    tags?: string[];
-    types?: string[];
-  };
-} = {
-  SOCIAL_INTERESTS: {
-    tags: [
-      'SOCIAL_INTERESTS__BIRTHDAY',
-      'SOCIAL_INTERESTS__ANNIVERSARY',
-      'SOCIAL_INTERESTS__HOLIDAY'
-    ],
-    types: ['BIRTHDAY', 'ANNIVERSARY', 'HOLIDAY']
-  }
-};
-
-export const selectScheduledTaskIdsByCategories = (categories: number[]) =>
-  createSelector(
-    tasksApi.endpoints.getAllScheduledTasks.select(),
-    entitiesApi.endpoints.getAllEntities.select(),
-    categoriesApi.endpoints.getAllCategories.select(),
-    (scheduledTasks, allEntities, allCategories) => {
-      const entitiesData = allEntities.data;
-      const taskData = scheduledTasks.data;
-      const allCategoriesData = allCategories.data;
-      if (!taskData || !entitiesData) {
-        return {};
-      }
-
-      const filteredTasks =
-        taskData.ordered
-          .map(({ id, recurrence_index, resourcetype, action_id }) => {
-            const recurrenceIndex =
-              recurrence_index === null ? -1 : recurrence_index;
-            if (['FixedTask'].includes(resourcetype)) {
-              return taskData.byTaskId[id][recurrenceIndex];
-            }
-
-            if (action_id) {
-              return scheduledTasks.data?.byActionId[action_id][
-                recurrenceIndex
-              ];
-            }
-          })
-          .filter(isTask)
-          .filter(
-            (task) =>
-              !categories ||
-              categories.length === 0 ||
-              task.entities.some((ent) =>
-                categories.some(
-                  (cat) =>
-                    entitiesData.byId[ent] &&
-                    entitiesData.byId[ent].category === cat
-                )
-              ) ||
-              categories.some((category) => {
-                const categoryName = allCategoriesData?.byId[category]?.name;
-                if (!categoryName) {
-                  return false;
-                }
-
-                if (
-                  task.tags.some((tagName) => {
-                    return TAG_TO_CATEGORY[tagName] === categoryName;
-                  })
-                ) {
-                  return true;
-                }
-
-                const extraItems = EXTRA_CATEGORY_ITEMS[categoryName];
-                if (!extraItems) {
-                  return false;
-                }
-                return (
-                  (extraItems.tags &&
-                    task.tags.some((tag) => extraItems?.tags?.includes(tag))) ||
-                  (extraItems.types && extraItems.types.includes(task.type))
-                );
-              })
           ) || [];
 
       const formatted = formatTasksPerDate(filteredTasks);

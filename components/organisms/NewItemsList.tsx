@@ -5,6 +5,7 @@ import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponen
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import useEntityById from 'hooks/entities/useEntityById';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { t } from 'i18next';
 import { useEffect } from 'react';
@@ -26,7 +27,6 @@ import {
   setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import {
-  selectEntityById,
   selectNewEntityIds,
   selectNewTaskCompletionFormIds
 } from 'reduxStore/slices/entities/selectors';
@@ -45,7 +45,7 @@ const cardStyles = StyleSheet.create({
   card: { marginBottom: 5 }
 });
 const NewEntityCard = ({ entityId }: { entityId: number }) => {
-  const entity = useSelector(selectEntityById(entityId));
+  const entity = useEntityById(entityId);
   const navigation = useNavigation();
 
   if (!entity) {

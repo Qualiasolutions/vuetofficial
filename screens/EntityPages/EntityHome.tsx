@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ListEntityPage from './EntityScreens/components/ListEntityPage';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import EditEntityForm from 'components/forms/EditEntityForm';
 import { StyleSheet } from 'react-native';
 import CarPage from './EntityScreens/components/CarPage';
+import useEntityById from 'hooks/entities/useEntityById';
 
 const styles = StyleSheet.create({
   editForm: { paddingBottom: 100 }
@@ -29,7 +29,7 @@ export const resourceTypeToComponent = {
 };
 
 export default function EntityHome({ entityId }: { entityId: number }) {
-  const entity = useSelector(selectEntityById(entityId));
+  const entity = useEntityById(entityId);
   const resourceType = entity?.resourcetype;
 
   if (!resourceType) {

@@ -1,8 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import EventPage from './EntityScreens/components/EventPage';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { EntityTypeName } from 'types/entities';
+import useEntityById from 'hooks/entities/useEntityById';
 
 export const RESOURCE_TYPE_TO_COMPONENT = {
   Event: EventPage,
@@ -13,7 +12,7 @@ export const RESOURCE_TYPE_TO_COMPONENT = {
 };
 
 export default function EntityOverview({ entityId }: { entityId: number }) {
-  const entity = useSelector(selectEntityById(entityId));
+  const entity = useEntityById(entityId);
   const resourceType = entity?.resourcetype;
 
   if (!resourceType) {

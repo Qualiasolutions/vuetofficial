@@ -10,8 +10,8 @@ import { ScheduledEntity } from 'components/calendars/TaskCalendar/components/Ta
 import { TransparentView } from './ViewComponents';
 import { ScrollView } from 'react-native-gesture-handler';
 import SafePressable from './SafePressable';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { MinimalScheduledTask } from 'types/tasks';
+import useEntityById from 'hooks/entities/useEntityById';
 
 export type CalendarViewProps = {
   tasks: { [date: string]: MinimalScheduledTask[] };
@@ -60,7 +60,7 @@ const ListedTask = ({
 };
 
 const ListedEntity = ({ id }: { id: number }) => {
-  const entity = useSelector(selectEntityById(id));
+  const entity = useEntityById(id);
   const styles = useStyle();
   if (!entity) {
     return null;

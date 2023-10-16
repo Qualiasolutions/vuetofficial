@@ -10,9 +10,8 @@ import {
 } from 'headers/utils/headerMappings';
 import { headerTintColorMapping } from 'headers/utils/headerTintColorMapping';
 import { headerRightMapping } from 'headers/utils/headerRightMapping';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
-import { useSelector } from 'react-redux';
 import { parsePresignedUrl } from 'utils/urls';
+import useEntityById from 'hooks/entities/useEntityById';
 
 export default function useEntityHeader(
   entityId: number,
@@ -21,7 +20,7 @@ export default function useEntityHeader(
 ) {
   const navigation = useNavigation();
   const route = useRoute();
-  const entity = useSelector(selectEntityById(entityId));
+  const entity = useEntityById(entityId);
 
   useLayoutEffect(() => {
     if (entity) {

@@ -20,6 +20,7 @@ import {
   TransparentView
 } from 'components/molecules/ViewComponents';
 import { Text } from 'components/Themed';
+import useEntityById from 'hooks/entities/useEntityById';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,6 @@ import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import { useCreateTaskMutation } from 'reduxStore/services/api/tasks';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { selectNextTaskFromEntityAndHiddenTag } from 'reduxStore/slices/tasks/selectors';
 import { elevation } from 'styles/elevation';
 import { FixedTaskResponseType, HiddenTagType } from 'types/tasks';
@@ -168,7 +168,7 @@ const DueDateInputForm = ({
 export default function CarPage({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const entity = useSelector(selectEntityById(entityId));
+  const entity = useEntityById(entityId);
   const [dueDateToAdd, setDueDateToAdd] = useState<HiddenTagType | ''>('');
 
   const nextMotTask = useSelector(

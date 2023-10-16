@@ -97,8 +97,18 @@ function Calendar({
   const { isLoading: isLoadingScheduledTasks, data: allScheduled } =
     useGetAllScheduledTasksQuery(undefined);
   const { isLoading: isLoadingTasks } = useGetAllTasksQuery(undefined);
-  const { isLoading: isLoadingEntities, data: allEntities } =
-    useGetAllEntitiesQuery(undefined);
+  const { data: entityNames } = useGetAllEntitiesQuery(undefined, {
+    selectFromResult: ({ data }) => {
+      if (!data) {
+        return { data: null };
+      }
+      const names: { [key: number]: string } = {};
+      for (const entityId in data.byId) {
+        names[entityId] = data.byId[entityId].name;
+      }
+      return { data: names };
+    }
+  });
 
   const dispatch = useDispatch();
 
@@ -130,7 +140,8 @@ function Calendar({
 
         for (const entityId of scheduledTask.entities) {
           if (
-            allEntities?.byId[entityId].name
+            entityNames &&
+            entityNames[entityId]
               ?.toLowerCase()
               .includes(submittedSearchText.toLowerCase())
           ) {
@@ -153,7 +164,7 @@ function Calendar({
       }
     }
     return full;
-  }, [filteredTasks, submittedSearchText, allEntities, allScheduled]);
+  }, [filteredTasks, submittedSearchText, entityNames, allScheduled]);
 
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
@@ -216,7 +227,7 @@ function Calendar({
     isLoadingTaskCompletionForms ||
     isLoadingScheduledTasks ||
     isLoadingTasks ||
-    isLoadingEntities;
+    !entityNames;
   if (isLoading) {
     return <FullPageSpinner />;
   }

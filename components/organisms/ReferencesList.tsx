@@ -17,6 +17,7 @@ import { Text, TextInput, useThemeColor } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import dayjs from 'dayjs';
+import useEntityById from 'hooks/entities/useEntityById';
 import useEntities from 'hooks/useEntities';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useCallback, useEffect, useState } from 'react';
@@ -45,7 +46,6 @@ import {
   useCreateReferencesSetupCompletionMutation,
   useGetReferencesSetupCompletionsQuery
 } from 'reduxStore/services/api/user';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   selectReferenceById,
   selectReferenceGroupsByEntityId,
@@ -649,7 +649,7 @@ const EntityReferences = ({ entityId }: { entityId: number }) => {
   const referenceGroups = useSelector(
     selectReferenceGroupsByEntityId(entityId)
   );
-  const entity = useSelector(selectEntityById(entityId));
+  const entity = useEntityById(entityId);
 
   if (!entity) {
     return null;
@@ -836,10 +836,12 @@ export default function ReferencesList({
 
   for (const entity of entitiesToShow) {
     const catId = allEntities.byId[entity].category;
-    if (!tagsAndEntitiesToShowByCategory[catId]) {
-      tagsAndEntitiesToShowByCategory[catId] = { tags: [], entities: [] };
+    if (catId) {
+      if (!tagsAndEntitiesToShowByCategory[catId]) {
+        tagsAndEntitiesToShowByCategory[catId] = { tags: [], entities: [] };
+      }
+      tagsAndEntitiesToShowByCategory[catId].entities.push(entity);
     }
-    tagsAndEntitiesToShowByCategory[catId].entities.push(entity);
   }
 
   let categoryName = '';
@@ -854,9 +856,10 @@ export default function ReferencesList({
       .join(' and ');
 
     entityNames = (Object.keys(ENTITY_TYPE_TO_CATEGORY) as EntityTypeName[])
-      .filter((entityTypeName) =>
-        categoryNames.includes(ENTITY_TYPE_TO_CATEGORY[entityTypeName])
-      )
+      .filter((entityTypeName) => {
+        const name = ENTITY_TYPE_TO_CATEGORY[entityTypeName];
+        return name && categoryNames.includes(name);
+      })
       .map((entityTypeName) => t(`entityResourceTypeNames.${entityTypeName}`))
       .join(' or ');
   } else if (entityTypes) {
@@ -869,25 +872,32 @@ export default function ReferencesList({
 
   const content =
     Object.keys(tagsAndEntitiesToShowByCategory).length > 0 ? (
-      Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => (
-        <TransparentView
-          key={categoryId}
-          style={referencesListStyles.categorySection}
-        >
-          {showCategoryHeaders && (
-            <Text style={referencesListStyles.categoryHeader}>
-              {t(`categories.${allCategories.byId[parseInt(categoryId)].name}`)}
-            </Text>
-          )}
-          <FlatReferencesList
-            entities={
-              tagsAndEntitiesToShowByCategory[parseInt(categoryId)].entities
-            }
-            tags={tagsAndEntitiesToShowByCategory[parseInt(categoryId)].tags}
-            tagsFirst={tagsFirst}
-          />
-        </TransparentView>
-      ))
+      Object.keys(tagsAndEntitiesToShowByCategory).map((categoryId) => {
+        const categoryIdNumber = parseInt(categoryId);
+        return (
+          <TransparentView
+            key={categoryIdNumber}
+            style={referencesListStyles.categorySection}
+          >
+            {showCategoryHeaders && (
+              <Text style={referencesListStyles.categoryHeader}>
+                {categoryIdNumber === -1
+                  ? ''
+                  : t(
+                      `categories.${allCategories.byId[categoryIdNumber].name}`
+                    )}
+              </Text>
+            )}
+            <FlatReferencesList
+              entities={
+                tagsAndEntitiesToShowByCategory[categoryIdNumber].entities
+              }
+              tags={tagsAndEntitiesToShowByCategory[categoryIdNumber].tags}
+              tagsFirst={tagsFirst}
+            />
+          </TransparentView>
+        );
+      })
     ) : (
       <Text>
         {categoryName && entityNames

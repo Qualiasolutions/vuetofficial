@@ -8,7 +8,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import {
   useDeleteEntityMutation,
-  useUpdateEntityMutation
+  useUpdateEntityWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/entities';
 
 import { TextInput } from 'components/Themed';
@@ -23,8 +23,6 @@ import ListEntry from './components/ListEntry';
 import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { Button } from 'components/molecules/ButtonComponents';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { useSelector } from 'react-redux';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import {
   ImagePicker,
   PickedFile
@@ -34,6 +32,7 @@ import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { YesNoModal } from 'components/molecules/Modals';
+import useEntityById from 'hooks/entities/useEntityById';
 
 const styles = StyleSheet.create({
   listEntry: {
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
 
 const ListHeader = ({ list }: { list: EntityResponseType }) => {
   const [deleteList] = useDeleteEntityMutation();
-  const [updateList] = useUpdateEntityMutation();
+  const [updateList] = useUpdateEntityWithoutCacheInvalidationMutation();
   const [deleting, setDeleting] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [newListName, setNewListName] = useState(list.name);
@@ -188,7 +187,7 @@ export default function ListEntityPage({
   hideHeader?: boolean;
 }) {
   const { data: userFullDetails } = useGetUserFullDetails();
-  const entityData = useSelector(selectEntityById(entityId));
+  const entityData = useEntityById(entityId);
   const { t } = useTranslation();
   const [newEntryTitle, setNewEntryTitle] = useState<string>('');
   const [createListEntry] = useCreateListEntryMutation();

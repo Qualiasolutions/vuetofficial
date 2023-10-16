@@ -7,7 +7,6 @@ import { Text, useThemeColor } from 'components/Themed';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetMessageThreadsQuery } from 'reduxStore/services/api/messages';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { MessagesTabParamList } from 'types/base';
 import { MessageResponse } from 'types/messages';
 import { parseSummaryTime } from 'utils/datesAndTimes';
@@ -18,6 +17,7 @@ import {
 } from 'reduxStore/slices/tasks/selectors';
 import UserTags from 'components/molecules/UserTags';
 import { t } from 'i18next';
+import useEntityById from 'hooks/entities/useEntityById';
 
 const useListingStyles = () => {
   const greyColor = useThemeColor({}, 'mediumLightGrey');
@@ -45,7 +45,7 @@ const useListingStyles = () => {
 };
 
 const MessageThreadListing = ({ thread }: { thread: MessageResponse }) => {
-  const entity = useSelector(selectEntityById(thread.entity || -1));
+  const entity = useEntityById(thread.entity || -1);
   const task = useSelector(selectTaskById(thread.task || -1));
   const listingStyles = useListingStyles();
 

@@ -9,6 +9,7 @@ import {
   WhiteView
 } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
+import useEntityById from 'hooks/entities/useEntityById';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +20,6 @@ import {
   useGetMessagesForActionIdQuery,
   useGetMessagesForEntityIdQuery
 } from 'reduxStore/services/api/messages';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import { elevation } from 'styles/elevation';
 import { MessageResponse } from 'types/messages';
@@ -174,7 +174,7 @@ export default function MessageThread({
   const scheduledTask = useSelector(
     selectScheduledTask({ actionId, id: taskId, recurrenceIndex })
   );
-  const entity = useSelector(selectEntityById(entityId || -1));
+  const entity = useEntityById(entityId || -1);
 
   const [createMessage, createMessageResult] = useCreateMessageMutation();
 

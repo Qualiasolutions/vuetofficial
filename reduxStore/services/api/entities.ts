@@ -5,27 +5,55 @@ import {
   FormUpdateEntityRequest
 } from 'types/entities';
 import { vuetApi } from './api';
+import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 
-const ARRAY_FIELDS = ['members'];
-const entityFormToObj = (formData: any) => {
-  let output: { [key: string]: any } = {};
-  formData._parts.forEach(([key, value]: any[]) => {
-    // Check if property already exist
-    if (Object.prototype.hasOwnProperty.call(output, key)) {
-      let current = output[key];
-      if (!Array.isArray(current)) {
-        // If it's not an array, convert it to an array.
-        current = output[key] = [current];
-      }
-      current.push(value); // Add the new value to the array.
-    } else {
-      output[key] = ARRAY_FIELDS.includes(key) ? [value] : value;
+const updateEntityHandler = async (
+  patch: Partial<EntityResponseType> & Pick<EntityResponseType, 'id'>,
+  entitiesApi: any,
+  state: RootState<any, any, 'vuetApi'>,
+  dispatch: ThunkDispatch<any, any, AnyAction>,
+  queryFulfilled: any
+) => {
+  const patchResults = [];
+  for (const {
+    endpointName,
+    originalArgs
+  } of entitiesApi.util.selectInvalidatedBy(state, [{ type: 'Entity' }])) {
+    if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
+      continue;
+
+    const patchResult = dispatch(
+      entitiesApi.util.updateQueryData(
+        endpointName as 'getAllEntities' | 'getMemberEntities',
+        originalArgs,
+        (draft: any) => {
+          draft.byId[patch.id] = {
+            ...draft.byId[patch.id],
+            ...patch
+          };
+        }
+      )
+    );
+    patchResults.push(patchResult);
+  }
+  try {
+    await queryFulfilled;
+  } catch {
+    for (const patchResult of patchResults) {
+      patchResult.undo();
     }
-  });
-  return output;
+  }
 };
 
-const normalizeEntityData = (data: { id: number; category: number }[]) => {
+const normalizeEntityData = (
+  data: {
+    id: number;
+    category: number;
+    resourcetype: string;
+    school_attended?: number;
+  }[]
+) => {
   return {
     ids: data.map(({ id }) => id),
     byId: data.reduce(
@@ -40,6 +68,24 @@ const normalizeEntityData = (data: { id: number; category: number }[]) => {
         ...prev,
         [next.category]: prev[next.category]
           ? [...prev[next.category], next.id]
+          : [next.id]
+      }),
+      {}
+    ),
+    byResourceType: data.reduce<{ [key: string]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.resourcetype]: prev[next.resourcetype]
+          ? [...prev[next.resourcetype], next.id]
+          : [next.id]
+      }),
+      {}
+    ),
+    bySchoolAttended: data.reduce<{ [key: number]: number[] }>(
+      (prev, next) => ({
+        ...prev,
+        [next.school_attended || -1]: prev[next.school_attended || -1]
+          ? [...prev[next.school_attended || -1], next.id]
           : [next.id]
       }),
       {}
@@ -97,38 +143,109 @@ const entitiesApi = vuetApi.injectEndpoints({
         { ...patch },
         { dispatch, queryFulfilled, getState }
       ) {
-        const patchResults = [];
-        for (const {
-          endpointName,
-          originalArgs
-        } of entitiesApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Entity' }
-        ])) {
-          if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
-            continue;
-
-          const patchResult = dispatch(
-            entitiesApi.util.updateQueryData(
-              endpointName as 'getAllEntities' | 'getMemberEntities',
-              originalArgs,
-              (draft) => {
-                draft.byId[patch.id] = {
-                  ...draft.byId[patch.id],
-                  ...patch
-                };
-              }
-            )
-          );
-          patchResults.push(patchResult);
-        }
-        try {
-          await queryFulfilled;
-        } catch {
-          for (const patchResult of patchResults) {
-            patchResult.undo();
-          }
-        }
+        await updateEntityHandler(
+          patch,
+          entitiesApi,
+          getState(),
+          dispatch,
+          queryFulfilled
+        );
       }
+    }),
+    updateEntityWithoutCacheInvalidation: builder.mutation<
+      EntityResponseType,
+      Partial<EntityResponseType> & Pick<EntityResponseType, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/entity/${body.id}/`,
+          method: 'PATCH',
+          body
+        };
+      },
+      invalidatesTags: [],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        await updateEntityHandler(
+          patch,
+          entitiesApi,
+          getState(),
+          dispatch,
+          queryFulfilled
+        );
+      }
+    }),
+    formUpdateEntity: builder.mutation<
+      EntityResponseType,
+      FormUpdateEntityRequest
+    >({
+      query: (payload) => {
+        return {
+          url: `core/entity/${payload.id}/`,
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'multipart/form-data;'
+          },
+          body: payload.formData
+        };
+      },
+      invalidatesTags: ['Entity', 'Task'],
+      // TODO - improve logic so that we don't always invalidate tags (for performance)
+      // invalidatesTags: [],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        await updateEntityHandler(
+          patch,
+          entitiesApi,
+          getState(),
+          dispatch,
+          queryFulfilled
+        );
+      }
+    }),
+    formUpdateEntityWithoutCacheInvalidation: builder.mutation<
+      EntityResponseType,
+      FormUpdateEntityRequest
+    >({
+      query: (payload) => {
+        return {
+          url: `core/entity/${payload.id}/`,
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'multipart/form-data;'
+          },
+          body: payload.formData
+        };
+      },
+      invalidatesTags: [],
+      async onQueryStarted(
+        { ...patch },
+        { dispatch, queryFulfilled, getState }
+      ) {
+        await updateEntityHandler(
+          patch,
+          entitiesApi,
+          getState(),
+          dispatch,
+          queryFulfilled
+        );
+      }
+    }),
+    deleteEntity: builder.mutation<
+      EntityResponseType,
+      Pick<EntityResponseType, 'id'>
+    >({
+      query: (body) => {
+        return {
+          url: `core/entity/${body.id}/`,
+          method: 'DELETE'
+        };
+      },
+      invalidatesTags: ['Entity', 'Task']
     }),
     createEntity: builder.mutation<
       EntityResponseType,
@@ -239,72 +356,6 @@ const entitiesApi = vuetApi.injectEndpoints({
         }
       }
     }),
-    formUpdateEntity: builder.mutation<
-      EntityResponseType,
-      FormUpdateEntityRequest
-    >({
-      query: (payload) => {
-        return {
-          url: `core/entity/${payload.id}/`,
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'multipart/form-data;'
-          },
-          body: payload.formData
-        };
-      },
-      invalidatesTags: ['Entity', 'Task'],
-      // TODO - improve logic so that we don't always invalidate tags (for performance)
-      // invalidatesTags: [],
-      async onQueryStarted(
-        { ...patch },
-        { dispatch, queryFulfilled, getState }
-      ) {
-        const patchResults = [];
-        for (const {
-          endpointName,
-          originalArgs
-        } of entitiesApi.util.selectInvalidatedBy(getState(), [
-          { type: 'Entity' }
-        ])) {
-          if (!['getAllEntities', 'getMemberEntities'].includes(endpointName))
-            continue;
-
-          const patchResult = dispatch(
-            entitiesApi.util.updateQueryData(
-              endpointName as 'getAllEntities' | 'getMemberEntities',
-              originalArgs,
-              (draft) => {
-                draft.byId[patch.id] = {
-                  ...draft.byId[patch.id],
-                  ...entityFormToObj(patch.formData)
-                };
-              }
-            )
-          );
-          patchResults.push(patchResult);
-        }
-        try {
-          await queryFulfilled;
-        } catch {
-          for (const patchResult of patchResults) {
-            patchResult.undo();
-          }
-        }
-      }
-    }),
-    deleteEntity: builder.mutation<
-      EntityResponseType,
-      Pick<EntityResponseType, 'id'>
-    >({
-      query: (body) => {
-        return {
-          url: `core/entity/${body.id}/`,
-          method: 'DELETE'
-        };
-      },
-      invalidatesTags: ['Entity', 'Task']
-    }),
     bulkCreateEntities: builder.mutation<
       EntityResponseType[],
       Omit<EntityResponseType, 'id'>
@@ -339,10 +390,12 @@ export const {
   useGetAllEntitiesQuery,
   useGetMemberEntitiesQuery,
   useUpdateEntityMutation,
+  useUpdateEntityWithoutCacheInvalidationMutation,
   useDeleteEntityMutation,
   useCreateEntityMutation,
   useFormCreateEntityMutation,
   useFormUpdateEntityMutation,
+  useFormUpdateEntityWithoutCacheInvalidationMutation,
   useBulkCreateEntitiesMutation,
   useBulkDeleteEntitiesMutation
 } = entitiesApi;

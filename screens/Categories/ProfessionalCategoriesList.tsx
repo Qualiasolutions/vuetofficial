@@ -61,7 +61,7 @@ const CreateCategoryButton = () => {
           <Feather name="plus" size={36} color={primaryColor} />
         </TouchableOpacity>
       </WhiteBox>
-      <Modal visible={showModal}>
+      <Modal visible={showModal} onRequestClose={() => setShowModal(false)}>
         <Text>{t('components.professionalCategories.addCategoryBlurb')}</Text>
         <TextInput
           value={newName}

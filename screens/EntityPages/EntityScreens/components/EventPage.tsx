@@ -1,7 +1,7 @@
 import {
   useCreateEntityMutation,
   useGetAllEntitiesQuery,
-  useUpdateEntityMutation
+  useUpdateEntityWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/entities';
 import {
   TransparentPaddedView,
@@ -66,7 +66,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
   const [itemName, setItemName] = useState('');
   const [createTrigger] = useCreateEntityMutation();
-  const [updateTrigger] = useUpdateEntityMutation();
+  const [updateTrigger] = useUpdateEntityWithoutCacheInvalidationMutation();
 
   const { t } = useTranslation();
 

@@ -1,10 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ContentTabParamList } from 'types/base';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import useEntityHeader from '../../../headers/hooks/useEntityHeader';
 import EntityNavigator from 'navigation/EntityNavigator';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
+import useEntityById from 'hooks/entities/useEntityById';
 
 export default function EntityScreen({
   navigation,
@@ -13,8 +12,7 @@ export default function EntityScreen({
   const entityIdRaw = route.params.entityId;
   const entityId =
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
-  const entity = useSelector(selectEntityById(entityId));
-  // const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
+  const entity = useEntityById(entityId);
 
   useEntityHeader(entityId);
   useEffect(() => {
@@ -22,10 +20,6 @@ export default function EntityScreen({
       navigation.goBack();
     }
   }, [entity, navigation]);
-
-  if (!entity) {
-    return null;
-  }
 
   return <EntityNavigator entityId={entityId} />;
 }

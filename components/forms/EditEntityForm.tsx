@@ -15,9 +15,8 @@ import { fieldColorMapping } from './utils/fieldColorMapping';
 import { derivedFieldsMapping } from './utils/derivedFieldsMapping';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useForm from './entityFormFieldTypes/useForm';
-import { useSelector } from 'react-redux';
-import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { ViewStyle } from 'react-native';
+import useEntityById from 'hooks/entities/useEntityById';
 
 export default function EditEntityForm({
   entityId,
@@ -30,7 +29,7 @@ export default function EditEntityForm({
 }) {
   const navigation = useNavigation();
 
-  const entityToEdit = useSelector(selectEntityById(entityId));
+  const entityToEdit = useEntityById(entityId);
 
   const formFields = useForm(entityToEdit?.resourcetype || 'Car', true); // Could use any default entity type here
 

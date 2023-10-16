@@ -2,12 +2,9 @@ import Calendar from 'components/calendars/TaskCalendar';
 import TopNav from 'components/molecules/TopNav';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
 import { useGetAllScheduledTasksQuery } from 'reduxStore/services/api/tasks';
-import {
-  selectFilteredScheduledEntityIds,
-  selectFilteredScheduledTaskIdsByDate
-} from 'reduxStore/slices/tasks/selectors';
+import useFilteredTasks from 'hooks/tasks/useFilteredTasks';
+import useScheduledEntityIds from 'hooks/entities/useScheduledEntityIds';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,8 +15,8 @@ const styles = StyleSheet.create({
 });
 
 export default function CalendarScreen() {
-  const filteredTasks = useSelector(selectFilteredScheduledTaskIdsByDate);
-  const filteredEntities = useSelector(selectFilteredScheduledEntityIds());
+  const filteredTasks = useFilteredTasks();
+  const filteredEntities = useScheduledEntityIds();
   const { isLoading } = useGetAllScheduledTasksQuery();
 
   if (isLoading) {

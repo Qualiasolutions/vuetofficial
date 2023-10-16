@@ -93,6 +93,12 @@ export default function EntityCheckboxes({
           ...infoCategoryIds
         ])
       ).map((categoryId) => {
+        if (categoryId === -1) {
+          // Don't show professional entities here
+          // TODO - show them somewhere else?
+          return null;
+        }
+
         const category = allCategories.byId[categoryId];
         const entityIds = memberEntities.byCategory[category.id];
         const infoTag = getTagFromCategory(category.name);

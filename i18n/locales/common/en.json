@@ -760,10 +760,6 @@
     "userInitials": {
       "setupPending": "Setup Pending"
     },
-    "listOfLists": {
-      "addList": "Add List",
-      "noLists": "No lists have been added here yet - go to your entities to add lists"
-    },
     "planningLists": {
       "addList": "+",
       "noTemplates": "There are currently no templates from which to create planning lists",

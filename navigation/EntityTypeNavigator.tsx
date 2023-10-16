@@ -3,13 +3,11 @@ import EntityListPage from 'components/lists/EntityListPage';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import ReferencesList from 'components/organisms/ReferencesList';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
+import useScheduledEntityIds from 'hooks/entities/useScheduledEntityIds';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import {
-  selectFilteredScheduledEntityIds,
-  selectScheduledTaskIdsByEntityTypes
-} from 'reduxStore/slices/tasks/selectors';
+import { selectScheduledTaskIdsByEntityTypes } from 'reduxStore/slices/tasks/selectors';
 import { EntityTypeName } from 'types/entities';
 import QuickNavigator from './base/QuickNavigator';
 
@@ -26,10 +24,7 @@ export default function EntityTypeNavigator({
     [entityTypes]
   );
   const filteredTasks = useSelector(taskSelector);
-
-  const filteredEntities = useSelector(
-    selectFilteredScheduledEntityIds(entityTypes)
-  );
+  const filteredEntities = useScheduledEntityIds(entityTypes);
 
   const homeComponent = useMemo(() => {
     return () => (

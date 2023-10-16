@@ -1,5 +1,5 @@
 import { FixedTaskResponseType } from 'types/tasks';
-import { EntityResponseType } from 'types/entities';
+import { EntityResponseType, EntityTypeName } from 'types/entities';
 import { Category } from 'types/categories';
 
 type AllTasks = {
@@ -15,6 +15,12 @@ type AllEntities = {
     [id: number]: EntityResponseType;
   };
   byCategory: {
+    [key: number]: number[];
+  };
+  byResourceType: {
+    [key in EntityTypeName]?: number[];
+  };
+  bySchoolAttended: {
     [key: number]: number[];
   };
 };
