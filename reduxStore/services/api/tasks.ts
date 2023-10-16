@@ -223,7 +223,7 @@ const tasksApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllScheduledTasks: builder.query<AllScheduledTasks, void>({
       query: () => ({
-        url: `core/scheduled_task/?earliest_datetime=2020-01-01T00:00:00Z&latest_datetime=2030-01-01T00:00:00Z`,
+        url: `core/scheduled_task/?earliest_datetime=2022-01-01T00:00:00Z&latest_datetime=2026-01-01T00:00:00Z`,
         responseHandler: async (response) => {
           if (response.ok) {
             const responseJson: {
