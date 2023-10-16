@@ -18,16 +18,18 @@ export default function ProfessionalCategoryNavigator({
 }: NativeStackScreenProps<ContentTabParamList, 'ProfessionalCategory'>) {
   const categoryId = route.params.categoryId;
   const { t } = useTranslation();
-  const category = useSelector(selectProfessionalCategoryById(categoryId));
+  const category = useSelector(
+    selectProfessionalCategoryById(categoryId || -1)
+  );
 
-  useCategoryHeader(category?.name || '', true);
+  useCategoryHeader(category?.name || t('common.uncategorised'), true);
   const taskSelector = useMemo(
-    () => selectScheduledTaskIdsByProfessionalCategory(categoryId),
+    () => selectScheduledTaskIdsByProfessionalCategory(categoryId || -1),
     [categoryId]
   );
   const filteredTasks = useSelector(taskSelector);
   const filteredEntities = useSelector(
-    selectEntitiesByProfessionalCategory(categoryId)
+    selectEntitiesByProfessionalCategory(categoryId || -1)
   );
 
   const homeComponent = useMemo(() => {

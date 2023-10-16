@@ -36,7 +36,7 @@ function DefaultLink({ entity }: { entity: EntityResponseType }) {
 }
 
 type ProfessionalEntityListPageProps = {
-  professionalCategory: number;
+  professionalCategory: number | null;
 };
 
 export default function ProfessionalEntityListPage({
@@ -58,14 +58,14 @@ export default function ProfessionalEntityListPage({
     });
   }, [allEntities, professionalCategory]);
   const category = useSelector(
-    selectProfessionalCategoryById(professionalCategory)
+    selectProfessionalCategoryById(professionalCategory || -1)
   );
 
   const { t } = useTranslation();
 
   let filteredEntityData = entityData;
 
-  if (isLoading || !filteredEntityData || !category) {
+  if (isLoading || !filteredEntityData) {
     return <FullPageSpinner />;
   }
 
@@ -79,7 +79,7 @@ export default function ProfessionalEntityListPage({
         <TransparentPaddedView style={styles.container}>
           <AlmostBlackText
             text={t('misc.currentlyNoProfessionalEntities', {
-              categoryName: category.name
+              categoryName: category?.name || t('common.uncategorised')
             })}
             style={styles.noEntitiesText}
           />

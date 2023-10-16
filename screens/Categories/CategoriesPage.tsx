@@ -9,7 +9,6 @@ import { Text } from 'components/Themed';
 
 import CategoriesGrid from './CategoriesGrid';
 import { Switch } from 'react-native-gesture-handler';
-import SafePressable from 'components/molecules/SafePressable';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import ProfessionalCategoriesList from './ProfessionalCategoriesList';
 
@@ -22,7 +21,8 @@ const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: 10
   },
   toggle: {
     marginHorizontal: 10
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
 export default function CategoriesPage() {
   const [professionalMode, setProfessionalMode] = useState(false);
   const primaryColor = useThemeColor({}, 'primary');
+  const lightYellowColor = useThemeColor({}, 'lightYellow');
   const greyColor = useThemeColor({}, 'grey');
   return (
     <SafeAreaView style={styles.container}>
@@ -42,7 +43,7 @@ export default function CategoriesPage() {
           onValueChange={setProfessionalMode}
           value={professionalMode}
           thumbColor={professionalMode ? primaryColor : greyColor}
-          trackColor={{ true: primaryColor }}
+          trackColor={{ true: lightYellowColor }}
           style={styles.toggle}
         />
         <Text bold={professionalMode}>Professional</Text>

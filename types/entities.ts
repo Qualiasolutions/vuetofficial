@@ -109,7 +109,7 @@ export interface EventResponseType extends BaseEntityType {
 }
 
 export interface ProfessionalEntityResponseType extends BaseEntityType {
-  professional_category: number;
+  professional_category: number | null;
 }
 
 export type FormCreateEntityRequest = {

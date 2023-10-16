@@ -368,6 +368,7 @@
     "completionFilters": "Completion filters"
   },
   "common": {
+    "uncategorised": "Uncategorised",
     "invitee": "Invitee",
     "status": "Status",
     "accepted": "Accepted",

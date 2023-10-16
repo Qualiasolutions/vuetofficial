@@ -9,7 +9,6 @@ import { PrimaryText } from 'components/molecules/TextComponents';
 import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 import {
   TransparentPaddedView,
-  TransparentView,
   WhiteBox
 } from 'components/molecules/ViewComponents';
 import { Text, TextInput, useThemeColor } from 'components/Themed';
@@ -97,18 +96,23 @@ const CreateCategoryButton = () => {
   );
 };
 
-const CategoryLink = ({ category }: { category: ProfessionalCategory }) => {
+const CategoryLink = ({
+  category
+}: {
+  category: ProfessionalCategory | null;
+}) => {
+  const { t } = useTranslation();
   const navigation = useNavigation<StackNavigationProp<ContentTabParamList>>();
   return (
     <WhiteBox style={styles.categoryLink}>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('ProfessionalCategory', {
-            categoryId: category.id
+            categoryId: category?.id || null
           });
         }}
       >
-        <PrimaryText text={category.name} bold />
+        <PrimaryText text={category?.name || t('common.uncategorised')} bold />
       </TouchableOpacity>
     </WhiteBox>
   );
@@ -129,6 +133,7 @@ export default function ProfessionalCategoriesList() {
           const category = categories?.byId[categoryId];
           return <CategoryLink key={category.id} category={category} />;
         })}
+        <CategoryLink category={null} />
         <CreateCategoryButton />
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
