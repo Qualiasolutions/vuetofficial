@@ -125,7 +125,7 @@ export const selectOverdueTasks = createSelector(
         ? tasksData.byActionId[actionId][recurrenceIndex]
         : tasksData.byTaskId[id][recurrenceIndex];
 
-      if (!ALERTABLE_TYPES.includes(task.type)) {
+      if (!task || !ALERTABLE_TYPES.includes(task.type)) {
         continue;
       }
 
@@ -138,11 +138,16 @@ export const selectOverdueTasks = createSelector(
       const isComplete = actionId
         ? !!(
             taskActionCompletionFormsData.byActionId[actionId] &&
+            taskActionCompletionFormsData.byActionId[actionId][
+              recurrenceIndex
+            ] &&
             taskActionCompletionFormsData.byActionId[actionId][recurrenceIndex]
+              .complete
           )
         : !!(
             taskCompletionFormsData.byTaskId[id] &&
-            taskCompletionFormsData.byTaskId[id][recurrenceIndex]
+            taskCompletionFormsData.byTaskId[id][recurrenceIndex] &&
+            taskCompletionFormsData.byTaskId[id][recurrenceIndex].complete
           );
 
       if (!isComplete) {
@@ -607,44 +612,6 @@ export const selectScheduledTaskIdsByProfessionalCategory = (
     }
   );
 
-export const selectIsComplete = ({
-  id,
-  recurrenceIndex,
-  actionId
-}: {
-  id: number;
-  recurrenceIndex: number | null;
-  actionId: number | null;
-}) =>
-  createSelector(
-    taskCompletionFormsApi.endpoints.getTaskCompletionForms.select(),
-    taskCompletionFormsApi.endpoints.getTaskActionCompletionForms.select(),
-    (taskCompletionForms, taskActionCompletionForms) => {
-      if (actionId) {
-        const completionForm =
-          taskActionCompletionForms.data?.byActionId[actionId] &&
-          taskActionCompletionForms.data?.byActionId[actionId][
-            recurrenceIndex === null ? -1 : recurrenceIndex
-          ];
-        return {
-          isComplete: !!completionForm,
-          isIgnored: !!(completionForm && completionForm.ignore),
-          completionForm
-        };
-      }
-      const completionForm =
-        taskCompletionForms.data?.byTaskId[id] &&
-        taskCompletionForms.data?.byTaskId[id][
-          recurrenceIndex === null ? -1 : recurrenceIndex
-        ];
-      return {
-        isComplete: !!completionForm,
-        isIgnored: !!(completionForm && completionForm.ignore),
-        completionForm
-      };
-    }
-  );
-
 export const selectScheduledTask = ({
   id,
   recurrenceIndex,
@@ -731,10 +698,13 @@ export const selectNextTaskFromEntityAndHiddenTag = (
 
       const now = new Date();
       for (const task of sortedTasks) {
-        if (taskCompletionFormData.byTaskId[task.id]) {
+        if (taskCompletionFormData.byTaskId[task.id][-1].complete) {
           continue;
         }
         if (task.start_datetime && new Date(task.start_datetime) > now) {
+          return task;
+        }
+        if (task.start_date && new Date(task.start_date) > now) {
           return task;
         }
         if (task.date && new Date(task.date) > now) {

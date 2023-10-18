@@ -64,8 +64,7 @@ export default function TaskCompletionPressable({
                 if (isComplete) {
                   await createTaskActionCompletionForm({
                     action: actionId,
-                    recurrence_index:
-                      recurrenceIndex === undefined ? -1 : recurrenceIndex,
+                    recurrence_index: scheduledTask.recurrence_index,
                     complete: false
                   }).unwrap();
                   onSuccess();
@@ -73,25 +72,21 @@ export default function TaskCompletionPressable({
                 }
                 await createTaskActionCompletionForm({
                   action: actionId,
-                  recurrence_index:
-                    recurrenceIndex === undefined ? -1 : recurrenceIndex
+                  recurrence_index: scheduledTask.recurrence_index
                 }).unwrap();
                 onSuccess();
                 return;
               }
               if (isComplete) {
                 await triggerCreateCompletionForm({
-                  resourcetype: 'TaskCompletionForm',
                   task: scheduledTask.id,
-                  recurrence_index:
-                    recurrenceIndex === undefined ? -1 : recurrenceIndex,
+                  recurrence_index: scheduledTask.recurrence_index,
                   complete: false
                 }).unwrap();
                 onSuccess();
                 return;
               }
               await triggerCreateCompletionForm({
-                resourcetype: 'TaskCompletionForm',
                 recurrence_index: scheduledTask.recurrence_index,
                 task: scheduledTask.id
               }).unwrap();

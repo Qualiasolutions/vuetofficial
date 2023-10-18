@@ -846,7 +846,8 @@
       "markPartiallyCompleteAndRepeat": "Partially done / task again",
       "markIncompleteAndReschedule": "Did not do / reschedule",
       "markIncomplete": "Did not do / will not do",
-      "duplicateTask": "Duplicate Task"
+      "duplicateTask": "Duplicate Task",
+      "markAllOverdueAsIncompleteQuestion": "Would you like to mark all overdue tasks in the series as incomplete?"
     },
     "actionSelector": {
       "placeholder": "Add Actions"

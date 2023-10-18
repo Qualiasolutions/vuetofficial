@@ -27,7 +27,6 @@ import {
   setLastUpdateId
 } from 'reduxStore/slices/calendars/actions';
 import MonthSelector from './components/MonthSelector';
-import { useGetTaskCompletionFormsQuery } from 'reduxStore/services/api/taskCompletionForms';
 import { ScheduledEntity } from './components/Task';
 import {
   useGetAllScheduledTasksQuery,
@@ -91,9 +90,6 @@ function Calendar({
   headerStyle,
   headerTextStyle
 }: CalendarProps) {
-  // Force fetch the completion forms initially
-  const { isLoading: isLoadingTaskCompletionForms } =
-    useGetTaskCompletionFormsQuery(undefined);
   const { isLoading: isLoadingScheduledTasks, data: allScheduled } =
     useGetAllScheduledTasksQuery(undefined);
   const { isLoading: isLoadingTasks } = useGetAllTasksQuery(undefined);
@@ -223,11 +219,7 @@ function Calendar({
     dispatch
   ]);
 
-  const isLoading =
-    isLoadingTaskCompletionForms ||
-    isLoadingScheduledTasks ||
-    isLoadingTasks ||
-    !entityNames;
+  const isLoading = isLoadingScheduledTasks || isLoadingTasks || !entityNames;
   if (isLoading) {
     return <FullPageSpinner />;
   }

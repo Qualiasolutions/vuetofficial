@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTaskToAction } from 'reduxStore/slices/calendars/selectors';
@@ -14,6 +14,7 @@ import {
   setTaskToReschedule
 } from 'reduxStore/slices/calendars/actions';
 import {
+  selectOverdueTasks,
   selectScheduledTask,
   selectTaskById
 } from 'reduxStore/slices/tasks/selectors';
@@ -32,17 +33,127 @@ const styles = StyleSheet.create({
   modalBox: { paddingHorizontal: 30 }
 });
 
+const MarkIncompleteButton = () => {
+  const [markingRecurrentComplete, setMarkingRecurrentComplete] =
+    useState(false);
+
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const [createTaskCompletionForm, createTaskCompletionFormResult] =
+    useCreateTaskCompletionFormMutation();
+
+  const taskToAction = useSelector(selectTaskToAction);
+  const scheduledTask = useSelector(
+    selectScheduledTask(
+      taskToAction
+        ? {
+            id: taskToAction.taskId,
+            recurrenceIndex: taskToAction.recurrenceIndex,
+            actionId: taskToAction.actionId
+          }
+        : { id: -1, recurrenceIndex: null, actionId: null }
+    )
+  );
+
+  const overdueTasks = useSelector(selectOverdueTasks);
+  const otherOverdueTasksInSeries = useMemo(() => {
+    if (!scheduledTask) {
+      return [];
+    }
+    return overdueTasks.filter(
+      (overdueTask) =>
+        overdueTask.id === scheduledTask.id &&
+        overdueTask.recurrence_index !== scheduledTask.recurrence_index
+    );
+  }, [overdueTasks, scheduledTask]);
+
+  if (!taskToAction) {
+    return null;
+  }
+
+  return (
+    <>
+      <LinkButton
+        onPress={async () => {
+          if (otherOverdueTasksInSeries.length > 0) {
+            setMarkingRecurrentComplete(true);
+          } else {
+            try {
+              dispatch(setTaskToAction(null));
+              await createTaskCompletionForm({
+                task: taskToAction.taskId,
+                recurrence_index: taskToAction.recurrenceIndex,
+                ignore: true
+              }).unwrap();
+            } catch {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }
+        }}
+        title={t('components.task.markIncomplete')}
+      />
+      <YesNoModal
+        question={t('components.task.markAllOverdueAsIncompleteQuestion')}
+        visible={markingRecurrentComplete}
+        onRequestClose={() => setMarkingRecurrentComplete(false)}
+        onYes={async () => {
+          setMarkingRecurrentComplete(false);
+          dispatch(setTaskToAction(null));
+          if (taskToAction) {
+            try {
+              await createTaskCompletionForm([
+                ...otherOverdueTasksInSeries.map((overdueTask) => ({
+                  task: overdueTask.id,
+                  recurrence_index: overdueTask.recurrence_index,
+                  ignore: true
+                })),
+                {
+                  task: taskToAction.taskId,
+                  recurrence_index: taskToAction.recurrenceIndex,
+                  ignore: true
+                }
+              ]).unwrap();
+            } catch {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }
+        }}
+        onNo={async () => {
+          setMarkingRecurrentComplete(false);
+          dispatch(setTaskToAction(null));
+          if (taskToAction) {
+            try {
+              await createTaskCompletionForm({
+                task: taskToAction.taskId,
+                recurrence_index: taskToAction.recurrenceIndex,
+                ignore: true
+              }).unwrap();
+            } catch {
+              Toast.show({
+                type: 'error',
+                text1: t('common.errors.generic')
+              });
+            }
+          }
+        }}
+      />
+    </>
+  );
+};
+
 export default function TaskActionModal() {
   const [deletingOccurrence, setDeletingOccurrence] = useState(false);
   const [deletingTask, setDeletingTask] = useState(false);
-
   const navigation = useNavigation<StackNavigationProp<RootTabParamList>>();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [deleteTask] = useDeleteTaskMutation();
-  const [createTaskCompletionForm, createTaskCompletionFormResult] =
-    useCreateTaskCompletionFormMutation();
-
   const taskToAction = useSelector(selectTaskToAction);
   const task = useSelector(selectTaskById(taskToAction?.taskId || -1));
   const scheduledTask = useSelector(
@@ -206,25 +317,7 @@ export default function TaskActionModal() {
                   }}
                   title={t('components.task.markIncompleteAndReschedule')}
                 />
-                <LinkButton
-                  onPress={async () => {
-                    dispatch(setTaskToAction(null));
-                    try {
-                      await createTaskCompletionForm({
-                        task: taskToAction.taskId,
-                        recurrence_index: taskToAction.recurrenceIndex,
-                        resourcetype: 'TaskCompletionForm',
-                        ignore: true
-                      }).unwrap();
-                    } catch {
-                      Toast.show({
-                        type: 'error',
-                        text1: t('common.errors.generic')
-                      });
-                    }
-                  }}
-                  title={t('components.task.markIncomplete')}
-                />
+                <MarkIncompleteButton />
               </>
             )}
           </>

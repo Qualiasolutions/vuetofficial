@@ -114,7 +114,6 @@ export default function TaskPartialCompletionModal() {
           await Promise.all([
             createTask(newTaskCreateBody).unwrap(),
             createTaskCompletionForm({
-              resourcetype: 'TaskCompletionForm',
               task: scheduledTask.id,
               recurrence_index:
                 taskToPartiallyComplete?.recurrenceIndex === undefined

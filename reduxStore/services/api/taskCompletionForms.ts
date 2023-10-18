@@ -2,7 +2,6 @@ import { vuetApi } from './api';
 import tasksApi from './tasks';
 
 type TaskCompletionFormCreateRequest = {
-  resourcetype: string;
   recurrence_index: number | null;
   task: number;
   complete?: boolean;
@@ -13,7 +12,6 @@ type TaskCompletionFormCreateRequest = {
 export type TaskCompletionForm = {
   recurrence_index: number | null;
   task: number;
-  resourcetype: string;
   id: number;
   ignore: boolean;
   complete: boolean;
@@ -109,6 +107,14 @@ const normalizeActionCompletionForms = (
   };
 };
 
+const isSingleEntity = (
+  requestData:
+    | TaskCompletionFormCreateRequest
+    | TaskCompletionFormCreateRequest[]
+): requestData is TaskCompletionFormCreateRequest => {
+  return !Array.isArray(requestData);
+};
+
 const taskCompletionFormsApi = vuetApi.injectEndpoints({
   endpoints: (builder) => ({
     getTaskCompletionForms: builder.query<AllTaskCompletionForms, void>({
@@ -147,7 +153,7 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
     }),
     createTaskCompletionForm: builder.mutation<
       object,
-      TaskCompletionFormCreateRequest
+      TaskCompletionFormCreateRequest | TaskCompletionFormCreateRequest[]
     >({
       query: (body) => {
         return {
@@ -162,6 +168,7 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
         { dispatch, queryFulfilled, getState }
       ) {
         const patchResults = [];
+        const newForms = isSingleEntity(patch) ? [patch] : patch;
         for (const {
           endpointName,
           originalArgs
@@ -174,24 +181,28 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               'getTaskCompletionForms',
               originalArgs,
               (draft) => {
-                const mockId = 1e10 + Math.round(Math.random() * 1e10);
-                const mockEntry = {
-                  ...patch,
-                  ignore: !!patch.ignore,
-                  complete:
-                    patch.complete === undefined ? true : patch.complete,
-                  id: mockId,
-                  completion_datetime: new Date().toISOString()
-                };
-                draft.ids.push(mockId);
-                draft.byId[mockId] = mockEntry;
+                for (const newForm of newForms) {
+                  const mockId = 1e10 + Math.round(Math.random() * 1e10);
+                  const mockEntry = {
+                    ...newForm,
+                    ignore: !!newForm.ignore,
+                    complete:
+                      newForm.complete === undefined ? true : newForm.complete,
+                    id: mockId,
+                    completion_datetime: new Date().toISOString()
+                  };
+                  draft.ids.push(mockId);
+                  draft.byId[mockId] = mockEntry;
 
-                if (!draft.byTaskId[patch.task]) {
-                  draft.byTaskId[patch.task] = {};
+                  if (!draft.byTaskId[newForm.task]) {
+                    draft.byTaskId[newForm.task] = {};
+                  }
+                  draft.byTaskId[newForm.task][
+                    newForm.recurrence_index === null
+                      ? -1
+                      : newForm.recurrence_index
+                  ] = mockEntry;
                 }
-                draft.byTaskId[patch.task][
-                  patch.recurrence_index === null ? -1 : patch.recurrence_index
-                ] = mockEntry;
               }
             )
           );
@@ -210,18 +221,20 @@ const taskCompletionFormsApi = vuetApi.injectEndpoints({
               'getAllScheduledTasks',
               originalArgs,
               (draft) => {
-                const existingTask =
-                  draft.byTaskId[patch.task][
-                    patch.recurrence_index === null
-                      ? -1
-                      : patch.recurrence_index
-                  ];
-                existingTask.is_complete =
-                  patch.complete === undefined ? true : patch.complete;
-                existingTask.is_partially_complete =
-                  patch.partial === undefined ? false : patch.partial;
-                existingTask.is_ignored =
-                  patch.ignore === undefined ? false : patch.ignore;
+                for (const newForm of newForms) {
+                  const existingTask =
+                    draft.byTaskId[newForm.task][
+                      newForm.recurrence_index === null
+                        ? -1
+                        : newForm.recurrence_index
+                    ];
+                  existingTask.is_complete =
+                    newForm.complete === undefined ? true : newForm.complete;
+                  existingTask.is_partially_complete =
+                    newForm.partial === undefined ? false : newForm.partial;
+                  existingTask.is_ignored =
+                    newForm.ignore === undefined ? false : newForm.ignore;
+                }
               }
             )
           );
