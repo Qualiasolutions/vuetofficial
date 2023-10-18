@@ -28,7 +28,7 @@ import { RegisterAccountRequest } from 'types/signup';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 
-const ENV = Constants.manifest?.extra?.processEnv;
+const ENV = Constants.expoConfig?.extra?.processEnv;
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {

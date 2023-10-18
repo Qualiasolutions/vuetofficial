@@ -183,13 +183,17 @@ function Calendar({
     return (
       <CalendarView
         tasks={fullFilteredTasks}
-        entities={filteredEntities}
+        entities={fullFilteredEntities}
         onChangeDate={(date) => {
           dispatch(setEnforcedDate({ date }));
         }}
       />
     );
-  }, [fullFilteredTasks, filteredEntities, dispatch]);
+  }, [
+    JSON.stringify(fullFilteredTasks),
+    JSON.stringify(fullFilteredEntities),
+    dispatch
+  ]);
 
   const listView = useMemo(() => {
     return (

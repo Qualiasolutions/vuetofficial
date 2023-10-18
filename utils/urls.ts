@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+const vuetApiUrl = Constants.expoConfig?.extra?.vuetApiUrl;
 
 export const makeApiUrl = (path: string): string => {
   const apiUrl = `http://${vuetApiUrl}${path}`;

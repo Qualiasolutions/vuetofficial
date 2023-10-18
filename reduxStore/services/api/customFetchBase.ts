@@ -13,11 +13,12 @@ import {
 import Constants from 'expo-constants';
 import { EntireState } from 'reduxStore/types';
 import { refreshTokenAsync, verifyTokenAsync } from 'utils/authRequests';
-const vuetApiUrl = Constants.manifest?.extra?.vuetApiUrl;
+const vuetApiUrl = Constants.expoConfig?.extra?.vuetApiUrl;
 
 const mutex = new Mutex();
 
 const baseUrl = `http://${vuetApiUrl}`;
+
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: (headers, { getState }) => {

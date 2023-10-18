@@ -9,18 +9,17 @@ export default function EntityScreen({
   navigation,
   route
 }: NativeStackScreenProps<ContentTabParamList, 'EntityScreen'>) {
-  // const entityIdRaw = route.params.entityId;
-  // const entityId =
-  //   typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
-  // const entity = useEntityById(entityId);
+  const entityIdRaw = route.params.entityId;
+  const entityId =
+    typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
+  const entity = useEntityById(entityId);
 
-  // useEntityHeader(entityId);
-  // useEffect(() => {
-  //   if (!entity) {
-  //     navigation.goBack();
-  //   }
-  // }, [entity, navigation]);
+  useEntityHeader(entityId);
+  useEffect(() => {
+    if (!entity) {
+      navigation.goBack();
+    }
+  }, [entity, navigation]);
 
-  return null;
-  // return <EntityNavigator entityId={entityId} />;
+  return <EntityNavigator entityId={entityId} />;
 }

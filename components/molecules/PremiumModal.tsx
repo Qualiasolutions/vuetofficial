@@ -8,7 +8,7 @@ import { SmallButton } from './ButtonComponents';
 import { Modal } from './Modals';
 import Constants from 'expo-constants';
 
-const vuetWebUrl = Constants.manifest?.extra?.vuetWebUrl;
+const vuetWebUrl = Constants.expoConfig?.extra?.vuetWebUrl;
 
 const useStyles = () => {
   const primaryColor = useThemeColor({}, 'primary');

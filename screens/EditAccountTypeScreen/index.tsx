@@ -17,9 +17,9 @@ import Constants from 'expo-constants';
 import { useGetAllSubscriptionsQuery } from 'reduxStore/services/api/subscriptions';
 import { Text } from 'components/Themed';
 
-const vuetWebUrl = Constants.manifest?.extra?.vuetWebUrl;
+const vuetWebUrl = Constants.expoConfig?.extra?.vuetWebUrl;
 const stripeCustomerPortalUrl =
-  Constants.manifest?.extra?.stripeCustomerPortalUrl;
+  Constants.expoConfig?.extra?.stripeCustomerPortalUrl;
 
 const FamilyMemberName = ({ userId }: { userId: number }) => {
   const { t } = useTranslation();
