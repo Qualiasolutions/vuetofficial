@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderRadius: 10,
-    height: 40,
+    minHeight: 40,
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderWidth: 1,

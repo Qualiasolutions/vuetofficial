@@ -1,12 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from 'types/base';
 
-import { useTranslation } from 'react-i18next';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner } from 'components/molecules/Spinners';
-import useEntityHeader from 'headers/hooks/useEntityHeader';
 import GenericTaskForm from 'components/forms/GenericTaskForm';
 import { useSelector } from 'react-redux';
 import { selectTaskById } from 'reduxStore/slices/tasks/selectors';

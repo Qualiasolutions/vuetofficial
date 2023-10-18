@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
     color: 'grey'
   },
   textInput: {
-    height: 44,
+    minHeight: 44,
+    height: 'auto',
     flexShrink: 1,
     minWidth: 100
   },
@@ -345,6 +346,7 @@ export default function TypedForm({
                       f.transform === 'uppercase' ? 'characters' : 'sentences'
                     }
                     editable={!f.disabled}
+                    multiline
                   />
                 </InputPair>
               );
