@@ -679,7 +679,7 @@
   "components": {
     "professionalCategories": {
       "addCategoryBlurb": "What would you like to name your new category?",
-      "deleteCategoryQuestion": "Are you sure you would like to delete this category?"
+      "deleteCategoryQuestion": "Are you sure you would like to delete this category? No entities from this category will deleted"
     },
     "eventsList": {
       "noInvites": "You do not have any pending event invites",
