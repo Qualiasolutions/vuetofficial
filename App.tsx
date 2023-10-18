@@ -29,6 +29,7 @@ import {
   Dimensions
 } from 'react-native';
 import { EventProvider } from 'react-native-outside-press';
+import * as Sentry from 'sentry-expo';
 
 import '@formatjs/intl-getcanonicallocales/polyfill';
 import '@formatjs/intl-locale/polyfill';
@@ -51,8 +52,13 @@ import '@formatjs/intl-relativetimeformat/locale-data/en'; // locale-data for en
 import '@formatjs/intl-datetimeformat/polyfill';
 import '@formatjs/intl-datetimeformat/locale-data/en'; // locale-data for en
 import '@formatjs/intl-datetimeformat/add-all-tz'; // Add ALL tz data
-import { Modal } from 'components/molecules/Modals';
 import InnerWrapper from './InnerWrapper';
+
+Sentry.init({
+  dsn: 'https://e9f24e9652b93b84a68b4f42955b9062@o4506071647715328.ingest.sentry.io/4506071663443969',
+  enableInExpoDevelopment: true,
+  debug: true // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 // @ts-ignore
 Date.prototype._toLocaleString = Date.prototype.toLocaleString;

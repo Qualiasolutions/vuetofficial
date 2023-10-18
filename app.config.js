@@ -24,6 +24,7 @@ export default {
     icon: './assets/images/icon.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
+    plugins: ['sentry-expo'],
     splash: {
       image: './assets/images/splash.png',
       resizeMode: 'contain',
@@ -45,6 +46,17 @@ export default {
     web: {
       favicon: './assets/images/favicon.png'
     },
-    extra: extraData
+    extra: extraData,
+    hooks: {
+      postPublish: [
+        {
+          file: 'sentry-expo/upload-sourcemaps',
+          config: {
+            organization: 'vuet',
+            project: 'vuet-app'
+          }
+        }
+      ]
+    }
   }
 };

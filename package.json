@@ -35,6 +35,7 @@
     "@react-navigation/native-stack": "^6.1.0",
     "@react-navigation/stack": "^6.2.2",
     "@reduxjs/toolkit": "^1.8.1",
+    "@sentry/react-native": "4.9.0",
     "@types/react": "~18.0.24",
     "@types/react-dom": "~18.0.8",
     "@types/react-native-simple-radio-button": "^2.7.2",
@@ -42,6 +43,7 @@
     "dayjs": "^1.11.3",
     "email-validator": "^2.0.4",
     "expo": "^47.0.0",
+    "expo-application": "~5.0.1",
     "expo-asset": "~8.6.2",
     "expo-checkbox": "~2.2.2",
     "expo-constants": "~14.0.2",
@@ -97,6 +99,7 @@
     "react-redux": "^8.0.1",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
+    "sentry-expo": "~6.0.0",
     "typesafe-actions": "^5.1.0"
   },
   "devDependencies": {
