@@ -63,7 +63,9 @@ export const selectEntitiesByEntityTypes = (entityTypes: EntityTypeName[]) =>
     });
   });
 
-export const selectEntitiesByProfessionalCategory = (categoryId: number) =>
+export const selectEntitiesByProfessionalCategory = (
+  categoryId: number | null
+) =>
   createSelector(entitiesApi.endpoints.getAllEntities.select(), (entities) => {
     const entityData = entities?.data;
     if (!entityData) {

@@ -17,10 +17,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { useSelector } from 'react-redux';
 import {
   useCreateProfessionalCategoryMutation,
   useGetAllProfessionalCategoriesQuery
 } from 'reduxStore/services/api/categories';
+import { selectEntitiesByProfessionalCategory } from 'reduxStore/slices/entities/selectors';
 import { ContentTabParamList } from 'types/base';
 import { ProfessionalCategory } from 'types/categories';
 
@@ -122,6 +124,10 @@ export default function ProfessionalCategoriesList() {
   const { data: categories, isLoading: isLoadingCategories } =
     useGetAllProfessionalCategoriesQuery();
 
+  const uncategorisedEntities = useSelector(
+    selectEntitiesByProfessionalCategory(null)
+  );
+
   if (isLoadingCategories || !categories) {
     return <FullPageSpinner />;
   }
@@ -133,7 +139,7 @@ export default function ProfessionalCategoriesList() {
           const category = categories?.byId[categoryId];
           return <CategoryLink key={category.id} category={category} />;
         })}
-        <CategoryLink category={null} />
+        {uncategorisedEntities.length > 0 && <CategoryLink category={null} />}
         <CreateCategoryButton />
       </TransparentPaddedView>
     </TransparentFullPageScrollView>
