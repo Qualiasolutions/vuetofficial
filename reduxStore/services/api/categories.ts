@@ -82,6 +82,13 @@ const categoriesApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['ProfessionalCategory']
+    }),
+    deleteProfessionalCategory: builder.mutation<void, number>({
+      query: (categoryId) => ({
+        url: `core/professional-category/${categoryId}/`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['ProfessionalCategory', 'Entity']
     })
   }),
   overrideExisting: true
@@ -95,5 +102,6 @@ export const {
   useGetAllCategoriesQuery,
   useGetAllProfessionalCategoriesQuery,
   useCreateProfessionalCategoryMutation,
-  useUpdateProfessionalCategoryMutation
+  useUpdateProfessionalCategoryMutation,
+  useDeleteProfessionalCategoryMutation
 } = categoriesApi;

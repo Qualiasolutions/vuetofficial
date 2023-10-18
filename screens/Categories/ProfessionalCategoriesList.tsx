@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { SmallButton } from 'components/molecules/ButtonComponents';
-import { Modal } from 'components/molecules/Modals';
+import { Modal, YesNoModal } from 'components/molecules/Modals';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { PrimaryText } from 'components/molecules/TextComponents';
@@ -21,6 +21,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 import {
   useCreateProfessionalCategoryMutation,
+  useDeleteProfessionalCategoryMutation,
   useGetAllProfessionalCategoriesQuery,
   useUpdateProfessionalCategoryMutation
 } from 'reduxStore/services/api/categories';
@@ -120,84 +121,121 @@ const CategoryLink = ({
   const { t } = useTranslation();
   const navigation = useNavigation<StackNavigationProp<ContentTabParamList>>();
   const [editingName, setEditingName] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState(false);
   const [newName, setNewName] = useState(category?.name);
   const [updateCategory, updateCategoryResult] =
     useUpdateProfessionalCategoryMutation();
+  const [deleteCategory, deleteCategoryResult] =
+    useDeleteProfessionalCategoryMutation();
+
   return (
-    <WhiteBox style={styles.categoryLink}>
-      {editingName && category ? (
-        <TransparentView style={styles.editingNameContainer}>
-          <TextInput
-            value={newName}
-            onChangeText={setNewName}
-            autoFocus={true}
-            onBlur={() => {
-              // Set a timeout because otherwise the update is sometimes not processed
-              setTimeout(() => {
+    <>
+      <WhiteBox style={styles.categoryLink}>
+        {editingName && category ? (
+          <TransparentView style={styles.editingNameContainer}>
+            <TextInput
+              value={newName}
+              onChangeText={setNewName}
+              autoFocus={true}
+              onBlur={() => {
+                // Set a timeout because otherwise the update is sometimes not processed
+                setTimeout(() => {
+                  setEditingName(false);
+                  setNewName(category.name);
+                }, 100);
+              }}
+              style={styles.editNameInput}
+              multiline
+            />
+            <TouchableOpacity
+              onPress={() => {
                 setEditingName(false);
-                setNewName(category.name);
-              }, 100);
-            }}
-            style={styles.editNameInput}
-            multiline
-          />
+              }}
+              style={styles.actionButton}
+            >
+              <Feather name="x" size={24} color="red" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={async () => {
+                if (updateCategoryResult.isLoading) {
+                  return;
+                }
+
+                try {
+                  setEditingName(false);
+                  await updateCategory({
+                    id: category.id,
+                    name: newName
+                  }).unwrap();
+                } catch (err) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
+              }}
+              style={styles.actionButton}
+            >
+              <Feather name="check" size={24} color="green" />
+            </TouchableOpacity>
+          </TransparentView>
+        ) : (
           <TouchableOpacity
             onPress={() => {
-              setEditingName(false);
+              navigation.navigate('ProfessionalCategory', {
+                categoryId: category?.id || null
+              });
             }}
-            style={styles.actionButton}
           >
-            <Feather name="x" size={24} color="red" />
+            <PrimaryText
+              text={category?.name || t('common.uncategorised')}
+              bold
+            />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={async () => {
-              if (updateCategoryResult.isLoading) {
-                return;
-              }
-
+        )}
+        {category && !editingName && (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                setEditingName(true);
+              }}
+              style={styles.actionButton}
+            >
+              <Feather name="edit" size={24} color="orange" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setDeletingCategory(true);
+              }}
+              style={styles.actionButton}
+            >
+              <Feather name="trash" size={24} color="red" />
+            </TouchableOpacity>
+          </>
+        )}
+      </WhiteBox>
+      {category && (
+        <YesNoModal
+          visible={deletingCategory}
+          question={t(
+            'components.professionalCategories.deleteCategoryQuestion'
+          )}
+          onNo={() => setDeletingCategory(false)}
+          onYes={async () => {
+            if (!deleteCategoryResult.isLoading) {
               try {
-                setEditingName(false);
-                await updateCategory({
-                  id: category.id,
-                  name: newName
-                }).unwrap();
+                await deleteCategory(category.id).unwrap();
               } catch (err) {
                 Toast.show({
                   type: 'error',
                   text1: t('common.errors.generic')
                 });
               }
-            }}
-            style={styles.actionButton}
-          >
-            <Feather name="check" size={24} color="green" />
-          </TouchableOpacity>
-        </TransparentView>
-      ) : (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('ProfessionalCategory', {
-              categoryId: category?.id || null
-            });
+            }
           }}
-        >
-          <PrimaryText
-            text={category?.name || t('common.uncategorised')}
-            bold
-          />
-        </TouchableOpacity>
+        />
       )}
-      {!editingName && (
-        <TouchableOpacity
-          onPress={() => {
-            setEditingName(true);
-          }}
-          style={styles.actionButton}
-        >
-          <Feather name="edit" size={24} color="orange" />
-        </TouchableOpacity>
-      )}
-    </WhiteBox>
+    </>
   );
 };
 
