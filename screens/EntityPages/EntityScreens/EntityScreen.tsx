@@ -9,9 +9,9 @@ export default function EntityScreen({
   navigation,
   route
 }: NativeStackScreenProps<ContentTabParamList, 'EntityScreen'>) {
-  const entityIdRaw = route.params.entityId;
-  const entityId =
-    typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
+  // const entityIdRaw = route.params.entityId;
+  // const entityId =
+  //   typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   // const entity = useEntityById(entityId);
 
   // useEntityHeader(entityId);
