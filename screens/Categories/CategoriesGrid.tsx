@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ContentTabParamList } from 'types/base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
+import * as Sentry from 'sentry-expo';
 
 type CategoryGroupName =
   | 'PETS'
@@ -92,6 +93,8 @@ export default function CategoriesGrid() {
   if (isLoading || !allCategories || !userDetails) {
     return <FullPageSpinner />;
   }
+
+  Sentry.Native.nativeCrash();
 
   const CATEGORY_GROUPS: { [key in CategoryGroupName]: CategoryType[] } = {
     PETS: [allCategories.byName.PETS],
