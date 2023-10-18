@@ -71,6 +71,17 @@ const categoriesApi = vuetApi.injectEndpoints({
         body
       }),
       invalidatesTags: ['ProfessionalCategory']
+    }),
+    updateProfessionalCategory: builder.mutation<
+      ProfessionalCategory,
+      Partial<ProfessionalCategory> & { id: number }
+    >({
+      query: (body) => ({
+        url: `core/professional-category/${body.id}/`,
+        method: 'PATCH',
+        body
+      }),
+      invalidatesTags: ['ProfessionalCategory']
     })
   }),
   overrideExisting: true
@@ -83,5 +94,6 @@ export default categoriesApi;
 export const {
   useGetAllCategoriesQuery,
   useGetAllProfessionalCategoriesQuery,
-  useCreateProfessionalCategoryMutation
+  useCreateProfessionalCategoryMutation,
+  useUpdateProfessionalCategoryMutation
 } = categoriesApi;
