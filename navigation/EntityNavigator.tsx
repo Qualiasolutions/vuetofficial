@@ -75,15 +75,15 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return null;
   }, [entityId, entity]);
 
-  const calendarComponent = useMemo(() => {
-    return () => (
-      <Calendar
-        showFilters={false}
-        filteredTasks={filteredTasks}
-        filteredEntities={filteredEntities}
-      />
-    );
-  }, [filteredTasks, filteredEntities]);
+  // const calendarComponent = useMemo(() => {
+  //   return () => (
+  //     <Calendar
+  //       showFilters={false}
+  //       filteredTasks={filteredTasks}
+  //       filteredEntities={filteredEntities}
+  //     />
+  //   );
+  // }, [filteredTasks, filteredEntities]);
 
   const referencesComponent = useMemo(() => {
     if (isMemberEntity) {
@@ -131,13 +131,13 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
         component: overviewComponent
       });
     }
-    if (calendarComponent) {
-      pages.push({
-        name: 'Calendar',
-        title: t('pageTitles.calendar'),
-        component: calendarComponent
-      });
-    }
+    // if (calendarComponent) {
+    //   pages.push({
+    //     name: 'Calendar',
+    //     title: t('pageTitles.calendar'),
+    //     component: calendarComponent
+    //   });
+    // }
     if (referencesComponent) {
       pages.push({
         name: 'References',
@@ -163,7 +163,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return pages;
   }, [
     homeComponent,
-    calendarComponent,
+    // calendarComponent,
     editComponent,
     guestListComponent,
     messagesComponent,
