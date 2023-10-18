@@ -215,7 +215,7 @@ export default function TypedForm({
   );
 
   const textInputStyle = StyleSheet.flatten([
-    Platform.OS === 'ios' ? { paddingTop: 10 } : {},
+    Platform.OS === 'ios' ? { paddingTop: 10 } : {}, // multiline text inputs don't center vertically on iPhone
     styles.textInput,
     { backgroundColor: fieldColor }
   ]);
