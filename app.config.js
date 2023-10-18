@@ -42,13 +42,15 @@ export default {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
+      buildNumber: '0'
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff'
-      }
+      },
+      versionCode: 0
     },
     web: {
       favicon: './assets/images/favicon.png'
@@ -66,6 +68,15 @@ export default {
           }
         }
       ]
+    }
+  },
+  build: {
+    dev: {
+      channel: 'master',
+      env: {
+        IOS_BUNDLE_ID: 'vuet-app',
+        ANDROID_PACKAGE_NAME: 'vuet-app'
+      }
     }
   }
 };

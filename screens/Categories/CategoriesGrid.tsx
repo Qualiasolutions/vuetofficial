@@ -94,8 +94,6 @@ export default function CategoriesGrid() {
     return <FullPageSpinner />;
   }
 
-  Sentry.Native.nativeCrash();
-
   const CATEGORY_GROUPS: { [key in CategoryGroupName]: CategoryType[] } = {
     PETS: [allCategories.byName.PETS],
     SOCIAL_INTERESTS: [allCategories.byName.SOCIAL_INTERESTS],
