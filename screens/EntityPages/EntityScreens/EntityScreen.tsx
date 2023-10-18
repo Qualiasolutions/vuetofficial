@@ -12,7 +12,7 @@ export default function EntityScreen({
   const entityIdRaw = route.params.entityId;
   const entityId =
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
-  const entity = useEntityById(entityId);
+  // const entity = useEntityById(entityId);
 
   // useEntityHeader(entityId);
   // useEffect(() => {
