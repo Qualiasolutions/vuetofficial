@@ -55,8 +55,10 @@ const filterTask = (
   );
 };
 
-const isTask = (item: any): item is ScheduledTaskResponseType => {
-  return item.type === 'TASK';
+const isTask = (
+  item?: ScheduledTaskResponseType
+): item is ScheduledTaskResponseType => {
+  return !!item;
 };
 
 export default function useFilteredTasks() {
@@ -65,6 +67,7 @@ export default function useFilteredTasks() {
       data: taskData
     })
   });
+
   const { data: entitiesData } = useGetAllEntitiesQuery();
   const { data: categoriesData } = useGetAllCategoriesQuery();
 
