@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   eventProvider: { flex: 1 }
 });
 
-export default function App() {
+function App() {
   const loadedCachedResources = useCachedResources();
   const colorScheme = useColorScheme();
 
@@ -151,3 +151,5 @@ export default function App() {
     );
   }
 }
+
+export default Sentry.Native.wrap(App);
