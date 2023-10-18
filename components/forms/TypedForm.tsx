@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useMemo } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle, Platform } from 'react-native';
 import { Text, TextInput } from 'components/Themed';
 import DateTimeTextInput from 'components/forms/components/DateTimeTextInput';
 import {
@@ -215,6 +215,7 @@ export default function TypedForm({
   );
 
   const textInputStyle = StyleSheet.flatten([
+    Platform.OS === 'ios' ? { paddingTop: 10 } : {},
     styles.textInput,
     { backgroundColor: fieldColor }
   ]);

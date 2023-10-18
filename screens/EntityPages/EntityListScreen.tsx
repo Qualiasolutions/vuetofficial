@@ -18,10 +18,22 @@ import { Text } from 'components/Themed';
 const SETUP_TEXT_PAGES: {
   [key in EntityTypeName]?: string[];
 } = {
-  SocialPlan: ['PBF to add intro info here'],
-  SocialMedia: ['PBF to add intro info here'],
-  Event: ['PBF to add intro info here'],
-  Hobby: ['PBF to add intro info here']
+  SocialPlan: [
+    "The Social subcategory allows users to better organise important social activities. Some entities that you might add include 1:1 time with a Family Member, Family Days Out, Supper Club, A Child's Social days if you schedule social activities for young children.",
+    'In addition to the tasks and due dates you can add, there are References and List templates to help.'
+  ],
+  SocialMedia: [
+    'The Social Media subcategory allows users to better organise posts on social media. You can set up an entity for each platform eg Instagram, TikTok etc or based on person/people. “My and my kids” versus “My social interests”',
+    'In addition to the tasks and due dates you can add, there are References and List templates to help.'
+  ],
+  Event: [
+    'The Events subcategory allows users to better organise Events during the year. All Events for the year will be listed and added to the calendar.',
+    'When it is time to start planning, use the subcategory to plan location, food, activities. You can even send invites to a shared guest list and manage RSVPs. In addition to the tasks and due dates, there are References, List templates and Shopping lists to help.'
+  ],
+  Hobby: [
+    'The Interests & Hobbies subcategory allows users to plan and manage the time spent on interests and hobbies. This might be setting aside time to read each day or doing weekend hobbies like sailing or football.',
+    'In addition to the tasks, appointments and due dates that are added to the calendar, there are References and List templates to help.'
+  ]
 };
 
 const setupPagesTypes = StyleSheet.create({

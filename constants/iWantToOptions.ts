@@ -130,7 +130,7 @@ const iWantToOptions: {
     { title: 'Reference logins for house subscriptions', link: '' },
     { title: 'Print a chore chart', link: '' },
     { title: 'Keep up with how much is spent in the home', link: '' },
-    { title: 'Make sure I don’t miss deadlines for bills', link: '' },
+    { title: "Make sure I don't miss deadlines for bills", link: '' },
     { title: 'Source a cleaning service (link to handy.com?)', link: '' },
     {
       title: 'Source an organisation service (is there a free app somewhere?)',

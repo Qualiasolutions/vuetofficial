@@ -3,12 +3,10 @@ import TagNavigator from 'navigation/TagNavigator';
 import { ContentTabScreenProps } from 'types/base';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EntityTypeName } from 'types/entities';
 import { TransparentContainerView } from 'components/molecules/ViewComponents';
 import { StyleSheet } from 'react-native';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import {
-  useCreateEntityTypeSetupCompletionMutation,
   useCreateTagSetupCompletionMutation,
   useGetTagSetupCompletionsQuery
 } from 'reduxStore/services/api/user';
@@ -19,7 +17,9 @@ import { Text } from 'components/Themed';
 const SETUP_TEXT_PAGES: {
   [key: string]: string[];
 } = {
-  SOCIAL_INTERESTS__INFORMATION__PUBLIC: ['PBF to add intro info here']
+  SOCIAL_INTERESTS__INFORMATION__PUBLIC: [
+    'My Social Information is a place to add important numbers as References and action around expiration dates of memberships or accounts related to social.'
+  ]
 };
 
 const setupPagesStyles = StyleSheet.create({

@@ -21,8 +21,14 @@ import { Text } from 'components/Themed';
 const SETUP_TEXT_PAGES: {
   [key: string]: string[];
 } = {
-  anniversaries: ['PBF to add intro info here'],
-  holidays: ['PBF to add intro info here']
+  anniversaries: [
+    'The Birthday & Annversary subcategory allows users to better organise celebrating birthdays and anniversaries. When a date is added, if you want to plan anything for the birthday, add an “Action” weeks or days before.  This action will appear as a task on calendar.',
+    'When it is time to start planning, use the “B&A Planning” subcategory to plan gifts, dinners, activities and more. In addition to the tasks and due dates you can add, there are List templates and Shopping lists to help.'
+  ],
+  holidays: [
+    'The Holidays subcategory allows users to better organise celebrating holidays during the year. All holidays will be listed and added to the calendar. If you want to plan anything for the holiday, add an “Action” weeks or days before.  This action will appear as a task on calendar.',
+    'When it is time to start planning, use the “Holiday Plans” subcategory to plan activities. In addition to the tasks and due dates you can add, there are List templates and Shopping lists to help.'
+  ]
 };
 const setupPagesStyles = StyleSheet.create({
   container: {

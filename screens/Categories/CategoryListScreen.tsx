@@ -40,12 +40,30 @@ Any tasks that cant be associated with one or more Transport entities can be add
 `
   ],
   FAMILY: null,
-  PETS: ['PBF to add intro info here'],
-  SOCIAL_INTERESTS: ['PBF to add intro info here'],
-  EDUCATION: ['PBF to add intro info here'],
-  CAREER: ['PBF to add intro info here'],
-  TRAVEL: ['PBF to add intro info here'],
-  HEALTH_BEAUTY: ['PBF to add intro info here'],
+  PETS: [
+    'The Pets Category allows users to keep up with their pets individually or as a group. The first step is to enter the pets as an Entity.',
+    'Once Pets are added, users can set up feeding, grooming/cleaning, exercise and health schedules individually or as a group by choosing from the subcategories.'
+  ],
+  SOCIAL_INTERESTS: [
+    'The Social Category allows users to better organise their social diaries. The first step recommended would be to enter Birthdays and Anniversaries and Holidays I Celebrate using the subcategories provided.',
+    'Other examples of items that can be added are listed within each category.'
+  ],
+  EDUCATION: [
+    'The Education category allows users to better organise their academic diaries and tasks. The first step recommended would be to enter Students, Schools and School Terms into the subcategories. These will be added as tags and dates added to the calendar.',
+    'Once these are added, academic (eg Homework or math) and extracurricular goals (eg swimming) tasks, appointments and due dates can be added and actioned.'
+  ],
+  CAREER: [
+    'The Career category allows users to better organise their work diaries and tasks. This is meant to be Career goals for growth and tracking days off and important employee details. For work tasks, use the toggle on Categories to switch to the Professional version.'
+  ],
+  TRAVEL: [
+    'The Travel Category allows users to plan travel and bucket lists and once a trip is decided to plan and view the trip at a glance to check that transport, accommodation or activities you want to pre-book are sorted and in the calendar. To get started, add a trip under “My Trips” or add a new entity under “My travel plans” for bucket lists or locations of interest.',
+    'My Travel Information is a place to add passport numbers as References and action around expiration dates. Other items that could be added here include Frequent Flier numbers, logins for car rentals, travel membership details and expirarion dates.'
+  ],
+  HEALTH_BEAUTY: [
+    'The Health and Beauty category is intended to help users take the best care of themselves. The first step recommended would be to enter People whose appointments are needed to manage. After this, enter Appointment Types. This could be Dental, Eye, Diabetes, Haircuts.',
+    'Once these tags are available, start planning and tagging track people and/or appointment types.',
+    'For Health & Beauty Goals, you might make a goal to go to the gym every day or measure yourself daily or weekly and track using one of the Lists Templates. Medical information such as insurance can be stored in References.'
+  ],
   HOME: ['PBF to add intro info here'],
   GARDEN: ['PBF to add intro info here'],
   FOOD: ['PBF to add intro info here'],
