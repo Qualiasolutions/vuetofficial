@@ -93,20 +93,22 @@ export default function GenericTaskForm({
   }, [isFocused]);
 
   useEffect(() => {
-    if (isEdit) {
-      // If edit then we want to make sure that we start with
-      // the right form values that are passed in from the parent
-      return setTaskFieldValues({ ...defaults });
-    }
+    if (isFocused) {
+      if (isEdit) {
+        // If edit then we want to make sure that we start with
+        // the right form values that are passed in from the parent
+        return setTaskFieldValues({ ...defaults });
+      }
 
-    // Otherwise we want to retain the current values
-    // except for specific fields
-    setTaskFieldValues((v) => ({
-      ...defaults,
-      ...v,
-      recurrence: defaults.recurrence // Always just use the defaulted recurrence
-    }));
-  }, [defaults, type, isEdit]);
+      // Otherwise we want to retain the current values
+      // except for specific fields
+      setTaskFieldValues((v) => ({
+        ...defaults,
+        ...v,
+        recurrence: defaults.recurrence // Always just use the defaulted recurrence
+      }));
+    }
+  }, [defaults, type, isEdit, isFocused]);
 
   const isSubmitting =
     createTaskResult.isLoading ||
