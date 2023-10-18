@@ -55,25 +55,25 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     return null;
   }, [entity, entityId, isMemberEntity]);
 
-  const editComponent = useMemo(() => {
-    return () => (
-      <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
-        <EditEntityForm
-          entityId={entityId}
-          onSubmitSuccess={() => {
-            navigation.goBack();
-          }}
-        />
-      </TransparentFullPageScrollView>
-    );
-  }, [entityId, navigation]);
+  // const editComponent = useMemo(() => {
+  //   return () => (
+  //     <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
+  //       <EditEntityForm
+  //         entityId={entityId}
+  //         onSubmitSuccess={() => {
+  //           navigation.goBack();
+  //         }}
+  //       />
+  //     </TransparentFullPageScrollView>
+  //   );
+  // }, [entityId, navigation]);
 
-  const overviewComponent = useMemo(() => {
-    if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
-      return () => <EntityOverview entityId={entityId} />;
-    }
-    return null;
-  }, [entityId, entity]);
+  // const overviewComponent = useMemo(() => {
+  //   if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
+  //     return () => <EntityOverview entityId={entityId} />;
+  //   }
+  //   return null;
+  // }, [entityId, entity]);
 
   // const calendarComponent = useMemo(() => {
   //   return () => (
@@ -110,27 +110,27 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const quickNavPages: QuickNavPage[] = useMemo(() => {
     let pages = [];
 
-    if (homeComponent) {
-      pages.push({
-        name: 'Home',
-        title: t('pageTitles.home'),
-        component: homeComponent
-      });
-    }
-    if (editComponent) {
-      pages.push({
-        name: 'Edit',
-        title: t('pageTitles.edit'),
-        component: editComponent
-      });
-    }
-    if (overviewComponent) {
-      pages.push({
-        name: 'Overview',
-        title: t('pageTitles.overview'),
-        component: overviewComponent
-      });
-    }
+    // if (homeComponent) {
+    //   pages.push({
+    //     name: 'Home',
+    //     title: t('pageTitles.home'),
+    //     component: homeComponent
+    //   });
+    // }
+    // if (editComponent) {
+    //   pages.push({
+    //     name: 'Edit',
+    //     title: t('pageTitles.edit'),
+    //     component: editComponent
+    //   });
+    // }
+    // if (overviewComponent) {
+    //   pages.push({
+    //     name: 'Overview',
+    //     title: t('pageTitles.overview'),
+    //     component: overviewComponent
+    //   });
+    // }
     // if (calendarComponent) {
     //   pages.push({
     //     name: 'Calendar',
@@ -162,12 +162,12 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
 
     return pages;
   }, [
-    homeComponent,
+    // homeComponent,
     // calendarComponent,
-    editComponent,
+    // editComponent,
     guestListComponent,
     messagesComponent,
-    overviewComponent,
+    // overviewComponent,
     referencesComponent,
     t
   ]);
