@@ -11,7 +11,10 @@ const extraData = {
     : 'https://web.vuet.app',
   stripeCustomerPortalUrl:
     'https://billing.stripe.com/p/login/test_eVadQR61H4mC02Q5kk',
-  processEnv: process.env.ENV
+  processEnv: process.env.ENV,
+  eas: {
+    projectId: 'b18c0824-d4d7-4c56-a8f3-def1b1e8117f'
+  }
 };
 
 export default {
@@ -31,7 +34,11 @@ export default {
       backgroundColor: '#ffffff'
     },
     updates: {
-      fallbackToCacheTimeout: 0
+      fallbackToCacheTimeout: 0,
+      url: 'https://u.expo.dev/b18c0824-d4d7-4c56-a8f3-def1b1e8117f'
+    },
+    runtimeVersion: {
+      policy: 'sdkVersion'
     },
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -53,7 +60,9 @@ export default {
           file: 'sentry-expo/upload-sourcemaps',
           config: {
             organization: 'vuet',
-            project: 'vuet-app'
+            project: 'vuet-app',
+            authToken:
+              '9b0b8561dec79d15dede6423679440e1f240401db6b6aab99a2d888dd79c1198'
           }
         }
       ]

@@ -49,7 +49,7 @@ We don't have too much process around branch naming convention etc. The only rul
 
 ## Deployment
 
-The app is deployed by running `expo publish` - only authorised users will be able to do this.
+The app is deployed by running `eas update` - only authorised users will be able to do this.
 
 ## Running on WSL2
 
