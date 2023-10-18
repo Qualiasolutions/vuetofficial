@@ -14,12 +14,12 @@ export default function EntityScreen({
     typeof entityIdRaw === 'number' ? entityIdRaw : parseInt(entityIdRaw);
   const entity = useEntityById(entityId);
 
-  useEntityHeader(entityId);
-  useEffect(() => {
-    if (!entity) {
-      navigation.goBack();
-    }
-  }, [entity, navigation]);
+  // useEntityHeader(entityId);
+  // useEffect(() => {
+  //   if (!entity) {
+  //     navigation.goBack();
+  //   }
+  // }, [entity, navigation]);
 
   return null;
   // return <EntityNavigator entityId={entityId} />;
