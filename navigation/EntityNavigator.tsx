@@ -42,7 +42,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
 
   const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
 
-  const filteredEntities = useScheduledEntityIds(undefined, entityId);
+  // const filteredEntities = useScheduledEntityIds(undefined, entityId);
 
   // const homeComponent = useMemo(() => {
   //   if (
