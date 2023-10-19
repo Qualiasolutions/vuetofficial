@@ -85,27 +85,27 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   //   );
   // }, [filteredTasks, filteredEntities]);
 
-  const referencesComponent = useMemo(() => {
-    if (isMemberEntity) {
-      return () => <ReferencesList entities={[entityId]} />;
-    }
-    return null;
-  }, [entityId, isMemberEntity]);
+  // const referencesComponent = useMemo(() => {
+  //   if (isMemberEntity) {
+  //     return () => <ReferencesList entities={[entityId]} />;
+  //   }
+  //   return null;
+  // }, [entityId, isMemberEntity]);
 
-  const messagesComponent = useMemo(() => {
-    if (isMemberEntity) {
-      return () => <MessageThread entityId={entityId} />;
-    }
-    return null;
-  }, [entityId, isMemberEntity]);
+  // const messagesComponent = useMemo(() => {
+  //   if (isMemberEntity) {
+  //     return () => <MessageThread entityId={entityId} />;
+  //   }
+  //   return null;
+  // }, [entityId, isMemberEntity]);
 
-  const guestListComponent = useMemo(() => {
-    if (entity && isMemberEntity) {
-      if (entity.resourcetype === 'Event')
-        return () => <GuestListPage entityId={entityId} />;
-    }
-    return null;
-  }, [entity, entityId, isMemberEntity]);
+  // const guestListComponent = useMemo(() => {
+  //   if (entity && isMemberEntity) {
+  //     if (entity.resourcetype === 'Event')
+  //       return () => <GuestListPage entityId={entityId} />;
+  //   }
+  //   return null;
+  // }, [entity, entityId, isMemberEntity]);
 
   const quickNavPages: QuickNavPage[] = useMemo(() => {
     let pages = [];
@@ -138,37 +138,37 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     //     component: calendarComponent
     //   });
     // }
-    if (referencesComponent) {
-      pages.push({
-        name: 'References',
-        title: t('pageTitles.references'),
-        component: referencesComponent
-      });
-    }
-    if (messagesComponent) {
-      pages.push({
-        name: 'Messages',
-        title: t('pageTitles.messages'),
-        component: messagesComponent
-      });
-    }
-    if (guestListComponent) {
-      pages.push({
-        name: 'GuestList',
-        title: t('pageTitles.guestList'),
-        component: guestListComponent
-      });
-    }
+    // if (referencesComponent) {
+    //   pages.push({
+    //     name: 'References',
+    //     title: t('pageTitles.references'),
+    //     component: referencesComponent
+    //   });
+    // }
+    // if (messagesComponent) {
+    //   pages.push({
+    //     name: 'Messages',
+    //     title: t('pageTitles.messages'),
+    //     component: messagesComponent
+    //   });
+    // }
+    // if (guestListComponent) {
+    //   pages.push({
+    //     name: 'GuestList',
+    //     title: t('pageTitles.guestList'),
+    //     component: guestListComponent
+    //   });
+    // }
 
     return pages;
   }, [
     // homeComponent,
     // calendarComponent,
     // editComponent,
-    guestListComponent,
-    messagesComponent,
+    // guestListComponent,
+    // messagesComponent,
     // overviewComponent,
-    referencesComponent,
+    // referencesComponent,
     t
   ]);
 
