@@ -58,10 +58,11 @@ import { Reference, ReferenceType } from 'types/references';
 
 const SETUP_TEXT_PAGES = ['PBF to add intro info here'];
 
-const setupPagesStypes = StyleSheet.create({
+const setupPagesStyles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
-  }
+  },
+  button: { marginTop: 20 }
 });
 
 const SetupPages = () => {
@@ -76,7 +77,7 @@ const SetupPages = () => {
   }
 
   return (
-    <TransparentContainerView style={setupPagesStypes.container}>
+    <TransparentContainerView style={setupPagesStyles.container}>
       <Text>{SETUP_TEXT_PAGES[currentPage]}</Text>
       {createReferencesCompletionResult.isLoading ? (
         <PaddedSpinner />
@@ -92,6 +93,7 @@ const SetupPages = () => {
             }
           }}
           title={t('common.continue')}
+          style={setupPagesStyles.button}
         />
       )}
     </TransparentContainerView>

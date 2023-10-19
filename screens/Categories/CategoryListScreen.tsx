@@ -19,9 +19,12 @@ import { CategoryName } from 'types/categories';
 
 type CategoryListScreenProps = ContentTabScreenProps<'CategoryList'>;
 
-const setupPagesTypes = StyleSheet.create({
+const setupPagesStyles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
+  },
+  button: {
+    marginTop: 20
   }
 });
 
@@ -89,7 +92,7 @@ const SetupPages = ({
   }
 
   return (
-    <TransparentContainerView style={setupPagesTypes.container}>
+    <TransparentContainerView style={setupPagesStyles.container}>
       <Text>{pages[currentPage]}</Text>
       {createCategoryCompletionResult.isLoading ? (
         <PaddedSpinner />
@@ -106,6 +109,7 @@ const SetupPages = ({
             }
           }}
           title={t('common.continue')}
+          style={setupPagesStyles.button}
         />
       )}
     </TransparentContainerView>

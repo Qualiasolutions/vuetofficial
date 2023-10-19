@@ -33,7 +33,8 @@ const SETUP_TEXT_PAGES: {
 const setupPagesStyles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
-  }
+  },
+  button: { marginTop: 20 }
 });
 
 const SetupPages = ({
@@ -71,6 +72,7 @@ const SetupPages = ({
             }
           }}
           title={t('common.continue')}
+          style={setupPagesStyles.button}
         />
       )}
     </TransparentContainerView>
