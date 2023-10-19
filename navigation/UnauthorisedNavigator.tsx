@@ -19,8 +19,7 @@ export function UnauthorisedNavigator() {
   return (
     <UnauthorisedStack.Navigator
       screenOptions={{
-        header: AlmostWhiteBackOnlyHeaderWithSafeArea,
-        headerTintColor: primaryColor
+        header: AlmostWhiteBackOnlyHeaderWithSafeArea
       }}
     >
       <UnauthorisedStack.Screen name="Login" component={LoginScreen} />

@@ -49,8 +49,7 @@ export default function useEditTaskHeader({
       navigation.setOptions({
         title: task.title,
         header,
-        headerShown: true,
-        headerTintColor: primaryColor
+        headerShown: true
       });
     }
   }, [task, navigation, route, recurrenceIndex, t, taskId, primaryColor]);

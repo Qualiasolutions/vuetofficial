@@ -57,6 +57,7 @@ import {
   useGetAllScheduledTasksQuery,
   useGetAllTasksQuery
 } from 'reduxStore/services/api/tasks';
+import { useThemeColor } from 'components/Themed';
 
 const styles = StyleSheet.create({
   icon: {
@@ -108,6 +109,7 @@ export function BottomTabNavigator({
   hasJustSignedUp: boolean;
 }) {
   const { t } = useTranslation();
+  const primaryColor = useThemeColor({}, 'primary');
   const dispatch = useDispatch();
   const { data: userDetails } = useGetUserDetailsQuery();
   useGetUserInvitesQuery(undefined, {

@@ -83,8 +83,7 @@ export function ContentNavigator() {
         component={HolidayListScreen}
         options={{
           header: BackOnlyHeaderWithSafeArea,
-          headerShown: true,
-          headerTintColor: primaryColor
+          headerShown: true
         }}
       />
 

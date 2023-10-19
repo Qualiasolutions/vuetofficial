@@ -35,6 +35,7 @@ export default function BackOnlyHeader(
   props: NativeStackHeaderProps | BottomTabHeaderProps
 ) {
   const navigationState = props.navigation.getState();
+  const primaryColor = useThemeColor({}, 'primary');
 
   if (navigationState.index === 0) {
     return null;
@@ -44,7 +45,7 @@ export default function BackOnlyHeader(
     <TransparentView style={[styles.container]}>
       <TransparentView style={styles.flexShrink}>
         <HeaderBackButton
-          tintColor={props.options.headerTintColor}
+          tintColor={props.options.headerTintColor || primaryColor}
           onPress={props.navigation.goBack}
         />
       </TransparentView>
@@ -64,6 +65,7 @@ function BackOnlyHeaderWithSafeAreaBase({
   // "Warning: React has detected a change in the order of Hooks called by BottomTabView"
   const statusBarHeight = getStatusBarHeight();
   const navigationState = otherProps.navigation.getState();
+  const primaryColor = useThemeColor({}, 'primary');
 
   if (navigationState.index === 0) {
     return null;
@@ -73,7 +75,7 @@ function BackOnlyHeaderWithSafeAreaBase({
     <WhiteView style={[style, { marginTop: statusBarHeight }]}>
       <TransparentView style={[styles.flexShrink, styles.content]}>
         <HeaderBackButton
-          tintColor={otherProps.options.headerTintColor}
+          tintColor={otherProps.options.headerTintColor || primaryColor}
           onPress={otherProps.navigation.goBack}
         />
         {headerRight || null}

@@ -17,7 +17,6 @@ export function MyAccountNavigator() {
       initialRouteName="MyAccount"
       screenOptions={{
         headerShown: true,
-        headerTintColor: primaryColor,
         header: BackOnlyHeader
       }}
     >

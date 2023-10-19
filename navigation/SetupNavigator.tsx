@@ -45,8 +45,7 @@ export function SetupNavigator() {
         component={AddFamilyMemberScreen}
         options={{
           headerShown: true,
-          header: BackOnlyHeaderWithSafeArea,
-          headerTintColor: primaryColor
+          header: BackOnlyHeaderWithSafeArea
         }}
       />
       <SetupStack.Screen
