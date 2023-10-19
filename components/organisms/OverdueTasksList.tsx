@@ -12,7 +12,6 @@ export default function OverdueTasksList() {
 
   return (
     <Calendar
-      showAllTime={true}
       showFilters={true}
       reverse={true}
       headerStyle={{ backgroundColor: errorBackground }}

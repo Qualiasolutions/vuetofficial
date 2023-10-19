@@ -1,13 +1,13 @@
 import Checkbox from 'components/molecules/Checkbox';
 import { AlmostBlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 
-export type RadioObjectValueType = {
-  id: number | string;
+export type RadioObjectValueType<T> = {
+  id: T;
 };
-export type RadioPermittedValues = {
-  value: RadioObjectValueType;
+export type RadioPermittedValues<T> = {
+  value: RadioObjectValueType<T>;
   label: string;
 }[];
 
@@ -16,16 +16,22 @@ const styles = StyleSheet.create({
   wrapper: { flexDirection: 'row' }
 });
 
-export default function RadioInput({
+export default function RadioInput<T>({
   value,
   label,
   permittedValues,
-  onValueChange
+  onValueChange,
+  buttonsContainerStyle,
+  checkboxWrapperStyle,
+  checkboxStyle
 }: {
   value: any;
   label?: string;
-  permittedValues: RadioPermittedValues;
-  onValueChange: (value: RadioObjectValueType) => void;
+  permittedValues: RadioPermittedValues<T>;
+  onValueChange: (value: RadioObjectValueType<T>) => void;
+  buttonsContainerStyle?: ViewStyle;
+  checkboxWrapperStyle?: ViewStyle;
+  checkboxStyle?: ViewStyle;
 }) {
   const radioButtons = permittedValues.map((obj: any, i: number) => {
     return (
@@ -37,13 +43,17 @@ export default function RadioInput({
         }}
         label={obj.label}
         key={i}
+        wrapperStyle={checkboxWrapperStyle || {}}
+        style={checkboxStyle || {}}
       />
     );
   });
   return (
     <TransparentView style={styles.wrapper}>
       {label && <AlmostBlackText text={label} style={styles.label} />}
-      <TransparentView>{radioButtons}</TransparentView>
+      <TransparentView style={buttonsContainerStyle || {}}>
+        {radioButtons}
+      </TransparentView>
     </TransparentView>
   );
 }

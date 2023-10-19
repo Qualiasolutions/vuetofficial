@@ -30,6 +30,7 @@ export default function CalendarScreen() {
         filteredTasks={filteredTasks}
         filteredEntities={filteredEntities}
         showFilters={true}
+        showProFilters={true}
       />
     </SafeAreaView>
   );

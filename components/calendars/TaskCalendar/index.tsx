@@ -41,6 +41,8 @@ import { ScheduledTask } from 'types/tasks';
 import { PrimaryText } from 'components/molecules/TextComponents';
 import { t } from 'i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
+import RadioInput from 'components/forms/components/RadioInput';
+import { isProfessionalEntity } from 'types/entities';
 
 dayjs.extend(utc);
 
@@ -68,12 +70,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 6
   },
   headerButton: { alignItems: 'center', marginHorizontal: 6 },
-  headerButtonText: { fontSize: 11 }
+  headerButtonText: { fontSize: 11 },
+  proButtonsContainerStyle: { flexDirection: 'row' },
+  proCheckboxWrapperStyle: { marginRight: 20 },
+  proCheckboxStyle: { marginRight: 4 }
 });
+
+type ProfessionalFilterType = 'ALL' | 'PROFESSIONAL' | 'PERSONAL';
 
 type CalendarProps = {
   showFilters?: boolean;
-  showAllTime?: boolean;
+  showProFilters?: boolean;
   reverse?: boolean;
   headerStyle?: ViewStyle;
   headerTextStyle?: TextStyle;
@@ -86,6 +93,7 @@ function Calendar({
   filteredTasks,
   filteredEntities,
   showFilters,
+  showProFilters,
   reverse,
   headerStyle,
   headerTextStyle
@@ -93,18 +101,7 @@ function Calendar({
   const { isLoading: isLoadingScheduledTasks, data: allScheduled } =
     useGetAllScheduledTasksQuery(undefined);
   const { isLoading: isLoadingTasks } = useGetAllTasksQuery(undefined);
-  const { data: entityNames } = useGetAllEntitiesQuery(undefined, {
-    selectFromResult: ({ data }) => {
-      if (!data) {
-        return { data: null };
-      }
-      const names: { [key: number]: string } = {};
-      for (const entityId in data.byId) {
-        names[entityId] = data.byId[entityId].name;
-      }
-      return { data: names };
-    }
-  });
+  const { data: entityData } = useGetAllEntitiesQuery(undefined);
 
   const dispatch = useDispatch();
 
@@ -112,8 +109,12 @@ function Calendar({
   const [showCalendar, setShowCalendar] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [submittedSearchText, setSubmittedSearchText] = useState('');
+  const [proFilter, setProFilter] = useState<ProfessionalFilterType>('ALL');
 
   const fullFilteredTasks = useMemo(() => {
+    if (!entityData) {
+      return {};
+    }
     const full: { [date: string]: ScheduledTask[] } = {};
     for (const date in filteredTasks) {
       const filtered = filteredTasks[date].filter((task) => {
@@ -126,46 +127,62 @@ function Calendar({
           return false;
         }
 
-        if (
-          scheduledTask.title
-            .toLowerCase()
+        const hasEntitites = scheduledTask.entities.length > 0;
+        if (proFilter === 'PROFESSIONAL' && !hasEntitites) {
+          return false;
+        }
+
+        const isProfessional = scheduledTask.entities.some((entityId) =>
+          isProfessionalEntity(entityData.byId[entityId])
+        );
+        const isPersonal = scheduledTask.entities.some(
+          (entityId) => !isProfessionalEntity(entityData.byId[entityId])
+        );
+        const matchesEntityString = scheduledTask.entities.some((entityId) =>
+          entityData.byId[entityId].name
+            ?.toLowerCase()
             .includes(submittedSearchText.toLowerCase())
-        ) {
-          return true;
+        );
+        const matchesTagString = scheduledTask.tags.some((tagName) =>
+          tagName.toLowerCase().includes(submittedSearchText.toLowerCase())
+        );
+        const matchesTitleString = scheduledTask.title
+          .toLowerCase()
+          .includes(submittedSearchText.toLowerCase());
+
+        if (proFilter === 'PROFESSIONAL' && !isProfessional) {
+          return false;
+        }
+        if (proFilter === 'PERSONAL' && !isPersonal) {
+          return false;
         }
 
-        for (const entityId of scheduledTask.entities) {
-          if (
-            entityNames &&
-            entityNames[entityId]
-              ?.toLowerCase()
-              .includes(submittedSearchText.toLowerCase())
-          ) {
-            return true;
-          }
-        }
-
-        for (const tagName of scheduledTask.tags) {
-          if (
-            tagName.toLowerCase().includes(submittedSearchText.toLowerCase())
-          ) {
-            return true;
-          }
-        }
-
-        return false;
+        return matchesEntityString || matchesTagString || matchesTitleString;
       });
       if (filtered.length > 0) {
         full[date] = filtered;
       }
     }
     return full;
-  }, [filteredTasks, submittedSearchText, entityNames, allScheduled]);
+  }, [filteredTasks, submittedSearchText, entityData, proFilter, allScheduled]);
 
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
     for (const date in filteredEntities) {
       const filtered = filteredEntities[date].filter((entity) => {
+        if (
+          proFilter === 'PROFESSIONAL' &&
+          entity.resourcetype !== 'ProfessionalEntity'
+        ) {
+          return false;
+        }
+        if (
+          proFilter === 'PERSONAL' &&
+          entity.resourcetype === 'ProfessionalEntity'
+        ) {
+          return false;
+        }
+
         return allScheduled?.byEntityId[
           RESOURCE_TYPE_TO_TYPE[entity.resourcetype] || 'ENTITY'
         ][entity.id].title
@@ -177,7 +194,7 @@ function Calendar({
       }
     }
     return full;
-  }, [filteredEntities, submittedSearchText, allScheduled]);
+  }, [filteredEntities, submittedSearchText, proFilter, allScheduled]);
 
   const calendarView = useMemo(() => {
     return (
@@ -223,7 +240,7 @@ function Calendar({
     dispatch
   ]);
 
-  const isLoading = isLoadingScheduledTasks || isLoadingTasks || !entityNames;
+  const isLoading = isLoadingScheduledTasks || isLoadingTasks || !entityData;
   if (isLoading) {
     return <FullPageSpinner />;
   }
@@ -297,6 +314,33 @@ function Calendar({
             onSubmit={setSubmittedSearchText}
           />
         </WhitePaddedView>
+        {showProFilters && (
+          <WhitePaddedView style={[elevation.elevated, styles.searchBox]}>
+            <RadioInput
+              value={proFilter}
+              onValueChange={(val) => setProFilter(val.id)}
+              permittedValues={
+                [
+                  {
+                    label: 'All',
+                    value: { id: 'ALL' }
+                  },
+                  {
+                    label: 'Personal',
+                    value: { id: 'PERSONAL' }
+                  },
+                  {
+                    label: 'Professional',
+                    value: { id: 'PROFESSIONAL' }
+                  }
+                ] as { label: string; value: { id: ProfessionalFilterType } }[]
+              }
+              buttonsContainerStyle={styles.proButtonsContainerStyle}
+              checkboxWrapperStyle={styles.proCheckboxWrapperStyle}
+              checkboxStyle={styles.proCheckboxStyle}
+            />
+          </WhitePaddedView>
+        )}
       </TransparentView>
       <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>
     </TransparentView>
