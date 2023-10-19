@@ -7,8 +7,6 @@ import FamilySettingsScreen from 'screens/SettingsScreens/FamilySettingsScreen';
 import { useTranslation } from 'react-i18next';
 import { useThemeColor } from 'components/Themed';
 import CreateUserInviteScreen from 'screens/SettingsScreens/Forms/CreateUserInviteScreen';
-import EditFamilyMemberScreen from 'screens/SettingsScreens/Forms/EditFamilyMemberScreen';
-import EditFamilyInviteScreen from 'screens/SettingsScreens/Forms/EditFamilyInviteScreen';
 import FriendSettingsScreen from 'screens/SettingsScreens/FriendsSettingsScreen';
 import BackOnlyHeader from 'headers/BackOnlyHeader';
 import PersonalAssistantScreen from 'screens/SettingsScreens/PersonalAssistantScreen';
@@ -138,22 +136,6 @@ export function SettingsNavigator() {
         component={CreateUserInviteScreen}
         options={{
           title: t('pageTitles.addFamilyMember'),
-          headerTintColor
-        }}
-      />
-      <SettingsStack.Screen
-        name="EditFamilyMember"
-        component={EditFamilyMemberScreen}
-        options={{
-          title: '',
-          headerTintColor
-        }}
-      />
-      <SettingsStack.Screen
-        name="EditFamilyInvite"
-        component={EditFamilyInviteScreen}
-        options={{
-          title: '',
           headerTintColor
         }}
       />

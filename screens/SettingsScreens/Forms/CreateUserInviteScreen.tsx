@@ -1,30 +1,9 @@
-import { useState } from 'react';
-
-import { useTranslation } from 'react-i18next';
-
 import { SettingsTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import {
-  TransparentContainerView,
-  TransparentView
-} from 'components/molecules/ViewComponents';
-
-import { useCreateUserInviteMutation } from 'reduxStore/services/api/user';
+import { TransparentContainerView } from 'components/molecules/ViewComponents';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import PhoneNumberInput from 'components/forms/components/PhoneNumberInput';
-import { Button } from 'components/molecules/ButtonComponents';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
-import { isFieldErrorCodeError, isInvalidPhoneNumberError } from 'types/signup';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { StyleSheet } from 'react-native';
-import SafePressable from 'components/molecules/SafePressable';
-import { PrimaryText } from 'components/molecules/TextComponents';
-import { TextInput } from 'components/Themed';
-import * as EmailValidator from 'email-validator';
-import { CreateUserInviteRequest } from 'types/users';
-import PhoneOrEmailInput from 'components/molecules/PhoneOrEmailInput';
+import UserInviteForm from 'components/organisms/UserInviteForm';
 
 const styles = StyleSheet.create({
   otherOptsWrapper: {
@@ -42,111 +21,20 @@ const CreateUserInviteScreen = ({
   route
 }: NativeStackScreenProps<SettingsTabParamList, 'CreateUserInvite'>) => {
   const isFamilyRequest = route.params?.familyRequest;
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [usingEmail, setUsingEmail] = useState(false);
-  const { data: userFullDetails } = useGetUserFullDetails();
-
-  const [createUserInvite, createUserInviteResult] =
-    useCreateUserInviteMutation();
-
-  const { t } = useTranslation();
-
-  if (!userFullDetails) {
-    return <FullPageSpinner />;
-  }
 
   return (
     <TransparentFullPageScrollView>
       <TransparentContainerView style={styles.container}>
-        <PhoneOrEmailInput
-          usingEmail={usingEmail}
-          value={usingEmail ? email : phoneNumber}
-          changeUsingEmail={setUsingEmail}
-          onValueChange={(val) => {
-            if (usingEmail) {
-              setEmail(val);
+        <UserInviteForm
+          isFamilyRequest={isFamilyRequest}
+          onSuccess={() => {
+            if (isFamilyRequest) {
+              navigation.navigate('FamilySettings');
             } else {
-              setPhoneNumber(val);
+              navigation.navigate('FriendSettings');
             }
           }}
         />
-        {createUserInviteResult.isLoading ? (
-          <PaddedSpinner />
-        ) : (
-          <Button
-            style={styles.button}
-            title={t('common.invite')}
-            disabled={
-              (usingEmail && !EmailValidator.validate(email)) ||
-              (!usingEmail && phoneNumber.length < 9)
-            }
-            onPress={async () => {
-              try {
-                const req: CreateUserInviteRequest = {
-                  invitee: userFullDetails.id,
-                  family: isFamilyRequest ? userFullDetails.family.id : null
-                };
-
-                if (usingEmail) {
-                  req.email = email;
-                } else {
-                  req.phone_number = phoneNumber;
-                }
-                await createUserInvite(req).unwrap();
-                Toast.show({
-                  type: 'success',
-                  text1: t('screens.createUserInvite.success')
-                });
-                if (isFamilyRequest) {
-                  navigation.navigate('FamilySettings');
-                } else {
-                  navigation.navigate('FriendSettings');
-                }
-              } catch (err) {
-                console.log(err);
-                if (isInvalidPhoneNumberError(err)) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.invalidPhone')
-                  });
-                } else if (
-                  isFieldErrorCodeError(
-                    'phone_number',
-                    'already_has_family'
-                  )(err)
-                ) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.createUserInvite.errors.alreadyHasFamily')
-                  });
-                } else if (
-                  isFieldErrorCodeError(
-                    'phone_number',
-                    'already_in_family'
-                  )(err)
-                ) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.createUserInvite.errors.alreadyInFamily')
-                  });
-                } else if (
-                  isFieldErrorCodeError('phone_number', 'already_invited')(err)
-                ) {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('screens.createUserInvite.errors.alreadyInvited')
-                  });
-                } else {
-                  Toast.show({
-                    type: 'error',
-                    text1: t('common.errors.generic')
-                  });
-                }
-              }
-            }}
-          />
-        )}
       </TransparentContainerView>
     </TransparentFullPageScrollView>
   );

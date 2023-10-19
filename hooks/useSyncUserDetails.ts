@@ -1,3 +1,4 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,15 +17,17 @@ import {
 export default function useSyncUserDetails() {
   const dispatch = useDispatch();
   const { data: userDetails } = useGetUserDetailsQuery();
-  const userId = userDetails ? userDetails.user_id : -1;
-  const { data, isLoadingUserDetails } = useGetUserFullDetailsQuery(userId, {
-    skip: userId === -1,
-    pollingInterval: 10000,
-    selectFromResult: ({ data: userData, isLoading }) => ({
-      data: userData,
-      isLoadingUserDetails: isLoading
-    })
-  });
+  const userId = userDetails?.user_id;
+  const { data, isLoadingUserDetails } = useGetUserFullDetailsQuery(
+    userId || skipToken,
+    {
+      pollingInterval: 10000,
+      selectFromResult: ({ data: userData, isLoading }) => ({
+        data: userData,
+        isLoadingUserDetails: isLoading
+      })
+    }
+  );
 
   const currentUserDetails = useSelector(selectReduxUserDetails);
   const currentLoading = useSelector(selectLoadingReduxUserDetails);

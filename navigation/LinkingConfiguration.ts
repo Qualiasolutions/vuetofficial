@@ -20,8 +20,6 @@ const linking: LinkingOptions<TabParamList> = {
         screens: {
           Settings: '',
           FamilySettings: 'family',
-          EditFamilyMember: 'edit-family-member',
-          EditFamilyInvite: 'edit-family-invite',
           CreateUserInvite: 'create-user-invite'
         }
       },

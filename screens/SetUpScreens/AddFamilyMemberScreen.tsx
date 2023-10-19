@@ -8,59 +8,30 @@ import { SetupTabParamList } from 'types/base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PageTitle } from 'components/molecules/TextComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
-import { ErrorBox } from 'components/molecules/Errors';
-import { useCreateUserInviteMutation } from 'reduxStore/services/api/user';
-import RTKForm from 'components/forms/RTKForm';
 
-import { deepCopy } from 'utils/copy';
-import {
-  useFamilyMemberForm,
-  FamilyMemberFormFieldTypes
-} from 'screens/SettingsScreens/Forms/familyMemberFormFieldTypes';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
-import useGetUserFullDetails from 'hooks/useGetUserDetails';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import UserInviteForm from 'components/organisms/UserInviteForm';
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 40,
-    paddingTop: 100
+    paddingTop: 40
   }
 });
 
 const AddFamilyMemberScreen = ({
   navigation
 }: NativeStackScreenProps<SetupTabParamList, 'AddFamilyMember'>) => {
-  const { data: userFullDetails } = useGetUserFullDetails();
-
-  const formFields = deepCopy<FamilyMemberFormFieldTypes>(
-    useFamilyMemberForm()
-  );
-
   const { t } = useTranslation();
 
   return (
     <TransparentFullPageScrollView>
       <TransparentPaddedView style={styles.container}>
         <PageTitle text={t('screens.addFamilyMember.title')} />
-        <RTKForm
-          fields={formFields}
-          methodHooks={{
-            POST: useCreateUserInviteMutation
-          }}
-          formType="CREATE"
-          onSubmitSuccess={() => {
+        <UserInviteForm
+          isFamilyRequest={true}
+          onSuccess={() => {
             navigation.push('AddFamily');
-          }}
-          onSubmitFailure={() => {
-            Toast.show({
-              type: 'error',
-              text1: t('common.errors.generic')
-            });
-          }}
-          extraFields={{
-            family: userFullDetails?.family.id,
-            invitee: userFullDetails?.id
           }}
         />
       </TransparentPaddedView>

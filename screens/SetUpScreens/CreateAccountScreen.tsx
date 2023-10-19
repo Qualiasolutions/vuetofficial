@@ -30,6 +30,7 @@ import dayjs from 'dayjs';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { TransparentFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const styles = StyleSheet.create({
   inputLabelWrapper: {
@@ -67,7 +68,8 @@ const CreateAccountScreen = ({
   const [memberColour, setMemberColour] = React.useState<string>('');
   const { t } = useTranslation();
 
-  const [updateUserDetails] = useUpdateUserDetailsMutation();
+  const [updateUserDetails, updateUserDetailsResult] =
+    useUpdateUserDetailsMutation();
   const [formUpdateUserDetails] = useFormUpdateUserDetailsMutation();
 
   const uploadProfileImage = (image: File) => {
@@ -178,29 +180,33 @@ const CreateAccountScreen = ({
             }}
           />
         </WhiteBox>
-        <Button
-          title={t('common.next')}
-          disabled={!hasAllRequired}
-          onPress={async () => {
-            if (userFullDetails?.id) {
-              try {
-                await updateUserDetails({
-                  user_id: userFullDetails?.id,
-                  first_name: firstName,
-                  last_name: lastName,
-                  dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
-                  member_colour: memberColour
-                }).unwrap();
-              } catch (e) {
-                Toast.show({
-                  type: 'error',
-                  text1: t('common.errors.generic')
-                });
+        {updateUserDetailsResult.isLoading ? (
+          <PaddedSpinner />
+        ) : (
+          <Button
+            title={t('common.next')}
+            disabled={!hasAllRequired}
+            onPress={async () => {
+              if (userFullDetails?.id) {
+                try {
+                  await updateUserDetails({
+                    user_id: userFullDetails?.id,
+                    first_name: firstName,
+                    last_name: lastName,
+                    dob: dayjs(dateOfBirth).format('YYYY-MM-DD'),
+                    member_colour: memberColour
+                  }).unwrap();
+                } catch (e) {
+                  Toast.show({
+                    type: 'error',
+                    text1: t('common.errors.generic')
+                  });
+                }
               }
-            }
-          }}
-          style={styles.confirmButton}
-        />
+            }}
+            style={styles.confirmButton}
+          />
+        )}
       </AlmostWhiteContainerView>
     </TransparentFullPageScrollView>
   );

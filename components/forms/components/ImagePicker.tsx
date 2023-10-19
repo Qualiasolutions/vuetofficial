@@ -14,6 +14,7 @@ import SafePressable from 'components/molecules/SafePressable';
 import { Button, LinkButton } from 'components/molecules/ButtonComponents';
 import { useTranslation } from 'react-i18next';
 import OutsidePressHandler from 'react-native-outside-press';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 const styles = StyleSheet.create({
   container: {
@@ -201,22 +202,27 @@ export function ImagePicker({
         disabled={false}
         style={[styles.photoTypeModalBox, modalOffsets]}
       >
-        <WhiteBox>
-          <LinkButton
-            onPress={chooseImage}
-            title={t('components.imagePicker.choosePhoto')}
-            style={styles.photoTypeModalLink}
-          />
-          <LinkButton
-            onPress={takePhoto}
-            title={t('components.imagePicker.takePhoto')}
-            style={styles.photoTypeModalLink}
-          />
-          <Button
-            onPress={() => setShowPhotoTypeModal(false)}
-            title={t('common.cancel')}
-          />
-        </WhiteBox>
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(200)}
+        >
+          <WhiteBox elevated={false}>
+            <LinkButton
+              onPress={chooseImage}
+              title={t('components.imagePicker.choosePhoto')}
+              style={styles.photoTypeModalLink}
+            />
+            <LinkButton
+              onPress={takePhoto}
+              title={t('components.imagePicker.takePhoto')}
+              style={styles.photoTypeModalLink}
+            />
+            <Button
+              onPress={() => setShowPhotoTypeModal(false)}
+              title={t('common.cancel')}
+            />
+          </WhiteBox>
+        </Animated.View>
       </OutsidePressHandler>
     );
   }, [t, chooseImage, takePhoto, modalOffsets]);

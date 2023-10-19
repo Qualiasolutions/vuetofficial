@@ -78,8 +78,6 @@ export type SettingsTabParamList = {
   Routines: undefined;
   Integrations: undefined;
   CreateUserInvite: { familyRequest: boolean };
-  EditFamilyMember: { id: number | string };
-  EditFamilyInvite: { id: number | string };
 };
 
 export type SettingsTabScreenProps<Screen extends keyof SettingsTabParamList> =

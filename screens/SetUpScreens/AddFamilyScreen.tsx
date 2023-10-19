@@ -82,7 +82,7 @@ const AddFamilyScreen = ({
     familyInvites && familyInvites.length > 0 ? (
       familyInvites.map((invite) => (
         <TransparentView key={invite.id}>
-          <AlmostBlackText text={`${invite.first_name} ${invite.last_name}`} />
+          <AlmostBlackText text={invite.phone_number || invite.email || ''} />
         </TransparentView>
       ))
     ) : (

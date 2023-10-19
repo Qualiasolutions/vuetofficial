@@ -8,11 +8,14 @@ import WelcomeToVuetScreen from 'screens/SetUpScreens/WelcomeToVuetScreen';
 import AddFamilyMemberScreen from 'screens/SetUpScreens/AddFamilyMemberScreen';
 
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
+import { useThemeColor } from 'components/Themed';
 
 const SetupStack = createNativeStackNavigator<SetupTabParamList>();
 
 export function SetupNavigator() {
   const { data: userFullDetails } = useGetUserFullDetails();
+  const primaryColor = useThemeColor({}, 'primary');
 
   let initialRouteName = 'CreateAccount' as keyof SetupTabParamList;
 
@@ -40,7 +43,11 @@ export function SetupNavigator() {
       <SetupStack.Screen
         name="AddFamilyMember"
         component={AddFamilyMemberScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: true,
+          header: BackOnlyHeaderWithSafeArea,
+          headerTintColor: primaryColor
+        }}
       />
       <SetupStack.Screen
         name="WelcomeToVuet"
