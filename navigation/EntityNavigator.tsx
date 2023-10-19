@@ -33,7 +33,6 @@ const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
 };
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
-  return null;
   const { t } = useTranslation();
   // const filteredTasks = useTasksForEntityId(entityId);
   // const navigation = useNavigation();
