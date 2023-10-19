@@ -10,6 +10,7 @@ import {
 } from 'reduxStore/slices/calendars/selectors';
 import { ScheduledTaskResponseType } from 'types/tasks';
 import { formatTasksPerDate } from 'utils/formatTasksAndPeriods';
+import filterTask from './filterTask';
 
 const isTask = (
   item?: ScheduledTaskResponseType
