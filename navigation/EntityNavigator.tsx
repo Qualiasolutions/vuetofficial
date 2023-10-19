@@ -172,7 +172,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     t
   ]);
 
-  return null;
+  // return null;
 
   return (
     <QuickNavigator
