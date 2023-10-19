@@ -39,5 +39,5 @@ export default function useCategoryHeader(
 
       navigation.setOptions(options);
     }
-  }, [navigation, route, t, categoryName]);
+  }, [navigation, route, t, categoryName, actualName, headerTintColor]);
 }
