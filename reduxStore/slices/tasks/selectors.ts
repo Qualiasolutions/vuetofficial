@@ -698,7 +698,10 @@ export const selectNextTaskFromEntityAndHiddenTag = (
 
       const now = new Date();
       for (const task of sortedTasks) {
-        if (taskCompletionFormData.byTaskId[task.id][-1].complete) {
+        if (
+          taskCompletionFormData.byTaskId[task.id] &&
+          taskCompletionFormData.byTaskId[task.id][-1]?.complete
+        ) {
           continue;
         }
         if (task.start_datetime && new Date(task.start_datetime) > now) {
