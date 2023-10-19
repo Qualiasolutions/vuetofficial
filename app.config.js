@@ -21,7 +21,7 @@ export default {
   expo: {
     name: 'vuet-app',
     slug: 'vuet-app',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     owner: 'vuet',
     icon: './assets/images/icon.png',

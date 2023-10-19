@@ -21,6 +21,5 @@ export default function EntityScreen({
     }
   }, [entity, navigation]);
 
-  return null;
-  // return <EntityNavigator entityId={entityId} />;
+  return <EntityNavigator entityId={entityId} />;
 }
