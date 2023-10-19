@@ -40,20 +40,20 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const entity = useEntityById(entityId);
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
-  // const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
+  const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
 
-  // const filteredEntities = useScheduledEntityIds(undefined, entityId);
+  const filteredEntities = useScheduledEntityIds(undefined, entityId);
 
-  // const homeComponent = useMemo(() => {
-  //   if (
-  //     entity &&
-  //     resourceTypeToComponent[entity?.resourcetype] &&
-  //     isMemberEntity
-  //   ) {
-  //     return () => <EntityHome entityId={entityId} />;
-  //   }
-  //   return null;
-  // }, [entity, entityId, isMemberEntity]);
+  const homeComponent = useMemo(() => {
+    if (
+      entity &&
+      resourceTypeToComponent[entity?.resourcetype] &&
+      isMemberEntity
+    ) {
+      return () => <EntityHome entityId={entityId} />;
+    }
+    return null;
+  }, [entity, entityId, isMemberEntity]);
 
   // const editComponent = useMemo(() => {
   //   return () => (
@@ -110,13 +110,13 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   const quickNavPages: QuickNavPage[] = useMemo(() => {
     let pages = [];
 
-    // if (homeComponent) {
-    //   pages.push({
-    //     name: 'Home',
-    //     title: t('pageTitles.home'),
-    //     component: homeComponent
-    //   });
-    // }
+    if (homeComponent) {
+      pages.push({
+        name: 'Home',
+        title: t('pageTitles.home'),
+        component: homeComponent
+      });
+    }
     // if (editComponent) {
     //   pages.push({
     //     name: 'Edit',
@@ -162,7 +162,7 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
 
     return pages;
   }, [
-    // homeComponent,
+    homeComponent,
     // calendarComponent,
     // editComponent,
     // guestListComponent,
@@ -171,8 +171,6 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     // referencesComponent,
     t
   ]);
-
-  // return null;
 
   return (
     <QuickNavigator
