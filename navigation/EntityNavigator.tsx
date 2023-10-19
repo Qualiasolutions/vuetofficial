@@ -37,8 +37,8 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
   // const filteredTasks = useTasksForEntityId(entityId);
   // const navigation = useNavigation();
 
-  // const entity = useEntityById(entityId);
-  // const category = useSelector(selectCategoryById(entity?.category || -1));
+  const entity = useEntityById(entityId);
+  const category = useSelector(selectCategoryById(entity?.category || -1));
 
   // const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
 
