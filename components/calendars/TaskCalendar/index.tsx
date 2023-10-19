@@ -208,11 +208,7 @@ function Calendar({
         }}
       />
     );
-  }, [
-    JSON.stringify(fullFilteredTasks),
-    JSON.stringify(fullFilteredEntities),
-    dispatch
-  ]);
+  }, [fullFilteredTasks, fullFilteredEntities, dispatch]);
 
   const listView = useMemo(() => {
     return (
@@ -233,9 +229,8 @@ function Calendar({
       </TransparentView>
     );
   }, [
-    JSON.stringify(fullFilteredTasks),
-    JSON.stringify(fullFilteredEntities),
-    showFilters,
+    fullFilteredTasks,
+    fullFilteredEntities,
     reverse,
     headerStyle,
     headerTextStyle,
