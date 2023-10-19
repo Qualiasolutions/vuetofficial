@@ -34,15 +34,15 @@ const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
-  const filteredTasks = useTasksForEntityId(entityId);
-  const navigation = useNavigation();
+  // const filteredTasks = useTasksForEntityId(entityId);
+  // const navigation = useNavigation();
 
-  const entity = useEntityById(entityId);
-  const category = useSelector(selectCategoryById(entity?.category || -1));
+  // const entity = useEntityById(entityId);
+  // const category = useSelector(selectCategoryById(entity?.category || -1));
 
-  const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
+  // const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
 
-  const filteredEntities = useScheduledEntityIds(undefined, entityId);
+  // const filteredEntities = useScheduledEntityIds(undefined, entityId);
 
   // const homeComponent = useMemo(() => {
   //   if (
@@ -171,6 +171,8 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
     // referencesComponent,
     t
   ]);
+
+  return null;
 
   return (
     <QuickNavigator

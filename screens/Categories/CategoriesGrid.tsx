@@ -94,6 +94,7 @@ export default function CategoriesGrid() {
     return <FullPageSpinner />;
   }
 
+  throw new Error('ON NO AN ERROR!');
   Sentry.Native.nativeCrash();
 
   const CATEGORY_GROUPS: { [key in CategoryGroupName]: CategoryType[] } = {
