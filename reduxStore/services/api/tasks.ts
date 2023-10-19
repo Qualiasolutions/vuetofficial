@@ -191,7 +191,7 @@ const updateQueryDataForUpdateTask = (
   return patchResults;
 };
 
-type AllScheduledTasks = {
+export type AllScheduledTasks = {
   ordered: {
     id: number;
     recurrence_index: number | null;

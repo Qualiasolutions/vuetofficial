@@ -14,9 +14,12 @@ import {
   selectFilteredTaskTypes,
   selectFilteredUsers
 } from 'reduxStore/slices/calendars/selectors';
+import { selectEntityById } from 'reduxStore/slices/entities/selectors';
 import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
+
 import { ScheduledEntityResponseType } from 'types/tasks';
 import { formatEntitiesPerDate } from 'utils/formatTasksAndPeriods';
+import filterEntity from './filterEntity';
 
 const isEntity = (
   item: ScheduledEntityResponseType | undefined
@@ -24,29 +27,21 @@ const isEntity = (
   return !!item;
 };
 
-const SCHOOL_ENTITY_TYPES = [
-  'SchoolYearStart',
-  'SchoolYearEnd',
-  'SchoolTerm',
-  'SchoolTermStart',
-  'SchoolTermEnd',
-  'SchoolBreak'
-];
-
 export default function useScheduledEntityIds(
   resourceTypes?: (EntityTypeName | SchoolTermTypeName)[],
   entityId?: number
 ) {
-  const { data: scheduledTasks } = useGetAllScheduledTasksQuery();
-  const { data: allCategoriesData } = useGetAllCategoriesQuery();
-  const { data: schoolYearsData } = useGetAllSchoolYearsQuery();
-  const { data: schoolTermsData } = useGetAllSchoolTermsQuery();
-  const { data: schoolBreaksData } = useGetAllSchoolBreaksQuery();
+  const { data: allScheduledTasks } = useGetAllScheduledTasksQuery();
+  const { data: allCategories } = useGetAllCategoriesQuery();
+  const { data: schoolYears } = useGetAllSchoolYearsQuery();
+  const { data: schoolTerms } = useGetAllSchoolTermsQuery();
+  const { data: schoolBreaks } = useGetAllSchoolBreaksQuery();
 
-  const users = useSelector(selectFilteredUsers);
-  const categories = useSelector(selectFilteredCategories);
-  const taskTypes = useSelector(selectFilteredTaskTypes);
+  const filteredUsers = useSelector(selectFilteredUsers);
+  const filteredCategories = useSelector(selectFilteredCategories);
+  const filteredTaskTypes = useSelector(selectFilteredTaskTypes);
   const completionFilters = useSelector(selectCompletionFilters);
+  const filteredEntity = useSelector(selectEntityById(entityId || -1));
 
   const { data: entitiesByCategory } = useGetAllEntitiesQuery(undefined, {
     selectFromResult: ({ data }) => {
@@ -82,111 +77,50 @@ export default function useScheduledEntityIds(
   });
 
   if (
-    !scheduledTasks?.orderedEntities ||
-    !schoolYearsData ||
-    !schoolBreaksData ||
-    !schoolTermsData ||
+    !allScheduledTasks?.orderedEntities ||
+    !schoolYears ||
+    !schoolBreaks ||
+    !schoolTerms ||
     !entitiesByCategory ||
-    !allCategoriesData
+    !entitiesBySchool ||
+    !studentIds ||
+    !allCategories
   ) {
     return {};
   }
 
   const filteredEntities =
-    scheduledTasks.orderedEntities
-      .filter(
-        ({ resourcetype }) =>
-          !resourceTypes || resourceTypes.includes(resourcetype)
-      )
-      .filter(({ id, resourcetype }) => {
-        if (entityId === id && !SCHOOL_ENTITY_TYPES.includes(resourcetype)) {
-          // Have exact entity ID match
-          return true;
-        }
-
-        if (resourceTypes && resourceTypes.includes(resourcetype)) {
-          // Have exact resource type match
-          return true;
-        }
-
-        if (!entityId && !resourceTypes) {
-          // No filtering
-          return true;
-        }
-
-        if (resourceTypes) {
-          // Otherwise if resourceTypes is specified then only return exact resource type matches
-          return false;
-        }
-
-        // At this point entityId must be specified
-        if (entityId) {
-          let schoolYear = null;
-          if (['SchoolYearStart', 'SchoolYearEnd'].includes(resourcetype)) {
-            schoolYear = schoolYearsData.byId[id];
-          }
-          if (
-            ['SchoolTermStart', 'SchoolTermEnd', 'SchoolTerm'].includes(
-              resourcetype
-            )
-          ) {
-            const schoolTerm = schoolTermsData.byId[id];
-            const schoolYearId = schoolTerm.school_year;
-            schoolYear = schoolYearsData.byId[schoolYearId];
-          }
-          if (['SchoolBreak'].includes(resourcetype)) {
-            const schoolBreak = schoolBreaksData.byId[id];
-            const schoolYearId = schoolBreak.school_year;
-            schoolYear = schoolYearsData.byId[schoolYearId];
-          }
-
-          if (studentIds && schoolYear && entitiesBySchool) {
-            if (entityId === schoolYear.school) {
-              return true;
-            }
-
-            for (const student of studentIds) {
-              if (entitiesBySchool[schoolYear.school]?.includes(student)) {
-                return true;
-              }
-            }
-          }
-        }
-
-        return false;
-      })
+    allScheduledTasks.orderedEntities
       .map(({ id, resourcetype }) => {
         const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
         return (
-          scheduledTasks?.byEntityId[type] &&
-          scheduledTasks?.byEntityId[type][id]
+          allScheduledTasks?.byEntityId[type] &&
+          allScheduledTasks?.byEntityId[type][id]
         );
       })
-      .filter(isEntity)
-      .filter(
-        (entity) =>
-          (!users ||
-            users.length === 0 ||
-            entity.members.some((member) => users?.includes(member))) &&
-          (!categories ||
-            categories.length === 0 ||
-            categories.length === allCategoriesData.ids.length ||
-            categories.some((categoryId) =>
-              entitiesByCategory[categoryId].includes(entity.id)
-            ) ||
-            (categories.some(
-              (categoryId) =>
-                allCategoriesData.byId[categoryId].name === 'EDUCATION'
-            ) &&
-              SCHOOL_ENTITY_TYPES.includes(entity.resourcetype))) &&
-          (!taskTypes ||
-            taskTypes.length === 0 ||
-            taskTypes.includes('OTHER')) &&
-          (!completionFilters ||
-            completionFilters.length === 0 ||
-            (completionFilters.includes('COMPLETE') &&
-              completionFilters.includes('INCOMPLETE')))
-      ) || [];
+      .filter((entity) =>
+        filterEntity(
+          entity,
+          filteredEntity || undefined,
+          resourceTypes,
+          {
+            allCategories,
+            schoolYears,
+            schoolBreaks,
+            schoolTerms,
+            entitiesByCategory,
+            entitiesBySchool,
+            studentIds
+          },
+          {
+            filteredUsers: filteredUsers || [],
+            filteredCategories: filteredCategories || [],
+            filteredTaskTypes: filteredTaskTypes || [],
+            completionFilters: completionFilters || []
+          }
+        )
+      )
+      .filter(isEntity) || [];
 
   const formatted = formatEntitiesPerDate(filteredEntities);
 
