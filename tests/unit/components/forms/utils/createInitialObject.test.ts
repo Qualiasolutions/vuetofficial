@@ -1,5 +1,24 @@
 import createInitialObject from 'components/forms/utils/createInitialObject';
 
+const DEFAULT_USER_RESPONSE = {
+  id: 1,
+  username: '__USERNAME__',
+  family: 1,
+  last_login: '__LAST_LOGIN__',
+  is_superuser: false,
+  first_name: '__FIRST_NAME__',
+  last_name: '__LAST_NAME__',
+  email: 'EMAIL@TEST.COM',
+  phone_number: '07123123123',
+  is_staff: false,
+  is_active: false,
+  date_joined: '__DATE_JOINED__',
+  member_colour: 'eeeeee',
+  dob: '01-01-2000',
+  has_done_setup: false,
+  profile_image: '',
+  presigned_profile_image_url: ''
+};
 it('createInitialObject ::: addMembers', () => {
   const initialObj = createInitialObject(
     {
@@ -14,9 +33,7 @@ it('createInitialObject ::: addMembers', () => {
         displayName: 'MEMBERS'
       }
     },
-    {
-      id: 1
-    },
+    DEFAULT_USER_RESPONSE,
     {
       members: [1, 2, 3]
     }
@@ -25,7 +42,7 @@ it('createInitialObject ::: addMembers', () => {
   expect(initialObj.members).toEqual([1, 2, 3]);
 });
 
-it('createInitialObject ::: addMembers', () => {
+it('createInitialObject ::: duration', () => {
   const initialObj = createInitialObject(
     {
       duration: {
@@ -53,9 +70,7 @@ it('createInitialObject ::: addMembers', () => {
         type: 'dropDown'
       }
     },
-    {
-      id: 1
-    },
+    DEFAULT_USER_RESPONSE,
     {
       duration: 30
     }

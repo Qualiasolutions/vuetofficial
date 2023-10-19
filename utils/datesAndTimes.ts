@@ -113,13 +113,14 @@ const getDatesBetween = (
   const datesArray = [];
   const dayjsFunction = useUtc ? dayjs.utc : dayjs;
 
+  const latestAllowed = dayjsFunction(end).toDate();
+  latestAllowed.setHours(23);
+  latestAllowed.setMinutes(59);
+  latestAllowed.setSeconds(59);
   let dt = dayjsFunction(start).toDate();
-  while (dt <= dayjsFunction(end).toDate()) {
+  while (dt <= latestAllowed) {
     datesArray.push(dayjsFunction(dt).toDate());
     dt.setDate(dt.getDate() + 1);
-    dt.setHours(0);
-    dt.setMinutes(0);
-    dt.setSeconds(0);
   }
 
   return datesArray;

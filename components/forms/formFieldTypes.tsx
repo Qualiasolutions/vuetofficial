@@ -62,7 +62,7 @@ export type DateTimeField = BaseField<'DateTime', Date> & {
 };
 export type RadioField = BaseField<'radio', any> & {
   permittedValues: any[];
-  valueToDisplay: Function;
+  valueToDisplay: (val: any) => string;
 };
 export type CheckboxField = BaseField<'checkbox', any> & {
   forceUnchecked?: string[];
@@ -73,12 +73,12 @@ export type AddMembersField = BaseField<'addMembers', any> & {
     friends: UserResponse[];
     family: UserResponse[];
   };
-  valueToDisplay: Function;
+  valueToDisplay: (val: any) => string;
   changeMembersText?: string;
 };
 export type AddFamilyMembersField = BaseField<'addFamilyMembers', any> & {
   permittedValues: any[];
-  valueToDisplay: Function;
+  valueToDisplay: (val: any) => string;
 };
 
 export type DropDownField = BaseField<'dropDown', any> & {
