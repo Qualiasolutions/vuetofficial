@@ -86,7 +86,7 @@ export function ContentNavigator() {
         name="CategoryList"
         component={CategoryListScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen

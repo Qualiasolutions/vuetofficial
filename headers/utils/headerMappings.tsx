@@ -116,6 +116,7 @@ export const headerWithBackground = (
             <HeaderBackButton
               tintColor={props.options.headerTintColor}
               onPress={props.navigation.goBack}
+              labelVisible={false}
             />
             <HeaderTitle
               tintColor={props.options.headerTintColor}
