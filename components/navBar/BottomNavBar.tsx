@@ -14,6 +14,7 @@ import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import SafePressable from 'components/molecules/SafePressable';
 import { Feather } from '@expo/vector-icons';
+import { TouchableOpacity } from 'components/molecules/TouchableOpacityComponents';
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
@@ -245,7 +246,7 @@ export default function BottomNavBar({
               ? 'Settings'
               : '';
           return (
-            <SafePressable
+            <TouchableOpacity
               key={index}
               onPress={() => {
                 if (forcedScreen) {
@@ -256,7 +257,7 @@ export default function BottomNavBar({
               }}
             >
               {options.tabBarIcon({ focused: isFocused, color: '', size: 0 })}
-            </SafePressable>
+            </TouchableOpacity>
           );
         }
       })}
