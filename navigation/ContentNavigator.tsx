@@ -22,11 +22,15 @@ import SchoolTermsScreen from 'screens/SchoolTermsScreen';
 import { useTranslation } from 'react-i18next';
 import CategoriesPage from 'screens/Categories/CategoriesPage';
 import ProfessionalCategoryNavigator from './ProfessionalCategoryNavigator';
+import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
+import { useThemeColor } from 'components/Themed';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
 export function ContentNavigator() {
   const { t } = useTranslation();
+  const primaryColor = useThemeColor({}, 'primary');
+
   return (
     <ContentStack.Navigator
       initialRouteName="Categories"
@@ -50,21 +54,21 @@ export function ContentNavigator() {
         name="EntityList"
         component={EntityListScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen
         name="AnniversaryDates"
         component={AnniversaryDatesScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen
         name="HolidayDates"
         component={HolidayDatesScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen
@@ -78,7 +82,9 @@ export function ContentNavigator() {
         name="HolidayList"
         component={HolidayListScreen}
         options={{
-          headerShown: true
+          header: BackOnlyHeaderWithSafeArea,
+          headerShown: true,
+          headerTintColor: primaryColor
         }}
       />
 
@@ -100,7 +106,7 @@ export function ContentNavigator() {
         name="SubCategoryList"
         component={SubCategoryListScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen
@@ -128,7 +134,7 @@ export function ContentNavigator() {
         name="LinkList"
         component={LinkListScreen}
         options={{
-          headerShown: true
+          headerShown: false
         }}
       />
       <ContentStack.Screen

@@ -67,6 +67,7 @@ export default function AddEntityForm({
         formValues={formValues}
         onFormValuesChange={setFormValues}
         fieldColor={fieldColor}
+        inlineFields={true}
       />
       <TransparentPaddedView>
         {formCreateEntityResult.isLoading ? (
