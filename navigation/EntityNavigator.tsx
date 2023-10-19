@@ -34,141 +34,141 @@ const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
 
 export default function EntityNavigator({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
-  // const filteredTasks = useTasksForEntityId(entityId);
-  // const navigation = useNavigation();
+  const filteredTasks = useTasksForEntityId(entityId);
+  const navigation = useNavigation();
 
   const entity = useEntityById(entityId);
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
   const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
 
-  // const filteredEntities = useScheduledEntityIds(undefined, entityId);
+  const filteredEntities = useScheduledEntityIds(undefined, entityId);
 
-  // const homeComponent = useMemo(() => {
-  //   if (
-  //     entity &&
-  //     resourceTypeToComponent[entity?.resourcetype] &&
-  //     isMemberEntity
-  //   ) {
-  //     return () => <EntityHome entityId={entityId} />;
-  //   }
-  //   return null;
-  // }, [entity, entityId, isMemberEntity]);
+  const homeComponent = useMemo(() => {
+    if (
+      entity &&
+      resourceTypeToComponent[entity?.resourcetype] &&
+      isMemberEntity
+    ) {
+      return () => <EntityHome entityId={entityId} />;
+    }
+    return null;
+  }, [entity, entityId, isMemberEntity]);
 
-  // const editComponent = useMemo(() => {
-  //   return () => (
-  //     <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
-  //       <EditEntityForm
-  //         entityId={entityId}
-  //         onSubmitSuccess={() => {
-  //           navigation.goBack();
-  //         }}
-  //       />
-  //     </TransparentFullPageScrollView>
-  //   );
-  // }, [entityId, navigation]);
+  const editComponent = useMemo(() => {
+    return () => (
+      <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
+        <EditEntityForm
+          entityId={entityId}
+          onSubmitSuccess={() => {
+            navigation.goBack();
+          }}
+        />
+      </TransparentFullPageScrollView>
+    );
+  }, [entityId, navigation]);
 
-  // const overviewComponent = useMemo(() => {
-  //   if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
-  //     return () => <EntityOverview entityId={entityId} />;
-  //   }
-  //   return null;
-  // }, [entityId, entity]);
+  const overviewComponent = useMemo(() => {
+    if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
+      return () => <EntityOverview entityId={entityId} />;
+    }
+    return null;
+  }, [entityId, entity]);
 
-  // const calendarComponent = useMemo(() => {
-  //   return () => (
-  //     <Calendar
-  //       showFilters={false}
-  //       filteredTasks={filteredTasks}
-  //       filteredEntities={filteredEntities}
-  //     />
-  //   );
-  // }, [filteredTasks, filteredEntities]);
+  const calendarComponent = useMemo(() => {
+    return () => (
+      <Calendar
+        showFilters={false}
+        filteredTasks={filteredTasks}
+        filteredEntities={filteredEntities}
+      />
+    );
+  }, [filteredTasks, filteredEntities]);
 
-  // const referencesComponent = useMemo(() => {
-  //   if (isMemberEntity) {
-  //     return () => <ReferencesList entities={[entityId]} />;
-  //   }
-  //   return null;
-  // }, [entityId, isMemberEntity]);
+  const referencesComponent = useMemo(() => {
+    if (isMemberEntity) {
+      return () => <ReferencesList entities={[entityId]} />;
+    }
+    return null;
+  }, [entityId, isMemberEntity]);
 
-  // const messagesComponent = useMemo(() => {
-  //   if (isMemberEntity) {
-  //     return () => <MessageThread entityId={entityId} />;
-  //   }
-  //   return null;
-  // }, [entityId, isMemberEntity]);
+  const messagesComponent = useMemo(() => {
+    if (isMemberEntity) {
+      return () => <MessageThread entityId={entityId} />;
+    }
+    return null;
+  }, [entityId, isMemberEntity]);
 
-  // const guestListComponent = useMemo(() => {
-  //   if (entity && isMemberEntity) {
-  //     if (entity.resourcetype === 'Event')
-  //       return () => <GuestListPage entityId={entityId} />;
-  //   }
-  //   return null;
-  // }, [entity, entityId, isMemberEntity]);
+  const guestListComponent = useMemo(() => {
+    if (entity && isMemberEntity) {
+      if (entity.resourcetype === 'Event')
+        return () => <GuestListPage entityId={entityId} />;
+    }
+    return null;
+  }, [entity, entityId, isMemberEntity]);
 
   const quickNavPages: QuickNavPage[] = useMemo(() => {
     let pages = [];
 
-    // if (homeComponent) {
-    //   pages.push({
-    //     name: 'Home',
-    //     title: t('pageTitles.home'),
-    //     component: homeComponent
-    //   });
-    // }
-    // if (editComponent) {
-    //   pages.push({
-    //     name: 'Edit',
-    //     title: t('pageTitles.edit'),
-    //     component: editComponent
-    //   });
-    // }
-    // if (overviewComponent) {
-    //   pages.push({
-    //     name: 'Overview',
-    //     title: t('pageTitles.overview'),
-    //     component: overviewComponent
-    //   });
-    // }
-    // if (calendarComponent) {
-    //   pages.push({
-    //     name: 'Calendar',
-    //     title: t('pageTitles.calendar'),
-    //     component: calendarComponent
-    //   });
-    // }
-    // if (referencesComponent) {
-    //   pages.push({
-    //     name: 'References',
-    //     title: t('pageTitles.references'),
-    //     component: referencesComponent
-    //   });
-    // }
-    // if (messagesComponent) {
-    //   pages.push({
-    //     name: 'Messages',
-    //     title: t('pageTitles.messages'),
-    //     component: messagesComponent
-    //   });
-    // }
-    // if (guestListComponent) {
-    //   pages.push({
-    //     name: 'GuestList',
-    //     title: t('pageTitles.guestList'),
-    //     component: guestListComponent
-    //   });
-    // }
+    if (homeComponent) {
+      pages.push({
+        name: 'Home',
+        title: t('pageTitles.home'),
+        component: homeComponent
+      });
+    }
+    if (editComponent) {
+      pages.push({
+        name: 'Edit',
+        title: t('pageTitles.edit'),
+        component: editComponent
+      });
+    }
+    if (overviewComponent) {
+      pages.push({
+        name: 'Overview',
+        title: t('pageTitles.overview'),
+        component: overviewComponent
+      });
+    }
+    if (calendarComponent) {
+      pages.push({
+        name: 'Calendar',
+        title: t('pageTitles.calendar'),
+        component: calendarComponent
+      });
+    }
+    if (referencesComponent) {
+      pages.push({
+        name: 'References',
+        title: t('pageTitles.references'),
+        component: referencesComponent
+      });
+    }
+    if (messagesComponent) {
+      pages.push({
+        name: 'Messages',
+        title: t('pageTitles.messages'),
+        component: messagesComponent
+      });
+    }
+    if (guestListComponent) {
+      pages.push({
+        name: 'GuestList',
+        title: t('pageTitles.guestList'),
+        component: guestListComponent
+      });
+    }
 
     return pages;
   }, [
-    // homeComponent,
-    // calendarComponent,
-    // editComponent,
-    // guestListComponent,
-    // messagesComponent,
-    // overviewComponent,
-    // referencesComponent,
+    homeComponent,
+    calendarComponent,
+    editComponent,
+    guestListComponent,
+    messagesComponent,
+    overviewComponent,
+    referencesComponent,
     t
   ]);
 

@@ -146,7 +146,7 @@ export default function useScheduledEntityIds(
             }
 
             for (const student of studentIds) {
-              if (entitiesBySchool[schoolYear.school].includes(student)) {
+              if (entitiesBySchool[schoolYear.school]?.includes(student)) {
                 return true;
               }
             }
