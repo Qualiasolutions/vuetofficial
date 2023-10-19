@@ -587,7 +587,8 @@ const SchoolYearCard = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 100
+    paddingBottom: 100,
+    paddingTop: 20
   },
   button: {
     marginHorizontal: 5
@@ -672,6 +673,8 @@ export default function SchoolTermsScreen() {
       </TransparentFullPageScrollView>
     );
   }
+
+  console.log('ajhsdas');
 
   return (
     <TransparentFullPageScrollView contentContainerStyle={styles.container}>

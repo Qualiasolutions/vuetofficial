@@ -161,7 +161,7 @@ export function ContentNavigator() {
         name="SchoolTerms"
         component={SchoolTermsScreen}
         options={{
-          headerShown: true
+          header: BackOnlyHeaderWithSafeArea
         }}
       />
     </ContentStack.Navigator>
