@@ -21,6 +21,7 @@ declare global {
 
 // Unauthorised Stack
 export type UnauthorisedTabParamList = {
+  InitialAuth: undefined;
   Login: undefined;
   Signup: undefined;
   ForgotPassword: {

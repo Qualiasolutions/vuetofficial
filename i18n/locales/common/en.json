@@ -482,6 +482,7 @@
       "enterEmail": "Please enter your email to log in",
       "phoneNumber": "Phone number",
       "emailAddress": "Email address",
+      "username": "Username",
       "forgotPassword": "Forgot password",
       "dontHaveAccount": "Don't have an account?",
       "signUp": "Sign up",
