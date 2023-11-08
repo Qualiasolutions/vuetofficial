@@ -29,7 +29,7 @@ import { setFiltersModalOpen } from 'reduxStore/slices/calendars/actions';
 import FiltersModal from 'components/organisms/FiltersModal';
 import TaskPartialCompletionModal from 'components/organisms/TaskPartialCompletionModal';
 import TaskRescheduleModal from 'components/organisms/TaskRescheduleModal';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
 
@@ -60,6 +60,17 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const firstInviteForUser =
     invitesForUser && invitesForUser.length > 0 ? invitesForUser[0] : null;
 
+  useEffect(() => {
+    // If user logs out then set to false
+    if (!userFullDetails) {
+      setHasJustSignedUp(false);
+    }
+
+    if (userFullDetails && !userFullDetails.has_done_setup) {
+      setHasJustSignedUp(true);
+    }
+  }, [userFullDetails]);
+
   const navigatorComponent = useMemo(() => {
     let component = <FullPageSpinner />;
 
@@ -72,9 +83,6 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
         if (firstInviteForUser) {
           component = <FamilyRequestNavigator />;
         } else if (userFullDetails && !userFullDetails.has_done_setup) {
-          if (!hasJustSignedUp) {
-            setHasJustSignedUp(true);
-          }
           component = <SetupNavigator />;
         } else {
           component = <SideNavigator hasJustSignedUp={hasJustSignedUp} />;

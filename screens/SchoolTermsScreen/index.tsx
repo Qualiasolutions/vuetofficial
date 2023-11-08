@@ -674,8 +674,6 @@ export default function SchoolTermsScreen() {
     );
   }
 
-  console.log('ajhsdas');
-
   return (
     <TransparentFullPageScrollView contentContainerStyle={styles.container}>
       <TransparentPaddedView>

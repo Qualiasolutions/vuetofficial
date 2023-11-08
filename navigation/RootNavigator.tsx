@@ -109,7 +109,6 @@ export function BottomTabNavigator({
   hasJustSignedUp: boolean;
 }) {
   const { t } = useTranslation();
-  const primaryColor = useThemeColor({}, 'primary');
   const dispatch = useDispatch();
   const { data: userDetails } = useGetUserDetailsQuery();
   useGetUserInvitesQuery(undefined, {

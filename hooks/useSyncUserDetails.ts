@@ -22,10 +22,12 @@ export default function useSyncUserDetails() {
     userId || skipToken,
     {
       pollingInterval: 10000,
-      selectFromResult: ({ data: userData, isLoading }) => ({
-        data: userData,
-        isLoadingUserDetails: isLoading
-      })
+      selectFromResult: ({ data: userData, isLoading }) => {
+        return {
+          data: userId ? userData : undefined,
+          isLoadingUserDetails: isLoading
+        };
+      }
     }
   );
 
