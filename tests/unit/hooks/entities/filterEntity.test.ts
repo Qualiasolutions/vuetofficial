@@ -240,8 +240,152 @@ it('filterEntity ::: addMembers', () => {
             }
           },
           entitiesBySchool: {
-            1: [1]
+            10: [1]
           }
+        },
+        filters: DEFAULT_FILTERS
+      },
+      expectedResult: true
+    },
+    {
+      description:
+        'School Entity ID provided for SchoolYearStart - unmatching School Year',
+      filterEntityArgs: {
+        entity: { ...DEFAULT_ENTITY, id: 1, resourcetype: 'SchoolYearStart' },
+        filteredEntity: {
+          ...DEFAULT_FILTERED_ENTITY,
+          id: 11,
+          resourcetype: 'School'
+        },
+        resourceTypes: undefined,
+        data: {
+          ...DEFAULT_DATA,
+          schoolYears: {
+            ids: [1, 2],
+            byId: {
+              1: {
+                id: 1,
+                start_date: 'string',
+                end_date: 'string',
+                school: 10,
+                year: 'string',
+                show_on_calendars: true
+              },
+              2: {
+                id: 2,
+                start_date: 'string',
+                end_date: 'string',
+                school: 11,
+                year: 'string',
+                show_on_calendars: true
+              }
+            },
+            bySchool: {
+              10: [1],
+              11: [2]
+            }
+          },
+          entitiesBySchool: {
+            10: [1],
+            11: [2]
+          }
+        },
+        filters: DEFAULT_FILTERS
+      },
+      expectedResult: false
+    },
+    {
+      description:
+        'School Entity ID provided for SchoolYearStart - unmatching School Year where schools have students',
+      filterEntityArgs: {
+        entity: { ...DEFAULT_ENTITY, id: 1, resourcetype: 'SchoolYearStart' },
+        filteredEntity: {
+          ...DEFAULT_FILTERED_ENTITY,
+          id: 11,
+          resourcetype: 'School'
+        },
+        resourceTypes: undefined,
+        data: {
+          ...DEFAULT_DATA,
+          schoolYears: {
+            ids: [1, 2],
+            byId: {
+              1: {
+                id: 1,
+                start_date: 'string',
+                end_date: 'string',
+                school: 10,
+                year: 'string',
+                show_on_calendars: true
+              },
+              2: {
+                id: 2,
+                start_date: 'string',
+                end_date: 'string',
+                school: 11,
+                year: 'string',
+                show_on_calendars: true
+              }
+            },
+            bySchool: {
+              10: [1],
+              11: [2]
+            }
+          },
+          entitiesBySchool: {
+            10: [1, 3],
+            11: [2, 4]
+          },
+          studentIds: [3, 4]
+        },
+        filters: DEFAULT_FILTERS
+      },
+      expectedResult: false
+    },
+    {
+      description:
+        'Student Entity ID provided for SchoolYearStart - matching School Year',
+      filterEntityArgs: {
+        entity: { ...DEFAULT_ENTITY, id: 1, resourcetype: 'SchoolYearStart' },
+        filteredEntity: {
+          ...DEFAULT_FILTERED_ENTITY,
+          id: 3,
+          resourcetype: 'Student',
+          school_attended: 10
+        },
+        resourceTypes: undefined,
+        data: {
+          ...DEFAULT_DATA,
+          schoolYears: {
+            ids: [1, 2],
+            byId: {
+              1: {
+                id: 1,
+                start_date: 'string',
+                end_date: 'string',
+                school: 10,
+                year: 'string',
+                show_on_calendars: true
+              },
+              2: {
+                id: 2,
+                start_date: 'string',
+                end_date: 'string',
+                school: 11,
+                year: 'string',
+                show_on_calendars: true
+              }
+            },
+            bySchool: {
+              10: [1],
+              11: [2]
+            }
+          },
+          entitiesBySchool: {
+            10: [1, 3],
+            11: [2, 4]
+          },
+          studentIds: [3, 4]
         },
         filters: DEFAULT_FILTERS
       },

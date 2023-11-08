@@ -3,6 +3,7 @@ import { AllCategories } from 'reduxStore/services/api/types';
 import {
   EntityResponseType,
   EntityTypeName,
+  isStudentEntity,
   SchoolTermTypeName
 } from 'types/entities';
 import {
@@ -144,10 +145,11 @@ export default function filterEntity(
         return true;
       }
 
-      for (const student of studentIds) {
-        if (entitiesBySchool[schoolYear.school]?.includes(student)) {
-          return true;
-        }
+      if (
+        isStudentEntity(filteredEntity) &&
+        filteredEntity.school_attended === schoolYear.school
+      ) {
+        return true;
       }
     }
   }

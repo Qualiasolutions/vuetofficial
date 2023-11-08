@@ -27,6 +27,8 @@ const isEntity = (
   return !!item;
 };
 
+const emptyArray: number[] = [];
+
 export default function useScheduledEntityIds(
   resourceTypes?: (EntityTypeName | SchoolTermTypeName)[],
   entityId?: number
@@ -60,7 +62,7 @@ export default function useScheduledEntityIds(
         return { data: null };
       }
       return {
-        data: data.byResourceType.Student
+        data: data.byResourceType.Student || emptyArray
       };
     }
   });
