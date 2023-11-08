@@ -36,7 +36,7 @@ const SETUP_TEXT_PAGES: {
   ]
 };
 
-const setupPagesTypes = StyleSheet.create({
+const setupPagesStyles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start'
   },
@@ -61,7 +61,7 @@ const SetupPages = ({
   }
 
   return (
-    <TransparentContainerView style={setupPagesTypes.container}>
+    <TransparentContainerView style={setupPagesStyles.container}>
       <Text>{pages[currentPage]}</Text>
       {createEntityTypeCompletionResult.isLoading ? (
         <PaddedSpinner />
