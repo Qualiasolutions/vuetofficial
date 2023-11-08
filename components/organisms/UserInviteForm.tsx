@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center'
-  }
+  },
+  wrapper: { width: '100%' }
 });
 
 export default function UserInviteForm({
@@ -45,7 +46,7 @@ export default function UserInviteForm({
   }
 
   return (
-    <TransparentView>
+    <TransparentView style={styles.wrapper}>
       <PhoneOrEmailInput
         usingEmail={usingEmail}
         value={usingEmail ? email : phoneNumber}
