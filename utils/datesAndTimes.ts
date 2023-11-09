@@ -110,11 +110,20 @@ const getDatesBetween = (
   end: string | Date,
   useUtc: boolean = false
 ): Date[] => {
+  /*
+    Edge cases considered:
+      - If a task ends at midnight then it should not include the last day
+      - If a task has start_date and end_date at midnight then it should only
+        include the day that starts at midnight
+  */
   const datesArray = [];
   const dayjsFunction = useUtc ? dayjs.utc : dayjs;
 
-  const latestAllowed = dayjsFunction(end).toDate();
-  latestAllowed.setSeconds(latestAllowed.getSeconds() - 1);
+  const secondBeforeEnd = dayjsFunction(end).toDate();
+  secondBeforeEnd.setSeconds(secondBeforeEnd.getSeconds() - 1);
+  const latestAllowed = new Date(
+    Math.max(Number(secondBeforeEnd), Number(dayjsFunction(start).toDate()))
+  );
   latestAllowed.setHours(23);
   latestAllowed.setMinutes(59);
   latestAllowed.setSeconds(59);

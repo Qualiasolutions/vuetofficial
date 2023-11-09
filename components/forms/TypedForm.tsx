@@ -613,6 +613,7 @@ export default function TypedForm({
                       });
                     }}
                     changeMembersText={f.changeMembersText || ''}
+                    disabled={f.disabled}
                   />
                 </InputPair>
               );

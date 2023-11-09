@@ -98,6 +98,7 @@ export type FormType =
   | 'TRANSPORT'
   | 'ACCOMMODATION'
   | 'HOLIDAY'
+  | 'USER_BIRTHDAY'
   | 'ANNIVERSARY';
 
 export default function AddTaskScreen({
@@ -141,7 +142,8 @@ export default function AddTaskScreen({
     TRANSPORT: 'Add Transport',
     ACCOMMODATION: 'Add Accommodation',
     HOLIDAY: 'Add Holiday',
-    ANNIVERSARY: 'Add Birthday / Anniversary'
+    ANNIVERSARY: 'Add Birthday / Anniversary',
+    USER_BIRTHDAY: 'Add User Birthday'
   }[formType];
 
   useColouredHeader(headerBackgroundColor, headerTintColor, headerTitle);

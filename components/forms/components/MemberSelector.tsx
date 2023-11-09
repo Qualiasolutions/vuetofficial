@@ -115,11 +115,13 @@ const ExternalListing = ({ memberId }: { memberId: number }) => {
 export default function MemberSelector({
   values,
   onValueChange,
-  changeMembersText
+  changeMembersText,
+  disabled
 }: {
   values: number[];
   onValueChange: (val: number[]) => void;
   changeMembersText?: string;
+  disabled?: boolean;
 }) {
   const bottomSheetRef = useRef<RBSheet>(null);
   const [showMembersList, setShowMembersList] = useState<boolean>(false);
@@ -205,20 +207,22 @@ export default function MemberSelector({
     <TransparentView>
       {selectedMembersList}
       {externalMembers.length > 0 && externalMembersList}
-      <SafePressable
-        onPress={() => setShowMembersList(true)}
-        style={styles.addMemberButton}
-      >
-        <Image
-          source={require('assets/images/icons/plus.png')}
-          style={styles.addIcon}
-        />
-        <PrimaryText
-          text={
-            changeMembersText || t('components.memberSelector.changeMembers')
-          }
-        />
-      </SafePressable>
+      {!disabled && (
+        <SafePressable
+          onPress={() => setShowMembersList(true)}
+          style={styles.addMemberButton}
+        >
+          <Image
+            source={require('assets/images/icons/plus.png')}
+            style={styles.addIcon}
+          />
+          <PrimaryText
+            text={
+              changeMembersText || t('components.memberSelector.changeMembers')
+            }
+          />
+        </SafePressable>
+      )}
       <RBSheet
         ref={bottomSheetRef}
         height={600}

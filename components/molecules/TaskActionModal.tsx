@@ -255,19 +255,22 @@ export default function TaskActionModal() {
           title={t('components.task.messages')}
         />
       )}
-      {taskToAction && !taskToAction.actionId && task && (
-        <LinkButton
-          onPress={() => {
-            if (taskToAction) {
-              (navigation.navigate as any)('AddTask', {
-                ...task
-              });
-              dispatch(setTaskToAction(null));
-            }
-          }}
-          title={t('components.task.duplicateTask')}
-        />
-      )}
+      {taskToAction &&
+        !taskToAction.actionId &&
+        task &&
+        task.type !== 'USER_BIRTHDAY' && (
+          <LinkButton
+            onPress={() => {
+              if (taskToAction) {
+                (navigation.navigate as any)('AddTask', {
+                  ...task
+                });
+                dispatch(setTaskToAction(null));
+              }
+            }}
+            title={t('components.task.duplicateTask')}
+          />
+        )}
       {canMarkComplete &&
         taskToAction &&
         scheduledTask &&

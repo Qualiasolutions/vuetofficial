@@ -642,6 +642,41 @@ export const useAnniversaryFieldTypes = ({
   }, [t, baseT, disabledRecurrenceFields, type]);
 };
 
+export const useUserBirthdayFieldTypes = (): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      title: {
+        type: 'string',
+        displayName: t('tasks.anniversaryTask.name'),
+        disabled: true,
+        required: true
+      },
+      members: {
+        type: 'addMembers',
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.showOnWhoseCalendar'),
+        required: true,
+        disabled: true
+      },
+      date: {
+        type: 'Date',
+        disabled: true,
+        required: true
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: true,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: true
+      }
+    };
+  }, [t]);
+};
+
 export const useHolidayFieldTypes = (
   disabledRecurrenceFields: boolean = false
 ): FlatFormFieldTypes => {
@@ -712,6 +747,7 @@ export const useFieldTypesForFormType = (
     type: opts.anniversaryType || 'BIRTHDAY'
   });
   const transportFieldTypes = useTransportFieldTypes(opts.transportType);
+  const userBirthdayFieldTypes = useUserBirthdayFieldTypes();
 
   let form: FormFieldTypes = {};
   if (type === 'ACCOMMODATION') form = accommodationFieldTypes;
@@ -719,6 +755,7 @@ export const useFieldTypesForFormType = (
   else if (type === 'TRANSPORT') form = transportFieldTypes;
   else if (type === 'DUE_DATE') form = dueDateFieldTypes;
   else if (type === 'HOLIDAY') form = holidayFieldTypes;
+  else if (type === 'USER_BIRTHDAY') form = userBirthdayFieldTypes;
   else form = taskFieldTypes;
 
   if (!opts.isEdit && form.tagsAndEntities) {

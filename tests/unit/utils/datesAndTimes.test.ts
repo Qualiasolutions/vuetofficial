@@ -101,6 +101,11 @@ it('datesAndTimes ::: getDateStringsBetween', () => {
       expectedOutput: ['2023-06-03']
     },
     {
+      start: '2023-06-04 00:00:00+00:00',
+      end: '2023-06-04 00:00:00+00:00',
+      expectedOutput: ['2023-06-04']
+    },
+    {
       start: '2023-06-03 08:00:00+00:00',
       end: '2023-06-04 00:00:00+00:00',
       expectedOutput: ['2023-06-03']

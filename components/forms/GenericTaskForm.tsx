@@ -138,6 +138,7 @@ export default function GenericTaskForm({
   const disabledRecurrenceFields =
     isEdit &&
     (isAnniversaryTaskType(type) ||
+      type === 'USER_BIRTHDAY' ||
       (recurrenceIndex !== undefined && !recurrenceOverwrite));
 
   const formFields = useFieldTypesForFormType(
@@ -165,6 +166,7 @@ export default function GenericTaskForm({
       TRANSPORT: 'TransportTask',
       ACCOMMODATION: 'AccommodationTask',
       ANNIVERSARY: 'AnniversaryTask',
+      USER_BIRTHDAY: 'FixedTask',
       HOLIDAY: 'HolidayTask',
       '': 'FixedTask'
     };
@@ -337,41 +339,43 @@ export default function GenericTaskForm({
         fieldColor={fieldColor}
         sectionStyle={sectionStyle}
       />
-      <TransparentPaddedView style={styles.bottomButtons}>
-        {isSubmitting ? (
-          <PaddedSpinner spinnerColor="buttonDefault" />
-        ) : isEdit ? (
-          recurrenceOverwrite ? (
-            <Button
-              title={t('common.update')}
-              onPress={() => {
-                const parsedTaskFieldValues = getParsedFieldValues();
-                setStateParsedFieldValues(parsedTaskFieldValues);
-                setShowRecurrentUpdateModal(true);
-              }}
-              disabled={!hasRequired}
-            />
-          ) : (
-            <TransparentView>
+      {formType !== 'USER_BIRTHDAY' && (
+        <TransparentPaddedView style={styles.bottomButtons}>
+          {isSubmitting ? (
+            <PaddedSpinner spinnerColor="buttonDefault" />
+          ) : isEdit ? (
+            recurrenceOverwrite ? (
               <Button
                 title={t('common.update')}
                 onPress={() => {
-                  submitUpdateForm();
+                  const parsedTaskFieldValues = getParsedFieldValues();
+                  setStateParsedFieldValues(parsedTaskFieldValues);
+                  setShowRecurrentUpdateModal(true);
                 }}
                 disabled={!hasRequired}
               />
-            </TransparentView>
-          )
-        ) : (
-          <Button
-            title={t('common.create')}
-            onPress={() => {
-              submitCreateForm();
-            }}
-            disabled={!hasRequired}
-          />
-        )}
-      </TransparentPaddedView>
+            ) : (
+              <TransparentView>
+                <Button
+                  title={t('common.update')}
+                  onPress={() => {
+                    submitUpdateForm();
+                  }}
+                  disabled={!hasRequired}
+                />
+              </TransparentView>
+            )
+          ) : (
+            <Button
+              title={t('common.create')}
+              onPress={() => {
+                submitCreateForm();
+              }}
+              disabled={!hasRequired}
+            />
+          )}
+        </TransparentPaddedView>
+      )}
       <RecurrentUpdateModal
         visible={showRecurrentUpdateModal}
         onRequestClose={() => setShowRecurrentUpdateModal(false)}

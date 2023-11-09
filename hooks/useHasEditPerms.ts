@@ -15,6 +15,10 @@ export default function useHasEditPerms(taskId: number) {
     return false;
   }
 
+  if (task?.type === 'USER_BIRTHDAY') {
+    return false;
+  }
+
   if (userDetails && task?.members.includes(userDetails.id)) {
     return true;
   }

@@ -68,7 +68,9 @@ function AnniversaryCard({ task }: { task: ScheduledTaskResponseType }) {
         <AlmostBlackText
           style={styles.cardSubtitle}
           text={`${
-            baseTask?.known_year ? `${yearsOffset} on ` : ''
+            baseTask.type === 'USER_BIRTHDAY' || baseTask?.known_year
+              ? `${yearsOffset} on `
+              : ''
           }${monthName} ${day}`}
         />
       </TouchableOpacity>
@@ -89,7 +91,9 @@ export default function AnniversaryDatesScreen() {
 
   const birthdayTasks = allTasks.ids
     .map((id) => allTasks.byId[id])
-    .filter((task) => ['BIRTHDAY', 'ANNIVERSARY'].includes(task.type));
+    .filter((task) =>
+      ['BIRTHDAY', 'ANNIVERSARY', 'USER_BIRTHDAY'].includes(task.type)
+    );
 
   const birthdayIds = birthdayTasks.map((task) => task.id);
 

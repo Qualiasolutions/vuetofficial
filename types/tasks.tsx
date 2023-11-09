@@ -31,6 +31,7 @@ type TaskResourceType =
   | 'AccommodationTask'
   | 'AnniversaryTask'
   | 'HolidayTask'
+  | 'UserBirthdayTask'
   | 'BirthdayTask';
 type ScheduledTaskType = 'TASK' | 'ACTION';
 type TransportTaskType =
@@ -46,6 +47,7 @@ type AnniversaryTaskType = 'ANNIVERSARY' | 'BIRTHDAY';
 type TaskType =
   | 'TASK'
   | 'APPOINTMENT'
+  | 'USER_BIRTHDAY'
   | 'DUE_DATE'
   | 'HOLIDAY'
   | 'ICAL_EVENT'
