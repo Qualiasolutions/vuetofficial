@@ -93,15 +93,17 @@ export default function useScheduledEntityIds(
 
   const filteredEntities =
     allScheduledTasks.orderedEntities
-      .map(({ id, resourcetype }) => {
+      .map(({ id, recurrence_index, resourcetype }) => {
         const type = RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY';
         return (
           allScheduledTasks?.byEntityId[type] &&
-          allScheduledTasks?.byEntityId[type][id]
+          allScheduledTasks?.byEntityId[type][id][
+            recurrence_index === null ? -1 : recurrence_index
+          ]
         );
       })
-      .filter((entity) =>
-        filterEntity(
+      .filter((entity) => {
+        return filterEntity(
           entity,
           filteredEntity || undefined,
           resourceTypes,
@@ -120,8 +122,8 @@ export default function useScheduledEntityIds(
             filteredTaskTypes: filteredTaskTypes || [],
             completionFilters: completionFilters || []
           }
-        )
-      )
+        );
+      })
       .filter(isEntity) || [];
 
   const formatted = formatEntitiesPerDate(filteredEntities);

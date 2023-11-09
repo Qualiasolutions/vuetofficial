@@ -147,6 +147,7 @@ interface ScheduledEntityResponseType {
   end_date: string | null;
   start_datetime: string | null;
   end_datetime: string | null;
+  recurrence_index: number | null;
 }
 
 interface BaseCreateTaskRequest {

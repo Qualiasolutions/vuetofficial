@@ -464,77 +464,6 @@ export const selectScheduledTaskIdsByEntityTypes = (
     }
   );
 
-export const selectFilteredScheduledTaskIdsByDate = createSelector(
-  tasksApi.endpoints.getAllScheduledTasks.select(),
-  entitiesApi.endpoints.getAllEntities.select(),
-  categoriesApi.endpoints.getAllCategories.select(),
-  selectFilteredUsers,
-  selectFilteredCategories,
-  selectFilteredTaskTypes,
-  selectCompletionFilters,
-  (
-    scheduledTasks,
-    allEntities,
-    allCategories,
-    users,
-    categories,
-    taskTypes,
-    completionFilters
-  ) => {
-    const entitiesData = allEntities.data;
-    const categoriesData = allCategories.data;
-    if (!scheduledTasks.data) {
-      return {};
-    }
-    if (
-      !entitiesData ||
-      !categoriesData ||
-      !users ||
-      !categories ||
-      !taskTypes ||
-      !completionFilters
-    ) {
-      return {};
-    }
-
-    const filteredTasks =
-      scheduledTasks.data.ordered
-        .map(({ id, recurrence_index, resourcetype, action_id }) => {
-          const recurrenceIndex =
-            recurrence_index === null ? -1 : recurrence_index;
-          if (['FixedTask'].includes(resourcetype)) {
-            return (
-              scheduledTasks.data?.byTaskId[id] &&
-              scheduledTasks.data?.byTaskId[id][recurrenceIndex]
-            );
-          }
-
-          if (action_id) {
-            return (
-              scheduledTasks.data?.byActionId[action_id] &&
-              scheduledTasks.data?.byActionId[action_id][recurrenceIndex]
-            );
-          }
-        })
-        .filter(isTask)
-        .filter((task) =>
-          filterTask(
-            task,
-            users,
-            categories,
-            taskTypes,
-            completionFilters,
-            categoriesData,
-            entitiesData
-          )
-        ) || [];
-
-    const formatted = formatTasksPerDate(filteredTasks);
-
-    return formatted;
-  }
-);
-
 export const selectScheduledTaskIdsByTagNames = (tagNames: string[]) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(),
@@ -641,7 +570,11 @@ export const selectScheduledTask = ({
     }
   );
 
-export const selectScheduledEntity = (id: number, type: string) =>
+export const selectScheduledEntity = (
+  id: number,
+  type: string,
+  recurrence_index: number | null
+) =>
   createSelector(
     tasksApi.endpoints.getAllScheduledTasks.select(),
     (scheduledTasks) => {
@@ -649,7 +582,10 @@ export const selectScheduledEntity = (id: number, type: string) =>
         return (
           scheduledTasks.data?.byEntityId &&
           scheduledTasks.data?.byEntityId[type] &&
-          scheduledTasks.data?.byEntityId[type][id]
+          scheduledTasks.data?.byEntityId[type][id] &&
+          scheduledTasks.data?.byEntityId[type][id][
+            recurrence_index === null ? -1 : recurrence_index
+          ]
         );
       }
     }

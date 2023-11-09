@@ -187,7 +187,9 @@ function Calendar({
 
         return allScheduled?.byEntityId[
           RESOURCE_TYPE_TO_TYPE[entity.resourcetype] || 'ENTITY'
-        ][entity.id].title
+        ][entity.id][
+          entity.recurrence_index === null ? -1 : entity.recurrence_index
+        ].title
           .toLowerCase()
           .includes(submittedSearchText.toLowerCase());
       });

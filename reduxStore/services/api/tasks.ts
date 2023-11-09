@@ -55,20 +55,30 @@ const normalizeScheduledTaskData = ({
         }),
         {}
       ),
-    orderedEntities: entityData.map(({ id, resourcetype }) => ({
-      id,
-      resourcetype
-    })),
-    byEntityId: entityData.reduce<{ [key: string]: {} }>((prev, next) => {
-      const type = RESOURCE_TYPE_TO_TYPE[next.resourcetype] || 'ENTITY';
-      return {
-        ...prev,
-        [type]: {
-          ...(prev[type] || {}),
-          [next.id]: next
-        }
-      };
-    }, {})
+    orderedEntities: entityData.map(
+      ({ id, resourcetype, recurrence_index }) => ({
+        id,
+        resourcetype,
+        recurrence_index
+      })
+    ),
+    byEntityId: entityData.reduce<{ [key: string]: { [key: number]: {} } }>(
+      (prev, next) => {
+        const type = RESOURCE_TYPE_TO_TYPE[next.resourcetype] || 'ENTITY';
+        return {
+          ...prev,
+          [type]: {
+            ...(prev[type] || {}),
+            [next.id]: {
+              ...((prev[type] || {})[next.id || -1] || {}), // -1 should never be used here
+              [next.recurrence_index === null ? -1 : next.recurrence_index]:
+                next
+            }
+          }
+        };
+      },
+      {}
+    )
   };
 };
 
@@ -211,10 +221,13 @@ export type AllScheduledTasks = {
   orderedEntities: {
     id: number;
     resourcetype: EntityTypeName | SchoolTermTypeName;
+    recurrence_index: null | number;
   }[];
   byEntityId: {
     [resourcetype: string]: {
-      [key: number]: ScheduledEntityResponseType;
+      [key: number]: {
+        [key: number]: ScheduledEntityResponseType;
+      };
     };
   };
 };

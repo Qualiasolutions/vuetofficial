@@ -2,7 +2,10 @@ import { CategoryName } from 'types/categories';
 import { EntityTypeName, SchoolTermTypeName } from 'types/entities';
 
 const ENTITY_TYPE_TO_CATEGORY: {
-  [key in EntityTypeName | SchoolTermTypeName]: CategoryName | null;
+  [key in
+    | EntityTypeName
+    | SchoolTermTypeName
+    | 'PetBirthday']: CategoryName | null;
 } = {
   Anniversary: 'SOCIAL_INTERESTS',
   Birthday: 'SOCIAL_INTERESTS',
@@ -32,7 +35,6 @@ const ENTITY_TYPE_TO_CATEGORY: {
   HotelOrRental: 'TRAVEL',
   StayWithFriend: 'TRAVEL',
   TravelPlan: 'TRAVEL',
-  Pet: 'PETS',
   Employee: 'CAREER',
   DaysOff: 'CAREER',
   CareerGoal: 'CAREER',
@@ -52,7 +54,9 @@ const ENTITY_TYPE_TO_CATEGORY: {
   HealthGoal: 'HEALTH_BEAUTY',
   Patient: 'HEALTH_BEAUTY',
   Appointment: 'HEALTH_BEAUTY',
-  ProfessionalEntity: null
+  ProfessionalEntity: null,
+  Pet: 'PETS',
+  PetBirthday: 'PETS'
 };
 
 export default ENTITY_TYPE_TO_CATEGORY;

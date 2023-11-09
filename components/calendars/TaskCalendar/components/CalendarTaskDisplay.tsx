@@ -300,9 +300,9 @@ function Calendar({
       const sectionData = [
         ...hoistedTasks,
         ...entitiesToShow
-          .map(({ id, resourcetype }) => ({
+          .map(({ id, resourcetype, recurrence_index }) => ({
             id,
-            recurrence_index: null,
+            recurrence_index,
             action_id: null,
             type: (RESOURCE_TYPE_TO_TYPE[resourcetype] || 'ENTITY') as
               | SchoolTermItemType

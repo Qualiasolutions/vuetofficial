@@ -25,7 +25,9 @@ const SCHOOL_ENTITY_TYPES = [
 export default function filterEntity(
   { id, resourcetype, members }: ScheduledEntityResponseType,
   filteredEntity: EntityResponseType | undefined,
-  resourceTypes: (EntityTypeName | SchoolTermTypeName)[] | undefined,
+  resourceTypes:
+    | (EntityTypeName | SchoolTermTypeName | 'PetBirthday')[]
+    | undefined,
   {
     allCategories,
     schoolYears,

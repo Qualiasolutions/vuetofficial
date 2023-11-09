@@ -94,7 +94,8 @@ export const formatEntitiesPerDate = (
 
       entitiesPerDate[entityDate].push({
         id: entity.id,
-        resourcetype: entity.resourcetype
+        resourcetype: entity.resourcetype,
+        recurrence_index: entity.recurrence_index
       });
     });
   }

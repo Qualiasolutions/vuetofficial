@@ -96,7 +96,11 @@ const styles = StyleSheet.create({
   checkbox: { marginLeft: 10 }
 });
 
-export type ScheduledEntity = { id: number; resourcetype: string };
+export type ScheduledEntity = {
+  id: number;
+  resourcetype: string;
+  recurrence_index: number | null;
+};
 
 type PropTypes = {
   task: MinimalScheduledTask;
@@ -341,7 +345,9 @@ function Task({
       actionId: action_id
     })
   );
-  const scheduledEntity = useSelector(selectScheduledEntity(id, type));
+  const scheduledEntity = useSelector(
+    selectScheduledEntity(id, type, recurrence_index)
+  );
 
   const isComplete = !!scheduledTask?.is_complete;
   const isPartiallyComplete = !!scheduledTask?.is_partially_complete;
