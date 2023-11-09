@@ -114,6 +114,7 @@ const getDatesBetween = (
   const dayjsFunction = useUtc ? dayjs.utc : dayjs;
 
   const latestAllowed = dayjsFunction(end).toDate();
+  latestAllowed.setSeconds(latestAllowed.getSeconds() - 1);
   latestAllowed.setHours(23);
   latestAllowed.setMinutes(59);
   latestAllowed.setSeconds(59);
