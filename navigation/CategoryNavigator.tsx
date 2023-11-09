@@ -22,8 +22,6 @@ const CategoryCalendar = ({ categoryId }: { categoryId: number }) => {
       ) as EntityTypeName[])
     : [];
 
-  console.log(categoryEntityTypes);
-
   const filteredTasks = useTasksForCategory(categoryId);
   const filteredEntities = useScheduledEntityIds(categoryEntityTypes);
 
