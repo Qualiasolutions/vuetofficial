@@ -134,8 +134,6 @@ function Calendar({
           return false;
         }
 
-        return false;
-
         const isProfessional = scheduledTask.entities?.some((entityId) =>
           isProfessionalEntity(entityData.byId[entityId])
         );
@@ -144,6 +142,8 @@ function Calendar({
           scheduledTask.entities?.some(
             (entityId) => !isProfessionalEntity(entityData.byId[entityId])
           );
+
+        return false;
 
         const matchesEntityString = scheduledTask.entities.some((entityId) =>
           entityData.byId[entityId].name
