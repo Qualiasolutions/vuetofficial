@@ -111,8 +111,6 @@ function Calendar({
   const [submittedSearchText, setSubmittedSearchText] = useState('');
   const [proFilter, setProFilter] = useState<ProfessionalFilterType>('ALL');
 
-  return null;
-
   const fullFilteredTasks = useMemo(() => {
     if (!entityData) {
       return {};
@@ -135,6 +133,8 @@ function Calendar({
         if (proFilter === 'PROFESSIONAL' && !hasEntitites) {
           return false;
         }
+
+        return false;
 
         const isProfessional = scheduledTask.entities?.some((entityId) =>
           isProfessionalEntity(entityData.byId[entityId])
@@ -172,6 +172,8 @@ function Calendar({
     }
     return full;
   }, [filteredTasks, submittedSearchText, entityData, proFilter, allScheduled]);
+
+  return null;
 
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
