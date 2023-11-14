@@ -200,6 +200,8 @@ function Calendar({
     return full;
   }, [filteredEntities, submittedSearchText, proFilter, allScheduled]);
 
+  return null;
+
   const calendarView = useMemo(() => {
     return (
       <CalendarView
@@ -243,8 +245,6 @@ function Calendar({
   if (isLoading) {
     return <FullPageSpinner />;
   }
-
-  return null;
 
   return (
     <TransparentView style={styles.container}>
