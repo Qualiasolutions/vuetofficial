@@ -138,12 +138,10 @@ function Calendar({
           isProfessionalEntity(entityData.byId[entityId])
         );
         const isPersonal =
-          (scheduledTask.entities && scheduledTask.entities.length === 0) ||
-          scheduledTask.entities.some(
+          scheduledTask.entities?.length === 0 ||
+          scheduledTask.entities?.some(
             (entityId) => !isProfessionalEntity(entityData.byId[entityId])
           );
-
-        return false;
 
         const matchesEntityString = scheduledTask.entities.some((entityId) =>
           entityData.byId[entityId].name
