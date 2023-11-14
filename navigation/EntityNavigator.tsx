@@ -22,6 +22,8 @@ import GuestListPage from 'components/organisms/GuestListPage';
 import useEntityById from 'hooks/entities/useEntityById';
 import useTasksForEntityId from 'hooks/tasks/useTasksForEntityId';
 import useScheduledEntityIds from 'hooks/entities/useScheduledEntityIds';
+import NoPermissionsPage from 'components/molecules/NoPermissionsPage';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
 
 const styles = StyleSheet.create({
   editForm: { paddingBottom: 100 }
@@ -32,12 +34,12 @@ const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
   Event: 'Overview'
 };
 
-export default function EntityNavigator({ entityId }: { entityId: number }) {
+function EntityNavigator({ entityId }: { entityId: number }) {
+  const entity = useEntityById(entityId);
   const { t } = useTranslation();
   const filteredTasks = useTasksForEntityId(entityId);
   const navigation = useNavigation();
 
-  const entity = useEntityById(entityId);
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
   const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
@@ -183,4 +185,18 @@ export default function EntityNavigator({ entityId }: { entityId: number }) {
       quickNavPages={quickNavPages}
     />
   );
+}
+
+export default function EntityNavigatorMain({
+  entityId
+}: {
+  entityId: number;
+}) {
+  const entity = useEntityById(entityId);
+  const { data: userDetails } = useGetUserFullDetails();
+  if (!(userDetails && entity?.members.includes(userDetails.id))) {
+    return <NoPermissionsPage />;
+  }
+
+  return <EntityNavigator entityId={entityId} />;
 }

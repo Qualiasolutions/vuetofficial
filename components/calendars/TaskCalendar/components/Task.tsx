@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Touchable } from 'react-native';
 import { Text, useThemeColor } from 'components/Themed';
 import {
   getTimeInTimezone,
@@ -86,12 +86,17 @@ const styles = StyleSheet.create({
   bottomWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    width: '100%'
   },
   tagsWrapper: {
-    flexDirection: 'row',
-    width: '50%',
-    flex: 0
+    flexDirection: 'row'
+  },
+  entityTagsWrapper: { flexShrink: 0, maxWidth: '50%' },
+  userTagsWrapper: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    flexGrow: 1
   },
   checkbox: { marginLeft: 10 }
 });
@@ -506,8 +511,11 @@ function Task({
             </TaskCompletionPressable>
           )}
         </TransparentView>
-        <TransparentView style={styles.bottomWrapper}>
-          <TransparentScrollView style={styles.tagsWrapper} horizontal>
+        <Pressable style={styles.bottomWrapper}>
+          <TransparentScrollView
+            style={[styles.tagsWrapper, styles.entityTagsWrapper]}
+            horizontal
+          >
             {!isEntity && task && (
               <>
                 <EntityTags entities={task.entities} />
@@ -515,8 +523,14 @@ function Task({
               </>
             )}
           </TransparentScrollView>
-          <UserTags memberIds={taskOrEntity.members} />
-        </TransparentView>
+          <TransparentScrollView
+            style={styles.tagsWrapper}
+            contentContainerStyle={styles.userTagsWrapper}
+            horizontal
+          >
+            <UserTags memberIds={taskOrEntity.members} />
+          </TransparentScrollView>
+        </Pressable>
       </TouchableOpacity>
     </>
   );
