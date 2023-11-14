@@ -8,21 +8,26 @@ import {
   TransparentPaddedView,
   TransparentView
 } from 'components/molecules/ViewComponents';
-import { WhiteFullPageScrollView } from 'components/molecules/ScrollViewComponents';
+import {
+  TransparentScrollView,
+  WhiteFullPageScrollView
+} from 'components/molecules/ScrollViewComponents';
 import { StyleSheet } from 'react-native';
 import {
   AlmostBlackText,
   BlackText,
-  PrimaryText,
-  WhiteText
+  PrimaryText
 } from 'components/molecules/TextComponents';
 import { TextInput, useThemeColor } from 'components/Themed';
 import EventListLink from 'components/molecules/EventListLink';
 import { Modal } from 'components/molecules/Modals';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import SafePressable from 'components/molecules/SafePressable';
+import MemberSelector from 'components/forms/components/MemberSelector';
+import useGetUserFullDetails from 'hooks/useGetUserDetails';
+import { SmallButton } from 'components/molecules/ButtonComponents';
+import { PaddedSpinner } from 'components/molecules/Spinners';
 
 const useStyle = function () {
   return StyleSheet.create({
@@ -30,17 +35,18 @@ const useStyle = function () {
       paddingTop: 10,
       paddingBottom: 100
     },
+    closeCircle: { alignSelf: 'flex-end' },
     addNewContainer: {
-      height: 198,
       width: '100%',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      paddingVertical: 20
     },
+    addNewContainerOuter: { width: '100%' },
     addNewHeader: {
       fontSize: 18
     },
     addNewButton: {
-      backgroundColor: useThemeColor({}, 'buttonDefault'),
       height: 37,
       width: 152,
       borderRadius: 10,
@@ -48,7 +54,7 @@ const useStyle = function () {
       justifyContent: 'center',
       alignItems: 'center'
     },
-    input: { width: '100%', flex: 0 },
+    input: { width: '100%', flex: 0, marginVertical: 20 },
     info: {
       fontSize: 16
     },
@@ -59,23 +65,37 @@ const useStyle = function () {
     },
     rightContainer: {
       marginLeft: 20
-    }
+    },
+    addNewLink: { marginTop: 20 }
   });
 };
 
 export default function EventScreen({ entityId }: { entityId: number }) {
   const [addNewModal, setAddNewModal] = useState(false);
   const [itemName, setItemName] = useState('');
-  const [createTrigger] = useCreateEntityMutation();
-  const [updateTrigger] = useUpdateEntityWithoutCacheInvalidationMutation();
+  const [newMembers, setNewMembers] = useState<number[]>([]);
+  const [createTrigger, createTriggerResult] = useCreateEntityMutation();
 
   const { t } = useTranslation();
-
-  const { data: allEntities } = useGetAllEntitiesQuery();
-  const { data: memberEntities } = useGetMemberEntitiesQuery();
+  const { data: userData } = useGetUserFullDetails();
+  const { data: allEntities, isFetching: isLoadingEntities } =
+    useGetAllEntitiesQuery();
+  const { data: memberEntities, isFetching: isLoadingMemberEntities } =
+    useGetMemberEntitiesQuery();
   const entityData = allEntities?.byId[entityId];
 
   const styles = useStyle();
+
+  const isLoading =
+    isLoadingEntities ||
+    isLoadingMemberEntities ||
+    createTriggerResult.isLoading;
+
+  useEffect(() => {
+    if (userData) {
+      setNewMembers([userData.id]);
+    }
+  }, [userData]);
 
   const childEntityIds = entityData?.child_entities || [];
 
@@ -106,28 +126,28 @@ export default function EventScreen({ entityId }: { entityId: number }) {
       );
     });
 
-  const customLink = (
+  const customLink = isLoading ? (
+    <PaddedSpinner style={styles.addNewLink} />
+  ) : (
     <EventListLink
       text="Add New"
       onPressContainer={() => {
         setAddNewModal(true);
       }}
       subType="add"
-      style={{ marginTop: 20 }}
+      style={styles.addNewLink}
     />
   );
 
   const onAddNew = useCallback(() => {
-    if (entityData) {
-      setAddNewModal(false);
-      createTrigger({
-        resourcetype: 'EventSubentity',
-        name: itemName,
-        parent: entityId,
-        members: entityData.members
-      });
-    }
-  }, [setAddNewModal, createTrigger, entityId, itemName, entityData]);
+    setAddNewModal(false);
+    createTrigger({
+      resourcetype: 'EventSubentity',
+      name: itemName,
+      parent: entityId,
+      members: newMembers
+    });
+  }, [setAddNewModal, createTrigger, entityId, itemName, newMembers]);
 
   const closeAddNewModal = useCallback(() => {
     setAddNewModal(false);
@@ -175,11 +195,14 @@ export default function EventScreen({ entityId }: { entityId: number }) {
         boxStyle={styles.addNewContainer}
         onRequestClose={() => setAddNewModal(false)}
       >
-        <TransparentView style={styles.addNewContainer}>
+        <TransparentScrollView
+          contentContainerStyle={styles.addNewContainer}
+          style={styles.addNewContainerOuter}
+        >
           <Ionicons
             name="close-circle"
             size={30}
-            style={{ alignSelf: 'flex-end' }}
+            style={styles.closeCircle}
             onPress={closeAddNewModal}
           />
           <PrimaryText text={t('common.addNew')} style={styles.addNewHeader} />
@@ -188,14 +211,19 @@ export default function EventScreen({ entityId }: { entityId: number }) {
             onChangeText={setItemName}
             placeholder={t('common.addTitle')}
           />
-          <SafePressable
-            disabled={itemName === ''}
+          <MemberSelector
+            values={newMembers}
+            onValueChange={(selectedMembers) => {
+              setNewMembers(selectedMembers);
+            }}
+          />
+          <SmallButton
+            disabled={!itemName || newMembers.length === 0}
             onPress={onAddNew}
             style={styles.addNewButton}
-          >
-            <WhiteText text={t('common.save')} />
-          </SafePressable>
-        </TransparentView>
+            title={t('common.save')}
+          />
+        </TransparentScrollView>
       </Modal>
     </WhiteFullPageScrollView>
   );
