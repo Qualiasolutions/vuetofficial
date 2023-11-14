@@ -75,6 +75,7 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   const [itemName, setItemName] = useState('');
   const [newMembers, setNewMembers] = useState<number[]>([]);
   const [createTrigger, createTriggerResult] = useCreateEntityMutation();
+  const [updateTrigger] = useUpdateEntityWithoutCacheInvalidationMutation();
 
   const { t } = useTranslation();
   const { data: userData } = useGetUserFullDetails();
