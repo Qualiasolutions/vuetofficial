@@ -111,8 +111,6 @@ function Calendar({
   const [submittedSearchText, setSubmittedSearchText] = useState('');
   const [proFilter, setProFilter] = useState<ProfessionalFilterType>('ALL');
 
-  return null;
-
   const fullFilteredTasks = useMemo(() => {
     if (!entityData) {
       return {};
@@ -120,10 +118,11 @@ function Calendar({
     const full: { [date: string]: ScheduledTask[] } = {};
     for (const date in filteredTasks) {
       const filtered = filteredTasks[date].filter((task) => {
-        const scheduledTask =
-          allScheduled?.byTaskId[task.id][
-            task.recurrence_index === null ? -1 : task.recurrence_index
-          ];
+        const scheduledTask = allScheduled?.byTaskId[task.id]
+          ? allScheduled?.byTaskId[task.id][
+              task.recurrence_index === null ? -1 : task.recurrence_index
+            ]
+          : null;
 
         if (!scheduledTask) {
           return false;
@@ -169,6 +168,8 @@ function Calendar({
     }
     return full;
   }, [filteredTasks, submittedSearchText, entityData, proFilter, allScheduled]);
+
+  return null;
 
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
