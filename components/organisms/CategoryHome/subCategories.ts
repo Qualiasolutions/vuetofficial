@@ -7,7 +7,7 @@ export default {
       navMethod: 'push',
       toScreen: 'EntityList',
       toScreenParams: {
-        entityTypes: ['Pet'],
+        entityTypes: ['Pet', 'PetBirthday'],
         entityTypeName: 'pets',
         showCreateForm: false
       }
