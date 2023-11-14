@@ -134,16 +134,16 @@ function Calendar({
           return false;
         }
 
-        const isProfessional = scheduledTask.entities?.some((entityId) =>
+        const isProfessional = scheduledTask.entities.some((entityId) =>
           isProfessionalEntity(entityData.byId[entityId])
         );
         const isPersonal =
-          scheduledTask.entities?.length === 0 ||
-          scheduledTask.entities?.some(
+          scheduledTask.entities.length === 0 ||
+          scheduledTask.entities.some(
             (entityId) => !isProfessionalEntity(entityData.byId[entityId])
           );
 
-        const matchesEntityString = scheduledTask.entities?.some((entityId) =>
+        const matchesEntityString = scheduledTask.entities.some((entityId) =>
           entityData.byId[entityId]?.name
             ?.toLowerCase()
             .includes(submittedSearchText.toLowerCase())
