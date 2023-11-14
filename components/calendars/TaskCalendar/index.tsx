@@ -144,7 +144,7 @@ function Calendar({
           );
 
         const matchesEntityString = scheduledTask.entities?.some((entityId) =>
-          entityData.byId[entityId].name
+          entityData.byId[entityId]?.name
             ?.toLowerCase()
             .includes(submittedSearchText.toLowerCase())
         );
