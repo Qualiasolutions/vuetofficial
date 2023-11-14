@@ -26,12 +26,12 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <TopNav />
-      {/* <Calendar
+      <Calendar
         filteredTasks={filteredTasks}
         filteredEntities={filteredEntities}
         showFilters={true}
         showProFilters={true}
-      /> */}
+      />
     </SafeAreaView>
   );
 }

@@ -244,6 +244,8 @@ function Calendar({
     return <FullPageSpinner />;
   }
 
+  return null;
+
   return (
     <TransparentView style={styles.container}>
       <TransparentView>
