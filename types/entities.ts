@@ -148,4 +148,4 @@ export const isEventEntity = (x: EntityResponseType): x is EventResponseType =>
 export const isProfessionalEntity = (
   x: EntityResponseType
 ): x is ProfessionalEntityResponseType =>
-  x.resourcetype === 'ProfessionalEntity';
+  x && x.resourcetype === 'ProfessionalEntity';
