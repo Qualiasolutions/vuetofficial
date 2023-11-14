@@ -149,8 +149,6 @@ function Calendar({
             .includes(submittedSearchText.toLowerCase())
         );
 
-        return false;
-
         const matchesTagString = scheduledTask.tags.some((tagName) =>
           tagName.toLowerCase().includes(submittedSearchText.toLowerCase())
         );
@@ -173,8 +171,6 @@ function Calendar({
     }
     return full;
   }, [filteredTasks, submittedSearchText, entityData, proFilter, allScheduled]);
-
-  return null;
 
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
