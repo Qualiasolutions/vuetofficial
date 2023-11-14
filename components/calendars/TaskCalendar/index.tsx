@@ -111,6 +111,8 @@ function Calendar({
   const [submittedSearchText, setSubmittedSearchText] = useState('');
   const [proFilter, setProFilter] = useState<ProfessionalFilterType>('ALL');
 
+  return null;
+
   const fullFilteredTasks = useMemo(() => {
     if (!entityData) {
       return {};
@@ -170,8 +172,6 @@ function Calendar({
     }
     return full;
   }, [filteredTasks, submittedSearchText, entityData, proFilter, allScheduled]);
-
-  return null;
 
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
