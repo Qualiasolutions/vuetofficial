@@ -171,8 +171,6 @@ function Calendar({
     return full;
   }, [filteredTasks, submittedSearchText, entityData, proFilter, allScheduled]);
 
-  return null;
-
   const fullFilteredEntities = useMemo(() => {
     const full: { [date: string]: ScheduledEntity[] } = {};
     for (const date in filteredEntities) {
