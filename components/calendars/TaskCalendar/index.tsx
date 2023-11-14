@@ -128,6 +128,8 @@ function Calendar({
           return false;
         }
 
+        return false;
+
         const hasEntitites = scheduledTask.entities.length > 0;
         if (proFilter === 'PROFESSIONAL' && !hasEntitites) {
           return false;
