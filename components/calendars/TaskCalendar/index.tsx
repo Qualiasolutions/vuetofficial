@@ -128,16 +128,17 @@ function Calendar({
           return false;
         }
 
-        const hasEntitites = scheduledTask.entities.length > 0;
+        const hasEntitites =
+          scheduledTask.entities && scheduledTask.entities.length > 0;
         if (proFilter === 'PROFESSIONAL' && !hasEntitites) {
           return false;
         }
 
-        const isProfessional = scheduledTask.entities.some((entityId) =>
+        const isProfessional = scheduledTask.entities?.some((entityId) =>
           isProfessionalEntity(entityData.byId[entityId])
         );
         const isPersonal =
-          scheduledTask.entities.length === 0 ||
+          (scheduledTask.entities && scheduledTask.entities.length === 0) ||
           scheduledTask.entities.some(
             (entityId) => !isProfessionalEntity(entityData.byId[entityId])
           );
