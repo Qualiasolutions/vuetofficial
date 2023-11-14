@@ -143,13 +143,14 @@ function Calendar({
             (entityId) => !isProfessionalEntity(entityData.byId[entityId])
           );
 
-        // return false;
-
         const matchesEntityString = scheduledTask.entities?.some((entityId) =>
           entityData.byId[entityId].name
             ?.toLowerCase()
             .includes(submittedSearchText.toLowerCase())
         );
+
+        return false;
+
         const matchesTagString = scheduledTask.tags.some((tagName) =>
           tagName.toLowerCase().includes(submittedSearchText.toLowerCase())
         );
