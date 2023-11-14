@@ -1,6 +1,7 @@
 import {
   useCreateEntityMutation,
   useGetAllEntitiesQuery,
+  useGetMemberEntitiesQuery,
   useUpdateEntityWithoutCacheInvalidationMutation
 } from 'reduxStore/services/api/entities';
 import {
@@ -71,36 +72,39 @@ export default function EventScreen({ entityId }: { entityId: number }) {
   const { t } = useTranslation();
 
   const { data: allEntities } = useGetAllEntitiesQuery();
+  const { data: memberEntities } = useGetMemberEntitiesQuery();
   const entityData = allEntities?.byId[entityId];
 
   const styles = useStyle();
 
   const childEntityIds = entityData?.child_entities || [];
 
-  const childEntityList = childEntityIds.map((id) => {
-    return (
-      <EventListLink
-        key={id}
-        text={allEntities?.byId[id].name || ''}
-        toScreen="EntityScreen"
-        toScreenParams={{ entityId: id }}
-        navMethod="push"
-        selected={!allEntities?.byId[id].hidden}
-        subType={allEntities?.byId[id].subtype}
-        onSelect={async () => {
-          const res = (await updateTrigger({
-            resourcetype: allEntities?.byId[id].resourcetype,
-            id,
-            hidden: !allEntities?.byId[id].hidden
-          })) as any;
+  const childEntityList = childEntityIds
+    .filter((id) => !!memberEntities?.byId[id])
+    .map((id) => {
+      return (
+        <EventListLink
+          key={id}
+          text={allEntities?.byId[id].name || ''}
+          toScreen="EntityScreen"
+          toScreenParams={{ entityId: id }}
+          navMethod="push"
+          selected={!allEntities?.byId[id].hidden}
+          subType={allEntities?.byId[id].subtype}
+          onSelect={async () => {
+            const res = (await updateTrigger({
+              resourcetype: allEntities?.byId[id].resourcetype,
+              id,
+              hidden: !allEntities?.byId[id].hidden
+            })) as any;
 
-          if (res && res?.error && res?.error.status >= 400) {
-            throw Error('Network request error');
-          }
-        }}
-      />
-    );
-  });
+            if (res && res?.error && res?.error.status >= 400) {
+              throw Error('Network request error');
+            }
+          }}
+        />
+      );
+    });
 
   const customLink = (
     <EventListLink
