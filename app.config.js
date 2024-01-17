@@ -44,7 +44,8 @@ export default {
     ios: {
       supportsTablet: true,
       buildNumber: '1.0.0',
-      bundleIdentifier: 'com.vuet.app'
+      bundleIdentifier: 'com.vuet.app',
+      companyName: 'Fezza Management Limited'
     },
     android: {
       adaptiveIcon: {
