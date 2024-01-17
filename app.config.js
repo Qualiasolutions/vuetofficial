@@ -19,17 +19,17 @@ const extraData = {
 
 export default {
   expo: {
-    name: 'vuet-app',
+    name: 'Vuet',
     slug: 'vuet-app',
     version: '1.0.2',
     orientation: 'portrait',
     owner: 'vuet',
-    icon: './assets/images/icon.png',
+    icon: './assets/images/logo.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
     plugins: ['sentry-expo'],
     splash: {
-      image: './assets/images/splash.png',
+      image: './assets/images/logo.png',
       resizeMode: 'contain',
       backgroundColor: '#ffffff'
     },
@@ -43,11 +43,12 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      buildNumber: '0'
+      buildNumber: '1.0.0',
+      bundleIdentifier: 'com.vuet.app'
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
+        foregroundImage: './assets/images/logo.png',
         backgroundColor: '#ffffff'
       },
       versionCode: 0
