@@ -11,5 +11,12 @@
         "production": {
             "channel": "production"
         }
+    },
+    "submit": {
+        "production": {
+            "ios": {
+                "companyName": "Fezza Management Limited"
+            }
+        }
     }
 }
