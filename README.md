@@ -49,7 +49,14 @@ We don't have too much process around branch naming convention etc. The only rul
 
 ## Deployment
 
-The app is deployed by running `eas update` - only authorised users will be able to do this.
+To submit to the Apple app store, we use `eas`. The steps are as follows:
+
+- Increment the app version in `app.config.js` - this will need updating in both `expo.version` and `expo.ios.buildNumber`
+- Build the app by running `eas build --platform ios` and following the instructions
+- Submit the app to the Apple store by running `eas submit -p ios` and following the instructions
+- Go to App Store Connect, log in and select TestFlight - there should be a warning next to the most recent version. Click "Manage" and select "None of the above". The app should now be available to test.
+
+The development app is deployed by running `eas update` - only authorised users will be able to do this.
 
 ## Running on WSL2
 
