@@ -56,6 +56,9 @@ To submit to the Apple app store, we use `eas`. The steps are as follows:
 - Submit the app to the Apple store by running `eas submit -p ios` and following the instructions
 - Go to App Store Connect, log in and select TestFlight - there should be a warning next to the most recent version. Click "Manage" and select "None of the above". The app should now be available to test.
 
+For PRODUCTION:
+- Click on the "Distribution" tab and distribute the new app version. You may have to remove the current build to add trhe newest one.
+
 The development app is deployed by running `eas update` - only authorised users will be able to do this.
 
 ## Running on WSL2

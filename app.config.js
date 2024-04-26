@@ -21,7 +21,7 @@ export default {
   expo: {
     name: 'Vuet',
     slug: 'vuet-app',
-    version: '1.0.3',
+    version: '1.0.4',
     orientation: 'portrait',
     owner: 'vuet',
     icon: './assets/images/logo.png',
@@ -42,8 +42,8 @@ export default {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
-      supportsTablet: true,
-      buildNumber: '1.0.3',
+      supportsTablet: false,
+      buildNumber: '1.0.4',
       bundleIdentifier: 'com.vuet.app'
     },
     android: {
