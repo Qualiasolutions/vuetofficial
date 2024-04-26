@@ -289,8 +289,8 @@ export const selectTasksInDailyRoutines = createSelector(
       .filter(isTask);
 
     const tasksByDate = formatTasksPerDate(allScheduledTasks);
-    for (const date in tasksByDate) {
-      const dayJsDate = dayjs(date);
+    for (const taskDate in tasksByDate) {
+      const dayJsDate = dayjs(taskDate);
       const weekdayName = dayJsDate.format('dddd').toLowerCase() as DayType;
 
       const dayRoutines =
@@ -305,8 +305,8 @@ export const selectTasksInDailyRoutines = createSelector(
 
       const nonRoutineTasks: ScheduledTask[] = [];
 
-      if (tasksByDate[date]) {
-        for (const taskObj of tasksByDate[date]) {
+      if (tasksByDate[taskDate]) {
+        for (const taskObj of tasksByDate[taskDate]) {
           if (taskObj.start_datetime && taskObj.end_datetime) {
             if (!taskObj.routine) {
               nonRoutineTasks.push(taskObj);
@@ -355,17 +355,17 @@ export const selectTasksInDailyRoutines = createSelector(
         .map((id) => parseInt(id));
 
       for (const routineId of routineIdsToShow) {
-        if (!dateTasksPerRoutine[date]) {
-          dateTasksPerRoutine[date] = {};
+        if (!dateTasksPerRoutine[taskDate]) {
+          dateTasksPerRoutine[taskDate] = {};
         }
-        dateTasksPerRoutine[date][routineId] = routineTasks[routineId];
+        dateTasksPerRoutine[taskDate][routineId] = routineTasks[routineId];
       }
 
-      if (!dateTasksPerRoutine[date]) {
-        dateTasksPerRoutine[date] = {};
+      if (!dateTasksPerRoutine[taskDate]) {
+        dateTasksPerRoutine[taskDate] = {};
       }
 
-      dateTasksPerRoutine[date][-1] = nonRoutineTasks;
+      dateTasksPerRoutine[taskDate][-1] = nonRoutineTasks;
     }
 
     return dateTasksPerRoutine;

@@ -72,7 +72,7 @@ Then `REACT_NATIVE_PACKAGER_HOSTNAME` can be set using:
 export REACT_NATIVE_PACKAGER_HOSTNAME=$(netsh.exe interface ip show address "WiFi" | grep 'IP Address' | sed -r 's/^.*IP Address:\W*//')
 ```
 
-And then `expo start` should run the Metro server that can be accessed by connected devices.
+And then `ENV=LOCAL npx expo start` should run the Metro server that can be accessed by connected devices.
 
 ## Swagger documentation
 

@@ -10,7 +10,7 @@ import * as Linking from 'expo-linking';
 import { TabParamList } from '../types/base';
 
 const linking: LinkingOptions<TabParamList> = {
-  prefixes: [Linking.makeUrl('/')],
+  prefixes: [Linking.createURL('/')],
   config: {
     screens: {
       Home: '',

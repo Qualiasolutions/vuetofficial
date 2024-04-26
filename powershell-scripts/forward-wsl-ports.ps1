@@ -1,37 +1,49 @@
-# Find WSL2 IP address
+# Forward WSL2 ports to host machine/platform (handles Windows Firewall)
+#
+# NOTE: 'iex' is a shortform for 'Invoke-Expression'
+
+# Ports that should be forwarded to WSL2 and allowed through firewall (comma-separated)
+$ports = @(8081);
+
+# WSL IP address changes whenever WSL restarts
 $wsl_ip = $(wsl hostname -I).Trim();
-$windows_ip = '0.0.0.0';
+
+# Incoming requests from any IP should be matched
+$listen_all_ips = '0.0.0.0';
 
 if ( -Not $wsl_ip ) {
   Write-Output "IP address for WSL 2 cannot be found";
   exit;
 }
 
-Write-Output $wsl_ip
-Write-Output $windows_ip
+Write-Output "WSL IP: '$wsl_ip'";
 
-# Remove all previously proxied ports (only if not using other ports!)
-Invoke-Expression "netsh int portproxy reset all"
+### Windows Firewall #####
 
-# Remove Firewall Exception Rules
-Invoke-Expression "Remove-NetFireWallRule -DisplayName 'Localstack Ports' ";
-Invoke-Expression "Remove-NetFireWallRule -DisplayName 'Expo WSL2 Ports' ";
+$firewall_rule = "WSL2 Forwarded Ports";
+$firewall_ports = $ports -join ",";
+
+# Remove existing firewal rule (will error if not already present; can ignore)
+iex "Remove-NetFireWallRule -DisplayName '$firewall_rule' ";
 
 # Allow Expo ports through Windows Firewall
-New-NetFireWallRule -DisplayName 'Expo WSL2 Ports' -Direction Inbound -LocalPort 19000-19006 -Action Allow -Protocol TCP;
-New-NetFireWallRule -DisplayName 'Expo WSL2 Ports' -Direction Outbound -LocalPort 19000-19006 -Action Allow -Protocol TCP;
+iex "New-NetFireWallRule -DisplayName '$firewall_rule' -Direction Inbound -LocalPort $firewall_ports -Action Allow -Protocol TCP;"
+iex "New-NetFireWallRule -DisplayName '$firewall_rule' -Direction Outbound -LocalPort $firewall_ports -Action Allow -Protocol TCP;"
 
+### WSL Port Proxy #####
 
-# Allow localstack access
-New-NetFireWallRule -DisplayName 'Localstack Ports' -Direction Inbound -LocalPort 4566 -Action Allow -Protocol TCP;
-New-NetFireWallRule -DisplayName 'Localstack Ports' -Direction Outbound -LocalPort 4566 -Action Allow -Protocol TCP;
+# Show all previously proxied ports
+iex "netsh interface portproxy show v4tov4"
 
-# Proxy Expo ports to WSL2
-netsh interface portproxy add v4tov4 listenport=19000 listenaddress=$windows_ip connectport=19000 connectaddress=$wsl_ip;
-netsh interface portproxy add v4tov4 listenport=19001 listenaddress=$windows_ip connectport=19001 connectaddress=$wsl_ip
-# NOTE: Avoid proxying port 19002, as this will prevent loading the Expo dev tools on the host (browser)!
+# Configure port forwarding (via remove/add)
+for ( $i = 0; $i -lt $ports.length; $i++ ) {
+  $port = $ports[$i];
+  # Remove previously proxied port
+  iex "netsh interface portproxy delete v4tov4 listenport=$port listenaddress=$listen_all_ips"
+  iex "netsh interface portproxy add v4tov4 listenport=$port listenaddress=$listen_all_ips connectport=$port connectaddress=$wsl_ip"
+}
 
 # Show all newly proxied ports
-Invoke-Expression "netsh interface portproxy show v4tov4"
+iex "netsh interface portproxy show v4tov4"
 
 cmd /c pause

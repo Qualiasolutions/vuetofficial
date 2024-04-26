@@ -27,7 +27,7 @@ export default {
     icon: './assets/images/logo.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
-    plugins: ['sentry-expo'],
+    plugins: ['sentry-expo', 'expo-font', 'expo-localization'],
     splash: {
       image: './assets/images/logo.png',
       resizeMode: 'contain',
