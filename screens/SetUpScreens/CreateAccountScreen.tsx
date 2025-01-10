@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  textInput: { width: '100%', zIndex: -1 }
+  textInput: { width: '100%' }
 });
 
 const CreateAccountScreen = ({

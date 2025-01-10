@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   placeholderImage: {
     width: 40,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   photoTypeModalBox: {
     position: 'absolute',
-    width: 150
+    width: 150,
   },
   photoTypeModalLink: {
     marginBottom: 10
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
   opaqueBackground: {
     color: '#000000',
     opacity: 0.8
-  }
+  },
+  defaultPressable: { zIndex: 1 }
 });
 
 export type CustomFile = {
@@ -252,7 +253,7 @@ export function ImagePicker({
   }
 
   return (
-    <SafePressable onPress={() => setShowPhotoTypeModal(true)}>
+    <SafePressable onPress={() => setShowPhotoTypeModal(true)} style={styles.defaultPressable}>
       <TransparentView
         style={[{ backgroundColor, borderColor }, styles.container, style]}
       >
@@ -278,7 +279,7 @@ export function WhiteImagePicker(
   const { style, ...otherProps } = props;
 
   return ImagePicker({
-    style: [style] as ViewStyle,
+    style: style || {} as ViewStyle,
     backgroundColor,
     ...otherProps
   });
@@ -291,7 +292,7 @@ export function FullWidthImagePicker(
   const { style, ...otherProps } = props;
 
   return ImagePicker({
-    style: [styles.fullWidth, style] as ViewStyle,
+    style: StyleSheet.flatten([styles.fullWidth, style || {}]) as ViewStyle,
     backgroundColor,
     ...otherProps
   });
@@ -312,7 +313,7 @@ export function SmallImagePicker(
   );
 
   return ImagePicker({
-    style: [style] as ViewStyle,
+    style,
     backgroundColor,
     PressableComponent,
     modalOffsets: {

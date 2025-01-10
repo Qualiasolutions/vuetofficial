@@ -21,6 +21,7 @@ export default {
   expo: {
     name: 'Vuet',
     slug: 'vuet-app',
+    newArchEnabled: true,
     version: '1.0.6',
     orientation: 'portrait',
     owner: 'vuet',
