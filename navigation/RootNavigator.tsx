@@ -63,8 +63,7 @@ const styles = StyleSheet.create({
   icon: {
     alignItems: 'center',
     justifyContent: 'center',
-    top: -5,
-    width: 60
+    width: 60,
   },
   barIconImage: {
     width: 26,
@@ -90,7 +89,7 @@ const BarIcon = ({
     <View style={styles.icon}>
       <ConditionallyTintedImage
         source={imageSource}
-        resizeMode="contain"
+        resizeMode='contain'
         tinted={focused}
         style={styles.barIconImage}
       />

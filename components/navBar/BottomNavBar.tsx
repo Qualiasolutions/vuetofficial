@@ -21,13 +21,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
-    shadowColor: '#000',
+    paddingTop: 10,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 3,
-    elevation: 5,
-    borderTopWidth: 1
+    borderTopWidth: 1,
   },
   addButtonPressable: {
     width: 80,
@@ -35,14 +33,6 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5
   },
   addButton: {
     width: 80,
@@ -63,7 +53,7 @@ const styles = StyleSheet.create({
     top: -50,
     borderRadius: 30,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   icon: {
     alignItems: 'center',
@@ -71,7 +61,7 @@ const styles = StyleSheet.create({
     top: -5
   },
   centralSection: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   chevronDown: {
     marginBottom: 10,
