@@ -22,7 +22,7 @@ export default {
     name: 'Vuet',
     slug: 'vuet-app',
     newArchEnabled: true,
-    version: '1.0.6',
+    version: '1.0.7',
     orientation: 'portrait',
     owner: 'vuet',
     icon: './assets/images/logo.png',
@@ -44,7 +44,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: false,
-      buildNumber: '1.0.6',
+      buildNumber: '1.0.7',
       bundleIdentifier: 'com.vuet.app'
     },
     android: {
