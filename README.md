@@ -18,9 +18,9 @@ First get the code. You must be given access to the GitHub repo and then set up 
 
 If you don't have Node installed then you will have to install it. The recommended way to do this is vie Node Version Manager (nvm). Instructions to install nvm are provided [here](https://heynode.com/tutorial/install-nodejs-locally-nvm/)
 
-Once nvm is installed you can ensure that you are using the right node version by opening a terminal and running `nvm install 16.14.2` and `nvm use 16.14.2`. To set this as the default node version, run `nvm alias default 16.14.2`.
+Once nvm is installed you can ensure that you are using the right node version by opening a terminal and running `nvm install 23.5.0` and `nvm use 23.5.0`. To set this as the default node version, run `nvm alias default 23.5.0`.
 
-To install the required node packages locally, open a terminal in the location where you cloned the code and run `npm i`. You also need to install the expo CLI globally by running `npm install --global expo-cli`
+To install the required node packages locally, open a terminal in the location where you cloned the code and run `yarn`. You also need to install the expo CLI globally by running `yarn install --global expo-cli`
 
 Then running `ENV=LOCAL expo start` should start running the app in expo and you can press `w` to see it running in the web simulator.
 
@@ -49,7 +49,7 @@ We don't have too much process around branch naming convention etc. The only rul
 
 ## Deployment
 
-To submit to the Apple app store, we use `eas`. The steps are as follows:
+To submit to the Apple app store, we use `eas`. You may need to run `yarn global add eas-cli` The steps are as follows:
 
 - Increment the app version in `app.config.js` - this will need updating in both `expo.version` and `expo.ios.buildNumber`
 - Build the app by running `eas build --platform ios` and following the instructions

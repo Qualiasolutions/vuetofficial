@@ -21,13 +21,13 @@ export default {
   expo: {
     name: 'Vuet',
     slug: 'vuet-app',
-    version: '1.0.5',
+    version: '1.0.6',
     orientation: 'portrait',
     owner: 'vuet',
     icon: './assets/images/logo.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
-    plugins: ['sentry-expo', 'expo-font', 'expo-localization'],
+    plugins: ['sentry-expo', 'expo-font', 'expo-localization', 'expo-asset'],
     splash: {
       image: './assets/images/logo.png',
       resizeMode: 'contain',
@@ -43,7 +43,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: false,
-      buildNumber: '1.0.5',
+      buildNumber: '1.0.6',
       bundleIdentifier: 'com.vuet.app'
     },
     android: {
