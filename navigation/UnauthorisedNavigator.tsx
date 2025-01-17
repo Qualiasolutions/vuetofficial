@@ -19,12 +19,12 @@ export function UnauthorisedNavigator() {
       screenOptions={{
         header: AlmostWhiteBackOnlyHeaderWithSafeArea
       }}
-      initialRouteName="InitialAuth"
+      initialRouteName="Login"
     >
-      <UnauthorisedStack.Screen
+      {/* <UnauthorisedStack.Screen
         name="InitialAuth"
         component={InitialAuthScreen}
-      />
+      /> */}
       <UnauthorisedStack.Screen name="Login" component={LoginScreen} />
       <UnauthorisedStack.Screen
         name="ForgotPassword"
