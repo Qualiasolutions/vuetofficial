@@ -233,6 +233,31 @@ export const useTaskFieldTypes = ({
           }
         ]
       },
+      location: {
+        type: 'string',
+        displayName: t('tasks.task.location'),
+        required: false,
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      notes: {
+        type: 'TextArea',
+        displayName: t('tasks.task.notes'),
+        required: false,
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      contact_no: {
+        type: 'phoneNumber',
+        displayName: t('tasks.task.contact_number'),
+        required: false,
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      // image: {
+      //   type: 'Image',
+      //   displayName: t('tasks.task.image'),
+      //   required: false,
+      //   disabled: !!(isEdit && taskHiddenTag), // If has hidden tag then shouldn't be editable
+      //   sourceField: 'presigned_image_url'
+      // },
       recurrence: {
         type: 'recurrenceSelector',
         required: false,

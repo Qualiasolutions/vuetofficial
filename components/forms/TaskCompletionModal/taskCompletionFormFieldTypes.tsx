@@ -13,7 +13,7 @@ export default function useCompletionFormFieldTypes(
   const { t: modelFieldTranslations } = useTranslation('modelFields');
   const { data: userFullDetails } = useGetUserFullDetails();
 
-  const dueDateFields = useDueDateFieldTypes();
+  const dueDateFields = useDueDateFieldTypes({});
   const taskFields = useTaskFieldTypes({});
 
   return useMemo(() => {
@@ -47,7 +47,6 @@ export default function useCompletionFormFieldTypes(
         ),
         members: dueDateMembershipField(
           'date',
-          userFullDetails,
           false,
           modelFieldTranslations('entities.entity.taskMembers'),
           modelFieldTranslations('tasks.task.changeMembers')

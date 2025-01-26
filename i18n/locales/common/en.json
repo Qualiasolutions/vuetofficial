@@ -11,7 +11,7 @@
     "messages": "Messages",
     "settings": "Settings",
     "addTask": "Add Task",
-    "editTask": "Edit Task",
+    "editTask": "Edit Item",
     "transport": "Transport",
     "addEntity": "Add Entity",
     "editEntity": "Edit Entity",
@@ -838,7 +838,7 @@
     "task": {
       "scheduleNext": "Schedule next {{dueDateType}} due date",
       "editOccurrence": "Edit occurrence",
-      "editTask": "Edit Task",
+      "editTask": "Edit Item",
       "editAll": "Edit all",
       "deleteOccurrence": "Delete occurrence",
       "deleteOccurrenceConfirmation": "Are you sure you would like to delete this occurrence?",
@@ -848,7 +848,7 @@
       "markPartiallyCompleteAndRepeat": "Partially done / task again",
       "markIncompleteAndReschedule": "Did not do / reschedule",
       "markIncomplete": "Did not do / will not do",
-      "duplicateTask": "Duplicate Task",
+      "duplicateTask": "Duplicate Item",
       "markAllOverdueAsIncompleteQuestion": "Would you like to mark all overdue tasks in the series as incomplete?"
     },
     "actionSelector": {

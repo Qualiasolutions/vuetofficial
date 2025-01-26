@@ -18,6 +18,7 @@
       "contact_name": "Name",
       "contact_email": "Email",
       "contact_number": "Contact no.",
+      "image": "Image",
       "notes": "Notes",
       "is_flexible": "Add this to my calendar any time between the dates below",
       "is_any_time": "Any time today / No Set Time",
