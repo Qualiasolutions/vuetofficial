@@ -354,7 +354,7 @@ function Task({
     selectScheduledEntity(id, type, recurrence_index)
   );
 
-  const isComplete = !!scheduledTask?.is_complete;
+  const isComplete = !!scheduledTask?.is_complete && !isEntity;
   const isPartiallyComplete = !!scheduledTask?.is_partially_complete;
   const isIgnored = !!scheduledTask?.is_ignored;
 
