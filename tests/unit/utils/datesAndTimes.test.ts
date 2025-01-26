@@ -109,6 +109,11 @@ it('datesAndTimes ::: getDateStringsBetween', () => {
       start: '2023-06-03 08:00:00+00:00',
       end: '2023-06-04 00:00:00+00:00',
       expectedOutput: ['2023-06-03']
+    },
+    {
+      start: '2023-06-03',
+      end: '2023-06-04',
+      expectedOutput: ['2023-06-03', '2023-06-04']
     }
   ];
 
@@ -129,6 +134,11 @@ it('datesAndTimes ::: getDateStringsBetween', () => {
       start: '2023-06-03 08:00:00+00:00',
       end: '2023-06-03 08:15:00+00:00',
       expectedOutput: ['2023-06-03']
+    },
+    {
+      start: '2023-06-03',
+      end: '2023-06-04',
+      expectedOutput: ['2023-06-03', '2023-06-04']
     }
   ];
 
@@ -144,6 +154,11 @@ it('datesAndTimes ::: getDateStringsBetween', () => {
       start: '2022-06-05T23:00:00Z',
       end: '2022-06-07T23:00:00Z',
       expectedOutput: ['2022-06-06', '2022-06-07', '2022-06-08']
+    },
+    {
+      start: '2023-06-03',
+      end: '2023-06-04',
+      expectedOutput: ['2023-06-03', '2023-06-04']
     }
   ];
 

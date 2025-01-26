@@ -115,11 +115,22 @@ const getDatesBetween = (
       - If a task ends at midnight then it should not include the last day
       - If a task has start_date and end_date at midnight then it should only
         include the day that starts at midnight
+      - If a task has start_date and end_date the same and at midnight then it should
+        include the day that starts at midnight
   */
   const datesArray = [];
   const dayjsFunction = useUtc ? dayjs.utc : dayjs;
 
-  const secondBeforeEnd = dayjsFunction(end).toDate();
+  let parsedEnd = end
+  if (typeof end === 'string' && end.length < 12) {
+    // e.g. 2020-01-01
+    // Go to the middle of the final day so that the final day will
+    // be included in the date range
+    parsedEnd = new Date(end)
+    parsedEnd.setHours(parsedEnd.getHours() + 12)
+  }
+
+  const secondBeforeEnd = dayjsFunction(parsedEnd).toDate();
   secondBeforeEnd.setSeconds(secondBeforeEnd.getSeconds() - 1);
   const latestAllowed = new Date(
     Math.max(Number(secondBeforeEnd), Number(dayjsFunction(start).toDate()))
@@ -127,6 +138,7 @@ const getDatesBetween = (
   latestAllowed.setHours(23);
   latestAllowed.setMinutes(59);
   latestAllowed.setSeconds(59);
+
   let dt = dayjsFunction(start).toDate();
   while (dt <= latestAllowed) {
     datesArray.push(dayjsFunction(dt).toDate());
