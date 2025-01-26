@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   searchView: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 40,
+    height: 48,
     backgroundColor: Colors.light.lightGrey,
     borderRadius: 20,
     paddingLeft: 18,
