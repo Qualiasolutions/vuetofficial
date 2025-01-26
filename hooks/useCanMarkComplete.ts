@@ -29,7 +29,7 @@ export default function useCanMarkComplete({
 
   const canMarkComplete =
     userDetails?.is_premium &&
-    hasEditPerms &&
+    (hasEditPerms || task && (["USER_BIRTHDAY", "ICAL_EVENT"].includes(task.type))) &&
     taskToAction &&
     (actionId || (task && (task.type as any !== "ENTITY")));
 
