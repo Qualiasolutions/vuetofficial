@@ -43,6 +43,10 @@ import { t } from 'i18next';
 import { useGetAllEntitiesQuery } from 'reduxStore/services/api/entities';
 import RadioInput from 'components/forms/components/RadioInput';
 import { isProfessionalEntity } from 'types/entities';
+import TaskActionModal from 'components/molecules/TaskActionModal';
+import TaskPartialCompletionModal from 'components/organisms/TaskPartialCompletionModal';
+import TaskRescheduleModal from 'components/organisms/TaskRescheduleModal';
+import FiltersModal from 'components/organisms/FiltersModal';
 
 dayjs.extend(utc);
 
@@ -346,6 +350,10 @@ function Calendar({
         )}
       </TransparentView>
       <WhiteView>{showCalendar ? calendarView : listView}</WhiteView>
+      <TaskActionModal />
+      <TaskPartialCompletionModal />
+      <TaskRescheduleModal />
+      <FiltersModal />
     </TransparentView>
   );
 }

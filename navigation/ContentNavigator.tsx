@@ -24,146 +24,149 @@ import CategoriesPage from 'screens/Categories/CategoriesPage';
 import ProfessionalCategoryNavigator from './ProfessionalCategoryNavigator';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
 import { useThemeColor } from 'components/Themed';
+import PremiumModal from 'components/molecules/PremiumModal';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
 
 export function ContentNavigator() {
   const { t } = useTranslation();
-  const primaryColor = useThemeColor({}, 'primary');
 
   return (
-    <ContentStack.Navigator
-      initialRouteName="Categories"
-      screenOptions={{
-        headerTitleStyle: {
-          fontFamily: 'Poppins-Bold'
-        }
-      }}
-    >
-      <ContentStack.Screen
-        name="Categories"
-        component={CategoriesPage}
-        options={{ headerShown: false }}
-      />
-      <ContentStack.Screen
-        name="AllReferences"
-        component={AllReferencesScreen}
-        options={{ headerShown: true, title: t('pageTitles.references') }}
-      />
-      <ContentStack.Screen
-        name="EntityList"
-        component={EntityListScreen}
-        options={{
-          headerShown: false
+    <>
+      <PremiumModal />
+      <ContentStack.Navigator
+        initialRouteName="Categories"
+        screenOptions={{
+          headerTitleStyle: {
+            fontFamily: 'Poppins-Bold'
+          }
         }}
-      />
-      <ContentStack.Screen
-        name="AnniversaryDates"
-        component={AnniversaryDatesScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="HolidayDates"
-        component={HolidayDatesScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="TagScreen"
-        component={TagScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="HolidayList"
-        component={HolidayListScreen}
-        options={{
-          header: BackOnlyHeaderWithSafeArea,
-          headerShown: true
-        }}
-      />
+      >
+        <ContentStack.Screen
+          name="Categories"
+          component={CategoriesPage}
+          options={{ headerShown: false }}
+        />
+        <ContentStack.Screen
+          name="AllReferences"
+          component={AllReferencesScreen}
+          options={{ headerShown: true, title: t('pageTitles.references') }}
+        />
+        <ContentStack.Screen
+          name="EntityList"
+          component={EntityListScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="AnniversaryDates"
+          component={AnniversaryDatesScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="HolidayDates"
+          component={HolidayDatesScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="TagScreen"
+          component={TagScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="HolidayList"
+          component={HolidayListScreen}
+          options={{
+            header: BackOnlyHeaderWithSafeArea,
+            headerShown: true
+          }}
+        />
 
-      <ContentStack.Screen
-        name="CategoryList"
-        component={CategoryListScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="ProfessionalCategory"
-        component={ProfessionalCategoryNavigator}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="SubCategoryList"
-        component={SubCategoryListScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="BlockedDaysSettings"
-        component={BlockedDaysSettingsScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="CategoryPreferences"
-        component={CategoryPreferencesScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="EntityScreen"
-        component={EntityScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="LinkList"
-        component={LinkListScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="HolidayDetail"
-        component={HolidayDetailScreen}
-        options={{
-          headerShown: true
-        }}
-      />
-      <ContentStack.Screen
-        name="AddEntity"
-        component={AddEntityScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ContentStack.Screen
-        name="AddHolidayTask"
-        component={AddHolidayTaskScreen}
-        options={{
-          title: 'Add Holiday'
-        }}
-      />
-      <ContentStack.Screen
-        name="SchoolTerms"
-        component={SchoolTermsScreen}
-        options={{
-          header: BackOnlyHeaderWithSafeArea
-        }}
-      />
-    </ContentStack.Navigator>
+        <ContentStack.Screen
+          name="CategoryList"
+          component={CategoryListScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="ProfessionalCategory"
+          component={ProfessionalCategoryNavigator}
+          options={{
+            headerShown: true
+          }}
+        />
+        <ContentStack.Screen
+          name="SubCategoryList"
+          component={SubCategoryListScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="BlockedDaysSettings"
+          component={BlockedDaysSettingsScreen}
+          options={{
+            headerShown: true
+          }}
+        />
+        <ContentStack.Screen
+          name="CategoryPreferences"
+          component={CategoryPreferencesScreen}
+          options={{
+            headerShown: true
+          }}
+        />
+        <ContentStack.Screen
+          name="EntityScreen"
+          component={EntityScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="LinkList"
+          component={LinkListScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="HolidayDetail"
+          component={HolidayDetailScreen}
+          options={{
+            headerShown: true
+          }}
+        />
+        <ContentStack.Screen
+          name="AddEntity"
+          component={AddEntityScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <ContentStack.Screen
+          name="AddHolidayTask"
+          component={AddHolidayTaskScreen}
+          options={{
+            title: 'Add Holiday'
+          }}
+        />
+        <ContentStack.Screen
+          name="SchoolTerms"
+          component={SchoolTermsScreen}
+          options={{
+            header: BackOnlyHeaderWithSafeArea
+          }}
+        />
+      </ContentStack.Navigator>
+    </>
   );
 }

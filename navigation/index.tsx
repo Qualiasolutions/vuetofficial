@@ -16,7 +16,6 @@ import { DarkTheme, DefaultTheme } from 'constants/Colors';
 import { FullPageSpinner } from 'components/molecules/Spinners';
 import { SideNavigator } from './SideNavigator';
 import useActiveInvitesForUser from 'headers/hooks/useActiveInvitesForUser';
-import TaskActionModal from 'components/molecules/TaskActionModal';
 import ListItemActionModal from 'components/molecules/ListItemActionModal';
 import {
   useGetAllSchoolBreaksQuery,
@@ -27,8 +26,6 @@ import PremiumModal from 'components/molecules/PremiumModal';
 import { selectFiltersModalOpen } from 'reduxStore/slices/calendars/selectors';
 import { setFiltersModalOpen } from 'reduxStore/slices/calendars/actions';
 import FiltersModal from 'components/organisms/FiltersModal';
-import TaskPartialCompletionModal from 'components/organisms/TaskPartialCompletionModal';
-import TaskRescheduleModal from 'components/organisms/TaskRescheduleModal';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useGetAllCategoriesQuery } from 'reduxStore/services/api/categories';
@@ -41,7 +38,6 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
   const [hasJustSignedUp, setHasJustSignedUp] = useState(false);
   const jwtAccessToken = useSelector(selectAccessToken);
   const jwtRefreshToken = useSelector(selectRefreshToken);
-  const filtersModalOpen = !!useSelector(selectFiltersModalOpen);
 
   const dispatch = useDispatch();
   const { data: userFullDetails, isLoading: isLoadingUserDetails } =
@@ -101,25 +97,12 @@ const Navigation = ({ colorScheme }: NavigationProps) => {
     userFullDetails
   ]);
 
-  const onFiltersClose = useCallback(() => {
-    dispatch(setFiltersModalOpen(false));
-  }, [dispatch]);
-
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
     >
       {navigatorComponent}
-      <TaskActionModal />
-      <TaskPartialCompletionModal />
-      <TaskRescheduleModal />
-      <ListItemActionModal />
-      <PremiumModal />
-      <FiltersModal
-        visible={filtersModalOpen}
-        onRequestClose={onFiltersClose}
-      />
     </NavigationContainer>
   );
 };

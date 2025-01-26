@@ -13,13 +13,15 @@ import {
   setCompletionFilters,
   setFilteredCategories,
   setFilteredTaskTypes,
-  setFilteredUsers
+  setFilteredUsers,
+  setFiltersModalOpen
 } from 'reduxStore/slices/calendars/actions';
 import {
   selectCompletionFilters,
   selectFilteredCategories,
   selectFilteredTaskTypes,
-  selectFilteredUsers
+  selectFilteredUsers,
+  selectFiltersModalOpen
 } from 'reduxStore/slices/calendars/selectors';
 import { TransparentScrollView } from 'components/molecules/ScrollViewComponents';
 import CategoryCheckboxes from 'components/organisms/CategoryCheckboxes';
@@ -167,19 +169,20 @@ const ExpandableSection = ({
   );
 };
 
-export default function FiltersModal({
-  visible,
-  onRequestClose
-}: {
-  visible: boolean;
-  onRequestClose: () => void;
-}) {
+export default function FiltersModal() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const filteredUsers = useSelector(selectFilteredUsers);
   const filteredCategories = useSelector(selectFilteredCategories);
   const filteredTaskTypes = useSelector(selectFilteredTaskTypes);
   const completionFilters = useSelector(selectCompletionFilters);
+  const filtersModalOpen = !!useSelector(selectFiltersModalOpen);
+
+  const onFiltersClose = useCallback(() => {
+    dispatch(setFiltersModalOpen(false));
+  }, [dispatch]);
+
+
   const { data: user } = useGetUserFullDetails();
 
   const [newFilteredUsers, setNewFilteredUsers] = useState(filteredUsers);
@@ -199,8 +202,8 @@ export default function FiltersModal({
 
   return (
     <Modal
-      visible={visible}
-      onRequestClose={onRequestClose}
+      visible={filtersModalOpen}
+      onRequestClose={onFiltersClose}
       boxStyle={styles.modal}
     >
       <TransparentScrollView>
@@ -280,7 +283,7 @@ export default function FiltersModal({
                   })
                 );
               }
-              onRequestClose();
+              onFiltersClose();
             }}
             style={styles.userFiltersApplyButton}
           />
