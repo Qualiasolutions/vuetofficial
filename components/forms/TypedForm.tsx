@@ -53,6 +53,7 @@ import isFieldShown from './utils/isFieldShown';
 import ActionSelector from './components/ActionSelector';
 import ReminderSelector from './components/ReminderSelector';
 import RoutineSelector from './components/RoutineSelector';
+import { parsePhoneNumberWithError } from 'libphonenumber-js';
 
 const parseFieldName = (name: string) => {
   return name
@@ -353,6 +354,13 @@ export default function TypedForm({
               );
             }
             case 'phoneNumber':
+              let defaultNumber = ""
+              let defaultCode = "GB"
+              try {
+                const parsedNo = parsePhoneNumberWithError(formValues[field])
+                defaultNumber = parsedNo.nationalNumber
+                defaultCode = parsedNo.country || "GB"
+              } catch (e) {}
               return (
                 <InputPair
                   field={field}
@@ -361,7 +369,9 @@ export default function TypedForm({
                   inlineFieldsOverride={inlineOverride}
                 >
                   <PhoneNumberInput
-                    defaultValue={formValues[field]}
+                    value={defaultNumber}
+                    defaultValue={defaultNumber}
+                    defaultCode={defaultCode as any}
                     onChangeFormattedText={(newValue) => {
                       onFormValuesChange({
                         ...formValues,
