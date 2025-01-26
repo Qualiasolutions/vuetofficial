@@ -31,7 +31,7 @@ export default function useCanMarkComplete({
     userDetails?.is_premium &&
     hasEditPerms &&
     taskToAction &&
-    (actionId || (task && ['TASK', 'DUE_DATE'].includes(task.type)));
+    (actionId || (task && ['TASK', 'DUE_DATE', 'APPOINTMENT'].includes(task.type)));
 
   return canMarkComplete;
 }
