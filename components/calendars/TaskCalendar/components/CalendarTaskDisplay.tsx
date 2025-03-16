@@ -392,19 +392,23 @@ function Calendar({
         if (sectionListRef.current) {
           sectionListRef.current.scrollToLocation({
             sectionIndex,
-            itemIndex: 0
+            itemIndex: 0,
+            // If animated is true, the checkboxes become unclickable
+            // when we scroll. This is a workaround to fix that.
+            animated: false
           });
+        } else {
+          // Set a timeout because sometimes this doesn't work
+          // on initial render otherwise
+          setTimeout(() => {
+            if (sectionListRef.current) {
+              sectionListRef.current.scrollToLocation({
+                sectionIndex,
+                itemIndex: 0
+              });
+            }
+          }, 100);
         }
-        // Set a timeout because sometimes this doesn't work
-        // on initial render otherwise
-        setTimeout(() => {
-          if (sectionListRef.current) {
-            sectionListRef.current.scrollToLocation({
-              sectionIndex,
-              itemIndex: 0
-            });
-          }
-        }, 100);
       } catch (err) {
         console.error(err);
       }
