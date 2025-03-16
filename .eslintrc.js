@@ -11,6 +11,7 @@ module.exports = {
     '@react-native-community',
     'airbnb-typescript',
     'prettier',
+    'plugin:jest/recommended'
   ],
   rules: {
     'no-console': 1, // Means warning
