@@ -20,7 +20,7 @@ If you don't have Node installed then you will have to install it. The recommend
 
 Once nvm is installed you can ensure that you are using the right node version by opening a terminal and running `nvm install 23.5.0` and `nvm use 23.5.0`. To set this as the default node version, run `nvm alias default 23.5.0`.
 
-To install the required node packages locally, open a terminal in the location where you cloned the code and run `yarn`. You also need to install the expo CLI globally by running `yarn install --global expo-cli`
+To install the required node packages locally, open a terminal in the location where you cloned the code and run `yarn`. You also need to install the expo CLI globally by running `yarn global add expo-cli`
 
 Then running `ENV=LOCAL expo start` should start running the app in expo and you can press `w` to see it running in the web simulator.
 

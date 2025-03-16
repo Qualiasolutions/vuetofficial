@@ -53,7 +53,11 @@ const customFetchBase: BaseQueryFn<
   // wait until the mutex is available without locking it
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
-  if ((result.error?.data as any)?.code === 'token_not_valid') {
+  if (
+    ['token_not_valid', 'user_not_found'].includes(
+      (result.error?.data as any)?.code
+    )
+  ) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       const jwtRefreshToken = (api.getState() as EntireState)?.authentication
