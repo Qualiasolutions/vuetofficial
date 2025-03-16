@@ -60,12 +60,13 @@ export default function QuickNavigator({
         <TopTabs.Screen
           key={i}
           name={name}
-          component={() => component}
           options={{
             title: title,
             dropDownId: QUICK_NAV_ID
           }}
-        />
+        >
+          {() => component}
+        </TopTabs.Screen>
       ))}
       {Object.entries(iWantToComponents).map(([opt, comp], i) => (
         <TopTabs.Screen
