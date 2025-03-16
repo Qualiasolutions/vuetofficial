@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next';
 import CategoriesPage from 'screens/Categories/CategoriesPage';
 import ProfessionalCategoryNavigator from './ProfessionalCategoryNavigator';
 import { BackOnlyHeaderWithSafeArea } from 'headers/BackOnlyHeader';
-import { useThemeColor } from 'components/Themed';
 import PremiumModal from 'components/molecules/PremiumModal';
 
 const ContentStack = createNativeStackNavigator<ContentTabParamList>();
