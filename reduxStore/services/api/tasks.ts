@@ -123,6 +123,26 @@ const updateQueryDataForNewTask = (
                 }
               };
 
+              // Update the byEntityId data on the frontend
+              for (const entityId of newTask.entities) {
+                draft.byEntityId[newTask.type] = {
+                  ...(draft.byEntityId[newTask.type] || {}),
+                  [entityId]: {
+                    ...(draft.byEntityId[newTask.type]?.[entityId] || {}),
+                    '-1': {
+                      ...(draft.byEntityId[newTask.type]?.[entityId]?.[-1] ||
+                        {}),
+                      [newTask.id]: {
+                        ...(draft.byEntityId[newTask.type]?.[entityId]?.[-1]?.[
+                          newTask.id
+                        ] || {}),
+                        ...newTask
+                      }
+                    }
+                  }
+                };
+              }
+
               draft.ordered.push({
                 id: newTask.id,
                 recurrence_index: null,

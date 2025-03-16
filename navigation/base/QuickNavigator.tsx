@@ -13,7 +13,7 @@ const QUICK_NAV_ID = 'QUICK_NAV';
 const I_WANT_TO_ID = 'I_WANT_TO';
 
 export type QuickNavPage = {
-  component: () => JSX.Element | null;
+  component: JSX.Element | null;
   name: string;
   title: string;
 };
@@ -60,7 +60,7 @@ export default function QuickNavigator({
         <TopTabs.Screen
           key={i}
           name={name}
-          component={component}
+          component={() => component}
           options={{
             title: title,
             dropDownId: QUICK_NAV_ID

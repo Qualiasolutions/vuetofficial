@@ -33,7 +33,7 @@ export default function ProfessionalCategoryNavigator({
   );
 
   const homeComponent = useMemo(() => {
-    return () => (
+    return (
       <TransparentFullPageScrollView>
         <ProfessionalEntityListPage professionalCategory={categoryId} />
       </TransparentFullPageScrollView>
@@ -41,11 +41,11 @@ export default function ProfessionalCategoryNavigator({
   }, [categoryId]);
 
   const calendarComponent = useMemo(() => {
-    return () => <Calendar showFilters={false} filteredTasks={filteredTasks} />;
+    return <Calendar showFilters={false} filteredTasks={filteredTasks} />;
   }, [filteredTasks]);
 
   const referencesComponent = useMemo(() => {
-    return () => <ReferencesList entities={filteredEntities} />;
+    return <ReferencesList entities={filteredEntities} />;
   }, [filteredEntities]);
 
   const quickNavPages = [];

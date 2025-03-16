@@ -45,15 +45,15 @@ export default function CategoryNavigator({
   const category = useSelector(selectCategoryById(categoryId));
 
   const homeComponent = useMemo(() => {
-    return () => <CategoryHome categoryId={categoryId} />;
+    return <CategoryHome categoryId={categoryId} />;
   }, [categoryId]);
 
   const calendarComponent = useMemo(() => {
-    return () => <CategoryCalendar categoryId={categoryId} />;
+    return <CategoryCalendar categoryId={categoryId} />;
   }, [categoryId]);
 
   const referencesComponent = useMemo(() => {
-    return () => <ReferencesList categories={[categoryId]} />;
+    return <ReferencesList categories={[categoryId]} />;
   }, [categoryId]);
 
   const quickNavPages = [];

@@ -34,145 +34,88 @@ const INITIAL_ROUTE_NAME_MAPPINGS: { [key in EntityTypeName]?: string } = {
   Event: 'Overview'
 };
 
+const CalendarComponent = ({ entityId }: { entityId: number }) => {
+  const filteredTasks = useTasksForEntityId(entityId);
+  const filteredEntities = useScheduledEntityIds(undefined, entityId);
+  return (
+    <Calendar
+      filteredTasks={filteredTasks}
+      filteredEntities={filteredEntities}
+    />
+  );
+};
+
 function EntityNavigator({ entityId }: { entityId: number }) {
   const entity = useEntityById(entityId);
   const { t } = useTranslation();
-  const filteredTasks = useTasksForEntityId(entityId);
   const navigation = useNavigation();
 
   const category = useSelector(selectCategoryById(entity?.category || -1));
 
   const isMemberEntity = !!useSelector(selectMemberEntityById(entityId));
 
-  const filteredEntities = useScheduledEntityIds(undefined, entityId);
+  const pages: QuickNavPage[] = [
+    {
+      name: 'Edit',
+      title: t('pageTitles.edit'),
+      component: (
+        <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
+          <EditEntityForm
+            entityId={entityId}
+            onSubmitSuccess={() => {
+              navigation.goBack();
+            }}
+          />
+        </TransparentFullPageScrollView>
+      )
+    }
+  ];
 
-  const homeComponent = useMemo(() => {
-    if (
-      entity &&
-      resourceTypeToComponent[entity?.resourcetype] &&
-      isMemberEntity
-    ) {
-      return () => <EntityHome entityId={entityId} />;
-    }
-    return null;
-  }, [entity, entityId, isMemberEntity]);
+  if (
+    entity &&
+    resourceTypeToComponent[entity?.resourcetype] &&
+    isMemberEntity
+  ) {
+    pages.push({
+      name: 'Home',
+      title: t('pageTitles.home'),
+      component: <EntityHome entityId={entityId} />
+    });
+  }
 
-  const editComponent = useMemo(() => {
-    return () => (
-      <TransparentFullPageScrollView contentContainerStyle={styles.editForm}>
-        <EditEntityForm
-          entityId={entityId}
-          onSubmitSuccess={() => {
-            navigation.goBack();
-          }}
-        />
-      </TransparentFullPageScrollView>
-    );
-  }, [entityId, navigation]);
+  if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
+    pages.push({
+      name: 'Overview',
+      title: t('pageTitles.overview'),
+      component: <EntityOverview entityId={entityId} />
+    });
+  }
+  pages.push({
+    name: 'Calendar',
+    title: t('pageTitles.calendar'),
+    component: <CalendarComponent entityId={entityId} />
+  });
+  if (isMemberEntity) {
+    pages.push({
+      name: 'References',
+      title: t('pageTitles.references'),
+      component: <ReferencesList entities={[entityId]} />
+    });
+    pages.push({
+      name: 'Messages',
+      title: t('pageTitles.messages'),
+      component: <MessageThread entityId={entityId} />
+    });
+  }
+  if (entity && isMemberEntity && entity.resourcetype === 'Event') {
+    pages.push({
+      name: 'GuestList',
+      title: t('pageTitles.guestList'),
+      component: <GuestListPage entityId={entityId} />
+    });
+  }
 
-  const overviewComponent = useMemo(() => {
-    if (entity && entity?.resourcetype in RESOURCE_TYPE_TO_COMPONENT) {
-      return () => <EntityOverview entityId={entityId} />;
-    }
-    return null;
-  }, [entityId, entity]);
-
-  const calendarComponent = useMemo(() => {
-    return () => (
-      <Calendar
-        showFilters={false}
-        filteredTasks={filteredTasks}
-        filteredEntities={filteredEntities}
-      />
-    );
-  }, [filteredTasks, filteredEntities]);
-
-  const referencesComponent = useMemo(() => {
-    if (isMemberEntity) {
-      return () => <ReferencesList entities={[entityId]} />;
-    }
-    return null;
-  }, [entityId, isMemberEntity]);
-
-  const messagesComponent = useMemo(() => {
-    if (isMemberEntity) {
-      return () => <MessageThread entityId={entityId} />;
-    }
-    return null;
-  }, [entityId, isMemberEntity]);
-
-  const guestListComponent = useMemo(() => {
-    if (entity && isMemberEntity) {
-      if (entity.resourcetype === 'Event')
-        return () => <GuestListPage entityId={entityId} />;
-    }
-    return null;
-  }, [entity, entityId, isMemberEntity]);
-
-  const quickNavPages: QuickNavPage[] = useMemo(() => {
-    let pages = [];
-
-    if (homeComponent) {
-      pages.push({
-        name: 'Home',
-        title: t('pageTitles.home'),
-        component: homeComponent
-      });
-    }
-    if (editComponent) {
-      pages.push({
-        name: 'Edit',
-        title: t('pageTitles.edit'),
-        component: editComponent
-      });
-    }
-    if (overviewComponent) {
-      pages.push({
-        name: 'Overview',
-        title: t('pageTitles.overview'),
-        component: overviewComponent
-      });
-    }
-    if (calendarComponent) {
-      pages.push({
-        name: 'Calendar',
-        title: t('pageTitles.calendar'),
-        component: calendarComponent
-      });
-    }
-    if (referencesComponent) {
-      pages.push({
-        name: 'References',
-        title: t('pageTitles.references'),
-        component: referencesComponent
-      });
-    }
-    if (messagesComponent) {
-      pages.push({
-        name: 'Messages',
-        title: t('pageTitles.messages'),
-        component: messagesComponent
-      });
-    }
-    if (guestListComponent) {
-      pages.push({
-        name: 'GuestList',
-        title: t('pageTitles.guestList'),
-        component: guestListComponent
-      });
-    }
-
-    return pages;
-  }, [
-    homeComponent,
-    calendarComponent,
-    editComponent,
-    guestListComponent,
-    messagesComponent,
-    overviewComponent,
-    referencesComponent,
-    t
-  ]);
+  const quickNavPages = pages;
 
   return (
     <QuickNavigator

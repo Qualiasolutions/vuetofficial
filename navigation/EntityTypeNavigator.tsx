@@ -27,7 +27,7 @@ export default function EntityTypeNavigator({
   const filteredEntities = useScheduledEntityIds(entityTypes);
 
   const homeComponent = useMemo(() => {
-    return () => (
+    return (
       <TransparentFullPageScrollView>
         <EntityListPage
           entityTypes={entityTypes}
@@ -38,7 +38,7 @@ export default function EntityTypeNavigator({
   }, [entityTypes, entityTypeName]);
 
   const calendarComponent = useMemo(() => {
-    return () => (
+    return (
       <Calendar
         showFilters={false}
         filteredTasks={filteredTasks}
@@ -48,7 +48,7 @@ export default function EntityTypeNavigator({
   }, [filteredTasks, filteredEntities]);
 
   const referencesComponent = useMemo(() => {
-    return () => <ReferencesList entityTypes={entityTypes} />;
+    return <ReferencesList entityTypes={entityTypes} />;
   }, [entityTypes]);
 
   const categoryName = ENTITY_TYPE_TO_CATEGORY[entityTypes[0]];
