@@ -1,9 +1,11 @@
+import React, { useEffect } from 'react';
 import useCompletionCallback from 'components/forms/TaskCompletionModal/taskCompletionCallbacks';
 import TaskCompletionModal from 'components/forms/TaskCompletionModal/TaskCompletionModal';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
+import { StyleSheet } from 'react-native';
 import {
   useCreateTaskActionCompletionFormMutation,
   useCreateTaskCompletionFormMutation
@@ -11,6 +13,18 @@ import {
 import { selectScheduledTask } from 'reduxStore/slices/tasks/selectors';
 import SafePressable from './SafePressable';
 import { TouchableOpacity } from './TouchableOpacityComponents';
+import Checkbox, { CHECKBOX_HEIGHT, CHECKBOX_WIDTH } from './Checkbox';
+import { SmallSpinner } from './Spinners';
+
+const styles = StyleSheet.create({
+  spinner: {
+    width: CHECKBOX_WIDTH,
+    height: CHECKBOX_HEIGHT,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+});
 
 export default function TaskCompletionPressable({
   taskId,
@@ -27,7 +41,7 @@ export default function TaskCompletionPressable({
   actionId: number | null;
   onSuccess?: () => void;
   onPress?: () => void;
-  children: ReactNode;
+  children?: ReactNode;
   useSafePressable?: boolean;
   disabled?: boolean;
 }) {
@@ -37,12 +51,17 @@ export default function TaskCompletionPressable({
   );
   const isComplete = scheduledTask?.is_complete;
   const { t } = useTranslation();
+  const [submitting, setSubmitting] = useState(false);
 
   const [createTaskActionCompletionForm, createTaskActionCompletionFormResult] =
     useCreateTaskActionCompletionFormMutation();
   const [triggerCreateCompletionForm, createTaskCompletionFormResult] =
     useCreateTaskCompletionFormMutation();
   const completionCallback = useCompletionCallback(taskId, recurrenceIndex);
+
+  useEffect(() => {
+    setSubmitting(false);
+  }, [scheduledTask?.is_complete]);
 
   if (!scheduledTask) {
     return null;
@@ -58,6 +77,7 @@ export default function TaskCompletionPressable({
           if (createTaskActionCompletionFormResult.isLoading) return;
           if (createTaskCompletionFormResult.isLoading) return;
           onPress();
+          setSubmitting(true);
           setTimeout(async () => {
             try {
               if (actionId) {
@@ -101,11 +121,23 @@ export default function TaskCompletionPressable({
                 type: 'error',
                 text1: t('common.errors.generic')
               });
+            } finally {
+              setSubmitting(false);
             }
           }, 10);
         }}
       >
-        {children}
+        {submitting ? (
+          <SmallSpinner style={styles.spinner} />
+        ) : (
+          children || (
+            <Checkbox
+              checked={scheduledTask.is_complete}
+              disabled={true}
+              smoothChecking={false}
+            />
+          )
+        )}
       </PressableComp>
       {scheduledTask && (
         <TaskCompletionModal

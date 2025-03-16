@@ -4,7 +4,7 @@ import {
   getTimeInTimezone,
   getTimeStringFromDateObject
 } from 'utils/datesAndTimes';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { BlackText } from 'components/molecules/TextComponents';
 import { TransparentView } from 'components/molecules/ViewComponents';
@@ -496,19 +496,7 @@ function Task({
                   : scheduledTask.recurrence_index
               }
               actionId={scheduledTask.action_id}
-            >
-              <Checkbox
-                checked={scheduledTask.is_complete}
-                disabled={true}
-                style={styles.checkbox}
-                color={isIgnored ? blackColor : undefined}
-                image={
-                  isIgnored
-                    ? require('assets/images/icons/red-cross.png')
-                    : undefined
-                }
-              />
-            </TaskCompletionPressable>
+            />
           )}
         </TransparentView>
         <Pressable style={styles.bottomWrapper}>

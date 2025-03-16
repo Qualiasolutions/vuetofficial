@@ -34,6 +34,7 @@ import { RESOURCE_TYPE_TO_TYPE } from 'constants/ResourceTypes';
 import {
   MinimalScheduledTask,
   ScheduledTask,
+  ScheduledTaskType,
   SchoolTermItemType
 } from 'types/tasks';
 import { useGetAllTasksQuery } from 'reduxStore/services/api/tasks';
@@ -92,8 +93,24 @@ const isEntity = (
   ].includes(item.type);
 };
 
+// Pass in the individual values from item because otherwise
+// the shallow comparison will detect a change and the memo
+// will re-compute
 const ListItem = React.memo(
-  ({ data, date }: { data: ItemData; date: string }) => {
+  ({
+    date,
+    id,
+    recurrence_index,
+    action_id,
+    type
+  }: {
+    date: string;
+    id: number;
+    recurrence_index: number | null;
+    action_id: number | null;
+    type: ScheduledTaskType | SchoolTermItemType | 'ROUTINE' | 'ENTITY';
+  }) => {
+    const data = { id, recurrence_index, action_id, type };
     if (isTask(data)) {
       return <Task task={data} date={date} />;
     }
@@ -411,7 +428,13 @@ function Calendar({
     ({ section, item }: { item: ItemData; section: { key: string } }) => {
       return (
         <TransparentView style={{ paddingHorizontal: HORIZONTAL_PADDING }}>
-          <ListItem data={item} date={section.key} />
+          <ListItem
+            date={section.key}
+            id={item.id}
+            recurrence_index={item.recurrence_index}
+            action_id={item.action_id}
+            type={item.type}
+          />
         </TransparentView>
       );
     },

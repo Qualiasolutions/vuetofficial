@@ -1,14 +1,15 @@
 import { useThemeColor } from 'components/Themed';
 import React, { useEffect, useState } from 'react';
 import { ViewStyle, ImageSourcePropType } from 'react-native';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Image } from '../ImageComponents';
 import SafePressable from '../SafePressable';
 import { AlmostBlackText } from '../TextComponents';
 import { TransparentView } from '../ViewComponents';
-const CHECKBOX_HEIGHT = 23;
-const CHECKBOX_WIDTH = 23;
-const CHECKBOX_RADIUS = 2;
+
+export const CHECKBOX_HEIGHT = 23;
+export const CHECKBOX_WIDTH = 23;
+export const CHECKBOX_RADIUS = 2;
 
 const styles = StyleSheet.create({
   wrapper: {
