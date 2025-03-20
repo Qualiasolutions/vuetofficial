@@ -21,6 +21,10 @@ import {
   useFormType
 } from 'constants/TaskTypes';
 
+/*
+shownFields: specifies the conditions under which a field is shown
+*/
+
 const defaultTagSelector = (t: TFunction): Field => ({
   type: 'tagSelector',
   required: true,
@@ -49,6 +53,18 @@ const defaultIsAnyTime = (t: TFunction, disabled?: boolean): Field => ({
   disabled: !!disabled,
   forceUnchecked: ['is_flexible'],
   helpText: t('tasks.helpText.is_any_time'),
+  shownFields: [
+    {
+      is_flexible: false
+    }
+  ]
+});
+
+const defaultIsAllDay = (t: TFunction): Field => ({
+  type: 'checkbox',
+  required: false,
+  displayName: t('tasks.task.is_all_day'),
+  forceUnchecked: ['is_flexible'],
   shownFields: [
     {
       is_flexible: false
@@ -288,14 +304,6 @@ export const useTaskFieldTypes = ({
         ],
         hidden: !allowRecurrence
       },
-      actions: {
-        ...defaultActions(t),
-        shownFields: [
-          {
-            is_flexible: false
-          }
-        ]
-      },
       reminders: {
         ...defaultReminders(t),
         shownFields: [{ is_flexible: false }]
@@ -323,6 +331,141 @@ export const useTaskFieldTypes = ({
     disableFlexible,
     disabledRecurrenceFields
   ]);
+};
+
+export const useAppointmentFieldTypes = ({
+  isEdit = false,
+  taskHiddenTag = '',
+  disabledRecurrenceFields = false,
+  allowRecurrence = true
+}: {
+  isEdit?: boolean;
+  taskHiddenTag?: string;
+  disabledRecurrenceFields?: boolean;
+  allowRecurrence?: boolean;
+}): FlatFormFieldTypes => {
+  const { t } = useTranslation('modelFields');
+
+  return useMemo<FlatFormFieldTypes>(() => {
+    return {
+      tagsAndEntities: defaultTagSelector(t),
+      title: {
+        type: 'string',
+        required: true,
+        displayName: t('tasks.task.title'),
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      members: {
+        type: 'addMembers',
+        required: true,
+        valueToDisplay: (val: any) => `${val.first_name} ${val.last_name}`,
+        displayName: t('tasks.task.members'),
+        changeMembersText: t('tasks.task.changeMembers')
+      },
+      is_all_day: defaultIsAllDay(t),
+      start_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('tasks.task.start_datetime'),
+        disabled: disabledRecurrenceFields,
+        associatedEndTimeField: 'end_datetime',
+        shownFields: [
+          {
+            is_all_day: false
+          }
+        ]
+      },
+      end_datetime: {
+        type: 'DateTime',
+        required: true,
+        displayName: t('tasks.task.end_datetime'),
+        disabled: disabledRecurrenceFields,
+        associatedStartTimeField: 'start_datetime',
+        shownFields: [
+          {
+            is_all_day: false
+          }
+        ]
+      },
+      duration_minutes_calculated: {
+        type: 'calculatedDuration',
+        displayName: t('tasks.task.duration'),
+        disabled: true,
+        required: false,
+        startFieldName: 'start_datetime',
+        endFieldName: 'end_datetime',
+        shownFields: [
+          {
+            is_all_day: false
+          }
+        ]
+      },
+      start_date: {
+        ...defaultStartDate(t),
+        shownFields: [
+          {
+            is_all_day: true
+          }
+        ]
+      },
+      end_date: {
+        ...defaultEndDate(t),
+        shownFields: [
+          {
+            is_all_day: true
+          }
+        ]
+      },
+      location: {
+        type: 'string',
+        displayName: t('tasks.task.location'),
+        required: false,
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      notes: {
+        type: 'TextArea',
+        displayName: t('tasks.task.notes'),
+        required: false,
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      contact_no: {
+        type: 'phoneNumber',
+        displayName: t('tasks.task.contact_number'),
+        required: false,
+        disabled: !!(isEdit && taskHiddenTag) // If has hidden tag then shouldn't be editable
+      },
+      recurrence: {
+        type: 'recurrenceSelector',
+        required: false,
+        firstOccurrenceField: 'start_datetime',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields,
+        shownFields: [
+          {
+            is_all_day: false
+          }
+        ],
+        hidden: !allowRecurrence
+      },
+      date_recurrence: {
+        type: 'recurrenceSelector',
+        required: false,
+        firstOccurrenceField: 'date',
+        displayName: t('tasks.task.recurrence'),
+        disabled: disabledRecurrenceFields,
+        sourceField: 'recurrence',
+        targetField: 'recurrence',
+        shownFields: [
+          {
+            is_all_day: true
+          }
+        ],
+        hidden: !allowRecurrence
+      },
+      actions: defaultActions(t),
+      reminders: defaultReminders(t)
+    };
+  }, [t, isEdit, taskHiddenTag, allowRecurrence, disabledRecurrenceFields]);
 };
 
 export const useDueDateFieldTypes = ({
@@ -359,11 +502,6 @@ export const useDueDateFieldTypes = ({
         required: true,
         displayName: t('tasks.due_date.date'),
         disabled: disabledRecurrenceFields
-      },
-      duration: {
-        type: 'duration',
-        required: true,
-        displayName: t('tasks.task.duration')
       },
       recurrence: {
         type: 'recurrenceSelector',
@@ -434,7 +572,7 @@ export const useTransportFieldTypes = (
             ? t('tasks.transportTask.dropoff_location')
             : t('tasks.transportTask.end_location')
       },
-      is_any_time: defaultIsAnyTime(t),
+      is_all_day: defaultIsAllDay(t),
       start_datetime: {
         type: 'DateTime',
         required: true,
@@ -442,7 +580,7 @@ export const useTransportFieldTypes = (
         utc: true,
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -452,7 +590,7 @@ export const useTransportFieldTypes = (
         displayName: t('tasks.task.start_timezone'),
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -463,7 +601,7 @@ export const useTransportFieldTypes = (
         utc: true,
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -473,7 +611,7 @@ export const useTransportFieldTypes = (
         displayName: t('tasks.task.end_timezone'),
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -481,7 +619,7 @@ export const useTransportFieldTypes = (
         ...defaultStartDate(t),
         shownFields: [
           {
-            is_any_time: true
+            is_all_day: true
           }
         ]
       },
@@ -489,7 +627,7 @@ export const useTransportFieldTypes = (
         ...defaultEndDate(t),
         shownFields: [
           {
-            is_any_time: true
+            is_all_day: true
           }
         ]
       },
@@ -522,7 +660,7 @@ export const useAccommodationFieldTypes = (
             ? t('tasks.accommodationTask.hotelName')
             : t('tasks.accommodationTask.friendName')
       },
-      is_any_time: defaultIsAnyTime(t),
+      is_all_day: defaultIsAllDay(t),
       start_datetime: {
         type: 'DateTime',
         required: true,
@@ -530,7 +668,7 @@ export const useAccommodationFieldTypes = (
         utc: true,
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -540,7 +678,7 @@ export const useAccommodationFieldTypes = (
         displayName: t('tasks.task.start_timezone'),
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -551,7 +689,7 @@ export const useAccommodationFieldTypes = (
         utc: true,
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -561,7 +699,7 @@ export const useAccommodationFieldTypes = (
         displayName: t('tasks.task.end_timezone'),
         shownFields: [
           {
-            is_any_time: false
+            is_all_day: false
           }
         ]
       },
@@ -569,7 +707,7 @@ export const useAccommodationFieldTypes = (
         ...defaultStartDate(t),
         shownFields: [
           {
-            is_any_time: true
+            is_all_day: true
           }
         ]
       },
@@ -577,7 +715,7 @@ export const useAccommodationFieldTypes = (
         ...defaultEndDate(t),
         shownFields: [
           {
-            is_any_time: true
+            is_all_day: true
           }
         ]
       },
@@ -762,6 +900,7 @@ export const useFieldTypesForFormType = (
   }
 ) => {
   const taskFieldTypes = useTaskFieldTypes(opts);
+  const appointmentFieldTypes = useAppointmentFieldTypes(opts);
   const dueDateFieldTypes = useDueDateFieldTypes(opts);
   const holidayFieldTypes = useHolidayFieldTypes(opts.disabledRecurrenceFields);
   const accommodationFieldTypes = useAccommodationFieldTypes(
@@ -781,7 +920,8 @@ export const useFieldTypesForFormType = (
   else if (type === 'DUE_DATE') form = dueDateFieldTypes;
   else if (type === 'HOLIDAY') form = holidayFieldTypes;
   else if (type === 'USER_BIRTHDAY') form = userBirthdayFieldTypes;
-  else form = taskFieldTypes;
+  else if (type === 'TASK') form = taskFieldTypes;
+  else form = appointmentFieldTypes;
 
   if (!opts.isEdit && form.tagsAndEntities) {
     delete form.tagsAndEntities;

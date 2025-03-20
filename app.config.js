@@ -2,12 +2,12 @@ const extraData = {
   vuetApiUrl: process.env.REACT_NATIVE_PACKAGER_HOSTNAME
     ? `${process.env.REACT_NATIVE_PACKAGER_HOSTNAME.trim()}:8000`
     : process.env.ENV === 'LOCAL'
-    ? 'localhost:8000'
+    ? '192.168.1.225:8000'
     : 'api.vuet.app',
   vuetWebUrl: process.env.REACT_NATIVE_PACKAGER_HOSTNAME
     ? `http://${process.env.REACT_NATIVE_PACKAGER_HOSTNAME.trim()}:3000`
     : process.env.ENV === 'LOCAL'
-    ? 'http://localhost:3000'
+    ? 'http://192.168.1.225:3000'
     : 'https://web.vuet.app',
   stripeCustomerPortalUrl:
     'https://billing.stripe.com/p/login/test_eVadQR61H4mC02Q5kk',
