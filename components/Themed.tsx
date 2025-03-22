@@ -7,9 +7,11 @@ import {
   Text as DefaultText,
   View as DefaultView,
   TextInput as DefaultTextInput,
-  StyleSheet
+  StyleSheet,
+  SafeAreaView
 } from 'react-native';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useState } from 'react';
 import Colors, { ColorName } from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 
@@ -101,5 +103,46 @@ export function TextInput(props: TextInputProps) {
       {...otherProps}
       placeholderTextColor={placeholderTextColor}
     />
+  );
+}
+
+
+export function PasswordInput(props: TextInputProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'backgroundWhite'
+  );
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const placeholderTextColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'mediumGrey'
+  );
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  
+  return (
+    <SafeAreaView style={style}>
+      <DefaultTextInput
+        style={[
+          {
+            backgroundColor,
+            color
+          },
+          styles.textInput,
+          style || {borderWidth: 0}
+        ]}
+        {...otherProps}
+        secureTextEntry={!isPasswordVisible}
+        placeholderTextColor={placeholderTextColor}
+      />
+      <MaterialCommunityIcons
+        name={isPasswordVisible ? 'eye-off' : 'eye'}
+        size={24}
+        color={color}
+        style={{ position: 'absolute', right: 10, top: 10}}
+        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+      />
+    </SafeAreaView>
   );
 }

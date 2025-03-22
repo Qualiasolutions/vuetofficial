@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { TextInput } from 'components/Themed';
+import { PasswordInput } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
@@ -90,7 +90,7 @@ const CreatePasswordScreen = ({
             text={t('screens.createPassword.password')}
           />
         </TransparentView>
-        <TextInput
+        <PasswordInput
           accessibilityLabel="password-input"
           value={password}
           onChangeText={(text) => onChangePassword(text)}
@@ -103,7 +103,7 @@ const CreatePasswordScreen = ({
             text={t('screens.createPassword.confirmPassword')}
           />
         </TransparentView>
-        <TextInput
+        <PasswordInput
           accessibilityLabel="password-input-confirmation"
           value={passwordConfirm}
           onChangeText={(text) => onChangePasswordConfirm(text)}

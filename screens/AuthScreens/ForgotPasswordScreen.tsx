@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UnauthorisedTabParamList } from 'types/base';
-import { TextInput } from 'components/Themed';
+import { PasswordInput } from 'components/Themed';
 import { PaddedSpinner } from 'components/molecules/Spinners';
 import { Button } from 'components/molecules/ButtonComponents';
 import { validate } from 'email-validator';
@@ -68,14 +68,14 @@ export default function ForgotPasswordScreen({
       {step === 'NEW_PASSWORD' && (
         <>
           <PageSubtitle text={t('screens.forgotPassword.newPassword')} />
-          <TextInput
+          <PasswordInput
             value={newPassword}
             onChangeText={setNewPassword}
             placeholder={t('screens.editSecurity.newPassword')}
             style={styles.passwordInput}
             secureTextEntry={true}
           />
-          <TextInput
+          <PasswordInput
             value={newPasswordConf}
             onChangeText={setNewPasswordConf}
             placeholder={t('screens.editSecurity.newPasswordConf')}
