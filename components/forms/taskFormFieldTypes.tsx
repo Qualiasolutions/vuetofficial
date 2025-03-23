@@ -249,6 +249,26 @@ export const useTaskFieldTypes = ({
           }
         ]
       },
+      urgency: {
+        type: 'dropDown',
+        displayName: t('tasks.task.urgency'),
+        required: true,
+        shownFields: [
+          {
+            is_flexible: true
+          },
+          {
+            is_any_time: true,
+            is_all_day: false
+          }
+        ],
+        permittedValues: [
+          { label: 'Low', value: 'LOW' },
+          { label: 'Medium', value: 'MEDIUM' },
+          { label: 'High', value: 'HIGH' }
+        ],
+        listMode: 'MODAL'
+      },
       location: {
         type: 'string',
         displayName: t('tasks.task.location'),

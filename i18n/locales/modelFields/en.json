@@ -22,6 +22,7 @@
       "notes": "Notes",
       "is_flexible": "Add this to my calendar any time between the dates below",
       "is_any_time": "Any time today / No Set Time",
+      "urgency": "Urgency",
       "is_all_day": "All Day",
       "earliest_action_date": "Earliest occurrence",
       "due_date": "Due date",
