@@ -7,9 +7,11 @@ import {
   Text as DefaultText,
   View as DefaultView,
   TextInput as DefaultTextInput,
-  StyleSheet,
-  SafeAreaView
+  StyleSheet
 } from 'react-native';
+import {
+  TransparentView,
+} from 'components/molecules/ViewComponents';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import Colors, { ColorName } from '../constants/Colors';
@@ -122,7 +124,7 @@ export function PasswordInput(props: TextInputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   
   return (
-    <SafeAreaView style={style}>
+    <TransparentView style={style}>
       <DefaultTextInput
         style={[
           {
