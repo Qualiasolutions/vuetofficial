@@ -80,7 +80,6 @@ export default function InitialAuthScreen({
       </TransparentView>
       <PasswordInput
         value={password}
-        secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
         style={styles.passwordInput}
       />

@@ -13,7 +13,7 @@ import {
   TransparentView,
   WhiteBox
 } from 'components/molecules/ViewComponents';
-import { Text, TextInput, useThemeColor } from 'components/Themed';
+import { PasswordInput, Text, TextInput, useThemeColor } from 'components/Themed';
 import ENTITY_TYPE_TO_CATEGORY from 'constants/EntityTypeToCategory';
 import INFO_CATEGORY_TAGS from 'constants/InfoCategoryTags';
 import dayjs from 'dayjs';
@@ -298,8 +298,7 @@ const PasswordModal = ({
         {!value && (
           <TransparentView>
             <Text>{t('components.referenceItem.passwordModal.blurb')}</Text>
-            <TextInput
-              secureTextEntry={true}
+            <PasswordInput
               style={passwordModalStyles.passwordInput}
               onChangeText={setAccountPassword}
               value={accountPassword}

@@ -73,14 +73,12 @@ export default function ForgotPasswordScreen({
             onChangeText={setNewPassword}
             placeholder={t('screens.editSecurity.newPassword')}
             style={styles.passwordInput}
-            secureTextEntry={true}
           />
           <PasswordInput
             value={newPasswordConf}
             onChangeText={setNewPasswordConf}
             placeholder={t('screens.editSecurity.newPasswordConf')}
             style={styles.passwordInput}
-            secureTextEntry={true}
           />
           {updateUserDetailsResult.isLoading ? (
             <PaddedSpinner />

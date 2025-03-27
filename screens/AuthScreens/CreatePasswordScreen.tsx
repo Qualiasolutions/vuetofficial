@@ -94,7 +94,6 @@ const CreatePasswordScreen = ({
           accessibilityLabel="password-input"
           value={password}
           onChangeText={(text) => onChangePassword(text)}
-          secureTextEntry={true}
           style={styles.passwordInput}
         />
         <TransparentView style={styles.inputLabelWrapper}>
@@ -107,7 +106,6 @@ const CreatePasswordScreen = ({
           accessibilityLabel="password-input-confirmation"
           value={passwordConfirm}
           onChangeText={(text) => onChangePasswordConfirm(text)}
-          secureTextEntry={true}
           style={styles.passwordInput}
         />
         {createAccountResult.isLoading ? (

@@ -31,21 +31,18 @@ export default function EditSecurityScreen() {
         onChangeText={setOldPassword}
         placeholder={t('screens.editSecurity.oldPassword')}
         style={{ marginBottom: 30 }}
-        secureTextEntry={true}
       />
       <PasswordInput
         value={newPassword}
         onChangeText={setNewPassword}
         placeholder={t('screens.editSecurity.newPassword')}
         style={{ marginBottom: 10 }}
-        secureTextEntry={true}
       />
       <PasswordInput
         value={newPasswordConf}
         onChangeText={setNewPasswordConf}
         placeholder={t('screens.editSecurity.newPasswordConf')}
         style={{ marginBottom: 30 }}
-        secureTextEntry={true}
       />
 
       {updateUserDetailsResult.isLoading ? (
