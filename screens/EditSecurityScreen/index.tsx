@@ -2,7 +2,7 @@ import { Button } from 'components/molecules/ButtonComponents';
 import { FullPageSpinner, PaddedSpinner } from 'components/molecules/Spinners';
 import { PageTitle } from 'components/molecules/TextComponents';
 import { TransparentPaddedView } from 'components/molecules/ViewComponents';
-import { TextInput } from 'components/Themed';
+import { PasswordInput } from 'components/Themed';
 import useGetUserFullDetails from 'hooks/useGetUserDetails';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,26 +26,23 @@ export default function EditSecurityScreen() {
   return (
     <TransparentPaddedView>
       <PageTitle text={t('screens.editSecurity.updatePassword')} />
-      <TextInput
+      <PasswordInput
         value={oldPassword}
         onChangeText={setOldPassword}
         placeholder={t('screens.editSecurity.oldPassword')}
         style={{ marginBottom: 30 }}
-        secureTextEntry={true}
       />
-      <TextInput
+      <PasswordInput
         value={newPassword}
         onChangeText={setNewPassword}
         placeholder={t('screens.editSecurity.newPassword')}
         style={{ marginBottom: 10 }}
-        secureTextEntry={true}
       />
-      <TextInput
+      <PasswordInput
         value={newPasswordConf}
         onChangeText={setNewPasswordConf}
         placeholder={t('screens.editSecurity.newPasswordConf')}
         style={{ marginBottom: 30 }}
-        secureTextEntry={true}
       />
 
       {updateUserDetailsResult.isLoading ? (

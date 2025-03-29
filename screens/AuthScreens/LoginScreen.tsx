@@ -10,7 +10,7 @@ import {
   setRefreshToken
 } from 'reduxStore/slices/auth/actions';
 
-import { Text, TextInput } from 'components/Themed';
+import { Text, PasswordInput } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { getTokenAsync } from 'utils/authRequests';
@@ -119,9 +119,8 @@ const LoginScreen = ({
           text={t('screens.logIn.password')}
         />
       </TransparentView>
-      <TextInput
+      <PasswordInput
         value={password}
-        secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
         style={styles.passwordInput}
       />

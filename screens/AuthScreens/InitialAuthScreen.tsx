@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
 
-import { Text, TextInput } from 'components/Themed';
+import { PasswordInput, TextInput } from 'components/Themed';
 import { Button } from 'components/molecules/ButtonComponents';
 
 import { UnauthorisedTabParamList } from 'types/base';
@@ -78,9 +78,8 @@ export default function InitialAuthScreen({
           text={t('screens.logIn.password')}
         />
       </TransparentView>
-      <TextInput
+      <PasswordInput
         value={password}
-        secureTextEntry={true}
         onChangeText={(text) => onChangePassword(text)}
         style={styles.passwordInput}
       />
