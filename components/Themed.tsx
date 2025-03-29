@@ -145,6 +145,6 @@ export function PasswordInput(props: TextInputProps) {
         style={{ position: 'absolute', right: 10, top: 10}}
         onPress={() => setIsPasswordVisible(!isPasswordVisible)}
       />
-    </SafeAreaView>
+    </TransparentView>
   );
 }
