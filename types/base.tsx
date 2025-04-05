@@ -77,6 +77,8 @@ export type SettingsTabParamList = {
   TaskLimits: undefined;
   FlexibleTaskPreferences: undefined;
   Routines: undefined;
+  TimeBlocks: undefined;
+  RoutinesAndTimeBlocks: undefined;
   Integrations: undefined;
   CreateUserInvite: { familyRequest: boolean };
 };

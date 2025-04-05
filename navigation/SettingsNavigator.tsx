@@ -19,6 +19,8 @@ import FlexibleTaskPreferencesScreen from 'screens/SettingsScreens/FlexibleTaskP
 import BlockedDayPreferencesScreen from 'screens/SettingsScreens/BlockedDayPreferencesScreen';
 import PreferredDayPreferencesScreen from 'screens/SettingsScreens/PreferredDayPreferencesScreen';
 import RoutinesScreen from 'screens/SettingsScreens/RoutinesScreen';
+import TimeBlocksScreen from 'screens/SettingsScreens/TimeBlocksScreen';
+import RoutinesAndTimeBlocksScreen from 'screens/SettingsScreens/RoutinesAndTimeBlocksScreen';
 import IntegrationsScreen from 'screens/SettingsScreens/IntegrationsScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsTabParamList>();
@@ -140,8 +142,24 @@ export function SettingsNavigator() {
         }}
       />
       <SettingsStack.Screen
+        name="RoutinesAndTimeBlocks"
+        component={RoutinesAndTimeBlocksScreen}
+        options={{
+          title: '',
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
         name="Routines"
         component={RoutinesScreen}
+        options={{
+          title: '',
+          headerTintColor
+        }}
+      />
+      <SettingsStack.Screen
+        name="TimeBlocks"
+        component={TimeBlocksScreen}
         options={{
           title: '',
           headerTintColor

@@ -6,9 +6,19 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { SettingsTabParamList } from 'types/base';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  button: {
+    marginBottom: 10
+  }
+});
+
 export default function PersonalAssistantScreen({
   navigation
-}: NativeStackScreenProps<SettingsTabParamList, 'Settings'>) {
+}: NativeStackScreenProps<SettingsTabParamList, 'PersonalAssistant'>) {
   const { t } = useTranslation();
 
   return (
@@ -60,13 +70,3 @@ export default function PersonalAssistantScreen({
     </TransparentFullPageScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  button: {
-    marginBottom: 10
-  }
-});

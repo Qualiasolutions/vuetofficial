@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
   }
 });
 
-const SettingsScreen = ({
+export default function RoutinesAndTimeBlocksScreen({
   navigation
-}: NativeStackScreenProps<SettingsTabParamList, 'Settings'>) => {
+}: NativeStackScreenProps<SettingsTabParamList, 'RoutinesAndTimeBlocks'>) {
   const { t } = useTranslation();
   const { data: user } = useGetUserFullDetails();
 
@@ -34,31 +34,17 @@ const SettingsScreen = ({
     <TransparentFullPageScrollView contentContainerStyle={styles.container}>
       <TransparentView>
         <Button
-          title={t('pageTitles.familySettings')}
+          title={t('pageTitles.routines')}
           onPress={() => {
-            navigation.navigate('FamilySettings');
-          }}
-          style={styles.button}
-        />
-        <Button
-          title={t('pageTitles.integrations')}
-          onPress={() => {
-            navigation.navigate('Integrations');
-          }}
-          style={styles.button}
-        />
-        <Button
-          title={t('pageTitles.personalAssistant')}
-          onPress={() => {
-            navigation.navigate('PersonalAssistant');
+            navigation.navigate('Routines');
           }}
           style={styles.button}
           disabled={!user.is_premium}
         />
         <Button
-          title={t('pageTitles.routineAndTimeBlocks')}
+          title={t('pageTitles.timeBlocks')}
           onPress={() => {
-            navigation.navigate('RoutinesAndTimeBlocks');
+            navigation.navigate('TimeBlocks');
           }}
           style={styles.button}
           disabled={!user.is_premium}
@@ -66,6 +52,4 @@ const SettingsScreen = ({
       </TransparentView>
     </TransparentFullPageScrollView>
   );
-};
-
-export default SettingsScreen;
+}
