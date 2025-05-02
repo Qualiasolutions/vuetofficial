@@ -7400,7 +7400,7 @@ metro@0.81.0, metro@^0.81.0:
     ws "^7.5.10"
     yargs "^17.6.2"
 
-metro@0.82.2, metro@^0.82.0:
+metro@0.82.2, metro@^0.82.0, metro@^0.82.2:
   version "0.82.2"
   resolved "https://registry.yarnpkg.com/metro/-/metro-0.82.2.tgz#3fdf2eb2558d930ba9f156967e861dee8b026081"
   integrity sha512-hOBd4O4Cn/tLf3jz7IjSgD/A66MqMzgZuyF1I/pmNwYcY3q3j2vbh7Fa09KIbvUq5Yz7BewU356XboaEtEXPgA==
